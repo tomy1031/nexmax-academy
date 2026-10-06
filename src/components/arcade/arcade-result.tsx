@@ -23,9 +23,11 @@ export function ArcadeResult({
   missedWords,
   furigana,
   onRetryWrong,
+  retryWrongDisabled = false,
   onBack,
   onLeave,
   leaveLabel,
+  certificate = null,
 }: {
   summary: ArcadeSummary;
   gameScore: number;
@@ -34,6 +36,8 @@ export function ArcadeResult({
   missedWords: readonly Word[];
   furigana: FuriganaIndex;
   onRetryWrong: () => void;
+  /** 「まちがえた ことばだけ」を まだ 押させない（修了証を 作って いる 途中）。 */
+  retryWrongDisabled?: boolean;
   onBack: () => void;
   /**
    * 単語テストから 出る 道。ステージから 来た ときだけ 渡る
@@ -45,6 +49,8 @@ export function ArcadeResult({
    */
   onLeave?: () => void;
   leaveLabel?: ReactNode;
+  /** 単語テストの 修了証（テストを 終えた 瞬間に 発行した もの。願い #562）。点の すぐ 下に 置く。 */
+  certificate?: ReactNode;
 }) {
   return (
     <motion.div
@@ -119,6 +125,8 @@ export function ArcadeResult({
         {!isTest && <Stat label="さいこう れんぞく" value={`${bestCombo}`} accent="#f2654a" />}
       </dl>
 
+      {certificate ? <div className="mt-5 text-left">{certificate}</div> : null}
+
       {missedWords.length > 0 && (
         <section className="mt-6">
           <h3 className="text-ink mb-2 font-extrabold">
@@ -148,7 +156,8 @@ export function ArcadeResult({
           <button
             type="button"
             onClick={onRetryWrong}
-            className="btn-island btn-game px-6 py-3.5 text-lg"
+            disabled={retryWrongDisabled}
+            className="btn-island btn-game px-6 py-3.5 text-lg disabled:opacity-60"
             style={{ "--btn-face": "#f26fa7", "--btn-shadow": "#d94d84" } as React.CSSProperties}
           >
             まちがえた ことばだけ

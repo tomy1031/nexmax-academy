@@ -19,10 +19,13 @@
  * - もんだい（第2段・同日の 回答「満点」）: 全問 正解。こたえ（けっかの 画面の せつめい）を
  *   見た あとの やりなおし・前の 回の 続き・バグ報告で こたえの 文を 見た 回は パーフェクトに しない。
  *   点・割合・合否は 書く
+ * - 単語テスト（第2段・同日の 回答「何回目でも満点なら金」）: テストの やりかたを 最後まで 終えて
+ *   満点（読み・意味 ぜんぶ）。「まちがえた ことばだけ」の やりなおしは パーフェクトに しない。
+ *   れんしゅう・もんだいだけ の やりかたには 出さない（テストでは ない）
  */
 
 /** 種類の 名前は ステージの `contents[].type` と 同じ（DB の kind 列。移行SQLの 註）。 */
-export type CertificateKind = "listening" | "typing" | "quizset";
+export type CertificateKind = "listening" | "typing" | "quizset" | "wordtest";
 
 /** 1回ぶんの 成績（端末が まとめて DB へ 送る）。 */
 export interface CertificateResult {
@@ -170,6 +173,46 @@ export function quizResult(
   };
 }
 
+/** 単語テストの 1回ぶん（`src/components/arcade/use-word-test-certificate.ts`）。 */
+export interface WordTestRunFacts {
+  /** 読みと 意味を あわせた 点（`summarize` の score / maxScore。画面と 同じ）。 */
+  readonly score: number;
+  readonly maxScore: number;
+  readonly readingCorrect: number;
+  /** 読みを 聞いた 数（読みの 無い ことばは 聞かない）。 */
+  readonly readingAsked: number;
+  readonly meaningCorrect: number;
+  /** 出た ことばの 数。 */
+  readonly words: number;
+  readonly passed: boolean;
+  /** 「まちがえた ことばだけ」の やりなおし。 */
+  readonly onlyMissed: boolean;
+}
+
+export function wordTestResult(
+  contentId: string,
+  title: string,
+  facts: WordTestRunFacts,
+): CertificateResult {
+  return {
+    kind: "wordtest",
+    contentId,
+    title,
+    perfect: facts.maxScore > 0 && facts.score === facts.maxScore && !facts.onlyMissed,
+    score: facts.score,
+    maxScore: facts.maxScore,
+    misses: facts.maxScore - facts.score,
+    detail: {
+      words: facts.words,
+      readingCorrect: facts.readingCorrect,
+      readingAsked: facts.readingAsked,
+      meaningCorrect: facts.meaningCorrect,
+      passed: facts.passed,
+      onlyMissed: facts.onlyMissed,
+    },
+  };
+}
+
 /** 修了証の 成績の 1行（ラベルと 値。画面の カードと 画像の 両方が 使う）。 */
 export interface CertificateLine {
   readonly label: string;
@@ -192,6 +235,24 @@ export function certificateLines(cert: CertificateResult): CertificateLine[] {
       ...(cert.detail.sawScriptBefore
         ? [{ label: "やりなおし", value: "前に こたえあわせを 見た あと" }]
         : []),
+    ];
+  }
+  if (cert.kind === "wordtest") {
+    const words = Number(cert.detail.words ?? 0);
+    return [
+      { label: "点", value: `${cert.score ?? 0} / ${cert.maxScore ?? 0}` },
+      {
+        label: "読み",
+        value: `${Number(cert.detail.readingCorrect ?? 0)} / ${Number(cert.detail.readingAsked ?? 0)}`,
+      },
+      { label: "意味", value: `${Number(cert.detail.meaningCorrect ?? 0)} / ${words}` },
+      /*
+       * 「まちがえた ことばだけ」の 回は 合否を 書かない——数語の やりなおしの「合格」は、
+       * テストに 合格した ように 読める（規律1・code-critic の 指摘）
+       */
+      ...(cert.detail.onlyMissed
+        ? [{ label: "はじめかた", value: "まちがえた ことばだけ" }]
+        : [{ label: "けっか", value: cert.detail.passed ? "合格" : "不合格" }]),
     ];
   }
   if (cert.kind === "quizset") {
@@ -244,6 +305,13 @@ export function notPerfectReasons(cert: CertificateResult): string[] {
       ...(cert.detail.sawScriptBefore ? ["前に こたえあわせを 見た あとの やりなおしです。"] : []),
     ];
   }
+  if (cert.kind === "wordtest") {
+    const missed = cert.misses ?? 0;
+    return [
+      ...(missed > 0 ? [`まちがえた ところが ${missed}つ あります。`] : []),
+      ...(cert.detail.onlyMissed ? ["まちがえた ことばだけの やりなおしです。"] : []),
+    ];
+  }
   if (cert.kind === "quizset") {
     const missed = cert.misses ?? 0;
     return [
@@ -264,6 +332,9 @@ export function notPerfectReasons(cert: CertificateResult): string[] {
 
 /** パーフェクトに する ための 次の 一手（1行）。 */
 export function nextStepForPerfect(cert: CertificateResult): string {
+  if (cert.kind === "wordtest") {
+    return "パーフェクトを めざすなら、もう一度 テストを ぜんぶ やって、満点を とりましょう。";
+  }
   if (cert.kind === "quizset") {
     /*
      * けっかの 画面で こたえと せつめいを 見たので、この あとの やりなおしは もう
