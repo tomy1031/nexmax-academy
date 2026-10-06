@@ -564,9 +564,31 @@ export function formatIssuedAt(iso: string): string {
   return `${get("year")}/${pad(get("month"))}/${pad(get("day"))} ${get("hour")}:${get("minute")}（ICT）`;
 }
 
-/** 画像の ファイル名（`nexmax-certificate_<教材ID>_<yyyymmdd-hhmm>.png`。時刻は ICT）。 */
-export function certificateFileName(contentId: string, iso: string): string {
-  const date = new Date(iso);
+/**
+ * ファイル名に 使えない 字を 外す（Windows・mac・スマホの どれでも 保存できる ように）。
+ * `/ \ : * ? " < > |` と 制御文字は「-」に。
+ */
+function safeFilePart(text: string): string {
+  return text
+    .replace(/[\/:*?"<>|\u0000-\u001f]/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^[-.]+|[-.]+$/g, "");
+}
+
+/**
+ * 画像の ファイル名 — **`<日付時刻>_<名前>_<タイトル>.png`**（2026-10-06 の 指定
+ * 「日付時刻_名前_タイトルとなるように」）。日付時刻は ICT の `yyyymmdd-hhmm`。
+ *
+ * - 名前の 中の 空白は「-」（`ヤマダ アヤ` → `ヤマダ-アヤ`。区切りの「_」と まぎれない）
+ * - タイトルの 空白は 詰める（画面の 分かち書き。`作業完了の 報告` → `作業完了の報告`）
+ * - 名前が 無い（見本）ときは「名前なし」。タイトルは 長すぎない ように 60字まで
+ */
+export function certificateFileName(cert: {
+  readonly issuedAt: string;
+  readonly learnerName: string;
+  readonly title: string;
+}): string {
+  const date = new Date(cert.issuedAt);
   const parts = new Intl.DateTimeFormat("en-CA", {
     timeZone: "Asia/Phnom_Penh",
     year: "numeric",
@@ -579,5 +601,8 @@ export function certificateFileName(contentId: string, iso: string): string {
   const get = (type: Intl.DateTimeFormatPartTypes) =>
     parts.find((part) => part.type === type)?.value ?? "00";
   const stamp = `${get("year")}${get("month")}${get("day")}-${get("hour")}${get("minute")}`;
-  return `nexmax-certificate_${contentId}_${stamp}.png`;
+  const name = safeFilePart(cert.learnerName.trim().replace(/[\s\u3000]+/g, "-")) || "名前なし";
+  const title =
+    [...safeFilePart(cert.title.replace(/[\s\u3000]+/g, ""))].slice(0, 60).join("") || "修了証";
+  return `${stamp}_${name}_${title}.png`;
 }

@@ -99,9 +99,34 @@ describe("タイピングの パーフェクト", () => {
 describe("時刻と ファイル名は カンボジアの 時刻（ICT）に 固定", () => {
   it("UTC の 時刻を ICT（+7時間）で 書く", () => {
     expect(formatIssuedAt("2026-10-06T07:05:00Z")).toBe("2026/10/06 14:05（ICT）");
-    expect(certificateFileName("houkoku_kanryou_typing", "2026-10-06T17:30:00Z")).toBe(
-      "nexmax-certificate_houkoku_kanryou_typing_20261007-0030.png",
-    );
+    expect(
+      certificateFileName({
+        issuedAt: "2026-10-06T17:30:00Z",
+        learnerName: "ヤマダ アヤ",
+        title: "タイピング：作業完了の 報告",
+      }),
+    ).toBe("20261007-0030_ヤマダ-アヤ_タイピング：作業完了の報告.png");
+  });
+});
+
+describe("ファイル名は 日付時刻_名前_タイトル（2026-10-06 の 指定）", () => {
+  it("ファイル名に 使えない 字は「-」に。名前が 無ければ「名前なし」", () => {
+    expect(
+      certificateFileName({
+        issuedAt: "2026-10-06T07:05:00Z",
+        learnerName: "",
+        title: 'A/B: "テスト"?',
+      }),
+    ).toBe("20261006-1405_名前なし_A-B-テスト.png");
+  });
+
+  it("長い タイトルは 60字で 切る", () => {
+    const name = certificateFileName({
+      issuedAt: "2026-10-06T07:05:00Z",
+      learnerName: "Sok Dara",
+      title: "あ".repeat(80),
+    });
+    expect(name).toBe(`20261006-1405_Sok-Dara_${"あ".repeat(60)}.png`);
   });
 });
 

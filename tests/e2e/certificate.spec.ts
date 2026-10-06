@@ -18,7 +18,7 @@ import {
  * 2. ❌ が あっても パーフェクト（❌ では 分けない。数は 成績に 出す。同日の 指定
  *    「間違いがないよりもちゃんと終わらせることが大切」）
  * 3. リスニングで 原稿を 100% 開いた 瞬間に 修了証が 出る（こたえあわせの 前・あいことば なし＝パーフェクト）
- * 4. 「画像で 保存」で PNG が 落ちる（ファイル名に 教材ID と ICT の 時刻）
+ * 4. 「画像で 保存」で PNG が 落ちる（ファイル名は ICT の 日付時刻_名前_タイトル）
  *
  * デモモード（鍵ゼロ）は ログインが 無いので **見本**（番号なし・「正式では ない」）に なる。
  * 正式な 発行（DB が 時刻・名前・番号を 押す）は 移行SQLと RLS で 決まる ので、ここでは 見ない。
@@ -112,8 +112,14 @@ test("タイピング: 最後まで 終えると パーフェクトの 修了証
 
   const download = page.waitForEvent("download");
   await page.getByRole("button", { name: "修了証を 画像で 保存" }).click();
+  // ファイル名は 日付時刻_名前_タイトル（2026-10-06 の 指定）。見本は 名前が 無いので「名前なし」
+  const title = (
+    JSON.parse(readFileSync(join("content", "typing", `${TYPING}.json`), "utf8")) as {
+      title: string;
+    }
+  ).title.replace(/\s+/g, "");
   expect((await download).suggestedFilename()).toMatch(
-    new RegExp(`^nexmax-certificate_${TYPING}_\\d{8}-\\d{4}\\.png$`),
+    new RegExp(`^\\d{8}-\\d{4}_名前なし_${title}\\.png$`),
   );
   // 画像そのものも 画面写真と 一緒に 残す（目で 見る ため）
   await (await download).saveAs("e2e-screens/certificate-typing-perfect.png");
