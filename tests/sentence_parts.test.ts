@@ -86,6 +86,9 @@ describe("cutPart", () => {
 
 describe("wavToPcm", () => {
   it("toWav で 包んだ PCM を そのまま 取り出す", () => {
-    expect(wavToPcm(new Uint8Array(toWav(audio)))).toEqual(audio);
+    // 7万字の 配列を toEqual で 比べると 遅い（負荷の 高い 端末で 時間切れに なった）ので Buffer で
+    expect(Buffer.from(wavToPcm(new Uint8Array(toWav(audio)))).equals(Buffer.from(audio))).toBe(
+      true,
+    );
   });
 });
