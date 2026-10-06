@@ -37,6 +37,9 @@ import {
   type StoredWordStage,
 } from "@/content/schema";
 import { GIT_CONTENTS } from "@/content/git-contents.generated";
+import { audioUnitsOf } from "@/content/listening-audio";
+import { hasAsset } from "@/lib/asset-url";
+import { matchSentenceClips } from "@/lib/audio/sentences";
 import { fetchDbContents } from "@/lib/content-db";
 import { notebookQuizSetIds } from "@/lib/answers/notebook";
 import {
@@ -372,8 +375,15 @@ export async function getQuest(id: string): Promise<Quest | null> {
   return (await listQuests()).find((quest) => quest.id === id) ?? null;
 }
 
-/** 読み出した あとの タイピング（ことばカードの 中身が 埋まって いる）。 */
-export type HydratedTyping = Typing & { words: Record<string, TypingWordCard> };
+/**
+ * 読み出した あとの タイピング（ことばカードの 中身が 埋まって いる）。
+ * `sentenceAudio` は お手本の 文ごとの 音（`listeningRef` の リスニングの 文ごとの 音から 当てる。
+ * 全部の 文に 当たる ときだけ 入る——`matchSentenceClips`）。
+ */
+export type HydratedTyping = Typing & {
+  words: Record<string, TypingWordCard>;
+  sentenceAudio?: string[];
+};
 
 export const listTypings = cache(async (): Promise<HydratedTyping[]> => {
   const git = gitContentsOfKind<Typing>("typing");
@@ -381,7 +391,21 @@ export const listTypings = cache(async (): Promise<HydratedTyping[]> => {
     a.id.localeCompare(b.id),
   );
   const words = await listVocabWords();
-  return merged.map((typing) => hydrateTyping(typing, words));
+  const listenings = new Map((await listListenings()).map((one) => [one.id, one]));
+  return merged.map((typing) => {
+    const hydrated = hydrateTyping(typing, words);
+    const listening = typing.listeningRef ? listenings.get(typing.listeningRef) : undefined;
+    const sentenceAudio = listening
+      ? matchSentenceClips(
+          listening.id,
+          listening.script,
+          typing.sentences.map((sentence) => sentence.text),
+          hasAsset,
+          audioUnitsOf(listening.id),
+        )
+      : null;
+    return sentenceAudio ? { ...hydrated, sentenceAudio } : hydrated;
+  });
 });
 
 export async function getTyping(id: string): Promise<HydratedTyping | null> {

@@ -1,7 +1,8 @@
 "use client";
 
-import { useCallback, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import type { Typing } from "@/content/schema";
+import { assetUrl } from "@/lib/asset-url";
 import { soundsLikeOf } from "@/content/listening-sounds";
 import { buildSoundsIndex } from "@/components/listening/listening-checks";
 import { RubyText } from "@/components/ruby-text";
@@ -31,8 +32,14 @@ import {
 import { createTypingTarget, judgeTyping, type TypingResult } from "./typing-checks";
 import { TYPING_UI_FURIGANA } from "./ui-furigana";
 
-/** 読み出した あとの タイピング（ことばカードの 中身が 埋まって いる。`src/lib/content.ts`）。 */
-export type TypingViewData = Typing & { words: Record<string, TypingWordCard> };
+/**
+ * 読み出した あとの タイピング（ことばカードの 中身が 埋まって いる。`src/lib/content.ts`）。
+ * `sentenceAudio` は お手本の 文ごとの 音の URL（全部の 文に 音が ある ときだけ）。
+ */
+export type TypingViewData = Typing & {
+  words: Record<string, TypingWordCard>;
+  sentenceAudio?: readonly string[];
+};
 
 function subscribeNever(): () => void {
   return () => {};
@@ -249,17 +256,22 @@ export function TypingView({ typing, embedded }: { typing: TypingViewData; embed
          * 読みが 付いて いると かなを 写すだけに なり、コピーできると 打つ 練習に ならない。
          * `data-furigana="off"` は e2e の 裸の 漢字の 見張り（bareKanjiTexts）に「わざと」を 知らせる 印。
          */}
-        <p
-          className="bg-panel-tint border-hairline text-ink mt-3 rounded-2xl border px-4 py-4 text-lg leading-loose font-extrabold break-words select-none sm:text-xl"
-          data-furigana="off"
-          data-typing="sentence"
-          onCopy={(event) => event.preventDefault()}
-          onCut={(event) => event.preventDefault()}
-          onDragStart={(event) => event.preventDefault()}
-          onContextMenu={(event) => event.preventDefault()}
-        >
-          {sentence.text}
-        </p>
+        <div className="mt-3 flex items-center gap-3">
+          <p
+            className="bg-panel-tint border-hairline text-ink min-w-0 flex-1 rounded-2xl border px-4 py-4 text-lg leading-loose font-extrabold break-words select-none sm:text-xl"
+            data-furigana="off"
+            data-typing="sentence"
+            onCopy={(event) => event.preventDefault()}
+            onCut={(event) => event.preventDefault()}
+            onDragStart={(event) => event.preventDefault()}
+            onContextMenu={(event) => event.preventDefault()}
+          >
+            {sentence.text}
+          </p>
+          {typing.sentenceAudio?.[index] ? (
+            <ModelAudioButton key={index} url={typing.sentenceAudio[index]} />
+          ) : null}
+        </div>
       </section>
 
       <section className="card-island border-hairline border p-5 sm:p-6">
@@ -390,6 +402,59 @@ export function TypingView({ typing, embedded }: { typing: TypingViewData; embed
         />
       )}
     </div>
+  );
+}
+
+/**
+ * お手本の 文を 聞く（2026-10-06 の 指定「音声再生の ボタンを テキストの 横に」）。
+ *
+ * 鳴らすのは リスニングで 作った 文ごとの 音（作り置き・端末の 読み上げでは ない）。
+ * もう一度 押すと 止まる。文が 変わると 部品ごと 作り直す（呼び出し側の `key`）ので、
+ * 前の 文の 音は 鳴り残らない。押しても 入力欄の カーソルを 奪わない（聞いて そのまま 打てる）。
+ */
+function ModelAudioButton({ url }: { url: string }) {
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [playing, setPlaying] = useState(false);
+  useEffect(() => {
+    const audio = audioRef.current;
+    return () => audio?.pause();
+  }, []);
+  const toggle = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (!audio.paused) {
+      audio.pause();
+      audio.currentTime = 0;
+      return;
+    }
+    setPlaying(true);
+    void audio.play().catch(() => setPlaying(false));
+  };
+  return (
+    <>
+      <button
+        type="button"
+        onClick={toggle}
+        onMouseDown={(event) => event.preventDefault()}
+        aria-label="お手本の 文を 聞く"
+        aria-pressed={playing}
+        data-typing="listen"
+        className={`grid h-11 w-11 shrink-0 place-items-center rounded-full border-2 text-lg ${
+          playing ? "bg-sky border-sky text-white" : "border-hairline bg-panel text-ink"
+        }`}
+      >
+        {playing ? "■" : "🔊"}
+      </button>
+      <audio
+        ref={audioRef}
+        src={assetUrl(url) ?? url}
+        preload="none"
+        onPause={() => setPlaying(false)}
+        onEnded={() => setPlaying(false)}
+        data-typing="audio"
+        className="hidden"
+      />
+    </>
   );
 }
 
