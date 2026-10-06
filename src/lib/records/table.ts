@@ -679,7 +679,13 @@ function certificateScoreText(record: CertificateRecord): string {
   const detail = (record.detail ?? {}) as Record<string, unknown>;
   const notes = [
     ...(detail.partial ? ["前の 回の 続きから"] : []),
-    ...(detail.sawScriptBefore ? ["こたえあわせを 見た あとの やりなおし"] : []),
+    ...(detail.sawScriptBefore
+      ? [
+          record.kind === "quizset"
+            ? "こたえを 見た あとの やりなおし"
+            : "こたえあわせを 見た あとの やりなおし",
+        ]
+      : []),
     ...(detail.reviewedEarly ? ["100%の 前に こたえあわせを 見た"] : []),
     ...(detail.usedRescue ? ["あいことばを 使った"] : []),
     ...(detail.sawModelAnswer ? ["バグ報告で こたえの 文を 見た"] : []),

@@ -451,8 +451,21 @@ export function QuizRunner({
       freeOnly,
       wholeRun,
       sawModelAnswer: sawBugReportAnswer(state.drafts),
+      attemptId,
     });
   }, [done, attemptId, summary, freeOnly, wholeRun, state.drafts, finishCertificate]);
+
+  /*
+   * この 回の 中で こたえを 見た 印（1問ずつの せつめい・バグ報告で 3回 だめで 見せた 文）。
+   * 同じ 回では 数えないが、「はじめから」で 回を 新しく しても **前の 回で 見た** ことは 残る
+   *（code-critic の 指摘。印が 無いと、見てから やり直して パーフェクトに なる）。
+   */
+  const { sawAnswers } = certificate;
+  const explaining = state.phase.kind === "explain";
+  const bugAnswerShown = sawBugReportAnswer(state.drafts);
+  useEffect(() => {
+    if (started && (explaining || bugAnswerShown)) sawAnswers();
+  }, [started, explaining, bugAnswerShown, sawAnswers]);
   const question = currentQuestion(state);
   /** 1問ずつの 画面で、バグ報告が まだ 合格して いない（「つぎ →」を 止める）。 */
   const bugBlocked = (() => {
@@ -617,7 +630,8 @@ export function QuizRunner({
                 setStarted(true);
               }}
               onStart={() => {
-                certificate.begin("fresh");
+                // 前に 出した こたえが 戻って いた 人は、消しても「出した あと」に 変わりない
+                certificate.begin(reopened ? "reopened" : "fresh");
                 clearQuizResume(set.id);
                 setRetryIds([]);
                 restart(set.questions);

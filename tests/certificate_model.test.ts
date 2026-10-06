@@ -18,7 +18,15 @@ import {
   quizResult,
   typingResult,
 } from "../src/lib/certificate/model";
-import { endRun, readRun, startRun, updateRun } from "../src/lib/certificate/run";
+import {
+  endRun,
+  markSawAnswers,
+  readRun,
+  sawAnswersOutside,
+  sawAnyAnswers,
+  startRun,
+  updateRun,
+} from "../src/lib/certificate/run";
 import {
   isFullyRevealed,
   createListening,
@@ -214,5 +222,30 @@ describe("もんだいの パーフェクト（第2段・2026-10-06 の 回答�
   it("つぎの 一手は「1回目だけ」と 正直に 言う（やりなおしで パーフェクトを めざそう と 言わない）", () => {
     const result = quizResult("q1", "題", { ...base, correct: 4, percent: 80 });
     expect(nextStepForPerfect(result)).toContain("1回目だけ");
+  });
+});
+
+describe("もんだい: どの 回で こたえを 見たか（code-critic の 指摘）", () => {
+  beforeEach(() => {
+    const data = new Map<string, string>();
+    vi.stubGlobal("window", {
+      localStorage: {
+        getItem: (key: string) => data.get(key) ?? null,
+        setItem: (key: string, value: string) => void data.set(key, value),
+        removeItem: (key: string) => void data.delete(key),
+      },
+    });
+  });
+  afterEach(() => vi.unstubAllGlobals());
+
+  it("同じ 回で 見た こたえ（1問ずつの せつめい）は 数えない。ほかの 回（別の タブ）で 見たら 数える", () => {
+    expect(sawAnyAnswers("q")).toBe(false);
+    markSawAnswers("q", "run-A");
+    expect(sawAnswersOutside("q", "run-A")).toBe(false);
+    // 別の タブで 出して けっかを 見た
+    markSawAnswers("q", "run-B");
+    expect(sawAnswersOutside("q", "run-A")).toBe(true);
+    // 次に 始める 回は「前に 見た あと」
+    expect(sawAnyAnswers("q")).toBe(true);
   });
 });

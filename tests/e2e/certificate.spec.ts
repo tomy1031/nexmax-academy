@@ -311,3 +311,65 @@ test("もんだい: 1問 まちがえると パーフェクトで ない（ま�
   await cert.scrollIntoViewIfNeeded();
   await shot(page, "certificate-quiz-not-perfect-390");
 });
+
+test("もんだい: こたえを 見た あと 開き直して「はじめる」から 全問 正解しても パーフェクトに ならない", async ({
+  page,
+  context,
+}) => {
+  await seedBefore(context, QUIZ);
+  await page.goto(`/${STAGE}/quiz-${QUIZ}`);
+  await page.getByRole("button", { name: "はじめる" }).click();
+  const answers = quizAnswers();
+  // 1回目は 白紙に 近い まま 出して、けっかの 画面で こたえを 見る
+  await answerQuiz(
+    page,
+    answers.map((at) => (at + 1) % 2),
+  );
+  await expect(page.locator('[data-certificate="ready"]')).toBeVisible();
+
+  // 開き直して はじめから（端末の 印が「前に こたえを 見た」を 覚えて いる）
+  await page.reload();
+  await page.getByRole("button", { name: "はじめる" }).click();
+  await answerQuiz(page, answers);
+  const cert = page.locator('[data-certificate="ready"]');
+  await expect(cert).toHaveAttribute("data-perfect", "false");
+  await expect(page.locator('[data-certificate="reasons"]')).toContainText("やりなおし");
+});
+
+test("もんだい: 発行の 途中で 閉じた 回は、次に 開くと「もう一度 ためす」から 出し直せる", async ({
+  page,
+  context,
+}) => {
+  await seedBefore(context, QUIZ);
+  const total = quizAnswers().length;
+  await context.addInitScript(
+    ([key, total]) => {
+      window.localStorage.setItem(
+        key as string,
+        JSON.stringify({
+          startedAt: "2026-10-06T05:00:00.000Z",
+          pending: {
+            attemptId: "00000000-0000-4000-8000-000000000001",
+            result: {
+              kind: "quizset",
+              contentId: "houkoku_kanryou_quiz",
+              title: "作業完了の 報告の もんだい",
+              perfect: true,
+              score: total,
+              maxScore: total,
+              misses: 0,
+              detail: { questions: total, percent: 100, passed: true },
+            },
+          },
+        }),
+      );
+    },
+    [`nexmax.cert-run.v1:${QUIZ}`, total] as const,
+  );
+  await page.goto(`/${STAGE}/quiz-${QUIZ}`);
+  await expect(page.locator('[data-certificate="error"]')).toBeVisible();
+  await page.getByRole("button", { name: /ためす/ }).click();
+  const cert = page.locator('[data-certificate="ready"]');
+  await expect(cert).toBeVisible();
+  await expect(cert).toHaveAttribute("data-perfect", "true");
+});

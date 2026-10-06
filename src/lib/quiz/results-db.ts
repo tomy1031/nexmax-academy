@@ -202,3 +202,35 @@ export async function fetchLatestQuizAnswers(
 
   return { at: newest.created_at ?? "", answers };
 }
+
+/**
+ * この 人が **ほかの 回で** この もんだいを 出した ことが あるか（修了証の パーフェクトの 判定）。
+ *
+ * 出せば けっかの 画面で こたえと せつめいを 見る。別の 端末・ログアウトで 消えた 端末の
+ * 印では 追えないので、DB の 記録で 確かめる。**いまの 回（`exceptAttemptId`）は 除く**——
+ * 同じ 瞬間に この 回の 行が 入るので、除かないと いつも「ある」に なる。
+ * 一部（しおりで 途中から）の 回も 数える（その 回でも こたえは 見て いる）。
+ *
+ * 読めない ときは null（「無い」と 取りちがえて パーフェクトに しない）。
+ */
+export async function hasEarlierQuizAttempt(
+  profileId: string,
+  quizSetId: string,
+  exceptAttemptId: string,
+): Promise<boolean | null> {
+  const supabase = createClient();
+  if (!supabase) return false;
+  const { data, error } = await supabase
+    .from(TABLE)
+    .select("attempt_id")
+    .eq("profile_id", profileId)
+    .eq("quiz_set_id", quizSetId)
+    .neq("attempt_id", exceptAttemptId)
+    .limit(1);
+  if (error) {
+    if (MISSING_TABLE_CODES.has(error.code)) return false;
+    console.warn("[quiz-results] 前の 回を 確かめられませんでした:", error.message);
+    return null;
+  }
+  return (data ?? []).length > 0;
+}
