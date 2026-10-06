@@ -12,8 +12,10 @@
  * ## パーフェクトの 条件（同日の 決定）
  * - リスニング: こたえあわせ（原稿）を 見る 前に 100%・あいことばを 使わない。
  *   **ミスは 許す**（数は 出す）
- * - タイピング: ❌ が 1回も 無い（同じ 外れを 打ち直さずに もう一度 判定しても 数えない）。
- *   途中から 始めた 回（前の 回の しおりから 続けた）は 全部の 文を 見て いないので パーフェクトに しない
+ * - タイピング: 1文目から 最後の 文まで、この 回で 続けて 終える。**❌ は 許す**（数は 出す。
+ *   同じ 外れを 打ち直さずに もう一度 判定しても 数えない）。同日の 指定「間違いがないよりも
+ *   ちゃんと終わらせることが大切なので、ここは分けなくて良さそうです」。
+ *   途中から 始めた 回（前の 回の しおりから 続けた）は 全部の 文を 打って いないので パーフェクトに しない
  */
 
 export type CertificateKind = "listening" | "typing";
@@ -111,7 +113,8 @@ export function typingResult(
     kind: "typing",
     contentId,
     title,
-    perfect: misses === 0 && !partial,
+    // ❌ の 数では 分けない（成績として 出すだけ）。終わらせたか どうかで 分ける
+    perfect: !partial,
     score: firstTry,
     maxScore: facts.total,
     misses,
@@ -172,17 +175,14 @@ export function notPerfectReasons(cert: CertificateResult): string[] {
       ...(cert.detail.sawScriptBefore ? ["前に こたえあわせを 見た あとの やりなおしです。"] : []),
     ];
   }
-  return [
-    ...((cert.misses ?? 0) > 0 ? [`❌ が ${cert.misses}回 ありました。`] : []),
-    ...(cert.detail.partial ? ["前の 回の 続きから 始めました。"] : []),
-  ];
+  return cert.detail.partial ? ["前の 回の 続きから 始めました。"] : [];
 }
 
 /** パーフェクトに する ための 次の 一手（1行）。 */
 export function nextStepForPerfect(cert: CertificateResult): string {
   return cert.kind === "listening"
     ? "パーフェクトを めざすなら、はじめから やりなおして、こたえあわせを 見る 前に 100%に しましょう。"
-    : "パーフェクトを めざすなら、1文目から もう一度、❌ なしで 入力しましょう。";
+    : "パーフェクトを めざすなら、1文目から 最後の 文まで 続けて 入力しましょう。";
 }
 
 /**

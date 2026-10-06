@@ -3,7 +3,8 @@
  *
  * 2026-10-06 の 指定（願い #562）と 同日の 決定:
  * - リスニングの パーフェクト = こたえあわせを 見る 前に 100%・あいことばを 使わない（ミスは 許す）
- * - タイピングの パーフェクト = ❌ が 1回も 無い（前の 回の 続きから 始めた 回は パーフェクトに しない）
+ * - タイピングの パーフェクト = 1文目から 最後まで この 回で 終える（❌ は 許す。数は 出す。
+ *   同日の 指定「間違いがないよりもちゃんと終わらせることが大切」。続きから 始めた 回は パーフェクトに しない）
  * - パーフェクトで ない ときは 理由を はっきり 書く（規律1）
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -53,7 +54,7 @@ describe("リスニングの パーフェクト", () => {
 });
 
 describe("タイピングの パーフェクト", () => {
-  it("❌ が 0回 なら パーフェクト。1回でも あれば パーフェクトで ない", () => {
+  it("❌ が あっても 最後まで 終えれば パーフェクト（❌ の 数は 成績に 出す）", () => {
     expect(
       typingResult("t1", "題", { total: 3, missesBySentence: [0, 0, 0], partial: false }).perfect,
     ).toBe(true);
@@ -62,10 +63,11 @@ describe("タイピングの パーフェクト", () => {
       missesBySentence: [0, 2, 0],
       partial: false,
     });
-    expect(missed.perfect).toBe(false);
+    expect(missed.perfect).toBe(true);
     expect(missed.score).toBe(2);
     expect(missed.misses).toBe(2);
-    expect(notPerfectReasons(missed)).toEqual(["❌ が 2回 ありました。"]);
+    expect(notPerfectReasons(missed)).toEqual([]);
+    expect(certificateLines(missed).map((line) => line.value)).toEqual(["2 / 3文", "2回"]);
   });
 
   it("前の 回の 続きから 始めた 回は ❌0 でも パーフェクトで ない", () => {

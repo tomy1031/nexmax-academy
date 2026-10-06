@@ -25,6 +25,7 @@ export const CERTIFICATE_UI_FURIGANA = buildFuriganaIndex([
   ["入力", "にゅうりょく"],
   ["一度", "いちど"],
   ["文目", "ぶんめ"],
+  ["最後", "さいご"],
   ["文", "ぶん"],
   ["終え", "おえ"],
   ["開い", "ひらい"],

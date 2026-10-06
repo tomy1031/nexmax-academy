@@ -6,8 +6,9 @@ import { bareKanjiTexts, seedCompleted, shot } from "./helpers";
 /**
  * 修了証（2026-10-06 の 指定・願い #562）
  *
- * 1. タイピングを ❌ なしで 終えると、その 瞬間に パーフェクト（金）の 修了証が 出る
- * 2. ❌ が 1回でも あると パーフェクトで ない（青）。理由を はっきり 書く
+ * 1. タイピングを 最後まで 終えると、その 瞬間に パーフェクト（金）の 修了証が 出る
+ * 2. ❌ が あっても パーフェクト（❌ では 分けない。数は 成績に 出す。同日の 指定
+ *    「間違いがないよりもちゃんと終わらせることが大切」）
  * 3. リスニングで 原稿を 100% 開いた 瞬間に 修了証が 出る（こたえあわせの 前・あいことば なし＝パーフェクト）
  * 4. 「画像で 保存」で PNG が 落ちる（ファイル名に 教材ID と ICT の 時刻）
  *
@@ -81,7 +82,7 @@ async function finishTyping(page: Page, missFirst: boolean) {
   }
 }
 
-test("タイピング: ❌ なしで 終えると パーフェクトの 修了証（見本）が 出て、画像で 保存できる", async ({
+test("タイピング: 最後まで 終えると パーフェクトの 修了証（見本）が 出て、画像で 保存できる", async ({
   page,
   context,
 }) => {
@@ -110,7 +111,7 @@ test("タイピング: ❌ なしで 終えると パーフェクトの 修了�
   await (await download).saveAs("e2e-screens/certificate-typing-perfect.png");
 });
 
-test("タイピング: ❌ が 1回 あると パーフェクトで ない（理由と 回数を 出す）", async ({
+test("タイピング: ❌ が あっても 最後まで 終えれば パーフェクト（❌ の 回数は 成績に 出す）", async ({
   page,
   context,
 }) => {
@@ -119,12 +120,18 @@ test("タイピング: ❌ が 1回 あると パーフェクトで ない（理
   await page.goto(`/${STAGE}/typing-${TYPING}`);
   await finishTyping(page, true);
 
+  const total = sentences().length;
   const cert = page.locator('[data-certificate="ready"]');
-  await expect(cert).toHaveAttribute("data-perfect", "false");
-  await expect(page.locator('[data-certificate="reasons"]')).toContainText("1回");
+  await expect(cert).toHaveAttribute("data-perfect", "true");
+  await expect(page.locator('[data-certificate="badge"]')).toHaveText("★ PERFECT");
+  await expect(page.locator('[data-certificate="reasons"]')).toHaveCount(0);
+  const valueOf = (label: string) =>
+    cert.locator("dt", { hasText: label }).locator("xpath=following-sibling::dd[1]");
+  await expect(valueOf("❌")).toContainText("1回");
+  await expect(valueOf("正解")).toContainText(`${total - 1} / ${total}`);
   expect(await bareKanjiTexts(page)).toEqual([]);
   await cert.scrollIntoViewIfNeeded();
-  await shot(page, "certificate-typing-not-perfect-390");
+  await shot(page, "certificate-typing-with-miss-390");
 });
 
 test("リスニング: 原稿を 100% 開いた 瞬間に 修了証が 出る（こたえあわせの 前・あいことば なし）", async ({
