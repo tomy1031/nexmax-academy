@@ -85,6 +85,8 @@ export function pickBoundaries(
   { maxDriftSec = 0.5 } = {},
 ): Boundary[] | null {
   const total = weights.reduce((sum, w) => sum + w, 0);
+  // 読みが 空（割り振れない）なら 切らない——NaN の ずれは 上限の 比べを すり抜ける
+  if (!(total > 0)) return null;
   const silent = pauses.reduce((sum, pause) => sum + pause.end - pause.start, 0);
   const voiced = voiceEnd - voiceStart - silent;
   // 間ごとに「その 間の 前までに 声が 出て いた 長さ」

@@ -44,6 +44,12 @@ import { scriptReading } from "./lib/speech_reading";
 import { cutPart, innerPauses, pickBoundaries, wavToPcm } from "./lib/sentence_parts";
 
 const dry = process.argv.includes("--dry");
+/**
+ * 切り出しの 話す 速さが、元の ひとまとまりの 何倍までなら 置くか。元は 間も 含めた 速さ・
+ * 切り出しは 間を 落とした 速さなので 少し 速く 出る（2026-10-06 の 7本は 0.83〜1.25倍）。
+ */
+const RATE_RATIO_MIN = 0.6;
+const RATE_RATIO_MAX = 1.6;
 const seconds = (samples: number) => (samples / SAMPLE_RATE).toFixed(2);
 
 interface ScriptLine {
@@ -119,6 +125,16 @@ for (const name of readdirSync(join("content", "typing")).sort()) {
         `      ${used.join("・")}\n` +
         `      できた 長さ ${seconds(cut.byteLength / 2)}秒・速さ ${cutRate.toFixed(1)}字/秒（元 ${unitRate.toFixed(1)}字/秒）`,
     );
+    // 間の 選び違いは「見積もりとの ずれ」の 上限だけでは 防ぎきれない（短い 音では 語の 中の
+    // 小さな 隙間も 上限の 内に 入る）。速さが 元と 大きく ちがう 切り出しは 置かない
+    const ratio = cutRate / unitRate;
+    if (!(ratio >= RATE_RATIO_MIN && ratio <= RATE_RATIO_MAX)) {
+      console.log(
+        `      ✗ 速さが 元の ${ratio.toFixed(2)}倍（${RATE_RATIO_MIN}〜${RATE_RATIO_MAX}倍の 外）— 切り所が おかしいので 置かない`,
+      );
+      failed = true;
+      continue;
+    }
     if (!dry) writeFileSync(join(dir, out), toWav(cut));
     made += 1;
   }
