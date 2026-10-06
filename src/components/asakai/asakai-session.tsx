@@ -41,6 +41,9 @@ import {
   warmAsakaiJudge,
 } from "@/components/meeting/judge-api";
 import { ModalShell } from "@/components/meeting/modal-shell";
+import { CertificatePanel } from "@/components/certificate/certificate-panel";
+import { useCertificateIssuer } from "@/components/certificate/use-certificate-issuer";
+import { asakaiResult } from "@/lib/certificate/model";
 import { AskPanel } from "@/components/meeting/ask-panel";
 import { ChatPanel } from "@/components/meeting/chat-panel";
 import { SpeechSpeedPicker } from "@/components/meeting/speech-speed-picker";
@@ -328,6 +331,37 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       recordContentProgress(meeting.id, { status: "completed" });
     }
   }, [results.length, sceneTotal, meeting.id]);
+
+  /*
+   * 修了証（願い #562 の 第2段・回答「取りこぼしなし」）。入室した ときに 回を 始め、
+   * **この 画面の 中で 5日目を 終えた 瞬間**に 1週に 1回だけ 発行する（そのあとの 1日の
+   * 話し直し・5日 そろった まま 開き直した 時には 出さない。「月曜日から もう いちど」で
+   * 次の 週に なる）。パーフェクト＝5日とも その日の ことを ぜんぶ 言えて、週も 合格。
+   * 聞き返し・ヒントは よい。
+   */
+  const issuer = useCertificateIssuer(meeting.id);
+  const { begin: beginCertificate, finish: finishCertificate, reset: resetCertificate } = issuer;
+  /** 前に 見た 日数（4日 → 5日 に 変わった 瞬間だけを 拾う）。 */
+  const daysSeen = useRef(start.results.length);
+  useEffect(() => {
+    if (joined) beginCertificate();
+  }, [joined, beginCertificate]);
+  useEffect(() => {
+    const before = daysSeen.current;
+    daysSeen.current = results.length;
+    if (!asakai || sceneTotal === 0 || before >= sceneTotal || results.length < sceneTotal) return;
+    const week = weekFacts(asakai, results);
+    finishCertificate(
+      asakaiResult(meeting.id, meeting.title, {
+        days: results.length,
+        fullDays: results.filter((row) => row.units >= row.unitTotal).length,
+        units: week.units,
+        unitTotal: week.unitTotal,
+        passed: week.pass,
+        stars: results.filter(isOneShotDay).length,
+      }),
+    );
+  }, [asakai, sceneTotal, results, meeting.id, meeting.title, finishCertificate]);
 
   /*
    * **声が 本線**（2026-09-11 の 指定「マイクで話すのがメインです」）。
@@ -1551,12 +1585,14 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
     clearAsakaiResume(meeting.id);
     /* つぎの 週の けっかを 閉じた ときに、しおりを もう いちど 片づける。 */
     weekRead.current = false;
+    // つぎの 週の 修了証を 出せる ように する（日数は 0 に 戻るので、5日目で また 拾う）
+    resetCertificate();
     setResults([]);
     setShownAnswers([]);
     setBackToWeek(false);
     setWeekOpen(false);
     goToScene(0);
-  }, [meeting.id, goToScene]);
+  }, [meeting.id, goToScene, resetCertificate]);
 
   /**
    * **その 曜日だけ 話し直す**（2026-09-29 の 指定。★の ない 曜日の「もう いちど」）。
@@ -2350,6 +2386,16 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
           onClose={closeWeek}
           onRestart={restartWeek}
           onRedoDay={redoDay}
+          certificate={
+            issuer.certificate ? (
+              <CertificatePanel
+                state={issuer.certificate}
+                furigana={index}
+                show
+                onRetry={issuer.retry}
+              />
+            ) : null
+          }
         />
       ) : null}
       {/*
@@ -2533,6 +2579,7 @@ function WeekResult({
   onClose,
   onRestart,
   onRedoDay,
+  certificate = null,
 }: {
   asakai: Asakai;
   rows: readonly DayResult[];
@@ -2542,6 +2589,8 @@ function WeekResult({
   onRestart: () => void;
   /** その 曜日だけ 話し直す（何日目か・0始まり）。 */
   onRedoDay: (at: number) => void;
+  /** 修了証（5日 そろった 瞬間に 発行した もの。願い #562）。 */
+  certificate?: React.ReactNode;
 }) {
   /*
    * 問題の 札は **教材の ことばを 使う**。「こまりごと」と 書き込んで いた ころ、
@@ -2550,23 +2599,11 @@ function WeekResult({
    */
   const komariName =
     asakai.scenes[0]?.panels.find((panel) => panel.id === "komari")?.label ?? "問題";
-  const units = rows.reduce((sum, row) => sum + row.units, 0);
-  const unitTotal = rows.reduce((sum, row) => sum + row.unitTotal, 0);
-  const komariDays = rows.filter((row) => row.komariOpen).length;
-  const komariBoxes = rows.reduce((sum, row) => sum + row.komariBoxes, 0);
-  const komariTotal = rows.reduce((sum, row) => sum + row.komariTotal, 0);
-
+  const { units, unitTotal, komariDays, komariBoxes, komariTotal, pass } = weekFacts(asakai, rows);
   const needUnits = asakai.pass.units;
   const needDays = asakai.pass.komariDays;
   const needBoxes = asakai.pass.komariBoxes;
   const unitName = asakai.level === "hard" ? "言えた こと" : "開いた カード";
-  const secondOk =
-    needBoxes !== undefined
-      ? komariBoxes >= needBoxes
-      : needDays !== undefined
-        ? komariDays >= needDays
-        : true;
-  const pass = units >= needUnits && secondOk;
   /*
    * **さいごの 日の「この あと あった こと」**（2026-09-28 の 点検 C4）。
    * 月〜木は 時間カードが 出すが、金曜は 時間カードを 通らない。9:00 の 朝礼の
@@ -2603,6 +2640,7 @@ function WeekResult({
         <DayCount n={rows.length} />
         <RubyText text=" ぜんぶ 話しました。" index={index} show />
       </p>
+      {certificate ? <div className="mt-3">{certificate}</div> : null}
       {after !== "" ? (
         <div className="bg-panel-tint mt-3 rounded-xl px-3 py-2">
           <p className="text-ink-soft text-[11px] font-black">
@@ -2889,4 +2927,25 @@ function faceOf(state: PanelState | undefined, asked: boolean): CardState {
   if (state.full) return "open";
   if (state.open || asked) return "asked";
   return "closed";
+}
+
+/**
+ * 週の 数（「今週の けっか」と 修了証が 同じ 式で 数える——2か所で 書くと 合否が ずれる）。
+ */
+function weekFacts(asakai: Asakai, rows: readonly DayResult[]) {
+  const units = rows.reduce((sum, row) => sum + row.units, 0);
+  const unitTotal = rows.reduce((sum, row) => sum + row.unitTotal, 0);
+  const komariDays = rows.filter((row) => row.komariOpen).length;
+  const komariBoxes = rows.reduce((sum, row) => sum + row.komariBoxes, 0);
+  const komariTotal = rows.reduce((sum, row) => sum + row.komariTotal, 0);
+  const needDays = asakai.pass.komariDays;
+  const needBoxes = asakai.pass.komariBoxes;
+  const secondOk =
+    needBoxes !== undefined
+      ? komariBoxes >= needBoxes
+      : needDays !== undefined
+        ? komariDays >= needDays
+        : true;
+  const pass = units >= asakai.pass.units && secondOk;
+  return { units, unitTotal, komariDays, komariBoxes, komariTotal, pass };
 }

@@ -74,6 +74,9 @@ import { SpeechSpeedPicker } from "./speech-speed-picker";
 import { VisemeFace, type Viseme } from "./viseme-face";
 import { useClipPlayer } from "./use-clip-player";
 import { useLiveVoice } from "./use-live-voice";
+import { CertificatePanel } from "@/components/certificate/certificate-panel";
+import { useCertificateIssuer } from "@/components/certificate/use-certificate-issuer";
+import { meetingResult } from "@/lib/certificate/model";
 
 /**
  * ミーティング — Zoom風の画面で、相手の質問に自分の日本語で答える。
@@ -1338,6 +1341,32 @@ export function MeetingSession({
     void flushMeetingTurns(meeting.id);
   }, [hasListenRound, round1Done, certificate, meeting.id]);
 
+  /*
+   * 修了証（願い #562 の 第2段・回答「取りこぼしなし」）。入室した ときに 回を 始め、
+   * **話しきった 瞬間**（ラウンド2の しゅうりょうしょうが 出る 時）に 1回だけ 発行する。
+   * パーフェクト＝ぜんぶの しつもんに 答えた（札が 開いた）＋聞き出す ことを ぜんぶ。ヒントは よい。
+   */
+  const issuer = useCertificateIssuer(meeting.id);
+  const { begin: beginCertificate, finish: finishCertificate } = issuer;
+  useEffect(() => {
+    if (joined) beginCertificate();
+  }, [joined, beginCertificate]);
+  const foundCount = meeting.discover.filter((item) => found.has(item.id)).length;
+  useEffect(() => {
+    if (certificate !== "round2") return;
+    finishCertificate(
+      meetingResult(meeting.id, meeting.title, {
+        questions: meeting.questions.length,
+        answered: openIds.size,
+        discover: meeting.discover.length,
+        found: foundCount,
+        ...(meeting.affection
+          ? { hearts: heartsOf(affection), maxHearts: meeting.affection.maxHearts }
+          : {}),
+      }),
+    );
+  }, [certificate, meeting, openIds, foundCount, affection, finishCertificate]);
+
   const closeJudge = useCallback(() => {
     const again = reply?.judge?.retry === true;
     setJudgeOpen(false);
@@ -1783,6 +1812,16 @@ export function MeetingSession({
                 : "ステージに もどる →"
           }
           onNext={closeCertificate}
+          official={
+            certificate === "round2" && issuer.certificate ? (
+              <CertificatePanel
+                state={issuer.certificate}
+                furigana={furigana}
+                show
+                onRetry={issuer.retry}
+              />
+            ) : null
+          }
         />
       ) : null}
 

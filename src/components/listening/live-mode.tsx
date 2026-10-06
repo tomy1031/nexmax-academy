@@ -33,6 +33,9 @@ import {
   type TalkLine,
 } from "./people";
 import { useLiveSession } from "./use-live-session";
+import { CertificatePanel } from "@/components/certificate/certificate-panel";
+import { useCertificateIssuer } from "@/components/certificate/use-certificate-issuer";
+import { scenarioResult } from "@/lib/certificate/model";
 
 /**
  * たいわ（Live対話）— 同じ Zoom風シェルの中で、お客さま役のAIと日本語で話す。
@@ -177,6 +180,14 @@ export function TalkSession({
     Array.from({ length: Math.max(3, talkPeople(scenario).length) }, () => ""),
   );
   const [open, setOpen] = useState<ReadonlySet<string>>(new Set());
+  /**
+   * 修了証（願い #562 の 第2段・回答「取りこぼしなし」）。話し始めた ときに 回を 始め、
+   * **退室した 瞬間**に 発行する。パーフェクト＝聞き出す ことを ぜんぶ 聞けた。ヒントは よい。
+   */
+  const issuer = useCertificateIssuer(scenario.id);
+  const { begin: beginCertificate, finish: finishCertificate, reset: resetCertificate } = issuer;
+  /** 退室した（事前調査の 無い 教材は けっかの 画面が 無いので、退室の あとに 修了証を 出す）。 */
+  const [leftCall, setLeftCall] = useState(false);
   // 画面に出す文言は型付きキーだけ（自由文字列を書けなくする — 設計03 §1.3-1）
   const [note, setNote] = useState<FeedbackKey | null>(null);
   const [draft, setDraft] = useState("");
@@ -456,10 +467,20 @@ export function TalkSession({
     const earned = !research || openRef.current.size > 0;
     recordContentProgress(scenario.id, { status: earned ? "completed" : "started" });
     void flushTalkTurns(scenario.id);
+    // 「おわった」に する 回だけ 修了証を 出す（1つも 聞き出さずに 退室した 回は 出さない）
+    if (earned) {
+      finishCertificate(
+        scenarioResult(scenario.id, scenario.title, {
+          covered: openRef.current.size,
+          total: scenario.interview.reqs.length,
+        }),
+      );
+    }
+    setLeftCall(true);
     // 5段の 教材は、退出したら そのまま けっか（要件定義書）へ。会話を おえた 学習者を
     // 何も 出さずに 一覧へ 返すと、聞き出した ことが どこにも 残らない。
     if (research) setPhase("result");
-  }, [live, scenario.id, research]);
+  }, [live, scenario, research, finishCertificate]);
 
   /** もう一度 やる。開いた 項目・字幕・メモを 元に 戻して ミッションから。 */
   const handleRetry = useCallback(() => {
@@ -483,8 +504,15 @@ export function TalkSession({
     logOffsetRef.current = 0;
     setLeaveAsk(false);
     setMemo(Array.from({ length: Math.max(3, people.length) }, () => ""));
+    setLeftCall(false);
+    resetCertificate();
     setPhase("mission");
-  }, [live, people.length]);
+  }, [live, people.length, resetCertificate]);
+
+  // 会話の 画面に 入った ときに 回を 始める（開き直して つづきから 話すのは 同じ 回）
+  useEffect(() => {
+    if (phase === "interview") beginCertificate();
+  }, [phase, beginCertificate]);
 
   /**
    * つなぐ（いま 🎤 を 向けて いる 人の persona と 声で）。
@@ -1102,15 +1130,39 @@ export function TalkSession({
           onDone={() => setPhase("interview")}
         />
       ) : phase === "result" ? (
-        <TalkResult
-          scenario={scenario}
-          opened={open}
-          furigana={furigana}
-          people={multi ? people : undefined}
-          onRetry={handleRetry}
-        />
+        <>
+          {issuer.certificate ? (
+            <div className="mb-4">
+              <CertificatePanel
+                state={issuer.certificate}
+                furigana={furigana}
+                show
+                onRetry={issuer.retry}
+              />
+            </div>
+          ) : null}
+          <TalkResult
+            scenario={scenario}
+            opened={open}
+            furigana={furigana}
+            people={multi ? people : undefined}
+            onRetry={handleRetry}
+          />
+        </>
       ) : (
-        callView
+        <>
+          {callView}
+          {leftCall && issuer.certificate ? (
+            <div className="mx-auto mt-4 max-w-md">
+              <CertificatePanel
+                state={issuer.certificate}
+                furigana={furigana}
+                show
+                onRetry={issuer.retry}
+              />
+            </div>
+          ) : null}
+        </>
       )}
     </div>
   );

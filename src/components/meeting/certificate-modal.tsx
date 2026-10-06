@@ -55,6 +55,7 @@ export function CertificateModal({
   mode = "certificate",
   nextLabel,
   onNext,
+  official = null,
 }: {
   /** 話せた こと（`buildMeetingRecord` が 組み立てた もの）。 */
   record: MeetingRecord;
@@ -70,6 +71,11 @@ export function CertificateModal({
   /** つぎへ 進む ボタンの 字（ばんに よって 変わる）。 */
   nextLabel: string;
   onNext: () => void;
+  /**
+   * 正式な 修了証（DB が 時刻・名前・番号を 押した もの。願い #562 の 第2段）。
+   * この ポップアップは 話した ことの ふりかえりで、先生に 出す 証明は こちら。
+   */
+  official?: React.ReactNode;
 }) {
   const hearts = record.hearts;
   const maxHearts = record.maxHearts;
@@ -100,6 +106,8 @@ export function CertificateModal({
         {/* 名前と 日付。ここが あると「自分の もの」に なる */}
         <p className="text-ink mt-3 text-base font-black">{learnerName || "あなた"} さん</p>
         <p className="text-ink-faint text-xs font-bold">{formatRecordDate(record.at)}</p>
+
+        {official ? <div className="mt-4 text-left">{official}</div> : null}
 
         {/* 話せた 数と ハート */}
         <p className="text-leaf-deep mt-3 text-sm font-black">

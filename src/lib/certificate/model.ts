@@ -22,10 +22,15 @@
  * - 単語テスト（第2段・同日の 回答「何回目でも満点なら金」）: テストの やりかたを 最後まで 終えて
  *   満点（読み・意味 ぜんぶ）。「まちがえた ことばだけ」の やりなおしは パーフェクトに しない。
  *   れんしゅう・もんだいだけ の やりかたには 出さない（テストでは ない）
+ * - 会話の 練習（第2段・同日の 回答「取りこぼしなし」）: 最後まで 終えて 取りこぼし なし。
+ *   ヒントは 使って よい。ミーティング＝ぜんぶの しつもんに 答えた（＋聞き出す ことを ぜんぶ）、
+ *   ヒアリング＝聞き出す ことを ぜんぶ、朝礼＝5日とも その日の ことを ぜんぶ 言えて 週も 合格、
+ *   たいわ＝クリア
  */
 
 /** 種類の 名前は ステージの `contents[].type` と 同じ（DB の kind 列。移行SQLの 註）。 */
-export type CertificateKind = "listening" | "typing" | "quizset" | "wordtest";
+export type CertificateKind =
+  "listening" | "typing" | "quizset" | "wordtest" | "meeting" | "talkgame" | "asakai" | "scenario";
 
 /** 1回ぶんの 成績（端末が まとめて DB へ 送る）。 */
 export interface CertificateResult {
@@ -213,6 +218,116 @@ export function wordTestResult(
   };
 }
 
+/* ---- 会話の 練習（第2段） ---- */
+
+/** ミーティング（`meeting-session.tsx`）の 1回ぶん。 */
+export interface MeetingRunFacts {
+  readonly questions: number;
+  /** 答えた しつもん（札が 開いた 数）。 */
+  readonly answered: number;
+  /** 聞き出す こと（聞く ばんの 札）の 数。聞く ばんの 無い 教材は 0。 */
+  readonly discover: number;
+  readonly found: number;
+  readonly hearts?: number;
+  readonly maxHearts?: number;
+}
+
+export function meetingResult(
+  contentId: string,
+  title: string,
+  facts: MeetingRunFacts,
+): CertificateResult {
+  return {
+    kind: "meeting",
+    contentId,
+    title,
+    perfect: facts.answered >= facts.questions && facts.found >= facts.discover,
+    score: facts.answered,
+    maxScore: facts.questions,
+    misses: facts.questions - facts.answered,
+    detail: {
+      questions: facts.questions,
+      answered: facts.answered,
+      discover: facts.discover,
+      found: facts.found,
+      ...(facts.hearts !== undefined && facts.maxHearts !== undefined
+        ? { hearts: facts.hearts, maxHearts: facts.maxHearts }
+        : {}),
+    },
+  };
+}
+
+/** たいわ（`talk-game-session.tsx`）。**クリアした 時だけ** 出す（クリア＝パーフェクト）。 */
+export function talkGameResult(
+  contentId: string,
+  title: string,
+  facts: { readonly turns: number; readonly asked: number },
+): CertificateResult {
+  return {
+    kind: "talkgame",
+    contentId,
+    title,
+    perfect: true,
+    score: null,
+    maxScore: null,
+    misses: null,
+    detail: { cleared: true, turns: facts.turns, asked: facts.asked },
+  };
+}
+
+/** 朝礼・夕礼（`asakai-session.tsx`）の 1週間ぶん。 */
+export interface AsakaiRunFacts {
+  readonly days: number;
+  /** その日の ことを ぜんぶ 言えた 曜日の 数。 */
+  readonly fullDays: number;
+  readonly units: number;
+  readonly unitTotal: number;
+  /** 週の 合否（画面の「今週の けっか」と 同じ）。 */
+  readonly passed: boolean;
+  /** ★（聞き返し 0回で ぜんぶ 言えた 曜日）。 */
+  readonly stars: number;
+}
+
+export function asakaiResult(
+  contentId: string,
+  title: string,
+  facts: AsakaiRunFacts,
+): CertificateResult {
+  return {
+    kind: "asakai",
+    contentId,
+    title,
+    perfect: facts.passed && facts.days > 0 && facts.fullDays >= facts.days,
+    score: facts.units,
+    maxScore: facts.unitTotal,
+    misses: facts.unitTotal - facts.units,
+    detail: {
+      days: facts.days,
+      fullDays: facts.fullDays,
+      passed: facts.passed,
+      stars: facts.stars,
+    },
+  };
+}
+
+/** ヒアリング（`listening/live-mode.tsx` の TalkSession）。 */
+export function scenarioResult(
+  contentId: string,
+  title: string,
+  facts: { readonly covered: number; readonly total: number },
+): CertificateResult {
+  return {
+    kind: "scenario",
+    contentId,
+    title,
+    perfect: facts.total > 0 && facts.covered >= facts.total,
+    score: facts.covered,
+    maxScore: facts.total,
+    misses: facts.total - facts.covered,
+    detail: { covered: facts.covered, total: facts.total },
+  };
+}
+
 /** 修了証の 成績の 1行（ラベルと 値。画面の カードと 画像の 両方が 使う）。 */
 export interface CertificateLine {
   readonly label: string;
@@ -235,6 +350,46 @@ export function certificateLines(cert: CertificateResult): CertificateLine[] {
       ...(cert.detail.sawScriptBefore
         ? [{ label: "やりなおし", value: "前に こたえあわせを 見た あと" }]
         : []),
+    ];
+  }
+  const partialLine = cert.detail.partial
+    ? [{ label: "はじめかた", value: "前の 回の 続きから" }]
+    : [];
+  const d = (key: string) => Number(cert.detail[key] ?? 0);
+  if (cert.kind === "meeting") {
+    return [
+      // 数には 数え方（こ・つ）を 付ける——画面の ほかの「7 / 8」と 同じ 字に しない
+      { label: "答えた しつもん", value: `${d("answered")} / ${d("questions")}こ` },
+      ...(d("discover") > 0
+        ? [{ label: "聞き出せた こと", value: `${d("found")} / ${d("discover")}こ` }]
+        : []),
+      ...(cert.detail.maxHearts !== undefined
+        ? [{ label: "ハート", value: `${d("hearts")} / ${d("maxHearts")}` }]
+        : []),
+      ...partialLine,
+    ];
+  }
+  if (cert.kind === "talkgame") {
+    return [
+      { label: "けっか", value: "クリア" },
+      { label: "話した 回数", value: `${d("turns")}回` },
+      { label: "聞いた しつもん", value: `${d("asked")}こ` },
+      ...partialLine,
+    ];
+  }
+  if (cert.kind === "asakai") {
+    return [
+      { label: "けっか", value: cert.detail.passed ? "合格" : "不合格" },
+      { label: "言えた こと", value: `${cert.score ?? 0} / ${cert.maxScore ?? 0}こ` },
+      { label: "ぜんぶ 言えた 曜日", value: `${d("fullDays")} / ${d("days")}つ` },
+      { label: "★ 1回で ぜんぶ 言えた 曜日", value: `${d("stars")} / ${d("days")}つ` },
+      ...partialLine,
+    ];
+  }
+  if (cert.kind === "scenario") {
+    return [
+      { label: "聞き出せた こと", value: `${d("covered")} / ${d("total")}こ` },
+      ...partialLine,
     ];
   }
   if (cert.kind === "wordtest") {
@@ -305,6 +460,33 @@ export function notPerfectReasons(cert: CertificateResult): string[] {
       ...(cert.detail.sawScriptBefore ? ["前に こたえあわせを 見た あとの やりなおしです。"] : []),
     ];
   }
+  const partialReason = cert.detail.partial ? ["前の 回の 続きから 始めました。"] : [];
+  const n = (key: string) => Number(cert.detail[key] ?? 0);
+  if (cert.kind === "meeting") {
+    const unanswered = n("questions") - n("answered");
+    const unfound = n("discover") - n("found");
+    return [
+      ...(unanswered > 0 ? [`答えきれなかった しつもんが ${unanswered}こ あります。`] : []),
+      ...(unfound > 0 ? [`聞き出せなかった ことが ${unfound}こ あります。`] : []),
+      ...partialReason,
+    ];
+  }
+  if (cert.kind === "talkgame") return partialReason;
+  if (cert.kind === "asakai") {
+    const short = n("days") - n("fullDays");
+    return [
+      ...(cert.detail.passed ? [] : ["週の 合格に 届いて いません。"]),
+      ...(short > 0 ? [`ぜんぶ 言えなかった 曜日が ${short}つ あります。`] : []),
+      ...partialReason,
+    ];
+  }
+  if (cert.kind === "scenario") {
+    const unfound = n("total") - n("covered");
+    return [
+      ...(unfound > 0 ? [`聞き出せなかった ことが ${unfound}こ あります。`] : []),
+      ...partialReason,
+    ];
+  }
   if (cert.kind === "wordtest") {
     const missed = cert.misses ?? 0;
     return [
@@ -332,6 +514,18 @@ export function notPerfectReasons(cert: CertificateResult): string[] {
 
 /** パーフェクトに する ための 次の 一手（1行）。 */
 export function nextStepForPerfect(cert: CertificateResult): string {
+  if (cert.kind === "meeting") {
+    return "パーフェクトを めざすなら、もう一度 はじめから 話して、取りこぼし なく 答えましょう。";
+  }
+  if (cert.kind === "talkgame") {
+    return "パーフェクトを めざすなら、もう一度 はじめから 話して、クリアしましょう。";
+  }
+  if (cert.kind === "asakai") {
+    return "パーフェクトを めざすなら、月曜日から もう一度、毎日 ぜんぶ 言えるように 話しましょう。";
+  }
+  if (cert.kind === "scenario") {
+    return "パーフェクトを めざすなら、もう一度 はじめから 話して、ぜんぶ 聞き出しましょう。";
+  }
   if (cert.kind === "wordtest") {
     return "パーフェクトを めざすなら、もう一度 テストを ぜんぶ やって、満点を とりましょう。";
   }
