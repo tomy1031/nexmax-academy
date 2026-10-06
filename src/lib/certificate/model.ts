@@ -75,6 +75,12 @@ export interface ListeningRunFacts {
    * 見て 写して 打てば 100% に なる）。同日の 決定「こたえあわせを 見る 前に 100%」に 合わせる。
    */
   readonly sawScriptBefore?: boolean;
+  /**
+   * **修了証が できる 前に もう 100% に して いた 回**（2026-10-06 の 指定「すでに
+   * 終わっているものは出すようにしてください…今回限りです」）。いつ・どう 終えたかが
+   * 分からないので パーフェクトに しない。時刻は 出した 時刻に なる。
+   */
+  readonly finishedBefore?: boolean;
 }
 
 export function listeningResult(
@@ -86,7 +92,12 @@ export function listeningResult(
     kind: "listening",
     contentId,
     title,
-    perfect: !facts.usedRescue && !facts.reviewedEarly && !facts.partial && !facts.sawScriptBefore,
+    perfect:
+      !facts.usedRescue &&
+      !facts.reviewedEarly &&
+      !facts.partial &&
+      !facts.sawScriptBefore &&
+      !facts.finishedBefore,
     score: facts.score,
     maxScore: null,
     misses: facts.misses,
@@ -96,6 +107,7 @@ export function listeningResult(
       reviewedEarly: facts.reviewedEarly,
       partial: Boolean(facts.partial),
       sawScriptBefore: Boolean(facts.sawScriptBefore),
+      ...(facts.finishedBefore ? { finishedBefore: true } : {}),
     },
   };
 }
@@ -337,6 +349,17 @@ export interface CertificateLine {
 /** 成績の 行。**画面と 画像で 同じ 行を 使う**（ずれを 作らない）。 */
 export function certificateLines(cert: CertificateResult): CertificateLine[] {
   if (cert.kind === "listening") {
+    /*
+     * 修了証が できる 前に 終えた 回は、ミス・あいことば・こたえあわせを 数えて いない。
+     * 分からない ことを それらしく 書かない（「使わなかった」「0回」と 読まれる）
+     */
+    if (cert.detail.finishedBefore) {
+      return [
+        { label: "原稿を 開いた 割合", value: "100%" },
+        { label: "スコア", value: `${cert.score ?? 0}点` },
+        { label: "はじめかた", value: "修了証が できる 前に 終えた 回" },
+      ];
+    }
     return [
       { label: "原稿を 開いた 割合", value: "100%" },
       { label: "スコア", value: `${cert.score ?? 0}点` },
@@ -458,6 +481,9 @@ export function notPerfectReasons(cert: CertificateResult): string[] {
       ...(cert.detail.reviewedEarly ? ["100%に なる 前に こたえあわせを 見ました。"] : []),
       ...(cert.detail.partial ? ["前の 回の 続きから 始めました。"] : []),
       ...(cert.detail.sawScriptBefore ? ["前に こたえあわせを 見た あとの やりなおしです。"] : []),
+      ...(cert.detail.finishedBefore
+        ? ["修了証が できる 前に 終えた 回です（時刻は 修了証を 出した 時刻です）。"]
+        : []),
     ];
   }
   const partialReason = cert.detail.partial ? ["前の 回の 続きから 始めました。"] : [];
