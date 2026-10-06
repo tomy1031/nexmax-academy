@@ -445,20 +445,35 @@ async function playWordTest(page: Page, missMeanings: number) {
       continue;
     }
     if (await visibleWithin(choices, 1_000)) {
-      const term = await page
-        .locator("ruby.mcq-term")
-        .first()
-        .evaluate((el) =>
+      /*
+       * 4択の 用語は **4択の あいだ だけ** 出る。答えた あとの 解説カードの あいだに 読みに
+       * 行くと 出るまで 待ち続ける（CI で 90秒 止まった）。出て いなければ 解説を 送って 次へ。
+       */
+      const termText = page.locator("ruby.mcq-term").first();
+      if (!(await visibleWithin(termText, 1_500))) {
+        await page
+          .getByRole("button", { name: /おす／Enter で つぎへ/ })
+          .click({ timeout: 2_000 })
+          .catch(() => {});
+        continue;
+      }
+      const term = await termText.evaluate(
+        (el) =>
           [...el.childNodes]
             .filter((node) => node.nodeType === Node.TEXT_NODE)
             .map((node) => node.textContent ?? "")
             .join(""),
-        );
+        undefined,
+        { timeout: 5_000 },
+      );
       const word = WORDS.find((w) => w.term === term);
       if (!word) throw new Error(`こたえ表に ない ことば: ${term}`);
       const pick = missed < missMeanings ? word.wrong : word.meaning;
       if (pick === word.wrong) missed += 1;
-      await choices.getByRole("button", { name: pick, exact: true }).click({ timeout: 5_000 });
+      await choices
+        .getByRole("button", { name: pick, exact: true })
+        .click({ timeout: 5_000 })
+        .catch(() => {});
       // 解説カードを 押して つぎへ（自動送りと 競走する ので、押せなくても よい）
       await page
         .getByRole("button", { name: /おす／Enter で つぎへ/ })
@@ -486,6 +501,8 @@ async function startWordTest(page: Page) {
 test.describe("単語テスト", () => {
   // 指の きかい（ふつうの 入力欄）に して、よみを ひらがなで そのまま 入れる
   test.use({ hasTouch: true, isMobile: true, viewport: { width: 390, height: 844 } });
+  // 3D の ゲームを 最後まで 通す（CI は 手もとより 遅い。1回で 8語 × よみ・意味）
+  test.describe.configure({ timeout: 240_000 });
 
   test("テストを 満点で 終えると パーフェクトの 修了証が 出る", async ({ page }) => {
     await startWordTest(page);
