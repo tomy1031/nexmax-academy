@@ -23,6 +23,7 @@ export function ArcadeResult({
   missedWords,
   furigana,
   onRetryWrong,
+  retryWrongDisabled = false,
   onBack,
   onLeave,
   leaveLabel,
@@ -35,6 +36,8 @@ export function ArcadeResult({
   missedWords: readonly Word[];
   furigana: FuriganaIndex;
   onRetryWrong: () => void;
+  /** 「まちがえた ことばだけ」を まだ 押させない（修了証を 作って いる 途中）。 */
+  retryWrongDisabled?: boolean;
   onBack: () => void;
   /**
    * 単語テストから 出る 道。ステージから 来た ときだけ 渡る
@@ -153,7 +156,8 @@ export function ArcadeResult({
           <button
             type="button"
             onClick={onRetryWrong}
-            className="btn-island btn-game px-6 py-3.5 text-lg"
+            disabled={retryWrongDisabled}
+            className="btn-island btn-game px-6 py-3.5 text-lg disabled:opacity-60"
             style={{ "--btn-face": "#f26fa7", "--btn-shadow": "#d94d84" } as React.CSSProperties}
           >
             まちがえた ことばだけ

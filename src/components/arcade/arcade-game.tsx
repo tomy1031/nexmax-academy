@@ -381,19 +381,15 @@ export function ArcadeGame({
                   else start(stage, mode);
                 }}
                 previous={
-                  certificate.certificate ? (
+                  certificate.certificateFor(stage.id) ? (
                     <CertificatePanel
-                      state={certificate.certificate}
+                      state={certificate.certificateFor(stage.id)!}
                       furigana={certificateFurigana}
                       show
                       onRetry={certificate.retry}
                     />
                   ) : (
-                    <PreviousCertificate
-                      contentId={stage.id}
-                      show
-                      onOpen={(cert) => certificate.setCertificate({ status: "ready", cert })}
-                    />
+                    <PreviousCertificate contentId={stage.id} show onOpen={certificate.open} />
                   )
                 }
                 onFlashcard={() => setScreen({ kind: "flashcard", stageId: stage.id })}
@@ -1085,6 +1081,7 @@ function ResultLayer({
 }) {
   const summary = useMemo(() => summarize(state), [state]);
   const byId = useMemo(() => new Map(stage.words.map((w) => [w.id, w])), [stage.words]);
+  const shownCertificate = certificate.certificateFor(stage.id);
   const missedWords = summary.missedWordIds
     .map((id) => byId.get(id))
     .filter((w): w is Word => Boolean(w));
@@ -1154,13 +1151,15 @@ function ResultLayer({
         missedWords={missedWords}
         furigana={furigana}
         onRetryWrong={() => onRetryWrong(summary.missedWordIds)}
+        /* 発行の 途中で 次の 回を 始めると、落ちた ときに「もう一度 ためす」が 消える */
+        retryWrongDisabled={shownCertificate?.status === "issuing"}
         onBack={onBack}
         onLeave={onLeave}
         leaveLabel={leaveLabel}
         certificate={
-          certificate.certificate ? (
+          shownCertificate ? (
             <CertificatePanel
-              state={certificate.certificate}
+              state={shownCertificate}
               furigana={certificateFurigana}
               show
               onRetry={certificate.retry}

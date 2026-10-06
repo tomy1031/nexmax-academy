@@ -697,8 +697,9 @@ function certificateScoreText(record: CertificateRecord): string {
     return `1回で 正解 ${record.score ?? 0}/${record.max_score ?? 0}・❌ ${misses}回${tail}`;
   }
   if (record.kind === "wordtest") {
-    const verdict = detail.passed ? "合格" : "不合格";
-    return `点 ${record.score ?? 0}/${record.max_score ?? 0}・${verdict}${tail}`;
+    // 「まちがえた ことばだけ」の 回は 合否を 書かない（数語の やりなおしの 合格と 読まれない）
+    const verdict = detail.onlyMissed ? "" : detail.passed ? "・合格" : "・不合格";
+    return `点 ${record.score ?? 0}/${record.max_score ?? 0}${verdict}${tail}`;
   }
   if (record.kind === "quizset") {
     // 正解の 無い 教材は 点も 合否も 無い（書けた 数だけ。けっかの 画面と 同じ）

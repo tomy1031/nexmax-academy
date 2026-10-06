@@ -246,8 +246,13 @@ export function certificateLines(cert: CertificateResult): CertificateLine[] {
         value: `${Number(cert.detail.readingCorrect ?? 0)} / ${Number(cert.detail.readingAsked ?? 0)}`,
       },
       { label: "意味", value: `${Number(cert.detail.meaningCorrect ?? 0)} / ${words}` },
-      { label: "けっか", value: cert.detail.passed ? "合格" : "不合格" },
-      ...(cert.detail.onlyMissed ? [{ label: "はじめかた", value: "まちがえた ことばだけ" }] : []),
+      /*
+       * 「まちがえた ことばだけ」の 回は 合否を 書かない——数語の やりなおしの「合格」は、
+       * テストに 合格した ように 読める（規律1・code-critic の 指摘）
+       */
+      ...(cert.detail.onlyMissed
+        ? [{ label: "はじめかた", value: "まちがえた ことばだけ" }]
+        : [{ label: "けっか", value: cert.detail.passed ? "合格" : "不合格" }]),
     ];
   }
   if (cert.kind === "quizset") {

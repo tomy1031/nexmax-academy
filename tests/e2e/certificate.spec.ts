@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { expect, test, type BrowserContext, type Page } from "@playwright/test";
+import { expect, test, type BrowserContext, type Locator, type Page } from "@playwright/test";
 import {
   bareKanjiTexts,
   choiceButtons,
@@ -413,23 +413,38 @@ const WORDS: readonly { term: string; reading: string; meaning: string; wrong: s
  * **セットの よみを 順に 打つ**——外しても 時間まで 何度でも 打ち直せる（kotoba_marubatsu.spec.ts）。
  * 4択では 画面の 用語（`ruby.mcq-term`）から こたえを 引く。
  */
+/** `locator` が `ms` の うちに 見えたか（`isVisible` は 待たない ので 使わない）。 */
+async function visibleWithin(locator: Locator, ms: number): Promise<boolean> {
+  return locator
+    .waitFor({ state: "visible", timeout: ms })
+    .then(() => true)
+    .catch(() => false);
+}
+
 async function playWordTest(page: Page, missMeanings: number) {
   const result = page.getByRole("heading", { name: /^(合格|不合格)$/ });
   const reading = page.getByLabel("よみを ひらがなで 入力する");
   const choices = page.getByRole("group", { name: "いみの こたえ" });
+  const next = reading.or(choices).or(result);
   let missed = 0;
   for (let step = 0; step < 40; step += 1) {
-    if (await result.isVisible().catch(() => false)) return;
-    if (await reading.isVisible().catch(() => false)) {
+    // つぎに 出る ものを 待つ（よみの 欄・4択・けっか の どれか）
+    await next.first().waitFor({ state: "visible", timeout: 20_000 });
+    if (await result.isVisible()) return;
+    if (await reading.isVisible()) {
       for (const word of WORDS) {
-        if (!(await reading.isVisible().catch(() => false))) break;
-        await reading.fill(word.reading).catch(() => {});
-        await reading.press("Enter").catch(() => {});
-        if (await choices.isVisible({ timeout: 300 }).catch(() => false)) break;
+        const typed = await reading
+          .fill(word.reading, { timeout: 2_000 })
+          .then(() => reading.press("Enter", { timeout: 2_000 }))
+          .then(() => true)
+          .catch(() => false);
+        if (!typed) break;
+        // 当たれば 4択に 進む。外れたら 欄が 空に なって 打ち直せる
+        if (await visibleWithin(choices, 400)) break;
       }
       continue;
     }
-    if (await choices.isVisible({ timeout: 5_000 }).catch(() => false)) {
+    if (await visibleWithin(choices, 1_000)) {
       const term = await page
         .locator("ruby.mcq-term")
         .first()
@@ -443,7 +458,8 @@ async function playWordTest(page: Page, missMeanings: number) {
       if (!word) throw new Error(`こたえ表に ない ことば: ${term}`);
       const pick = missed < missMeanings ? word.wrong : word.meaning;
       if (pick === word.wrong) missed += 1;
-      await choices.getByRole("button", { name: pick, exact: true }).click();
+      await choices.getByRole("button", { name: pick, exact: true }).click({ timeout: 5_000 });
+      // 解説カードを 押して つぎへ（自動送りと 競走する ので、押せなくても よい）
       await page
         .getByRole("button", { name: /おす／Enter で つぎへ/ })
         .click({ timeout: 3_000 })

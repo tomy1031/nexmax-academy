@@ -285,5 +285,9 @@ describe("単語テストの パーフェクト（第2段・回答「何回目�
     const result = wordTestResult("w1", "題", { ...base, score: 6, maxScore: 6, onlyMissed: true });
     expect(result.perfect).toBe(false);
     expect(notPerfectReasons(result)).toEqual(["まちがえた ことばだけの やりなおしです。"]);
+    // 数語の やりなおしの「合格」は テストの 合格と 読まれる ので、合否は 書かない
+    const values = certificateLines(result).map((line) => line.value);
+    expect(values).toContain("まちがえた ことばだけ");
+    expect(values).not.toContain("合格");
   });
 });
