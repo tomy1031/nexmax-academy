@@ -16,9 +16,13 @@
  *   同じ 外れを 打ち直さずに もう一度 判定しても 数えない）。同日の 指定「間違いがないよりも
  *   ちゃんと終わらせることが大切なので、ここは分けなくて良さそうです」。
  *   途中から 始めた 回（前の 回の しおりから 続けた）は 全部の 文を 打って いないので パーフェクトに しない
+ * - もんだい（第2段・同日の 回答「満点」）: 全問 正解。こたえ（けっかの 画面の せつめい）を
+ *   見た あとの やりなおし・前の 回の 続き・バグ報告で こたえの 文を 見た 回は パーフェクトに しない。
+ *   点・割合・合否は 書く
  */
 
-export type CertificateKind = "listening" | "typing";
+/** 種類の 名前は ステージの `contents[].type` と 同じ（DB の kind 列。移行SQLの 註）。 */
+export type CertificateKind = "listening" | "typing" | "quizset";
 
 /** 1回ぶんの 成績（端末が まとめて DB へ 送る）。 */
 export interface CertificateResult {
@@ -122,6 +126,50 @@ export function typingResult(
   };
 }
 
+/** もんだいの 1回ぶん（`src/components/quiz/use-quiz-certificate.ts`）。 */
+export interface QuizRunFacts {
+  /** 出した 問題の 数（全問を 通した 回なら 教材の 問題の 数）。 */
+  readonly total: number;
+  readonly correct: number;
+  /** 画面と 同じ 丸めた 割合（`summarizeQuiz`）。 */
+  readonly percent: number;
+  readonly passed: boolean;
+  /** 正解の 無い 教材（自由記述だけ）。点・合否の 代わりに 書けた 数を 出す。 */
+  readonly freeOnly: boolean;
+  /** 前の 回の 続きから（書きかけを 開き直した・しおりで 途中から 始めた）。 */
+  readonly partial: boolean;
+  /** 前に こたえ（けっかの 画面の せつめい）を 見た あとの やりなおし。 */
+  readonly sawScriptBefore: boolean;
+  /** バグ報告で、3回 だめで こたえの 文を 見た。 */
+  readonly sawModelAnswer: boolean;
+}
+
+export function quizResult(
+  contentId: string,
+  title: string,
+  facts: QuizRunFacts,
+): CertificateResult {
+  const allCorrect = facts.total > 0 && facts.correct === facts.total;
+  return {
+    kind: "quizset",
+    contentId,
+    title,
+    perfect: allCorrect && !facts.partial && !facts.sawScriptBefore && !facts.sawModelAnswer,
+    score: facts.correct,
+    maxScore: facts.total,
+    misses: facts.total - facts.correct,
+    detail: {
+      questions: facts.total,
+      percent: facts.percent,
+      passed: facts.passed,
+      freeOnly: facts.freeOnly,
+      partial: facts.partial,
+      sawScriptBefore: facts.sawScriptBefore,
+      sawModelAnswer: facts.sawModelAnswer,
+    },
+  };
+}
+
 /** 修了証の 成績の 1行（ラベルと 値。画面の カードと 画像の 両方が 使う）。 */
 export interface CertificateLine {
   readonly label: string;
@@ -144,6 +192,27 @@ export function certificateLines(cert: CertificateResult): CertificateLine[] {
       ...(cert.detail.sawScriptBefore
         ? [{ label: "やりなおし", value: "前に こたえあわせを 見た あと" }]
         : []),
+    ];
+  }
+  if (cert.kind === "quizset") {
+    const how = [
+      ...(cert.detail.partial ? [{ label: "はじめかた", value: "前の 回の 続きから" }] : []),
+      ...(cert.detail.sawScriptBefore
+        ? [{ label: "やりなおし", value: "前に こたえを 見た あと" }]
+        : []),
+    ];
+    // 正解の 無い 教材は 点も 合否も 出さない（けっかの 画面と 同じ。2026-08-27 の 指定）
+    if (cert.detail.freeOnly) {
+      return [
+        { label: "書けた もんだい", value: `${cert.score ?? 0} / ${cert.maxScore ?? 0}` },
+        ...how,
+      ];
+    }
+    return [
+      { label: "正解", value: `${cert.score ?? 0} / ${cert.maxScore ?? 0}問` },
+      { label: "正解の 割合", value: `${Number(cert.detail.percent ?? 0)}%` },
+      { label: "けっか", value: cert.detail.passed ? "合格" : "不合格" },
+      ...how,
     ];
   }
   return [
@@ -175,11 +244,33 @@ export function notPerfectReasons(cert: CertificateResult): string[] {
       ...(cert.detail.sawScriptBefore ? ["前に こたえあわせを 見た あとの やりなおしです。"] : []),
     ];
   }
+  if (cert.kind === "quizset") {
+    const missed = cert.misses ?? 0;
+    return [
+      ...(missed > 0
+        ? [
+            cert.detail.freeOnly
+              ? `書いて いない もんだいが ${missed}つ あります。`
+              : `まちがえた もんだいが ${missed}問 あります。`,
+          ]
+        : []),
+      ...(cert.detail.partial ? ["前の 回の 続きから 始めました。"] : []),
+      ...(cert.detail.sawScriptBefore ? ["前に こたえを 見た あとの やりなおしです。"] : []),
+      ...(cert.detail.sawModelAnswer ? ["バグ報告で こたえの 文を 見ました。"] : []),
+    ];
+  }
   return cert.detail.partial ? ["前の 回の 続きから 始めました。"] : [];
 }
 
 /** パーフェクトに する ための 次の 一手（1行）。 */
 export function nextStepForPerfect(cert: CertificateResult): string {
+  if (cert.kind === "quizset") {
+    /*
+     * けっかの 画面で こたえと せつめいを 見たので、この あとの やりなおしは もう
+     * パーフェクトに ならない。できない ことを「めざそう」と 言わない（規律1）。
+     */
+    return "パーフェクトに なるのは、こたえを 見る 前の 1回目だけです。つぎの もんだいでは、出す 前に 見直しましょう。";
+  }
   return cert.kind === "listening"
     ? "パーフェクトを めざすなら、はじめから やりなおして、こたえあわせを 見る 前に 100%に しましょう。"
     : "パーフェクトを めざすなら、1文目から 最後の 文まで 続けて 入力しましょう。";

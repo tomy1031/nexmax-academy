@@ -13,7 +13,9 @@ import {
   certificateLines,
   formatIssuedAt,
   listeningResult,
+  nextStepForPerfect,
   notPerfectReasons,
+  quizResult,
   typingResult,
 } from "../src/lib/certificate/model";
 import { endRun, readRun, startRun, updateRun } from "../src/lib/certificate/run";
@@ -158,5 +160,59 @@ describe("続きから・こたえあわせを 見た あとの やりなおし�
     const redo = listeningResult("l1", "題", { ...base, sawScriptBefore: true });
     expect(redo.perfect).toBe(false);
     expect(notPerfectReasons(redo)).toEqual(["前に こたえあわせを 見た あとの やりなおしです。"]);
+  });
+});
+
+describe("もんだいの パーフェクト（第2段・2026-10-06 の 回答「満点」）", () => {
+  const base = {
+    total: 5,
+    correct: 5,
+    percent: 100,
+    passed: true,
+    freeOnly: false,
+    partial: false,
+    sawScriptBefore: false,
+    sawModelAnswer: false,
+  };
+
+  it("全問 正解・1回目 なら パーフェクト", () => {
+    const result = quizResult("q1", "題", base);
+    expect(result.kind).toBe("quizset");
+    expect(result.perfect).toBe(true);
+    expect(notPerfectReasons(result)).toEqual([]);
+    expect(certificateLines(result).map((line) => line.value)).toEqual(["5 / 5問", "100%", "合格"]);
+  });
+
+  it("1問でも まちがえれば パーフェクトで ない（合格でも）。数と 合否を 書く", () => {
+    const result = quizResult("q1", "題", { ...base, correct: 4, percent: 80 });
+    expect(result.perfect).toBe(false);
+    expect(result.misses).toBe(1);
+    expect(notPerfectReasons(result)).toEqual(["まちがえた もんだいが 1問 あります。"]);
+    expect(certificateLines(result).map((line) => line.value)).toEqual(["4 / 5問", "80%", "合格"]);
+    const failed = quizResult("q1", "題", { ...base, correct: 2, percent: 40, passed: false });
+    expect(certificateLines(failed).map((line) => line.value)).toContain("不合格");
+  });
+
+  it("こたえを 見た あとの やりなおし・続きから・バグ報告で こたえの 文を 見た 回は 満点でも パーフェクトで ない", () => {
+    const redo = quizResult("q1", "題", { ...base, sawScriptBefore: true });
+    expect(redo.perfect).toBe(false);
+    expect(notPerfectReasons(redo)).toEqual(["前に こたえを 見た あとの やりなおしです。"]);
+    const partial = quizResult("q1", "題", { ...base, partial: true });
+    expect(partial.perfect).toBe(false);
+    expect(notPerfectReasons(partial)).toEqual(["前の 回の 続きから 始めました。"]);
+    const model = quizResult("q1", "題", { ...base, sawModelAnswer: true });
+    expect(model.perfect).toBe(false);
+    expect(notPerfectReasons(model)).toEqual(["バグ報告で こたえの 文を 見ました。"]);
+  });
+
+  it("正解の 無い 教材は 点も 合否も 出さず、書けた 数を 出す", () => {
+    const result = quizResult("q1", "題", { ...base, freeOnly: true, correct: 3, total: 4 });
+    expect(certificateLines(result).map((line) => line.value)).toEqual(["3 / 4"]);
+    expect(notPerfectReasons(result)).toEqual(["書いて いない もんだいが 1つ あります。"]);
+  });
+
+  it("つぎの 一手は「1回目だけ」と 正直に 言う（やりなおしで パーフェクトを めざそう と 言わない）", () => {
+    const result = quizResult("q1", "題", { ...base, correct: 4, percent: 80 });
+    expect(nextStepForPerfect(result)).toContain("1回目だけ");
   });
 });

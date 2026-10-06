@@ -166,6 +166,37 @@ describe("修了証を 先生の 表に する", () => {
     expect(table.rows[0]?.cells.type).toBe("タイピング");
   });
 
+  it("成績: もんだいは 正解の 数と 合否。正解の 無い 教材は 書けた 数（第2段）", () => {
+    const table = certificateTable(
+      [
+        cert({
+          id: "a",
+          kind: "quizset",
+          score: 4,
+          max_score: 5,
+          misses: 1,
+          detail: { passed: true, sawScriptBefore: true },
+        }),
+        cert({ id: "b", kind: "quizset", score: 2, max_score: 5, detail: { passed: false } }),
+        cert({ id: "c", kind: "quizset", score: 3, max_score: 3, detail: { freeOnly: true } }),
+        cert({
+          id: "d",
+          kind: "quizset",
+          score: 5,
+          max_score: 5,
+          detail: { sawModelAnswer: true, passed: true },
+        }),
+      ],
+      LOOKUPS,
+    );
+    expect(table.rows.map((row) => row.cells.score)).toEqual([
+      "正解 4/5・合格（こたえあわせを 見た あとの やりなおし）",
+      "正解 2/5・不合格",
+      "書けた 3/3",
+      "正解 5/5・合格（バグ報告で こたえの 文を 見た）",
+    ]);
+  });
+
   it("成績: 知らない 種類でも 持って いる 数は そのまま 出す", () => {
     const table = certificateTable(
       [
