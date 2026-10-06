@@ -696,6 +696,19 @@ function certificateScoreText(record: CertificateRecord): string {
   if (record.kind === "typing") {
     return `1回で 正解 ${record.score ?? 0}/${record.max_score ?? 0}・❌ ${misses}回${tail}`;
   }
+  const num = (key: string) => Number(detail[key] ?? 0);
+  if (record.kind === "meeting") {
+    const found = num("discover") > 0 ? `・聞き出せた ${num("found")}/${num("discover")}` : "";
+    return `答えた ${record.score ?? 0}/${record.max_score ?? 0}${found}${tail}`;
+  }
+  if (record.kind === "talkgame") return `クリア${tail}`;
+  if (record.kind === "asakai") {
+    const verdict = detail.passed ? "合格" : "不合格";
+    return `言えた ${record.score ?? 0}/${record.max_score ?? 0}・${verdict}・ぜんぶ 言えた 曜日 ${num("fullDays")}/${num("days")}${tail}`;
+  }
+  if (record.kind === "scenario") {
+    return `聞き出せた ${record.score ?? 0}/${record.max_score ?? 0}${tail}`;
+  }
   if (record.kind === "wordtest") {
     // 「まちがえた ことばだけ」の 回は 合否を 書かない（数語の やりなおしの 合格と 読まれない）
     const verdict = detail.onlyMissed ? "" : detail.passed ? "・合格" : "・不合格";
