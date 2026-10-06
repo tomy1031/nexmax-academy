@@ -74,6 +74,10 @@ import { SpeechSpeedPicker } from "./speech-speed-picker";
 import { VisemeFace, type Viseme } from "./viseme-face";
 import { useClipPlayer } from "./use-clip-player";
 import { useLiveVoice } from "./use-live-voice";
+import { CertificatePanel } from "@/components/certificate/certificate-panel";
+import { useCertificateIssuer } from "@/components/certificate/use-certificate-issuer";
+import { CertificateCorner } from "@/components/certificate/certificate-corner";
+import { meetingResult } from "@/lib/certificate/model";
 
 /**
  * ミーティング — Zoom風の画面で、相手の質問に自分の日本語で答える。
@@ -1338,6 +1342,41 @@ export function MeetingSession({
     void flushMeetingTurns(meeting.id);
   }, [hasListenRound, round1Done, certificate, meeting.id]);
 
+  /*
+   * 修了証（願い #562 の 第2段・回答「取りこぼしなし」）。入室した ときに 回を 始め、
+   * **話しきった 瞬間**（ラウンド2の しゅうりょうしょうが 出る 時）に 1回だけ 発行する。
+   * パーフェクト＝ぜんぶの しつもんに 答えた（札が 開いた）＋聞き出す ことを ぜんぶ。ヒントは よい。
+   */
+  const issuer = useCertificateIssuer(meeting.id);
+  const { begin: beginCertificate, finish: finishCertificate } = issuer;
+  useEffect(() => {
+    // しおりから 戻った 回は「つづき」（この 端末で 始めた 回で なければ 前の 回の 続き）
+    if (joined) beginCertificate({ resumed: resume.resumed });
+  }, [joined, beginCertificate, resume.resumed]);
+  const foundCount = meeting.discover.filter((item) => found.has(item.id)).length;
+  /*
+   * 答えた しつもん＝**札が 開いて、答えきれなかった 印が 無く、ことばが 残って いる**もの。
+   * 札は 言い直しの 上限で 開く ことが あり、開き直すと 通りすぎた しつもんが 開いた 扱いに
+   * なる（飛ばした ものも）。札の 数だけでは 取りこぼしを 数えられない（code-critic の 指摘）。
+   */
+  const answeredCount = meeting.questions.filter(
+    (q) => openIds.has(q.id) && !missedIds.has(q.id) && (answers[q.id] ?? "") !== "",
+  ).length;
+  useEffect(() => {
+    if (certificate !== "round2") return;
+    finishCertificate(
+      meetingResult(meeting.id, meeting.title, {
+        questions: meeting.questions.length,
+        answered: answeredCount,
+        discover: meeting.discover.length,
+        found: foundCount,
+        ...(meeting.affection
+          ? { hearts: heartsOf(affection), maxHearts: meeting.affection.maxHearts }
+          : {}),
+      }),
+    );
+  }, [certificate, meeting, answeredCount, foundCount, affection, finishCertificate]);
+
   const closeJudge = useCallback(() => {
     const again = reply?.judge?.retry === true;
     setJudgeOpen(false);
@@ -1633,6 +1672,12 @@ export function MeetingSession({
 
   return (
     <div className={embedded ? "" : "mx-auto w-full max-w-4xl px-4 py-6"}>
+      {/* 入る 前: 前に 出した 修了証・出し直し（願い #562） */}
+      {!joined ? (
+        <div className="mb-4">
+          <CertificateCorner issuer={issuer} contentId={meeting.id} furigana={furigana} />
+        </div>
+      ) : null}
       <CallShell
         title={meeting.title}
         focus={meeting.focus}
@@ -1783,6 +1828,16 @@ export function MeetingSession({
                 : "ステージに もどる →"
           }
           onNext={closeCertificate}
+          official={
+            certificate === "round2" && issuer.certificate ? (
+              <CertificatePanel
+                state={issuer.certificate}
+                furigana={furigana}
+                show
+                onRetry={issuer.retry}
+              />
+            ) : null
+          }
         />
       ) : null}
 

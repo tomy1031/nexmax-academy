@@ -217,6 +217,29 @@ describe("修了証を 先生の 表に する", () => {
     ]);
   });
 
+  it("成績: 会話の 練習（ミーティング・たいわ・朝礼・ヒアリング）は それぞれの 数え方（第2段）", () => {
+    const table = certificateTable(
+      [
+        cert({ kind: "meeting", score: 7, max_score: 8, detail: { discover: 4, found: 3 } }),
+        cert({ kind: "talkgame", score: null, max_score: null, misses: null }),
+        cert({
+          kind: "asakai",
+          score: 18,
+          max_score: 20,
+          detail: { passed: true, fullDays: 3, days: 5 },
+        }),
+        cert({ kind: "scenario", score: 9, max_score: 10, detail: { partial: true } }),
+      ],
+      LOOKUPS,
+    );
+    expect(table.rows.map((row) => row.cells.score)).toEqual([
+      "答えた 7/8・聞き出せた 3/4",
+      "クリア",
+      "言えた 18/20・合格・ぜんぶ 言えた 曜日 3/5",
+      "聞き出せた 9/10（前の 回の 続きから）",
+    ]);
+  });
+
   it("成績: 知らない 種類でも 持って いる 数は そのまま 出す", () => {
     const table = certificateTable(
       [

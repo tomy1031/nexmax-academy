@@ -612,6 +612,38 @@ test("月曜を 終えて 開き直すと、火曜から つづく", async ({ pa
 });
 
 /**
+ * **5日目を 終えた 瞬間に 修了証が 出る**（2026-10-06 の 指定・願い #562 の 第2段）
+ *
+ * 週の けっかの ポップアップの 中に 正式な 修了証（デモでは 見本）。パーフェクト＝
+ * 5日とも その日の ことを ぜんぶ 言えて 週も 合格（回答「取りこぼしなし」）。
+ */
+test("5日 通すと、週の けっかに 修了証が 出る", async ({ page, context }) => {
+  const refs = stageRefs();
+  const at = refs.indexOf("asakai_kantan");
+  await seedCompleted(context, refs.slice(0, at));
+  await page.goto("/asakai/meeting-asakai_kantan");
+  await joinCall(page);
+  await closeDuty(page);
+  for (const [day, utterance] of exampleUtterances().entries()) {
+    await page.getByLabel("こたえを 入力する").fill(utterance);
+    await page.getByRole("button", { name: "おくる" }).click();
+    await closeDayScore(page);
+    if (day < 4) {
+      await page.getByRole("button", { name: /つづけます/ }).click();
+      await closeDuty(page);
+    }
+  }
+  await page.getByRole("button", { name: "今週の けっかを 見る" }).click();
+  const week = page.getByRole("dialog", { name: "今週の けっか" });
+  const cert = week.locator('[data-certificate="ready"]');
+  await expect(cert).toBeVisible();
+  await expect(cert).toHaveAttribute("data-official", "false");
+  expect(await bareKanjiTexts(page)).toEqual([]);
+  await cert.scrollIntoViewIfNeeded();
+  await shot(page, "asakai-11-week-certificate");
+});
+
+/**
  * **週の けっかが 読める**（2026-09-11 の 再発防止）
  *
  * 「おわった」を けっかを 見せる **前**に 書いて いた ころ、ステージの

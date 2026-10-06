@@ -49,6 +49,10 @@ import { readAloud, talkInstruction } from "@/lib/talkgame/instructions";
 import { buildFuriganaIndex, mergeFuriganaEntries } from "@/lib/text/furigana";
 import { TalkFeedback, TalkRubric, FEEDBACK_FURIGANA } from "./talk-feedback";
 import { TalkScene } from "./talk-scene";
+import { CertificatePanel } from "@/components/certificate/certificate-panel";
+import { useCertificateIssuer } from "@/components/certificate/use-certificate-issuer";
+import { CertificateCorner } from "@/components/certificate/certificate-corner";
+import { talkGameResult } from "@/lib/certificate/model";
 
 /**
  * 対話ゲーム — 好感度 100% を 目ざして 社長と 話す（願い #177）
@@ -255,6 +259,12 @@ export function TalkGameSession({
 
   const [phase, setPhase] = useState<Phase>("lobby");
   const [talk, setTalk] = useState<TalkState>(EMPTY_TALK);
+  /**
+   * 修了証（願い #562 の 第2段・回答「取りこぼしなし」＝たいわは クリア）。話しはじめた ときに
+   * 回を 始め、**クリアした 瞬間**に 発行する。
+   */
+  const issuer = useCertificateIssuer(meeting.id);
+  const { begin: beginCertificate, finish: finishCertificate } = issuer;
   const [queue, setQueue] = useState<readonly Line[]>([]);
   /**
    * もう 出した 社長の ことば（**新しい ものが うしろ**）。
@@ -552,6 +562,8 @@ export function TalkGameSession({
       if (!game) return;
       turnRef.current += 1;
       if (fresh) clearTalkResume(meeting.id);
+      // しおりの つづきなら「つづき」（この 端末で 始めた 回で なければ 前の 回の 続き）
+      beginCertificate({ resumed: !fresh && saved !== null });
       const from = fresh ? EMPTY_TALK : (saved ?? EMPTY_TALK);
       setTalk(from);
       setResult(null);
@@ -590,7 +602,7 @@ export function TalkGameSession({
       }
       recordContentProgress(meeting.id, { status: "started" });
     },
-    [game, meeting.id, saved, withName, openerAt, lineOf],
+    [game, meeting.id, saved, withName, openerAt, lineOf, beginCertificate],
   );
 
   /**
@@ -824,6 +836,14 @@ export function TalkGameSession({
     void flushMeetingTurns(meeting.id);
   }, [phase, meeting.id, meeting.closingAudioUrl, clipPlay, speedRate]);
 
+  // クリアした 瞬間に 修了証を 1回だけ 出す（同じ 回の 2度目は `useCertificateIssuer` が 止める）
+  useEffect(() => {
+    if (phase !== "clear") return;
+    finishCertificate(
+      talkGameResult(meeting.id, meeting.title, { turns: talk.turns, asked: talk.asked }),
+    );
+  }, [phase, meeting.id, meeting.title, talk.turns, talk.asked, finishCertificate]);
+
   /*
    * **しおりを 書く**（2026-08-21 の 指定「画面更新などした 場合でも 途中から」）。
    * 満タンまで 行ったら 消す——もう一度 開いた 人は はじめから 話せる ほうが よい。
@@ -904,6 +924,8 @@ export function TalkGameSession({
             {saved ? "つづきから 話す ▶" : "はじめる ▶"}
           </button>
         </div>
+        {/* 前に 出した 修了証・出し直し（願い #562） */}
+        <CertificateCorner issuer={issuer} contentId={meeting.id} furigana={furigana} />
       </div>
     );
   }
@@ -1052,6 +1074,16 @@ export function TalkGameSession({
             closing={withName(meeting.closing)}
             furigana={furigana}
             onLeave={leave}
+            certificate={
+              issuer.certificate ? (
+                <CertificatePanel
+                  state={issuer.certificate}
+                  furigana={furigana}
+                  show
+                  onRetry={issuer.retry}
+                />
+              ) : null
+            }
           />
         ) : null}
       </TalkScene>
@@ -1356,12 +1388,15 @@ function ClearPanel({
   closing,
   furigana,
   onLeave,
+  certificate = null,
 }: {
   hostName: string;
   goal: number;
   closing: string;
   furigana: ReturnType<typeof buildFuriganaIndex>;
   onLeave: () => void;
+  /** 修了証（クリアした 瞬間に 発行した もの。願い #562）。 */
+  certificate?: React.ReactNode;
 }) {
   return (
     <div className="absolute inset-0 grid place-items-center overflow-y-auto p-4">
@@ -1377,6 +1412,7 @@ function ClearPanel({
         <p className="text-ink text-sm font-bold">
           <DictionaryText text={closing} index={furigana} show />
         </p>
+        {certificate ? <div className="text-left">{certificate}</div> : null}
         <button type="button" onClick={onLeave} className="btn-game rounded-full px-7 py-3">
           おわる
         </button>

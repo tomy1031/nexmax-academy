@@ -9,13 +9,17 @@
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
+  asakaiResult,
   certificateFileName,
   certificateLines,
   formatIssuedAt,
   listeningResult,
+  meetingResult,
   nextStepForPerfect,
   notPerfectReasons,
   quizResult,
+  scenarioResult,
+  talkGameResult,
   typingResult,
   wordTestResult,
 } from "../src/lib/certificate/model";
@@ -289,5 +293,42 @@ describe("単語テストの パーフェクト（第2段・回答「何回目�
     const values = certificateLines(result).map((line) => line.value);
     expect(values).toContain("まちがえた ことばだけ");
     expect(values).not.toContain("合格");
+  });
+});
+
+describe("会話の 練習の パーフェクト（第2段・回答「取りこぼしなし」）", () => {
+  it("ミーティング: ぜんぶの しつもんに 答えて、聞き出す ことも ぜんぶ なら パーフェクト", () => {
+    const all = meetingResult("m", "題", { questions: 8, answered: 8, discover: 4, found: 4 });
+    expect(all.perfect).toBe(true);
+    const missed = meetingResult("m", "題", { questions: 8, answered: 7, discover: 4, found: 3 });
+    expect(missed.perfect).toBe(false);
+    expect(notPerfectReasons(missed)).toEqual([
+      "答えきれなかった しつもんが 1こ あります。",
+      "聞き出せなかった ことが 1こ あります。",
+    ]);
+    expect(certificateLines(missed).map((line) => line.value)).toEqual(["7 / 8こ", "3 / 4こ"]);
+  });
+
+  it("たいわ: クリアで 出す ので いつも パーフェクト", () => {
+    const result = talkGameResult("t", "題", { turns: 6, asked: 3 });
+    expect(result.perfect).toBe(true);
+    expect(certificateLines(result).map((line) => line.value)).toEqual(["クリア", "6回", "3こ"]);
+  });
+
+  it("朝礼: 5日とも ぜんぶ 言えて 週も 合格なら パーフェクト。1日でも 足りなければ 青", () => {
+    const base = { days: 5, fullDays: 5, units: 20, unitTotal: 20, passed: true, stars: 2 };
+    expect(asakaiResult("a", "題", base).perfect).toBe(true);
+    const short = asakaiResult("a", "題", { ...base, fullDays: 4, units: 19 });
+    expect(short.perfect).toBe(false);
+    expect(notPerfectReasons(short)).toEqual(["ぜんぶ 言えなかった 曜日が 1つ あります。"]);
+    const failed = asakaiResult("a", "題", { ...base, passed: false });
+    expect(notPerfectReasons(failed)).toContain("週の 合格に 届いて いません。");
+  });
+
+  it("ヒアリング: 聞き出す ことを ぜんぶ 聞けたら パーフェクト", () => {
+    expect(scenarioResult("s", "題", { covered: 10, total: 10 }).perfect).toBe(true);
+    const short = scenarioResult("s", "題", { covered: 9, total: 10 });
+    expect(short.perfect).toBe(false);
+    expect(notPerfectReasons(short)).toEqual(["聞き出せなかった ことが 1こ あります。"]);
   });
 });

@@ -50,6 +50,11 @@ export interface CertificateRun {
    * 次に 開いた 画面で「もう一度 ためす」から 出し直す（黙って 消さない）。
    */
   readonly pending?: { readonly result: CertificateResult; readonly attemptId: string };
+  /**
+   * 会話の 練習: この 回の 修了証は もう 出した。同じ 回を 開き直して 終えても 2枚目を 出さない
+   *（回は 次に「はじめから」始めた ときに 置きかわる）。
+   */
+  readonly issued?: boolean;
 }
 
 function storage(): Storage | null {
