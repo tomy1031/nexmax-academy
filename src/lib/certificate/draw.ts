@@ -46,7 +46,10 @@ async function fontFamily(sample: string): Promise<string> {
   const rounded = getComputedStyle(document.body).getPropertyValue("--font-rounded").trim();
   const family = `${rounded ? `${rounded}, ` : ""}"Hiragino Maru Gothic ProN", "Noto Sans JP", sans-serif`;
   try {
-    await document.fonts.load(`bold 40px ${family}`, sample);
+    // 和文の 字は 字ごとに 分けて 届くので、描く 太さ（700/800/900）と 描く 字を ぜんぶ 先に 読む
+    await Promise.all(
+      [700, 800, 900].map((weight) => document.fonts.load(`${weight} 40px ${family}`, sample)),
+    );
     await document.fonts.ready;
   } catch {
     /* 読めなくても 描く（端末の 字で） */
@@ -92,7 +95,10 @@ export async function drawCertificate(cert: IssuedCertificate): Promise<Blob> {
   const lines = certificateLines(cert);
   const reasons = notPerfectReasons(cert);
   const all = [
-    "修了証PERFECT修了名前教材終えた時刻回目成績照合番号見本",
+    "修了証PERFECT修了名前教材終えた時刻回目成績照合番号見本NexMax Academy",
+    "パーフェクトでは ありません：",
+    "ログインして いないので、正式な 修了証では ありません。",
+    "（名前が ありません）0123456789/:（ICT）",
     cert.title,
     cert.learnerName,
     ...lines.flatMap((line) => [line.label, line.value]),
@@ -129,7 +135,9 @@ export async function drawCertificate(cert: IssuedCertificate): Promise<Blob> {
   ctx.rotate(-0.12);
   ctx.fillStyle = accent;
   ctx.beginPath();
-  ctx.roundRect(-170, -62, 340, 124, 24);
+  // iOS 15 以下には roundRect が 無い（無ければ 角の ある 四角で 描く）
+  if (typeof ctx.roundRect === "function") ctx.roundRect(-170, -62, 340, 124, 24);
+  else ctx.rect(-170, -62, 340, 124);
   ctx.fill();
   ctx.fillStyle = "#ffffff";
   ctx.font = font(cert.perfect ? 54 : 64, 900);
@@ -178,8 +186,16 @@ export async function drawCertificate(cert: IssuedCertificate): Promise<Blob> {
   if (reasons.length > 0) {
     ctx.fillStyle = CORAL;
     ctx.font = font(32, 900);
-    ctx.fillText(`パーフェクトでは ありません：${reasons.join(" ")}`, left, y + 16);
-    y += 56;
+    // 右下の ネクマックスに かからない はばで 折り返す
+    const used = wrapText(
+      ctx,
+      `パーフェクトでは ありません：${reasons.join(" ")}`,
+      left,
+      y + 16,
+      W - left - 420,
+      44,
+    );
+    y += used * 44 + 12;
   }
 
   // 照合番号（いちばん 下に 大きく）
@@ -224,24 +240,35 @@ export async function drawCertificate(cert: IssuedCertificate): Promise<Blob> {
   });
 }
 
-/** 描いて 保存する。スマホは 共有シート、PC は ダウンロード。 */
-export async function saveCertificateImage(cert: IssuedCertificate): Promise<void> {
+/** 保存する ファイル（PNG）を 作る。画面が 修了証を 出した 時点で 先に 作って おく。 */
+export async function certificateFile(cert: IssuedCertificate): Promise<File> {
   const blob = await drawCertificate(cert);
-  const name = certificateFileName(cert.contentId, cert.issuedAt);
-  const file = new File([blob], name, { type: "image/png" });
+  return new File([blob], certificateFileName(cert.contentId, cert.issuedAt), {
+    type: "image/png",
+  });
+}
+
+/**
+ * 保存する。スマホは 共有シート（「画像を 保存」）、PC は ダウンロード。
+ *
+ * **押した その場で 呼ぶ**（ファイルは 先に 作って おく）。iOS Safari は 押してから 時間が たつと
+ * 共有シートを 断る（NotAllowedError）。共有シートを 閉じた（AbortError）ときは 何も しない。
+ */
+export async function saveCertificateFile(file: File): Promise<void> {
   const mobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
   if (mobile && typeof navigator.canShare === "function" && navigator.canShare({ files: [file] })) {
     try {
       await navigator.share({ files: [file], title: "修了証" });
       return;
-    } catch {
-      /* 閉じられた・使えない → ダウンロードへ */
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") return;
+      /* 使えない → ダウンロードへ */
     }
   }
-  const url = URL.createObjectURL(blob);
+  const url = URL.createObjectURL(file);
   const a = document.createElement("a");
   a.href = url;
-  a.download = name;
+  a.download = file.name;
   document.body.appendChild(a);
   a.click();
   a.remove();

@@ -36,6 +36,7 @@ import { fetchAllProfiles, fetchOwnProfile, type ProfileRow } from "@/lib/profil
 import { AFFILIATIONS, COHORTS, formatSchool } from "@/lib/school";
 import { createClient } from "@/lib/supabase/client";
 import {
+  fetchCertificateByCode,
   fetchCertificateRecords,
   fetchContentProgress,
   fetchListeningRecords,
@@ -55,6 +56,7 @@ import {
   buildLookups,
   buildRecordsCsv,
   certificateTable,
+  normalizeCode,
   defaultKind,
   EMPTY_FILTER,
   filterRows,
@@ -218,18 +220,19 @@ export function RecordsShell({
    * 見て いる タブの 表だけを 読む。5種類を いちどに 読むと、学期の 終わりに
    * 先生の 画面が 開かなく なる。
    */
+  const certificateCode = kind === "certificate" ? exactCertificateCode(filter.text) : null;
   useEffect(() => {
     if (loading) return;
     let active = true;
     void (async () => {
-      const built = await loadTable(kind, lookups, query);
+      const built = await loadTable(kind, lookups, query, certificateCode);
       if (!active) return;
       setLoaded({ kind, query, table: built.table, note: built.note });
     })();
     return () => {
       active = false;
     };
-  }, [kind, loading, lookups, query]);
+  }, [kind, loading, lookups, query, certificateCode]);
 
   const rows = useMemo(
     () => (table ? filterRows(table, filter, lookups) : []),
@@ -585,6 +588,8 @@ async function loadTable(
   kind: RecordKind,
   lookups: ReturnType<typeof buildLookups>,
   query: RecordsQuery = NO_QUERY,
+  /** 修了証: 照合番号が 8けた そろって いれば その 番号（大文字）。 */
+  code: string | null = null,
 ): Promise<{ table: RecordTable; note: string | null }> {
   const wrap = (table: RecordTable, results: readonly RecordsResult<unknown>[]) => {
     const failed = results.find(
@@ -630,9 +635,16 @@ async function loadTable(
     ]);
   }
   if (kind === "certificate") {
-    const got = await fetchCertificateRecords(query);
+    // 照合番号が 8けた そろったら、その 番号を DB に 直に 聞く（古い 修了証も 引ける）
+    const got = code ? await fetchCertificateByCode(code) : await fetchCertificateRecords(query);
     return wrap(certificateTable(got.ok ? got.rows : [], lookups), [got]);
   }
   const got = await fetchListeningRecords(query);
   return wrap(listeningTable(got.ok ? got.rows : [], lookups), [got]);
+}
+
+/** 照合番号が 8けた そろって いれば 大文字で 返す（そろって いなければ null）。 */
+function exactCertificateCode(text: string): string | null {
+  const code = normalizeCode(text);
+  return /^[a-z0-9]{8}$/.test(code) ? code.toUpperCase() : null;
 }

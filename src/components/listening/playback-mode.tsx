@@ -11,13 +11,15 @@ import {
   CertificatePanel,
   type CertificateState,
 } from "@/components/certificate/certificate-panel";
-import { issueCertificate } from "@/lib/certificate/certificate-db";
+import { claimRun, currentOwner, issueCertificate } from "@/lib/certificate/certificate-db";
 import { listeningResult } from "@/lib/certificate/model";
 import {
   endRun,
+  markSawScript,
   readIssued,
   readRun,
   saveIssued,
+  sawScript,
   startRun,
   updateRun,
 } from "@/lib/certificate/run";
@@ -122,27 +124,54 @@ export function ListeningPlayer({
   const seenMissesRef = useRef(0);
   const issuedRef = useRef(false);
 
+  /** 回を 新しく 始める（前に こたえあわせを 見た ことが あれば、それも 写す）。 */
+  const beginRun = useCallback(
+    (partial: boolean) => {
+      const run = startRun(listening.id, {
+        misses: 0,
+        partial,
+        sawScriptBefore: sawScript(listening.id),
+      });
+      claimRun(listening.id);
+      return run;
+    },
+    [listening.id],
+  );
+
   const issue = useCallback(
     (score: number) => {
-      const run = readRun(listening.id) ?? startRun(listening.id);
+      const run = readRun(listening.id) ?? beginRun(true);
       const result = listeningResult(listening.id, listening.title, {
         score,
         misses: run.misses ?? 0,
         usedRescue: Boolean(run.usedRescue),
         reviewedEarly: Boolean(run.reviewedEarly),
+        partial: Boolean(run.partial),
+        sawScriptBefore: Boolean(run.sawScriptBefore),
       });
       setCertificate({ status: "issuing" });
-      void issueCertificate(result).then((outcome) => {
-        if (outcome.status === "error") {
-          setCertificate({ status: "error" });
-          return;
-        }
-        saveIssued(outcome.cert);
-        endRun(listening.id);
-        setCertificate({ status: "ready", cert: outcome.cert });
-      });
+      /*
+       * 発行の あいだに「はじめから」を 押される ことが ある。届いた ときに 回が もう
+       * 変わって いたら、新しい 回の 記録を 消さない（回の 印＝始めた 時刻で 見分ける）。
+       */
+      const startedAt = run.startedAt;
+      const sameRun = () => (readRun(listening.id)?.startedAt ?? startedAt) === startedAt;
+      issueCertificate(result, run.owner)
+        .then((outcome) => {
+          if (!sameRun()) return;
+          if (outcome.status === "error") {
+            setCertificate({ status: "error" });
+            return;
+          }
+          saveIssued(outcome.cert);
+          endRun(listening.id);
+          setCertificate({ status: "ready", cert: outcome.cert });
+        })
+        .catch(() => {
+          if (sameRun()) setCertificate({ status: "error" });
+        });
     },
-    [listening.id, listening.title],
+    [listening.id, listening.title, beginRun],
   );
 
   const onCheckChange = useCallback(
@@ -154,11 +183,25 @@ export function ListeningPlayer({
       if (fullAtOpenRef.current === null) {
         fullAtOpenRef.current = full;
         seenMissesRef.current = state.misses;
-        // 前の 回で もう 100%: 出した 修了証が あれば 見せる（画像を 保存し直せる）
+        // 前の 回で もう 100%: 出した 修了証が あれば 見せる（画像を 保存し直せる）。
+        // 共有 PC で 前の 人の ものを 見せない ように、持ち主を 突き合わせて から
         if (full) {
           const last = readIssued(listening.id);
-          if (last) setCertificate({ status: "ready", cert: last });
+          if (last) {
+            void currentOwner().then((owner) => {
+              if ((last.owner ?? "") === (owner ?? "")) {
+                setCertificate({ status: "ready", cert: last });
+              }
+            });
+          }
+          return;
         }
+        /*
+         * 回の 記録が 無い まま 原稿が もう 途中まで 開いて いる（この 機能より 前の 進み具合・
+         * 別の 端末）。続きから 100% に しても、全部を この 回で 聞き取った とは 言えない
+         * ので パーフェクトに しない（code-critic の 指摘）。
+         */
+        if (!readRun(listening.id)) beginRun(state.usedInputs.length > 0);
         return;
       }
       if (state.misses > seenMissesRef.current) {
@@ -171,17 +214,17 @@ export function ListeningPlayer({
         issue(state.score);
       }
     },
-    [listening.id, issue],
+    [listening.id, issue, beginRun],
   );
 
   /** 「はじめから」: 新しい 回に する。 */
   const onReset = useCallback(() => {
-    startRun(listening.id, { misses: 0 });
+    beginRun(false);
     fullAtOpenRef.current = false;
     seenMissesRef.current = 0;
     issuedRef.current = false;
     setCertificate(null);
-  }, [listening.id]);
+  }, [beginRun]);
 
   const start = () => {
     setPhase("listen");
@@ -198,6 +241,8 @@ export function ListeningPlayer({
     if (!current || !isFullyRevealed(current)) {
       updateRun(listening.id, (run) => ({ ...run, reviewedEarly: true }));
     }
+    // 原稿を 見た 印は「はじめから」でも 消さない（見て 写せば 100% に できる）
+    markSawScript(listening.id);
     setPhase("review");
     setCaptionsOn(true);
     setLine(0);

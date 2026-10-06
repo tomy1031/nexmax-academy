@@ -42,6 +42,8 @@ export interface IssuedCertificate extends CertificateResult {
   readonly attempt: number;
   /** DB が 押した 正式な もの か（false = 見本。ログインして いない・デモ）。 */
   readonly official: boolean;
+  /** 出した 人の id（見本は 空）。端末に 残した 控えを 見せる ときに 突き合わせる。 */
+  readonly owner?: string;
 }
 
 /** リスニングの 1回ぶん（端末の 記録 `run.ts` から）。 */
@@ -51,6 +53,14 @@ export interface ListeningRunFacts {
   readonly usedRescue: boolean;
   /** 100% に なる 前に こたえあわせ（原稿）を 見たか。 */
   readonly reviewedEarly: boolean;
+  /** 前の 回の 続きから 始めた（回の 記録が 無い まま、原稿が もう 途中まで 開いて いた）。 */
+  readonly partial?: boolean;
+  /**
+   * 前の 回で こたえあわせ（原稿）を 見た あとの やりなおし。
+   * 「はじめから」で 回を 新しく しても、原稿を 見た ことは 消えない（code-critic の 指摘。
+   * 見て 写して 打てば 100% に なる）。同日の 決定「こたえあわせを 見る 前に 100%」に 合わせる。
+   */
+  readonly sawScriptBefore?: boolean;
 }
 
 export function listeningResult(
@@ -62,7 +72,7 @@ export function listeningResult(
     kind: "listening",
     contentId,
     title,
-    perfect: !facts.usedRescue && !facts.reviewedEarly,
+    perfect: !facts.usedRescue && !facts.reviewedEarly && !facts.partial && !facts.sawScriptBefore,
     score: facts.score,
     maxScore: null,
     misses: facts.misses,
@@ -70,6 +80,8 @@ export function listeningResult(
       revealPercent: 100,
       usedRescue: facts.usedRescue,
       reviewedEarly: facts.reviewedEarly,
+      partial: Boolean(facts.partial),
+      sawScriptBefore: Boolean(facts.sawScriptBefore),
     },
   };
 }
@@ -77,8 +89,11 @@ export function listeningResult(
 /** タイピングの 1回ぶん。 */
 export interface TypingRunFacts {
   readonly total: number;
-  /** 文ごとの ❌ の 回数（並びは 文の 順）。 */
-  readonly missesBySentence: readonly number[];
+  /**
+   * 文ごとの ❌ の 回数（並びは 文の 順）。**null = この 回では 打って いない 文**
+   *（前の 回の 続きから 始めた とき。0 と 混ぜると「1回で 正解」に 数えて しまう）。
+   */
+  readonly missesBySentence: readonly (number | null)[];
   /** 前の 回の しおりから 続けた（1文目から 見て いない）。 */
   readonly partial: boolean;
 }
@@ -88,17 +103,19 @@ export function typingResult(
   title: string,
   facts: TypingRunFacts,
 ): CertificateResult {
-  const misses = facts.missesBySentence.reduce((sum, n) => sum + n, 0);
-  const firstTry = facts.missesBySentence.filter((n) => n === 0).length;
+  const judged = facts.missesBySentence.filter((n): n is number => n !== null);
+  const misses = judged.reduce((sum, n) => sum + n, 0);
+  const firstTry = judged.filter((n) => n === 0).length;
+  const partial = facts.partial || judged.length < facts.total;
   return {
     kind: "typing",
     contentId,
     title,
-    perfect: misses === 0 && !facts.partial,
+    perfect: misses === 0 && !partial,
     score: firstTry,
     maxScore: facts.total,
     misses,
-    detail: { sentences: facts.total, firstTry, partial: facts.partial },
+    detail: { sentences: facts.total, firstTry, judged: judged.length, partial },
   };
 }
 
@@ -120,12 +137,24 @@ export function certificateLines(cert: CertificateResult): CertificateLine[] {
         label: "こたえあわせ",
         value: cert.detail.reviewedEarly ? "100%の 前に 見た" : "100%の あとに 見た",
       },
+      ...(cert.detail.partial ? [{ label: "はじめかた", value: "前の 回の 続きから" }] : []),
+      ...(cert.detail.sawScriptBefore
+        ? [{ label: "やりなおし", value: "前に こたえあわせを 見た あと" }]
+        : []),
     ];
   }
   return [
     { label: "1回で 正解した 文", value: `${cert.score ?? 0} / ${cert.maxScore ?? 0}文` },
     { label: "❌ の 回数", value: `${cert.misses ?? 0}回` },
-    ...(cert.detail.partial ? [{ label: "はじめかた", value: "前の 回の 続きから" }] : []),
+    ...(cert.detail.partial
+      ? [
+          { label: "はじめかた", value: "前の 回の 続きから" },
+          {
+            label: "この 回で 入力した 文",
+            value: `${Number(cert.detail.judged ?? 0)} / ${cert.maxScore ?? 0}文`,
+          },
+        ]
+      : []),
   ];
 }
 
@@ -139,6 +168,8 @@ export function notPerfectReasons(cert: CertificateResult): string[] {
     return [
       ...(cert.detail.usedRescue ? ["あいことばを 使いました。"] : []),
       ...(cert.detail.reviewedEarly ? ["100%に なる 前に こたえあわせを 見ました。"] : []),
+      ...(cert.detail.partial ? ["前の 回の 続きから 始めました。"] : []),
+      ...(cert.detail.sawScriptBefore ? ["前に こたえあわせを 見た あとの やりなおしです。"] : []),
     ];
   }
   return [

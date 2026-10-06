@@ -120,8 +120,41 @@ describe("100% は 丸めずに 数える", () => {
       );
     let state = createListening(text, [], { minLength: 1, maxMiss: 99 });
     state = submitListening(state, text.slice(0, -1));
-    // 225字中 224字 → 表示は 100%（四捨五入）でも、修了証の 100%では ない
-    expect(revealRate(state)).toBe(100);
+    // 225字中 224字 → 四捨五入では 100 に なるが、表示も 99 に とどめる（修了証の 100%では ない）
+    expect(revealRate(state)).toBe(99);
     expect(isFullyRevealed(state)).toBe(false);
+  });
+});
+
+describe("続きから・こたえあわせを 見た あとの やりなおし（code-critic の 指摘）", () => {
+  it("タイピング: 打って いない 文（null）は「1回で 正解」に 数えず、パーフェクトに しない", () => {
+    const result = typingResult("t1", "題", {
+      total: 13,
+      missesBySentence: [...Array.from({ length: 12 }, () => null), 0],
+      partial: true,
+    });
+    expect(result.perfect).toBe(false);
+    expect(result.score).toBe(1);
+    expect(result.detail).toMatchObject({ judged: 1, partial: true });
+    expect(certificateLines(result).map((line) => line.value)).toContain("1 / 13文");
+  });
+
+  it("タイピング: 1文目から 始めても、打って いない 文が 残れば パーフェクトに しない", () => {
+    const result = typingResult("t1", "題", {
+      total: 3,
+      missesBySentence: [0, null, 0],
+      partial: false,
+    });
+    expect(result.perfect).toBe(false);
+  });
+
+  it("リスニング: 続きから・こたえあわせを 見た あとの やりなおしは パーフェクトに しない（理由を 書く）", () => {
+    const base = { score: 50, misses: 0, usedRescue: false, reviewedEarly: false };
+    const partial = listeningResult("l1", "題", { ...base, partial: true });
+    expect(partial.perfect).toBe(false);
+    expect(notPerfectReasons(partial)).toEqual(["前の 回の 続きから 始めました。"]);
+    const redo = listeningResult("l1", "題", { ...base, sawScriptBefore: true });
+    expect(redo.perfect).toBe(false);
+    expect(notPerfectReasons(redo)).toEqual(["前に こたえあわせを 見た あとの やりなおしです。"]);
   });
 });

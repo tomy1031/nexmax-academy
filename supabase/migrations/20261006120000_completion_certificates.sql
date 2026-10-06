@@ -93,11 +93,18 @@ begin
     ),
     ''
   );
+  -- 同じ 人・同じ 教材の 発行を 1つずつに する（2つの タブで 同時に 出しても「◯回目」が 重ならない）
+  perform pg_advisory_xact_lock(hashtext(new.profile_id::text || ':' || new.content_id));
   new.attempt := (
     select count(*) + 1
     from public.completion_certificates c
     where c.profile_id = new.profile_id and c.content_id = new.content_id
   );
+  /*
+   * 番号を 作る。この 関数は 呼んだ 人の きまり（RLS）で 動くので、下の 確かめは **自分の 行**しか
+   * 見えない。ほかの 人の 番号との 重なりを 最後に 止めるのは unique 索引（ぶつかれば insert が
+   * 失敗し、画面は「もう一度 ためす」を 出す）。31字の 8けた（約 8500億 通り）なので、まず 起きない。
+   */
   loop
     candidate := '';
     for i in 1..8 loop

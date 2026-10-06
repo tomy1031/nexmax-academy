@@ -11,8 +11,15 @@
  */
 import type { IssuedCertificate } from "./model";
 
-const RUN_PREFIX = "nexmax:v1:cert-run:";
-const ISSUED_PREFIX = "nexmax:v1:cert:";
+/*
+ * 鍵は「nexmax.」で 始める——ログアウトで `clearNexmaxCache()` が まとめて 消す。
+ * 教室の 共有 PC で、前の 人の 回の 記録や 修了証（名前・番号）が 次の 人に 見えない ように
+ *（code-critic の 指摘）。ログアウトしない 人の ために、持ち主（owner）も 記録して 突き合わせる。
+ */
+const RUN_PREFIX = "nexmax.cert-run.v1:";
+const ISSUED_PREFIX = "nexmax.cert.v1:";
+/** この 教材の こたえあわせ（原稿）を 見た ことが あるか（「はじめから」でも 消さない）。 */
+const SAW_PREFIX = "nexmax.cert-saw.v1:";
 
 /** 1回ぶんの 記録（リスニング・タイピング 共通。使う 欄は 種類ごと）。 */
 export interface CertificateRun {
@@ -24,10 +31,14 @@ export interface CertificateRun {
   readonly usedRescue?: boolean;
   /** リスニング: 100% に なる 前に こたえあわせを 見た。 */
   readonly reviewedEarly?: boolean;
-  /** タイピング: 文ごとの ❌ の 回数。 */
-  readonly missesBySentence?: readonly number[];
-  /** タイピング: 前の 回の しおりから 続けた。 */
+  /** タイピング: 文ごとの ❌ の 回数（null = この 回では 打って いない 文）。 */
+  readonly missesBySentence?: readonly (number | null)[];
+  /** 前の 回の 続きから 始めた（タイピングの しおり・リスニングの 開いた 原稿）。 */
   readonly partial?: boolean;
+  /** リスニング: 回を 始めた 時点で、もう こたえあわせを 見た ことが あった。 */
+  readonly sawScriptBefore?: boolean;
+  /** 回を 始めた 人（ログインして いれば 本人の id。発行の ときに 突き合わせる）。 */
+  readonly owner?: string;
 }
 
 function storage(): Storage | null {
@@ -92,4 +103,13 @@ export function readIssued(contentId: string): IssuedCertificate | null {
 
 export function saveIssued(cert: IssuedCertificate): void {
   writeJson(ISSUED_PREFIX + cert.contentId, cert);
+}
+
+/** こたえあわせ（原稿）を 見た 印を 付ける（その 教材では 以後 ずっと 残る）。 */
+export function markSawScript(contentId: string): void {
+  writeJson(SAW_PREFIX + contentId, true);
+}
+
+export function sawScript(contentId: string): boolean {
+  return readJson<boolean>(SAW_PREFIX + contentId) === true;
 }

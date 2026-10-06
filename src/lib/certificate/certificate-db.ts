@@ -19,6 +19,7 @@ import { createClient } from "@/lib/supabase/client";
 import { readOwnId } from "@/lib/supabase/claims";
 import { getProfile } from "@/lib/profile";
 import type { CertificateResult, IssuedCertificate } from "./model";
+import { updateRun } from "./run";
 
 export type IssueOutcome =
   | { readonly status: "issued"; readonly cert: IssuedCertificate }
@@ -37,11 +38,51 @@ function sampleOf(result: CertificateResult): IssuedCertificate {
   };
 }
 
-export async function issueCertificate(result: CertificateResult): Promise<IssueOutcome> {
+/**
+ * いま ログインして いる 人の id。ログインして いない（デモ）は null。
+ * **確かめられなかった（通信断など）は undefined**——見本と 取りちがえない。
+ */
+export async function currentOwner(): Promise<string | null | undefined> {
+  const client = createClient();
+  if (!client) return null;
+  try {
+    return await readOwnId(client);
+  } catch {
+    return undefined;
+  }
+}
+
+/** 回を 始めた 人を 記録する（あとから 届く。発行の ときに 突き合わせる）。 */
+export function claimRun(contentId: string): void {
+  void currentOwner().then((owner) => {
+    if (!owner) return;
+    updateRun(contentId, (run) => (run.owner ? run : { ...run, owner }));
+  });
+}
+
+export async function issueCertificate(
+  result: CertificateResult,
+  /** 回を 始めた 人（`claimRun`）。いまの 人と ちがえば、前の 人の 続きと して 扱う。 */
+  runOwner?: string,
+): Promise<IssueOutcome> {
   const client = createClient();
   if (!client) return { status: "sample", cert: sampleOf(result) };
-  const profileId = await readOwnId(client).catch(() => null);
+  let profileId: string | null;
+  try {
+    profileId = await readOwnId(client);
+  } catch (error) {
+    /*
+     * ログインして いるのに 確かめられなかった（トークンの 更新・通信断）。**見本に しない**——
+     * 見本に すると 回が 終わり、正式な 修了証が 二度と 出ない。もう一度 ためせる ように する。
+     */
+    console.warn("[certificate] だれか 確かめられませんでした:", String(error));
+    return { status: "error", message: "claims" };
+  }
   if (!profileId) return { status: "sample", cert: sampleOf(result) };
+  // 共有 PC: 前の 人が 始めた 回を 引きついだ ときは、パーフェクトに しない
+  if (runOwner && runOwner !== profileId) {
+    result = { ...result, perfect: false, detail: { ...result.detail, partial: true } };
+  }
 
   const { data, error } = await client
     .from("completion_certificates")
@@ -72,6 +113,7 @@ export async function issueCertificate(result: CertificateResult): Promise<Issue
       learnerName: row.learner_name,
       attempt: row.attempt,
       official: true,
+      owner: profileId,
     },
   };
 }

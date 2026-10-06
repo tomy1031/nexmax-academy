@@ -137,15 +137,27 @@ test("リスニング: 原稿を 100% 開いた 瞬間に 修了証が 出る（
   ).script;
   const lines = script.map((line) => line.text);
   await seedBefore(context, listening);
-  // 最後の 1行の 手前まで 当てた ところから 始める（ぜんぶ 打つと 長い）
+  /*
+   * 最後の 1行の 手前まで 当てた ところから 始める（ぜんぶ 打つと 長い）。
+   * **この 端末で 始めた 回の 記録も 置く**——記録が 無い まま 原稿が 途中まで 開いて いると
+   * 「前の 回の 続き」と 見て パーフェクトに しない（それは 下の テストで 見る）。
+   */
   await context.addInitScript(
-    ([key, inputs]) => {
+    ([key, inputs, runKey]) => {
       window.localStorage.setItem(
         key as string,
         JSON.stringify({ inputs, revealPercent: 90, keywordsLeft: 0 }),
       );
+      window.localStorage.setItem(
+        runKey as string,
+        JSON.stringify({ startedAt: new Date().toISOString(), misses: 0 }),
+      );
     },
-    [`nexmax:v1:listening:${listening}`, lines.slice(0, -1)] as const,
+    [
+      `nexmax:v1:listening:${listening}`,
+      lines.slice(0, -1),
+      `nexmax.cert-run.v1:${listening}`,
+    ] as const,
   );
   await page.setViewportSize({ width: 390, height: 900 });
   await page.goto(`/${STAGE}/listening-${listening}`);
@@ -162,4 +174,54 @@ test("リスニング: 原稿を 100% 開いた 瞬間に 修了証が 出る（
   expect(await bareKanjiIn(page, '[data-certificate="ready"]')).toEqual([]);
   await cert.scrollIntoViewIfNeeded();
   await shot(page, "certificate-listening-perfect-390");
+});
+
+test("リスニング: 100%の 前に こたえあわせを 見て 戻ると、パーフェクトに ならない。貼り付けも できない", async ({
+  page,
+  context,
+}) => {
+  const listening = "houkoku_shougai_listening";
+  const lines: string[] = JSON.parse(
+    readFileSync(join("content", "listening", `${listening}.json`), "utf8"),
+  ).script.map((line: { text: string }) => line.text);
+  await seedBefore(context, listening);
+  await context.addInitScript(
+    ([key, inputs]) => {
+      window.localStorage.setItem(
+        key as string,
+        JSON.stringify({ inputs, revealPercent: 90, keywordsLeft: 0 }),
+      );
+    },
+    [`nexmax:v1:listening:${listening}`, lines.slice(0, -1)] as const,
+  );
+  await page.goto(`/${STAGE}/listening-${listening}`);
+  await page.getByRole("button", { name: "はじめる" }).click();
+
+  // 貼り付けは 止める（原稿を 写して 貼れば 100% に できて しまう）
+  const input = page.getByLabel("聞こえた ことばを 入力する");
+  await input.focus();
+  const prevented = await input.evaluate((el, text) => {
+    const data = new DataTransfer();
+    data.setData("text/plain", text);
+    const event = new ClipboardEvent("paste", {
+      clipboardData: data,
+      bubbles: true,
+      cancelable: true,
+    });
+    el.dispatchEvent(event);
+    return event.defaultPrevented;
+  }, lines.at(-1)!);
+  expect(prevented).toBe(true);
+  await expect(page.locator('[data-listening="paste"]')).toBeVisible();
+
+  // 100% の 前に こたえあわせへ → もういちど 聞く → 最後の 行を 打つ
+  await page.getByRole("button", { name: /こたえあわせに すすむ/ }).click();
+  await page.getByRole("button", { name: /もういちど/ }).click();
+  await page.getByLabel("聞こえた ことばを 入力する").fill(lines.at(-1)!);
+  await page.getByLabel("聞こえた ことばを 入力する").press("Enter");
+
+  const cert = page.locator('[data-certificate="ready"]');
+  await expect(cert).toBeVisible();
+  await expect(cert).toHaveAttribute("data-perfect", "false");
+  await expect(page.locator('[data-certificate="reasons"]')).toContainText("こたえあわせ");
 });

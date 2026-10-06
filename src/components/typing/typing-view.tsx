@@ -17,9 +17,18 @@ import {
   CertificatePanel,
   type CertificateState,
 } from "@/components/certificate/certificate-panel";
-import { issueCertificate } from "@/lib/certificate/certificate-db";
-import { typingResult } from "@/lib/certificate/model";
-import { endRun, readRun, saveIssued, startRun, updateRun } from "@/lib/certificate/run";
+import { claimRun, currentOwner, issueCertificate } from "@/lib/certificate/certificate-db";
+import { typingResult, type IssuedCertificate } from "@/lib/certificate/model";
+import { CERTIFICATE_UI_FURIGANA } from "@/components/certificate/ui-furigana";
+import {
+  endRun,
+  readIssued,
+  readRun,
+  saveIssued,
+  startRun,
+  updateRun,
+  type CertificateRun,
+} from "@/lib/certificate/run";
 import { createTypingTarget, judgeTyping, type TypingResult } from "./typing-checks";
 import { TYPING_UI_FURIGANA } from "./ui-furigana";
 
@@ -103,24 +112,37 @@ export function TypingView({ typing, embedded }: { typing: TypingViewData; embed
   const solved = result?.ok === true;
   const isLast = index === total - 1;
 
+  /**
+   * 1回ぶんの 記録の 手もとの 写し。端末に 書けない（プライベートモード・容量切れ）ときも
+   * 回が 途中で 切れない ように、端末の 記録と 同じ ものを ここにも 持つ。
+   */
+  const runRef = useRef<CertificateRun | null>(null);
+  const currentRun = (): CertificateRun | null => runRef.current ?? readRun(typing.id);
+
   /** 修了証を 出す（落ちたら「もう一度」から 呼び直す）。 */
   const issue = useCallback(
-    (run: NonNullable<ReturnType<typeof readRun>>) => {
+    (run: CertificateRun) => {
       const result = typingResult(typing.id, typing.title, {
         total,
-        missesBySentence: run.missesBySentence ?? [],
+        missesBySentence: Array.from(
+          { length: total },
+          (_, i) => run.missesBySentence?.[i] ?? null,
+        ),
         partial: Boolean(run.partial),
       });
       setCertificate({ status: "issuing" });
-      void issueCertificate(result).then((outcome) => {
-        if (outcome.status === "error") {
-          setCertificate({ status: "error" });
-          return;
-        }
-        saveIssued(outcome.cert);
-        endRun(typing.id);
-        setCertificate({ status: "ready", cert: outcome.cert });
-      });
+      issueCertificate(result, run.owner)
+        .then((outcome) => {
+          if (outcome.status === "error") {
+            setCertificate({ status: "error" });
+            return;
+          }
+          saveIssued(outcome.cert);
+          endRun(typing.id);
+          runRef.current = null;
+          setCertificate({ status: "ready", cert: outcome.cert });
+        })
+        .catch(() => setCertificate({ status: "error" }));
     },
     [typing.id, typing.title, total],
   );
@@ -134,21 +156,26 @@ export function TypingView({ typing, embedded }: { typing: TypingViewData; embed
     /*
      * 修了証の ための 1回ぶんの 記録。回が 無ければ 始める——1文目なら ふつうの 回、
      * 途中の 文なら「前の 回の 続き」（全部の 文を 見て いないので パーフェクトに しない）。
+     * まだ 打って いない 文は null（0 に すると「1回で 正解」に 数えて しまう）。
      */
-    const run =
-      readRun(typing.id) ??
-      startRun(typing.id, {
-        missesBySentence: Array.from({ length: total }, () => 0),
+    let run = runRef.current ?? readRun(typing.id);
+    if (!run) {
+      run = startRun(typing.id, {
+        missesBySentence: Array.from({ length: total }, () => null),
         partial: index > 0,
       });
-    let current = run;
-    if (!next.ok && lastMissRef.current !== input) {
-      current = updateRun(typing.id, (r) => {
-        const counts = Array.from({ length: total }, (_, i) => r.missesBySentence?.[i] ?? 0);
-        counts[index] = (counts[index] ?? 0) + 1;
-        return { ...r, missesBySentence: counts };
-      });
+      claimRun(typing.id);
     }
+    const counted = !next.ok && lastMissRef.current !== input;
+    const change = (r: CertificateRun): CertificateRun => {
+      const counts = Array.from({ length: total }, (_, i) => r.missesBySentence?.[i] ?? null);
+      counts[index] = (counts[index] ?? 0) + (counted ? 1 : 0);
+      return { ...r, missesBySentence: counts };
+    };
+    const updated = updateRun(typing.id, (r) => change({ ...run, ...r }));
+    // 端末に 書けなかった ときは 手もとの 写しで 続ける
+    runRef.current = readRun(typing.id) ? null : change(run);
+    const current = runRef.current ?? updated;
     lastMissRef.current = next.ok ? null : input;
     // 「つぎの 文へ」は 正解の あとしか 押せないので、最後の 文の 正解＝ぜんぶ 正解
     if (next.ok && isLast) {
@@ -160,6 +187,7 @@ export function TypingView({ typing, embedded }: { typing: TypingViewData; embed
 
   const reset = useCallback(() => {
     setPasteBlocked(false);
+    lastMissRef.current = null;
     setInput("");
     setResult(null);
     inputRef.current?.focus();
@@ -351,11 +379,17 @@ export function TypingView({ typing, embedded }: { typing: TypingViewData; embed
           furigana={furigana}
           show={furiganaOn}
           onRetry={() => {
-            const run = readRun(typing.id);
+            const run = currentRun();
             if (run) issue(run);
           }}
         />
-      ) : null}
+      ) : (
+        <PreviousCertificate
+          contentId={typing.id}
+          onOpen={(cert) => setCertificate({ status: "ready", cert })}
+          show={furiganaOn}
+        />
+      )}
     </div>
   );
 }
@@ -481,5 +515,45 @@ function WordCards({
         ))}
       </ul>
     </section>
+  );
+}
+
+/**
+ * 前に 出した 修了証を ひらく（画像を 保存し直す ため）。端末の 控えを 読むので、
+ * サーバと 最初の 描画では 出さない。**持ち主を 突き合わせて から** 出す
+ *（共有 PC で 前の 人の 名前・番号を 見せない）。
+ */
+function PreviousCertificate({
+  contentId,
+  onOpen,
+  show,
+}: {
+  contentId: string;
+  onOpen: (cert: IssuedCertificate) => void;
+  show: boolean;
+}) {
+  const stored = useSyncExternalStore(
+    subscribeNever,
+    () => (readIssued(contentId) ? "yes" : "no"),
+    () => "no",
+  );
+  if (stored !== "yes") return null;
+  return (
+    <p className="text-center">
+      <button
+        type="button"
+        onClick={() => {
+          const cert = readIssued(contentId);
+          if (!cert) return;
+          void currentOwner().then((owner) => {
+            if ((cert.owner ?? "") === (owner ?? "")) onOpen(cert);
+          });
+        }}
+        className="border-hairline text-navy bg-panel rounded-2xl border px-4 py-2 text-sm font-extrabold"
+      >
+        🎓{" "}
+        <RubyText text="前に 出した 修了証を ひらく" index={CERTIFICATE_UI_FURIGANA} show={show} />
+      </button>
+    </p>
   );
 }

@@ -823,7 +823,12 @@ export function revealRate(state: ListeningState): number {
   for (const index of state.revealed) {
     if (isHideable(state.transcript[index])) shown += 1;
   }
-  return Math.round((shown / state.hideableCount) * 100);
+  const percent = Math.round((shown / state.hideableCount) * 100);
+  /*
+   * **1字でも 残って いれば 100 と 言わない**（2026-10-06）。四捨五入で 100 に なると、
+   * 学習者は 終わったと 思って こたえあわせへ 進み、修了証の 100%（`isFullyRevealed`）を 取りのがす。
+   */
+  return percent === 100 && shown < state.hideableCount ? 99 : percent;
 }
 
 /**

@@ -672,9 +672,21 @@ export function normalizeCode(value: string): string {
  */
 function certificateScoreText(record: CertificateRecord): string {
   const misses = record.misses ?? 0;
-  if (record.kind === "listening") return `スコア ${record.score ?? 0}点・ミス ${misses}回`;
+  /*
+   * パーフェクトに ならなかった わけ（画像の 理由と 同じ）。先生には 数だけ では
+   * 「続きから 1文だけ 打った 人」が ほぼ パーフェクトに 見える（code-critic の 指摘）。
+   */
+  const detail = (record.detail ?? {}) as Record<string, unknown>;
+  const notes = [
+    ...(detail.partial ? ["前の 回の 続きから"] : []),
+    ...(detail.sawScriptBefore ? ["こたえあわせを 見た あとの やりなおし"] : []),
+    ...(detail.reviewedEarly ? ["100%の 前に こたえあわせを 見た"] : []),
+    ...(detail.usedRescue ? ["あいことばを 使った"] : []),
+  ];
+  const tail = notes.length > 0 ? `（${notes.join("・")}）` : "";
+  if (record.kind === "listening") return `スコア ${record.score ?? 0}点・ミス ${misses}回${tail}`;
   if (record.kind === "typing") {
-    return `1回で 正解 ${record.score ?? 0}/${record.max_score ?? 0}・❌ ${misses}回`;
+    return `1回で 正解 ${record.score ?? 0}/${record.max_score ?? 0}・❌ ${misses}回${tail}`;
   }
   const parts: string[] = [];
   if (record.score !== null) {

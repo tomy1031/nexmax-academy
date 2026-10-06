@@ -1,10 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { RubyText } from "@/components/ruby-text";
 import type { FuriganaIndex } from "@/lib/text/furigana";
-import { saveCertificateImage } from "@/lib/certificate/draw";
+import { certificateFile, saveCertificateFile } from "@/lib/certificate/draw";
 import {
   certificateLines,
   formatIssuedAt,
@@ -45,6 +45,24 @@ export function CertificatePanel({
 }) {
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState(false);
+  /** 先に 作って おく PNG（押した その場で 共有シートを 開ける ように。iOS Safari）。 */
+  const fileRef = useRef<File | null>(null);
+  const ready = state.status === "ready" ? state.cert : null;
+  useEffect(() => {
+    fileRef.current = null;
+    if (!ready) return;
+    let alive = true;
+    certificateFile(ready)
+      .then((file) => {
+        if (alive) fileRef.current = file;
+      })
+      .catch(() => {
+        /* 押した ときに もう一度 作る */
+      });
+    return () => {
+      alive = false;
+    };
+  }, [ready]);
 
   if (state.status === "issuing") {
     return (
@@ -77,7 +95,7 @@ export function CertificatePanel({
             onClick={onRetry}
             className="border-coral bg-panel mt-2 rounded-xl border-2 px-4 py-2 text-sm font-extrabold"
           >
-            ↻ もう一度 ためす
+            ↻ <RubyText text="もう一度 ためす" index={UI} show={show} />
           </button>
         ) : null}
       </div>
@@ -178,7 +196,11 @@ export function CertificatePanel({
           onClick={() => {
             setSaving(true);
             setSaveError(false);
-            saveCertificateImage(cert)
+            const prepared = fileRef.current;
+            (prepared
+              ? saveCertificateFile(prepared)
+              : certificateFile(cert).then(saveCertificateFile)
+            )
               .catch(() => setSaveError(true))
               .finally(() => setSaving(false));
           }}

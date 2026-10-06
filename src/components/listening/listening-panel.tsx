@@ -3,7 +3,15 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
 import { RubyText } from "@/components/ruby-text";
-import { annotateRuby, type FuriganaIndex } from "@/lib/text/furigana";
+import { annotateRuby, buildFuriganaIndex, type FuriganaIndex } from "@/lib/text/furigana";
+
+/** 貼り付けを 止めた ときの 文の 読み（画面の 読みは 画面が 持つ）。 */
+const PASTE_FURIGANA = buildFuriganaIndex([
+  ["貼り付け", "はりつけ"],
+  ["聞こえた", "きこえた"],
+  ["自分", "じぶん"],
+  ["入力", "にゅうりょく"],
+]);
 import { readListeningFinds, saveListeningFinds } from "@/lib/progress/store";
 import {
   createListening,
@@ -82,6 +90,8 @@ export function ListeningPanel({
    * いまは class を 付け外しするだけで、入力欄は そのまま 残す。
    */
   const [shaking, setShaking] = useState(false);
+  /** 貼り付けを 止めた ことを 知らせる（黙って 何も 起きないと、壊れて いると 思う）。 */
+  const [pasteBlocked, setPasteBlocked] = useState(false);
   const notified = useRef<ListeningState | null>(null);
 
   // 表示率は外（つぎへの関所）でも使う。描画のたびに呼ばないよう、変わったときだけ渡す
@@ -203,7 +213,22 @@ export function ListeningPanel({
         <input
           type="text"
           value={value}
-          onChange={(e) => setValue(e.target.value)}
+          onChange={(e) => {
+            setPasteBlocked(false);
+            setValue(e.target.value);
+          }}
+          /*
+           * **貼り付けを 止める**（2026-10-06・願い #562）。こたえあわせの 原稿を 写して 貼れば
+           * 100%（修了証）に できて しまう。聞き取りは 聞こえた ことばを 自分で 打つ 練習。
+           */
+          onPaste={(e) => {
+            e.preventDefault();
+            setPasteBlocked(true);
+          }}
+          onDrop={(e) => {
+            e.preventDefault();
+            setPasteBlocked(true);
+          }}
           // 首ふりが おわったら class を 外す。つぎに 外した ときに もう一度 動く
           onAnimationEnd={() => setShaking(false)}
           autoComplete="off"
@@ -219,6 +244,14 @@ export function ListeningPanel({
           はんてい
         </button>
       </form>
+      {pasteBlocked ? (
+        <p role="status" className="text-coral-deep mt-2 text-sm font-bold" data-listening="paste">
+          <RubyText
+            text="貼り付けは できません。聞こえた ことばを 自分で 入力しましょう。"
+            index={PASTE_FURIGANA}
+          />
+        </p>
+      ) : null}
 
       {/* 入力の履歴（旧アプリの result-log） */}
       {state.log.length > 0 && (
