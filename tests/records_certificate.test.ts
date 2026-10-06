@@ -197,6 +197,26 @@ describe("修了証を 先生の 表に する", () => {
     ]);
   });
 
+  it("成績: 単語テストは 点と 合否。「まちがえた ことばだけ」は そう 書く（第2段）", () => {
+    const table = certificateTable(
+      [
+        cert({ id: "a", kind: "wordtest", score: 20, max_score: 20, detail: { passed: true } }),
+        cert({
+          id: "b",
+          kind: "wordtest",
+          score: 6,
+          max_score: 6,
+          detail: { passed: true, onlyMissed: true },
+        }),
+      ],
+      LOOKUPS,
+    );
+    expect(table.rows.map((row) => row.cells.score)).toEqual([
+      "点 20/20・合格",
+      "点 6/6（まちがえた ことばだけ）",
+    ]);
+  });
+
   it("成績: 知らない 種類でも 持って いる 数は そのまま 出す", () => {
     const table = certificateTable(
       [

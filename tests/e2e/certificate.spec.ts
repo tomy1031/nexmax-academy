@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { expect, test, type BrowserContext, type Page } from "@playwright/test";
+import { expect, test, type BrowserContext, type Locator, type Page } from "@playwright/test";
 import {
   bareKanjiTexts,
   choiceButtons,
@@ -372,4 +372,172 @@ test("もんだい: 発行の 途中で 閉じた 回は、次に 開くと「�
   const cert = page.locator('[data-certificate="ready"]');
   await expect(cert).toBeVisible();
   await expect(cert).toHaveAttribute("data-perfect", "true");
+});
+
+/* ---- 第2段: 単語テスト（2026-10-06 の 回答「何回目でも満点なら金」） ---- */
+
+/** 8語の 小さな セット（`kotoba_marubatsu.spec.ts` と 同じ）。 */
+const WORD_SET = "hajimari_kotoba";
+
+/** 遊べる ことば（対訳の 1語と 誤答3つが そろった 語。アプリの `gameWordsOf` と 同じ 条件）。 */
+const WORDS: readonly { term: string; reading: string; meaning: string; wrong: string }[] = (() => {
+  const set = JSON.parse(
+    readFileSync(join("content", "wordstages", `${WORD_SET}.json`), "utf8"),
+  ) as { wordIds: string[] };
+  const vocab = JSON.parse(readFileSync(join("content", "vocab", "vocabulary.json"), "utf8")) as {
+    words: {
+      id: string;
+      term: string;
+      reading: string;
+      englishTerm?: string;
+      wrongMeanings?: string[];
+    }[];
+  };
+  const byId = new Map(vocab.words.map((word) => [word.id, word]));
+  return set.wordIds.flatMap((id) => {
+    const word = byId.get(id);
+    if (!word?.englishTerm || word.wrongMeanings?.length !== 3) return [];
+    return [
+      {
+        term: word.term,
+        reading: word.reading,
+        meaning: word.englishTerm,
+        wrong: word.wrongMeanings[0]!,
+      },
+    ];
+  });
+})();
+
+/**
+ * テストを 最後まで 通す。よみの あいだ ことばは 3D の 中にしか 無い（DOM で 読めない）ので、
+ * **セットの よみを 順に 打つ**——外しても 時間まで 何度でも 打ち直せる（kotoba_marubatsu.spec.ts）。
+ * 4択では 画面の 用語（`ruby.mcq-term`）から こたえを 引く。
+ */
+/** `locator` が `ms` の うちに 見えたか（`isVisible` は 待たない ので 使わない）。 */
+async function visibleWithin(locator: Locator, ms: number): Promise<boolean> {
+  return locator
+    .waitFor({ state: "visible", timeout: ms })
+    .then(() => true)
+    .catch(() => false);
+}
+
+async function playWordTest(page: Page, missMeanings: number) {
+  const result = page.getByRole("heading", { name: /^(合格|不合格)$/ });
+  const reading = page.getByLabel("よみを ひらがなで 入力する");
+  const choices = page.getByRole("group", { name: "いみの こたえ" });
+  const next = reading.or(choices).or(result);
+  let missed = 0;
+  for (let step = 0; step < 40; step += 1) {
+    // つぎに 出る ものを 待つ（よみの 欄・4択・けっか の どれか）
+    await next.first().waitFor({ state: "visible", timeout: 20_000 });
+    if (await result.isVisible()) return;
+    if (await reading.isVisible()) {
+      for (const word of WORDS) {
+        const typed = await reading
+          .fill(word.reading, { timeout: 2_000 })
+          .then(() => reading.press("Enter", { timeout: 2_000 }))
+          .then(() => true)
+          .catch(() => false);
+        if (!typed) break;
+        // 当たれば 4択に 進む。外れたら 欄が 空に なって 打ち直せる
+        if (await visibleWithin(choices, 400)) break;
+      }
+      continue;
+    }
+    if (await visibleWithin(choices, 1_000)) {
+      /*
+       * 4択の 用語は **4択の あいだ だけ** 出る。答えた あとの 解説カードの あいだに 読みに
+       * 行くと 出るまで 待ち続ける（CI で 90秒 止まった）。出て いなければ 解説を 送って 次へ。
+       */
+      const termText = page.locator("ruby.mcq-term").first();
+      if (!(await visibleWithin(termText, 1_500))) {
+        await page
+          .getByRole("button", { name: /おす／Enter で つぎへ/ })
+          .click({ timeout: 2_000 })
+          .catch(() => {});
+        continue;
+      }
+      const term = await termText.evaluate(
+        (el) =>
+          [...el.childNodes]
+            .filter((node) => node.nodeType === Node.TEXT_NODE)
+            .map((node) => node.textContent ?? "")
+            .join(""),
+        undefined,
+        { timeout: 5_000 },
+      );
+      const word = WORDS.find((w) => w.term === term);
+      if (!word) throw new Error(`こたえ表に ない ことば: ${term}`);
+      const pick = missed < missMeanings ? word.wrong : word.meaning;
+      if (pick === word.wrong) missed += 1;
+      await choices
+        .getByRole("button", { name: pick, exact: true })
+        .click({ timeout: 5_000 })
+        .catch(() => {});
+      // 解説カードを 押して つぎへ（自動送りと 競走する ので、押せなくても よい）
+      await page
+        .getByRole("button", { name: /おす／Enter で つぎへ/ })
+        .click({ timeout: 3_000 })
+        .catch(() => {});
+    }
+  }
+  await expect(result).toBeVisible({ timeout: 20_000 });
+}
+
+async function startWordTest(page: Page) {
+  await page.goto(`/wordtest/${WORD_SET}`);
+  await page
+    .getByRole("button", { name: /テスト/ })
+    .first()
+    .click();
+  const check = page.getByLabel("ひらがなで 入力する");
+  for (const word of ["あいうえお", "ようけんていぎ"]) {
+    await check.click();
+    await check.fill(word);
+    await page.keyboard.press("Enter");
+  }
+}
+
+test.describe("単語テスト", () => {
+  // 指の きかい（ふつうの 入力欄）に して、よみを ひらがなで そのまま 入れる
+  test.use({ hasTouch: true, isMobile: true, viewport: { width: 390, height: 844 } });
+  // 3D の ゲームを 最後まで 通す（CI は 手もとより 遅い。1回で 8語 × よみ・意味）
+  test.describe.configure({ timeout: 240_000 });
+
+  test("テストを 満点で 終えると パーフェクトの 修了証が 出る", async ({ page }) => {
+    await startWordTest(page);
+    await playWordTest(page, 0);
+    const cert = page.locator('[data-certificate="ready"]');
+    await expect(cert).toBeVisible();
+    await expect(cert).toHaveAttribute("data-perfect", "true");
+    await expect(page.locator('[data-certificate="badge"]')).toHaveText("★ PERFECT");
+    expect(await bareKanjiIn(page, '[data-certificate="ready"]')).toEqual([]);
+    await cert.scrollIntoViewIfNeeded();
+    await shot(page, "certificate-wordtest-perfect-390");
+  });
+
+  test("まちがえると 青。「まちがえた ことばだけ」で 満点でも パーフェクトに ならない", async ({
+    page,
+  }) => {
+    await startWordTest(page);
+    await playWordTest(page, 1);
+    const cert = page.locator('[data-certificate="ready"]');
+    await expect(cert).toHaveAttribute("data-perfect", "false");
+    await expect(page.locator('[data-certificate="reasons"]')).toContainText("1つ");
+    await cert.scrollIntoViewIfNeeded();
+    await shot(page, "certificate-wordtest-not-perfect-390");
+
+    await page.getByRole("button", { name: "まちがえた ことばだけ" }).click();
+    await expect(cert).toHaveCount(0);
+    await playWordTest(page, 0);
+    await expect(cert).toHaveAttribute("data-perfect", "false");
+    await expect(page.locator('[data-certificate="reasons"]')).toContainText("ことばだけ");
+  });
+
+  test("もんだいだけ では 修了証を 出さない（テストでは ない）", async ({ page }) => {
+    await page.goto(`/wordtest/${WORD_SET}`);
+    await page.getByRole("button", { name: /もんだいだけ/ }).click();
+    await playWordTest(page, 0);
+    await expect(page.locator("[data-certificate]")).toHaveCount(0);
+  });
 });

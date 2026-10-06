@@ -17,6 +17,7 @@ import {
   notPerfectReasons,
   quizResult,
   typingResult,
+  wordTestResult,
 } from "../src/lib/certificate/model";
 import {
   endRun,
@@ -247,5 +248,46 @@ describe("もんだい: どの 回で こたえを 見たか（code-critic の �
     expect(sawAnswersOutside("q", "run-A")).toBe(true);
     // 次に 始める 回は「前に 見た あと」
     expect(sawAnyAnswers("q")).toBe(true);
+  });
+});
+
+describe("単語テストの パーフェクト（第2段・回答「何回目でも満点なら金」）", () => {
+  const base = {
+    score: 20,
+    maxScore: 20,
+    readingCorrect: 10,
+    readingAsked: 10,
+    meaningCorrect: 10,
+    words: 10,
+    passed: true,
+    onlyMissed: false,
+  };
+
+  it("満点なら パーフェクト。成績の 行に 点・読み・意味・合否", () => {
+    const result = wordTestResult("w1", "題", base);
+    expect(result.kind).toBe("wordtest");
+    expect(result.perfect).toBe(true);
+    expect(certificateLines(result).map((line) => line.value)).toEqual([
+      "20 / 20",
+      "10 / 10",
+      "10 / 10",
+      "合格",
+    ]);
+  });
+
+  it("1つでも まちがえれば パーフェクトで ない（まちがえた 数を 書く）", () => {
+    const result = wordTestResult("w1", "題", { ...base, score: 19, meaningCorrect: 9 });
+    expect(result.perfect).toBe(false);
+    expect(notPerfectReasons(result)).toEqual(["まちがえた ところが 1つ あります。"]);
+  });
+
+  it("「まちがえた ことばだけ」の やりなおしは 満点でも パーフェクトで ない", () => {
+    const result = wordTestResult("w1", "題", { ...base, score: 6, maxScore: 6, onlyMissed: true });
+    expect(result.perfect).toBe(false);
+    expect(notPerfectReasons(result)).toEqual(["まちがえた ことばだけの やりなおしです。"]);
+    // 数語の やりなおしの「合格」は テストの 合格と 読まれる ので、合否は 書かない
+    const values = certificateLines(result).map((line) => line.value);
+    expect(values).toContain("まちがえた ことばだけ");
+    expect(values).not.toContain("合格");
   });
 });
