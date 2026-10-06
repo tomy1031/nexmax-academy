@@ -823,7 +823,26 @@ export function revealRate(state: ListeningState): number {
   for (const index of state.revealed) {
     if (isHideable(state.transcript[index])) shown += 1;
   }
-  return Math.round((shown / state.hideableCount) * 100);
+  const percent = Math.round((shown / state.hideableCount) * 100);
+  /*
+   * **1字でも 残って いれば 100 と 言わない**（2026-10-06）。四捨五入で 100 に なると、
+   * 学習者は 終わったと 思って こたえあわせへ 進み、修了証の 100%（`isFullyRevealed`）を 取りのがす。
+   */
+  return percent === 100 && shown < state.hideableCount ? 99 : percent;
+}
+
+/**
+ * 原稿を **1字も 残さず** 開いたか（修了証の「100%」）。
+ *
+ * `revealRate` は 四捨五入なので、300字の うち 1字 残って いても 100 に なる。
+ * 修了証は「100% 達成」の 証明なので、ここでは 丸めずに 数える（2026-10-06・願い #562）。
+ */
+export function isFullyRevealed(state: ListeningState): boolean {
+  let shown = 0;
+  for (const index of state.revealed) {
+    if (isHideable(state.transcript[index])) shown += 1;
+  }
+  return shown >= state.hideableCount;
 }
 
 /** 隠す対象の文字か（かな・漢字・数字）。 */

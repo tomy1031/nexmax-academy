@@ -6,7 +6,7 @@
  * ## 何を 解いた ものか
  * 記録は 表ごとに 別の 画面に 散って いた（ミーティング／テスト）うえ、進み具合・
  * ことばの テスト・たいわ・リスニングは **そもそも 残って いなかった**。
- * ここは その 5種類を **1つの 表の かたち**で 読む 場所である。
+ * ここは その 6種類（修了証を 含む）を **1つの 表の かたち**で 読む 場所である。
  *
  * ## 順は「絞る → 出た データの 種類を えらぶ」（2026-09-09 の 指定・願い #346）
  * 前は **種類を 先に えらばせて** いた（画面の いちばん 上に タブ）。先生が 先に
@@ -36,6 +36,8 @@ import { fetchAllProfiles, fetchOwnProfile, type ProfileRow } from "@/lib/profil
 import { AFFILIATIONS, COHORTS, formatSchool } from "@/lib/school";
 import { createClient } from "@/lib/supabase/client";
 import {
+  fetchCertificateByCode,
+  fetchCertificateRecords,
   fetchContentProgress,
   fetchListeningRecords,
   fetchMeetingRecords,
@@ -53,6 +55,8 @@ import {
 import {
   buildLookups,
   buildRecordsCsv,
+  certificateTable,
+  normalizeCode,
   defaultKind,
   EMPTY_FILTER,
   filterRows,
@@ -216,18 +220,19 @@ export function RecordsShell({
    * 見て いる タブの 表だけを 読む。5種類を いちどに 読むと、学期の 終わりに
    * 先生の 画面が 開かなく なる。
    */
+  const certificateCode = kind === "certificate" ? exactCertificateCode(filter.text) : null;
   useEffect(() => {
     if (loading) return;
     let active = true;
     void (async () => {
-      const built = await loadTable(kind, lookups, query);
+      const built = await loadTable(kind, lookups, query, certificateCode);
       if (!active) return;
       setLoaded({ kind, query, table: built.table, note: built.note });
     })();
     return () => {
       active = false;
     };
-  }, [kind, loading, lookups, query]);
+  }, [kind, loading, lookups, query, certificateCode]);
 
   const rows = useMemo(
     () => (table ? filterRows(table, filter, lookups) : []),
@@ -386,12 +391,21 @@ export function RecordsShell({
             </select>
           </Field>
 
-          <Field label="ことばで さがす">
+          {/*
+            修了証では 同じ 入れ物を **照合番号の 検索**に 使う（先生が 学習者の 画像から
+            番号を 写して 貼る。空白・ハイフン・全角・大小は `filterRows` が 吸収する）。
+            別の 入れ物を 足すと 「ことばで さがす」が 2つに なって 迷う。
+          */}
+          <Field label={kind === "certificate" ? "照合番号で さがす" : "ことばで さがす"}>
             <input
               type="search"
               value={filter.text}
               onChange={(e) => changeFilter({ text: e.target.value })}
-              placeholder="学生の こたえ・名前"
+              placeholder={
+                kind === "certificate"
+                  ? "画像の 照合番号を はりつけ（名前でも さがせます）"
+                  : "学生の こたえ・名前"
+              }
               className={SELECT}
             />
           </Field>
@@ -574,6 +588,8 @@ async function loadTable(
   kind: RecordKind,
   lookups: ReturnType<typeof buildLookups>,
   query: RecordsQuery = NO_QUERY,
+  /** 修了証: 照合番号が 8けた そろって いれば その 番号（大文字）。 */
+  code: string | null = null,
 ): Promise<{ table: RecordTable; note: string | null }> {
   const wrap = (table: RecordTable, results: readonly RecordsResult<unknown>[]) => {
     const failed = results.find(
@@ -618,6 +634,17 @@ async function loadTable(
       talks,
     ]);
   }
+  if (kind === "certificate") {
+    // 照合番号が 8けた そろったら、その 番号を DB に 直に 聞く（古い 修了証も 引ける）
+    const got = code ? await fetchCertificateByCode(code) : await fetchCertificateRecords(query);
+    return wrap(certificateTable(got.ok ? got.rows : [], lookups), [got]);
+  }
   const got = await fetchListeningRecords(query);
   return wrap(listeningTable(got.ok ? got.rows : [], lookups), [got]);
+}
+
+/** 照合番号が 8けた そろって いれば 大文字で 返す（そろって いなければ null）。 */
+function exactCertificateCode(text: string): string | null {
+  const code = normalizeCode(text);
+  return /^[a-z0-9]{8}$/.test(code) ? code.toUpperCase() : null;
 }

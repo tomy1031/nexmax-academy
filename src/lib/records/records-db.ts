@@ -211,6 +211,32 @@ export interface ListeningRecord {
   updated_at: string;
 }
 
+/**
+ * 修了証（`completion_certificates` の 1行）。
+ *
+ * 時刻・名前・照合番号・何回目かは **DB が 押した もの**（端末の 申告ではない）。
+ * 先生は 学習者が 出した 画像の 照合番号を ここと 突き合わせる。
+ */
+export interface CertificateRecord {
+  id: string;
+  profile_id: string;
+  /** 教材ID（`content_progress.content_id` と 同じ 値）。 */
+  content_id: string;
+  /** 'listening' / 'typing' / …（ステージの contents[].type と 同じ 名前）。 */
+  kind: string;
+  attempt: number;
+  perfect: boolean;
+  score: number | null;
+  max_score: number | null;
+  misses: number | null;
+  detail: Record<string, unknown> | null;
+  /** 出した 時の 名前（あとで 設定を 直しても 変わらない）。 */
+  learner_name: string;
+  /** 照合番号（8文字）。 */
+  code: string;
+  issued_at: string;
+}
+
 /* ------------------------------------------------------------------ *
  * 読む
  * ------------------------------------------------------------------ */
@@ -301,4 +327,44 @@ export function fetchListeningRecords(
   query: RecordsQuery = NO_QUERY,
 ): Promise<RecordsResult<ListeningRecord>> {
   return fetchTable<ListeningRecord>("listening_results", "updated_at", "listening_id", query);
+}
+
+/** 修了証。新しい ほうから（`issued_at` は DB が 打った 時刻）。 */
+export function fetchCertificateRecords(
+  query: RecordsQuery = NO_QUERY,
+): Promise<RecordsResult<CertificateRecord>> {
+  return fetchTable<CertificateRecord>("completion_certificates", "issued_at", "content_id", query);
+}
+
+/**
+ * 照合番号で 1枚を 引く（8けたが ぜんぶ 入った とき）。
+ *
+ * ふだんの 表は 新しい ほうから 2000行まで しか 読まない ので、古い 修了証の 番号は その 中に
+ * 無い ことが ある——本物なのに「0行」と 出て、偽物に 見えて しまう（code-critic の 指摘）。
+ * 番号が そろったら DB に 直に 聞く。
+ */
+export async function fetchCertificateByCode(
+  code: string,
+): Promise<RecordsResult<CertificateRecord>> {
+  const supabase = createClient();
+  if (!supabase) {
+    return {
+      ok: false,
+      preparing: true,
+      message: "きろくは じゅんびちゅう（データベースの設定後に 見られます）",
+    };
+  }
+  const { data, error } = await supabase
+    .from("completion_certificates")
+    .select("*")
+    .eq("code", code)
+    .limit(5);
+  if (error) {
+    return {
+      ok: false,
+      preparing: MISSING_TABLE_CODES.has(error.code ?? ""),
+      message: "きろくを 読めませんでした。少し待って もう一度 ためしてください。",
+    };
+  }
+  return { ok: true, rows: (data ?? []) as CertificateRecord[], truncated: false };
 }
