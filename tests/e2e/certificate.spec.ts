@@ -547,3 +547,48 @@ test.describe("単語テスト", () => {
     await expect(page.locator("[data-certificate]")).toHaveCount(0);
   });
 });
+
+test("リスニング: 修了証が できる 前に 100% に して いた 回にも 1回だけ 出す（今回限り・青）", async ({
+  page,
+  context,
+}) => {
+  const listening = "houkoku_shougai_listening";
+  const lines: string[] = JSON.parse(
+    readFileSync(join("content", "listening", `${listening}.json`), "utf8"),
+  ).script.map((line: { text: string }) => line.text);
+  await seedBefore(context, listening);
+  // 前に もう 100%（全部の 行を 当てて ある）。回の 記録も 修了証の 控えも 無い
+  await context.addInitScript(
+    ([key, inputs]) => {
+      window.localStorage.setItem(
+        key as string,
+        JSON.stringify({ inputs, revealPercent: 100, keywordsLeft: 0 }),
+      );
+    },
+    [`nexmax:v1:listening:${listening}`, lines] as const,
+  );
+  await page.goto(`/${STAGE}/listening-${listening}`);
+  await page.getByRole("button", { name: "はじめる" }).click();
+
+  const cert = page.locator('[data-certificate="ready"]');
+  await expect(cert).toBeVisible();
+  await expect(cert).toHaveAttribute("data-perfect", "false");
+  await expect(page.locator('[data-certificate="reasons"]')).toContainText("できる");
+  expect(await bareKanjiIn(page, '[data-certificate="ready"]')).toEqual([]);
+  await cert.scrollIntoViewIfNeeded();
+  await shot(page, "certificate-listening-finished-before-390");
+
+  // 開き直すと 同じ 1枚（端末の 控え）を 見せる。新しく 出し直さない（控えの 時刻が 変わらない）
+  const storedAt = () =>
+    page.evaluate(
+      (key) =>
+        (JSON.parse(localStorage.getItem(key) ?? "null") as { issuedAt?: string } | null)?.issuedAt,
+      `nexmax.cert.v1:${listening}`,
+    );
+  const first = await storedAt();
+  expect(first).toBeTruthy();
+  await page.reload();
+  await page.getByRole("button", { name: "はじめる" }).click();
+  await expect(cert).toBeVisible();
+  expect(await storedAt()).toBe(first);
+});

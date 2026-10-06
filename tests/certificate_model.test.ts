@@ -357,3 +357,25 @@ describe("会話の 練習の パーフェクト（第2段・回答「取りこ�
     expect(notPerfectReasons(short)).toEqual(["聞き出せなかった ことが 1こ あります。"]);
   });
 });
+
+describe("修了証が できる 前に 終えた リスニング（2026-10-06 の 指定・今回限り）", () => {
+  it("パーフェクトに しない。理由は 1つだけ（時刻は 出した 時刻と 書く）", () => {
+    const result = listeningResult("l1", "題", {
+      score: 90,
+      misses: 0,
+      usedRescue: false,
+      reviewedEarly: false,
+      finishedBefore: true,
+    });
+    expect(result.perfect).toBe(false);
+    expect(notPerfectReasons(result)).toEqual([
+      "修了証が できる 前に 終えた 回です（時刻は 修了証を 出した 時刻です）。",
+    ]);
+    // 数えて いない こと（ミス・あいことば・こたえあわせ）は 書かない
+    expect(certificateLines(result).map((line) => line.value)).toEqual([
+      "100%",
+      "90点",
+      "修了証が できる 前に 終えた 回",
+    ]);
+  });
+});

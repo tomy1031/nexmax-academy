@@ -11,7 +11,12 @@ import {
   CertificatePanel,
   type CertificateState,
 } from "@/components/certificate/certificate-panel";
-import { claimRun, currentOwner, issueCertificate } from "@/lib/certificate/certificate-db";
+import {
+  claimRun,
+  currentOwner,
+  hasIssuedCertificate,
+  issueCertificate,
+} from "@/lib/certificate/certificate-db";
 import { listeningResult } from "@/lib/certificate/model";
 import {
   endRun,
@@ -123,6 +128,8 @@ export function ListeningPlayer({
   /** この 画面で 見た ミスの 数（開き直すと 0 から 数え直す ので、増えた ぶんだけ 積む）。 */
   const seenMissesRef = useRef(0);
   const issuedRef = useRef(false);
+  /** 修了証が できる 前に 終えた 回の ぶんを 出して いる（「もう一度 ためす」でも 同じ 出し方に する）。 */
+  const finishedBeforeRef = useRef(false);
 
   /** 回を 新しく 始める（前に こたえあわせを 見た ことが あれば、それも 写す）。 */
   const beginRun = useCallback(
@@ -141,13 +148,16 @@ export function ListeningPlayer({
   const issue = useCallback(
     (score: number) => {
       const run = readRun(listening.id) ?? beginRun(true);
+      const finishedBefore = finishedBeforeRef.current;
       const result = listeningResult(listening.id, listening.title, {
         score,
         misses: run.misses ?? 0,
         usedRescue: Boolean(run.usedRescue),
         reviewedEarly: Boolean(run.reviewedEarly),
-        partial: Boolean(run.partial),
-        sawScriptBefore: Boolean(run.sawScriptBefore),
+        // 前に 終えた 回は 理由を 1つに する（続き・やりなおしの 理由を 重ねない）
+        partial: finishedBefore ? false : Boolean(run.partial),
+        sawScriptBefore: finishedBefore ? false : Boolean(run.sawScriptBefore),
+        finishedBefore,
       });
       setCertificate({ status: "issuing" });
       /*
@@ -193,7 +203,21 @@ export function ListeningPlayer({
                 setCertificate({ status: "ready", cert: last });
               }
             });
+            return;
           }
+          /*
+           * **今回限り**（2026-10-06 の 指定「すでに終わっているものは出すようにしてください。
+           * いったんそれでいい。今回限りです」）。修了証が できる 前に もう 100% に して いた
+           * 回にも、この 人が この 教材の 修了証を まだ 1枚も 持って いなければ 1回だけ 出す。
+           * いつ・どう 終えたかは 分からないので 青（「修了証が できる 前に 終えた 回」）。
+           * DB に もう あれば 出さない（2枚目に しない）。確かめられない ときも 出さない。
+           */
+          void hasIssuedCertificate(listening.id).then((has) => {
+            if (has !== false || issuedRef.current) return;
+            issuedRef.current = true;
+            finishedBeforeRef.current = true;
+            issue(state.score);
+          });
           return;
         }
         /*
@@ -223,6 +247,7 @@ export function ListeningPlayer({
     fullAtOpenRef.current = false;
     seenMissesRef.current = 0;
     issuedRef.current = false;
+    finishedBeforeRef.current = false;
     setCertificate(null);
   }, [beginRun]);
 

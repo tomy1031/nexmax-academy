@@ -60,6 +60,30 @@ export function claimRun(contentId: string): void {
   });
 }
 
+/**
+ * この 人が この 教材の 修了証を もう 持って いるか（DB）。ログインして いない（デモ）は false、
+ * 確かめられない ときは null（「無い」と 取りちがえて 2枚目を 出さない）。
+ */
+export async function hasIssuedCertificate(contentId: string): Promise<boolean | null> {
+  const client = createClient();
+  if (!client) return false;
+  let profileId: string | null;
+  try {
+    profileId = await readOwnId(client);
+  } catch {
+    return null;
+  }
+  if (!profileId) return false;
+  const { data, error } = await client
+    .from("completion_certificates")
+    .select("id")
+    .eq("profile_id", profileId)
+    .eq("content_id", contentId)
+    .limit(1);
+  if (error) return null;
+  return (data ?? []).length > 0;
+}
+
 export async function issueCertificate(
   result: CertificateResult,
   /** 回を 始めた 人（`claimRun`）。いまの 人と ちがえば、前の 人の 続きと して 扱う。 */

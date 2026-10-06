@@ -688,6 +688,7 @@ function certificateScoreText(record: CertificateRecord): string {
       : []),
     ...(detail.reviewedEarly ? ["100%の 前に こたえあわせを 見た"] : []),
     ...(detail.usedRescue ? ["あいことばを 使った"] : []),
+    ...(detail.finishedBefore ? ["修了証が できる 前に 終えた 回"] : []),
     ...(detail.sawModelAnswer ? ["バグ報告で こたえの 文を 見た"] : []),
     ...(detail.onlyMissed ? ["まちがえた ことばだけ"] : []),
   ];
