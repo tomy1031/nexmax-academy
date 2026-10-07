@@ -282,6 +282,8 @@ export function FormBlock({
       <div className="mt-4 flex flex-wrap items-center gap-3">
         <button
           type="button"
+          // 名前は ルビ前の 字で（ルビが 入ると 読み上げが「保存ほぞんする」に なる）
+          aria-label={status === "saving" ? "保存して います" : "保存する"}
           onClick={() => void submit()}
           disabled={preview || status === "saving"}
           className="bg-sky rounded-full px-6 py-2.5 font-extrabold text-white disabled:opacity-50"
