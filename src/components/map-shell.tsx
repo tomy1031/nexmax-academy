@@ -1127,8 +1127,9 @@ function RouteArea({
         )}
       </MapLayer>
 
-      {/* 土地の境目の雲海。エリアの下端にまたがるので、背景画像の切り口が雲に隠れる */}
-      <CloudBand className="bottom-0 translate-y-1/2" />
+      {/* 土地の境目の雲海。エリアの下端にまたがるので、背景画像の切り口が雲に隠れる。
+          種をエリアごとに変えて、境目ごとに違う形の雲にする（出発の帯が 1 を使う） */}
+      <CloudBand className="bottom-0 translate-y-1/2" seed={index + 2} />
     </section>
   );
 }
@@ -1223,7 +1224,7 @@ function MapViewPane({
           ぶつからない分だけ取る（詰めると看板がパネルに隠れる） */}
       <div className="relative h-64 w-full" style={{ backgroundColor: SKY_BLUE }}>
         {/* 1枚目のエリアの上端にも雲をかける。看板より先に置いて、看板を隠さないようにする */}
-        <CloudBand className="bottom-0 translate-y-1/2" />
+        <CloudBand className="bottom-0 translate-y-1/2" seed={1} />
         <MapLayer>
           {/* 看板より上には航路を引かない（出発点なので、道は看板の真下から始まる）。
               看板の下端から下だけに引いて、1枚目のエリアへ切れ目なくつなぐ */}
