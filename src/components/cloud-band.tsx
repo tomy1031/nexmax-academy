@@ -24,6 +24,11 @@ import { memo, useId } from "react";
  * （同日のユーザー指摘「建物に被りすぎ」）。土地の絵は境目の約95〜130px上から空色に
  * 溶け始めるので、雲のてっぺんは `CLOUD_CEILING`（境目の約80px上）より上へ出さない。
  * 溶け始めから雲のてっぺんまでは淡い空だけの帯にして、土地と雲のあいだの空白にする。
+ *
+ * ## 帯は縦に薄く（土地の見える高さを削らない）
+ * 空白を入れた版でも、雲の底と靄が境目の約170px下まで伸びていた。PCでは土地1枚の
+ * 半分近くが雲と靄になり、ゴールの富士山も隠れていた（同日のユーザー指摘）。雲は境目の
+ * 上下それぞれ約80〜100pxに収める（`CLOUD_FADE`・`HAZE`）。
  */
 
 /** 雲の絵の座標系。横長にして、幅の広い画面でも左右が切れないようにする */
@@ -54,29 +59,35 @@ type CloudRow = {
  */
 const CLOUD_CEILING = 160;
 
-/** 奥から手前へ。奥ほど山が高く、手前ほど低い */
+/** 雲の底を消していく範囲（ここから下へ薄くなり、終わりで消える）。下の土地へ伸ばしすぎない */
+const CLOUD_FADE = [390, 470] as const;
+
+/** 雲の底の靄の範囲。下の土地の溶け始めを和らげる分だけにする */
+const HAZE = [360, 500] as const;
+
+/** 奥から手前へ。奥ほど山が高く、手前ほど低い。列の間隔を詰めて、帯を縦に薄くする */
 const ROWS: readonly CloudRow[] = [
   {
-    base: 270,
-    height: [40, 270 - CLOUD_CEILING],
+    base: 255,
+    height: [40, 255 - CLOUD_CEILING],
     width: [420, 760],
     radius: [60, 90],
     shade: "far",
     valley: 1,
   },
   {
-    base: 345,
-    height: [25, 100],
+    base: 310,
+    height: [20, 85],
     width: [400, 720],
-    radius: [70, 100],
+    radius: [65, 95],
     shade: "puff",
     valley: 0.7,
   },
   {
-    base: 420,
-    height: [15, 90],
+    base: 360,
+    height: [10, 70],
     width: [380, 700],
-    radius: [75, 105],
+    radius: [65, 95],
     shade: "low",
     valley: 0.3,
   },
@@ -294,24 +305,23 @@ export const CloudBand = memo(function CloudBand({
           <VerticalGradient
             id={`${id}-sky`}
             from={SKY_TOP}
-            to={540}
+            to={HAZE[1]}
             stops={[
               [0, "#e2f1fa", 0],
               [0.22, "#e2f1fa", 0.7],
-              [0.45, "#e2f1fa", 0.9],
+              [0.5, "#e2f1fa", 0.9],
               [1, "#e2f1fa", 0],
             ]}
           />
           {/* 雲の底を下へ向かって消す */}
           <VerticalGradient
             id={`${id}-fade`}
-            from={0}
-            to={VIEW_H}
+            from={CLOUD_FADE[0]}
+            to={CLOUD_FADE[1]}
             stops={[
               [0, "#ffffff", 1],
-              [0.7, "#ffffff", 1],
-              [0.84, "#999999", 1],
-              [0.98, "#000000", 1],
+              [0.5, "#999999", 1],
+              [1, "#000000", 1],
             ]}
           />
           <mask
@@ -333,12 +343,12 @@ export const CloudBand = memo(function CloudBand({
           {/* 雲の底の靄。下の土地を霞ませながら透かす */}
           <VerticalGradient
             id={`${id}-haze`}
-            from={VIEW_H * 0.6}
-            to={VIEW_H}
+            from={HAZE[0]}
+            to={HAZE[1]}
             stops={[
               [0, "#dbeaf6", 0],
-              [0.35, "#d7e8f5", 0.5],
-              [0.65, "#d2e5f4", 0.2],
+              [0.35, "#d7e8f5", 0.45],
+              [0.65, "#d2e5f4", 0.18],
               [1, "#d2e5f4", 0],
             ]}
           />
@@ -374,7 +384,7 @@ export const CloudBand = memo(function CloudBand({
           x={-BLEED}
           y={SKY_TOP}
           width={VIEW_W + BLEED * 2}
-          height={540 - SKY_TOP}
+          height={HAZE[1] - SKY_TOP}
           fill={`url(#${id}-sky)`}
         />
         <g mask={`url(#${id}-mask)`}>
@@ -392,9 +402,9 @@ export const CloudBand = memo(function CloudBand({
         </g>
         <rect
           x={-BLEED}
-          y={VIEW_H * 0.6}
+          y={HAZE[0]}
           width={VIEW_W + BLEED * 2}
-          height={VIEW_H * 0.4}
+          height={HAZE[1] - HAZE[0]}
           fill={`url(#${id}-haze)`}
         />
       </svg>
