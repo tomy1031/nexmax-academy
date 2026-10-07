@@ -301,8 +301,9 @@ function AreaImage({ src, fade }: { src: string; fade: "both" | "top" }) {
   const mask =
     fade === "both"
       ? "linear-gradient(to bottom, transparent 0%, #000 14%, #000 86%, transparent 100%)"
-      : // 日本だけは俯瞰の海ではなく水平線の絵なので、海からの入りを長めにぼかす
-        "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,.5) 14%, #000 30%, #000 100%)";
+      : // 日本だけは俯瞰の海ではなく水平線の絵なので、空からの入りを少しやわらかくぼかす。
+        // 長くぼかすと、絵の上寄りにある富士山まで消える（2026-10-07 に実際に隠れていた）
+        "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,.5) 8%, #000 18%, #000 100%)";
 
   return (
     // eslint-disable-next-line @next/next/no-img-element
@@ -312,7 +313,12 @@ function AreaImage({ src, fade }: { src: string; fade: "both" | "top" }) {
       aria-hidden
       onError={() => setFailed(true)}
       className="absolute inset-0 h-full w-full object-cover"
-      style={{ maskImage: mask, WebkitMaskImage: mask }}
+      style={{
+        maskImage: mask,
+        WebkitMaskImage: mask,
+        // 日本の絵は富士山が上寄りにあるので、切り落とすのは下を多めにする
+        objectPosition: fade === "top" ? "50% 22%" : undefined,
+      }}
     />
   );
 }
@@ -1028,8 +1034,10 @@ function RouteArea({
          名前が無い土地はステージの見出しで呼ぶ（画面には出ない） */
       aria-label={area.name || stage?.title || "エリア"}
       /* 狭い画面ではレッスンパネルが丸の真下に縦長で開くので、そのぶん背を高くする。
-         詰めるとパネルが次のエリアまではみ出し、エリア名の札に重なる */
-      className="relative h-[940px] w-full md:h-[clamp(680px,64vh,780px)]"
+         詰めるとパネルが次のエリアまではみ出し、エリア名の札に重なる。
+         PCでも上下の雲の分を見込んで背を取る（画像は横幅に合わせて広がるので、低いと
+         絵の大半が切り落とされ、残りも雲に隠れる。2026-10-07 のユーザー指摘） */
+      className="relative h-[940px] w-full md:h-[clamp(760px,84vh,920px)]"
       style={{ backgroundColor: SKY_BLUE }}
     >
       <AreaImage src={area.image} fade="both" />
@@ -1151,19 +1159,21 @@ function GoalArea({
     <section
       id={MAP_GOAL_ELEMENT_ID}
       aria-label={goalArea.name}
-      className="relative h-[clamp(320px,40vh,460px)] w-full overflow-hidden"
+      /* 富士山が雲の下に隠れないだけの背を取る（上の境目の雲と靄が約110px かかる） */
+      className="relative h-[clamp(480px,64vh,600px)] w-full overflow-hidden md:h-[clamp(620px,78vh,860px)]"
       style={{ backgroundColor: SKY_BLUE }}
     >
       <AreaImage src={goalArea.image} fade="top" />
 
       <MapLayer>
-        {/* 航路は看板に触れる手前で終える。看板は中央から上下に約 5.5rem あるので、
+        {/* 航路は看板に触れる手前で終える。看板は中心から上下に約 5.5rem あるので、
             そのぶん＋余白を空ける。突き抜けると着地して見えない */}
-        <div className="absolute inset-x-0 top-0 bottom-[calc(50%+3.5rem)]">
+        <div className="absolute inset-x-0 top-0 bottom-[calc(30%+3.5rem)]">
           <AreaTrail xAt={() => 50} areaIndex={totalAreas} flownUntil={flown} />
         </div>
 
-        <div className="absolute top-1/2 left-1/2 z-20 -translate-x-1/2 -translate-y-1/2 text-center">
+        {/* 看板は中央より下（70%）に立てる。真ん中だと、絵の上寄りにある富士山を隠す */}
+        <div className="absolute top-[70%] left-1/2 z-20 -translate-x-1/2 -translate-y-1/2 text-center">
           <div className="mx-auto h-7 w-4 bg-linear-to-r from-[#6f3518] via-[#a7622e] to-[#5a2b15] shadow-md" />
           <div
             className={`min-w-48 rounded-lg border-4 px-6 py-2 text-white shadow-[0_7px_0_#4e250f,0_12px_24px_rgba(0,0,0,.28)] ${
