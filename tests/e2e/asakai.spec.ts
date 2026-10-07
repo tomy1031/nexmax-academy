@@ -175,6 +175,70 @@ test("夕礼の 前ばなしに Next Talent と 担当が 書いて ある", asy
   expect(await bareKanjiTexts(page)).toEqual([]);
 });
 
+/**
+ * 朝礼ページ 7節 — 書きこみフォーム（2026-10-07 の 指定「入力フォームで朝礼の内容を
+ * 埋めてもらいます。一度入れたものは入力フォームの下に本人が参照できるようにします」）。
+ *
+ * 型の 空いた ところを うめて 保存すると、すぐ 下の「あなたが 書いた 朝礼」に 出る。
+ * デモモード（鍵ゼロ）では 端末に 置かれる ので、開き直しても 残る。
+ * 欄は ルビで 名前が 引けない ので、`aria-label`（ルビ前の 字）で さがす。
+ */
+test("朝礼ページ 7節: フォームに 書いて 保存すると、すぐ 下に 出る", async ({ page }) => {
+  await page.setViewportSize(PHONE);
+  await page.goto("/asakai/article-asakai_lecture");
+  const skip = page.getByText("それでも 見る");
+  if (await skip.count()) await skip.first().click();
+
+  const form = page.getByTestId("article-form");
+  await form.scrollIntoViewIfNeeded();
+  const entries = page.getByTestId("article-form-entry");
+  /* 見出しの「朝礼」は 辞書の ことば（押せる）なので、ボタンは 名前で さがす */
+  const save = form.getByRole("button", { name: "保存する", exact: true });
+  await expect(form.getByTestId("article-form-history")).toBeVisible();
+  await expect(entries).toHaveCount(0);
+
+  /* 空の まま 押すと 保存しない。4つの 欄 それぞれで、足りない ことを はっきり 言う。 */
+  await save.click();
+  await expect(form.getByRole("alert")).toHaveCount(4);
+  await expect(entries).toHaveCount(0);
+
+  await page.getByLabel("① きのう したこと（1つめの 書く ところ）").fill("商品名と 値段を 表示");
+  await page.getByLabel("② 機能の 進捗（1つめの 書く ところ）").fill("商品一覧");
+  /* ％の 欄は 0〜100 の 数字だけ。120 は 言い直しに なる。 */
+  await page.getByLabel("② 機能の 進捗（2つめの 書く ところ）").fill("120");
+  await page.getByLabel("③ きょう すること（1つめの 書く ところ）").fill("商品画像を 表示");
+  await form.getByRole("checkbox").check();
+  await save.click();
+  await expect(form.getByRole("alert")).toHaveCount(1);
+  await expect(entries).toHaveCount(0);
+
+  /* 全角でも 受ける。④は「問題は ありません。」を えらんだ まま。 */
+  await page.getByLabel("② 機能の 進捗（2つめの 書く ところ）").fill("６０");
+  await save.click();
+  await expect(entries).toHaveCount(1);
+
+  const written = async () =>
+    entries.first().evaluate((element) => {
+      const clone = element.cloneNode(true) as HTMLElement;
+      for (const rt of Array.from(clone.querySelectorAll("rt"))) rt.remove();
+      return (clone.textContent ?? "").replace(/\s+/gu, "");
+    });
+  expect(await written()).toContain("きのうは、商品名と値段を表示しました。");
+  expect(await written()).toContain("商品一覧機能の進捗は、60％です。");
+  expect(await written()).toContain("きょうは、商品画像を表示します。");
+  expect(await written()).toContain("問題はありません。");
+  /* 保存したら 欄は 空に もどる（つづけて もう1回 書ける）。 */
+  await expect(page.getByLabel("① きのう したこと（1つめの 書く ところ）")).toHaveValue("");
+  await shot(page, "asakai-lecture-form");
+  expect(await bareKanjiTexts(page)).toEqual([]);
+
+  /* 開き直しても 残る（本人の 端末の 写し）。 */
+  await page.reload();
+  const again = page.getByText("それでも 見る");
+  if (await again.count()) await again.first().click();
+  await expect(page.getByTestId("article-form-entry")).toHaveCount(1);
+});
+
 test("朝礼（かんたん）— 報告すると カードが 開く", async ({ page, context }) => {
   const refs = stageRefs();
   const at = refs.indexOf("asakai_kantan");

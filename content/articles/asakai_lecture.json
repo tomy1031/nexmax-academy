@@ -1001,64 +1001,50 @@
       "text": "以下の サービスの どれかの チームに なった つもりで、朝礼を 考えて みよう。"
     },
     {
-      "kind": "list",
-      "items": [
-        "Grabの 配車機能",
-        "Foodpandaの 商品一覧画面",
-        "ABA銀行の 決済画面"
-      ]
+      "kind": "image",
+      "size": "wide",
+      "src": "/img/articles/asakai_lecture/sec7_steps.webp",
+      "refs": [],
+      "status": "done",
+      "caption": "STEP 1 仕事の 状況を 考える。STEP 2 朝礼の 4つの 内容に 分けて 話す"
     },
     {
       "kind": "image",
       "size": "wide",
-      "src": "/img/articles/asakai_lecture/sec7_apps.webp",
-      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded border, arranged so the eye reads it in one pass. THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: choose one of these three apps and imagine you are on the team that builds it. A teaching diagram of three large rounded cream cards side by side on a soft sky-blue background. Each card holds one big smartphone standing upright, with a Japanese label panel across the top of the card. Card 1: the phone shows a simple ride-hailing map screen with streets, a small car mark and a pickup pin; the label reads 配車機能. Card 2: the phone shows a food delivery product list screen with rows of small dish pictures and blank price lines; the label reads 商品一覧画面. Card 3: the phone shows a bank payment screen with a QR code, a blank amount line and one big rounded pay button; the label reads 決済画面. No people. No brand names, no logos and no app names anywhere — the screens are generic. Few large elements, generous spacing. The Japanese words in this picture are exactly: 配車機能 / 商品一覧画面 / 決済画面. Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture. Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+      "src": "/img/articles/asakai_lecture/sec7_example.webp",
       "refs": [],
       "status": "done",
-      "caption": "配車機能・商品一覧画面・決済画面の 3つの アプリの 画面"
+      "caption": "商品一覧画面の 例"
     },
     {
-      "kind": "heading",
-      "level": 3,
-      "text": "朝礼の 4つを 考えましょう"
-    },
-    {
-      "kind": "cards",
-      "tone": "plain",
-      "columns": 2,
-      "items": [
+      "kind": "form",
+      "title": "あなたの 朝礼を 書いて みよう",
+      "historyTitle": "あなたが 書いた 朝礼",
+      "fields": [
         {
+          "id": "kinou",
           "label": "①",
           "title": "きのう したこと",
-          "text": "きのうは、＿＿＿＿＿＿＿＿しました。",
-          "items": [
-            "例：「きのうは、レストランの メニュー画面に、料理の 名前と 値段を 表示しました。」"
-          ]
+          "template": "きのうは、＿＿＿＿＿＿＿＿しました。"
         },
         {
+          "id": "shinchoku",
           "label": "②",
-          "title": "担当の 機能の 進捗",
-          "text": "＿＿＿＿機能の 進捗は、＿＿％です。",
-          "items": [
-            "例：「メニュー一覧機能の 進捗は、40％です。」"
-          ]
+          "title": "機能の 進捗",
+          "template": "＿＿＿＿機能の 進捗は、＿＿％です。"
         },
         {
+          "id": "kyou",
           "label": "③",
           "title": "きょう すること",
-          "text": "きょうは、＿＿＿＿＿＿＿＿します。",
-          "items": [
-            "例：「きょうは、料理の 写真を 表示し、料理を カテゴリーごとに 分けます。」"
-          ]
+          "template": "きょうは、＿＿＿＿＿＿＿＿します。"
         },
         {
+          "id": "mondai",
           "label": "④",
           "title": "問題",
-          "text": "問題が ある 場合：＿＿＿＿で 問題が あります。今、＿＿＿＿して います。",
-          "items": [
-            "例：「一部の 料理の 写真が 表示されません。今、APIから 写真の データが 届いて いるか 確認して います。」",
-            "問題が ない 場合は、「問題は ありません。」と 話します。"
-          ]
+          "template": "＿＿＿＿で 問題が あります。今、＿＿＿＿して います。",
+          "none": "問題は ありません。"
         }
       ]
     }
