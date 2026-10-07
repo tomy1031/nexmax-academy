@@ -210,6 +210,16 @@ export function emptyArticleBlock(kind: ArticleBlock["kind"]): ArticleBlock {
       };
     case "banner":
       return { kind: "banner", tone: "message", icon: "💡", text: "ここが 大切です。" };
+    /*
+     * 書きこみフォーム。欄の id は 記録の 鍵（先生の 表の 問い）なので、
+     * 1つめは 決まった 名前で 始める。足した 欄は エディタが 番号を 振る。
+     */
+    case "form":
+      return {
+        kind: "form",
+        title: "ここに 書いて みよう",
+        fields: [{ id: "f1", title: "書く こと", template: "わたしは、＿＿＿＿します。" }],
+      };
   }
 }
 
@@ -407,6 +417,7 @@ export const ARTICLE_BLOCK_OPTIONS: readonly { value: ArticleBlock["kind"]; labe
   { value: "missions", label: "調べる ことの 一覧" },
   { value: "compare", label: "まえと あとの くらべ" },
   { value: "banner", label: "帯（ゴール・大切なこと）" },
+  { value: "form", label: "書きこみフォーム（学習の きろくに 残る）" },
 ];
 
 export const CONTENT_TYPE_OPTIONS: readonly { value: ContentRefType; label: string }[] = [

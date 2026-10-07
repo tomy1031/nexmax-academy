@@ -19,6 +19,7 @@ import {
   type FuriganaIndex,
 } from "@/lib/text/furigana";
 import { BannerBlock, CardsBlock, CompareBlock, HeroBlock, MissionsBlock } from "./rich-blocks";
+import { FormBlock } from "./form-block";
 import {
   collectHeadings,
   contentHref,
@@ -211,6 +212,7 @@ export function ArticleView({
               furigana={furigana}
               show={rubyOn}
               characters={characters}
+              preview={preview}
             />
           ))}
         </div>
@@ -279,9 +281,19 @@ interface BlockProps {
   furigana: FuriganaIndex;
   show: boolean;
   characters?: readonly ArticleCharacter[];
+  /** スタジオの プレビュー（書きこみフォームが 保存しない）。 */
+  preview: boolean;
 }
 
-function BlockView({ block, blockIndex, articleId, furigana, show, characters }: BlockProps) {
+function BlockView({
+  block,
+  blockIndex,
+  articleId,
+  furigana,
+  show,
+  characters,
+  preview,
+}: BlockProps) {
   switch (block.kind) {
     case "heading":
       return block.level === 2 ? (
@@ -476,6 +488,18 @@ function BlockView({ block, blockIndex, articleId, furigana, show, characters }:
 
     case "banner":
       return <BannerBlock block={block} furigana={furigana} show={show} />;
+
+    /* 書きこみフォーム。保存した ものは 本人に 下で 見せ、先生には 学習の きろくで 見せる。 */
+    case "form":
+      return (
+        <FormBlock
+          block={block}
+          articleId={articleId}
+          furigana={furigana}
+          show={show}
+          preview={preview}
+        />
+      );
   }
 }
 

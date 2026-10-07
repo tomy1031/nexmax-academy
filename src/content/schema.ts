@@ -2178,6 +2178,48 @@ export const articleBlockSchema = z.discriminatedUnion("kind", [
     /** 下に 並べる 小さな 札。 */
     badges: z.array(plainText).optional(),
   }),
+  /**
+   * 書きこみフォーム（form）。型の 空いた ところに 学習者が 書いて 保存する。
+   *
+   * 2026-10-07 の 指定「入力フォームを作って、学習の記録にデータが載るように」
+   *「一度入れたものは入力フォームの下に本人が参照できるように」（朝礼ページ 7節）。
+   *
+   * - **行き先は もんだいと 同じ `quiz_results`**（教材＝記事の id、問い＝欄の id）。
+   *   先生は 学習の きろく（`/admin/records`）の「もんだいの こたえ」で 読む。
+   *   表を 増やさない 理由は ツール教材の こたえと 同じ（`src/lib/answers/link-answers-db.ts`）。
+   * - **正解は 無い**（採点しない）。書いた 文を そのまま 残す。
+   * - 型の 中の `＿` が 続く ところが 書きこむ 欄。**すぐ あとが `％` の 欄は 数字だけ**
+   *  （「＿＿機能の 進捗は、＿＿％です。」）。カードに 書いて きた 型と 同じ 書き方に して、
+   *   先生が スタジオで 見た ままの 字で 直せる ように して ある。
+   */
+  z.object({
+    kind: z.literal("form"),
+    /** フォームの 見出し（「あなたの 朝礼を 書こう」など）。省ける。 */
+    title: plainText.optional(),
+    /** 下に 出す「これまでに 書いた もの」の 見出し。省くと 決まった ことばが 出る。 */
+    historyTitle: plainText.optional(),
+    fields: z
+      .array(
+        z.object({
+          /** 記録の 鍵（先生の 画面の 問い）。**ページの 中で 1つだけ**。 */
+          id: z.string().regex(/^[a-z0-9_-]+$/),
+          /** 札（「①」など）。 */
+          label: plainText.optional(),
+          /** 欄の 名前（「きのう したこと」）。先生の 画面の 問いにも なる。 */
+          title: plainText,
+          /** 型（「きのうは、＿＿＿＿しました。」）。`＿` が 1つも 無い 型は 書きこめない。 */
+          template: plainText.refine((s) => s.includes("＿"), {
+            message: "型に 書きこむ ところ（＿）が 無い",
+          }),
+          /** 「ない」ときの 言い方（「問題は ありません。」）。置くと 欄の かわりに えらべる。 */
+          none: plainText.optional(),
+        }),
+      )
+      .min(1)
+      .refine((fields) => new Set(fields.map((field) => field.id)).size === fields.length, {
+        message: "欄の id が かさなって いる（記録が まざる）",
+      }),
+  }),
 ]);
 
 /** 説明ページ（article / WYSIWYG — 設計07 §5）。保存形式はブロックJSON。 */
