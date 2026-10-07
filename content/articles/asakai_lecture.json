@@ -875,48 +875,6 @@
     },
     {
       "kind": "heading",
-      "level": 3,
-      "text": "✅ 問題を 話す ときは、3つ 考えます"
-    },
-    {
-      "kind": "cards",
-      "tone": "plain",
-      "columns": 3,
-      "items": [
-        {
-          "label": "①",
-          "title": "どこで？",
-          "text": "「ログイン画面で」",
-          "image": {
-            "src": "/img/articles/asakai_lecture/sec4_doko.webp",
-            "refs": [],
-            "status": "done"
-          }
-        },
-        {
-          "label": "②",
-          "title": "何が 起きて いる？",
-          "text": "「ログインボタンを 押しても、次の 画面に 進みません。」",
-          "image": {
-            "src": "/img/articles/asakai_lecture/sec4_nani.webp",
-            "refs": [],
-            "status": "done"
-          }
-        },
-        {
-          "label": "③",
-          "title": "今、どう して いる？",
-          "text": "「今、原因を 調べて います。」",
-          "image": {
-            "src": "/img/articles/asakai_lecture/sec4_ima.webp",
-            "refs": [],
-            "status": "done"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "heading",
       "level": 2,
       "text": "5．大きな 問題は、すぐに 報告しよう"
     },
