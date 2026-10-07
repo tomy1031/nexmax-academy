@@ -18,6 +18,12 @@ import { memo, useId } from "react";
  * こぶ1つ1つを「上が白く、下が青い影」のグラデーションで塗り、上にあるこぶから順に描く。
  * 下のこぶの白い頭が上のこぶの影に重なり、こぶ同士の谷に影の筋ができる。
  * 縁は `feTurbulence` で少しけば立たせ、ベクターの真円に見えないようにしている。
+ *
+ * ## 土地の建物に雲をかけない（緩衝の空白）
+ * 最初の版は雲の山が境目から約160px上まで伸び、上の土地の建物に大きくかぶさっていた
+ * （同日のユーザー指摘「建物に被りすぎ」）。土地の絵は境目の約95〜130px上から空色に
+ * 溶け始めるので、雲のてっぺんは `CLOUD_CEILING`（境目の約80px上）より上へ出さない。
+ * 溶け始めから雲のてっぺんまでは淡い空だけの帯にして、土地と雲のあいだの空白にする。
  */
 
 /** 雲の絵の座標系。横長にして、幅の広い画面でも左右が切れないようにする */
@@ -42,29 +48,35 @@ type CloudRow = {
   valley: number;
 };
 
+/**
+ * 雲のてっぺんの上限（雲の座標。境目は `VIEW_H / 2`）。これより上は淡い空だけにして、
+ * 上の土地の建物に雲をかけない。奥の列の「裾 − 高さの最大」がこれに一致する
+ */
+const CLOUD_CEILING = 160;
+
 /** 奥から手前へ。奥ほど山が高く、手前ほど低い */
 const ROWS: readonly CloudRow[] = [
   {
-    base: 230,
-    height: [90, 270],
-    width: [480, 900],
-    radius: [70, 105],
+    base: 270,
+    height: [40, 270 - CLOUD_CEILING],
+    width: [420, 760],
+    radius: [60, 90],
     shade: "far",
     valley: 1,
   },
   {
-    base: 325,
-    height: [30, 170],
-    width: [420, 800],
-    radius: [80, 115],
+    base: 345,
+    height: [25, 100],
+    width: [400, 720],
+    radius: [70, 100],
     shade: "puff",
     valley: 0.7,
   },
   {
-    base: 410,
-    height: [20, 140],
-    width: [380, 720],
-    radius: [80, 115],
+    base: 420,
+    height: [15, 90],
+    width: [380, 700],
+    radius: [75, 105],
     shade: "low",
     valley: 0.3,
   },
@@ -180,7 +192,8 @@ function billowsFor(seed: number): readonly Billow[] {
   const rounded = billows.map((billow) => ({
     ...billow,
     x: Math.round(billow.x * 10) / 10,
-    y: Math.round(billow.y * 10) / 10,
+    // 肩にのせた小さいこぶも、てっぺんの上限を越えないように下ろす
+    y: Math.round(Math.max(billow.y, CLOUD_CEILING + billow.r) * 10) / 10,
     r: Math.round(billow.r * 10) / 10,
   }));
   billowCache.set(seed, rounded);
@@ -235,6 +248,9 @@ function VerticalGradient({
 /** 雲の外側へ広めに取る塗りの範囲（左右の端で雲や靄が途切れないように） */
 const BLEED = 300;
 
+/** 淡い空を塗りはじめる高さ。ここから雲のてっぺんまでが、土地と雲のあいだの空白になる */
+const SKY_TOP = CLOUD_CEILING - 100;
+
 /**
  * エリアとエリアのあいだの雲海。土地の境目をこれで作る。
  *
@@ -273,15 +289,16 @@ export const CloudBand = memo(function CloudBand({
               ))}
             </radialGradient>
           ))}
-          {/* 雲のすきまに見える淡い空。画像の切り口の濃い空色を、ここで和らげる */}
+          {/* 土地と雲のあいだの空白と、雲のすきまに見える淡い空。画像の切り口の濃い空色を
+              ここで和らげる。雲のてっぺん（CLOUD_CEILING）の少し上から淡くしはじめる */}
           <VerticalGradient
             id={`${id}-sky`}
-            from={140}
+            from={SKY_TOP}
             to={540}
             stops={[
               [0, "#e2f1fa", 0],
-              [0.3, "#e2f1fa", 0.85],
-              [0.6, "#e2f1fa", 0.9],
+              [0.22, "#e2f1fa", 0.7],
+              [0.45, "#e2f1fa", 0.9],
               [1, "#e2f1fa", 0],
             ]}
           />
@@ -320,8 +337,8 @@ export const CloudBand = memo(function CloudBand({
             to={VIEW_H}
             stops={[
               [0, "#dbeaf6", 0],
-              [0.4, "#d7e8f5", 0.6],
-              [0.7, "#d2e5f4", 0.3],
+              [0.35, "#d7e8f5", 0.5],
+              [0.65, "#d2e5f4", 0.2],
               [1, "#d2e5f4", 0],
             ]}
           />
@@ -353,7 +370,13 @@ export const CloudBand = memo(function CloudBand({
           </filter>
         </defs>
 
-        <rect x={-BLEED} y={140} width={VIEW_W + BLEED * 2} height={400} fill={`url(#${id}-sky)`} />
+        <rect
+          x={-BLEED}
+          y={SKY_TOP}
+          width={VIEW_W + BLEED * 2}
+          height={540 - SKY_TOP}
+          fill={`url(#${id}-sky)`}
+        />
         <g mask={`url(#${id}-mask)`}>
           <g filter={`url(#${id}-fluff)`}>
             {billows.map((billow, index) => (
