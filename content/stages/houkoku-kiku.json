@@ -71,6 +71,10 @@
     {
       "ref": "houkoku_chourei_quiz",
       "type": "quizset"
+    },
+    {
+      "ref": "houkoku_kiku_test",
+      "type": "quizset"
     }
   ],
   "wordStageIds": [],

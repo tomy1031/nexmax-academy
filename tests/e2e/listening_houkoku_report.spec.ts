@@ -37,14 +37,16 @@ async function type(page: Page, word: string): Promise<void> {
 }
 
 test("5場面は 報告の リスニングの ステージに リスニング → タイピング → もんだい の 順で 並ぶ", () => {
-  // 並びは 2026-09-30 の 選択「聴く→打つ→もんだい」
-  expect(refs()).toEqual(
-    SCENES.flatMap((scene) => [
+  // 並びは 2026-09-30 の 選択「聴く→打つ→もんだい」。
+  // さいごに 全体テスト（2026-10-07。技術調査と 朝礼から 出すので 5場面の 後）
+  expect(refs()).toEqual([
+    ...SCENES.flatMap((scene) => [
       `houkoku_${scene}_listening`,
       `houkoku_${scene}_typing`,
       `houkoku_${scene}_quiz`,
     ]),
-  );
+    "houkoku_kiku_test",
+  ]);
   // 報告の ステージからは 外れて いる（2つの ステージに 同じ 教材を 並べない）
   const houkoku = refs("houkoku");
   for (const scene of SCENES) {
