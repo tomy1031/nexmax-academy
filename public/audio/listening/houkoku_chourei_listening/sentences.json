@@ -87,17 +87,17 @@
     },
     {
       "speaker": "sato",
-      "text": "商品詳細機能 全体の 進捗は、80％です。",
+      "text": "商品詳細機能の 進捗は、80％です。",
       "file": "06.wav",
       "voice": "Autonoe",
       "model": "gemini-3.8-live",
-      "seconds": 4.88,
-      "longestPause": 0.34,
-      "transcript": "商品詳細機能全体の進捗は、80％です。",
+      "seconds": 3.87,
+      "longestPause": 0.11,
+      "transcript": "商品詳細機能の進捗は、80%です。",
       "transcriptBy": "gemini-3.8-live",
       "reading": {
-        "expected": "しょうひんしょうさいきのうぜんたいのしんちょくははちじゅっぱあせんとです",
-        "spoken": "しょうひんしょうさいきのうぜんたいのしんちょくははちじゅっぱあせんとです",
+        "expected": "しょうひんしょうさいきのうのしんちょくははちじゅっぱあせんとです",
+        "spoken": "しょうひんしょうさいきのうのしんちょくははちじゅっぱあせんとです",
         "distance": 0
       }
     },
@@ -215,17 +215,17 @@
     },
     {
       "speaker": "yamada",
-      "text": "商品検索機能 全体の 進捗は、60％です。",
+      "text": "商品検索機能の 進捗は、60％です。",
       "file": "14.wav",
       "voice": "Achird",
       "model": "gemini-3.8-live",
-      "seconds": 4.63,
-      "longestPause": 0.2,
-      "transcript": "商品検索機能 全体の進捗は、60％です。",
-      "transcriptBy": "gemini-3.8-live",
+      "seconds": 3.96,
+      "longestPause": 0.18,
+      "transcript": "商品検索機能 の 進捗 は 60% です 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
       "reading": {
-        "expected": "しょうひんけんさくきのうぜんたいのしんちょくはろくじゅっぱあせんとです",
-        "spoken": "しょうひんけんさくきのうぜんたいのしんちょくはろくじゅっぱあせんとです",
+        "expected": "しょうひんけんさくきのうのしんちょくはろくじゅっぱあせんとです",
+        "spoken": "しょうひんけんさくきのうのしんちょくはろくじゅっぱあせんとです",
         "distance": 0
       }
     },

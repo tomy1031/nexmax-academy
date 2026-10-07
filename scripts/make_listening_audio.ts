@@ -48,7 +48,7 @@
  *   `node --import tsx scripts/make_listening_audio.ts <教材ID> --join`（1文ずつの 教材だけ）
  */
 
-import { readFileSync, writeFileSync, mkdirSync, existsSync, rmSync } from "node:fs";
+import { readFileSync, readdirSync, writeFileSync, mkdirSync, existsSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { joinPcm } from "../src/lib/audio/wav";
 import { buildFuriganaIndex } from "../src/lib/text/furigana";
@@ -329,6 +329,13 @@ async function makeSentences(activePlan: ListeningAudioPlan): Promise<void> {
 
   /** 文ごとの 結果（並び順に 入れる。同時に 作るので 終わる 順は ばらばら）。 */
   const done: ({ pcm: Uint8Array; record: SentenceRecord } | undefined)[] = [];
+  /**
+   * 使い回す 文から 切り出した 音（`01_2.wav` など。scripts/cut_sentence_parts.ts）。
+   * 元の 音が 変わらないので 切り出しも そのまま 使える——下で フォルダを 消したあと 置き直す。
+   * 置き直さないと、変えて いない 文の 切り出しまで 消え、音づくりの push が 検査で 止まる
+   *（2026-10-07 に 実発生。2文だけ 作り直したら 01_2・21_1-2・21_3 が 消えた）。
+   */
+  const keptParts = new Map<string, Buffer>();
 
   /*
    * **前の 回で できた 文は 作り直さない**（2026-09-16。3.8 が 4文目で 崩れる たびに、
@@ -343,6 +350,12 @@ async function makeSentences(activePlan: ListeningAudioPlan): Promise<void> {
       if (!now || now.text !== record.text || now.speaker !== record.speaker) continue;
       if (!existsSync(wav)) continue;
       done[at] = { pcm: readFileSync(wav).subarray(44), record };
+      const prefix = `${record.file.replace(/\.wav$/, "")}_`;
+      for (const name of readdirSync(sentenceDir)) {
+        if (name.startsWith(prefix) && name.endsWith(".wav")) {
+          keptParts.set(name, readFileSync(join(sentenceDir, name)));
+        }
+      }
     }
     const kept = done.filter(Boolean).length;
     console.log(`前の 回で できて いる ${kept}文は そのまま 使います`);
@@ -454,6 +467,7 @@ async function makeSentences(activePlan: ListeningAudioPlan): Promise<void> {
   rmSync(sentenceDir, { recursive: true, force: true });
   mkdirSync(sentenceDir, { recursive: true });
   for (const one of made) writeFileSync(join(sentenceDir, one.record.file), toWav(one.pcm));
+  for (const [name, bytes] of keptParts) writeFileSync(join(sentenceDir, name), bytes);
   const manifest: Manifest = {
     listeningId,
     gapSeconds: activePlan.gapSeconds,
