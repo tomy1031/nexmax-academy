@@ -128,11 +128,15 @@ export async function saveQuizResults({
  * `ignoreDuplicates: true` は必須。既定の upsert は ON CONFLICT DO UPDATE を生み、
  * update 権限を要求する——この表に update ポリシーは **わざと置いていない**ので、
  * 既定のままだと RLS に黙って全部落とされる。
+ *
+ * 返り値は **入ったか**（入れる 行が 無い・デモモードは false）。書きこみフォームは
+ * 「保存しました」と 言う 前に これを 見る（`src/lib/answers/form-answers-db.ts`）。
+ * ほかの 書き手は 待たない ので 捨てて よい。
  */
-export async function insertQuizResultRows(rows: readonly QuizResultRow[]): Promise<void> {
-  if (rows.length === 0) return;
+export async function insertQuizResultRows(rows: readonly QuizResultRow[]): Promise<boolean> {
+  if (rows.length === 0) return false;
   const supabase = createClient();
-  if (!supabase) return;
+  if (!supabase) return false;
 
   const { error } = await supabase
     .from(TABLE)
@@ -143,7 +147,9 @@ export async function insertQuizResultRows(rows: readonly QuizResultRow[]): Prom
     // （try/catch で 囲んでも 入らない）。先生の 画面が 空のままなら、まず ここを 見る。
     // 学習者の 画面は 止めない（ここで throw しない）。
     console.warn("[quiz-results] 記録できませんでした:", error.message);
+    return false;
   }
+  return true;
 }
 
 /**

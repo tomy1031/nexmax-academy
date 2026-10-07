@@ -1068,6 +1068,21 @@ export function collectLabeledTexts(content: Content): LabeledText[] {
             push(at("text"), block.text);
             (block.badges ?? []).forEach((badge, j) => push(at(`badges[${j}]`), badge));
             break;
+          /*
+           * 書きこみフォーム。見出し・欄の 名前・型・「ない」の 言い方は どれも 画面に 出る
+           *（`form-block.tsx` が RubyText で 出す）。`id` は 記録の 鍵で 学習者は 読まない。
+           */
+          case "form":
+            push(at("title"), block.title);
+            push(at("historyTitle"), block.historyTitle);
+            block.fields.forEach((field, j) => {
+              const item = (name: string) => at(`fields[${j}].${name}`);
+              push(item("label"), field.label);
+              push(item("title"), field.title);
+              push(item("template"), field.template);
+              push(item("none"), field.none);
+            });
+            break;
         }
       });
       break;

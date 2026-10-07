@@ -909,5 +909,106 @@ function BlockEditor({
           />
         </div>
       );
+
+    /*
+     * 書きこみフォーム。型の `＿` が 書く ところ（すぐ あとが ％ なら 数字だけ）。
+     * **欄の id は 記録の 鍵**——学習者が 保存した あとに 変えると、前の 記録と
+     * 新しい 記録が 先生の 表で 別の 問いに 分かれる。
+     */
+    case "form": {
+      const patchField = (index: number, next: Partial<(typeof block.fields)[number]>) =>
+        onChange({
+          ...block,
+          fields: replaceAt(block.fields, index, { ...block.fields[index]!, ...next }),
+        });
+      return (
+        <div className="space-y-3">
+          <div className="grid gap-3 sm:grid-cols-2">
+            <TextField
+              label="見出し（なくてもよい）"
+              value={block.title ?? ""}
+              onChange={(title) =>
+                onChange({ ...block, title: title.length > 0 ? title : undefined })
+              }
+            />
+            <TextField
+              label="下の 一覧の 見出し（なくてもよい）"
+              value={block.historyTitle ?? ""}
+              onChange={(historyTitle) =>
+                onChange({
+                  ...block,
+                  historyTitle: historyTitle.length > 0 ? historyTitle : undefined,
+                })
+              }
+            />
+          </div>
+          {block.fields.map((field, index) => (
+            <div key={index} className="border-hairline space-y-2 rounded-xl border-2 bg-white p-2">
+              <div className="flex flex-wrap items-end gap-2">
+                <div className="w-28">
+                  <TextField
+                    label="記録の id"
+                    value={field.id}
+                    onChange={(id) => patchField(index, { id })}
+                  />
+                </div>
+                <div className="w-20">
+                  <TextField
+                    label="札"
+                    value={field.label ?? ""}
+                    onChange={(label) =>
+                      patchField(index, { label: label.length > 0 ? label : undefined })
+                    }
+                  />
+                </div>
+                <div className="min-w-[10rem] flex-1">
+                  <TextField
+                    label="欄の 名前"
+                    value={field.title}
+                    onChange={(title) => patchField(index, { title })}
+                  />
+                </div>
+                <RowTools
+                  index={index}
+                  count={block.fields.length}
+                  label="欄"
+                  onMove={(delta) =>
+                    onChange({ ...block, fields: moveItem(block.fields, index, delta) })
+                  }
+                  onRemove={() => onChange({ ...block, fields: removeAt(block.fields, index) })}
+                />
+              </div>
+              <TextField
+                label="型（＿ が 書く ところ。＿ の すぐ あとが ％ なら 数字だけ）"
+                value={field.template}
+                onChange={(template) => patchField(index, { template })}
+              />
+              <TextField
+                label="「ない」ときの 言い方（なくてもよい。例: 問題は ありません。）"
+                value={field.none ?? ""}
+                onChange={(none) => patchField(index, { none: none.length > 0 ? none : undefined })}
+              />
+            </div>
+          ))}
+          <MiniButton
+            tone="accent"
+            onClick={() => {
+              const used = new Set(block.fields.map((field) => field.id));
+              let n = block.fields.length + 1;
+              while (used.has(`f${n}`)) n += 1;
+              onChange({
+                ...block,
+                fields: [
+                  ...block.fields,
+                  { id: `f${n}`, title: "書く こと", template: "＿＿＿＿します。" },
+                ],
+              });
+            }}
+          >
+            ＋ 欄を 追加
+          </MiniButton>
+        </div>
+      );
+    }
   }
 }

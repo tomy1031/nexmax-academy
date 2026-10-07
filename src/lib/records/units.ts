@@ -41,6 +41,7 @@ import {
   listWordStages,
 } from "@/lib/content";
 import { LINK_ANSWER_PROMPTS } from "@/content/link-answers";
+import { formPrompt } from "@/lib/answers/form-answers";
 import { sortStages } from "@/lib/map-data";
 
 /** 1つの 教材（＝記録の id が 指す もの）。 */
@@ -133,6 +134,17 @@ export async function loadUnitIndex(): Promise<UnitIndex> {
   for (const [linkId, questions] of Object.entries(LINK_ANSWER_PROMPTS)) {
     for (const [questionId, text] of Object.entries(questions)) {
       prompts[`${linkId}:${questionId}`] = text;
+    }
+  }
+  /*
+   * ページ（article）の 書きこみフォーム。問いは 欄の 札＋名前（「① きのう したこと」）。
+   * 記録の `quiz_set_id` が 記事の id なので、鍵の 形は もんだいと 同じ に なる
+   *（保存は `src/lib/answers/form-answers-db.ts`）。
+   */
+  for (const article of articles) {
+    for (const block of article.blocks) {
+      if (block.kind !== "form") continue;
+      for (const field of block.fields) prompts[`${article.id}:${field.id}`] = formPrompt(field);
     }
   }
 
