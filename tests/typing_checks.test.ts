@@ -165,15 +165,11 @@ describe("数字・英字の 語も かなで 当たる（台帳 src/content/lis
   it("朝礼: 80％ は はちじっぱーせんと・80パーセント でも、Slack は すらっく でも 当たる", () => {
     const at = load("chourei").sentences.findIndex((item) => item.text.includes("80％"));
     expect(
-      judge(
-        "chourei",
-        at,
-        "しょうひんしょうさいきのう ぜんたいの しんちょくは、はちじっぱーせんとです。",
-      ),
+      judge("chourei", at, "しょうひんしょうさいきのうの しんちょくは、はちじっぱーせんとです。"),
     ).toEqual({
       ok: true,
     });
-    expect(judge("chourei", at, "商品詳細機能全体の進捗は、80パーセントです。")).toEqual({
+    expect(judge("chourei", at, "商品詳細機能の進捗は、80パーセントです。")).toEqual({
       ok: true,
     });
     const last = load("chourei").sentences.length - 1;

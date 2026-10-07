@@ -34,13 +34,12 @@
       ]
     },
     {
-      "text": "商品詳細機能全体の進捗は、80％です。",
-      "en": "The overall progress of the product detail feature is 80%.",
+      "text": "商品詳細機能の進捗は、80％です。",
+      "en": "The progress of the product detail feature is 80%.",
       "wordIds": [
         "shouhin",
         "shousai",
         "kinou",
-        "zentai",
         "sinchoku"
       ]
     },
@@ -70,13 +69,12 @@
       ]
     },
     {
-      "text": "商品検索機能全体の進捗は、60％です。",
-      "en": "The overall progress of the product search feature is 60%.",
+      "text": "商品検索機能の進捗は、60％です。",
+      "en": "The progress of the product search feature is 60%.",
       "wordIds": [
         "shouhin",
         "kensaku",
         "kinou",
-        "zentai",
         "sinchoku"
       ]
     },
@@ -238,10 +236,6 @@
     [
       "機能",
       "きのう"
-    ],
-    [
-      "全体",
-      "ぜんたい"
     ],
     [
       "進捗",
