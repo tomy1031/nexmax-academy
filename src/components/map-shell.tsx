@@ -25,6 +25,7 @@ import {
   type PersonalityFamilyId,
   type PersonalityTypeCode,
 } from "@/content/personality";
+import { useGroupVisibility, visibleMapAreas, visibleMapStages } from "@/lib/group-visibility";
 import { contentKindMeta } from "@/lib/content-kinds";
 import { hasLearnerNames } from "@/lib/name";
 import { isSchoolChosen } from "@/lib/school";
@@ -1400,9 +1401,9 @@ function CardsView({
 }
 
 export function MapShell({
-  routeAreas,
+  routeAreas: allAreas,
   goalArea,
-  stages,
+  stages: allStages,
 }: {
   /** 道のりのエリア（ゴールを除く）。既定 ∪ スタジオで作ったステージ。 */
   routeAreas: readonly MapArea[];
@@ -1412,6 +1413,13 @@ export function MapShell({
   stages: readonly MapStage[];
 }) {
   const router = useRouter();
+  /*
+   * 組ごとに 隠した ステージ・教材を 抜く（願い #589）。ここから 下は ぜんぶ 抜いた
+   * あとの 並びで 数える——現在地・進み具合・💎・「つづきから」が 見えない もの を 数えない。
+   */
+  const visibility = useGroupVisibility();
+  const stages = useMemo(() => visibleMapStages(allStages, visibility), [allStages, visibility]);
+  const routeAreas = useMemo(() => visibleMapAreas(allAreas, visibility), [allAreas, visibility]);
   const stageById = useMemo(() => new Map(stages.map((stage) => [stage.id, stage])), [stages]);
   const rawProfile = useSyncExternalStore(
     subscribeToStorage,
