@@ -1,0 +1,35 @@
+name: nexmax-kanji 動画の 音声（一時ブランチ）
+
+# ネクマックスの漢字アドベンチャーの 宣伝・あそびかた動画の ナレーションを
+# Gemini 3.8 Flash TTS で 作る。鍵は Environment「Preview」の Secrets にだけ あるので、
+# この 一時ブランチで 回して、音は artifact で 受け取る。作業が 終わったら ブランチごと 消す。
+on:
+  push:
+    branches: ['tts/nexmax-kanji-videos']
+
+concurrency:
+  group: nexmax-kanji-tts
+  cancel-in-progress: false
+
+jobs:
+  tts:
+    runs-on: ubuntu-latest
+    environment: Preview
+    timeout-minutes: 45
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: 音を つくる
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: node tts/gen.mjs tts/jobs.json out
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: tts-out
+          path: out
+          retention-days: 7
