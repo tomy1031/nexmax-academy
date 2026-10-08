@@ -20,6 +20,7 @@
 import {
   aiGroupOf,
   decideAiGate,
+  parseExceptions,
   parseWindows,
   type AiGateClosed,
   type AiGlobalSettings,
@@ -89,6 +90,8 @@ export interface AiCheckContext {
     university: string;
     cohort: number;
     windows: unknown;
+    /** 日付の 例外（列を 足す 前の 行・古い 窓口では 無い）。 */
+    exceptions?: unknown;
     override: string;
     override_until: string | null;
   } | null;
@@ -219,6 +222,7 @@ function ruleOf(context: AiCheckContext): AiGroupRule | null {
     university: row.university,
     cohort: row.cohort,
     windows: parseWindows(row.windows),
+    exceptions: parseExceptions(row.exceptions),
     override,
     overrideUntil: row.override_until,
   };

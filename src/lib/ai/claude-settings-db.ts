@@ -1,7 +1,9 @@
 import { createClient } from "@/lib/supabase/client";
 import { requireOwnId } from "@/lib/supabase/claims";
 import {
+  parseExceptions,
   parseWindows,
+  type AiDateException,
   type AiGlobalSettings,
   type AiGroupRule,
   type AiOverride,
@@ -69,13 +71,14 @@ export async function saveAiSettings(next: AiGlobalSettings): Promise<void> {
 export async function fetchAiRules(): Promise<AiGroupRule[]> {
   const { data, error } = await client()
     .from("ai_windows")
-    .select("university, cohort, windows, override, override_until");
+    .select("university, cohort, windows, exceptions, override, override_until");
   if (error) throw error;
   return (
     (data ?? []) as {
       university: string;
       cohort: number;
       windows: unknown;
+      exceptions: unknown;
       override: string;
       override_until: string | null;
     }[]
@@ -83,6 +86,7 @@ export async function fetchAiRules(): Promise<AiGroupRule[]> {
     university: row.university,
     cohort: row.cohort,
     windows: parseWindows(row.windows),
+    exceptions: parseExceptions(row.exceptions),
     override: (["on", "off"].includes(row.override) ? row.override : "auto") as AiOverride,
     overrideUntil: row.override_until,
   }));
@@ -92,6 +96,7 @@ export async function saveAiRule(rule: {
   university: string;
   cohort: number;
   windows: readonly AiWindow[];
+  exceptions: readonly AiDateException[];
   override: AiOverride;
   overrideUntil: string | null;
 }): Promise<void> {
@@ -101,6 +106,7 @@ export async function saveAiRule(rule: {
     university: rule.university,
     cohort: rule.cohort,
     windows: rule.windows,
+    exceptions: rule.exceptions,
     override: rule.override,
     override_until: rule.override === "auto" ? null : rule.overrideUntil,
     updated_by: updatedBy,

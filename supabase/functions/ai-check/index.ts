@@ -73,7 +73,7 @@ Deno.serve((request) =>
           ? { data: null }
           : await admin
               .from("ai_windows")
-              .select("university, cohort, windows, override, override_until")
+              .select("university, cohort, windows, exceptions, override, override_until")
               .eq("university", university)
               .eq("cohort", cohort)
               .maybeSingle();

@@ -14,6 +14,11 @@
  * - 授業は 火・水・金 17:30〜19:00。**時間は 大学 × 期生ごとに 先生が 決める**
  * - **設定の 無い 組は 常に 使えない**。大学・期生を まだ 選んで いない 人も 使えない
  * - 時刻は **カンボジア時間**（UTC+7・夏時間なし）。生徒の 端末の 時計は 信じない
+ * - **日に よって 時間が ちがう ことも ある**（同日の 指定「日によって違う可能性も0ではない
+ *   ので、入力に柔軟性を持たせてください」）。だから 2段で 持つ:
+ *   1. 曜日ごとの 時間わく（`windows`）… 曜日ごとに ちがう 時間・1日に 何回でも
+ *   2. 日付の 例外（`exceptions`）… **その 日だけは 曜日の わくを 使わない**。
+ *      「この 日は なし」か「この 日だけ この 時間」
  */
 
 /** 時間わく 1本（カンボジア時間）。 */
@@ -26,6 +31,18 @@ export interface AiWindow {
   readonly end: string;
 }
 
+/**
+ * 日付の 例外 1つ（カンボジア時間の 日付）。
+ * はじめ・おわりが 無ければ「その 日は なし」。ある ときは「その 日だけ この 時間」。
+ * 同じ 日付に 何本 置いても よい（その 日に 2回 授業が ある とき）。
+ */
+export interface AiDateException {
+  /** "2026-10-14"。 */
+  readonly date: string;
+  readonly start?: string;
+  readonly end?: string;
+}
+
 export type AiOverride = "auto" | "on" | "off";
 
 /** 組（大学 × 期生）ごとの 決まり。`ai_windows` の 1行。 */
@@ -33,6 +50,8 @@ export interface AiGroupRule {
   readonly university: string;
   readonly cohort: number;
   readonly windows: readonly AiWindow[];
+  /** 日付の 例外。無い 組は 空。 */
+  readonly exceptions: readonly AiDateException[];
   readonly override: AiOverride;
   /** 手動の 期限（ISO）。過ぎたら auto に もどる。null は 期限なし。 */
   readonly overrideUntil: string | null;
@@ -68,6 +87,12 @@ const PHNOM_PENH_OFFSET_MINUTES = 7 * 60;
 export function phnomPenhClock(now: Date): { day: number; minutes: number } {
   const local = new Date(now.getTime() + PHNOM_PENH_OFFSET_MINUTES * 60_000);
   return { day: local.getUTCDay(), minutes: local.getUTCHours() * 60 + local.getUTCMinutes() };
+}
+
+/** カンボジア時間の 日付（"2026-10-14"）。 */
+export function phnomPenhDate(now: Date): string {
+  const local = new Date(now.getTime() + PHNOM_PENH_OFFSET_MINUTES * 60_000);
+  return local.toISOString().slice(0, 10);
 }
 
 /** カンボジア時間の 今月の 1日 0時（UTC の 時刻で 返す）。今月の 使用額の 区切り。 */
@@ -121,6 +146,61 @@ export function parseWindows(raw: unknown): AiWindow[] {
   return out;
 }
 
+/**
+ * DB の `exceptions`（jsonb）を 読む。**崩れた ものは 落とす**。
+ * 時刻が 片方だけ・はじめ ≧ おわり の ものは 開く 側に 倒さず 捨てる。
+ */
+export function parseExceptions(raw: unknown): AiDateException[] {
+  if (!Array.isArray(raw)) return [];
+  const out: AiDateException[] = [];
+  for (const one of raw) {
+    if (!one || typeof one !== "object") continue;
+    const bag = one as { date?: unknown; start?: unknown; end?: unknown };
+    if (typeof bag.date !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(bag.date)) continue;
+    const hasStart = typeof bag.start === "string" && bag.start.trim() !== "";
+    const hasEnd = typeof bag.end === "string" && bag.end.trim() !== "";
+    if (!hasStart && !hasEnd) {
+      out.push({ date: bag.date });
+      continue;
+    }
+    if (!hasStart || !hasEnd) continue;
+    const start = clockMinutes(bag.start as string);
+    const end = clockMinutes(bag.end as string);
+    if (start === null || end === null || start >= end) continue;
+    out.push({
+      date: bag.date,
+      start: (bag.start as string).trim(),
+      end: (bag.end as string).trim(),
+    });
+  }
+  return out.sort(
+    (a, b) => a.date.localeCompare(b.date) || (a.start ?? "").localeCompare(b.start ?? ""),
+  );
+}
+
+/**
+ * いま 授業の 時間か（曜日の わく ＋ 日付の 例外）。
+ *
+ * **その 日に 例外が 1つでも あれば、曜日の わくは 見ない**——「この 日だけ 15:00〜」と
+ * 書いたのに いつもの 17:30〜 も 開いて いたら、例外の 意味が 無い。
+ * その 日の 例外が「なし」だけなら 一日中 閉じる。
+ */
+export function insideSchedule(
+  rule: Pick<AiGroupRule, "windows" | "exceptions">,
+  now: Date,
+): boolean {
+  const today = phnomPenhDate(now);
+  const todays = rule.exceptions.filter((one) => one.date === today);
+  if (todays.length === 0) return insideWindows(rule.windows, now);
+  const { minutes } = phnomPenhClock(now);
+  return todays.some((one) => {
+    if (one.start === undefined || one.end === undefined) return false;
+    const start = clockMinutes(one.start);
+    const end = clockMinutes(one.end);
+    return start !== null && end !== null && minutes >= start && minutes < end;
+  });
+}
+
 /** 時間わくの どれかに 入って いるか（はじめ ≦ いま ＜ おわり）。 */
 export function insideWindows(windows: readonly AiWindow[], now: Date): boolean {
   const { day, minutes } = phnomPenhClock(now);
@@ -162,7 +242,7 @@ export function ruleOpenNow(rule: AiGroupRule, now: Date): boolean {
   const override = effectiveOverride(rule, now);
   if (override === "on") return true;
   if (override === "off") return false;
-  return insideWindows(rule.windows, now);
+  return insideSchedule(rule, now);
 }
 
 /**
@@ -189,7 +269,7 @@ export function decideAiGate(input: {
   if (!input.rule) return { open: false, reason: "noRule" };
   const override = effectiveOverride(input.rule, input.now);
   if (override === "off") return { open: false, reason: "off" };
-  if (override === "auto" && !insideWindows(input.rule.windows, input.now)) {
+  if (override === "auto" && !insideSchedule(input.rule, input.now)) {
     return { open: false, reason: "outside" };
   }
   if (input.monthCostUsd >= input.settings.monthlyBudgetUsd) {

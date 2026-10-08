@@ -8,9 +8,11 @@ import {
   AI_STAFF_AFFILIATION,
   clockMinutes,
   effectiveOverride,
+  phnomPenhDate,
   phnomPenhMonthStart,
   phnomPenhNextMidnight,
   ruleOpenNow,
+  type AiDateException,
   type AiGroupRule,
   type AiWindow,
 } from "@/lib/ai/claude-gate";
@@ -53,6 +55,9 @@ import { createClient } from "@/lib/supabase/client";
  * 大学、○期生ごとに設定できる。設定のないものは常時使用不可」。
  *
  * - 時刻は **カンボジア時間**。判定は AIを 呼ぶ 関数が する（`src/lib/ai/claude-gate.ts`）
+ * - **曜日ごとに ちがう 時間**と、**その 日だけの 例外**（なし／この 時間）を 入れられる
+ *  （同日の 指定「日によって違う可能性も0ではないので、入力に柔軟性を持たせてください」）。
+ *   新しい 組を 開いた ときは 何も 入れて おかない——どの 組も 同じ 時間に 見えない ように
  * - 使えない ときも 学習者は 止まらない（いまの 動き＝Gemini／お手本に 落ちる）
  * - 認可は ここでは 決めない。画面は 入口を 隠すだけで、関所は RLS（`public.is_admin()`）
  */
@@ -342,8 +347,14 @@ export function ClassSettings({ stages }: { stages: readonly ClassStage[] }) {
                 <p className="text-ink mt-1 text-sm font-bold">
                   {rule && rule.windows.length > 0
                     ? rule.windows.map(windowText).join(" ／ ")
-                    : "時間わくは まだ ありません"}
+                    : "曜日の 時間は まだ ありません"}
                 </p>
+                {rule && upcomingExceptions(rule.exceptions, now).length > 0 ? (
+                  <p className="text-ink-soft mt-0.5 text-xs font-bold">
+                    この 日だけ:{" "}
+                    {upcomingExceptions(rule.exceptions, now).map(exceptionText).join(" ／ ")}
+                  </p>
+                ) : null}
                 <p className="text-ink-soft mt-0.5 text-xs font-bold" data-visibility={key}>
                   表示: {visibilityText(visibilityOf(group))}
                 </p>
@@ -368,6 +379,7 @@ export function ClassSettings({ stages }: { stages: readonly ClassStage[] }) {
                           university: group.university,
                           cohort: group.cohort,
                           windows: rule?.windows ?? [],
+                          exceptions: rule?.exceptions ?? [],
                           override: "on",
                           overrideUntil: new Date(
                             Date.now() + MANUAL_ON_HOURS * 60 * 60_000,
@@ -408,16 +420,18 @@ export function ClassSettings({ stages }: { stages: readonly ClassStage[] }) {
                   ) : null}
                 </div>
                 {editing === key ? (
-                  <WindowEditor
-                    initial={rule?.windows ?? []}
+                  <ScheduleEditor
+                    initialWindows={rule?.windows ?? []}
+                    initialExceptions={rule?.exceptions ?? []}
                     saving={saving}
                     canDelete={rule !== undefined}
-                    onSave={(windows) =>
+                    onSave={(windows, exceptions) =>
                       void run(`${groupName(group)}の 時間を 保存しました`, async () => {
                         await saveAiRule({
                           university: group.university,
                           cohort: group.cohort,
                           windows,
+                          exceptions,
                           override: rule?.override ?? "auto",
                           overrideUntil: rule?.overrideUntil ?? null,
                         });
@@ -628,106 +642,347 @@ function GlobalCard({
   );
 }
 
-function WindowEditor({
-  initial,
+/** 今日と それより 後の 例外（過ぎた 日は 出さない）。 */
+function upcomingExceptions(exceptions: readonly AiDateException[], now: Date): AiDateException[] {
+  const today = phnomPenhDate(now);
+  return exceptions.filter((one) => one.date >= today);
+}
+
+/** "2026-10-14" → "10/14"。 */
+function shortDate(date: string): string {
+  const [, month, day] = date.split("-");
+  return `${Number(month)}/${Number(day)}`;
+}
+
+function exceptionText(one: AiDateException): string {
+  return one.start && one.end
+    ? `${shortDate(one.date)} ${one.start}〜${one.end}`
+    : `${shortDate(one.date)} なし`;
+}
+
+/** 1つの 時間（はじめ〜おわり）。 */
+interface Slot {
+  readonly start: string;
+  readonly end: string;
+}
+
+/** 例外の 入力中の 形（「なし」と「この 時間」を 切りかえる）。 */
+interface ExceptionDraft {
+  readonly date: string;
+  readonly mode: "none" | "time";
+  readonly start: string;
+  readonly end: string;
+}
+
+const EMPTY_SLOT: Slot = { start: "17:30", end: "19:00" };
+
+function slotProblem(slot: Slot): string {
+  const start = clockMinutes(slot.start);
+  const end = clockMinutes(slot.end);
+  if (start === null || end === null) return "時刻を 入れて ください";
+  if (start >= end) return "おわりは はじめより 後に して ください";
+  return "";
+}
+
+/** 曜日ごとの わく（windows）を、曜日 → 時間の 並び に ほどく。 */
+function slotsByDay(windows: readonly AiWindow[]): Record<number, Slot[]> {
+  const out: Record<number, Slot[]> = {};
+  for (const window of windows) {
+    for (const day of window.days) {
+      (out[day] ??= []).push({ start: window.start, end: window.end });
+    }
+  }
+  for (const day of Object.keys(out)) {
+    out[Number(day)]!.sort((a, b) => a.start.localeCompare(b.start));
+  }
+  return out;
+}
+
+/**
+ * 曜日 → 時間 を わく（windows）に もどす。**同じ 時間の 曜日は 1つの わくに まとめる**
+ *（一覧の 1行が「火・水・金 17:30〜19:00」と 読める ように）。
+ */
+function windowsFromDays(byDay: Record<number, Slot[]>): AiWindow[] {
+  const grouped = new Map<string, number[]>();
+  for (const day of DAYS.map((one) => one.value)) {
+    for (const slot of byDay[day] ?? []) {
+      const key = `${slot.start}-${slot.end}`;
+      grouped.set(key, [...(grouped.get(key) ?? []), day]);
+    }
+  }
+  return [...grouped.entries()]
+    .map(([key, days]) => {
+      const [start = "", end = ""] = key.split("-");
+      return { days: [...new Set(days)].sort((a, b) => a - b), start, end };
+    })
+    .sort((a, b) => (a.days[0] ?? 0) - (b.days[0] ?? 0) || a.start.localeCompare(b.start));
+}
+
+/**
+ * 時間を 決める（曜日ごと ＋ その 日だけ）。
+ *
+ * - **曜日ごと**: 曜日を 押すと その 曜日が 入り、時間を 入れる。1日に 2回 ある ときは
+ *   「もう 1つ」。曜日ごとに ちがう 時間で よい
+ * - **その 日だけ**: 日付を えらび「なし」か「この 時間」。その 日は 曜日の 時間を 見ない
+ * - 新しい 組は 空から 始める（決まった 時間を 先に 入れない）。いつもの 授業は
+ *   ボタン 1つで 入れられる
+ */
+export function ScheduleEditor({
+  initialWindows,
+  initialExceptions,
   saving,
   canDelete,
   onSave,
   onDelete,
 }: {
-  initial: readonly AiWindow[];
+  initialWindows: readonly AiWindow[];
+  initialExceptions: readonly AiDateException[];
   saving: boolean;
   canDelete: boolean;
-  onSave: (windows: AiWindow[]) => void;
+  onSave: (windows: AiWindow[], exceptions: AiDateException[]) => void;
   onDelete: () => void;
 }) {
-  const [windows, setWindows] = useState<AiWindow[]>(() =>
-    initial.length > 0 ? initial.map((one) => ({ ...one, days: [...one.days] })) : [CLASS_PRESET],
+  const [byDay, setByDay] = useState<Record<number, Slot[]>>(() => slotsByDay(initialWindows));
+  const [today] = useState(() => phnomPenhDate(new Date()));
+  const [exceptions, setExceptions] = useState<ExceptionDraft[]>(() =>
+    initialExceptions
+      .filter((one) => one.date >= today)
+      .map((one) => ({
+        date: one.date,
+        mode: one.start && one.end ? "time" : "none",
+        start: one.start ?? EMPTY_SLOT.start,
+        end: one.end ?? EMPTY_SLOT.end,
+      })),
   );
-  const problems = windows.map((window) => {
-    const start = clockMinutes(window.start);
-    const end = clockMinutes(window.end);
-    if (window.days.length === 0) return "曜日を 1つ 以上 えらんで ください";
-    if (start === null || end === null) return "時刻を 入れて ください";
-    if (start >= end) return "おわりは はじめより 後に して ください";
-    return "";
+
+  const setDay = (day: number, slots: Slot[]) =>
+    setByDay((all) => {
+      const next = { ...all };
+      if (slots.length === 0) delete next[day];
+      else next[day] = slots;
+      return next;
+    });
+  const updateException = (index: number, next: ExceptionDraft) =>
+    setExceptions((all) => all.map((one, at) => (at === index ? next : one)));
+
+  const dayProblems = Object.values(byDay)
+    .flat()
+    .map(slotProblem)
+    .filter((one) => one !== "");
+  const exceptionProblems = exceptions.map((one) => {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(one.date)) return "日付を えらんで ください";
+    if (one.date < today) return "過ぎた 日付です";
+    return one.mode === "time" ? slotProblem(one) : "";
   });
-  const valid = problems.every((one) => one === "");
-  const update = (index: number, next: AiWindow) =>
-    setWindows((all) => all.map((one, at) => (at === index ? next : one)));
+  const valid = dayProblems.length === 0 && exceptionProblems.every((one) => one === "");
+  const empty = Object.keys(byDay).length === 0 && exceptions.length === 0;
 
   return (
     <div className="bg-panel-tint mt-3 rounded-xl px-4 py-3">
-      {windows.map((window, index) => (
-        <div key={index} className="border-hairline mb-3 rounded-lg border-2 bg-white px-3 py-2">
-          <div className="flex flex-wrap gap-1.5">
-            {DAYS.map((day) => {
-              const on = window.days.includes(day.value);
-              return (
-                <button
-                  key={day.value}
-                  type="button"
-                  aria-pressed={on}
-                  onClick={() =>
-                    update(index, {
-                      ...window,
-                      days: on
-                        ? window.days.filter((value) => value !== day.value)
-                        : [...window.days, day.value],
-                    })
+      <h3 className="text-navy text-sm font-black">曜日ごとの 時間</h3>
+      <p className="text-ink-soft text-xs font-bold">
+        曜日を 押して 入れます。曜日ごとに ちがう 時間で だいじょうぶです。
+      </p>
+      <ul className="mt-2 grid gap-1.5">
+        {DAYS.map((day) => {
+          const slots = byDay[day.value] ?? [];
+          const on = slots.length > 0;
+          return (
+            <li
+              key={day.value}
+              className="border-hairline flex flex-wrap items-start gap-2 rounded-lg border-2 bg-white px-2 py-1.5"
+            >
+              <button
+                type="button"
+                aria-pressed={on}
+                onClick={() => setDay(day.value, on ? [] : [{ ...EMPTY_SLOT }])}
+                className={`h-8 w-8 shrink-0 rounded-full text-sm font-black ${
+                  on ? "bg-navy text-white" : "border-hairline text-navy border-2 bg-white"
+                }`}
+              >
+                {day.label}
+              </button>
+              {on ? (
+                <div className="grid gap-1">
+                  {slots.map((slot, index) => (
+                    <div
+                      key={index}
+                      className="flex flex-wrap items-center gap-1.5 text-sm font-bold"
+                    >
+                      <input
+                        type="time"
+                        aria-label={`${day.label} はじめ`}
+                        value={slot.start}
+                        onChange={(event) =>
+                          setDay(
+                            day.value,
+                            slots.map((one, at) =>
+                              at === index ? { ...one, start: event.target.value } : one,
+                            ),
+                          )
+                        }
+                        className="border-hairline rounded-lg border-2 px-2 py-0.5"
+                      />
+                      〜
+                      <input
+                        type="time"
+                        aria-label={`${day.label} おわり`}
+                        value={slot.end}
+                        onChange={(event) =>
+                          setDay(
+                            day.value,
+                            slots.map((one, at) =>
+                              at === index ? { ...one, end: event.target.value } : one,
+                            ),
+                          )
+                        }
+                        className="border-hairline rounded-lg border-2 px-2 py-0.5"
+                      />
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setDay(
+                            day.value,
+                            slots.filter((_, at) => at !== index),
+                          )
+                        }
+                        className="text-ink-soft text-xs font-bold underline"
+                      >
+                        消す
+                      </button>
+                      {slotProblem(slot) ? (
+                        <span className="text-xs font-bold text-[#b42318]">
+                          {slotProblem(slot)}
+                        </span>
+                      ) : null}
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => setDay(day.value, [...slots, { ...EMPTY_SLOT }])}
+                    className="text-navy w-fit text-xs font-bold underline"
+                  >
+                    この 曜日に もう 1つ
+                  </button>
+                </div>
+              ) : (
+                <span className="text-ink-faint self-center text-xs font-bold">なし</span>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+      <div className="mt-2 flex flex-wrap gap-2">
+        <SmallButton
+          onClick={() =>
+            setByDay((all) => {
+              const next = { ...all };
+              for (const day of CLASS_PRESET.days) {
+                next[day] = [{ start: CLASS_PRESET.start, end: CLASS_PRESET.end }];
+              }
+              return next;
+            })
+          }
+        >
+          火・水・金 17:30〜19:00 を 入れる
+        </SmallButton>
+        <SmallButton onClick={() => setByDay({})}>曜日を ぜんぶ 空に する</SmallButton>
+      </div>
+
+      <h3 className="text-navy mt-4 text-sm font-black">この 日だけ（休み・時間が ちがう 日）</h3>
+      <p className="text-ink-soft text-xs font-bold">
+        その 日は 曜日の 時間を 使いません。「なし」か「この 時間」を えらびます。
+      </p>
+      <ul className="mt-2 grid gap-1.5">
+        {exceptions.map((one, index) => (
+          <li
+            key={index}
+            className="border-hairline flex flex-wrap items-center gap-2 rounded-lg border-2 bg-white px-2 py-1.5 text-sm font-bold"
+          >
+            <input
+              type="date"
+              aria-label="日付"
+              value={one.date}
+              min={today}
+              onChange={(event) => updateException(index, { ...one, date: event.target.value })}
+              className="border-hairline rounded-lg border-2 px-2 py-0.5"
+            />
+            <select
+              aria-label="その 日"
+              value={one.mode}
+              onChange={(event) =>
+                updateException(index, {
+                  ...one,
+                  mode: event.target.value === "time" ? "time" : "none",
+                })
+              }
+              className="border-hairline rounded-lg border-2 px-2 py-0.5"
+            >
+              <option value="none">なし（使えない）</option>
+              <option value="time">この 時間だけ</option>
+            </select>
+            {one.mode === "time" ? (
+              <>
+                <input
+                  type="time"
+                  aria-label="その 日の はじめ"
+                  value={one.start}
+                  onChange={(event) =>
+                    updateException(index, { ...one, start: event.target.value })
                   }
-                  className={`h-8 w-8 rounded-full text-sm font-black ${
-                    on ? "bg-navy text-white" : "border-hairline text-navy border-2 bg-white"
-                  }`}
-                >
-                  {day.label}
-                </button>
-              );
-            })}
-          </div>
-          <div className="mt-2 flex flex-wrap items-center gap-2 text-sm font-bold">
-            <input
-              type="time"
-              aria-label="はじめ"
-              value={window.start}
-              onChange={(event) => update(index, { ...window, start: event.target.value })}
-              className="border-hairline rounded-lg border-2 px-2 py-1"
-            />
-            〜
-            <input
-              type="time"
-              aria-label="おわり"
-              value={window.end}
-              onChange={(event) => update(index, { ...window, end: event.target.value })}
-              className="border-hairline rounded-lg border-2 px-2 py-1"
-            />
+                  className="border-hairline rounded-lg border-2 px-2 py-0.5"
+                />
+                〜
+                <input
+                  type="time"
+                  aria-label="その 日の おわり"
+                  value={one.end}
+                  onChange={(event) => updateException(index, { ...one, end: event.target.value })}
+                  className="border-hairline rounded-lg border-2 px-2 py-0.5"
+                />
+              </>
+            ) : null}
             <button
               type="button"
-              onClick={() => setWindows((all) => all.filter((_, at) => at !== index))}
+              onClick={() => setExceptions((all) => all.filter((_, at) => at !== index))}
               className="text-ink-soft ml-auto text-xs font-bold underline"
             >
-              この わくを 消す
+              消す
             </button>
-          </div>
-          {problems[index] ? (
-            <p className="mt-1 text-xs font-bold text-[#b42318]">{problems[index]}</p>
-          ) : null}
-        </div>
-      ))}
-      <div className="flex flex-wrap gap-2">
-        <SmallButton onClick={() => setWindows((all) => [...all, { ...CLASS_PRESET }])}>
-          わくを 足す
-        </SmallButton>
-        <SmallButton onClick={() => setWindows([{ ...CLASS_PRESET }])}>
-          火・水・金 17:30〜19:00 に する
+            {exceptionProblems[index] ? (
+              <span className="w-full text-xs font-bold text-[#b42318]">
+                {exceptionProblems[index]}
+              </span>
+            ) : null}
+          </li>
+        ))}
+      </ul>
+      <div className="mt-2">
+        <SmallButton
+          onClick={() =>
+            setExceptions((all) => [
+              ...all,
+              { date: today, mode: "none", start: EMPTY_SLOT.start, end: EMPTY_SLOT.end },
+            ])
+          }
+        >
+          日付を 足す
         </SmallButton>
       </div>
-      <div className="mt-3 flex flex-wrap gap-3">
+
+      <div className="mt-4 flex flex-wrap gap-3">
         <button
           type="button"
-          disabled={saving || !valid || windows.length === 0}
+          disabled={saving || !valid || empty}
           onClick={() =>
-            onSave(windows.map((one) => ({ ...one, days: [...one.days].sort((a, b) => a - b) })))
+            onSave(
+              windowsFromDays(byDay),
+              exceptions.map((one) =>
+                one.mode === "time"
+                  ? { date: one.date, start: one.start, end: one.end }
+                  : { date: one.date },
+              ),
+            )
           }
           className="btn-game px-4 py-2 text-sm disabled:opacity-40"
         >
@@ -744,6 +999,11 @@ function WindowEditor({
           </button>
         ) : null}
       </div>
+      {empty ? (
+        <p className="text-ink-soft mt-1 text-xs font-bold">
+          曜日か 日付を 1つ 以上 入れると 保存できます。
+        </p>
+      ) : null}
     </div>
   );
 }
