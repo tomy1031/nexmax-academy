@@ -65,6 +65,11 @@ const GROUPS: readonly { title: string; items: readonly Item[] }[] = [
        * 先生が 全員ぶんを まとめて 外すための レバー（願い #333・#246）。
        */
       { href: "/admin/lock", icon: "🔓", label: "じゅんろの 鍵", match: "/admin/lock" },
+      /*
+       * AIの 時間。こたえの チェック（Claude）を 使える 時間を 大学 × 期生 ごとに 決める
+       *（願い #586）。設定の 無い 組は 使えない。
+       */
+      { href: "/admin/ai-time", icon: "⏰", label: "AIの 時間", match: "/admin/ai-time" },
     ],
   },
 ];
