@@ -1,0 +1,35 @@
+name: nexmax-kanji ネクマックスの 声（一時ブランチ）
+
+# ネクマックスの 声を デザインして、セリフを 読ませる（tts/gen.mjs, tts/voice.json）。
+# 大きい 読み上げ（nexmax-kanji-tts.yml）と 別に 回せる ように 分けて ある。
+on:
+  push:
+    branches: ['tts/nexmax-kanji-videos']
+    paths: ['tts/voice.json']
+
+concurrency:
+  group: nexmax-kanji-voice
+  cancel-in-progress: false
+
+jobs:
+  voice:
+    runs-on: ubuntu-latest
+    environment: Preview
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: 声
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: node tts/gen.mjs tts/voice.json out
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: voice-out
+          path: out
+          retention-days: 7

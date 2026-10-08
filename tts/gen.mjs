@@ -45,7 +45,7 @@ for (const [name, v] of Object.entries(jobs.voices || {})) {
   const { input, fallback, ...rest } = v.design;
   let r;
   try {
-    r = await call('/voices', { store: true, voice: { model: MODEL, type: 'prompted', ...rest, prompted: { input } } });
+    r = await call('/voices', { store: true, voice: { type: 'prompted', ...rest, prompted: { input } } });
   } catch (e) {
     console.error('  voice design failed, falling back to', fallback || 'Leda', e.message);
     voiceIds[name] = fallback || 'Leda';

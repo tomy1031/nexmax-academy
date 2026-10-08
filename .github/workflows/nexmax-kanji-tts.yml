@@ -8,6 +8,7 @@ name: nexmax-kanji 動画の 音声（一時ブランチ）
 on:
   push:
     branches: ['tts/nexmax-kanji-videos']
+    paths: ['tts/jobs.json', 'tts/live.json', 'tts/live.mjs']
 
 concurrency:
   group: nexmax-kanji-tts
