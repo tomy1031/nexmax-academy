@@ -27,7 +27,8 @@ import fs from "node:fs";
 import path from "node:path";
 
 /** バンドルに入ってはいけない環境変数。増えたらここに足す。 */
-const FORBIDDEN_AT_BUILD = ["SUPABASE_SERVICE_ROLE_KEY", "GEMINI_API_KEY"];
+// ANTHROPIC_API_KEY は Supabase の 関数の 秘密だけに 置く（願い #586・supabase/functions/ai-check）
+const FORBIDDEN_AT_BUILD = ["SUPABASE_SERVICE_ROLE_KEY", "GEMINI_API_KEY", "ANTHROPIC_API_KEY"];
 
 /** ビルド時に必須の公開値（欠けるとデモモードのまま本番に出てしまう）。 */
 const REQUIRED_AT_BUILD = ["NEXT_PUBLIC_SUPABASE_URL", "NEXT_PUBLIC_SUPABASE_ANON_KEY"];

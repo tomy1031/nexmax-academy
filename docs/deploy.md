@@ -1254,6 +1254,37 @@ curl -s -o /dev/null -D - -H 'Range: bytes=1000-1999' "https://staging-academy.n
 入れた `use-seekable-audio.ts`）は、これが 入った あとも 害は 無い（Range の 無い 頼みには
 これまでどおり 200＋全体を 返す）。
 
+### 0.18 AIチェック（Claude）の 窓口は Supabase の 関数 —— Cloudflare から 呼ばない（2026-10-08）
+
+こたえの チェック（メール・Slack・バグ報告）を 授業の 時間だけ Claude（Haiku 5.5）で 見る
+（願い #586・`docs/proposals/2026-10-08_ClaudeAPIで学習を補助する計画.md`）。
+
+**呼ぶ 場所は Supabase の Edge Function `ai-check`**（`supabase/functions/ai-check/`）。
+
+- Cloudflare の Worker は 香港で 動く ことが あり、**Claude API は 香港から 使えない**
+  （Anthropic の 対応地域一覧で 確認）。Gemini を ブラウザ直に 移した のも 同じ 理由
+- 画面は 関数を **シンガポール（`ap-southeast-1`）に 固定して** 呼ぶ（`src/lib/ai/claude-check.ts`）
+- 鍵 `ANTHROPIC_API_KEY` は **関数の 秘密だけ**（Supabase の 管理画面 → Edge Functions → Secrets）。
+  Cloudflare・GitHub・`.env` には 置かない。`scripts/check_build_env.mjs` が ビルドへの 混入を 止める
+- 鍵が 入る まで・関数が 出る まで・時間の 外は、画面は **いまの 動き**（Gemini／お手本）の まま
+
+**出しかた**（関数の 中身を 変えた とき）:
+
+1. 門番（`src/lib/ai/claude-gate.ts`）を 直したら `node scripts/sync_ai_check.mjs` で 関数の 側へ 写す
+   （`tests/claude_gate.test.ts` が 2つの ずれを 落とす）
+2. `integration` へ マージして 移行SQL（`ai_settings`・`ai_windows`・`ai_usage`）を 先に 流す（§0.8）
+3. 関数を 出す。どちらかで:
+   - Supabase の コネクタ（AIの セッション）: `deploy_edge_function`（名前 `ai-check`・入口 `index.ts`・
+     ファイルは `index.ts`／`handler.ts`／`claude-gate.ts` の 3つ・**`verify_jwt` は false**）
+   - CLI: `supabase functions deploy ai-check --no-verify-jwt`
+4. `verify_jwt` を 切るのは、ログインの 確かめを **関数の 中で** する ため（`auth.getUser`）。
+   門の 前で 切ると ブラウザの 下見（OPTIONS）が 通らない
+
+**DBは 全環境で 1つ**なので、関数も 1つ。STG と 本番が 同じ 関数を 呼ぶ。
+
+**使える 時間は 先生の 画面**（`/admin/ai-time`「AIの 時間」）で 大学 × 期生ごとに 決める。
+設定の 無い 組は 使えない。月の 上限（100ドルまで）と 1人 1日の 上限も ここ。
+
 ## 1. 環境の位置づけ
 
 現行（Cloudflare 移行後）:

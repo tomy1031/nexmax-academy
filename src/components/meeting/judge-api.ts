@@ -8,6 +8,13 @@ import {
   LiveSetupError,
   reasonFromClose,
 } from "@/lib/ai/live-connect";
+import { claudeAvailable } from "@/lib/ai/claude-check";
+import {
+  claudeBugReview,
+  claudeFailReason,
+  claudeQuizReview,
+  fallBackToGemini,
+} from "@/lib/ai/claude-review";
 import { liveDebug } from "@/lib/ai/live-debug";
 import { createLiveToken } from "@/lib/ai/live-token";
 import { LIVE_TEXT_MODELS } from "@/lib/ai/models";
@@ -357,14 +364,28 @@ export type QuizReviewApiResult =
  * ## 読めない 漢字は 1回だけ 言い直させる
  * `needsKanjiRetry` は 呼ぶ 側（画面）が 決める——読み辞書は 教材が 持って いて、
  * ここからは 見えない ため。
+ *
+ * ## 授業の 時間は Claude が 先（願い #586）
+ * 先生が 決めた 時間（大学 × 期生ごと）だけ、Claude（`claudeQuizReview`）に 見て もらう。
+ * 閉じて いる・だめだった ときは **これまでの Gemini の 道**に そのまま 落とす
+ *（生徒が 自分の 鍵を 持って いれば Gemini、無ければ アプリの 判定）。
  */
 export async function requestQuizReview(
   key: string,
   context: QuizReviewContext,
   needsKanjiRetry: (result: QuizReviewResult) => boolean,
 ): Promise<QuizReviewApiResult> {
+  const viaClaude = await claudeQuizReview(context, needsKanjiRetry);
+  liveDebug(
+    "judge.review",
+    viaClaude.ok ? `claude ok ${viaClaude.model}` : `claude ${viaClaude.reason}`,
+    false,
+  );
+  if (viaClaude.ok) return viaClaude;
+  if (!fallBackToGemini(viaClaude)) return { ok: false, reason: claudeFailReason(viaClaude) };
+
   const apiKey = getGeminiKey();
-  if (!apiKey) return { ok: false, reason: "noKey" };
+  if (!apiKey) return { ok: false, reason: claudeFailReason(viaClaude) };
   if (SLOTS.review.busy) return { ok: false, reason: "busy" };
   SLOTS.review.busy = true;
   /*
@@ -410,6 +431,8 @@ export async function requestQuizReview(
  * 横から 捨てて しまう。
  */
 export async function warmQuizReview(key: string): Promise<boolean> {
+  // Claude が 使える 時間は Gemini の つなぎを 張らない（生徒の Gemini の 枠を むだに しない）
+  if (await claudeAvailable()) return true;
   const apiKey = getGeminiKey();
   if (!apiKey) return false;
   // 見て もらって いる 最中は 触らない（走って いる 往復の つなぎを 捨てて しまう）
@@ -480,8 +503,18 @@ export async function requestBugReview(
   context: BugReviewContext,
   needsKanjiRetry: (result: BugReviewResult) => boolean,
 ): Promise<BugReviewApiResult> {
+  // 授業の 時間は Claude が 先（`requestQuizReview` と 同じ 順番・願い #586）
+  const viaClaude = await claudeBugReview(context, needsKanjiRetry);
+  liveDebug(
+    "judge.bug",
+    viaClaude.ok ? `claude ok ${viaClaude.model}` : `claude ${viaClaude.reason}`,
+    false,
+  );
+  if (viaClaude.ok) return viaClaude;
+  if (!fallBackToGemini(viaClaude)) return { ok: false, reason: claudeFailReason(viaClaude) };
+
   const apiKey = getGeminiKey();
-  if (!apiKey) return { ok: false, reason: "noKey" };
+  if (!apiKey) return { ok: false, reason: claudeFailReason(viaClaude) };
   if (SLOTS.bug.busy) return { ok: false, reason: "busy" };
   SLOTS.bug.busy = true;
   let gaveUp = false;
@@ -510,6 +543,7 @@ export async function requestBugReview(
 
 /** 欄が うまった ところで つなぎを 先に 張る（`warmQuizReview` と 同じ）。 */
 export async function warmBugReview(key: string): Promise<boolean> {
+  if (await claudeAvailable()) return true;
   const apiKey = getGeminiKey();
   if (!apiKey || SLOTS.bug.busy) return false;
   if (SLOTS.bug.key === key && (SLOTS.bug.session?.alive() || SLOTS.bug.opening)) return true;

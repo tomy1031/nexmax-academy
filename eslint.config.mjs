@@ -103,6 +103,8 @@ const eslintConfig = defineConfig([
     // pdf.js の worker（scripts/copy_pdf_worker.mjs が写す他人のコード）。
     // 1行1.3MBの圧縮ずみファイルなので、検査しても直す先が無い。
     "public/pdfjs/**",
+    // Supabase の 関数（Deno）。`npm:` の import を ESLint は 解けない。中身は vitest が 見る。
+    "supabase/functions/**",
     /*
      * Playwright が 手もとで 出す 置きみやげ（どちらも .gitignore ずみ）。
      *
