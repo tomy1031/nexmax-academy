@@ -5,8 +5,11 @@ import {
   clockMinutes,
   decideAiGate,
   effectiveOverride,
+  insideSchedule,
   insideWindows,
+  parseExceptions,
   parseWindows,
+  phnomPenhDate,
   phnomPenhClock,
   phnomPenhMonthStart,
   phnomPenhNextMidnight,
@@ -32,6 +35,7 @@ const CLASS: AiGroupRule = {
   university: "AUPP",
   cohort: 3,
   windows: [{ days: [2, 3, 5], start: "17:30", end: "19:00" }],
+  exceptions: [],
   override: "auto",
   overrideUntil: null,
 };
@@ -181,5 +185,60 @@ describe("門番", () => {
     expect(
       effectiveOverride({ ...CLASS, override: "on", overrideUntil: "あした" }, tuesday("20:00")),
     ).toBe("auto");
+  });
+});
+
+describe("日に よって ちがう 時間（2026-10-08 の 指定）", () => {
+  it("曜日ごとに ちがう 時間を 持てる（火 17:30〜・水 18:00〜）", () => {
+    const rule: AiGroupRule = {
+      ...CLASS,
+      windows: [
+        { days: [2], start: "17:30", end: "19:00" },
+        { days: [3], start: "18:00", end: "19:30" },
+      ],
+    };
+    const wednesday = (hhmm: string) => new Date(tuesday(hhmm).getTime() + 24 * 60 * 60_000);
+    expect(insideSchedule(rule, tuesday("17:45"))).toBe(true);
+    expect(insideSchedule(rule, wednesday("17:45"))).toBe(false);
+    expect(insideSchedule(rule, wednesday("19:15"))).toBe(true);
+  });
+
+  it("その 日だけ「なし」なら、曜日の 時間でも 閉じる", () => {
+    const rule: AiGroupRule = { ...CLASS, exceptions: [{ date: "2026-10-13" }] };
+    expect(insideSchedule(rule, tuesday("18:00"))).toBe(false);
+    expect(gate({ rule })).toEqual({ open: false, reason: "outside" });
+  });
+
+  it("その 日だけ「この 時間」なら、曜日の 時間は 見ない", () => {
+    const rule: AiGroupRule = {
+      ...CLASS,
+      exceptions: [{ date: "2026-10-13", start: "15:00", end: "16:30" }],
+    };
+    expect(insideSchedule(rule, tuesday("15:30"))).toBe(true);
+    expect(insideSchedule(rule, tuesday("18:00"))).toBe(false);
+  });
+
+  it("ほかの 日の 例外は 効かない", () => {
+    const rule: AiGroupRule = { ...CLASS, exceptions: [{ date: "2026-10-14" }] };
+    expect(insideSchedule(rule, tuesday("18:00"))).toBe(true);
+  });
+
+  it("カンボジアの 日付で 数える（UTC では まだ 前の 日）", () => {
+    // カンボジアの 10/14 0:30 は UTC では 10/13 17:30
+    expect(phnomPenhDate(new Date(Date.UTC(2026, 9, 13, 17, 30)))).toBe("2026-10-14");
+  });
+
+  it("崩れた 例外は 落とす（時刻が 片方だけ・前後が 逆・日付の 形が ちがう）", () => {
+    expect(
+      parseExceptions([
+        { date: "2026-10-14" },
+        { date: "2026-10-15", start: "15:00", end: "16:30" },
+        { date: "2026-10-16", start: "15:00" },
+        { date: "2026-10-17", start: "18:00", end: "17:00" },
+        { date: "10/18" },
+        "2026-10-19",
+      ]),
+    ).toEqual([{ date: "2026-10-14" }, { date: "2026-10-15", start: "15:00", end: "16:30" }]);
+    expect(parseExceptions(undefined)).toEqual([]);
   });
 });

@@ -221,3 +221,22 @@ describe("費用", () => {
     expect(aiCostUsd("unknown", { input_tokens: 1_000_000 })).toBeCloseTo(1);
   });
 });
+
+describe("日付の 例外（窓口でも 効く）", () => {
+  it("その 日だけ「なし」なら 授業の 時間でも 閉じる", async () => {
+    const { all, callClaude } = deps({
+      loadContext: async () => ({
+        ...OPEN_CONTEXT,
+        rule: { ...OPEN_CONTEXT.rule!, exceptions: [{ date: "2026-10-13" }] },
+      }),
+    });
+    const response = await handleAiCheck(post(REVIEW), all);
+    expect(await response.json()).toEqual({ ok: false, reason: "outside" });
+    expect(callClaude).not.toHaveBeenCalled();
+  });
+
+  it("例外の 列が 無い 古い 行は 曜日の 時間だけで 見る", async () => {
+    const response = await handleAiCheck(post({ op: "status" }), deps().all);
+    expect((await response.json()).open).toBe(true);
+  });
+});
