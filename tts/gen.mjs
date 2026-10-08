@@ -41,8 +41,15 @@ const voiceIds = {};
 for (const [name, v] of Object.entries(jobs.voices || {})) {
   if (v.id) { voiceIds[name] = v.id; continue; }
   console.log('design voice', name);
-  const r = await call('/voices', { store: true, voice: { model: MODEL, type: 'prompted', ...v.design, prompted: { input: v.design.input } } });
-  const { input, ...rest } = v.design;
+  const { input, fallback, ...rest } = v.design;
+  let r;
+  try {
+    r = await call('/voices', { store: true, voice: { model: MODEL, type: 'prompted', ...rest, prompted: { input } } });
+  } catch (e) {
+    console.error('  voice design failed, falling back to', fallback || 'Leda', e.message);
+    voiceIds[name] = fallback || 'Leda';
+    continue;
+  }
   voiceIds[name] = r.id || r.name;
   if (r.sample_audio?.data) writeFileSync(`${OUT}/voice_${name}_preview.wav`, Buffer.from(r.sample_audio.data, 'base64'));
   console.log('  →', voiceIds[name], JSON.stringify(Object.keys(r)));
