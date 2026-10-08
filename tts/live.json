@@ -1,0 +1,1054 @@
+{
+ "lines": [
+  {
+   "key": "live_promo_ja_p01",
+   "text": "ある夜、町から文字が消えた。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "ゲームの 宣伝動画の ナレーションです。明るく、わくわくする、あたたかい 声で 読んで ください。"
+  },
+  {
+   "key": "live_promo_en_p01",
+   "text": "One night, every letter vanished from the town.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This is the narration of a game trailer. Read it in a bright, exciting and warm voice."
+  },
+  {
+   "key": "live_promo_ja_p02",
+   "text": "文字を食べるかげ……モジクイのしわざだ。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "ゲームの 宣伝動画の ナレーションです。明るく、わくわくする、あたたかい 声で 読んで ください。"
+  },
+  {
+   "key": "live_promo_en_p02",
+   "text": "The work of the Mojikui — a shadow that eats words.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This is the narration of a game trailer. Read it in a bright, exciting and warm voice."
+  },
+  {
+   "key": "live_promo_ja_p04",
+   "text": "でも、あなたには「書く手」がある。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "ゲームの 宣伝動画の ナレーションです。明るく、わくわくする、あたたかい 声で 読んで ください。"
+  },
+  {
+   "key": "live_promo_en_p04",
+   "text": "But you have a hand that writes.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This is the narration of a game trailer. Read it in a bright, exciting and warm voice."
+  },
+  {
+   "key": "live_promo_ja_p05",
+   "text": "書いた漢字が光になって、町の看板がよみがえる！",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "ゲームの 宣伝動画の ナレーションです。明るく、わくわくする、あたたかい 声で 読んで ください。"
+  },
+  {
+   "key": "live_promo_en_p05",
+   "text": "Every kanji you write turns into light — and the town's signs come back to life!",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This is the narration of a game trailer. Read it in a bright, exciting and warm voice."
+  },
+  {
+   "key": "live_promo_ja_p06",
+   "text": "たたかいは手本なしの真剣勝負。正しく書くほど、こうげきが強くなる！",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "ゲームの 宣伝動画の ナレーションです。明るく、わくわくする、あたたかい 声で 読んで ください。"
+  },
+  {
+   "key": "live_promo_en_p06",
+   "text": "In battle, you write from memory. The better you write, the harder you hit!",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This is the narration of a game trailer. Read it in a bright, exciting and warm voice."
+  },
+  {
+   "key": "live_promo_ja_p08",
+   "text": "覚えた漢字を組み合わせて、武器を作ろう。本当にある言葉なら、もっと強い！",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "ゲームの 宣伝動画の ナレーションです。明るく、わくわくする、あたたかい 声で 読んで ください。"
+  },
+  {
+   "key": "live_promo_en_p08",
+   "text": "Combine the kanji you've learned to forge weapons. Real words make the strongest ones!",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This is the narration of a game trailer. Read it in a bright, exciting and warm voice."
+  },
+  {
+   "key": "live_promo_ja_p09",
+   "text": "なかまを集めて、友だちとオンラインでたいせんも！",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "ゲームの 宣伝動画の ナレーションです。明るく、わくわくする、あたたかい 声で 読んで ください。"
+  },
+  {
+   "key": "live_promo_en_p09",
+   "text": "Gather companions, and battle your friends online!",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This is the narration of a game trailer. Read it in a bright, exciting and warm voice."
+  },
+  {
+   "key": "live_promo_ja_p10",
+   "text": "ひらがなから漢字まで。ふりがなと英語のヒントで、はじめてでも大丈夫。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "ゲームの 宣伝動画の ナレーションです。明るく、わくわくする、あたたかい 声で 読んで ください。"
+  },
+  {
+   "key": "live_promo_en_p10",
+   "text": "From hiragana all the way to kanji — with furigana and English hints, anyone can start.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This is the narration of a game trailer. Read it in a bright, exciting and warm voice."
+  },
+  {
+   "key": "live_promo_ja_p11",
+   "text": "ネクマックスの漢字アドベンチャー。ブラウザで、今すぐあそべる！",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "ゲームの 宣伝動画の ナレーションです。明るく、わくわくする、あたたかい 声で 読んで ください。"
+  },
+  {
+   "key": "live_promo_en_p11",
+   "text": "Nexmax Kanji Adventure. Play now, right in your browser!",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This is the narration of a game trailer. Read it in a bright, exciting and warm voice."
+  },
+  {
+   "key": "live_nex_Leda_ja_p03",
+   "text": "ぼくの名前も、食べられました……！",
+   "voice": "Leda",
+   "lang": "ja",
+   "instruction": "この セリフは アニメの 元気な 主人公の ロボットの セリフです。女性の 声優が 少年役を 演じる ように、中性的で 少し 低めの、元気で まっすぐな 声で 読んで ください。"
+  },
+  {
+   "key": "live_nex_Leda_en_p03",
+   "text": "It even ate my name...!",
+   "voice": "Leda",
+   "lang": "en",
+   "instruction": "These are lines of a cheerful robot hero in an anime. Read them the way a female voice actor plays a boy hero: gender-neutral, a little low, energetic and earnest."
+  },
+  {
+   "key": "live_nex_Leda_ja_p07",
+   "text": "あなたは書きます。ぼくはたたかいます！",
+   "voice": "Leda",
+   "lang": "ja",
+   "instruction": "この セリフは アニメの 元気な 主人公の ロボットの セリフです。女性の 声優が 少年役を 演じる ように、中性的で 少し 低めの、元気で まっすぐな 声で 読んで ください。"
+  },
+  {
+   "key": "live_nex_Leda_en_p07",
+   "text": "You write. I fight!",
+   "voice": "Leda",
+   "lang": "en",
+   "instruction": "These are lines of a cheerful robot hero in an anime. Read them the way a female voice actor plays a boy hero: gender-neutral, a little low, energetic and earnest."
+  },
+  {
+   "key": "live_nex_Leda_ja_p12",
+   "text": "いっしょに行きましょう！",
+   "voice": "Leda",
+   "lang": "ja",
+   "instruction": "この セリフは アニメの 元気な 主人公の ロボットの セリフです。女性の 声優が 少年役を 演じる ように、中性的で 少し 低めの、元気で まっすぐな 声で 読んで ください。"
+  },
+  {
+   "key": "live_nex_Leda_en_p12",
+   "text": "Let's go together!",
+   "voice": "Leda",
+   "lang": "en",
+   "instruction": "These are lines of a cheerful robot hero in an anime. Read them the way a female voice actor plays a boy hero: gender-neutral, a little low, energetic and earnest."
+  },
+  {
+   "key": "live_nex_Kore_ja_p03",
+   "text": "ぼくの名前も、食べられました……！",
+   "voice": "Kore",
+   "lang": "ja",
+   "instruction": "この セリフは アニメの 元気な 主人公の ロボットの セリフです。女性の 声優が 少年役を 演じる ように、中性的で 少し 低めの、元気で まっすぐな 声で 読んで ください。"
+  },
+  {
+   "key": "live_nex_Kore_en_p03",
+   "text": "It even ate my name...!",
+   "voice": "Kore",
+   "lang": "en",
+   "instruction": "These are lines of a cheerful robot hero in an anime. Read them the way a female voice actor plays a boy hero: gender-neutral, a little low, energetic and earnest."
+  },
+  {
+   "key": "live_nex_Kore_ja_p07",
+   "text": "あなたは書きます。ぼくはたたかいます！",
+   "voice": "Kore",
+   "lang": "ja",
+   "instruction": "この セリフは アニメの 元気な 主人公の ロボットの セリフです。女性の 声優が 少年役を 演じる ように、中性的で 少し 低めの、元気で まっすぐな 声で 読んで ください。"
+  },
+  {
+   "key": "live_nex_Kore_en_p07",
+   "text": "You write. I fight!",
+   "voice": "Kore",
+   "lang": "en",
+   "instruction": "These are lines of a cheerful robot hero in an anime. Read them the way a female voice actor plays a boy hero: gender-neutral, a little low, energetic and earnest."
+  },
+  {
+   "key": "live_nex_Kore_ja_p12",
+   "text": "いっしょに行きましょう！",
+   "voice": "Kore",
+   "lang": "ja",
+   "instruction": "この セリフは アニメの 元気な 主人公の ロボットの セリフです。女性の 声優が 少年役を 演じる ように、中性的で 少し 低めの、元気で まっすぐな 声で 読んで ください。"
+  },
+  {
+   "key": "live_nex_Kore_en_p12",
+   "text": "Let's go together!",
+   "voice": "Kore",
+   "lang": "en",
+   "instruction": "These are lines of a cheerful robot hero in an anime. Read them the way a female voice actor plays a boy hero: gender-neutral, a little low, energetic and earnest."
+  },
+  {
+   "key": "live_nex_Laomedeia_ja_p03",
+   "text": "ぼくの名前も、食べられました……！",
+   "voice": "Laomedeia",
+   "lang": "ja",
+   "instruction": "この セリフは アニメの 元気な 主人公の ロボットの セリフです。女性の 声優が 少年役を 演じる ように、中性的で 少し 低めの、元気で まっすぐな 声で 読んで ください。"
+  },
+  {
+   "key": "live_nex_Laomedeia_en_p03",
+   "text": "It even ate my name...!",
+   "voice": "Laomedeia",
+   "lang": "en",
+   "instruction": "These are lines of a cheerful robot hero in an anime. Read them the way a female voice actor plays a boy hero: gender-neutral, a little low, energetic and earnest."
+  },
+  {
+   "key": "live_nex_Laomedeia_ja_p07",
+   "text": "あなたは書きます。ぼくはたたかいます！",
+   "voice": "Laomedeia",
+   "lang": "ja",
+   "instruction": "この セリフは アニメの 元気な 主人公の ロボットの セリフです。女性の 声優が 少年役を 演じる ように、中性的で 少し 低めの、元気で まっすぐな 声で 読んで ください。"
+  },
+  {
+   "key": "live_nex_Laomedeia_en_p07",
+   "text": "You write. I fight!",
+   "voice": "Laomedeia",
+   "lang": "en",
+   "instruction": "These are lines of a cheerful robot hero in an anime. Read them the way a female voice actor plays a boy hero: gender-neutral, a little low, energetic and earnest."
+  },
+  {
+   "key": "live_nex_Laomedeia_ja_p12",
+   "text": "いっしょに行きましょう！",
+   "voice": "Laomedeia",
+   "lang": "ja",
+   "instruction": "この セリフは アニメの 元気な 主人公の ロボットの セリフです。女性の 声優が 少年役を 演じる ように、中性的で 少し 低めの、元気で まっすぐな 声で 読んで ください。"
+  },
+  {
+   "key": "live_nex_Laomedeia_en_p12",
+   "text": "Let's go together!",
+   "voice": "Laomedeia",
+   "lang": "en",
+   "instruction": "These are lines of a cheerful robot hero in an anime. Read them the way a female voice actor plays a boy hero: gender-neutral, a little low, energetic and earnest."
+  },
+  {
+   "key": "howto_ja_h01",
+   "text": "こんにちは。このビデオでは、「ネクマックスの漢字アドベンチャー」のあそびかたを説明します。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h01",
+   "text": "Hello! In this video, we'll show you how to play Nexmax Kanji Adventure.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h02",
+   "text": "漢字を書いて、町を助けるゲームです。ブラウザですぐにあそべます。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h02",
+   "text": "It's a game where you save a town by writing kanji. You can play it right in your browser.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h03",
+   "text": "タイトル画面で、「はじめから」をタップします。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h03",
+   "text": "On the title screen, tap \"Start\".",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h04",
+   "text": "まず、プロローグが始まります。画面をタップすると、お話が進みます。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h04",
+   "text": "First, the prologue begins. Tap the screen to move the story forward.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h05",
+   "text": "ある夜、文字を食べるかげ「モジクイ」が、町の文字を食べてしまいました。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h05",
+   "text": "One night, a shadow that eats letters — the Mojikui — ate all the letters in the town.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h06",
+   "text": "ロボットのネクマックスも、言葉と名前を食べられてしまいます。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h06",
+   "text": "Even Nexmax, a little robot, had his words and his name eaten.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h07",
+   "text": "あなたは旅人です。あなたには、書いた文字を生き返らせる力があります。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h07",
+   "text": "You are a traveler — and you have the power to bring written letters back to life.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h08",
+   "text": "プロローグのさいごに、ひらがなとカタカナが読めるか聞かれます。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h08",
+   "text": "At the end of the prologue, the game asks if you can read hiragana and katakana.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h09",
+   "text": "まだ読めない人は、0章のかなから。読める人は、1章のナニワタウンから始めます。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h09",
+   "text": "If you can't read them yet, start with kana in Chapter 0. If you can, go straight to Naniwa Town in Chapter 1.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h10",
+   "text": "お話の画面では、タップで文が進みます。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h10",
+   "text": "In the story, tap to go to the next line.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h11",
+   "text": "「よみあげ」を押すと、文を声で読みます。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h11",
+   "text": "Press the speaker button to hear the line read aloud.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h12",
+   "text": "「EN」で文の英語、「ことば」で言葉ごとの意味が見られます。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h12",
+   "text": "\"EN\" shows the line in English, and the word chips show the meaning of each word.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h13",
+   "text": "「オート」で自動で進み、「スキップ」でお話をとばせます。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h13",
+   "text": "\"Auto\" plays the story by itself, and \"Skip\" jumps ahead.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h14",
+   "text": "お話のあとは、漢字を書きます。町の看板から消えた字です。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h14",
+   "text": "After the story, you write kanji — the letters that vanished from the town signs.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h15",
+   "text": "上のカードに、読みかたと英語の意味があります。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h15",
+   "text": "The card at the top shows the readings and the English meaning.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h16",
+   "text": "看板のうすい手本の上を、指でなぞって書きましょう。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h16",
+   "text": "Trace over the faint model on the sign with your finger.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h17",
+   "text": "書きじゅんが分からないときは、「書きじゅん」ボタンで書く順番を見られます。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h17",
+   "text": "Not sure of the stroke order? Press the stroke-order button to watch it.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h18",
+   "text": "正しく書くと、線が光って、看板にあかりがつきます。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h18",
+   "text": "Write it correctly, and the strokes glow and the sign lights up.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h19",
+   "text": "書きじゅんがちがうと、ミスになります。ミスが 3つになったら、もう一度書きます。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h19",
+   "text": "A wrong stroke counts as a slip. With three slips, you write it again.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h20",
+   "text": "同じ字を 3回書くと、町の看板に字がもどります。これで★1です。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h20",
+   "text": "Write the same kanji three times, and it returns to the town sign. That earns one star.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h21",
+   "text": "字の★は、書いた回数でふえます。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h21",
+   "text": "Each kanji gets more stars the more times you write it.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h22",
+   "text": "3回で★1、6回で★2、10回で★3。★が多い字ほど、たたかいで強くなります。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h22",
+   "text": "Three times for one star, six for two, ten for three. The more stars, the stronger it is in battle.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h23",
+   "text": "★3の字は「漢字マスター」。武器を作るときに使えます。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h23",
+   "text": "A three-star kanji is mastered — and you can use it to forge weapons.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h24",
+   "text": "「もっと書く」で、続けて練習できます。4回目からは手本なしで書きます。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h24",
+   "text": "Tap \"Write more\" to keep practicing. From the fourth time on, you write without the model.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h25",
+   "text": "字をぜんぶもどすと、モジクイがあらわれます。たたかいの前に、じゅんびの画面が出ます。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h25",
+   "text": "When all the letters are back, a Mojikui appears. Before the fight, you see the preparation screen.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h26",
+   "text": "あいての HPと、たたかいに出る字が見られます。★が少ない字は、あいてにねらわれます。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h26",
+   "text": "Here you can see the opponent's HP and the kanji in the fight. The opponent goes after your kanji with the fewest stars.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h27",
+   "text": "よういができたら、「たたかう！」を押しましょう。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h27",
+   "text": "When you are ready, press \"Fight!\"",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h28",
+   "text": "たたかいでは、漢字は見えません。読みと意味を見て、手本なしで書きます。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h28",
+   "text": "In battle, the kanji is hidden. Look at the reading and meaning, and write it from memory.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h29",
+   "text": "書いた字の光で、ネクマックスがこうげきします。ミスが少ないほど、ダメージが大きくなります。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h29",
+   "text": "The light of your writing powers Nexmax’s attack. The fewer slips you make, the more damage you deal.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h30",
+   "text": "ミスがたまって、あいての「がまん」をこえると、あいてがこうげきしてきます。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h30",
+   "text": "Slips add up — and when they pass the opponent's patience, it strikes back.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h31",
+   "text": "こまったときは「かきじゅん」で書きじゅんを見られます。でも、ミスが 1つふえます。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h31",
+   "text": "If you get stuck, you can peek at the stroke order — but it costs you one slip.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h32",
+   "text": "ときどき「読みはどれ」と聞かれます。正しい読みをえらぶと、こうげきをはね返します。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h32",
+   "text": "Sometimes the opponent throws a kanji at you. Pick its correct reading to bounce the attack back.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h33",
+   "text": "あいては字をふういんしています。ぜんぶの字を 1回ずつ書くまで、たおせません。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h33",
+   "text": "The opponent holds your kanji under a seal. You can't defeat it until you've written every one at least once.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h34",
+   "text": "ミスなしで続けて書くと、コンボでこうげきが強くなります。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h34",
+   "text": "Write cleanly in a row to build a combo and power up your attacks.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h35",
+   "text": "あいての HPを 0にしたら、勝ちです。経験値をもらうと、レベルが上がります。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h35",
+   "text": "Bring the opponent's HP to zero, and you win! Earn experience points to level up.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h36",
+   "text": "お話をクリアすると、ステージせんたくにもどります。つぎの話をえらんで進みましょう。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h36",
+   "text": "After you clear an episode, you return to the stage select. Pick the next episode and keep going.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h37",
+   "text": "はじめて勝ったあとは、「やさしい」「ふつう」「ハード」からむずかしさをえらべます。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h37",
+   "text": "After your first win, you can choose Easy, Normal or Hard.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h38",
+   "text": "1章の 2話をクリアすると、「漢字やさん」が開きます。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h38",
+   "text": "Clear Chapter 1, Episode 2, and the Kanji Shop opens.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h39",
+   "text": "★3の漢字を 2つか 3つえらんで、武器を作ります。えらぶ順番も大切です。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h39",
+   "text": "Choose two or three three-star kanji to forge a weapon. The order matters, too.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h40",
+   "text": "たとえば「火」と「山」で「火山」。本当にある言葉なので、強い武器になります。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h40",
+   "text": "For example, \"fire\" and \"mountain\" make \"volcano\" — a real word, so it becomes a strong weapon.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h41",
+   "text": "言葉にならない組み合わせも作れますが、弱くなります。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h41",
+   "text": "Combinations that aren't real words can still be made, but they're weak.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h42",
+   "text": "話ごとに「かくし武器」もあります。さがしてみましょう。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h42",
+   "text": "Every episode also hides a secret weapon. See if you can find it!",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h43",
+   "text": "同じ字で、盾やからだのそうびも作れます。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h43",
+   "text": "You can also make shields and armor from the same kanji.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h44",
+   "text": "「もちもの」では、武器・盾・からだ・アクセサリをそうびします。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h44",
+   "text": "In Equipment, you equip a weapon, a shield, armor and an accessory.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h45",
+   "text": "「強化」で武器の字を書くと、武器がもっと強くなります。1日 1回です。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h45",
+   "text": "Use \"Power up\" to write a weapon's kanji and make it stronger — once a day.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h46",
+   "text": "1章の 4話のあとは、ガチャでなかまを集められます。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h46",
+   "text": "After Chapter 1, Episode 4, you can collect companions from the gacha.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h47",
+   "text": "ガチャにはジェムを使います。ジェムは話のクリアや、まいにちのやることでもらえます。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h47",
+   "text": "The gacha uses gems. You earn gems by clearing episodes and doing your daily tasks.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h48",
+   "text": "1日 1回はジェムなしでひけます。本のひもを下に引いて、出てきた字をなぞりましょう。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h48",
+   "text": "Once a day, you can pull without gems. Pull the cord on the book, then trace the kanji that appears.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h49",
+   "text": "なかまはたたかいにつれて行けます。ゲージがたまったら、なかまをタップして「わざ」を使いましょう。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h49",
+   "text": "Bring a companion into battle. When its gauge is full, tap it to use its special skill.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h50",
+   "text": "「まいにちのやること」をすると、ジェムがもらえます。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h50",
+   "text": "Complete your daily tasks to earn gems.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h51",
+   "text": "「ずかん」では、おぼえた漢字の読みかたや言葉、書きじゅんを見なおせます。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h51",
+   "text": "In the encyclopedia, review the readings, words and stroke order of the kanji you've learned.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h52",
+   "text": "「ことば図鑑」では、字を組み合わせた言葉をさがせます。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h52",
+   "text": "In the word book, hunt for words made by combining kanji.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h53",
+   "text": "1章のさいごのボスに勝つと、「たいせん」が開きます。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h53",
+   "text": "Beat the final boss of Chapter 1, and Versus opens.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h54",
+   "text": "同じ字を書いて、はやく正しく書いた方が勝ちです。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h54",
+   "text": "Both players write the same kanji. Whoever writes faster and more accurately wins.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h55",
+   "text": "オンラインであいてをさがしたり、ともだちとあいことばでたたかったりできます。CPUと練習もできます。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h55",
+   "text": "Find an opponent online, battle a friend with a passcode, or practice against the CPU.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h56",
+   "text": "毎日少しずつ書いて、町に文字を取りもどしましょう。",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h56",
+   "text": "Write a little every day, and bring the letters back to the town.",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  },
+  {
+   "key": "howto_ja_h57",
+   "text": "ネクマックスといっしょに、漢字の冒険へ出発です！",
+   "voice": "Zephyr",
+   "lang": "ja",
+   "instruction": "日本語を 勉強して いる 人に 向けた 説明です。やさしく、はっきり、少し ゆっくり 読んで ください。"
+  },
+  {
+   "key": "howto_en_h57",
+   "text": "Let's set off on a kanji adventure with Nexmax!",
+   "voice": "Zephyr",
+   "lang": "en",
+   "instruction": "This explains how to play a game to language learners. Read it in a friendly, clear and warm teaching voice, a little slower than usual."
+  }
+ ]
+}

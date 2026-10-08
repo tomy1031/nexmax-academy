@@ -26,7 +26,8 @@ async function call(path, body, method = 'POST', tries = 5) {
       method,
       headers: { 'x-goog-api-key': KEY, 'Content-Type': 'application/json' },
       body: body ? JSON.stringify(body) : undefined,
-    });
+      signal: AbortSignal.timeout(150000),
+    }).catch((e) => ({ ok: false, status: 599, text: async () => String(e) }));
     const text = await res.text();
     if (res.ok) return JSON.parse(text);
     console.error(`  ${method} ${path} → ${res.status}: ${text.slice(0, 400)}`);

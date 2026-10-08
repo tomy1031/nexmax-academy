@@ -1,166 +1,62 @@
 {
-  "voices": {
-    "nexmax_ja": {
-      "design": {
-        "display_name": "Nexmax JA",
-        "gender": "female",
-        "language_code": "ja-JP",
-        "input": "A young Japanese voice actress performing an energetic boy hero in an anime: gender-neutral and boyish, bright, slightly husky, youthful and warm, with clear standard Japanese diction."
-      }
-    },
-    "nexmax_en": {
-      "design": {
-        "display_name": "Nexmax EN",
-        "gender": "female",
-        "language_code": "en-US",
-        "input": "A young voice actress performing an energetic boy hero in an English anime dub: gender-neutral and boyish, bright, slightly husky, youthful and warm, with clear American English diction."
-      }
-    }
+ "model": "gemini-3.8-flash-lite-tts",
+ "delay": 21000,
+ "voices": {
+  "nexmax_ja": {
+   "design": {
+    "display_name": "Nexmax JA",
+    "gender": "female",
+    "language_code": "ja-JP",
+    "input": "A Japanese androgynous, gender-neutral voice with a bright, slightly husky mid-range timbre and a spirited, earnest heroic delivery, the kind a female voice actor gives a plucky hero in an animated series.",
+    "fallback": "Leda"
+   }
   },
-  "lines": [
-    {
-      "key": "promo_ja_p01",
-      "text": "ある夜、町から文字が消えた。",
-      "voice": "Zephyr",
-      "style": "bright, exciting and warm, like the narrator of an anime game trailer"
-    },
-    {
-      "key": "promo_en_p01",
-      "text": "One night, every letter vanished from the town.",
-      "voice": "Zephyr",
-      "style": "bright, exciting and warm, like the narrator of an anime game trailer"
-    },
-    {
-      "key": "promo_ja_p02",
-      "text": "文字を食べるかげ……モジクイのしわざだ。",
-      "voice": "Zephyr",
-      "style": "bright, exciting and warm, like the narrator of an anime game trailer"
-    },
-    {
-      "key": "promo_en_p02",
-      "text": "The work of the Mojikui — a shadow that eats words.",
-      "voice": "Zephyr",
-      "style": "bright, exciting and warm, like the narrator of an anime game trailer"
-    },
-    {
-      "key": "promo_ja_p03",
-      "text": "ぼくの名前も、食べられました……！",
-      "voice": "@nexmax_ja",
-      "style": "cheerful, earnest young hero"
-    },
-    {
-      "key": "promo_en_p03",
-      "text": "It even ate my name...!",
-      "voice": "@nexmax_en",
-      "style": "cheerful, earnest young hero"
-    },
-    {
-      "key": "promo_ja_p04",
-      "text": "でも、あなたには「書く手」がある。",
-      "voice": "Zephyr",
-      "style": "bright, exciting and warm, like the narrator of an anime game trailer"
-    },
-    {
-      "key": "promo_en_p04",
-      "text": "But you have a hand that writes.",
-      "voice": "Zephyr",
-      "style": "bright, exciting and warm, like the narrator of an anime game trailer"
-    },
-    {
-      "key": "promo_ja_p05",
-      "text": "書いた漢字が光になって、町の看板がよみがえる！",
-      "voice": "Zephyr",
-      "style": "bright, exciting and warm, like the narrator of an anime game trailer"
-    },
-    {
-      "key": "promo_en_p05",
-      "text": "Every kanji you write turns into light — and the town's signs come back to life!",
-      "voice": "Zephyr",
-      "style": "bright, exciting and warm, like the narrator of an anime game trailer"
-    },
-    {
-      "key": "promo_ja_p06",
-      "text": "たたかいは手本なしの真剣勝負。正しく書くほど、こうげきが強くなる！",
-      "voice": "Zephyr",
-      "style": "bright, exciting and warm, like the narrator of an anime game trailer"
-    },
-    {
-      "key": "promo_en_p06",
-      "text": "In battle, you write from memory. The better you write, the harder you hit!",
-      "voice": "Zephyr",
-      "style": "bright, exciting and warm, like the narrator of an anime game trailer"
-    },
-    {
-      "key": "promo_ja_p07",
-      "text": "あなたは書きます。ぼくはたたかいます！",
-      "voice": "@nexmax_ja",
-      "style": "cheerful, earnest young hero"
-    },
-    {
-      "key": "promo_en_p07",
-      "text": "You write. I fight!",
-      "voice": "@nexmax_en",
-      "style": "cheerful, earnest young hero"
-    },
-    {
-      "key": "promo_ja_p08",
-      "text": "覚えた漢字を組み合わせて、武器を作ろう。本当にある言葉なら、もっと強い！",
-      "voice": "Zephyr",
-      "style": "bright, exciting and warm, like the narrator of an anime game trailer"
-    },
-    {
-      "key": "promo_en_p08",
-      "text": "Combine the kanji you've learned to forge weapons. Real words make the strongest ones!",
-      "voice": "Zephyr",
-      "style": "bright, exciting and warm, like the narrator of an anime game trailer"
-    },
-    {
-      "key": "promo_ja_p09",
-      "text": "なかまを集めて、友だちとオンラインでたいせんも！",
-      "voice": "Zephyr",
-      "style": "bright, exciting and warm, like the narrator of an anime game trailer"
-    },
-    {
-      "key": "promo_en_p09",
-      "text": "Gather companions, and battle your friends online!",
-      "voice": "Zephyr",
-      "style": "bright, exciting and warm, like the narrator of an anime game trailer"
-    },
-    {
-      "key": "promo_ja_p10",
-      "text": "ひらがなから漢字まで。ふりがなと英語のヒントで、はじめてでも大丈夫。",
-      "voice": "Zephyr",
-      "style": "bright, exciting and warm, like the narrator of an anime game trailer"
-    },
-    {
-      "key": "promo_en_p10",
-      "text": "From hiragana all the way to kanji — with furigana and English hints, anyone can start.",
-      "voice": "Zephyr",
-      "style": "bright, exciting and warm, like the narrator of an anime game trailer"
-    },
-    {
-      "key": "promo_ja_p11",
-      "text": "ネクマックスの漢字アドベンチャー。ブラウザで、今すぐあそべる！",
-      "voice": "Zephyr",
-      "style": "bright, exciting and warm, like the narrator of an anime game trailer"
-    },
-    {
-      "key": "promo_en_p11",
-      "text": "Nexmax Kanji Adventure. Play now, right in your browser!",
-      "voice": "Zephyr",
-      "style": "bright, exciting and warm, like the narrator of an anime game trailer"
-    },
-    {
-      "key": "promo_ja_p12",
-      "text": "いっしょに行きましょう！",
-      "voice": "@nexmax_ja",
-      "style": "cheerful, earnest young hero"
-    },
-    {
-      "key": "promo_en_p12",
-      "text": "Let's go together!",
-      "voice": "@nexmax_en",
-      "style": "cheerful, earnest young hero"
-    }
-  ]
+  "nexmax_en": {
+   "design": {
+    "display_name": "Nexmax EN",
+    "gender": "female",
+    "language_code": "en-US",
+    "input": "An American English androgynous, gender-neutral voice with a bright, slightly husky mid-range timbre and a spirited, earnest heroic delivery, the kind a female voice actor gives a plucky hero in an animated series.",
+    "fallback": "Leda"
+   }
+  }
+ },
+ "lines": [
+  {
+   "key": "lite_nex_ja_p03",
+   "text": "ぼくの名前も、食べられました……！",
+   "voice": "@nexmax_ja",
+   "style": "cheerful, earnest hero"
+  },
+  {
+   "key": "lite_nex_en_p03",
+   "text": "It even ate my name...!",
+   "voice": "@nexmax_en",
+   "style": "cheerful, earnest hero"
+  },
+  {
+   "key": "lite_nex_ja_p07",
+   "text": "あなたは書きます。ぼくはたたかいます！",
+   "voice": "@nexmax_ja",
+   "style": "cheerful, earnest hero"
+  },
+  {
+   "key": "lite_nex_en_p07",
+   "text": "You write. I fight!",
+   "voice": "@nexmax_en",
+   "style": "cheerful, earnest hero"
+  },
+  {
+   "key": "lite_nex_ja_p12",
+   "text": "いっしょに行きましょう！",
+   "voice": "@nexmax_ja",
+   "style": "cheerful, earnest hero"
+  },
+  {
+   "key": "lite_nex_en_p12",
+   "text": "Let's go together!",
+   "voice": "@nexmax_en",
+   "style": "cheerful, earnest hero"
+  }
+ ]
 }
