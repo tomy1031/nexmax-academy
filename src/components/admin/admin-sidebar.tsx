@@ -66,10 +66,10 @@ const GROUPS: readonly { title: string; items: readonly Item[] }[] = [
        */
       { href: "/admin/lock", icon: "🔓", label: "じゅんろの 鍵", match: "/admin/lock" },
       /*
-       * AIの 時間。こたえの チェック（Claude）を 使える 時間を 大学 × 期生 ごとに 決める
-       *（願い #586）。設定の 無い 組は 使えない。
+       * クラスの 設定。大学 × 期生 ごとに、AIの 時間（願い #586・設定の 無い 組は 使えない）と
+       * 表示する 教材（願い #589・設定の 無い 組は 全部 見える）を 決める。
        */
-      { href: "/admin/ai-time", icon: "⏰", label: "AIの 時間", match: "/admin/ai-time" },
+      { href: "/admin/ai-time", icon: "🏫", label: "クラスの 設定", match: "/admin/ai-time" },
     ],
   },
 ];

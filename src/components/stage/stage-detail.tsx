@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import type { ContentRefType } from "@/content/schema";
 import { RubyText } from "@/components/ruby-text";
+import { useGroupVisibility, visibleContents } from "@/lib/group-visibility";
 import { rememberOpenedStage } from "@/lib/progress";
 import { readContentProgress, subscribeProgress } from "@/lib/progress/store";
 import {
@@ -75,13 +76,23 @@ export interface StageHeader {
 
 export function StageDetail({
   stage,
-  items,
+  items: allItems,
   wordStages,
 }: {
   stage: StageHeader;
   items: readonly StageContentItem[];
   wordStages: readonly StageWordItem[];
 }) {
+  /*
+   * 組ごとに 隠した 教材は 並びから 抜く（願い #589）。「Nこの うち Mこ」と
+   * 「つづきから」の 行き先も 抜いた あとで 数える——見えない 教材が 残って いると
+   * ステージが いつまでも おわらない。
+   */
+  const visibility = useGroupVisibility();
+  const items = useMemo(
+    () => visibleContents(allItems, stage.id, visibility),
+    [allItems, stage.id, visibility],
+  );
   /**
    * 一覧に出る教材の読み辞書を1つの索引にまとめる。
    * ステージ見出しは reading（タイトル全体の読み）しか持たないため、
