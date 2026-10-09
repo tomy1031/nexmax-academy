@@ -101,6 +101,27 @@ describe.each(MEETINGS)("%s の 週の けっかの ★", (id) => {
   });
 });
 
+/*
+ * 聞き返しの ポップアップの 主ボタンと 札（2026-10-09）。「一度」は 画面の 辞書に 無く、
+ * 裸の 漢字に なって いた（見張りは e2e の bareKanjiTexts だけ）。
+ */
+describe.each(MEETINGS)("%s の 聞き返しの ポップアップ", (id) => {
+  it.each([
+    ["もう一度報告", ["一度〔いちど〕", "報告〔ほうこく〕"]],
+    [
+      "内容: 伝わりませんでした",
+      ["内容〔ないよう〕", "伝わりませんでした〔つたわりませんでした〕"],
+    ],
+  ])("「%s」", (text, expected) => {
+    const got = read(text, id);
+    for (const one of expected) expect(got).toContain(one);
+    const bare = annotateRuby(text, indexOf(id)).filter(
+      (seg) => !seg.reading && KANJI.test(seg.text),
+    );
+    expect(bare.map((seg) => seg.text)).toEqual([]);
+  });
+});
+
 describe("数字＋日 は 手書きの ルビで 読む", () => {
   it("5日 は いつか", () => {
     expect(renderToStaticMarkup(<DayCount n={5} />)).toContain("<rt>いつか</rt>");
