@@ -157,6 +157,22 @@ test("前ばなしの ページに アプリと 担当が 書いて ある", asy
   await expectOnScreen(page, "きのう したこと");
   await expectOnScreen(page, "きょう すること");
   await shot(page, "asakai-01-team");
+  /*
+   * 朝礼で 話す 4つの カード②（担当の 機能の 進捗）の 絵。長い ページなので、全体の
+   * 写真では 読めない——その 絵まで 送って、画面 1枚ぶんを 撮る（2026-10-09 に
+   * 絵の 字を「決済フロントエンド」に 描き直した ので、見える ことを 残す）。
+   */
+  const card2 = page.locator('img[src*="r2_shinchoku"]').first();
+  await card2.scrollIntoViewIfNeeded();
+  await page.waitForFunction(
+    () => {
+      const one = document.querySelector('img[src*="r2_shinchoku"]') as HTMLImageElement | null;
+      return Boolean(one && one.complete && one.naturalWidth > 0);
+    },
+    undefined,
+    { timeout: 15_000 },
+  );
+  await page.screenshot({ path: "e2e-screens/asakai-01-team-card2.png" });
 
   expect(await bareKanjiTexts(page)).toEqual([]);
 });
@@ -536,8 +552,12 @@ test("夕礼: 伝わらない 回は もう一度報告 だけ（作業記録の
     await page.getByRole("button", { name: "おくる" }).click();
   };
 
-  /* 1行では 開かない → 司会が 聞き返す。 */
-  await send("学生一覧APIと 接続しました。");
+  /*
+   * 1つも 当たらない 報告 → 司会が 聞き返す。
+   * **1行でも 当たる 報告に しない**: 札が 進んだ 回は 聞き返しに 数えず、司会は
+   * 何も 聞かない（`moved`）ので、次の 回が 聞き返しへの こたえに ならない。
+   */
+  await send("よろしく お願いします。");
   await page.getByRole("button", { name: "つづける" }).click();
   await expect(page.getByText("（0 / 4）")).toBeVisible();
 
@@ -662,6 +682,86 @@ test("朝礼: しごとの 表に 絵が 出て、押すと ひろがる", async
     .getByRole("button", { name: /決済の 画面/ })
     .first()
     .click();
+  const back = page.getByRole("button", { name: "✕ もどす" });
+  await expect(back).toBeVisible();
+  await back.click();
+});
+
+/**
+ * 報告メモの「きのう したこと」「きょう すること」の 行にも **しごとの 絵が 並ぶ**
+ *（2026-10-09 の 指定「昨日したこと、今日することの 項目内に しごとの イメージ画像を
+ * 入れてください」）。絵の ファイルは 下の 表の 行が 持つ ので、`tasks` の 名前で 引く。
+ * 月曜は きのう 2枚・きょう 2枚（教材 `rows[].tasks`）。64px で 出て、390px の 幅に 収まる。
+ */
+test("朝礼: 報告メモの 行に しごとの 絵が 並ぶ（きのう 2枚・きょう 2枚）", async ({
+  page,
+  context,
+}) => {
+  const refs = stageRefs();
+  await seedCompleted(context, refs.slice(0, refs.indexOf("asakai_kantan")));
+  await page.goto("/asakai/meeting-asakai_kantan");
+  await joinCall(page);
+
+  const memo = page.getByRole("dialog", { name: "報告メモ" });
+  await expect(memo).toBeVisible();
+  const rows = memo.locator("dl > div");
+  const kinou = rows.filter({ hasText: "きのう したこと" });
+  const kyou = rows.filter({ hasText: "きょう すること" });
+  await expect(kinou.locator("img")).toHaveCount(2);
+  await expect(kyou.locator("img")).toHaveCount(2);
+
+  /* 絵が ぜんぶ 読めている（壊れた 絵の 四角に なって いない）。 */
+  await page.waitForFunction(
+    () => {
+      const all = [...document.querySelectorAll('[role="dialog"] dl img')];
+      return all.length > 0 && all.every((one) => (one as HTMLImageElement).complete);
+    },
+    undefined,
+    { timeout: 15_000 },
+  );
+  for (const row of [kinou, kyou]) {
+    const widths = await row
+      .locator("img")
+      .evaluateAll((all) => all.map((one) => (one as HTMLImageElement).naturalWidth));
+    expect(
+      widths.every((width) => width > 0),
+      "読めない 絵が ある",
+    ).toBe(true);
+  }
+
+  /* 並びは 教材の tasks の 順。名前は 表の しごとの 名前（押すと 全画面）。 */
+  const names = async (row: Locator) =>
+    row
+      .locator("button[aria-label$='（ひろげて 見る）']")
+      .evaluateAll((all) =>
+        all.map((one) => (one.getAttribute("aria-label") ?? "").replace("（ひろげて 見る）", "")),
+      );
+  expect(await names(kinou)).toEqual(["決済の 画面", "ABA Payの ボタン"]);
+  expect(await names(kyou)).toEqual(["注文IDと 金額の 表示", "決済APIと つなぐ（ABA）"]);
+
+  /*
+   * 行の 絵は 64px（下の 表の 絵は 80px の まま）。**`offsetWidth` で 測る**——
+   * ポップアップは 開く ときに 拡大の アニメーションを 持つ ので、`boundingBox` は
+   * 途中の 値（63.19 や 79.5）を 返して ゆらぐ。
+   */
+  const sizeOf = (image: Locator) => image.evaluate((one) => (one as HTMLImageElement).offsetWidth);
+  expect(await sizeOf(kinou.locator("img").first())).toBe(64);
+  expect(await sizeOf(kyou.locator("img").last())).toBe(64);
+  expect(await sizeOf(memo.locator("table img").first()), "表の 絵は 80px の まま").toBe(80);
+
+  /* 390px の 幅に 収まる（横に はみ出さない）。 */
+  const overflow = await memo.evaluate((dialog) => {
+    const island = dialog.querySelector(".card-island") as HTMLElement | null;
+    return island ? island.scrollWidth - island.clientWidth : -1;
+  });
+  expect(overflow, "報告メモが 横に はみ出して いる").toBeLessThanOrEqual(0);
+  expect(await bareKanjiTexts(page)).toEqual([]);
+
+  await kinou.scrollIntoViewIfNeeded();
+  await shot(page, "asakai-memo-row-pictures");
+
+  /* 行の 絵も 押すと 全画面（表の 絵と 同じ 包み）。 */
+  await kinou.getByRole("button", { name: /決済の 画面/ }).click();
   const back = page.getByRole("button", { name: "✕ もどす" });
   await expect(back).toBeVisible();
   await back.click();
@@ -1151,6 +1251,14 @@ test("聞き返しに こたえると、こたえの 見かたが 出る", async
     await expect(probe.getByRole("button", { name: /つぎの しつもんを 聞く/ })).toHaveCount(0);
     expect(await dialogText(probe)).not.toContain("ここまでです");
   }
+  /*
+   * 撮るのは ポップアップの 開く アニメーションが 終わって から。**上**（札と 問い）と
+   * **下**（ボタンは「もう一度報告」の 1つだけ）を 1枚ずつ——島の 中で 縦に すべる ので、
+   * 1枚では ボタンまで 入らない。
+   */
+  await page.waitForTimeout(700);
+  await shot(page, "asakai-03d-probe-retry-only-top");
+  await probe.getByRole("button", { name: "もう一度報告" }).scrollIntoViewIfNeeded();
   await shot(page, "asakai-03d-probe-retry-only");
 
   /*
