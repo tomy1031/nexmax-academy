@@ -272,7 +272,7 @@ export const ASSET_VERSIONS: Readonly<Record<string, string>> = {
   "/audio/meetings/asakai_kantan/s3-member-1-eac14877.wav": "220ce306",
   "/audio/meetings/asakai_kantan/s3-onegai-ex-cebe5d55.wav": "ce2d6121",
   "/audio/meetings/asakai_kantan/s3-onegai-fu0-ca5c5cea.wav": "21c10c2f",
-  "/audio/meetings/asakai_kantan/s3-onegai-fu1-d6b4e88a.wav": "82e1726a",
+  "/audio/meetings/asakai_kantan/s3-onegai-fu1-3429da79.wav": "32031730",
   "/audio/meetings/asakai_kantan/s3-opening-0-ca8a38bb.wav": "bd10d7b5",
   "/audio/meetings/asakai_kantan/s3-sample-72e8459e.wav": "1d81fd92",
   "/audio/meetings/asakai_kantan/s3-sample-84310cb6.wav": "7c84f3ae",

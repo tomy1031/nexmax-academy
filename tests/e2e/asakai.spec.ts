@@ -765,6 +765,86 @@ test("朝礼: 報告メモの 行に しごとの 絵が 並ぶ（きのう 2枚
   const back = page.getByRole("button", { name: "✕ もどす" });
   await expect(back).toBeVisible();
   await back.click();
+  await expect(back).toHaveCount(0);
+  await expect(memo, "もどすで 報告メモごと 閉じて いる").toBeVisible();
+
+  /*
+   * **絵の 外側を 押しても 「✕ もどす」と 同じに もどる**（2026-10-09 の 指定「写真を
+   * 拡大した 場合に、右上の「もどす」ボタンだけでなく、写真の 外側の 領域クリックでも
+   * 戻すと 同じ 挙動に」）。全画面の 殻は `flex-col` の fixed（報告メモの 殻には 無い）。
+   */
+  const zoomed = page.locator("div.fixed.inset-0.flex-col");
+  const zoomedImage = zoomed.locator("img");
+  const open = () => kinou.getByRole("button", { name: /決済の 画面/ }).click();
+
+  await open();
+  await expect(zoomed).toBeVisible();
+  await expect(zoomedImage).toBeVisible();
+  const box = (await zoomedImage.boundingBox())!;
+  /* 画面の 左下の すみ。絵の 箱の 外であること（外れて いたら テストの 前提が 崩れる）。 */
+  const outside = { x: 10, y: PHONE.height - 10 };
+  expect(
+    outside.x < box.x ||
+      outside.x > box.x + box.width ||
+      outside.y < box.y ||
+      outside.y > box.y + box.height,
+    `クリックする 点 (${outside.x}, ${outside.y}) が 絵の 箱 ${JSON.stringify(box)} の 中に ある`,
+  ).toBe(true);
+  /* 全画面の 殻は fixed なので、`shot`（ページ全体を 縦に つなぐ）では なく 画面の 見えている 所を 撮る。 */
+  await page.screenshot({ path: "e2e-screens/asakai-memo-row-picture-zoomed.png" });
+
+  /* 外側 → もどる。報告メモは 開いた まま。 */
+  await page.mouse.click(outside.x, outside.y);
+  await expect(zoomed).toHaveCount(0);
+  await expect(memo, "外側クリックで 報告メモごと 閉じて いる").toBeVisible();
+  expect(
+    await page.evaluate(() => document.body.style.overflow),
+    "後ろの ページが 動かせない まま",
+  ).not.toBe("hidden");
+
+  /* もう 一度 ひろげる。絵そのものを 押しても もどらない。 */
+  await open();
+  await expect(zoomed).toBeVisible();
+  await zoomedImage.click();
+  await expect(zoomed, "絵を 押したら もどって しまった").toBeVisible();
+  await expect(memo).toBeVisible();
+
+  /* 右上の 外側（すみ）も 同じ。最後は ふだんどおり 「✕ もどす」で もどる。 */
+  await page.mouse.click(PHONE.width - 10, PHONE.height - 10);
+  await expect(zoomed).toHaveCount(0);
+  await open();
+  await expect(zoomed).toBeVisible();
+  await page.getByRole("button", { name: "✕ もどす" }).click();
+  await expect(zoomed).toHaveCount(0);
+  await expect(memo).toBeVisible();
+});
+
+/**
+ * 外側クリックで もどるのは **報告メモの しごとの 絵だけ**（`closeOnBackdrop`）。
+ * 表の 絵（同じ `TaskPicture`）も 同じ 画面なので 同じに もどる。
+ */
+test("朝礼: 表の しごとの 絵も 外側を 押すと もどる（報告メモは 開いた まま）", async ({
+  page,
+  context,
+}) => {
+  const refs = stageRefs();
+  await seedCompleted(context, refs.slice(0, refs.indexOf("asakai_kantan")));
+  await page.goto("/asakai/meeting-asakai_kantan");
+  await joinCall(page);
+
+  const memo = page.getByRole("dialog", { name: "報告メモ" });
+  await expect(memo).toBeVisible();
+  const zoomed = page.locator("div.fixed.inset-0.flex-col");
+  await memo
+    .locator("table")
+    .first()
+    .getByRole("button", { name: /決済の 画面/ })
+    .first()
+    .click();
+  await expect(zoomed).toBeVisible();
+  await page.mouse.click(10, PHONE.height - 10);
+  await expect(zoomed).toHaveCount(0);
+  await expect(memo).toBeVisible();
 });
 
 /**

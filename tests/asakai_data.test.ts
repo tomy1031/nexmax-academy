@@ -871,7 +871,7 @@ describe("その日の 中身でしか 開かない（朝礼）", () => {
     };
     for (const [day, percent] of Object.entries(value)) {
       expect(say(day, `今、進捗は ${percent}%です。`, "shinchoku").full, `${day} の 数`).toBe(true);
-      /* 見本（ヘンディさん）の 数字は 決済バックエンド機能の もの。 */
+      /* 見本（ヘンディさん）の 数字は 決済バックエンドの もの。 */
       expect(say(day, "今、進捗は 50%です。", "shinchoku").open, `${day}: 見本の 数で 開いた`).toBe(
         percent === "50",
       );

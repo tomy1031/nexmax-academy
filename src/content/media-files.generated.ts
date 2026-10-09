@@ -273,7 +273,7 @@ export const MEDIA_FILES: Readonly<Record<string, readonly [size: number, etag: 
   "/audio/meetings/asakai_kantan/s3-member-1-eac14877.wav": [1149164, "b19fa405"],
   "/audio/meetings/asakai_kantan/s3-onegai-ex-cebe5d55.wav": [225166, "7fd79fc3"],
   "/audio/meetings/asakai_kantan/s3-onegai-fu0-ca5c5cea.wav": [202606, "02977cad"],
-  "/audio/meetings/asakai_kantan/s3-onegai-fu1-d6b4e88a.wav": [370124, "8c81d6d7"],
+  "/audio/meetings/asakai_kantan/s3-onegai-fu1-3429da79.wav": [358124, "b6994315"],
   "/audio/meetings/asakai_kantan/s3-opening-0-ca8a38bb.wav": [276526, "39232f38"],
   "/audio/meetings/asakai_kantan/s3-sample-72e8459e.wav": [1073806, "ef1be7af"],
   "/audio/meetings/asakai_kantan/s3-sample-84310cb6.wav": [1060364, "eab3e1de"],
