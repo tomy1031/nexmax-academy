@@ -24,6 +24,14 @@ import { useCallback, useEffect, useRef, useState, type MouseEvent, type RefObje
  *   ① 自前で `fixed inset-0` に 広げる（どの 端末でも 効く）
  *   ② そのうえで 本物の 全画面も 頼む（効く 端末では ブラウザの 枠まで 消える）
  * の順に 重ねる。②が 断られても ①が 残る。
+ *
+ * ## もどす 道は 3つ（どの 絵も 同じ）
+ * 「✕ もどす」・Esc・**絵の 外側を 押す**。外側を 押して もどるのは 2026-10-09 の 指定
+ *「写真を 拡大した 場合に、右上の「もどす」ボタンだけでなく、写真の 外側の 領域クリックでも
+ * 戻すと 同じ 挙動に」で 始まり、同日の 回答「B」で **アプリ全体**に 広げた
+ *（朝礼の 報告メモだけの 約束だった `closeOnBackdrop` は 外した）。
+ * 絵そのものを 押しても もどらない（拡大した 絵の 文字を 指で 探す ときに 閉じて しまう）。
+ * まんがの ページ絵（`manga-slides.tsx` の `PageArt`）も 同じ 作法で もどる。
  */
 export function ZoomableImage({
   children,
@@ -32,22 +40,11 @@ export function ZoomableImage({
   /** ⛶ の 大きさ。小さな サムネイルでは `"small"`。 */
   size = "normal",
   className = "",
-  closeOnBackdrop = false,
 }: {
   children: React.ReactNode;
   label?: string;
   size?: "normal" | "small";
   className?: string;
-  /**
-   * ひろげた 絵の **外側を 押しても もどす**（「✕ もどす」と 同じ `collapse`）。
-   *
-   * 2026-10-09 の 指定「写真を 拡大した 場合に、右上の「もどす」ボタンだけでなく、
-   * 写真の 外側の 領域クリックでも 戻すと 同じ 挙動に なるように」。朝礼の 報告メモの
-   * しごとの 絵（`TaskPicture`）だけが 渡す。**既定は false**——記事・スキット・
-   * リッチブロックの 絵は これまでどおり 「✕ もどす」か Esc で だけ もどる。
-   * 絵そのものを 押しても もどらない（拡大した 絵の 文字を 指で 探す ときに 閉じて しまう）。
-   */
-  closeOnBackdrop?: boolean;
 }) {
   const [wide, setWide] = useState(false);
   const shellRef = useRef<HTMLDivElement | null>(null);
@@ -117,7 +114,7 @@ export function ZoomableImage({
       </button>
 
       {wide ? (
-        <ZoomedView shellRef={shellRef} onClose={collapse} closeOnBackdrop={closeOnBackdrop}>
+        <ZoomedView shellRef={shellRef} onClose={collapse}>
           {children}
         </ZoomedView>
       ) : null}
@@ -126,34 +123,39 @@ export function ZoomableImage({
 }
 
 /**
- * ひろげた 全画面の 中身。**フックを 持たない**（ふるまいは 呼ぶ側の `collapse` に 任せる）。
+ * 「外側を 押したら もどす」の 手。**絵の 外側**（暗い 幕・絵を 真ん中に 置く 枠・
+ * `<dialog>` の 地）の `onClick` から 呼ぶ。`(event) => closeOnOutsideClick(event, onClose)` の
+ * 形で 渡す——`onClose` が ref を 読む ものでも、描く 最中には 触らない（React の lint）。
  *
- * `closeOnBackdrop` の ときだけ、**絵の 外側**（暗い 幕と、絵を 真ん中に 置く 枠）を
- * 押すと `onClose` を 呼ぶ。見分けは `event.target === event.currentTarget`——
- * 絵（子）を 押した click は `target` が 絵に なる ので、ここでは 閉じない。
+ * 見分けは `event.target === event.currentTarget`——絵（子）を 押した click は
+ * `target` が 絵に なる ので、ここでは 閉じない。
  *
  * 閉じる click は **ここで 止める**（`stopPropagation`）。親の ポップアップ
  *（`ModalShell` の 幕）まで 届くと、絵だけ 閉じるつもりが 報告メモごと 閉じて しまう。
- * 「✕ もどす」は これまでどおり 自分の `onClick` だけで 動く。
+ * 絵を 押した click は 止めない（絵の 上の 操作を 邪魔しない）。
+ */
+export function closeOnOutsideClick(event: MouseEvent<HTMLElement>, onClose: () => void) {
+  if (event.target !== event.currentTarget) return;
+  event.stopPropagation();
+  onClose();
+}
+
+/**
+ * ひろげた 全画面の 中身。**フックを 持たない**（ふるまいは 呼ぶ側の `collapse` に 任せる）。
+ *
+ * **絵の 外側を 押すと `onClose` を 呼ぶ**（`closeOnOutsideClick`）。どの 絵も 同じ
+ *（2026-10-09 の 回答「B」＝アプリ全体）。「✕ もどす」は 自分の `onClick` だけで 動く。
  */
 export function ZoomedView({
   shellRef,
   onClose,
-  closeOnBackdrop = false,
   children,
 }: {
   shellRef?: RefObject<HTMLDivElement | null>;
   onClose: () => void;
-  closeOnBackdrop?: boolean;
   children: React.ReactNode;
 }) {
-  const closeFromBackdrop = closeOnBackdrop
-    ? (event: MouseEvent<HTMLDivElement>) => {
-        if (event.target !== event.currentTarget) return;
-        event.stopPropagation();
-        onClose();
-      }
-    : undefined;
+  const closeFromBackdrop = (event: MouseEvent<HTMLElement>) => closeOnOutsideClick(event, onClose);
   return (
     <div
       ref={shellRef}

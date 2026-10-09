@@ -61,3 +61,63 @@ test("ページ絵は 縦長で 出て、タップで 大きく なり、とじ�
   await expect(zoom).toBeHidden();
   await expect(open).toBeFocused();
 });
+
+/**
+ * **絵の 外側（黒い 地）を 押しても とじる**（2026-10-09 の 指定「写真を 拡大した 場合に、
+ * 右上の「もどす」ボタンだけでなく、写真の 外側の 領域クリックでも」→ 回答「B」＝アプリ全体）。
+ * 絵そのものを 押すと 「もっと おおきく」の 切り替えで、とじない。
+ */
+test("ページ絵の 拡大: 外側を 押すと とじ、絵を 押しても とじない（スマホ）", async ({ page }) => {
+  const viewport = { width: 390, height: 844 };
+  await page.setViewportSize(viewport);
+  await page.goto(PATH);
+
+  const open = page.getByRole("button", { name: "まんがの ページを おおきく する" });
+  await open.click();
+  const zoom = page.getByTestId("manga-page-zoom");
+  await expect(zoom).toBeVisible();
+
+  // 絵を 押す … 2ばいに なるだけ。とじない
+  const art = zoom.getByRole("button", { name: "もっと おおきく する" });
+  const box = (await art.boundingBox())!;
+  await art.click();
+  await expect(zoom.getByRole("button", { name: "もとの おおきさに もどす" })).toBeVisible();
+  await expect(zoom, "絵を 押したら とじて しまった").toBeVisible();
+  await zoom.getByRole("button", { name: "もとの おおきさに もどす" }).click();
+  await expect(art).toBeVisible();
+
+  // 絵の 下の 黒い 地（390px では 左右に 余白が 無いので 下を 押す）
+  const below = { x: viewport.width / 2, y: box.y + box.height + 40 };
+  expect(below.y, "押す 点が 画面の 外（テストの 前提が 崩れた）").toBeLessThan(viewport.height);
+  await page.mouse.click(below.x, below.y);
+  await expect(zoom).toBeHidden();
+  await expect(open).toBeFocused();
+  expect(
+    await page.evaluate(() => document.body.style.overflow),
+    "後ろの ページが 動かせない まま",
+  ).not.toBe("hidden");
+});
+
+test("ページ絵の 拡大: 外側を 押すと とじる（広い 画面は 絵の 左右の 余白）", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto(PATH);
+
+  const open = page.getByRole("button", { name: "まんがの ページを おおきく する" });
+  await open.click();
+  const zoom = page.getByTestId("manga-page-zoom");
+  await expect(zoom).toBeVisible();
+
+  const art = zoom.getByRole("button", { name: "もっと おおきく する" });
+  const box = (await art.boundingBox())!;
+  expect(box.x, "広い 画面で 左に 余白が 無い（テストの 前提が 崩れた）").toBeGreaterThan(40);
+
+  // 余白を 押す前に、絵の 上の 点を 押しても とじない ことも 見る
+  await page.mouse.click(box.x + box.width / 2, 300);
+  await expect(zoom.getByRole("button", { name: "もとの おおきさに もどす" })).toBeVisible();
+  await expect(zoom).toBeVisible();
+  await zoom.getByRole("button", { name: "もとの おおきさに もどす" }).click();
+
+  await page.mouse.click(20, 300);
+  await expect(zoom).toBeHidden();
+  await expect(open).toBeFocused();
+});

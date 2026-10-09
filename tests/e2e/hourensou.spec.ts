@@ -334,6 +334,40 @@ for (const { id, title, skitId } of STAGES) {
     await expect(page.locator(".fixed.inset-0").first()).toBeVisible();
     await page.keyboard.press("Escape");
     await expect(page.locator(".fixed.inset-0")).toHaveCount(0);
+
+    /*
+     * **絵の 外側を 押しても もどる**（2026-10-09 の 指定「写真を 拡大した 場合に、右上の
+     * 「もどす」ボタンだけでなく、写真の 外側の 領域クリックでも」→ 回答「B」＝アプリ全体）。
+     * 記事の さし絵は 朝礼の しごとの 絵では ない——申し出式だった ころは ここが
+     * 「✕ もどす」か Esc でしか もどれなかった。全画面の 殻は `flex-col` の fixed。
+     */
+    const zoomed = page.locator("div.fixed.inset-0.flex-col");
+    await target.scrollIntoViewIfNeeded();
+    await target.click();
+    await expect(zoomed).toBeVisible();
+    const zoomedImage = zoomed.locator("img");
+    await expect(zoomedImage).toBeVisible();
+
+    /* 絵そのものを 押しても もどらない（拡大した 絵の 字を 探す ときに 閉じない）。 */
+    await zoomedImage.click();
+    await expect(zoomed, "絵を 押したら もどって しまった").toBeVisible();
+
+    /* 画面の 左上の すみ。絵の 箱の 外であること（外れて いたら テストの 前提が 崩れる）。 */
+    const box = (await zoomedImage.boundingBox())!;
+    const outside = { x: 4, y: 4 };
+    expect(
+      outside.x < box.x ||
+        outside.x > box.x + box.width ||
+        outside.y < box.y ||
+        outside.y > box.y + box.height,
+      `クリックする 点 (${outside.x}, ${outside.y}) が 絵の 箱 ${JSON.stringify(box)} の 中に ある`,
+    ).toBe(true);
+    await page.mouse.click(outside.x, outside.y);
+    await expect(zoomed).toHaveCount(0);
+    expect(
+      await page.evaluate(() => document.body.style.overflow),
+      "後ろの ページが 動かせない まま",
+    ).not.toBe("hidden");
   });
 
   test(`報連相：${title} — 裸の 漢字が 出て いない`, async ({ page, context }) => {
