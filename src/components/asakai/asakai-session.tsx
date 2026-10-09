@@ -66,6 +66,7 @@ import {
   CountBoxes,
   DayProgress,
   ProgressBoxes,
+  RowTaskPictures,
   SkyStrip,
   DayCount,
 } from "@/components/asakai/asakai-parts";
@@ -457,16 +458,21 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
      * **この 回で 打ち切った 札の 名前**（2回 聞いても 開かなかった。無ければ null）。
      *
      * 2026-09-28 の 点検。打ち切った 回にも「もう いちど お願いします」＋ヒント＋
-     *「言い直す」を 出して いた ので、閉じると 司会が「◯◯は 聞けませんでした」と
-     * 言うのと **画面が 逆の ことを 言って いた**（規律1）。
+     *「もう一度報告」（当時は「言い直す」）を 出して いた ので、閉じると 司会が
+     *「◯◯は 聞けませんでした」と 言うのと **画面が 逆の ことを 言って いた**（規律1）。
      */
     readonly gaveUp: string | null;
     /**
-     * 言い直す（同じ 問いに もう いちど 答える）。**伝わらなかった 回だけ** 入る。
+     * もう一度報告（同じ 問いに もう いちど 答える）。**伝わらなかった 回だけ** 入る。
      *
      * 前は いつでも ポップアップを 閉じるだけ だった ので、聞き返しの 回数だけ
      * 使われて、型文つきの 2回目の 問いが 流れない まま 打ち切られて いた。
      * 伝わった 回に 押すと、次の 札が 1回目を 飛ばして いた（2026-09-28）。
+     *
+     * 2026-10-09 から、伝わらなかった 回の **道は これ 1つだけ**（「つぎの しつもんを 聞く」は
+     * 出さない）。押すたびに 回数を 戻す ので、伝わるまで 何回でも 同じ 問いに 答えられる——
+     * 朝礼の 聞き返しは 打ち切りに ならない。**入らない のは 作業記録の 読み上げ（夕礼）**で、
+     * そこは 司会が「もう いちど」と 頼む いつもの 動き（回数も 数える＝打ち切りが 残る）。
      */
     readonly retry: (() => void) | null;
     readonly after: (() => void) | null;
@@ -1296,7 +1302,8 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
         readLog,
         sceneOver: false,
         /*
-         * **言い直しは 伝わらなかった 聞き返しの あとだけ**（2026-09-28）。
+         * **もう一度報告は 伝わらなかった 聞き返しの あとだけ**（2026-09-28。
+         * 2026-10-09 から これが 唯一の 道）。
          * 押したら この 回を 数えなかった ことに する（同じ 問いの まま・司会は 何も 言わない）。
          * 伝わった 回・作業記録の 差し戻し には 置かない（次の 行動は 1つ）。
          */
@@ -1976,9 +1983,21 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
    * 同じ 形の 箱に 入れて、位置も 並びの 中に きちんと 置く。
    * `kinou` の 無い 教材では いちばん 後ろに 付く。
    */
-  const memoRows: { key: string; label: string; text: string; count?: RowCount }[] = [];
+  const memoRows: {
+    key: string;
+    label: string;
+    text: string;
+    count?: RowCount;
+    tasks?: readonly string[];
+  }[] = [];
   for (const row of scene.card.rows ?? []) {
-    memoRows.push({ key: row.key, label: row.label, text: row.text, count: row.count });
+    memoRows.push({
+      key: row.key,
+      label: row.label,
+      text: row.text,
+      count: row.count,
+      tasks: row.tasks,
+    });
     if (row.key === "kinou" && scene.card.pin) {
       memoRows.push({ key: "shinchoku", label: "進捗", text: scene.card.pin });
     }
@@ -2045,6 +2064,13 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
                   <DictionaryText text={row.text} index={index} />
                   {row.count ? (
                     <CountBoxes total={row.count.total} done={row.count.done} now={row.count.now} />
+                  ) : null}
+                  {/*
+                    その 行の しごとの 絵（2026-10-09 の 指定）。絵の ファイルは 下の 表が
+                    持って いる ので、名前で 引く。`tasks` が ある 行だけ。
+                  */}
+                  {row.tasks?.length ? (
+                    <RowTaskPictures tasks={row.tasks} progress={scene.card.progress} />
                   ) : null}
                 </dd>
               </div>
@@ -2264,9 +2290,12 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
               copied={judge.copied}
               askRedo={!judge.sceneOver && judge.gaveUp === null}
               /*
-              言い直す … 同じ しつもんの まま、もう いちど 書く（司会は 何も 言わない）。
-              **伝わらなかった 回だけ**（`retry`）。その日が 終わって いる とき・
-              打ち切った とき・伝わった ときは 出さない（2026-09-28）。
+              もう一度報告 … 同じ しつもんの まま、もう いちど 書く（司会は 何も 言わない・
+              回数にも 数えない）。**伝わらなかった 回だけ**（`retry`）で、その 回は
+              この ボタンが 唯一の 道（2026-10-09 の 決定。伝わるまで 何回でも）。
+              その日が 終わって いる とき・打ち切った とき・伝わった ときは 出さない。
+              作業記録の 読み上げ（夕礼）は `retry` が 無い ので、主ボタンの 字だけ
+             「もう一度報告」に なり、押すと いつもの `closeJudge`（司会が もう いちど 頼む）。
             */
               onRetry={judge.sceneOver ? undefined : (judge.retry ?? undefined)}
               onClose={closeJudge}

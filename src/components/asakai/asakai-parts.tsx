@@ -226,10 +226,16 @@ function TaskPicture({
   label,
   image,
   icon,
+  size = "normal",
 }: {
   label: string;
   image?: { src?: string; status?: string };
   icon?: string;
+  /**
+   * 絵の 大きさ。`"normal"` は 表の 80px、`"small"` は 報告メモの 行に 並べる 64px
+   *（2026-10-09）。表の 列幅は 80px を 前提に して いる ので、表は 変えない。
+   */
+  size?: "normal" | "small";
 }) {
   const [missing, setMissing] = useState(false);
   const src = taskImage(image);
@@ -249,9 +255,54 @@ function TaskPicture({
         height={640}
         unoptimized
         onError={() => setMissing(true)}
-        className="border-hairline mx-auto h-20 w-20 rounded-lg border bg-white object-cover"
+        className={`border-hairline mx-auto rounded-lg border bg-white object-cover ${
+          size === "small" ? "h-16 w-16" : "h-20 w-20"
+        }`}
       />
     </ZoomableImage>
+  );
+}
+
+/**
+ * 報告メモの「きのう したこと」「きょう すること」の 行に 並べる、**しごとの 絵**。
+ *
+ * 2026-10-09 の 指定「昨日したこと、今日することの 項目内に しごとの イメージ画像を
+ * 入れてください」。文を 読む 前に **何の しごとか あたりが つく**ように する。
+ *
+ * - 絵の ファイルは **表（`progress`）の 行が 持つ**。`tasks` の 名前で 表から 引く
+ *   （同じ 絵の 場所を 2か所に 書かない。名前の 合わない 書き方は `schema.ts` が 落とす）
+ * - 見つからない 名前は 飛ばす（表が 変わって 絵が 消えても 画面は 壊れない）
+ * - 押すと 全画面（表の 絵と 同じ `ZoomableImage`）。**キャプションの 字は 付けない**——
+ *   すぐ 上の 文に 同じ ことばが あり、すぐ 下の 表に 名前つきで 同じ 絵が ある
+ */
+export function RowTaskPictures({
+  tasks,
+  progress,
+}: {
+  tasks: readonly string[];
+  progress: readonly {
+    label: string;
+    icon?: string;
+    image?: { src?: string; status?: string };
+  }[];
+}) {
+  const found = tasks.flatMap((name) => {
+    const item = progress.find((one) => one.label === name);
+    return item ? [item] : [];
+  });
+  if (found.length === 0) return null;
+  return (
+    <div className="mt-2 flex flex-wrap gap-2">
+      {found.map((item, at) => (
+        <TaskPicture
+          key={`${item.label}-${at}`}
+          label={item.label}
+          image={item.image}
+          icon={item.icon}
+          size="small"
+        />
+      ))}
+    </div>
   );
 }
 

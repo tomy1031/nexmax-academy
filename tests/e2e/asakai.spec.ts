@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Locator, type Page } from "@playwright/test";
 
 import { bareKanjiTexts, joinCall, seedCompleted, shot } from "./helpers";
 
@@ -44,9 +44,9 @@ function stageRefs(): string[] {
  * `tests/asakai_data.test.ts` が **れいを そのまま 言えば ⭕ に なる**ことを
  * 保証して いる ので、ここでは それを 足場どおりに 話した 人の 入力として 使う。
  */
-function exampleUtterances(): string[] {
+function exampleUtterances(id: "asakai_kantan" | "asakai_muzukashii" = "asakai_kantan"): string[] {
   const meeting = JSON.parse(
-    readFileSync(join(__dirname, "..", "..", "content", "meetings", "asakai_kantan.json"), "utf8"),
+    readFileSync(join(__dirname, "..", "..", "content", "meetings", `${id}.json`), "utf8"),
   ) as { asakai: { scenes: { panels: { example: { text: string } }[] }[] } };
   return meeting.asakai.scenes.map((scene) =>
     scene.panels.map((panel) => panel.example.text).join(" "),
@@ -70,6 +70,20 @@ async function readingFreeText(page: Page): Promise<string> {
     }
     for (const rt of Array.from(clone.querySelectorAll("rt"))) rt.remove();
     return (clone.textContent ?? "").replace(/\s+/gu, "");
+  });
+}
+
+/**
+ * 1つの ポップアップの **画面の 字**（ふりがな `rt` を 外し、空白は ぜんぶ 落とす）。
+ *
+ * チャットには 司会の 同じ ことばが 残る ので、「ポップアップの 中に だけ 出る／出ない」を
+ * 見る ときは `readingFreeText`（ページ ぜんぶ）では なく こちらを 使う。
+ */
+async function dialogText(dialog: Locator): Promise<string> {
+  return dialog.evaluate((element) => {
+    const copy = element.cloneNode(true) as HTMLElement;
+    for (const rt of Array.from(copy.querySelectorAll("rt"))) rt.remove();
+    return (copy.textContent ?? "").replace(/\s+/gu, "");
   });
 }
 
@@ -279,7 +293,8 @@ test("朝礼（かんたん）— 報告すると カードが 開く", async ({
   await page.getByRole("button", { name: "報告メモを 見る" }).click();
   const dutyModal = page.getByRole("dialog", { name: "報告メモ" });
   await expect(dutyModal).toBeVisible();
-  await expectOnScreen(page, "決済フロントエンド機能");
+  /* 2026-10-09 に 教材の 呼び名が「決済フロントエンド機能」→「決済フロントエンド」に そろった。 */
+  await expectOnScreen(page, "決済フロントエンド");
   await expectOnScreen(page, "進捗");
   /*
    * **月曜は ACLEDA Pay が まだ 無い**（社長の 要望は 火曜の 午後）。
@@ -491,6 +506,74 @@ test("夕礼 — 作業記録を そのまま 読み上げると 差し戻され
   await page.getByRole("button", { name: "つづける" }).click();
   await expect(page.getByText("（1 / 4）")).toBeVisible();
 
+  expect(await bareKanjiTexts(page)).toEqual([]);
+});
+
+/**
+ * **夕礼も 同じ — 伝わらない 回は「もう一度報告」だけ**（2026-10-09 の 決定）
+ *
+ * 聞き返しの ポップアップは 朝礼と 夕礼で 同じ 部品。伝わらない 回の 道は
+ *「もう一度報告」の 1つで、押すと 同じ しつもんの まま 答え直す（伝わるまで 何回でも）。
+ *
+ * **作業記録の 読み上げだけは 例外。** 司会が「大きな 作業を まとめて、もう いちど」と
+ * 頼む いつもの 動きの まま（押し先は ポップアップを 閉じる）で、**回数も 数える**——
+ * 3回 つづくと その 札は 聞けなかった ことに なる。打ち切りが 残る のは ここだけ。
+ */
+test("夕礼: 伝わらない 回は もう一度報告 だけ（作業記録の 読み上げは 打ち切りが 残る）", async ({
+  page,
+  context,
+}) => {
+  const refs = stageRefs();
+  const at = refs.indexOf("asakai_muzukashii");
+  await seedCompleted(context, refs.slice(0, at));
+
+  await page.goto("/asakai/meeting-asakai_muzukashii");
+  await joinCall(page);
+  await closeDuty(page);
+
+  const send = async (text: string) => {
+    await page.getByLabel("こたえを 入力する").fill(text);
+    await page.getByRole("button", { name: "おくる" }).click();
+  };
+
+  /* 1行では 開かない → 司会が 聞き返す。 */
+  await send("学生一覧APIと 接続しました。");
+  await page.getByRole("button", { name: "つづける" }).click();
+  await expect(page.getByText("（0 / 4）")).toBeVisible();
+
+  /* 伝わらない 回は 上限（2回）を 超えても「もう一度報告」だけ。打ち切りに ならない。 */
+  const probe = page.getByRole("dialog", { name: "追加の しつもんへの こたえ" });
+  for (let round = 0; round < 3; round += 1) {
+    await send("よろしく お願いします。");
+    await expect(probe).toBeVisible();
+    await expect(probe.getByRole("button", { name: "もう一度報告" })).toHaveCount(1);
+    await expect(probe.getByRole("button", { name: /つぎの しつもんを 聞く/ })).toHaveCount(0);
+    expect(await dialogText(probe)).not.toContain("ここまでです");
+    expect(await bareKanjiTexts(page)).toEqual([]);
+    await probe.getByRole("button", { name: "もう一度報告" }).click();
+    await expect(probe).toBeHidden();
+  }
+  await expect(page.getByText("（0 / 4）")).toBeVisible();
+
+  /* 作業記録の 読み上げ: 字は「もう一度報告」。押すと 司会が まとめて もう いちどと 頼む。 */
+  const logText =
+    "09:00 学生一覧APIの 仕様を 確認。09:30 学生一覧APIとの 接続開始。" +
+    "10:30 AUPP・CADTの 学生データ 表示完了。11:00 キーワード検索UIを 作成。";
+  await send(logText);
+  await expect(probe).toBeVisible();
+  await expect(probe.getByRole("button", { name: "もう一度報告" })).toHaveCount(1);
+  expect(await dialogText(probe)).toContain("このぶんは数えていません");
+  await probe.getByRole("button", { name: "もう一度報告" }).click();
+  await expect(probe).toBeHidden();
+  await expectOnScreen(page, "大きな 作業を 2つか 3つに まとめて");
+
+  /* もう 1回 読み上げると、その 札は 打ち切り（回数を 数えて いた ぶん）。 */
+  await send(logText);
+  const report = page.getByRole("dialog", { name: "報告の 見かた" });
+  await expect(report).toBeVisible();
+  expect(await dialogText(report)).toContain("はここまでです");
+  await report.getByRole("button").last().click();
+  await expectOnScreen(page, "聞けませんでした");
   expect(await bareKanjiTexts(page)).toEqual([]);
 });
 
@@ -1022,50 +1105,71 @@ test("聞き返しに こたえると、こたえの 見かたが 出る", async
   await shot(page, "asakai-03c-probe-score");
 
   /*
-   * **伝わった 回には「言い直す」を 置かない**（2026-09-28 の 点検 B3）。
+   * **伝わった 回には「もう一度報告」を 置かない**（2026-09-28 の 点検 B3。当時は「言い直す」）。
    * 置いて いた ころは、押すと 次の 札の 1回目の 問いが 流れない まま
    * 回数だけ 進み、型文つきの 2回目から 始まって いた。
    */
-  await expect(probe.getByRole("button", { name: "言い直す" })).toHaveCount(0);
+  await expect(probe.getByRole("button", { name: "もう一度報告" })).toHaveCount(0);
   await probe.getByRole("button", { name: /つぎの しつもんを 聞く/ }).click();
   await expect(probe).toBeHidden();
   await expect(page.getByText("（2 / 4）")).toBeVisible();
 
-  /* 伝わらなかった 回だけ 言い直せる。押しても 聞き返しの 回数は 使わない（同じ 問いの まま）。 */
+  /*
+   * **伝わらなかった 回の 道は「もう一度報告」の 1つだけ**（2026-10-09 の 決定）。
+   * 前は「つぎの しつもんを 聞く」で 先へ 進めて、2回 はずすと 打ち切られた。
+   * いまは 押すと 同じ しつもんの まま 答え直す（司会は 何も 言わず、回数にも 数えない）。
+   */
   const answer = async (text: string) => {
     await page.getByLabel("こたえを 入力する").fill(text);
     await page.getByRole("button", { name: "おくる" }).click();
     await expect(probe).toBeVisible();
   };
+  /* ポップアップの「ヘンディさんの しつもん」の 字（ふりがなと 空白は 外す）。 */
+  const questionOf = async () =>
+    (await dialogText(probe)).match(/ヘンディさんのしつもん(.*?)あなたのこたえ/u)?.[1];
   await answer("すみません、わかりません。");
   await expectOnScreen(page, "もう いちど お願いします");
-  await probe.getByRole("button", { name: "言い直す" }).click();
-  await expect(probe).toBeHidden();
-
-  /* 言い直しで 回数を 戻したので、もう 1回 はずしても まだ 打ち切られない。 */
-  await answer("すみません、わかりません。");
-  await expectOnScreen(page, "もう いちど お願いします");
-  await probe.getByRole("button", { name: /つぎの しつもんを 聞く/ }).click();
-  await expect(probe).toBeHidden();
+  await expectOnScreen(page, "内容: まだ 伝わって いません");
+  await expect(probe.getByRole("button", { name: "もう一度報告" })).toHaveCount(1);
+  await expect(probe.getByRole("button", { name: /つぎの しつもんを 聞く/ })).toHaveCount(0);
+  await expect(probe.getByRole("button", { name: "言い直す" })).toHaveCount(0);
+  /* 「一度」「伝わりませんでした」も 含めて、ポップアップの 中に 裸の 漢字が 無い。 */
+  expect(await bareKanjiTexts(page)).toEqual([]);
+  const question = await questionOf();
+  expect(question, "ポップアップに 司会の しつもんが 出て いる").toBeTruthy();
 
   /*
-   * **3回目で 打ち切る ときは「ここまで」と はっきり 言う**（B2）。
-   * 前は「もう いちど お願いします」＋ヒント＋「言い直す」を 出して いて、
-   * 閉じると 司会が「聞けませんでした」と 言う——画面と 会話が 逆だった。
+   * 聞き返しの 上限（2回）を **超えて** はずしつづけても、打ち切りに ならず、
+   * 同じ しつもんの まま 何回でも 答え直せる。
    */
-  await answer("すみません、わかりません。");
-  await expectOnScreen(page, "は ここまでです");
-  /* 見出しは ポップアップの 中で 見る（チャットには 司会の「もう いちど お願いします」が 残る）。 */
-  const probeText = await probe.evaluate((element) => {
-    const copy = element.cloneNode(true) as HTMLElement;
-    copy.querySelectorAll("rt").forEach((rt) => rt.remove());
-    return (copy.textContent ?? "").replace(/\s+/gu, "");
-  });
-  expect(probeText).not.toContain("もういちどお願いします");
-  await expect(probe.getByRole("button", { name: "言い直す" })).toHaveCount(0);
-  await expectOnScreen(page, "この 項目は ここまでです");
+  for (let round = 0; round < 4; round += 1) {
+    await probe.getByRole("button", { name: "もう一度報告" }).click();
+    await expect(probe).toBeHidden();
+    await expect(page.getByText("（2 / 4）")).toBeVisible();
+    await answer("すみません、わかりません。");
+    expect(await questionOf(), "しつもんが 変わって いない").toBe(question);
+    await expect(probe.getByRole("button", { name: /つぎの しつもんを 聞く/ })).toHaveCount(0);
+    expect(await dialogText(probe)).not.toContain("ここまでです");
+  }
+  await shot(page, "asakai-03d-probe-retry-only");
+
+  /*
+   * 伝わるまで 答え直すと、はじめて 先へ 進める。**はずした 回は 数えて いない**ので、
+   * 打ち切られず 普通に 開く（主ボタンは「つぎの しつもんを 聞く」に 戻る）。
+   */
+  await probe.getByRole("button", { name: "もう一度報告" }).click();
+  await expect(probe).toBeHidden();
+  await answer("きょうは、注文IDと 合計金額を 決済の 画面に 表示します。");
+  await expectOnScreen(page, "こたえが 伝わりました");
+  await expect(probe.getByRole("button", { name: "もう一度報告" })).toHaveCount(0);
+  await probe.getByRole("button", { name: /つぎの しつもんを 聞く/ }).click();
+  await expect(probe).toBeHidden();
+  await expect(page.getByText("（3 / 4）")).toBeVisible();
+  /* 打ち切りの ことばは 1度も 出て いない（朝礼の 聞き返しは 打ち切りに ならない）。 */
+  const chat = await readingFreeText(page);
+  expect(chat).not.toContain("聞けませんでした");
+  expect(chat).not.toContain("ここまでです");
   expect(await bareKanjiTexts(page)).toEqual([]);
-  await shot(page, "asakai-03d-probe-gave-up");
 });
 
 /**
@@ -1122,14 +1226,15 @@ test("もう いちど 報告すると、その日が はじめから やり直�
 });
 
 /**
- * **その日の さいごの 1枚には「言い直す」を 置かない**（2026-09-17 の 通しプレイ検収）
+ * **その日の さいごの 1枚には「もう一度報告」を 置かない**（2026-09-17 の 通しプレイ検収。
+ * 当時の ボタンは「言い直す」——2026-10-09 に「もう一度報告」へ 名前が 変わった）
  *
  * 置いて いた ころ、押すと 司会の 受け止めも メンバーの 報告も 流れない まま
  * 板だけ ⭕ に なった。「きょうの 評価」も「つぎの 日へ 進む」も 出るので
  * **成功したように 見える**のに、しおりには 1日も 記録されて いない——
  * 開き直すと 月曜の 途中に 逆もどりする。閉じる 道だけ 残す。
  */
-test("さいごの 1枚の ポップアップに 言い直すは 出ない", async ({ page, context }) => {
+test("さいごの 1枚の ポップアップに もう一度報告は 出ない", async ({ page, context }) => {
   const refs = stageRefs();
   const at = refs.indexOf("asakai_kantan");
   await seedCompleted(context, refs.slice(0, at));
@@ -1157,6 +1262,7 @@ test("さいごの 1枚の ポップアップに 言い直すは 出ない", asy
 
   const probe = page.getByRole("dialog", { name: "追加の しつもんへの こたえ" });
   await expect(probe).toBeVisible();
+  await expect(probe.getByRole("button", { name: "もう一度報告" })).toHaveCount(0);
   await expect(probe.getByRole("button", { name: "言い直す" })).toHaveCount(0);
 
   /* 閉じる 道は 1つ。ここを 通って はじめて 司会が 受け止める。 */
@@ -1175,13 +1281,17 @@ test("さいごの 1枚の ポップアップに 言い直すは 出ない", asy
 });
 
 /**
- * **打ち切った 札を「まだ 言えて いない ところ」に 並べない**（同検収）
+ * **何回 まちがえても、その 札は 打ち切られず「まだ 言えて いない ところ」に 残る**
+ *（2026-10-09 の 決定）
  *
- * 2回 聞いても 開かない 札は 先へ 進める（2026-09-17 の 指定）。その 札は
- * 照合から 外れる ので、あとから 正しく 言っても 何も 起きない——なのに
- * 一覧に 残して いたので、学習者は **もう 開かない ものに 答えつづけて いた**。
+ * もとは「2回 聞いても 開かない 札は 先へ 進める（2026-09-17）。その 札は 照合から
+ * 外れる ので、一覧に 残すと **もう 開かない ものに 答えつづける**」を 守る テストだった
+ *（打ち切った 札を 一覧から 消す）。2026-10-09 に 朝礼の 聞き返しは **伝わるまで
+ * 何回でも**（「もう一度報告」だけ）に なり、打ち切りが 無く なった——札は 照合から
+ * 外れず、開く 日まで 一覧に 残るのが 正しい。打ち切りは 夕礼の 作業記録の
+ * 読み上げ（`夕礼 — 聞き返しは …`）にだけ 残る。
  */
-test("2回 まちがえた 札は、残りの 一覧から 消える", async ({ page, context }) => {
+test("何回 まちがえても、その 札は 打ち切られず 残りの 一覧に 残る", async ({ page, context }) => {
   const refs = stageRefs();
   const at = refs.indexOf("asakai_kantan");
   await seedCompleted(context, refs.slice(0, at));
@@ -1197,25 +1307,26 @@ test("2回 まちがえた 札は、残りの 一覧から 消える", async ({ 
   await page.getByRole("button", { name: "おくる" }).click();
   await page.getByRole("dialog", { name: "報告の 見かた" }).getByRole("button").last().click();
 
-  /* 聞かれた 札に かみ合わない ことを 2回 言う → その 札は 打ち切られる。 */
+  /* 聞かれた 札に かみ合わない ことを 4回（上限の 2回を 超えて）言う。 */
   const probe = page.getByRole("dialog", { name: "追加の しつもんへの こたえ" });
-  for (let round = 0; round < 2; round += 1) {
+  for (let round = 0; round < 4; round += 1) {
     await page.getByLabel("こたえを 入力する").fill("よろしく お願いします。");
     await page.getByRole("button", { name: "おくる" }).click();
     await expect(probe).toBeVisible();
-    const rest = await readingFreeText(page);
-    expect(rest, "打ち切る 前は 一覧に 残って いる").toContain("進捗");
-    await probe.getByRole("button", { name: /つぎの しつもん|きょうの 評価を 見る/ }).click();
+    /* 「まだ 言えて いない ところ: …」の 中に、聞かれて いる 進捗の 札が 残って いる。 */
+    const rest = (await dialogText(probe)).match(/まだ言えていないところ:(.*?)もう一度報告/u)?.[1];
+    expect(rest, `${round + 1}回目: 打ち切られず 一覧に 残って いる`).toContain("進捗");
+    await expect(probe.getByRole("button", { name: "もう一度報告" })).toHaveCount(1);
+    expect(await dialogText(probe)).not.toContain("ここまでです");
+    expect(await bareKanjiTexts(page)).toEqual([]);
+    if (round === 3) await shot(page, "asakai-12-retry-card");
+    await probe.getByRole("button", { name: "もう一度報告" }).click();
+    await expect(probe).toBeHidden();
   }
 
-  /* 3本目。進捗は もう 聞かれない ので、一覧からも 消えて いる。 */
-  await page.getByLabel("こたえを 入力する").fill("よろしく お願いします。");
-  await page.getByRole("button", { name: "おくる" }).click();
-  await expect(probe).toBeVisible();
-  const after = await readingFreeText(page);
-  expect(after, "打ち切った 札を 残りに 並べない").not.toContain("まだ言えていないところ:進捗");
-  expect(await bareKanjiTexts(page)).toEqual([]);
-  await shot(page, "asakai-12-gave-up-card");
+  /* 板は 1枚も 増えて いない（きのう だけ）。司会は 1度も 「聞けませんでした」と 言って いない。 */
+  await expect(page.getByText("（1 / 4）")).toBeVisible();
+  expect(await readingFreeText(page)).not.toContain("聞けませんでした");
 });
 
 /**
@@ -1330,20 +1441,34 @@ test("きょうの 評価に 自分の 回答・正しい 回答・まとめが 
  *「もう いちど 報告する」が ある。上書きできる ままだと
  *「適当に 答える → お手本を 読む → 写して やり直す」で 満点が 記録できる。
  * 練習は できる（板は 開く）が、**週の けっかに 残る 数は 変わらない**。
+ *
+ * ## 夕礼で 見る（2026-10-09）
+ * 前は 朝礼で「かみ合わない ことを 言いつづけて 4枚 とも 打ち切られる」まで 進めて いた。
+ * 朝礼の 聞き返しは 伝わるまで 何回でも（打ち切りが 無い）に なった ので、
+ * **0点の 日**は 朝礼では 作れない。打ち切りが 残る のは 夕礼の 作業記録の 読み上げ
+ *（そのまま 読むと 数えず、3回 つづくと その 札は 聞けなかった ことに なる）だけ——
+ * 同じ 文を 送りつづけて、4枚 とも 打ち切られる まで 進める。
  */
-test("お手本を 見て やり直しても、その日の 点は 変わらない", async ({ page, context }) => {
+test("夕礼: 打ち切りで 終えた 日を お手本を 見て やり直しても、その日の 点は 変わらない", async ({
+  page,
+  context,
+}) => {
+  test.slow();
   const refs = stageRefs();
-  const at = refs.indexOf("asakai_kantan");
+  const at = refs.indexOf("asakai_muzukashii");
   await seedCompleted(context, refs.slice(0, at));
 
-  await page.goto("/asakai/meeting-asakai_kantan");
+  await page.goto("/asakai/meeting-asakai_muzukashii");
   await joinCall(page);
   await closeDuty(page);
 
-  /* かみ合わない ことを 言いつづけて、4枚 とも 打ち切られる まで 進める。 */
+  /* 月曜の 作業記録を 時刻ごと そのまま 読み上げつづけて、4枚 とも 打ち切られる まで 進める。 */
+  const logText =
+    "09:00 学生一覧APIの 仕様を 確認。09:30 学生一覧APIとの 接続開始。" +
+    "10:30 AUPP・CADTの 学生データ 表示完了。11:00 キーワード検索UIを 作成。";
   const day = page.getByRole("dialog", { name: "今日の 評価" });
-  for (let round = 0; round < 12 && !(await day.isVisible()); round += 1) {
-    await page.getByLabel("こたえを 入力する").fill("よろしく お願いします。");
+  for (let round = 0; round < 14 && !(await day.isVisible()); round += 1) {
+    await page.getByLabel("こたえを 入力する").fill(logText);
     await page.getByRole("button", { name: "おくる" }).click();
     const open = page.getByRole("dialog", { name: /報告の 見かた|追加の しつもんへの こたえ/ });
     await expect(open.or(day).first()).toBeVisible();
@@ -1360,14 +1485,7 @@ test("お手本を 見て やり直しても、その日の 点は 変わらな�
   await closeDuty(page);
 
   /* 写して やり直す。板は 開くが…… */
-  await page
-    .getByLabel("こたえを 入力する")
-    .fill(
-      "先週の 金曜日は、決済の 決まりを 調べて、決済の 画面と ABA Payの ボタンを 作りました。" +
-        "今、決済フロントエンド機能の 進捗は 20%です。" +
-        "きょうは、注文IDと 合計金額を 画面に 出します。" +
-        "今の ところ 問題は ありません。",
-    );
+  await page.getByLabel("こたえを 入力する").fill(exampleUtterances("asakai_muzukashii")[0] ?? "");
   await page.getByRole("button", { name: "おくる" }).click();
   await expect(day).toBeVisible();
   await expectOnScreen(page, "4つ ぜんぶ 伝えられました");

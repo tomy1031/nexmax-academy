@@ -2795,6 +2795,13 @@ const asakaiCardSchema = z.object({
         label: plainText,
         text: plainText,
         image: imageSlotSchema.optional(),
+        /**
+         * この 行の しごとの 絵（2026-10-09 の 指定「昨日したこと、今日することの 項目内に
+         * しごとの イメージ画像を 入れてください」）。**`progress` の `label` を そのまま 書く**——
+         * 絵の ファイルは 表の 行が 持つ（同じ 絵の 場所を 2か所に 書かない）。
+         * 並びは 文に 出て くる 順。
+         */
+        tasks: z.array(plainText).min(1).max(4).optional(),
         /** 「20この うち 16こ」を 四角と ✓ で 描く（数を 絵に 焼かせない）。 */
         count: z
           .object({
@@ -2822,7 +2829,26 @@ const asakaiCardSchema = z.object({
   pin: plainText.optional(),
   /** 「やること」（何を どの 順で 報告するか）。 */
   todo: z.array(plainText).optional(),
-});
+})
+  /*
+   * 行の `tasks` は **同じ カードの 表（`progress`）に ある 名前**だけ。
+   * 絵の ファイルは 表の 行が 持つ ので、名前が 合わないと その 絵は 黙って 出なくなる
+   *（`RowTaskPictures` は 見つからない 名前を 飛ばす）。書いた 時点で 落とす。
+   */
+  .superRefine((card, ctx) => {
+    const labels = new Set(card.progress.map((one) => one.label));
+    for (const [rowAt, row] of (card.rows ?? []).entries()) {
+      for (const [taskAt, name] of (row.tasks ?? []).entries()) {
+        if (!labels.has(name)) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ["rows", rowAt, "tasks", taskAt],
+            message: `rows の tasks「${name}」が 表（progress）の しごとの 名前に ありません`,
+          });
+        }
+      }
+    }
+  });
 
 /** 1場面（1日）。 */
 const asakaiSceneSchema = z
