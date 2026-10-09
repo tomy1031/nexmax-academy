@@ -681,7 +681,7 @@ export const ASSET_VERSIONS: Readonly<Record<string, string>> = {
   "/img/articles/asakai_team/hero.webp": "b688e89a",
   "/img/articles/asakai_team/lastweek.webp": "70e236a8",
   "/img/articles/asakai_team/r1_kinou.webp": "88699941",
-  "/img/articles/asakai_team/r2_shinchoku.webp": "186489dd",
+  "/img/articles/asakai_team/r2_shinchoku.webp": "d9f60497",
   "/img/articles/asakai_team/r3_kyou.webp": "6edb9824",
   "/img/articles/asakai_team/r4_mondai.webp": "f6666d5e",
   "/img/articles/asakai_team/taisetsu.webp": "af67fb01",
