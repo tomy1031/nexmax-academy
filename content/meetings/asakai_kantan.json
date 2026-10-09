@@ -181,7 +181,7 @@
         "sample": {
           "speakerId": "hendy",
           "text": "先週の 金曜日は、ABA Pay（カンボジアの 決済の サービス）の 仕様を 調べて、決済APIの 基本の ところを 作り始めました。今、決済バックエンドの 進捗は 30%です。きょうは、ABA Payの 設定と、決済を 始める APIを 進めます。今の ところ、大きな 問題は ありません。",
-          "audio": "/audio/meetings/asakai_kantan/s0-sample-33408e35.wav"
+          "audio": "/audio/meetings/asakai_kantan/s0-sample-55f7e26a.wav"
         },
         "prompt": {
           "speakerId": "hendy",
@@ -273,13 +273,13 @@
               {
                 "speakerId": "hendy",
                 "text": "「今、決済フロントエンドの 進捗は ◯◯%です」の 形で お願いします。カードの 付せんを 見て ください。",
-                "audio": "/audio/meetings/asakai_kantan/s0-shinchoku-fu1-446be97a.wav"
+                "audio": "/audio/meetings/asakai_kantan/s0-shinchoku-fu1-635fdfcc.wav"
               }
             ],
             "example": {
               "speakerId": "hendy",
               "text": "「今、決済フロントエンドの 進捗は 20%です。」",
-              "audio": "/audio/meetings/asakai_kantan/s0-shinchoku-ex-abe52cd5.wav"
+              "audio": "/audio/meetings/asakai_kantan/s0-shinchoku-ex-da1aaec6.wav"
             }
           },
           {
@@ -316,7 +316,7 @@
             "example": {
               "speakerId": "hendy",
               "text": "「きょうは、注文IDと 合計金額を 決済の 画面に 表示します。それから、決済APIと つなぐ 用意を します。」",
-              "audio": "/audio/meetings/asakai_kantan/s0-kyou-ex-540eec4c.wav"
+              "audio": "/audio/meetings/asakai_kantan/s0-kyou-ex-7817c62f.wav"
             }
           },
           {
@@ -501,7 +501,7 @@
         "sample": {
           "speakerId": "hendy",
           "text": "きのうは、ABA Payの 設定と、決済を 始める APIを 進めました。テスト用の データで APIを 呼ぶ ところまで 確認できました。今、決済バックエンドの 進捗は 50%です。きょうは、ABA Payから 返って くる 決済の けっかを 確認する ところを 作ります。今の ところ 問題は ありません。",
-          "audio": "/audio/meetings/asakai_kantan/s1-sample-4f8de23e.wav"
+          "audio": "/audio/meetings/asakai_kantan/s1-sample-b4a585a2.wav"
         },
         "prompt": {
           "speakerId": "hendy",
@@ -592,7 +592,7 @@
             "example": {
               "speakerId": "hendy",
               "text": "「きのうは、注文IDと 合計金額を 決済の 画面に 表示しました。決済APIと つなぐ 用意も しました。」",
-              "audio": "/audio/meetings/asakai_kantan/s1-kinou-ex-40d08475.wav"
+              "audio": "/audio/meetings/asakai_kantan/s1-kinou-ex-7c251a9d.wav"
             }
           },
           {
@@ -619,13 +619,13 @@
               {
                 "speakerId": "hendy",
                 "text": "「今、決済フロントエンドの 進捗は ◯◯%です」の 形で お願いします。カードの 付せんを 見て ください。",
-                "audio": "/audio/meetings/asakai_kantan/s1-shinchoku-fu1-446be97a.wav"
+                "audio": "/audio/meetings/asakai_kantan/s1-shinchoku-fu1-635fdfcc.wav"
               }
             ],
             "example": {
               "speakerId": "hendy",
               "text": "「今、決済フロントエンドの 進捗は 30%です。」",
-              "audio": "/audio/meetings/asakai_kantan/s1-shinchoku-ex-aa31e37a.wav"
+              "audio": "/audio/meetings/asakai_kantan/s1-shinchoku-ex-6ddd8a07.wav"
             }
           },
           {
@@ -662,7 +662,7 @@
             "example": {
               "speakerId": "hendy",
               "text": "「きょうは、ABA Payの 決済APIと つなぎます。それから、処理中の アニメーションを 作ります。」",
-              "audio": "/audio/meetings/asakai_kantan/s1-kyou-ex-9b752bd0.wav"
+              "audio": "/audio/meetings/asakai_kantan/s1-kyou-ex-fe7cdc86.wav"
             }
           },
           {
@@ -857,7 +857,7 @@
         "sample": {
           "speakerId": "hendy",
           "text": "きのうは、ABA Payの 決済の けっかを 確認する ところを 作りました。ABA Pay がわの 設定も 進めました。今、決済バックエンドの 進捗は 70%です。きょうは、決済が 成功したか 失敗したかを KhmerSabai へ 返す ところを 作ります。今の ところ 大きな 問題は ありません。",
-          "audio": "/audio/meetings/asakai_kantan/s2-sample-ad2aa7e0.wav"
+          "audio": "/audio/meetings/asakai_kantan/s2-sample-6f96e90a.wav"
         },
         "prompt": {
           "speakerId": "hendy",
@@ -928,7 +928,7 @@
             "example": {
               "speakerId": "hendy",
               "text": "「きのうは、ABA Payの 決済APIと つなぐ ところを 進めました。ABA Payと ACLEDA Payを えらべる 画面も 作り始めました。」",
-              "audio": "/audio/meetings/asakai_kantan/s2-kinou-ex-7d77549a.wav"
+              "audio": "/audio/meetings/asakai_kantan/s2-kinou-ex-798b7a41.wav"
             }
           },
           {
@@ -955,13 +955,13 @@
               {
                 "speakerId": "hendy",
                 "text": "「今、決済フロントエンドの 進捗は ◯◯%です」の 形で お願いします。カードの 付せんを 見て ください。",
-                "audio": "/audio/meetings/asakai_kantan/s2-shinchoku-fu1-446be97a.wav"
+                "audio": "/audio/meetings/asakai_kantan/s2-shinchoku-fu1-635fdfcc.wav"
               }
             ],
             "example": {
               "speakerId": "hendy",
               "text": "「今、決済フロントエンドの 進捗は 30%です。」",
-              "audio": "/audio/meetings/asakai_kantan/s2-shinchoku-ex-aa31e37a.wav"
+              "audio": "/audio/meetings/asakai_kantan/s2-shinchoku-ex-6ddd8a07.wav"
             }
           },
           {
@@ -1067,7 +1067,7 @@
             "example": {
               "speakerId": "hendy",
               "text": "「1つ 問題が あります。決済APIと つなぐ ところが 少し むずかしいです。今は 調べながら 進めて います。」",
-              "audio": "/audio/meetings/asakai_kantan/s2-komari-ex-8496581b.wav"
+              "audio": "/audio/meetings/asakai_kantan/s2-komari-ex-6cfd92f4.wav"
             }
           }
         ],
@@ -1235,7 +1235,7 @@
         "sample": {
           "speakerId": "hendy",
           "text": "きのうは、ABA Payの 決済の けっかを あつかう ところを 作りました。ABA Payの 設定も 進めました。今、決済バックエンドの 進捗は 90%です。きょうは、バックエンドの 最後の テストを します。ABA Payの 設定が 思ったより 順調なので、予定より 早く 終わりそうです。",
-          "audio": "/audio/meetings/asakai_kantan/s3-sample-62ff4679.wav"
+          "audio": "/audio/meetings/asakai_kantan/s3-sample-72e8459e.wav"
         },
         "prompt": {
           "speakerId": "hendy",
@@ -1313,7 +1313,7 @@
             "example": {
               "speakerId": "hendy",
               "text": "「きのうは、支払方法を えらぶ 画面と、成功の 画面と、失敗の 画面を 作りました。決済APIと つなぐ ところも 進めました。」",
-              "audio": "/audio/meetings/asakai_kantan/s3-kinou-ex-ba2680e0.wav"
+              "audio": "/audio/meetings/asakai_kantan/s3-kinou-ex-4a0eb830.wav"
             }
           },
           {
@@ -1341,13 +1341,13 @@
               {
                 "speakerId": "hendy",
                 "text": "「今、決済フロントエンドの 進捗は ◯◯%です」の 形で お願いします。カードの 付せんを 見て ください。",
-                "audio": "/audio/meetings/asakai_kantan/s3-shinchoku-fu1-446be97a.wav"
+                "audio": "/audio/meetings/asakai_kantan/s3-shinchoku-fu1-635fdfcc.wav"
               }
             ],
             "example": {
               "speakerId": "hendy",
               "text": "「今、決済フロントエンドの 進捗は 70%です。」",
-              "audio": "/audio/meetings/asakai_kantan/s3-shinchoku-ex-355ffd39.wav"
+              "audio": "/audio/meetings/asakai_kantan/s3-shinchoku-ex-e1f3cba2.wav"
             }
           },
           {
@@ -1383,7 +1383,7 @@
             "example": {
               "speakerId": "hendy",
               "text": "「きょうは、処理中の アニメーションと、成功・失敗の 画面の 最後の 確認を します。」",
-              "audio": "/audio/meetings/asakai_kantan/s3-kyou-ex-9914d4ff.wav"
+              "audio": "/audio/meetings/asakai_kantan/s3-kyou-ex-1f12b4e8.wav"
             }
           },
           {
@@ -1584,7 +1584,7 @@
             "example": {
               "speakerId": "hendy",
               "text": "「申し訳ありませんが、スケジュールを 1日 のばして いただけますか？」",
-              "audio": "/audio/meetings/asakai_kantan/s3-onegai-ex-cdafd902.wav"
+              "audio": "/audio/meetings/asakai_kantan/s3-onegai-ex-cebe5d55.wav"
             }
           }
         ],
@@ -1599,12 +1599,12 @@
           "done": {
             "speakerId": "hendy",
             "text": "分かりました。早めに 言って くれて ありがとう ございます。わたしの 決済バックエンドは 90%まで 進んで いて、ABA Payの 設定も 思ったより 順調です。予定より 早く 終わりそうなので、まず チームの 中で 仕事を 分け直しましょう。決済APIと つなぐ ところは、きょうから わたしが 対応します。あなたは、処理中の アニメーションと、成功・失敗の 画面の 最後の 確認を 進めて ください。スケジュールは のばしません。金曜日の テストは 予定どおり 行います。",
-            "audio": "/audio/meetings/asakai_kantan/s3-arrange-done-9054f169.wav"
+            "audio": "/audio/meetings/asakai_kantan/s3-arrange-done-1c3f7eb4.wav"
           },
           "missing": {
             "speakerId": "hendy",
             "text": "決済APIと つなぐ ところは、きょうから わたしが 対応します。あなたは、処理中の アニメーションと、成功・失敗の 画面の 最後の 確認を 進めて ください。スケジュールは のばしません。金曜日の テストは 予定どおり 行います。こまった ときは、その 日の うちに 言って ください。",
-            "audio": "/audio/meetings/asakai_kantan/s3-arrange-missing-04ff3be4.wav"
+            "audio": "/audio/meetings/asakai_kantan/s3-arrange-missing-1f427e6c.wav"
           }
         },
         "judgeNote": "**この 日が 週の 山です。**「お願い」の 札が この 日だけ 増えます。\n- 問題は 2つ 見ます: **何が 起きて いて、今 どう して いるか**（決済が OKでも 成功の 画面に ならず、処理中の まま。調べて いるが まだ 直せて いない）と **予定への えいきょう**（このままだと 1日 遅れる）。「問題は ありません」は この 日は 言えたに しません\n- お願いは **中身**で 見ます: 予定（納期）を **1日 のばして ほしい**と 言い、**自分で 決めずに 承認を 求めて いる**か。おわびは **別の 札**で 見るので、おわびが 無くても お願いの 中身は 立ちます\n- 進捗は 70%。「1日 遅れる」の 1は 進捗では ありません\n- 言いにくい ことを 言えた 日なので、言い方が くずれて いても 中身が 届いて いれば 言えたと 見ます"
@@ -1747,7 +1747,7 @@
         "sample": {
           "speakerId": "hendy",
           "text": "きのうは、ABA Payの バックエンドを 仕上げました。それから、フロントエンドとの APIを つなぐ ところも やりました。今、決済バックエンドの 進捗は 100%です。きょうは、注文から 決済完了までの 結合テストを します。ABA Payに ついては、大きな 問題は ありません。",
-          "audio": "/audio/meetings/asakai_kantan/s4-sample-22735f14.wav"
+          "audio": "/audio/meetings/asakai_kantan/s4-sample-ec69065f.wav"
         },
         "prompt": {
           "speakerId": "hendy",
@@ -1830,7 +1830,7 @@
             "example": {
               "speakerId": "hendy",
               "text": "「きのうは、処理中の アニメーションと、成功・失敗の 画面の 最後の 確認を しました。」",
-              "audio": "/audio/meetings/asakai_kantan/s4-kinou-ex-1d55ee5f.wav"
+              "audio": "/audio/meetings/asakai_kantan/s4-kinou-ex-83395748.wav"
             }
           },
           {
@@ -1857,13 +1857,13 @@
               {
                 "speakerId": "hendy",
                 "text": "「今、決済フロントエンドの 進捗は ◯◯%です」の 形で お願いします。カードの 付せんを 見て ください。",
-                "audio": "/audio/meetings/asakai_kantan/s4-shinchoku-fu1-446be97a.wav"
+                "audio": "/audio/meetings/asakai_kantan/s4-shinchoku-fu1-635fdfcc.wav"
               }
             ],
             "example": {
               "speakerId": "hendy",
               "text": "「今、決済フロントエンドの 進捗は 90%です。」",
-              "audio": "/audio/meetings/asakai_kantan/s4-shinchoku-ex-65bc3496.wav"
+              "audio": "/audio/meetings/asakai_kantan/s4-shinchoku-ex-c87aaeff.wav"
             }
           },
           {
