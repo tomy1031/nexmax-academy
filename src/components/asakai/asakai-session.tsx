@@ -128,7 +128,11 @@ type Asakai = NonNullable<Meeting["asakai"]>;
 type Scene = Asakai["scenes"][number];
 type Line = Scene["sample"];
 
-/** 同じ カードを 聞き返すのは 2回まで。3回目は 会話が 止まる。 */
+/**
+ * 同じ カードを 聞き返すのは 2回まで。3回目は 会話が 止まる。
+ * 2026-10-09 から 朝礼の 聞き返しの「もう一度報告」は 回数に 数えない——打ち切りが
+ * 起きるのは 夕礼の 作業記録の 読み上げ（`readLog`）だけ。
+ */
 const MAX_PROBE = 2;
 
 const DAY_NAME: Record<Scene["day"], string> = {
@@ -163,6 +167,7 @@ const KIND_NAME: Record<Scene["kind"], string> = { asa: "朝礼", yuu: "夕礼" 
  * 仕組みだったが、**答えを そのまま 読み上げて しまう**——進捗の 札なら
  *「今、決済フロントエンド機能の 進捗は 20%です。」が 画面に 出るので、
  * 学習者は 考えずに 写せる（ユーザーの 指摘）。
+ *（引用は 当時の まま。いまは「決済フロントエンドの 進捗」・2026-10-09）
  *
  * いまは **言えなかった ことを はっきり 言って 次へ 行く**（規律1）。
  * 答えは 見せない。材料は 報告メモに あるので、次の 日に 自分で 取りに いける。
@@ -1241,7 +1246,9 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
         return;
       }
 
-      /* 2回 聞いても 開かない カードは、司会が れいを 見せて 先へ 進める。 */
+      /* 2回 聞いても 開かない カードは、司会が れいを 見せて 先へ 進める。
+       * 2026-10-09 から 朝礼の「もう一度報告」は 回数に 数えない——ここへ 来るのは
+       * 夕礼の 作業記録の 読み上げ（`readLog`）だけ。 */
       if (count > MAX_PROBE) {
         const passed = step.states.map((one) =>
           one.id === target.id ? { ...one, gaveUp: true } : one,
