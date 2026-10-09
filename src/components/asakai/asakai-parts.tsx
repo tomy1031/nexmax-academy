@@ -248,10 +248,10 @@ function TaskPicture({
   }
   return (
     /*
-      ひろげた 絵の **外側を 押しても もどる**（2026-10-09 の 指定「写真の 外側の 領域
-      クリックでも 戻す」）。この 絵だけ——ほかの 画面の `ZoomableImage` は 変えない。
+      ひろげた 絵の **外側を 押しても もどる**のは `ZoomableImage` の どの 絵も 同じ
+      （2026-10-09 の 回答「B」＝アプリ全体）。ここで 特別な 指定は しない。
     */
-    <ZoomableImage label={label} size="small" className="block" closeOnBackdrop>
+    <ZoomableImage label={label} size="small" className="block">
       <Image
         src={assetUrl(src) ?? src}
         alt=""

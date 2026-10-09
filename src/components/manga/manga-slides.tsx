@@ -7,6 +7,7 @@ import type { Manga, MangaLine, MangaPanel } from "@/content/schema";
 import { NexMax } from "@/components/nexmax";
 import { RubyText } from "@/components/ruby-text";
 import { CelebrationBurst } from "@/components/quiz/celebration";
+import { closeOnOutsideClick } from "@/components/media/zoomable-image";
 import { buildFuriganaIndex, type FuriganaIndex } from "@/lib/text/furigana";
 import { readContentProgress, recordContentProgress } from "@/lib/progress/store";
 
@@ -407,6 +408,11 @@ function PanelView({
  * ネイティブの `<dialog>`（`showModal`）に する。うしろの 画面を 押せなく し、
  * フォーカスを 中に 閉じこめ、Esc で 閉じる——自前の `div` では うしろの「つぎ →」を
  * Tab で 押せて、ページが 変わって 閉じて いた（code-critic の 指摘）。
+ *
+ * **絵の 外側（黒い 地）を 押しても 閉じる**（2026-10-09 の 回答「B」＝拡大した 絵は
+ * アプリ全体で 外側クリックで もどる。`ZoomableImage` と 同じ `closeOnOutsideClick`）。
+ * 絵そのものを 押すと 「もっと おおきく」／「もとの おおきさ」の 切り替えに なる ので、
+ * 絵の 上では 閉じない（`target` が 絵に なる）。
  */
 function PageArt({ src }: { src: string }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -478,6 +484,7 @@ function PageArt({ src }: { src: string }) {
         ref={dialogRef}
         aria-label="まんがの ページ"
         data-testid="manga-page-zoom"
+        onClick={(event) => closeOnOutsideClick(event, close)}
         onCancel={(event) => {
           // Esc。ブラウザに 閉じさせず、状態から 閉じる（フォーカスを 元へ 戻すため）
           event.preventDefault();
