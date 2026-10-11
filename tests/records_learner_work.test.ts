@@ -10,7 +10,8 @@ import type {
 import { buildLookups } from "../src/lib/records/table";
 import type { UnitIndex } from "../src/lib/records/units";
 
-const INDEX: Pick<UnitIndex, "stages" | "units"> = {
+const INDEX: Pick<UnitIndex, "stages" | "units" | "passRates"> = {
+  passRates: { houkoku_quiz: 60, renraku_quiz: 60 },
   stages: [
     { id: "houkoku", title: "報連相：報告", onMap: true },
     { id: "renraku", title: "報連相：連絡", onMap: true },
@@ -167,7 +168,8 @@ describe("1人の 工程ごとの 行った こと（願い #599 第3段）", ()
       LOOKUPS,
     );
     const quiz = find(stages, "houkoku", "houkoku_quiz");
-    expect(quiz.summary).toBe("初回 0／2点・2回");
+    // 学習者の 画面と 同じ 数え方（何問中 何問・四捨五入した % で 合否）
+    expect(quiz.summary).toBe("初回 2問中 0問 正解（0%・不合格）・2回");
     expect(quiz.items).toEqual([
       { prompt: "報告は どの 順で 話しますか", answer: "経過 → 結論", ok: false },
       { prompt: "悪い ニュースは いつ 言いますか", answer: "あとで", ok: false },
@@ -262,5 +264,26 @@ describe("1人の 工程ごとの 行った こと（願い #599 第3段）", ()
       ["きのう 何を しましたか", "発言 1", false],
       ["きのう 何を しましたか", "発言 2", true],
     ]);
+  });
+
+  it("書きこみフォーム・調査の こたえは ⭕✕を 付けず、いちばん 新しい 答えを 出す", () => {
+    const form = (attempt: string, at: string, text: string): QuizRecord => ({
+      ...answer(attempt, at, "q1", 0, text, true),
+      quiz_set_id: "houkoku_page",
+    });
+    const stages = buildLearnerWork(
+      {
+        ...NONE,
+        quiz: [
+          form("a", "2026-10-01T00:00:00Z", "はじめの 答え"),
+          form("b", "2026-10-02T00:00:00Z", "あとの 答え"),
+        ],
+      },
+      INDEX,
+      LOOKUPS,
+    );
+    const page = find(stages, "houkoku", "houkoku_page");
+    expect(page.summary).toBe("2回 書いた");
+    expect(page.items.map((item) => [item.answer, item.ok])).toEqual([["あとの 答え", null]]);
   });
 });

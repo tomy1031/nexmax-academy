@@ -25,6 +25,7 @@ import type {
   WordAnswerRecord,
   WordTestRecord,
 } from "@/lib/records/records-db";
+import { quizPassed, quizPercent } from "@/lib/quiz/pass-rate";
 import { askOf, promptOf, type Lookups } from "@/lib/records/table";
 import type { UnitIndex } from "@/lib/records/units";
 
@@ -105,23 +106,43 @@ const firstAt = <T extends { created_at: string }>(rows: readonly T[]) =>
   rows.reduce((min, row) => (min === "" || row.created_at < min ? row.created_at : min), "");
 
 /** もんだい・書きこみフォーム・調査ツール（どれも quiz_results に 入る）。 */
-function quizWork(rows: readonly QuizRecord[], unitId: string, lookups: Lookups) {
+function quizWork(
+  rows: readonly QuizRecord[],
+  unitId: string,
+  lookups: Lookups,
+  /** 合格ライン（%）。もんだいセットで ない（書きこみフォーム・調査の こたえ）ときは null。 */
+  passRate: number | null,
+) {
   const runs = [...groupBy(rows, (row) => row.attempt_id).values()]
     .map((list) => list.toSorted((a, b) => a.question_index - b.question_index))
     .toSorted((a, b) => firstAt(a).localeCompare(firstAt(b)));
+
+  // 採点の 無い 書きこみ（フォーム・調査）は ⭕✕を 付けず、いちばん 新しい 答えを 出す
+  if (passRate === null) {
+    const latest = runs.at(-1) ?? [];
+    return {
+      summary: `${runs.length}回 書いた`,
+      items: latest.map((row) => ({
+        prompt: promptOf(lookups, unitId, row.question_id),
+        answer: row.answer_text,
+        ok: null,
+      })),
+    };
+  }
+
   const full = runs.filter((list) => list.every((row) => row.full_set));
   const shown = full[0] ?? runs.at(-1) ?? [];
-  const earned = shown.reduce((sum, row) => sum + row.earned, 0);
-  const max = shown.reduce((sum, row) => sum + row.max_points, 0);
+  // 学習者の 画面と 同じ 数え方（何問中 何問 正解・四捨五入した % で 合否）
+  const correct = shown.filter((row) => row.correct).length;
+  const answered = shown.length;
   const label = full.length > 0 ? "初回" : "さいご";
-  const summary =
-    max > 0 ? `${label} ${earned}／${max}点・${runs.length}回` : `${runs.length}回 書いた`;
+  const verdict = quizPassed(correct, answered, passRate) ? "合格" : "不合格";
   return {
-    summary,
+    summary: `${label} ${answered}問中 ${correct}問 正解（${quizPercent(correct, answered)}%・${verdict}）・${runs.length}回`,
     items: shown.map((row) => ({
       prompt: promptOf(lookups, unitId, row.question_id),
       answer: row.answer_text,
-      ok: max > 0 ? row.correct : null,
+      ok: row.correct,
     })),
   };
 }
@@ -212,7 +233,7 @@ function listeningWork(row: ListeningRecord) {
  */
 export function buildLearnerWork(
   records: LearnerRecords,
-  index: Pick<UnitIndex, "stages" | "units">,
+  index: Pick<UnitIndex, "stages" | "units" | "passRates">,
   lookups: Lookups,
 ): WorkStage[] {
   const progressOf = new Map(records.progress.map((row) => [row.content_id, row.status]));
@@ -240,7 +261,12 @@ export function buildLearnerWork(
       if (row) work = listeningWork(row);
     } else if (quiz.length > 0) {
       // もんだい・ページの 書きこみフォーム・調査ツールの こたえ
-      work = quizWork(quiz, unit.id, lookups);
+      work = quizWork(
+        quiz,
+        unit.id,
+        lookups,
+        unit.type === "quizset" ? (index.passRates[unit.id] ?? null) : null,
+      );
     }
 
     const progress = progressOf.get(unit.id);

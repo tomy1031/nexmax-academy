@@ -53,9 +53,8 @@ export function LearnerWorkPanel({
         ように）。読むだけの 教材は おわったか どうかだけ です。
       </p>
 
-      {busy ? (
-        <p className="text-ink-soft mt-3 font-bold">読み込み中です。</p>
-      ) : note ? (
+      {!busy && note ? (
+        // 1つの 表が 読めなくても、読めた ぶんは 下に 出す（注意だけで 全部を 隠さない）
         <p
           role="status"
           className="mt-3 rounded-2xl border-2 bg-white p-3 text-sm font-black"
@@ -63,6 +62,9 @@ export function LearnerWorkPanel({
         >
           {note}
         </p>
+      ) : null}
+      {busy ? (
+        <p className="text-ink-soft mt-3 font-bold">読み込み中です。</p>
       ) : (
         <div className="mt-3 flex flex-col gap-2">
           {stages.map((stage) => (
