@@ -144,7 +144,7 @@ export function buildLookups(
  * **id を 落とさない のは 引けなかった ときだけ**。教材から 消した 問いでも
  * 「その問いに 何人が つまずいたか」は 数えられるので、行ごと 消して しまわない。
  */
-function promptOf(lookups: Lookups, contentId: string, questionId: string): string {
+export function promptOf(lookups: Lookups, contentId: string, questionId: string): string {
   return lookups.prompts[`${contentId}:${questionId}`] || questionId;
 }
 
@@ -162,7 +162,7 @@ function promptOf(lookups: Lookups, contentId: string, questionId: string): stri
  * しつもんの 列に **聞かれて いない もの**が 並ぶ（`promptOf` が id を 落とさない
  * のは、まとめの 見出しで「その問いに 何人 つまずいたか」を 数える ためで、役目が ちがう）。
  */
-function askOf(
+export function askOf(
   lookups: Lookups,
   contentId: string,
   questionId: string,
