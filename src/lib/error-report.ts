@@ -16,7 +16,7 @@
  * ## 増えすぎない ように（30人 同時でも）
  * - 端末ごと: 同じ エラーは 30分に 1回・どの エラーでも 1時間に 5回まで（localStorage）。
  *   localStorage が 使えない ブラウザでは、この タブの あいだだけ 覚える。
- * - 全体: DB の トリガーが 10分に 30行で ふたを する（移行SQL 20261011120000）。
+ * - 全体: DB の トリガーが 10分に 30行で ふたを する（移行SQL 20261011150000）。
  *
  * 送りっぱなしで 返事は 見ない。**送れなくても 画面には 何も 起こさない**——
  * 落ちた 画面を さらに 落とさない ことが 最優先。
@@ -78,7 +78,7 @@ export function sanitizeErrorText(text: string, max = MESSAGE_MAX): string {
 /** 道だけ（クエリ・# は 落とす）。id らしい ものは 伏せる。 */
 export function sanitizePath(pathname: string): string {
   const path = pathname.split(/[?#]/)[0] || "/";
-  // DB は 空白の 入った 道を 受け取らない（移行SQL 20261011120000 の 形の しばり）
+  // DB は 空白の 入った 道を 受け取らない（移行SQL 20261011150000 の 形の しばり）
   const clean = sanitizeErrorText(path.startsWith("/") ? path : `/${path}`, PATH_MAX);
   return clean.replace(/\s/g, "_") || "/";
 }
