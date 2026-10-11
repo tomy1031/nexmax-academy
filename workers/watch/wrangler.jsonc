@@ -1,0 +1,50 @@
+/**
+ * watch — 本番の 見張り（外形監視）。中身と なぜ 要るかは README.md と src/watch.js の 冒頭。
+ *
+ * 出しかた（アプリ本体とは 別の Worker なので、設定ファイルを 名指しする）:
+ *   npx wrangler deploy -c workers/watch/wrangler.jsonc
+ *
+ * **アプリ本体（wrangler.jsonc・name=academy）には 触らない。** 本体に cron を
+ * 相乗りさせると OpenNext の 出力と 混ざり、本体の 大きさ（gzip 3MiB）にも 響く。
+ */
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "academy-watch",
+  "main": "src/index.js",
+  "compatibility_date": "2026-07-01",
+
+  // 何を 見て 何を 送ったかを あとから 見られる ように（鍵は 出ない）。
+  "observability": { "enabled": true },
+
+  // **UTC で 書く。** ICT は UTC+7。授業は 火・水・金 17:30〜19:00 ICT。
+  //
+  // Cron Trigger は **アカウント全体で 5本まで**（無料枠）。deploy-kicker が 3本
+  // 使って いるので、ここは 2本しか 置けない。増やす ときは 先に 数える。
+  //
+  //   */10 * * * *                         … 毎日 10分ごと
+  //   5,15,…,55 10,11 * * TUE,WED,FRI      … 授業の 日の 17:05〜18:55 ICT は 間を 埋めて 5分ごと
+  //
+  // 曜日は **名前で 書く**。Cloudflare の 数字は 1＝日曜（ほかの cron と ずれる）と
+  // 資料に あり、数字だと 読み違えやすい。
+  "triggers": {
+    "crons": ["*/10 * * * *", "5,15,25,35,45,55 10,11 * * TUE,WED,FRI"],
+  },
+
+  "vars": {
+    "PROD_URL": "https://academy.nexmax.workers.dev",
+  },
+
+  // 状態は Durable Object（SQLite・無料枠）に 1件。**KV は 使わない**（src/index.js の 冒頭）。
+  "durable_objects": {
+    "bindings": [{ "name": "WATCH_STATE", "class_name": "WatchState" }],
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["WatchState"] }],
+
+  // secret（`wrangler secret put` で 入れる。ここにも ビルド環境にも 書かない）:
+  //   知らせ先（どちらか 一方 または 両方）
+  //     SLACK_WEBHOOK_URL … Slack の Incoming Webhook の URL
+  //     RESEND_API_KEY    … メール（Resend）の API キー ＋ ALERT_EMAIL_TO（宛先・カンマ区切り）
+  //   画面の エラーの 数（無くても 動く。無ければ ページだけ 見る）
+  //     SUPABASE_URL      … アプリと 同じ 公開の URL
+  //     SUPABASE_ANON_KEY … アプリと 同じ 公開の anon キー（読めるのは 件数だけ）
+}
