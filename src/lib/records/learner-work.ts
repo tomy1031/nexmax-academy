@@ -210,7 +210,7 @@ function talkWork(rows: readonly TalkRecord[]) {
   const learnerTurns = last.filter((turn) => turn.speaker === "learner");
   const final = learnerTurns.at(-1);
   const summary = final
-    ? `札 ${final.opened_count}／${final.req_total}・${sessions.length}回`
+    ? `カード ${final.opened_count}／${final.req_total}・${sessions.length}回`
     : `${sessions.length}回`;
   return { summary, items };
 }
