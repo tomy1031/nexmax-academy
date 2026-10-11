@@ -14,7 +14,7 @@
  *   - count-sql     … 戻した 先で 同じ 表を 数える SQL を 作る
  *   - verify        … 「書き出した 行数」と「戻せた 行数」を 突き合わせる
  *   - manifest      … 中身の 目録（行数・ハッシュ）を 作る
- *   - keys          … 置き場での 名前（daily/ と monthly/）を 決める
+ *   - key           … 置き場での 名前（daily/ か monthly/）を 決める
  *   - prune         … 消して よい 古い ものを 選ぶ（新しい ものは 必ず 残す）
  *   - redact-log    … 復元の 失敗ログから **行の 中身を 落として** 出す
  *
@@ -383,10 +383,10 @@ function main(argv) {
       process.stdout.write(`${JSON.stringify(manifest, null, 2)}\n`);
       return 0;
     }
-    case "keys": {
-      const stamp = option("stamp");
-      console.log(keyFor("daily", stamp));
-      console.log(keyFor("monthly", stamp));
+    case "key": {
+      const kind = option("kind");
+      if (kind !== "daily" && kind !== "monthly") throw new Error("--kind は daily か monthly");
+      process.stdout.write(keyFor(kind, option("stamp")));
       return 0;
     }
     case "needs-monthly": {

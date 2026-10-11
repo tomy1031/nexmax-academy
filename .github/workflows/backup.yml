@@ -42,9 +42,6 @@ on:
     # 定期実行は **既定の ブランチ（main）に 載った あと** から 動く。
     - cron: "17 19 * * *"
   workflow_dispatch:
-  # 一時: ブランチでの 試し走り（PR に 出す 前に 消す）
-  push:
-    branches: [claude/nightly-db-backup]
 
 permissions:
   contents: read
@@ -163,7 +160,7 @@ jobs:
           AWS_REQUEST_CHECKSUM_CALCULATION: when_required
           AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
         run: |
-          KEY="$(node scripts/db_backup.mjs keys --stamp "$STAMP" | head -n 1)"
+          KEY="$(node scripts/db_backup.mjs key --kind daily --stamp "$STAMP")"
           aws --endpoint-url "$R2_ENDPOINT" s3 cp "$OUT" "s3://$BUCKET/$KEY" --only-show-errors
           echo "→ 置いた: $KEY"
 
@@ -212,7 +209,7 @@ jobs:
 
           # 月の 写し: その 月の monthly/ が まだ 無ければ、今夜の ぶん（戻せると 確かめた もの）を 置く
           if [ "$(list monthly/ | node scripts/db_backup.mjs needs-monthly --now "$NOW")" = yes ]; then
-            KEY="$(node scripts/db_backup.mjs keys --stamp "$STAMP" | tail -n 1)"
+            KEY="$(node scripts/db_backup.mjs key --kind monthly --stamp "$STAMP")"
             s3 s3 cp "$OUT" "s3://$BUCKET/$KEY" --only-show-errors
             echo "→ 今月の 写しを 置いた: $KEY"
           fi
