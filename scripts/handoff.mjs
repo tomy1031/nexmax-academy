@@ -1,9 +1,9 @@
 /**
- * handoff — 「今どこにいるか」を git と台帳から復元して表示する。
+ * handoff — 作業の状況を、git と GitHub の要望の一覧から組み立てて表示する。
  *
  * なぜ要るか: Claude がリミットで突然切れると、引き継ぎメモを書き残す時間がない。
  * そこで渡す側ではなく **受け取った側（Codex など）が到着時に引き出す** 方式にする。
- * セッション開始時・ツール切替直後に実行すれば、前のツールの記憶なしで現在地が分かる。
+ * セッション開始時・ツール切替直後に実行すれば、前のツールの記憶なしで作業の状況が分かる。
  *
  * 表示は2層: 最初の「サマリ」だけで全体（自分・本番・STG・本体の異常）が掴めること。
  * ユーザーはワーキングメモリーが枯渇気味 — 冒頭数行がすべてだと思って書く。
@@ -151,21 +151,21 @@ if (prod.sha && prod.sha !== stgBaseSha) {
   if (raw) pendingProd = raw.split("\n").map((l) => (l.startsWith("  ") ? l : `  ${l}`));
 }
 
-// ── 次の一手（状態から機械的に導出）
+// ── 次にやること（状態から機械的に決める）
 //
 // **ユーザーに「本番OK」を求める文言を出さない。** 2026-08-21 にその運用はやめた
 // （docs/constraints.md）。いまは「授業前に時刻で出る」ので、待つ相手が人ではない。
-let next = "台帳から次の願いを選ぶ";
+let next = "要望の一覧から次にやるものを選ぶ";
 if (Number(behind) > 0) next = `origin/${STG_BRANCH} を取り込む（${behind} コミット遅れ）`;
 else if (dirtyCount > 0) next = "未コミットの変更を確認してから続きを判断する";
 else if (pendingProd.length)
   next =
-    `本番待ち ${pendingProd.length} 件 — 次の授業前（火・水・金 16:12〜17:12 ICT）に自動で出ます。` +
+    `まだ本番に出ていない変更が ${pendingProd.length} 件 — 次の授業前（火・水・金 16:12〜17:12 ICT）に自動で出ます。` +
     "先に出すなら Actions「デプロイ」→ Run workflow → production";
 else if (prod.sha && prod.sha !== prodBaseSha)
   next = `本番と ${PROD_BRANCH} の差を確認する（docs/deploy.md §0.6）`;
 
-console.log(`\n${line}\n 現在地レポート（handoff）\n${line}`);
+console.log(`\n${line}\n 作業の状況（handoff）\n${line}`);
 console.log(`\n■ サマリ`);
 console.log(
   `  あなた : ${branch}（${STG_BRANCH}比 +${ahead}/-${behind}・未コミット ${dirtyCount} 件）`,
@@ -173,11 +173,11 @@ console.log(
 console.log(`  本番   : ${prod.label}（配信元 ${PROD_BRANCH}）`);
 console.log(`  STG    : ${stg.label}（配信元 ${STG_BRANCH}）`);
 if (mainWarning) console.log(`  ${mainWarning}`);
-console.log(`  次の一手: ${next}`);
+console.log(`  次にやること: ${next}`);
 
 if (pendingProd.length) {
   console.log(
-    `\n■ 本番待ち（${STG_BRANCH} にあり本番に無い。火・水・金 16:12〜17:12 ICT に自動で出ます。docs/deploy.md §0.6・§0.11）`,
+    `\n■ まだ本番に出ていない変更（${STG_BRANCH} にあり本番に無い。火・水・金 16:12〜17:12 ICT に自動で出ます。docs/deploy.md §0.6・§0.11）`,
   );
   for (const l of pendingProd.slice(0, 12)) console.log(l);
   if (pendingProd.length > 12) console.log(`  …ほか ${pendingProd.length - 12} 件`);
@@ -204,7 +204,7 @@ const migrations = (() => {
     return String(error.stdout ?? "") + String(error.stderr ?? "");
   }
 })();
-for (const l of (migrations.trim() || "（見張りを実行できませんでした）").split("\n")) {
+for (const l of (migrations.trim() || "（確認のプログラムを実行できませんでした）").split("\n")) {
   console.log(`  ${l}`);
 }
 
@@ -223,11 +223,11 @@ if (!dirty) {
   console.log("  → やりかけの可能性。内容を確認してから続きを判断すること");
 }
 
-// ── 並行スレッド: worktree ↔ ブランチの対応表（名前が当てにならないので必ずここで見る）
+// ── 同時に動いているほかの作業: worktree ↔ ブランチの対応表（名前が当てにならないので必ずここで見る）
 const cwd = sh("git rev-parse --show-toplevel");
 const others = wts.filter((w) => w.path !== cwd);
 if (others.length) {
-  console.log(`\n■ 並行スレッド（worktree ⇄ ブランチ。触らないこと）`);
+  console.log(`\n■ 同時に動いているほかの作業（worktree ⇄ ブランチ。触らないこと）`);
   for (const w of others) {
     const dir = basename(w.path);
     const slug = dir.replace(/-[0-9a-f]{6}$/, "");
@@ -250,7 +250,7 @@ if (others.length) {
   }
 }
 
-// ── 台帳（GitHub Issues）
+// ── 要望の一覧（GitHub Issues）
 const originUrl = sh("git remote get-url origin")
   .replace(/\.git$/, "")
   .replace(/^git@github\.com:/, "https://github.com/");
@@ -258,11 +258,11 @@ const issues = sh(
   `gh issue list --state open --limit 10 --json number,title --template '{{range .}}  #{{.number}} {{.title}}{{"\\n"}}{{end}}'`,
   20000,
 );
-console.log(`\n■ 願いの台帳（未完了）`);
+console.log(`\n■ 要望の一覧（GitHub の Issues・未完了）`);
 console.log(issues || `  （取得できず。${originUrl}/issues を直接見る）`);
 
 /*
- * 検証の 道順を 毎回 出す。
+ * 確認の手順を毎回出す。
  *
  * なぜ ここに 書くか: 手もとで build・e2e全件・cf:build を ぜんぶ 回すと **約9分**
  * かかり、そのあと CI が **同じ ことを もう一度** 5分かけて やる。2026-08-25 の
@@ -270,17 +270,22 @@ console.log(issues || `  （取得できず。${originUrl}/issues を直接見�
  * ドキュメントに 書いても セッションが 変わると 読まれないので、毎回 目に 入る
  * ここに 出す。
  */
-console.log(`\n■ 検証の はやい道（手もとで 全部 回さない — CI が 同じ ことを やる）`);
 console.log(
-  "  押す前   : node scripts/check_fast.mjs   … 整形・型・コンテンツ・単体を 並列で 約25秒",
+  `\n■ 確認を速く済ませる手順（ローカルで全部は回さない。GitHub 上の自動テストが同じことをする）`,
 );
-console.log("             （git push の pre-push が 自動で 回す。CI の 赤の 大半は ここで 出る）");
 console.log(
-  "  e2e      : npx playwright test tests/e2e/<直したところ>.spec.ts … 全件は CI に任せる",
+  "  push の前: node scripts/check_fast.mjs   … 整形・型・教材データ・単体テストを並列で約25秒",
 );
-console.log("  大きさ   : CI の size ジョブに任せる（手もとの cf:build は 81秒）");
+console.log(
+  "             （git push のときに自動で走る。GitHub 上のテスト失敗の大半はここで見つかる）",
+);
+console.log(
+  "  e2e      : npx playwright test tests/e2e/<直したところ>.spec.ts … 全件は GitHub 上のテストに任せる",
+);
+console.log("  大きさ   : GitHub 上の size のテストに任せる（ローカルの cf:build は81秒）");
 console.log("  くわしくは docs/自動でたしかめる1枚.md §7");
 
 console.log(`\n■ 作業前に読むもの`);
-console.log("  AGENTS.md（規律・ツール共通） / docs/constraints.md（言われた制約の台帳）");
+console.log("  AGENTS.md（ルール・ツール共通） / docs/constraints.md（注意事項）");
+console.log("  docs/用語集.md（tomy さんへの文で使う言葉と、報告の書き方）");
 console.log(`${line}\n`);
