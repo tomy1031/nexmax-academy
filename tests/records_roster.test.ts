@@ -230,3 +230,37 @@ describe("一覧に 出す 生徒", () => {
     ).toEqual(["staff"]);
   });
 });
+
+describe("レビューの 直し（2026-10-11）", () => {
+  it("初回の 合否は 問題の 数で 決める（点では 届いても 問題の 数で 届かなければ 低い）", () => {
+    const row = only(
+      buildRoster(
+        [profile("a")],
+        [summary("a")],
+        [
+          // 点では 8/13＝62%（ライン 60 に 届く）。問題の 数では 4/9＝44%
+          { ...first("a", "houkoku_quiz", 8, 13), first_correct: 4, first_questions: 9 },
+        ],
+        { ...INDEX, passRates: { houkoku_quiz: 60, renraku_quiz: 80 } },
+      ),
+    );
+    expect(row.lowSets.map((set) => [set.id, Math.round(set.ratio * 100)])).toEqual([
+      ["houkoku_quiz", 44],
+    ]);
+  });
+
+  it("ステージの クリアは 地図と 同じく 関門の 教材だけで 決める", () => {
+    const gated = {
+      ...INDEX,
+      units: INDEX.units.map((unit) =>
+        unit.id === "houkoku_page" ? { ...unit, gates: false } : unit,
+      ),
+    };
+    const row = only(
+      buildRoster([profile("a")], [summary("a", { completed_ids: ["houkoku_quiz"] })], [], gated),
+    );
+    // 報告の 型（関門で ない）を 読んで いなくても、報告の ステージは クリア
+    expect(row.progress.stagesDone).toBe(1);
+    expect(row.progress.done).toBe(1);
+  });
+});

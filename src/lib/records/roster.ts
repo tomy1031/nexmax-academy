@@ -20,6 +20,7 @@
 
 import type { ProfileRow } from "@/lib/profile-db";
 import type { LearnerQuizFirstRow, LearnerSummaryRow } from "@/lib/records/records-db";
+import { quizPassed, quizPercent } from "@/lib/quiz/pass-rate";
 import { matchesProfile, type RecordFilter } from "@/lib/records/table";
 import type { UnitIndex } from "@/lib/records/units";
 import { formatSchool, isStaff, STAFF_AFFILIATION } from "@/lib/school";
@@ -91,6 +92,17 @@ export function rosterStudents(
   });
 }
 
+/**
+ * 初回の 問題の 数と 正解の 数。view が 数えて いれば それ（学習者の 画面と 同じ 単位）、
+ * 古い view（点しか 無い）なら 点で 代わりに 数える。
+ */
+function answeredOf(row: LearnerQuizFirstRow): number {
+  return row.first_questions ?? row.first_max;
+}
+function correctOf(row: LearnerQuizFirstRow): number {
+  return row.first_questions != null ? (row.first_correct ?? 0) : row.first_score;
+}
+
 /** 1人ぶんの 印。 */
 export function followUpFlags(row: Omit<RosterRow, "flags">): FollowFlag[] {
   const flags: FollowFlag[] = [];
@@ -140,6 +152,18 @@ export function buildRoster(
       index.units.filter((unit) => unit.stageId === stage.id).map((unit) => unit.id),
     ]),
   );
+  /**
+   * ステージの 関門の 教材（地図の クリア判定と 同じ）。関門で ない 教材（スライド・単語の
+   * セット）は 終えて いなくても ステージは クリアに なる（2026-10-11 の レビュー）。
+   */
+  const gatesByStage = new Map(
+    mapStages.map((stage) => [
+      stage.id,
+      index.units
+        .filter((unit) => unit.stageId === stage.id && unit.gates !== false)
+        .map((unit) => unit.id),
+    ]),
+  );
   const stagesWithUnits = mapStages.filter(
     (stage) => (unitsByStage.get(stage.id)?.length ?? 0) > 0,
   );
@@ -151,7 +175,7 @@ export function buildRoster(
   const quizByProfile = new Map<string, LearnerQuizFirstRow[]>();
   for (const row of quizFirst) {
     // 合格ラインの ある もんだいセットだけ（ページの 書きこみフォームの 記録も 同じ 表に 入る）
-    if (!(row.quiz_set_id in index.passRates) || row.first_max <= 0) continue;
+    if (!(row.quiz_set_id in index.passRates) || answeredOf(row) <= 0) continue;
     const list = quizByProfile.get(row.profile_id) ?? [];
     list.push(row);
     quizByProfile.set(row.profile_id, list);
@@ -166,19 +190,25 @@ export function buildRoster(
       0,
     );
     const stagesDone = stagesWithUnits.filter((stage) =>
-      (unitsByStage.get(stage.id) ?? []).every((id) => completed.has(id)),
+      (gatesByStage.get(stage.id) ?? []).every((id) => completed.has(id)),
     ).length;
 
-    const quiz = quizByProfile.get(profile.id) ?? [];
-    const ratios = quiz.map((row) => row.first_score / row.first_max);
+    // 合否は 学習者の 画面と 同じ式（正解した 問題の 数 ÷ 答えた 問題の 数・四捨五入）
+    const quiz = (quizByProfile.get(profile.id) ?? []).map((row) => ({
+      row,
+      passRate: index.passRates[row.quiz_set_id] ?? DEFAULT_PASS_RATE,
+      correct: correctOf(row),
+      answered: answeredOf(row),
+    }));
+    const ratios = quiz.map((one) => quizPercent(one.correct, one.answered) / 100);
     const lowSets = quiz
-      .map((row) => ({
-        id: row.quiz_set_id,
-        title: titleOf.get(row.quiz_set_id) ?? row.quiz_set_id,
-        ratio: row.first_score / row.first_max,
-        passRate: index.passRates[row.quiz_set_id] ?? DEFAULT_PASS_RATE,
+      .filter((one) => !quizPassed(one.correct, one.answered, one.passRate))
+      .map((one) => ({
+        id: one.row.quiz_set_id,
+        title: titleOf.get(one.row.quiz_set_id) ?? one.row.quiz_set_id,
+        ratio: quizPercent(one.correct, one.answered) / 100,
+        passRate: one.passRate,
       }))
-      .filter((set) => set.ratio * 100 < set.passRate)
       .toSorted((a, b) => a.ratio - b.ratio);
 
     const base = {
