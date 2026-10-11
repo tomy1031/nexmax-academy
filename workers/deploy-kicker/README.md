@@ -83,7 +83,10 @@ curl -s https://academy-deploy-kicker.nexmax.workers.dev | python3 -m json.tool
 同じ アカウントの Worker は workers.dev の 公開 URL では 呼べない（`error code: 1042`・404）。
 2026-10-11 まで 公開 URL で 読んで いたので、本番の 版が 常に 読めず（`prodSha: null`）、
 `same` が 常に false の まま **毎回 起こして いた**（出すかは `should_deploy` が 決めるので 空振りで 済んだ）。
-この URL 自体も 1042 で 開けなかった。見張り（`workers/watch`・#608）も 同じ 理由で 同じ つなぎかたに した。
+この URL 自体も 1042 で 開けなかった。
+直した あとも `integrationSha` が ときどき null に なった。GitHub の 鍵なしの 読みは IP ごとに
+60回/時で、Cloudflare の 共有の 出口 IP では 使い切られて いる ことが ある（403 `API rate limit exceeded`）。
+だから GitHub の 読みにも `GITHUB_TOKEN` を 付けて いる（鍵ごとの 枠に なる）。見張り（`workers/watch`・#608）も 同じ 理由で 同じ つなぎかたに した。
 
 ## 2. この Mac 側（保険・鍵ゼロ）
 

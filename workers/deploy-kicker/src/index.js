@@ -58,9 +58,13 @@ async function kick(env) {
   }
 }
 
-/** 本番と integration が そろって いるかを 読むだけで 見る（鍵は 要らない）。 */
+/** 本番と integration が そろって いるかを 読むだけで 見る。 */
 async function status(env) {
   const headers = { "User-Agent": UA, Accept: "application/vnd.github+json" };
+  // 鍵なしの 読みは IP ごとに 60回/時。Cloudflare の 出口 IP は 共有なので 使い切られて いて
+  // 403 に なる ことが ある（2026-10-11 実測）。鍵を 付けると 鍵ごとの 枠に なる。
+  // 公開リポジトリなので Actions だけの 鍵でも 読める。
+  if (env.GITHUB_TOKEN) headers.Authorization = `Bearer ${env.GITHUB_TOKEN}`;
   // 本番は サービスバインディングで 読む（同じ アカウントの workers.dev は 公開 URL で 呼べない・1042）
   const prodFetch = env.PROD ? (url, init) => env.PROD.fetch(url, init) : fetch;
   const [liveRes, refRes] = await Promise.all([
