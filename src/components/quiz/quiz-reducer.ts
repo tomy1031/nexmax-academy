@@ -588,7 +588,7 @@ export function summarizeQuiz(state: QuizState): QuizSummary {
    * 学習者に 見せる 数とは 分ける。丸めた 割合で 判定するのは、**画面に 出た 数と
    * 合否が 食い違わない ようにする**ため（67% と 出して 不合格、を 起こさない）。
    */
-  const percent = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+  const percent = percentOf(correct, answered);
   return {
     total: answered,
     correct,
@@ -598,6 +598,25 @@ export function summarizeQuiz(state: QuizState): QuizSummary {
     passed: answered > 0 && percent >= state.passRate,
     missedQuestionIds: state.results.filter((r) => !r.correct).map((r) => r.questionId),
   };
+}
+
+/** 何問中 何問の 割合（%・整数に 丸める）。合否も 画面も この 1つの 式で 数える。 */
+function percentOf(correct: number, total: number): number {
+  return total > 0 ? Math.round((correct / total) * 100) : 0;
+}
+
+/**
+ * 合格に 要る **正解の 数**（けっかの「合格ライン 3もん」「あと 1もん」）。
+ *
+ * 合否は `summarizeQuiz` が **丸めた ％**で 決める ので、ここも 同じ 式で 数え上げる。
+ * `Math.ceil(total * passRate / 100)` で 出すと、丸めの ぶん 1つ 多く 言う ことが ある
+ *（「あと 1もん」と 出して、実は もう 合格して いた、を 起こさない）。
+ */
+export function passLine(total: number, passRate: number): number {
+  for (let correct = 0; correct <= total; correct++) {
+    if (total > 0 && percentOf(correct, total) >= passRate) return correct;
+  }
+  return total;
 }
 
 /**

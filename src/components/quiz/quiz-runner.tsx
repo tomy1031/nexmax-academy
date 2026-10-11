@@ -54,6 +54,7 @@ import {
   currentDraft,
   currentQuestion,
   isWholeSetRun,
+  passLine,
   quizReducer,
   resumeQuizSession,
   summarizeQuiz,
@@ -93,6 +94,9 @@ const UI_FURIGANA = buildFuriganaIndex([
   ["次", "つぎ"],
   ["上", "うえ"],
   ["進", "すす"],
+  // けっかの 見出し（⭕ 合格／❌ 不合格・台帳 #381）。長い 表記が 先に 当たる
+  ["不合格", "ふごうかく"],
+  ["合格", "ごうかく"],
 ]);
 
 /**
@@ -2152,6 +2156,20 @@ function ReviewRow({
   );
 }
 
+/** けっかの 見出し（正解の ある 教材）。色と 記号は 単語テストの けっか（`arcade-result.tsx`）と 同じ。 */
+type Verdict = "partial" | "pass" | "fail";
+const VERDICT_LABEL: Record<Verdict, string> = {
+  partial: "とちゅうまで",
+  pass: "合格",
+  fail: "不合格",
+};
+const VERDICT_MARK: Record<Verdict, string> = { partial: "⏸", pass: "⭕", fail: "❌" };
+const VERDICT_COLOR: Record<Verdict, string> = {
+  partial: "#1f3a56",
+  pass: "#1c7f3e",
+  fail: "#a3182f",
+};
+
 export function QuizResultCard({
   set,
   embedded,
@@ -2192,12 +2210,31 @@ export function QuizResultCard({
     lens === "again" ? !result.correct : lens === "report" ? question.report : true,
   );
   /**
-   * 「合格」と 言ってよい回か。**しおりで 途中から 始めた 回では 言わない**
-   * ——見て いない 問題が 残って いるので 教材を 通した ことには ならず、成績にも
-   * ステージの「おわった」にも 残さない（`isWholeSetRun`）。答えた ぶんの 数と
-   * スタンプは そのまま 出す。取り上げは しない。
+   * けっかの 見出し。**合格か 不合格かを 先に、はっきり 言う**（規律1・台帳 #381）。
+   * 前は 合格でも 不合格でも「よく できました！」／「ここまで すすんだね」で、合否を
+   * 言って いなかった。単語テストの けっか（`arcade-result.tsx`）と 同じ 出しかたに そろえる。
+   *
+   *  - `free` … 正解の 無い 教材（自由記述だけ）。合否は 無い。「書けました」の まま
+   *  - `partial` … **しおりで 途中から 始めた 回**。合否を 言わない（「とちゅうまで」）
+   *    ——見て いない 問題が 残って いるので 教材を 通した ことには ならず、成績にも
+   *    ステージの「おわった」にも 残さない（`isWholeSetRun`）。答えた ぶんの 数と
+   *    スタンプは そのまま 出す。取り上げは しない。
+   *  - `pass` ／ `fail` … 合格ライン（`set.passRate`）に とどいたか（`summary.passed`）
+   */
+  const verdict: "free" | Verdict = freeOnly
+    ? "free"
+    : skipped > 0
+      ? "partial"
+      : summary.passed
+        ? "pass"
+        : "fail";
+  /*
+   * 紙吹雪と ネクマックスの 喜びは 前と 同じ 条件（自由記述でも ぜんぶ 書けば 出る）。
+   * 正解の ある 教材では `verdict === "pass"` と 同じ に なる。
    */
   const praised = summary.passed && skipped === 0;
+  /** 合格に 要る 正解の 数（教材 ぜんぶの 問題で 数える。合否と 同じ 式）。 */
+  const needed = passLine(set.questions.length, set.passRate);
   /**
    * 正解の 無い 教材で「できた」と 言える 数＝**書けた 数**。
    *
@@ -2227,15 +2264,44 @@ export function QuizResultCard({
           <p className="text-ink-soft text-sm font-extrabold">
             {prepared ? "はなす じゅんび" : "けっか"}
           </p>
-          <h2 className="text-ink text-3xl font-extrabold">
-            {freeOnly
-              ? written === review.length
-                ? "ぜんぶ 書けました！"
-                : "ここまで 書けました"
-              : praised
-                ? "よく できました！"
-                : "ここまで すすんだね"}
-          </h2>
+          {verdict === "free" ? (
+            <h2 className="text-ink text-3xl font-extrabold">
+              {written === review.length ? "ぜんぶ 書けました！" : "ここまで 書けました"}
+            </h2>
+          ) : (
+            <>
+              {/*
+                記号と ことばの 両方で 言う（色だけに たよらない。単語テストと 同じ）。
+                ルビが 語の 中に 入る（合格ごうかく）ので、名前は aria-label で 持たせる。
+              */}
+              <h2
+                data-quiz-verdict={verdict}
+                aria-label={VERDICT_LABEL[verdict]}
+                className="flex items-center gap-2 text-3xl font-extrabold"
+                style={{ color: VERDICT_COLOR[verdict] }}
+              >
+                <span aria-hidden>{VERDICT_MARK[verdict]}</span>
+                <RubyText text={VERDICT_LABEL[verdict]} index={UI_FURIGANA} />
+              </h2>
+              {/* 何もんで 合格かを 隠さない。とちゅうの 回は 下の 🔖 が 言う */}
+              {verdict !== "partial" && (
+                <p className="text-ink-soft mt-1 text-sm font-extrabold">
+                  <RubyText
+                    text={`合格ライン ${needed}もん（${set.passRate}%）`}
+                    index={UI_FURIGANA}
+                  />
+                </p>
+              )}
+              {verdict === "fail" && (
+                <p className="text-sm font-extrabold text-[#a3182f]">
+                  <RubyText
+                    text={`あと ${needed - summary.correct}もん せいかいで 合格`}
+                    index={UI_FURIGANA}
+                  />
+                </p>
+              )}
+            </>
+          )}
         </div>
       </div>
 
@@ -2260,9 +2326,9 @@ export function QuizResultCard({
                 ? "quiz.prepared"
                 : freeOnly
                   ? "quiz.written"
-                  : summary.passed
-                    ? "stage.passed"
-                    : "quiz.keepGoing"
+                  : verdict === "pass"
+                    ? "quiz.passed"
+                    : "quiz.failed"
             }
           />
         )}
