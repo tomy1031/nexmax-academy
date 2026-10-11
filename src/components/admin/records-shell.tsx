@@ -32,6 +32,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AdminError, AdminHeader, AdminLoading, AdminPageFrame } from "@/components/admin/admin-ui";
+import { LearnerRoster } from "@/components/admin/learner-roster";
 import { fetchAllProfiles, fetchOwnProfile, type ProfileRow } from "@/lib/profile-db";
 import { AFFILIATIONS, COHORTS, formatSchool } from "@/lib/school";
 import { createClient } from "@/lib/supabase/client";
@@ -39,6 +40,7 @@ import {
   fetchCertificateByCode,
   fetchCertificateRecords,
   fetchContentProgress,
+  fetchLearnerRoster,
   fetchListeningRecords,
   fetchMeetingRecords,
   fetchQuizRecords,
@@ -61,6 +63,7 @@ import {
   EMPTY_FILTER,
   filterRows,
   kindsWithRecords,
+  listedKinds,
   listeningTable,
   matchesProfile,
   progressTable,
@@ -74,6 +77,15 @@ import {
   type RecordKind,
   type RecordTable,
 } from "@/lib/records/table";
+import { buildRoster, rosterStudents } from "@/lib/records/roster";
+import type { LearnerQuizFirstRow, LearnerSummaryRow } from "@/lib/records/records-db";
+import {
+  browserStorage,
+  hasAnyFilter,
+  readSavedFilter,
+  restoreFilter,
+  writeSavedFilter,
+} from "@/lib/records/saved-filter";
 import type { UnitIndex } from "@/lib/records/units";
 
 /** 1画面に 出す 行数。**続きは ボタンで 足す**（学期ぶんを 一気に 描くと 開かない）。 */
@@ -119,6 +131,16 @@ export function RecordsShell({
     note: string | null;
   } | null>(null);
   const [shown, setShown] = useState(PAGE_SIZE);
+  /**
+   * 生徒の 一覧の 材料と、それが **どの 生徒たちの ものか**（`key`）。
+   * 表と 同じく「中身が 今の 条件の ものか」で 読み込み中かを 決める。
+   */
+  const [rosterData, setRosterData] = useState<{
+    key: string;
+    summaries: LearnerSummaryRow[];
+    quizFirst: LearnerQuizFirstRow[];
+    note: string | null;
+  } | null>(null);
 
   const lookups = useMemo(
     () => buildLookups(profiles, index.units, index.prompts),
@@ -164,11 +186,18 @@ export function RecordsShell({
     [recordIndex, filter, lookups],
   );
 
+  /** 種類の ボタンに 出す もの。修了証は 出さない（結果の 印で、回答では ない）。 */
+  const listed = useMemo(() => listedKinds(kinds), [kinds]);
+
   /*
    * 先生の えらびが **いまの 条件で 生きて いれば** それ、でなければ 既定
    *（＝学生が 入れた ほう）。絞り込みを 変えるたび 自動で 座り直す。
+   * 修了証は **照合番号で さがす ボタンから だけ** 入る（記録が 無くても 番号で 引ける）。
    */
-  const kind = chosenKind !== null && kinds.includes(chosenKind) ? chosenKind : defaultKind(kinds);
+  const kind =
+    chosenKind === "certificate" || (chosenKind !== null && listed.includes(chosenKind))
+      ? chosenKind
+      : defaultKind(listed);
 
   const fresh = loaded !== null && loaded.kind === kind && loaded.query === query;
   const busy = !fresh;
@@ -204,6 +233,18 @@ export function RecordsShell({
         setProfiles(all);
         setRecordIndex(found.ok ? found.rows : null);
         setIndexNote(found.ok ? null : found.message);
+        /*
+         * 前回の 条件で 開く（2026-10-11 の 指定・願い #599）。名簿と 教材の 一覧が
+         * そろってから 戻すのは、**いまも ある 学生・教材だけ**を 戻す ため。
+         * 読み込み中の 表示と 同じ 回で 戻すので、空の 条件の 表を 1回 読みに 行かない。
+         */
+        setFilter(
+          restoreFilter(readSavedFilter(browserStorage()), {
+            profileIds: new Set(all.map((profile) => profile.id)),
+            stageIds: new Set(index.stages.map((stage) => stage.id)),
+            unitIds: new Set(index.units.map((unit) => unit.id)),
+          }),
+        );
         setLoading(false);
       } catch (error) {
         if (!active) return;
@@ -214,7 +255,16 @@ export function RecordsShell({
     return () => {
       active = false;
     };
-  }, [router]);
+  }, [router, index]);
+
+  /*
+   * 条件を 変えたら 覚える。**読み込みが 終わる 前は 書かない**——最初の 描画の
+   * 空の 条件で、覚えて いた 条件を 上書きして しまう。
+   */
+  useEffect(() => {
+    if (loading) return;
+    writeSavedFilter(browserStorage(), filter);
+  }, [filter, loading]);
 
   /*
    * 見て いる タブの 表だけを 読む。5種類を いちどに 読むと、学期の 終わりに
@@ -233,6 +283,35 @@ export function RecordsShell({
       active = false;
     };
   }, [kind, loading, lookups, query, certificateCode]);
+
+  /*
+   * 生徒の 一覧（願い #599）。所属・期生・メンバーで 絞った 生徒だけ。
+   * ステージ・単元の 絞り込みは 効かせない——一覧は「人」の 全体を 見る ための もの。
+   */
+  const students = useMemo(() => rosterStudents(profiles, filter), [profiles, filter]);
+  const rosterKey = useMemo(() => students.map((one) => one.id).join(","), [students]);
+  useEffect(() => {
+    if (loading) return;
+    let active = true;
+    void (async () => {
+      const got = await fetchLearnerRoster(rosterKey === "" ? [] : rosterKey.split(","));
+      if (!active) return;
+      setRosterData(
+        got.ok
+          ? { key: rosterKey, summaries: got.summaries, quizFirst: got.quizFirst, note: null }
+          : { key: rosterKey, summaries: [], quizFirst: [], note: got.message },
+      );
+    })();
+    return () => {
+      active = false;
+    };
+  }, [loading, rosterKey]);
+  const rosterFresh = rosterData !== null && rosterData.key === rosterKey;
+  const rosterRows = useMemo(
+    () =>
+      rosterFresh ? buildRoster(students, rosterData.summaries, rosterData.quizFirst, index) : [],
+    [rosterFresh, rosterData, students, index],
+  );
 
   const rows = useMemo(
     () => (table ? filterRows(table, filter, lookups) : []),
@@ -302,9 +381,21 @@ export function RecordsShell({
       />
 
       <section className="card-island mb-3 p-4">
-        <h2 className="text-navy text-lg font-black">だれの・どこの きろくを 見ますか</h2>
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
+          <h2 className="text-navy text-lg font-black">だれの・どこの きろくを 見ますか</h2>
+          {hasAnyFilter(filter) ? (
+            <button
+              type="button"
+              onClick={() => changeFilter(EMPTY_FILTER)}
+              className="border-hairline text-navy rounded-full border-2 bg-white px-3 py-1 text-xs font-black"
+            >
+              条件を ぜんぶ 外す
+            </button>
+          ) : null}
+        </div>
         <p className="text-ink-soft mt-1 mb-3 text-xs font-bold">
-          えらぶと、その 条件で 入って いる きろくを そのまま 出します。
+          えらぶと、その 条件で 入って いる きろくを そのまま 出します。前回の 条件は この 端末に
+          残ります。
         </p>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           <Field label="所属">
@@ -412,6 +503,12 @@ export function RecordsShell({
         </div>
       </section>
 
+      <LearnerRoster
+        rows={rosterRows}
+        busy={!rosterFresh}
+        note={rosterFresh ? rosterData.note : null}
+      />
+
       {[indexNote, note]
         .filter((one): one is string => one !== null)
         .map((one) => (
@@ -425,33 +522,50 @@ export function RecordsShell({
           </p>
         ))}
 
-      {kinds.length > 0 ? (
-        <nav aria-label="見る きろくの しゅるい" className="mb-3 flex flex-wrap items-center gap-2">
+      <nav aria-label="見る きろくの しゅるい" className="mb-3 flex flex-wrap items-center gap-2">
+        {listed.length > 0 ? (
           <span className="text-ink-soft text-xs font-black">この 条件で 見られる もの:</span>
-          {RECORD_KINDS.filter((one) => kinds.includes(one.id)).map((one) => (
-            <button
-              key={one.id}
-              type="button"
-              onClick={() => {
-                setChosenKind(one.id);
-                // 出す 行数は 種類ごとに 数え直す（前の 種類で 押した ぶんを 持ち越さない）。
-                setShown(PAGE_SIZE);
-              }}
-              aria-current={kind === one.id ? "page" : undefined}
-              className={`rounded-full px-4 py-2 text-sm font-black transition ${
-                kind === one.id
-                  ? "bg-navy text-white"
-                  : "border-hairline text-ink border-2 bg-white"
-              }`}
-            >
-              <span aria-hidden className="mr-1">
-                {one.icon}
-              </span>
-              {one.label}
-            </button>
-          ))}
-        </nav>
-      ) : null}
+        ) : null}
+        {RECORD_KINDS.filter((one) => listed.includes(one.id)).map((one) => (
+          <button
+            key={one.id}
+            type="button"
+            onClick={() => {
+              setChosenKind(one.id);
+              // 出す 行数は 種類ごとに 数え直す（前の 種類で 押した ぶんを 持ち越さない）。
+              setShown(PAGE_SIZE);
+            }}
+            aria-current={kind === one.id ? "page" : undefined}
+            className={`rounded-full px-4 py-2 text-sm font-black transition ${
+              kind === one.id ? "bg-navy text-white" : "border-hairline text-ink border-2 bg-white"
+            }`}
+          >
+            <span aria-hidden className="mr-1">
+              {one.icon}
+            </span>
+            {one.label}
+          </button>
+        ))}
+        {/*
+          修了証は 種類に 並べない（結果の 印で、回答では ない。願い #599）。
+          学習者の 画像の 照合番号を 確かめる ときだけ ここから 入る。
+        */}
+        <button
+          type="button"
+          onClick={() => {
+            setChosenKind(kind === "certificate" ? null : "certificate");
+            setShown(PAGE_SIZE);
+          }}
+          aria-current={kind === "certificate" ? "page" : undefined}
+          className={`ml-auto rounded-full px-3 py-1.5 text-xs font-black transition ${
+            kind === "certificate"
+              ? "bg-navy text-white"
+              : "border-hairline text-ink-soft border-2 bg-white"
+          }`}
+        >
+          {kind === "certificate" ? "← きろくに もどる" : "🎓 修了証を 照合番号で さがす"}
+        </button>
+      </nav>
 
       {summary && summary.rows.length > 0 ? (
         <section className="card-island mb-3 p-4 sm:p-5">
