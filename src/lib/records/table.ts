@@ -1106,6 +1106,19 @@ export function defaultKind(available: readonly RecordKind[]): RecordKind {
   return KIND_PREFERENCE.find((id) => available.includes(id)) ?? "progress";
 }
 
+/**
+ * 種類の えらびに 出す もの ＝ **修了証を 除いた** 記録の ある 種類。
+ *
+ * 修了証は 学習の **結果の 印**で、先生が 読みたい 回答では ない（2026-10-11 の
+ * 指定「結果が修了証であって、回答を見たいのがメインのはず」・願い #599）。
+ * 種類に 並べると、回答の 無い 単元（タイピング・リスニング）で **既定の 表が
+ * 修了証に なる**——先生には「名前が いつの間にか 修了証に なった」ように 見えた。
+ * 修了証は **照合番号の 検索**からだけ 開く（画面の 別の ボタン）。
+ */
+export function listedKinds(available: readonly RecordKind[]): readonly RecordKind[] {
+  return available.filter((id) => id !== "certificate");
+}
+
 export function filterRows(
   table: RecordTable,
   filter: RecordFilter,
