@@ -82,6 +82,10 @@ curl -s https://academy.nexmax.workers.dev/api/health/content | python3 -c "impo
 
 ### 2. Worker を 出して、鍵を 入れる
 
+鍵を 入れる コマンドは **名前（`--name academy-watch`）で 指す**ので、どの フォルダから 打っても よい
+（`-c workers/watch/wrangler.jsonc` は リポジトリの 中で ないと 読めない——2026-10-11 に ホームで 打って 止まった）。
+Worker が まだ 無ければ「作りますか？」と 聞かれるので `y`（中身は あとの deploy で 入る。鍵は 残る）。
+
 ```bash
 npx wrangler deploy -c workers/watch/wrangler.jsonc
 ```
@@ -89,7 +93,7 @@ npx wrangler deploy -c workers/watch/wrangler.jsonc
 Telegram の とき（入れた あと、ボットに `/start` を 1通 送る）:
 
 ```bash
-npx wrangler secret put TELEGRAM_BOT_TOKEN -c workers/watch/wrangler.jsonc
+npx wrangler secret put TELEGRAM_BOT_TOKEN --name academy-watch
 ```
 
 送り先を 決めて おきたい とき（グループを 変えた など）は `TELEGRAM_CHAT_ID` も 入れる。
@@ -98,27 +102,27 @@ npx wrangler secret put TELEGRAM_BOT_TOKEN -c workers/watch/wrangler.jsonc
 Slack の とき:
 
 ```bash
-npx wrangler secret put SLACK_WEBHOOK_URL -c workers/watch/wrangler.jsonc
+npx wrangler secret put SLACK_WEBHOOK_URL --name academy-watch
 ```
 
 メールの とき（宛先は カンマ区切りで 何人でも）:
 
 ```bash
-npx wrangler secret put RESEND_API_KEY -c workers/watch/wrangler.jsonc
+npx wrangler secret put RESEND_API_KEY --name academy-watch
 ```
 
 ```bash
-npx wrangler secret put ALERT_EMAIL_TO -c workers/watch/wrangler.jsonc
+npx wrangler secret put ALERT_EMAIL_TO --name academy-watch
 ```
 
 画面の エラーの 件数も 見る とき（アプリと 同じ **公開の** 値。無くても ページは 見る）:
 
 ```bash
-npx wrangler secret put SUPABASE_URL -c workers/watch/wrangler.jsonc
+npx wrangler secret put SUPABASE_URL --name academy-watch
 ```
 
 ```bash
-npx wrangler secret put SUPABASE_ANON_KEY -c workers/watch/wrangler.jsonc
+npx wrangler secret put SUPABASE_ANON_KEY --name academy-watch
 ```
 
 ### 3. 動いて いるかを 見る（読むだけ・鍵は 出ない）
