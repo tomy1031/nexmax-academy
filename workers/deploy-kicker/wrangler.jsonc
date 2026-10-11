@@ -32,6 +32,11 @@
     "crons": ["10 9 * * 2,3,5", "52 9 * * 2,3,5", "2 10 * * 2,3,5"],
   },
 
+  // 本番の Worker（name=academy）へ 直に つなぐ。**同じ アカウントの Worker は workers.dev の
+  // 公開 URL では 呼べない**（error code: 1042・404）。2026-10-11 まで これで 本番の 版が
+  // 読めず、`same` が 常に false の まま 毎回 起こして いた。中身は `/api/version` を 読むだけ。
+  "services": [{ "binding": "PROD", "service": "academy" }],
+
   "vars": {
     "GITHUB_REPO": "tomy1031/nexmax-academy",
     "WORKFLOW": "deploy.yml",

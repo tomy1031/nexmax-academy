@@ -5,6 +5,7 @@ import {
   listArticles,
   listLinks,
   listSkits,
+  listQuests,
   listTypings,
   listListenings,
   listMangas,
@@ -16,8 +17,31 @@ import {
   listWordStages,
 } from "@/lib/content";
 import { fetchDbContents } from "@/lib/content-db";
-import { buildContentHealth } from "@/lib/content-health";
+import {
+  buildContentHealth,
+  HEALTH_CONTENT_KINDS,
+  type HealthContentKind,
+} from "@/lib/content-health";
 import { buildInfo } from "@/lib/env";
+
+/*
+ * 種別ごとの 読み出し。**種別と 読み出しを 対で 持つ**——名前の 並びと 読み出しの 並びを
+ * 別々に 持つと、片方だけ 足して 順が ずれる。読み出しの 無い 種別は 型で 止まる。
+ */
+const LIST_BY_KIND = {
+  article: listArticles,
+  manga: listMangas,
+  slides: listSlides,
+  listening: listListenings,
+  quizset: listQuizSets,
+  scenario: listScenarios,
+  meeting: listMeetings,
+  wordstage: listWordStages,
+  link: listLinks,
+  skit: listSkits,
+  quest: listQuests,
+  typing: listTypings,
+} satisfies Record<HealthContentKind, () => Promise<readonly { id: string }[]>>;
 
 /**
  * 教材の 健康しらべ（ログイン不要）。
@@ -43,32 +67,11 @@ export async function GET() {
      *（`contents[].type` と 同じ 名前で 鍵に する）。**種別を 混ぜない**——
      * 同じ id の ページと もんだいが 別物として 並ぶ ことが ある。
      */
-    listArticles(),
-    listMangas(),
-    listSlides(),
-    listListenings(),
-    listQuizSets(),
-    listScenarios(),
-    listMeetings(),
-    listLinks(),
-    listSkits(),
-    listTypings(),
+    ...HEALTH_CONTENT_KINDS.map((kind) => LIST_BY_KIND[kind]()),
   ]);
 
-  const KINDS = [
-    "article",
-    "manga",
-    "slides",
-    "listening",
-    "quizset",
-    "scenario",
-    "meeting",
-    "link",
-    "skit",
-    "typing",
-  ] as const;
   const liveContentIds = new Set(
-    lists.flatMap((items, at) => items.map((item) => `${KINDS[at]}:${item.id}`)),
+    lists.flatMap((items, at) => items.map((item) => `${HEALTH_CONTENT_KINDS[at]}:${item.id}`)),
   );
 
   const gitStages = GIT_CONTENTS.flatMap((raw) => {
