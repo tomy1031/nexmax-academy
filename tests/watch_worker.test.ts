@@ -201,7 +201,7 @@ describe("judge — 続いて いるか", () => {
       T0 + 10 * 60_000,
     );
     expect(second.findings[0]).toMatchObject({ level: "confirmed" });
-    expect(second.findings[0]!.text).toContain("いまは 通る");
+    expect(second.findings[0]!.text).toContain("いまは通る");
   });
 
   it("前の 失敗が 古すぎれば 続いたとは 数えない", () => {
@@ -242,7 +242,7 @@ describe("judge — 続いて いるか", () => {
     );
     expect(many.findings[0]).toMatchObject({ key: "client-errors", level: "confirmed" });
     expect(many.findings[0]!.text).toBe(
-      "画面の エラーが 15分で 4件（/map 3件・/houkoku 1件（部品の 読みこみ））",
+      "ブラウザのエラーが15分で4件（/map 3件・/houkoku 1件（部品の読み込み））",
     );
   });
 
@@ -299,7 +299,7 @@ describe("judge — 続いて いるか", () => {
     expect(j.findings).toEqual([
       expect.objectContaining({
         key: "content",
-        text: expect.stringContaining("警告 1件 — stage:houkoku"),
+        text: expect.stringContaining("警告1件: stage:houkoku"),
       }),
     ]);
     const onlyMuted = [
@@ -334,14 +334,17 @@ describe("decide — 鳴らす・念押し・直った", () => {
   it("最初の 1回は「見張りを はじめました」（知らせ先の 試しを 兼ねる）", () => {
     const { messages, next } = decide(null, clear, T0, PROD);
     expect(messages).toHaveLength(1);
-    expect(messages[0]).toMatchObject({ kind: "start", title: "本番の 見張りを はじめました" });
-    expect(messages[0]!.text).toContain("いまは ぜんぶ 正常です");
+    expect(messages[0]).toMatchObject({
+      kind: "start",
+      title: "本番サイトの自動チェックを始めました",
+    });
+    expect(messages[0]!.text).toContain("いまはすべて正常です");
     expect(next.startedAt).toBe(T0);
   });
 
   it("黙らせて いる 誤報が あれば「はじめました」に 書く（知らない うちに 黙らない）", () => {
     const { messages } = decide(null, clear, T0, PROD, { mutes: ["waterfall_quest"] });
-    expect(messages[0]!.text).toContain("直し待ちの 既知の 誤報は 知らせません: waterfall_quest");
+    expect(messages[0]!.text).toContain("修正待ちの既知の誤報は知らせません: waterfall_quest");
   });
 
   it("正常が 続く あいだは 何も 送らない", () => {
@@ -355,7 +358,7 @@ describe("decide — 鳴らす・念押し・直った", () => {
   it("新しい 異常で 1回 → 2時間 たつまで 黙る → 念押し", () => {
     const a = decide(started, bad, T0, PROD);
     expect(a.messages).toHaveLength(1);
-    expect(a.messages[0]).toMatchObject({ kind: "alert", title: "本番に 異常が あります" });
+    expect(a.messages[0]).toMatchObject({ kind: "alert", title: "本番サイトに異常があります" });
     expect(a.messages[0]!.text).toContain("🆕 タイトル画面（/）: Error 1102");
     expect(a.messages[0]!.text).toContain("17:40 ICT");
 
@@ -363,7 +366,7 @@ describe("decide — 鳴らす・念押し・直った", () => {
     expect(b.messages).toEqual([]);
 
     const c = decide(b.next, bad, T0 + REMIND_MS, PROD);
-    expect(c.messages[0]).toMatchObject({ kind: "alert", title: "本番の 異常が 続いて います" });
+    expect(c.messages[0]).toMatchObject({ kind: "alert", title: "本番サイトの異常が続いています" });
   });
 
   it("ゆれて いる あいだは 閉じない（直った・壊れたを 行き来して 鳴らさない）", () => {
@@ -381,8 +384,8 @@ describe("decide — 鳴らす・念押し・直った", () => {
     const c = decide(b.next, clear, T0 + 10 * 60_000 + RECOVER_QUIET_MS, PROD);
     expect(c.messages).toHaveLength(1);
     expect(c.messages[0]).toMatchObject({ kind: "recovered" });
-    expect(c.messages[0]!.text).toContain("10分 続いた"); // 出て いた 長さ（静かに なるまで）
-    expect(c.messages[0]!.text).toContain("いまは ぜんぶ 正常です");
+    expect(c.messages[0]!.text).toContain("10分続いた"); // 出て いた 長さ（静かに なるまで）
+    expect(c.messages[0]!.text).toContain("いまはすべて正常です");
     expect(c.next.open).toEqual({});
   });
 
@@ -438,7 +441,7 @@ describe("decide — 鳴らす・念押し・直った", () => {
 });
 
 describe("notify — 知らせ先は 入って いる 鍵で 決まる", () => {
-  const message = { kind: "alert", title: "本番に 異常が あります", text: "🚨 本文" };
+  const message = { kind: "alert", title: "本番サイトに異常があります", text: "🚨 本文" };
 
   it("Slack の Webhook へ text を 送る", async () => {
     const sent: { url: string; body: unknown }[] = [];
@@ -478,7 +481,7 @@ describe("notify — 知らせ先は 入って いる 鍵で 決まる", () => {
     );
     expect(sent[0]).toMatchObject({
       to: ["a@example.com", "b@example.com"],
-      subject: "[NexmaxAcademy] 本番に 異常が あります",
+      subject: "[NexmaxAcademy] 本番サイトに異常があります",
       text: "🚨 本文",
     });
   });
@@ -524,6 +527,7 @@ interface SavedState {
   startedAt: number | null;
   open: Record<string, unknown>;
   last: { clientErrors: unknown };
+  retry: unknown[];
 }
 
 describe("runWatch — 1回の 見張りの 通し", () => {
@@ -552,19 +556,31 @@ describe("runWatch — 1回の 見張りの 通し", () => {
     expect(h.state().last.clientErrors).toContain("見ていない");
   });
 
-  it("知らせが 届かなかったら、次の 回に もう一度 送る（黙って 落とさない）", async () => {
+  it("通知が届かなくても状態は正しく残す（管理画面に出る）。届かなかった通知だけ次の回に送り直す", async () => {
     const h = harness(
       { ...OK_ALL, "/": [ERROR_1102] },
       { SLACK_WEBHOOK_URL: "https://slack.down/x" },
     );
-    h.deps.fetch = async (url: string) => {
-      if (url.startsWith("https://slack.down")) return new Response("no", { status: 500 });
+    let slackUp = false;
+    const sent: string[] = [];
+    h.deps.fetch = async (url: string, init?: RequestInit) => {
+      if (url.startsWith("https://slack.down")) {
+        if (!slackUp) return new Response("no", { status: 500 });
+        sent.push(JSON.parse(String(init?.body)).text);
+        return new Response("ok");
+      }
       return fakeFetch({ ...OK_ALL, "/": [ERROR_1102] })(url);
     };
     const r = await runWatch(h.env, h.deps);
     expect(r.delivered).toBe(false);
-    expect(h.state().startedAt).toBeNull();
-    expect(h.state().open).toEqual({});
+    expect(h.state().startedAt).toBe(T0);
+    expect(Object.keys(h.state().open)).toEqual(["page:title"]);
+    expect(h.state().retry).toHaveLength(1);
+
+    slackUp = true;
+    await runWatch(h.env, { ...h.deps, now: () => T0 + 600_000 });
+    expect(sent[0]).toContain("自動チェックを始めました");
+    expect(h.state().retry).toEqual([]);
   });
 
   it("本番は probeFetch（サービスバインディング）で 見る。知らせや DB は ふつうの fetch", async () => {
@@ -643,8 +659,8 @@ describe("findTelegramChat — 送り先を ボットへの 1通から 見つけ
       async () => Response.json({ ok: true, result: [] }),
       (n: string) => notes.push(n),
     );
-    expect(notes[0]).toContain("HTTP 401: 鍵が 違う");
-    expect(notes[1]).toContain("更新 0件");
+    expect(notes[0]).toContain("HTTP 401: 鍵が違う");
+    expect(notes[1]).toContain("更新0件");
     expect(notes.join()).not.toContain("t/getUpdates");
   });
 
@@ -702,7 +718,7 @@ describe("runWatch — Telegram の 通し", () => {
     expect(urls.some((u) => u.endsWith("/getUpdates"))).toBe(false);
   });
 
-  it("知らせ先が まだ 無い あいだは「はじめました」を 取って おく（鍵を 入れた あとに 届く）", async () => {
+  it("通知先が1つも無いときは、送り直しを溜めない（状態だけ残す）", async () => {
     let state: unknown = null;
     const base = fakeFetch(OK_ALL);
     const deps = {
@@ -715,14 +731,40 @@ describe("runWatch — Telegram の 通し", () => {
       log: () => {},
     };
     const none = await runWatch({ PROD_URL: PROD }, deps);
-    expect(none.delivered).toBe(false);
-    expect(state).toMatchObject({ startedAt: null });
-    const later = await runWatch(
-      { PROD_URL: PROD, TELEGRAM_BOT_TOKEN: "t", TELEGRAM_CHAT_ID: "9" },
-      { ...deps, now: () => T0 + 600_000 },
-    );
-    expect(later.messages[0]).toMatchObject({ kind: "start" });
-    expect(later.delivered).toBe(true);
+    expect(none.delivered).toBe(true);
+    expect(state).toMatchObject({ startedAt: T0, retry: [] });
+  });
+
+  it("Telegram の送り先がまだ分からないあいだは送り直しを溜め、見つかったら送る", async () => {
+    let state: unknown = null;
+    let chatKnown = false;
+    const sent: string[] = [];
+    const base = fakeFetch(OK_ALL);
+    const deps = {
+      fetch: async (url: string, init?: RequestInit) => {
+        if (url.endsWith("/getUpdates")) {
+          return Response.json({
+            ok: true,
+            result: chatKnown ? [{ update_id: 1, message: { chat: { id: 5 } } }] : [],
+          });
+        }
+        if (url.endsWith("/sendMessage")) {
+          sent.push(JSON.parse(String(init?.body)).text);
+          return Response.json({ ok: true });
+        }
+        return base(url);
+      },
+      sleep: noSleep,
+      now: () => T0,
+      loadState: async () => state,
+      saveState: async (s: unknown) => void (state = s),
+      log: () => {},
+    };
+    const env = { PROD_URL: PROD, TELEGRAM_BOT_TOKEN: "t" };
+    expect((await runWatch(env, deps)).delivered).toBe(false);
+    chatKnown = true;
+    expect((await runWatch(env, { ...deps, now: () => T0 + 600_000 })).delivered).toBe(true);
+    expect(sent[0]).toContain("自動チェックを始めました");
   });
 });
 

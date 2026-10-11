@@ -58,6 +58,11 @@ const GROUPS: readonly { title: string; items: readonly Item[] }[] = [
         label: "学習の きろく",
         match: "/admin/records",
       },
+      /*
+       * エラーログ（2026-10-11）。本番サイトの自動チェックの結果と、学習者のブラウザで
+       * 起きたエラー。連絡を受ける前に気づくため。
+       */
+      { href: "/admin/logs", icon: "🩺", label: "エラーログ", match: "/admin/logs" },
       { href: "/nexmax", icon: "🧑‍🎨", label: "ネクマックス16人" },
       { href: "/admin/ai", icon: "🤖", label: "AI設定", match: "/admin/ai" },
       /*

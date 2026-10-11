@@ -21,9 +21,9 @@ export const PROBES = [
   // 全員が 最初に 開く 画面。作りおき（force-static）なので Next の サーバは 起きない
   { id: "title", label: "タイトル画面", path: "/", ok: [200] },
   // 門番（src/middleware.ts）を 通る 道。ログインなしは タイトルへ 307 で 返る のが 正常
-  { id: "gate", label: "まなびマップ（門番）", path: "/map", ok: [200, 307, 308] },
+  { id: "gate", label: "まなびマップ（ログイン前の転送）", path: "/map", ok: [200, 307, 308] },
   // Next の サーバ本体と DB を 通る 道。warnings が 空なら 教材も 健康
-  { id: "health", label: "教材の 健康しらべ", path: "/api/health/content", ok: [200] },
+  { id: "health", label: "教材の自動チェック", path: "/api/health/content", ok: [200] },
 ];
 
 /** 1回の 見張りで 1つの ページを 試す 回数と 間（その 回の 中で「続いたか」を 見る）。 */
@@ -60,15 +60,15 @@ export function classifyResponse(probe, status, bodyText = "") {
 export function describeCode(code) {
   switch (code) {
     case "1102":
-      return "Error 1102（Worker の 上限を 超えた）";
+      return "Error 1102（Worker の上限を超えた）";
     case "1101":
-      return "Error 1101（Worker が 例外で 止まった）";
+      return "Error 1101（Worker が例外で止まった）";
     case "timeout":
-      return `${TIMEOUT_MS / 1000}秒 待っても 返事が 無い`;
+      return `${TIMEOUT_MS / 1000}秒待っても返事がない`;
     case "network":
       return "つながらない";
     case "bad-json":
-      return "返事の 形が おかしい（JSON で ない）";
+      return "返事の形がおかしい（JSON ではない）";
     default:
       return `HTTP ${code}`;
   }
@@ -240,7 +240,7 @@ export function judge(prev, probeResults, clientErrors, now, { mutes = [] } = {}
         findings.push({
           key: "content",
           level: lastPending.health === key ? "confirmed" : "suspect",
-          text: `教材の 健康しらべに 警告 ${warnings.length}件 — ${String(warnings[0]).slice(0, 160)}`,
+          text: `教材の自動チェックで警告${warnings.length}件: ${String(warnings[0]).slice(0, 160)}`,
         });
       }
     }
@@ -251,11 +251,11 @@ export function judge(prev, probeResults, clientErrors, now, { mutes = [] } = {}
     // 後者が 無いと「3割だけ 1102」の ような 間欠的な 異常を 拾えない（毎回 2回目で 通る）
     const carried = typeof lastFail[r.id] === "number" && now - lastFail[r.id] <= CARRY_MS;
     const level = r.failures >= 2 || carried ? "confirmed" : "suspect";
-    const tail = r.code ? "" : "・いまは 通る";
+    const tail = r.code ? "" : "・いまは通る";
     findings.push({
       key: `page:${r.id}`,
       level,
-      text: `${probe.label}（${probe.path}）: ${describeCode(r.lastFailCode)}（${r.attempts}回中 ${r.failures}回 失敗${tail}）`,
+      text: `${probe.label}（${probe.path}）: ${describeCode(r.lastFailCode)}（${r.attempts}回中${r.failures}回失敗${tail}）`,
     });
   }
 
@@ -265,7 +265,7 @@ export function judge(prev, probeResults, clientErrors, now, { mutes = [] } = {}
       findings.push({
         key: "db",
         level: lastPending.db ? "confirmed" : "suspect",
-        text: `DB（Supabase）に 届かない: ${clientErrors.failed}`,
+        text: `データベース（Supabase）に届かない: ${clientErrors.failed}`,
       });
       hold("client-errors");
     } else {
@@ -276,13 +276,13 @@ export function judge(prev, probeResults, clientErrors, now, { mutes = [] } = {}
           .slice(0, 3)
           .map(
             (row) =>
-              `${safePath(row.path)} ${Number(row.n) || 0}件${row.kind === "stale" ? "（部品の 読みこみ）" : ""}`,
+              `${safePath(row.path)} ${Number(row.n) || 0}件${row.kind === "stale" ? "（部品の読み込み）" : ""}`,
           )
           .join("・");
         findings.push({
           key: "client-errors",
           level: "confirmed",
-          text: `画面の エラーが ${CLIENT_ERROR_MINUTES}分で ${total}件（${where}）`,
+          text: `ブラウザのエラーが${CLIENT_ERROR_MINUTES}分で${total}件（${where}）`,
         });
       }
     }
@@ -367,16 +367,16 @@ export function decide(prev, judged, now, prodUrl, { mutes = [] } = {}) {
     const openKeys = Object.keys(open);
     messages.push({
       kind: "start",
-      title: "本番の 見張りを はじめました",
+      title: "本番サイトの自動チェックを始めました",
       text: [
-        `👀 本番の 見張りを はじめました（${time}）`,
-        "10分ごと（授業の 火・水・金 17:05〜18:55 は 5分ごと）に 見ます。",
-        "知らせるのは 異常が 続いた とき・2時間ごとの 念押し（夜は なし）・直った ときだけです。",
+        `👀 本番サイトの自動チェックを始めました（${time}）`,
+        "10分ごと（授業がある火・水・金の17:05〜18:55は5分ごと）にチェックします。",
+        "知らせるのは、異常が続いたとき・続いている異常の2時間ごとの再通知（夜は送らない）・直ったときだけです。",
         openKeys.length === 0
-          ? "✅ いまは ぜんぶ 正常です。"
-          : `いま 開いて いる 異常:\n${lines(openKeys, "・").join("\n")}`,
+          ? "✅ いまはすべて正常です。"
+          : `いま続いている異常:\n${lines(openKeys, "・").join("\n")}`,
         ...(mutes.length > 0
-          ? [`（直し待ちの 既知の 誤報は 知らせません: ${mutes.join("・")}）`]
+          ? [`（修正待ちの既知の誤報は知らせません: ${mutes.join("・")}）`]
           : []),
         prodUrl,
       ].join("\n"),
@@ -385,13 +385,13 @@ export function decide(prev, judged, now, prodUrl, { mutes = [] } = {}) {
     const others = Object.keys(open).filter((k) => !fresh.includes(k) && !reminded.includes(k));
     messages.push({
       kind: "alert",
-      title: fresh.length > 0 ? "本番に 異常が あります" : "本番の 異常が 続いて います",
+      title: fresh.length > 0 ? "本番サイトに異常があります" : "本番サイトの異常が続いています",
       text: [
-        `${fresh.length > 0 ? "🚨 本番に 異常が あります" : "⏰ 本番の 異常が 続いて います"}（${time}）`,
+        `${fresh.length > 0 ? "🚨 本番サイトに異常があります" : "⏰ 本番サイトの異常が続いています"}（${time}）`,
         ...lines(fresh, "🆕"),
         ...lines(reminded, "・"),
         ...lines(others, "・"),
-        `たしかめる: ${prodUrl}/api/health/content`,
+        `確認: ${prodUrl}/admin/logs`,
       ].join("\n"),
     });
   }
@@ -399,15 +399,13 @@ export function decide(prev, judged, now, prodUrl, { mutes = [] } = {}) {
     const stillOpen = Object.keys(open).length;
     messages.push({
       kind: "recovered",
-      title: "本番の 異常が 直りました",
+      title: "本番サイトの異常が直りました",
       text: [
-        `✅ 直りました（${time}・${RECOVER_QUIET_MS / 60_000}分 正常が 続いた）`,
+        `✅ 直りました（${time}・${RECOVER_QUIET_MS / 60_000}分正常が続いた）`,
         ...recovered.map(
-          (r) => `・${r.text}（${Math.max(1, Math.round((r.until - r.since) / 60_000))}分 続いた）`,
+          (r) => `・${r.text}（${Math.max(1, Math.round((r.until - r.since) / 60_000))}分続いた）`,
         ),
-        stillOpen > 0
-          ? `まだ 開いて いる 異常が ${stillOpen}件 あります。`
-          : "いまは ぜんぶ 正常です。",
+        stillOpen > 0 ? `まだ続いている異常が${stillOpen}件あります。` : "いまはすべて正常です。",
       ].join("\n"),
     });
   }
@@ -452,10 +450,10 @@ export async function findTelegramChat(env, fetchImpl, onNote = () => {}) {
     if (!res.ok) {
       const why =
         res.status === 401 || res.status === 404
-          ? "鍵が 違う（BotFather の 鍵を まるごと 入れ直す）"
+          ? "鍵が違う（BotFather の鍵をまるごと入れ直す）"
           : res.status === 409
-            ? "ボットに webhook が 付いて いる"
-            : "Telegram が 答えない";
+            ? "ボットに webhook が設定されている"
+            : "Telegram が答えない";
       onNote(`getUpdates HTTP ${res.status}: ${why}`);
       return null;
     }
@@ -464,16 +462,16 @@ export async function findTelegramChat(env, fetchImpl, onNote = () => {}) {
     for (const update of updates) {
       const chat = update?.message?.chat ?? update?.my_chat_member?.chat;
       if (chat && (typeof chat.id === "number" || typeof chat.id === "string")) {
-        onNote("送り先を 見つけた");
+        onNote("送り先を見つけた");
         return String(chat.id);
       }
     }
     onNote(
-      `更新 ${updates.length}件: まだ ボットに 1通も 届いて いない（24時間 過ぎると 消える。/start を もう一度）`,
+      `更新${updates.length}件: まだボットに1通も届いていない（24時間で消えるので、/start をもう一度）`,
     );
     return null;
   } catch {
-    onNote("Telegram に つながらない");
+    onNote("Telegram につながらない");
     return null;
   }
 }
@@ -506,7 +504,7 @@ export async function notify(env, message, fetchImpl, { telegramChatId = null } 
               disable_web_page_preview: true,
             }),
           })
-        : Promise.reject(new Error("Telegram の 送り先が まだ 分からない")),
+        : Promise.reject(new Error("Telegram の送り先がまだ分からない")),
     );
   }
   if (env.SLACK_WEBHOOK_URL) {
@@ -527,7 +525,7 @@ export async function notify(env, message, fetchImpl, { telegramChatId = null } 
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          from: env.ALERT_EMAIL_FROM || "NexmaxAcademy 見張り <onboarding@resend.dev>",
+          from: env.ALERT_EMAIL_FROM || "NexmaxAcademy 自動チェック <onboarding@resend.dev>",
           to: env.ALERT_EMAIL_TO.split(",")
             .map((s) => s.trim())
             .filter(Boolean),
@@ -569,31 +567,34 @@ export async function runWatch(env, deps) {
 
   // Telegram の 送り先。入れて あれば それ、覚えて いれば それ、無ければ 探す
   let telegramChatId = env.TELEGRAM_CHAT_ID || prev?.telegramChatId || null;
-  let telegramNote = env.TELEGRAM_BOT_TOKEN ? (telegramChatId ? "送り先 あり" : null) : "鍵 なし";
+  let telegramNote = env.TELEGRAM_BOT_TOKEN ? (telegramChatId ? "送り先あり" : null) : "鍵なし";
   if (env.TELEGRAM_BOT_TOKEN && !telegramChatId) {
     telegramChatId = await findTelegramChat(env, deps.fetch, (note) => (telegramNote = note));
   }
 
+  // 通知は おまけ。状態（管理画面のエラーログに 出る）は 届いたかに 関係なく いつも 正しく 残す。
+  // 通知先が あるのに 届かなかった 通知だけ、次の回に 送り直す（3通まで）
+  const queue = [...(Array.isArray(prev?.retry) ? prev.retry : []), ...messages].slice(-3);
+  const retry = [];
   let delivered = true;
-  for (const message of messages) {
+  for (const message of queue) {
     const { configured, sent } = await notify(env, message, deps.fetch, { telegramChatId });
-    deps.log(`[${message.kind}] ${message.text}${configured === 0 ? "（知らせ先が 未設定）" : ""}`);
-    if (sent === 0) delivered = false;
+    deps.log(`[${message.kind}] ${message.text}${configured === 0 ? "（通知先が未設定）" : ""}`);
+    if (configured > 0 && sent === 0) {
+      delivered = false;
+      retry.push(message);
+    }
   }
 
-  // 知らせが 1通も 届かなかったら、次の 回に もう一度 知らせる（黙って 落とさない）。
-  // 知らせ先が まだ 無い ときも 同じ——鍵を 入れた あとの 最初の 回に「はじめました」が 届く
-  const saved = delivered
-    ? next
-    : { ...next, startedAt: prev?.startedAt ?? null, open: prev?.open ?? {} };
   await deps.saveState({
-    ...saved,
+    ...next,
+    retry,
     telegramChatId: env.TELEGRAM_CHAT_ID ? (prev?.telegramChatId ?? null) : telegramChatId,
     last: {
       at: now,
       probes: probeResults.map((r) => ({ id: r.id, code: r.code, failures: r.failures })),
       clientErrors: clientErrors.skipped
-        ? "見ていない（SUPABASE_URL が 無い）"
+        ? "見ていない（SUPABASE_URL がない）"
         : (clientErrors.failed ??
           (clientErrors.rows ?? []).reduce((s, r) => s + (Number(r.n) || 0), 0)),
       delivered,

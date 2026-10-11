@@ -43,7 +43,7 @@ const handler = {
       }).then((result) => {
         if (result.findings.length > 0) {
           console.log(
-            `見えた 異常: ${result.findings.map((f) => `${f.key}=${f.level}`).join(" ")}`,
+            `見つかった異常: ${result.findings.map((f) => `${f.key}=${f.level}`).join(" ")}`,
           );
         }
       }),
@@ -73,9 +73,15 @@ const handler = {
         lastRunAt: state?.lastRunAt ? new Date(state.lastRunAt).toISOString() : null,
         open: state?.open ?? {},
         last: state?.last ?? null,
-        note: "読むだけの 画面です。ここから 見張りや 知らせは 起きません。",
+        note: "読むだけのページです。ここから自動チェックや通知は起きません。",
       },
-      { headers: { "cache-control": "no-store" } },
+      {
+        headers: {
+          "cache-control": "no-store",
+          // 管理画面のエラーログ（/admin/logs）がブラウザから読む。中身は公開してよい結果だけ
+          "access-control-allow-origin": "*",
+        },
+      },
     );
   },
 };
