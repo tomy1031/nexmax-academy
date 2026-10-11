@@ -16,6 +16,7 @@ import {
   isQuietHour,
   judge,
   notify,
+  parseMutes,
   runProbe,
   runWatch,
   safePath,
@@ -275,6 +276,28 @@ describe("judge — 続いて いるか", () => {
     );
   });
 
+  it("直し待ちの 既知の 誤報は 黙らせられる（ほかの 警告は 残る）", () => {
+    const warn = [
+      "stage:kaihatsu — 教材が 見つからない（quest:waterfall_quest）。学習者は ステージの 途中で 404に なる",
+      "stage:houkoku — DBの 版が gitの 教材を 1本 隠している（article:x）",
+    ];
+    const results = [...allOk().slice(0, 2), pageResult("health", 0, null, { warnings: warn })];
+    const mutes = parseMutes(" waterfall_quest , ");
+    expect(mutes).toEqual(["waterfall_quest"]);
+    const j = judge(null, results, { skipped: true }, T0, { mutes });
+    expect(j.findings).toEqual([
+      expect.objectContaining({
+        key: "content",
+        text: expect.stringContaining("警告 1件 — stage:houkoku"),
+      }),
+    ]);
+    const onlyMuted = [
+      ...allOk().slice(0, 2),
+      pageResult("health", 0, null, { warnings: [warn[0]] }),
+    ];
+    expect(judge(null, onlyMuted, { skipped: true }, T0, { mutes }).findings).toEqual([]);
+  });
+
   it("DB に 届かないのは 2回 続いたら", () => {
     const first = judge(null, allOk(), { failed: "HTTP 503" }, T0);
     expect(first.findings[0]).toMatchObject({ key: "db", level: "suspect" });
@@ -303,6 +326,11 @@ describe("decide — 鳴らす・念押し・直った", () => {
     expect(messages[0]).toMatchObject({ kind: "start", title: "本番の 見張りを はじめました" });
     expect(messages[0]!.text).toContain("いまは ぜんぶ 正常です");
     expect(next.startedAt).toBe(T0);
+  });
+
+  it("黙らせて いる 誤報が あれば「はじめました」に 書く（知らない うちに 黙らない）", () => {
+    const { messages } = decide(null, clear, T0, PROD, { mutes: ["waterfall_quest"] });
+    expect(messages[0]!.text).toContain("直し待ちの 既知の 誤報は 知らせません: waterfall_quest");
   });
 
   it("正常が 続く あいだは 何も 送らない", () => {

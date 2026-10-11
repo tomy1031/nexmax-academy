@@ -67,6 +67,17 @@ curl -s https://academy.nexmax.workers.dev/api/health/content | python3 -c "impo
 
 `[]` なら 出して よい。
 
+**直し待ちの 既知の 誤報が 残って いる ときは、その 警告だけ 黙らせて 出せる**（部分一致・カンマ区切り）。
+wrangler.jsonc には 書かず、その deploy だけに 付ける——次の ふつうの deploy で 自然に 外れる:
+
+```bash
+npx wrangler deploy -c workers/watch/wrangler.jsonc --var MUTE_WARNINGS:waterfall_quest
+```
+
+黙らせて いる ものは「見張りを はじめました」と 状態の URL（`muted`）に 出る。
+2026-10-11 は これで 出した（Telegram の `/start` は 24時間で 消えるので、#598 を 待てなかった）。
+**#598 が 本番に 出たら、`--var` なしで 出し直す。**
+
 ### 1. 知らせ先の 鍵を 作る
 
 **本命は Telegram**（2026-10-11 に tomy さんが 選んだ。カンボジアでは 先生も 使って いて、

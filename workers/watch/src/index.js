@@ -65,6 +65,8 @@ const handler = {
           email: Boolean(env.RESEND_API_KEY && env.ALERT_EMAIL_TO),
         },
         clientErrors: Boolean(env.SUPABASE_URL && env.SUPABASE_ANON_KEY),
+        // 一時的に 黙らせて いる 既知の 誤報（deploy の --var で 渡した ときだけ）
+        muted: env.MUTE_WARNINGS ?? null,
         startedAt: state?.startedAt ? new Date(state.startedAt).toISOString() : null,
         lastRunAt: state?.lastRunAt ? new Date(state.lastRunAt).toISOString() : null,
         open: state?.open ?? {},

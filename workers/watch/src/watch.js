@@ -161,6 +161,19 @@ export async function readClientErrors(env, fetchImpl) {
   }
 }
 
+/**
+ * 一時的に 黙らせる 警告（var `MUTE_WARNINGS`・カンマ区切りの 部分一致）。
+ * **直しが 決まって いる 既知の 誤報だけ**に 使う。deploy の とき `--var` で 渡し、
+ * wrangler.jsonc には 書かない——次の ふつうの deploy で 自然に 外れる ように。
+ * 2026-10-11: 健康しらべが quest を 数えず 誤報を 出して いた（#598 で 直し中）ため。
+ */
+export function parseMutes(value) {
+  return String(value ?? "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
 /** 健康しらべの 警告を 1つの 印に する（同じ 警告が 続いて いるかを 見る ため）。 */
 function warningsKey(warnings) {
   return warnings.slice().sort().join("\n").slice(0, 500);
@@ -183,8 +196,14 @@ export function safePath(path) {
  *   hold      … 測れなかった（健康しらべ・DB が 落ちた）。前の 回の 異常を そのまま 残す
  *               ——測れない ことを「直った」と 取り違えない ため
  * 返す recentFail・pending は 次の 回に 引き継ぐ もの。
+ *
+ * @param {any} prev
+ * @param {any[]} probeResults
+ * @param {any} clientErrors
+ * @param {number} now
+ * @param {{ mutes?: string[] }} [opts]
  */
-export function judge(prev, probeResults, clientErrors, now) {
+export function judge(prev, probeResults, clientErrors, now, { mutes = [] } = {}) {
   const findings = [];
   const recentFail = {};
   const pending = {};
@@ -201,7 +220,9 @@ export function judge(prev, probeResults, clientErrors, now) {
 
     // 健康しらべの 警告（教材が 隠れる・404 に なる）。2回 続いたら 知らせる
     if (r.id === "health") {
-      const warnings = Array.isArray(r.body?.warnings) ? r.body.warnings : [];
+      const warnings = (Array.isArray(r.body?.warnings) ? r.body.warnings : []).filter(
+        (w) => !mutes.some((m) => String(w).includes(m)),
+      );
       if (r.code) {
         // 測れなかった。警告の 続きぐあいも 異常も 前の まま
         if (lastPending.health) pending.health = lastPending.health;
@@ -282,8 +303,14 @@ export function isQuietHour(now) {
  *   念押し … 開いた まま 2時間 たった とき（夜は 送らない）
  *   閉じる … **30分 続けて** 何も 出なかった とき（✅ で 1通）。その 間に また 出たら
  *            黙って 開いた まま に 戻す（行き来で 鳴らさない）
+ *
+ * @param {any} prev
+ * @param {any} judged
+ * @param {number} now
+ * @param {string} prodUrl
+ * @param {{ mutes?: string[] }} [opts]
  */
-export function decide(prev, judged, now, prodUrl) {
+export function decide(prev, judged, now, prodUrl, { mutes = [] } = {}) {
   const open = {};
   const fresh = [];
   const reminded = [];
@@ -341,6 +368,9 @@ export function decide(prev, judged, now, prodUrl) {
         openKeys.length === 0
           ? "✅ いまは ぜんぶ 正常です。"
           : `いま 開いて いる 異常:\n${lines(openKeys, "・").join("\n")}`,
+        ...(mutes.length > 0
+          ? [`（直し待ちの 既知の 誤報は 知らせません: ${mutes.join("・")}）`]
+          : []),
         prodUrl,
       ].join("\n"),
     });
@@ -500,8 +530,9 @@ export async function runWatch(env, deps) {
     readClientErrors(env, deps.fetch),
   ]);
 
-  const judged = judge(prev, probeResults, clientErrors, now);
-  const { messages, next } = decide(prev, judged, now, baseUrl);
+  const mutes = parseMutes(env.MUTE_WARNINGS);
+  const judged = judge(prev, probeResults, clientErrors, now, { mutes });
+  const { messages, next } = decide(prev, judged, now, baseUrl, { mutes });
 
   // Telegram の 送り先。入れて あれば それ、覚えて いれば それ、無ければ 探す
   let telegramChatId = env.TELEGRAM_CHAT_ID || prev?.telegramChatId || null;
