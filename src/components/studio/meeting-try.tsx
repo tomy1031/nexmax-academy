@@ -146,7 +146,7 @@ export function MeetingTryPanel({
   return (
     <StudioSection
       title="試す（質問ごと）"
-      hint="いま 書いて ある ままで、AIに 1回 きいて みます。保存しなくても ためせます。"
+      hint="いま書いてあるままで、AI に1回聞いてみます。保存しなくても試せます。"
       right={
         <MiniButton tone="plain" onClick={() => setOpen((v) => !v)}>
           {open ? "とじる" : "ひらく"}
