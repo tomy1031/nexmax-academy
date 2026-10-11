@@ -58,6 +58,12 @@ describe("sanitizeErrorText — 人や 鍵に つながる ものを 伏せる",
     expect(text).toContain("https://academy.nexmax.workers.dev/auth/callback");
   });
 
+  it("相対の 道の クエリも 落とす（名前や 短い 数字が 残らない）", () => {
+    expect(sanitizeErrorText("failed /auth/callback?next=%2Fmap&name=Sokha&n=12345 here")).toBe(
+      "failed /auth/callback here",
+    );
+  });
+
   it("英数の 長い 鍵（API キーの 形）を 伏せる", () => {
     expect(sanitizeErrorText("key AIzaSyA1b2C3d4E5f6G7h8I9j0KLMNOPqrstu used")).toBe(
       "key <token> used",
@@ -79,6 +85,10 @@ describe("sanitizePath — 道だけ 送る", () => {
   it("クエリと # を 落とす（?code= が 乗る ため）", () => {
     expect(sanitizePath("/?error=auth&code=abc")).toBe("/");
     expect(sanitizePath("/houkoku/manga#top")).toBe("/houkoku/manga");
+  });
+
+  it("空白は 残さない（DB が 受け取らない 形に しない）", () => {
+    expect(sanitizePath("/a b/c")).toBe("/a_b/c");
   });
 
   it("道の 中の id らしい ものは 伏せる", () => {

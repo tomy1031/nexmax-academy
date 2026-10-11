@@ -5,15 +5,19 @@ import {
   CARRY_MS,
   CLIENT_ERROR_THRESHOLD,
   PROBES,
+  RECOVER_QUIET_MS,
   REMIND_MS,
   RETRY_WAIT_MS,
   classifyResponse,
   decide,
+  escapeSlack,
   ictLabel,
+  isQuietHour,
   judge,
   notify,
   runProbe,
   runWatch,
+  safePath,
 } from "../workers/watch/src/watch.js";
 
 /*
@@ -225,7 +229,48 @@ describe("judge — 続いて いるか", () => {
     );
     expect(many.findings[0]).toMatchObject({ key: "client-errors", level: "confirmed" });
     expect(many.findings[0]!.text).toBe(
-      "画面の エラーが 15分で 4件（/map 3件・/houkoku 1件（読み直しでも 直らず））",
+      "画面の エラーが 15分で 4件（/map 3件・/houkoku 1件（部品の 読みこみ））",
+    );
+  });
+
+  it("道は だれでも 書けるので、知らせの 文に 入れる 前に 消毒する", () => {
+    const j = judge(
+      null,
+      allOk(),
+      { rows: [{ path: "/a <!channel> <https://evil.example|ログイン>", kind: "render", n: 3 }] },
+      T0,
+    );
+    expect(j.findings[0]!.text).not.toContain("<!channel");
+    expect(j.findings[0]!.text).not.toContain("|");
+    expect(safePath("/a <!channel>\n<https://evil|x>")).toBe("/a?<?channel>?<https://evil?x>");
+  });
+
+  it("健康しらべが 測れない 回は、開いて いる 教材の 警告を 閉じない（うその「直りました」を 出さない）", () => {
+    const warn = ["stage:kaihatsu — 教材が 見つからない"];
+    const prev = {
+      open: { content: { since: T0, notifiedAt: T0, text: "教材の 健康しらべに 警告 1件" } },
+      recentFail: {},
+      pending: { health: warn.join("\n") },
+    };
+    const j = judge(
+      prev,
+      [...allOk().slice(0, 2), pageResult("health", 3, "503")],
+      { skipped: true },
+      T0 + 600_000,
+    );
+    expect(j.findings).toContainEqual(expect.objectContaining({ key: "content", level: "hold" }));
+    expect(j.pending.health).toBe(warn.join("\n"));
+  });
+
+  it("DB が 読めない 回は、開いて いる 画面の エラーを 閉じない", () => {
+    const prev = {
+      open: { "client-errors": { since: T0, notifiedAt: T0, text: "画面の エラーが 15分で 4件" } },
+      recentFail: {},
+      pending: {},
+    };
+    const j = judge(prev, allOk(), { failed: "timeout" }, T0 + 600_000);
+    expect(j.findings).toContainEqual(
+      expect.objectContaining({ key: "client-errors", level: "hold" }),
     );
   });
 
@@ -288,14 +333,67 @@ describe("decide — 鳴らす・念押し・直った", () => {
     expect(Object.keys(b.next.open)).toEqual(["page:title"]);
   });
 
-  it("消えたら「直りました」と 続いた 長さ", () => {
+  it(`消えても すぐは 閉じない。${RECOVER_QUIET_MS / 60_000}分 正常が 続いたら「直りました」`, () => {
     const a = decide(started, bad, T0, PROD);
-    const b = decide(a.next, clear, T0 + 30 * 60_000, PROD);
-    expect(b.messages).toHaveLength(1);
-    expect(b.messages[0]).toMatchObject({ kind: "recovered" });
-    expect(b.messages[0]!.text).toContain("30分 続いた");
-    expect(b.messages[0]!.text).toContain("いまは ぜんぶ 正常です");
-    expect(b.next.open).toEqual({});
+    const b = decide(a.next, clear, T0 + 10 * 60_000, PROD);
+    expect(b.messages).toEqual([]);
+    expect(Object.keys(b.next.open)).toEqual(["page:title"]);
+    const c = decide(b.next, clear, T0 + 10 * 60_000 + RECOVER_QUIET_MS, PROD);
+    expect(c.messages).toHaveLength(1);
+    expect(c.messages[0]).toMatchObject({ kind: "recovered" });
+    expect(c.messages[0]!.text).toContain("10分 続いた"); // 出て いた 長さ（静かに なるまで）
+    expect(c.messages[0]!.text).toContain("いまは ぜんぶ 正常です");
+    expect(c.next.open).toEqual({});
+  });
+
+  it("静かな 間に また 出たら、黙って 開いた まま に 戻す（行き来で 鳴らさない）", () => {
+    const a = decide(started, bad, T0, PROD);
+    const b = decide(a.next, clear, T0 + 10 * 60_000, PROD);
+    const c = decide(b.next, bad, T0 + 20 * 60_000, PROD);
+    expect(c.messages).toEqual([]);
+    expect(c.next.open).toMatchObject({ "page:title": { since: T0, quietSince: null } });
+  });
+
+  it("夜（22〜7時 ICT）は 念押しを 送らない。新しい 異常は 送る", () => {
+    const night = Date.UTC(2026, 9, 13, 16, 0); // 23:00 ICT
+    expect(isQuietHour(night)).toBe(true);
+    expect(isQuietHour(T0)).toBe(false);
+    const a = decide(started, bad, night - REMIND_MS, PROD);
+    expect(decide(a.next, bad, night, PROD).messages).toEqual([]);
+    expect(decide(started, bad, night, PROD).messages[0]).toMatchObject({ kind: "alert" });
+  });
+
+  it("3割だけ 1102 が 1日 続いても、知らせは 少ない（行き来で 鳴らさない）", () => {
+    // 決まった 乱数（毎回 同じ 結果に なる ように）
+    let seed = 20261011;
+    const random = () => (seed = (seed * 1103515245 + 12345) % 2 ** 31) / 2 ** 31;
+    let state: Parameters<typeof decide>[0] = started;
+    const kinds: string[] = [];
+    const start = Date.UTC(2026, 9, 13, 0, 0);
+    for (let run = 0; run < 144; run++) {
+      const now = start + run * 10 * 60_000;
+      let failures = 0;
+      let code: string | null = null;
+      for (let attempt = 0; attempt < ATTEMPTS; attempt++) {
+        if (random() < 0.3) {
+          failures++;
+          code = "1102";
+        } else {
+          code = null;
+          break;
+        }
+      }
+      const results = [pageResult("title", failures, code), ...allOk().slice(1)];
+      const judged = judge(state, results, { skipped: true }, now);
+      const { messages, next } = decide(state, judged, now, PROD);
+      kinds.push(...messages.map((m: { kind: string }) => m.kind));
+      state = next;
+    }
+    const count = (k: string) => kinds.filter((x) => x === k).length;
+    // 1日中 つづく 異常なので: 開く 知らせは 数回まで・念押しは 昼だけ 2時間ごと
+    // 「直りました」は 1時間 正常が 続いた ときだけ（30分では 1日 8回 行き来した・実測）
+    expect(count("recovered")).toBeLessThanOrEqual(5);
+    expect(count("alert")).toBeLessThanOrEqual(10);
   });
 });
 
@@ -311,6 +409,20 @@ describe("notify — 知らせ先は 入って いる 鍵で 決まる", () => {
     const r = await notify({ SLACK_WEBHOOK_URL: "https://hooks.slack.test/x" }, message, fetchImpl);
     expect(r).toEqual({ configured: 1, sent: 1 });
     expect(sent).toEqual([{ url: "https://hooks.slack.test/x", body: { text: "🚨 本文" } }]);
+  });
+
+  it("Slack の 呼び出し（<!channel>）や リンク（<url|文>）を 効かせない", async () => {
+    let text = "";
+    await notify(
+      { SLACK_WEBHOOK_URL: "https://hooks.slack.test/x" },
+      { kind: "alert", title: "t", text: "<!channel> <https://evil|x> & y" },
+      async (_url: string, init: RequestInit) => {
+        text = JSON.parse(String(init.body)).text;
+        return new Response("ok");
+      },
+    );
+    expect(text).toBe("&lt;!channel&gt; &lt;https://evil|x&gt; &amp; y");
+    expect(escapeSlack("a<b>&")).toBe("a&lt;b&gt;&amp;");
   });
 
   it("メール（Resend）へ 件名つきで 送る。宛先は カンマ区切り", async () => {

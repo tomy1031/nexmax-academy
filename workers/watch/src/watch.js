@@ -32,9 +32,17 @@ export const RETRY_WAIT_MS = 20_000;
 export const TIMEOUT_MS = 15_000;
 /** 前の 回の 失敗を「続いた」と 数える 長さ（10分 間隔 ＋ ゆとり）。 */
 export const CARRY_MS = 25 * 60_000;
-/** 続いて いる 異常を もう一度 知らせる 間。 */
+/** 続いて いる 異常を もう一度 知らせる 間。夜（22〜7時 ICT）は 念押し しない。 */
 export const REMIND_MS = 2 * 60 * 60_000;
-/** 画面の エラーを 数える 幅と、知らせる 数。端末ごとに 間引いて あるので 3件 ＝ ほぼ 3人。 */
+/**
+ * 「直りました」と 言う までに 正常が 続く 長さ。1回 通った だけで 閉じると、
+ * 時々だけ 落ちる 異常（3割だけ 1102 など）で「異常あり」と「直りました」が 交互に 届く。
+ */
+export const RECOVER_QUIET_MS = 60 * 60_000;
+/**
+ * 画面の エラーを 数える 幅と、知らせる 数。端末ごとに 同じ エラーは 30分に 1回まで
+ * なので、3件は「3人」か「1人が ちがう 画面で 3回」——どちらも 見る 価値が ある。
+ */
 export const CLIENT_ERROR_MINUTES = 15;
 export const CLIENT_ERROR_THRESHOLD = 3;
 
@@ -159,10 +167,22 @@ function warningsKey(warnings) {
 }
 
 /**
+ * 画面の エラーの ページの 道を 見せて よい 形に する。道は **だれでも 書きこめる**
+ * （公開の anon 鍵で 入る）ので、知らせの 文に そのまま 混ぜない。
+ */
+export function safePath(path) {
+  return String(path ?? "?")
+    .replace(/[^\w/.~%<>@:+-]/g, "?")
+    .slice(0, 60);
+}
+
+/**
  * その 回の 結果から「異常」を 作る。
  *   confirmed … 知らせて よい（続いて いる）
  *   suspect   … まだ 1回だけ。新しくは 知らせないが、開いて いる 異常は 閉じない
- * 返す next は、次の 回に 引き継ぐ もの（recentFail・pending）。
+ *   hold      … 測れなかった（健康しらべ・DB が 落ちた）。前の 回の 異常を そのまま 残す
+ *               ——測れない ことを「直った」と 取り違えない ため
+ * 返す recentFail・pending は 次の 回に 引き継ぐ もの。
  */
 export function judge(prev, probeResults, clientErrors, now) {
   const findings = [];
@@ -170,21 +190,31 @@ export function judge(prev, probeResults, clientErrors, now) {
   const pending = {};
   const lastFail = prev?.recentFail ?? {};
   const lastPending = prev?.pending ?? {};
+  const lastOpen = prev?.open ?? {};
+  const hold = (key) => {
+    if (lastOpen[key]) findings.push({ key, level: "hold", text: lastOpen[key].text });
+  };
 
   for (const r of probeResults) {
     const probe = PROBES.find((p) => p.id === r.id);
     if (!probe) continue;
 
     // 健康しらべの 警告（教材が 隠れる・404 に なる）。2回 続いたら 知らせる
-    const warnings = Array.isArray(r.body?.warnings) ? r.body.warnings : [];
-    if (r.id === "health" && !r.code && warnings.length > 0) {
-      const key = warningsKey(warnings);
-      pending.health = key;
-      findings.push({
-        key: "content",
-        level: lastPending.health === key ? "confirmed" : "suspect",
-        text: `教材の 健康しらべに 警告 ${warnings.length}件 — ${String(warnings[0]).slice(0, 160)}`,
-      });
+    if (r.id === "health") {
+      const warnings = Array.isArray(r.body?.warnings) ? r.body.warnings : [];
+      if (r.code) {
+        // 測れなかった。警告の 続きぐあいも 異常も 前の まま
+        if (lastPending.health) pending.health = lastPending.health;
+        hold("content");
+      } else if (warnings.length > 0) {
+        const key = warningsKey(warnings);
+        pending.health = key;
+        findings.push({
+          key: "content",
+          level: lastPending.health === key ? "confirmed" : "suspect",
+          text: `教材の 健康しらべに 警告 ${warnings.length}件 — ${String(warnings[0]).slice(0, 160)}`,
+        });
+      }
     }
 
     if (r.failures === 0) continue;
@@ -209,6 +239,7 @@ export function judge(prev, probeResults, clientErrors, now) {
         level: lastPending.db ? "confirmed" : "suspect",
         text: `DB（Supabase）に 届かない: ${clientErrors.failed}`,
       });
+      hold("client-errors");
     } else {
       const rows = clientErrors.rows ?? [];
       const total = rows.reduce((sum, row) => sum + (Number(row.n) || 0), 0);
@@ -217,7 +248,7 @@ export function judge(prev, probeResults, clientErrors, now) {
           .slice(0, 3)
           .map(
             (row) =>
-              `${row.path} ${row.n}件${row.kind === "stale" ? "（読み直しでも 直らず）" : ""}`,
+              `${safePath(row.path)} ${Number(row.n) || 0}件${row.kind === "stale" ? "（部品の 読みこみ）" : ""}`,
           )
           .join("・");
         findings.push({
@@ -238,37 +269,59 @@ export function ictLabel(now) {
   return `${d.slice(5, 10).replace("-", "/")} ${d.slice(11, 16)} ICT`;
 }
 
+/** 夜（22〜7時 ICT）か。念押しだけ 止める（新しい 異常と 直った 知らせは 送る）。 */
+export function isQuietHour(now) {
+  const hour = new Date(now + 7 * 60 * 60_000).getUTCHours();
+  return hour >= 22 || hour < 7;
+}
+
 /**
  * 前の 状態と その 回の 異常から、知らせる 文と 次の 状態を 決める。
- * 知らせは 1回に 1通まで（まとめて 送る）。
+ *
+ *   開く   … confirmed が 新しく 出た とき（🆕 で 1通）
+ *   念押し … 開いた まま 2時間 たった とき（夜は 送らない）
+ *   閉じる … **30分 続けて** 何も 出なかった とき（✅ で 1通）。その 間に また 出たら
+ *            黙って 開いた まま に 戻す（行き来で 鳴らさない）
  */
 export function decide(prev, judged, now, prodUrl) {
-  const open = { ...(prev?.open ?? {}) };
+  const open = {};
   const fresh = [];
   const reminded = [];
   const recovered = [];
 
-  const byKey = new Map(judged.findings.map((f) => [f.key, f]));
+  for (const [key, was] of Object.entries(prev?.open ?? {})) open[key] = { ...was };
+
+  const seen = new Set();
   for (const f of judged.findings) {
+    seen.add(f.key);
     const was = open[f.key];
     if (f.level === "confirmed") {
       if (!was) {
-        open[f.key] = { since: now, notifiedAt: now, text: f.text };
+        open[f.key] = { since: now, notifiedAt: now, text: f.text, quietSince: null };
         fresh.push(f.key);
       } else {
-        const remind = now - was.notifiedAt >= REMIND_MS;
-        open[f.key] = { ...was, text: f.text, notifiedAt: remind ? now : was.notifiedAt };
+        const remind = now - was.notifiedAt >= REMIND_MS && !isQuietHour(now);
+        open[f.key] = {
+          ...was,
+          text: f.text,
+          quietSince: null,
+          notifiedAt: remind ? now : was.notifiedAt,
+        };
         if (remind) reminded.push(f.key);
       }
     } else if (was) {
-      // まだ ゆれて いる。閉じも 鳴らしも しない
-      open[f.key] = { ...was, text: f.text };
+      // ゆれて いる／測れない。閉じも 鳴らしも しない
+      open[f.key] = { ...was, text: f.level === "hold" ? was.text : f.text, quietSince: null };
     }
   }
-  for (const [key, was] of Object.entries(prev?.open ?? {})) {
-    if (!byKey.has(key)) {
+  for (const [key, was] of Object.entries(open)) {
+    if (seen.has(key)) continue;
+    const quietSince = typeof was.quietSince === "number" ? was.quietSince : now;
+    if (now - quietSince >= RECOVER_QUIET_MS) {
       delete open[key];
-      recovered.push({ key, text: was.text, since: was.since });
+      recovered.push({ key, text: was.text, since: was.since, until: quietSince });
+    } else {
+      open[key] = { ...was, quietSince };
     }
   }
 
@@ -284,7 +337,7 @@ export function decide(prev, judged, now, prodUrl) {
       text: [
         `👀 本番の 見張りを はじめました（${time}）`,
         "10分ごと（授業の 火・水・金 17:05〜18:55 は 5分ごと）に 見ます。",
-        "知らせるのは 異常が 続いた とき・2時間ごとの 念押し・直った ときだけです。",
+        "知らせるのは 異常が 続いた とき・2時間ごとの 念押し（夜は なし）・直った ときだけです。",
         openKeys.length === 0
           ? "✅ いまは ぜんぶ 正常です。"
           : `いま 開いて いる 異常:\n${lines(openKeys, "・").join("\n")}`,
@@ -311,9 +364,9 @@ export function decide(prev, judged, now, prodUrl) {
       kind: "recovered",
       title: "本番の 異常が 直りました",
       text: [
-        `✅ 直りました（${time}）`,
+        `✅ 直りました（${time}・${RECOVER_QUIET_MS / 60_000}分 正常が 続いた）`,
         ...recovered.map(
-          (r) => `・${r.text}（${Math.max(1, Math.round((now - r.since) / 60_000))}分 続いた）`,
+          (r) => `・${r.text}（${Math.max(1, Math.round((r.until - r.since) / 60_000))}分 続いた）`,
         ),
         stillOpen > 0
           ? `まだ 開いて いる 異常が ${stillOpen}件 あります。`
@@ -333,6 +386,14 @@ export function decide(prev, judged, now, prodUrl) {
 }
 
 /**
+ * Slack の mrkdwn で 意味を 持つ 3文字を 消す。知らせの 文には だれでも 書きこめる
+ * 部分（画面の エラーの 道）が 混ざるので、`<!channel>` や `<https://…|…>` を 効かせない。
+ */
+export function escapeSlack(text) {
+  return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+/**
  * 知らせる。どこへ 送るかは 入って いる 鍵で 決まる（両方 入って いれば 両方）。
  *   Slack … SLACK_WEBHOOK_URL（Incoming Webhook）
  *   メール … RESEND_API_KEY ＋ ALERT_EMAIL_TO（Resend。無料枠 1日100通）
@@ -345,7 +406,7 @@ export async function notify(env, message, fetchImpl) {
       fetchImpl(env.SLACK_WEBHOOK_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: message.text }),
+        body: JSON.stringify({ text: escapeSlack(message.text) }),
       }),
     );
   }

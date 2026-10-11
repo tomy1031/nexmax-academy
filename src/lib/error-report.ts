@@ -61,6 +61,8 @@ export function sanitizeErrorText(text: string, max = MESSAGE_MAX): string {
     text
       // URL の クエリと # 以降（?code= や トークンが 乗る）
       .replace(/(https?:\/\/[^\s?#"'<>]+)[?#][^\s"'<>]*/gi, "$1")
+      // 相対の 道の クエリ（/auth/callback?next=…&name=… など）
+      .replace(/\?[\w.%-]+=[^\s"'<>]*/g, "")
       .replace(/[\w.+-]+@[\w-]+(\.[\w-]+)+/g, "<email>")
       .replace(/\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b/gi, "<id>")
       // JWT（eyJ…）・API キー・長い ランダム文字列
@@ -76,7 +78,9 @@ export function sanitizeErrorText(text: string, max = MESSAGE_MAX): string {
 /** 道だけ（クエリ・# は 落とす）。id らしい ものは 伏せる。 */
 export function sanitizePath(pathname: string): string {
   const path = pathname.split(/[?#]/)[0] || "/";
-  return sanitizeErrorText(path.startsWith("/") ? path : `/${path}`, PATH_MAX) || "/";
+  // DB は 空白の 入った 道を 受け取らない（移行SQL 20261011120000 の 形の しばり）
+  const clean = sanitizeErrorText(path.startsWith("/") ? path : `/${path}`, PATH_MAX);
+  return clean.replace(/\s/g, "_") || "/";
 }
 
 function describe(error: unknown): { name: string; message: string; digest: string | null } {

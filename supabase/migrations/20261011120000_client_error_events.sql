@@ -15,6 +15,10 @@
 --     10分に 30行を 超えたら 黙って 捨てる（鍵は 公開なので、ブラウザを 通らない 連打にも 効く ように）。
 --     古い 行は 14日で 消す。
 --   * 見張りの Worker（workers/watch）が 読むのは **数だけ**（client_error_counts）。中身は 出さない。
+--   * **道（object）は だれでも 書ける**ので、形を 絞る（/ で 始まる・空白や 制御文字なし・
+--     種類は render／stale だけ）。知らせの 文に 混ぜる 側でも 消毒する（workers/watch）。
+--   * ふた・片づけ・件数は **だれの でもない 行だけ**を 数える。ログイン中の 人が 自分の
+--     user_id で 入れる 行（既存の events_insert）で ふたを 埋めさせない・件数に 混ぜない。
 --
 -- いま 動いて いる コードは events を 使って いない（0行）ので、先に 流して 壊れる ものは 無い。
 -- 変える のは「not null を 外す」「insert の 許可を 足す」「関数・トリガーを 足す」だけ。
@@ -25,7 +29,7 @@ begin;
 alter table public.events alter column user_id drop not null;
 
 create index if not exists events_client_error_at_idx
-  on public.events (at desc) where verb = 'client_error';
+  on public.events (at desc) where verb = 'client_error' and user_id is null;
 
 -- ── 2. 入れる だけを 許す（anon と ログイン中の 両方。送る ときは anon の 鍵で 送る）──
 -- authenticated は 20260727013256 で すでに insert を 持って いる。足すのは anon だけ。
@@ -50,7 +54,10 @@ create policy events_insert_client_error on public.events for insert to anon, au
     and unit_id is null
     and object is not null
     and char_length(object) <= 200
+    and left(object, 1) = '/'
+    and object !~ '[[:space:][:cntrl:]]'
     and jsonb_typeof(result) = 'object'
+    and coalesce(result ->> 'kind', 'render') in ('render', 'stale')
     and octet_length(result::text) <= 2048
   );
 
@@ -67,13 +74,15 @@ begin
 
   if (
     select count(*) from public.events e
-    where e.verb = 'client_error' and e.at > now() - interval '10 minutes'
+    where e.verb = 'client_error' and e.user_id is null
+      and e.at > now() - interval '10 minutes'
   ) >= 30 then
     return null; -- 黙って 捨てる（ブラウザ側は 送りっぱなしで 返事を 見ない）
   end if;
 
   delete from public.events e
-  where e.verb = 'client_error' and e.at < now() - interval '14 days';
+  where e.verb = 'client_error' and e.user_id is null
+    and e.at < now() - interval '14 days';
 
   return new;
 end;
@@ -85,7 +94,7 @@ drop trigger if exists events_client_error_guard on public.events;
 create trigger events_client_error_guard
   before insert on public.events
   for each row
-  when (new.verb = 'client_error')
+  when (new.verb = 'client_error' and new.user_id is null)
   execute function app.client_error_guard();
 
 -- ── 4. 見張りが 読む 数（中身は 出さない）──
@@ -104,6 +113,7 @@ as $$
     count(*)::integer as n
   from public.events e
   where e.verb = 'client_error'
+    and e.user_id is null
     and e.at > now() - make_interval(mins => least(greatest(coalesce(p_minutes, 15), 1), 60))
   group by 1, 2
   order by 3 desc, 1
