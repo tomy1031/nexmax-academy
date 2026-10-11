@@ -22,6 +22,32 @@
  *（教材の 中身も 学習者の データも 出さない。id は public リポジトリに 元から ある）。
  */
 
+/**
+ * 健康しらべが 「いま 出て いるか」を 数える 教材の 種別（`contents[].type` と 同じ 名前）。
+ *
+ * **ステージの `contents[].type` に 入りうる 種別を 1つも 落とさない**（`CONTENT_REF_TYPES`）。
+ * 落とした 種別の 教材は、出て いても 「見つからない・404に なる」と 誤って 名指しされ、
+ * 「`warnings` が 空なら 健康」が 当てに ならなく なる——2026-10-11 に `quest` を
+ * 落として いて、本番で `quest:waterfall_quest` を 警告し 続けて いた。
+ * ずれは `tests/content_health.test.ts` が 落とす。
+ */
+export const HEALTH_CONTENT_KINDS = [
+  "article",
+  "manga",
+  "slides",
+  "listening",
+  "quizset",
+  "scenario",
+  "meeting",
+  "wordstage",
+  "link",
+  "skit",
+  "quest",
+  "typing",
+] as const;
+
+export type HealthContentKind = (typeof HEALTH_CONTENT_KINDS)[number];
+
 /** しらべる のに 要る 最小の かたち（Stage / WordStage の 部分集合）。 */
 export interface HealthStage {
   readonly id: string;
