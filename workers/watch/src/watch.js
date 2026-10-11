@@ -118,7 +118,14 @@ export async function runProbe(probe, { baseUrl, fetchImpl, sleep = sleepDefault
         }
       }
     } catch (error) {
-      code = error && error.name === "AbortError" ? "timeout" : "network";
+      // サービスバインディング越しでは 1102 は 画面では なく 例外で 返る
+      const text = String(error?.message ?? "");
+      code =
+        error && error.name === "AbortError"
+          ? "timeout"
+          : /exceeded|resource limits|cpu time/i.test(text)
+            ? "1102"
+            : "network";
     }
     if (!code) {
       return { id: probe.id, failures, attempts: attempt + 1, code: null, lastFailCode, body };
@@ -517,6 +524,9 @@ export async function notify(env, message, fetchImpl, { telegramChatId = null } 
 /**
  * 1回の 見張り。Cloudflare の ものは 全部 外から 渡す（テストで 差しかえる ため）。
  *   deps.fetch / deps.sleep / deps.now / deps.loadState / deps.saveState / deps.log
+ *   deps.probeFetch … 本番を 見る ときだけ 使う fetch（無ければ deps.fetch）。
+ *     **同じ アカウントの Worker は workers.dev の 公開 URL では 呼べない**（2026-10-11 に
+ *     3か所とも 404 が 返った）ので、本番の Worker へは サービスバインディング（env.PROD）で 行く
  */
 export async function runWatch(env, deps) {
   const baseUrl = (env.PROD_URL || "").replace(/\/+$/, "");
@@ -525,7 +535,9 @@ export async function runWatch(env, deps) {
 
   const [probeResults, clientErrors] = await Promise.all([
     Promise.all(
-      PROBES.map((probe) => runProbe(probe, { baseUrl, fetchImpl: deps.fetch, sleep: deps.sleep })),
+      PROBES.map((probe) =>
+        runProbe(probe, { baseUrl, fetchImpl: deps.probeFetch ?? deps.fetch, sleep: deps.sleep }),
+      ),
     ),
     readClientErrors(env, deps.fetch),
   ]);

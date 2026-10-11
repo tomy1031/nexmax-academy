@@ -33,6 +33,8 @@ const handler = {
     ctx.waitUntil(
       runWatch(env, {
         fetch: (url, init) => fetch(url, init),
+        // 本番は サービスバインディングで 見る（同じ アカウントの workers.dev は 公開 URL で 呼べない）
+        probeFetch: env.PROD ? (url, init) => env.PROD.fetch(url, init) : undefined,
         sleep: (ms) => new Promise((resolve) => setTimeout(resolve, ms)),
         now: () => Date.now(),
         loadState: () => stub.load(),

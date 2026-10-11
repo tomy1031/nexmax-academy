@@ -30,6 +30,11 @@
     "crons": ["*/10 * * * *", "5,15,25,35,45,55 10,11 * * TUE,WED,FRI"],
   },
 
+  // 本番の Worker（name=academy）へ 直に つなぐ。**同じ アカウントの Worker は workers.dev の
+  // 公開 URL では 呼べない**（2026-10-11 に 3か所とも 404 が 返った）。つなぐ 先は いま 本番に
+  // 出て いる 版（STG の 別名では ない）。中身は 公開の ページを 読むだけ。
+  "services": [{ "binding": "PROD", "service": "academy" }],
+
   "vars": {
     "PROD_URL": "https://academy.nexmax.workers.dev",
   },

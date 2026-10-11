@@ -129,6 +129,17 @@ describe("runProbe — その 回の 中で 試し直す", () => {
     expect(r).toMatchObject({ failures: 3, code: "network" });
   });
 
+  it("サービスバインディング越しの 上限超え（例外）は 1102 と みなす", async () => {
+    const r = await runProbe(title, {
+      baseUrl: PROD,
+      fetchImpl: async () => {
+        throw new Error("Worker exceeded CPU time limit.");
+      },
+      sleep: noSleep,
+    });
+    expect(r.code).toBe("1102");
+  });
+
   it("健康しらべが JSON で なければ 失敗", async () => {
     const r = await runProbe(PROBES[2]!, {
       baseUrl: PROD,
@@ -554,6 +565,25 @@ describe("runWatch — 1回の 見張りの 通し", () => {
     expect(r.delivered).toBe(false);
     expect(h.state().startedAt).toBeNull();
     expect(h.state().open).toEqual({});
+  });
+
+  it("本番は probeFetch（サービスバインディング）で 見る。知らせや DB は ふつうの fetch", async () => {
+    const viaBinding: string[] = [];
+    const h = harness(OK_ALL);
+    const inner = fakeFetch(OK_ALL);
+    const deps = {
+      ...h.deps,
+      fetch: async (url: string) => {
+        throw new Error(`本番を ふつうの fetch で 見た: ${url}`);
+      },
+      probeFetch: async (url: string) => {
+        viaBinding.push(url);
+        return inner(url);
+      },
+    };
+    const r = await runWatch(h.env, deps);
+    expect(viaBinding).toEqual([`${PROD}/`, `${PROD}/map`, `${PROD}/api/health/content`]);
+    expect(r.findings).toEqual([]);
   });
 
   it("画面の エラーの 数は 件数の 関数だけを 呼ぶ", async () => {
