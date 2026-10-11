@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { buildContentHealth } from "../src/lib/content-health";
+import { CONTENT_REF_TYPES, contentSchema } from "../src/content/schema";
+import { buildContentHealth, HEALTH_CONTENT_KINDS } from "../src/lib/content-health";
 
 /**
  * DBの 古い 版が gitの 教材を 隠して いないか（2026-08-26 の 事故）
@@ -140,5 +141,32 @@ describe("教材の 並びの 健康しらべ", () => {
     });
 
     expect(health.stages[0]?.missingContents).toEqual(["quizset:same"]);
+  });
+});
+
+/*
+ * しらべる 種別の もれ（2026-10-11）。
+ *
+ * `/api/health/content` の 種別から `quest` が 抜けて いて、本番で ちゃんと 出て いる
+ * `quest:waterfall_quest`（開発の ステージ）を 「見つからない・404に なる」と 警告し 続けて いた。
+ * 抜けた 種別の 教材は ぜんぶ 「無い」に 数えられ、「`warnings` が 空なら 健康」が
+ * 当てに ならなく なる。種別を 足した ときに ここで 落とす。
+ */
+describe("しらべる 種別の もれ", () => {
+  it("ステージの contents[].type に 入りうる 種別を ぜんぶ、1回ずつ 数える", () => {
+    expect([...HEALTH_CONTENT_KINDS].sort()).toEqual([...CONTENT_REF_TYPES].sort());
+    expect(new Set(HEALTH_CONTENT_KINDS).size).toBe(HEALTH_CONTENT_KINDS.length);
+  });
+
+  it("教材の 種別（contentSchema の kind）が 増えたら、数えるか 外すかを 決めさせる", () => {
+    /*
+     * ステージの 並びに 置かない 種別だけを 名指しで 外す。新しい 種別を
+     * contentSchema に 足すと ここが 落ちる——数える なら `CONTENT_REF_TYPES` と
+     * `HEALTH_CONTENT_KINDS` へ、置かない なら この 一覧へ 足す。
+     */
+    const NOT_IN_STAGE = ["stage", "vocab", "character"];
+    const kinds = contentSchema.options.map((option) => option.shape.kind.value as string);
+    const expected = kinds.filter((kind) => !NOT_IN_STAGE.includes(kind));
+    expect([...HEALTH_CONTENT_KINDS].sort()).toEqual(expected.sort());
   });
 });
