@@ -631,6 +631,23 @@ describe("findTelegramChat — 送り先を ボットへの 1通から 見つけ
     expect(await findTelegramChat({ TELEGRAM_BOT_TOKEN: "t" }, fetchImpl)).toBe("-100123");
   });
 
+  it("見つからない 理由を 残す（鍵の 中身は 出さない）", async () => {
+    const notes: string[] = [];
+    await findTelegramChat(
+      { TELEGRAM_BOT_TOKEN: "t" },
+      async () => new Response("{}", { status: 401 }),
+      (n: string) => notes.push(n),
+    );
+    await findTelegramChat(
+      { TELEGRAM_BOT_TOKEN: "t" },
+      async () => Response.json({ ok: true, result: [] }),
+      (n: string) => notes.push(n),
+    );
+    expect(notes[0]).toContain("HTTP 401: 鍵が 違う");
+    expect(notes[1]).toContain("更新 0件");
+    expect(notes.join()).not.toContain("t/getUpdates");
+  });
+
   it("まだ だれも 送って いなければ null（落ちない）", async () => {
     expect(
       await findTelegramChat({ TELEGRAM_BOT_TOKEN: "t" }, async () =>

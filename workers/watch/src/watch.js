@@ -435,24 +435,45 @@ export function escapeSlack(text) {
  * ボットに 1通 送って もらえば 見つかる（グループに 入れた ときは その グループ）。
  * **いちばん 古い 1件**を とる——ボットを 作った 直後に 送るのは 作った 本人だから。
  * 見つけたら 状態に 覚えて、もう 探さない（TELEGRAM_CHAT_ID が あれば そちらが 勝つ）。
+ *
+ * @param {Record<string, string | undefined>} env
+ * @param {(url: string, init: RequestInit) => Promise<Response>} fetchImpl
+ * @param {(note: string) => void} [onNote]
+ * @returns {Promise<string | null>}
  */
-export async function findTelegramChat(env, fetchImpl) {
+export async function findTelegramChat(env, fetchImpl, onNote = () => {}) {
+  // 見つからない 理由を 1行 残す（鍵の 中身は 出さない）。状態の URL の last.telegram に 出る
   try {
     const res = await fetchWithTimeout(
       fetchImpl,
       `https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/getUpdates`,
       { method: "GET" },
     );
-    if (!res.ok) return null;
+    if (!res.ok) {
+      const why =
+        res.status === 401 || res.status === 404
+          ? "鍵が 違う（BotFather の 鍵を まるごと 入れ直す）"
+          : res.status === 409
+            ? "ボットに webhook が 付いて いる"
+            : "Telegram が 答えない";
+      onNote(`getUpdates HTTP ${res.status}: ${why}`);
+      return null;
+    }
     const data = await res.json();
-    for (const update of Array.isArray(data?.result) ? data.result : []) {
+    const updates = Array.isArray(data?.result) ? data.result : [];
+    for (const update of updates) {
       const chat = update?.message?.chat ?? update?.my_chat_member?.chat;
       if (chat && (typeof chat.id === "number" || typeof chat.id === "string")) {
+        onNote("送り先を 見つけた");
         return String(chat.id);
       }
     }
+    onNote(
+      `更新 ${updates.length}件: まだ ボットに 1通も 届いて いない（24時間 過ぎると 消える。/start を もう一度）`,
+    );
     return null;
   } catch {
+    onNote("Telegram に つながらない");
     return null;
   }
 }
@@ -548,8 +569,9 @@ export async function runWatch(env, deps) {
 
   // Telegram の 送り先。入れて あれば それ、覚えて いれば それ、無ければ 探す
   let telegramChatId = env.TELEGRAM_CHAT_ID || prev?.telegramChatId || null;
+  let telegramNote = env.TELEGRAM_BOT_TOKEN ? (telegramChatId ? "送り先 あり" : null) : "鍵 なし";
   if (env.TELEGRAM_BOT_TOKEN && !telegramChatId) {
-    telegramChatId = await findTelegramChat(env, deps.fetch);
+    telegramChatId = await findTelegramChat(env, deps.fetch, (note) => (telegramNote = note));
   }
 
   let delivered = true;
@@ -575,6 +597,7 @@ export async function runWatch(env, deps) {
         : (clientErrors.failed ??
           (clientErrors.rows ?? []).reduce((s, r) => s + (Number(r.n) || 0), 0)),
       delivered,
+      telegram: telegramNote,
     },
   });
   return { messages, delivered, findings: judged.findings };
