@@ -27,11 +27,11 @@ async function openStage(page: Page, stageId: string) {
 }
 
 /**
- * 開けない ときの 知らせ（下に 出る トースト）。デモモードでは「ほぞん・こうかいは
- * じゅんびちゅう」も role=status で 常に 出ているので、文言で 分ける。
+ * 開けない ときの 知らせ（下に 出る トースト）。デモモードでは「保存・公開は準備中」も
+ * role=status で 常に 出ているので、文言で 分ける。
  */
 function noEditorToast(page: Page) {
-  return page.getByRole("status").filter({ hasText: "まだ スタジオで 直せません" });
+  return page.getByRole("status").filter({ hasText: "まだ管理画面で直せません" });
 }
 
 /** ながれ の 1行（参照ID で 引く。題名が 出るかは 一覧の 作りしだいなので 当てにしない）。 */
@@ -63,7 +63,7 @@ for (const { stageId, ref, label, dir } of CASES) {
     await openFlowRow(page, ref);
 
     await expect(noEditorToast(page)).toHaveText(
-      `${label}は まだ スタジオで 直せません（${dir} の JSON で 作ります）。`,
+      `${label}は、まだ管理画面で直せません（${dir} の JSON で作ります）。`,
     );
     // 知らせを 出すだけで、ステージの 編集からは 動かない。
     await expect(page.getByRole("heading", { name: "③ この ステージの ながれ" })).toBeVisible();
@@ -76,7 +76,7 @@ test("たいわの「✎ ひらく」は これまでと 同じ 知らせ", asyn
   await openFlowRow(page, "youken_aoba");
 
   await expect(noEditorToast(page)).toHaveText(
-    "たいわは まだ スタジオで 直せません（content/scenarios の JSON で 作ります）。",
+    "たいわは、まだ管理画面で直せません（content/scenarios の JSON で作ります）。",
   );
 });
 

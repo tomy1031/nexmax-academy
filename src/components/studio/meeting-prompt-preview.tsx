@@ -52,16 +52,16 @@ const PANES: readonly { key: Pane; label: string; note: string }[] = [
   {
     key: "listen",
     label: "02 聞く ばん",
-    note: "学生が しつもんする 時間に 渡す 文です。ここで はじめて 話題を 渡します。",
+    note: "学生が質問する時間に渡す文です。ここで初めてエピソードを渡します。",
   },
   {
     key: "judge",
-    label: "日本語の 見かた",
-    note: "会話とは 別の つなぎで 送ります。声では 返さず、道具で 見かたを 返します。",
+    label: "採点の指示",
+    note: "会話とは別の接続で送ります。声では返さず、ツールで採点を返します。",
   },
   {
     key: "cards",
-    label: "札の あたり",
+    label: "カード判定",
     note: "ことばで 当たらなかった ときだけ 送ります。迷ったら 開かない 側に 寄せます。",
   },
 ];
@@ -115,7 +115,7 @@ export function MeetingPromptPreview({ value }: { value: Meeting }) {
               "",
               topics.length > 0
                 ? buildCardPrompt(topics, "日本で びっくりした ことは ありますか。")
-                : "話題を 1つ 作ると、ここに 見本が 出ます。",
+                : "エピソードを1つ作ると、ここに見本が出ます。",
             ].join("\n");
 
   const now = PANES.find((item) => item.key === pane);
@@ -123,7 +123,7 @@ export function MeetingPromptPreview({ value }: { value: Meeting }) {
   return (
     <StudioSection
       title="AIに 渡して いる 文（見るだけ）"
-      hint="下書きの ままで 組み上がります。ここは 直せません——直すのは 上の「話し方」「見かた」「話題」です。"
+      hint="下書きのままで組み上がります。ここは直せません——直すのは上の「話し方」「採点の指示」「エピソード」です。"
       right={
         <MiniButton tone="plain" onClick={() => setOpen((v) => !v)}>
           {open ? "とじる" : "ひらく"}

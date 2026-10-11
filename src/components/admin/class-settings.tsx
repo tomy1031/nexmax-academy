@@ -129,7 +129,7 @@ function nowText(
   monthCost: number,
   now: Date,
 ) {
-  if (settings.stopped) return { open: false, text: "ぜんぶ 止めて います" };
+  if (settings.stopped) return { open: false, text: "AI チェックを一斉停止しています" };
   if (monthCost >= settings.monthlyBudgetUsd)
     return { open: false, text: "今月の 上限に 届きました" };
   if (!rule) return { open: false, text: "設定が ありません（使えません）" };
@@ -312,10 +312,10 @@ export function ClassSettings({ stages }: { stages: readonly ClassStage[] }) {
       />
 
       <section className="card-pop mt-4 px-5 py-5">
-        <h2 className="text-navy text-base font-black">組ごとの 設定</h2>
+        <h2 className="text-navy text-base font-black">授業の組みごとの設定</h2>
         <p className="text-ink-soft mt-1 text-xs font-bold">
-          AIの 時間は、設定の 無い 組は 使えません。表示する 教材は、設定の 無い 組は 全部
-          見えます。
+          AI
+          の時間は、設定のない授業の組みでは使えません。表示する教材は、設定のない授業の組みでは全部見えます。
         </p>
         <ul className="mt-3 divide-y divide-[color:var(--hairline,#e5e7eb)]">
           {GROUPS.map((group) => {
@@ -488,11 +488,10 @@ export function ClassSettings({ stages }: { stages: readonly ClassStage[] }) {
             学習者の 端末は「使えるか」を 1分 ためます。時間に なってから 1分 ほどで
             切りかわります。
           </li>
-          <li>大学・期生を まだ 選んで いない 生徒は、どの 組の 設定でも 使えません。</li>
+          <li>大学・期生をまだ選んでいない生徒は、どの授業の組みの設定でも使えません。</li>
           <li>
-            隠した ステージ・教材は、その 組の 生徒の 地図と ステージの 画面から 消え、順路の 鍵と
-            進み具合の 数からも 外れます。URL を 直接 開けば 見られます。生徒の 端末は 表示を 3分
-            ためます。
+            隠したステージ・教材は、その授業の組みの生徒の地図とステージの画面から消え、ロックと進み具合の数からも外れます。URL
+            を直接開けば見られます。生徒の端末は表示を3分ためます。
           </li>
         </ul>
       </section>
@@ -563,7 +562,9 @@ function GlobalCard({
         </span>
         <div className="min-w-0">
           <p className="text-navy text-lg font-black">
-            {settings.stopped ? "いま ぜんぶ 止めて います" : "組ごとの 時間で 動いて います"}
+            {settings.stopped
+              ? "いま AI チェックを一斉停止しています"
+              : "授業の組みごとの時間で動いています"}
           </p>
           <p className="text-ink-soft text-sm font-bold">
             Claude の 鍵: {keyText(keyReason)}・モデル: {settings.model}
@@ -630,12 +631,14 @@ function GlobalCard({
           onClick={() =>
             onSave(
               { ...settings, stopped: !settings.stopped },
-              settings.stopped ? "動かしました" : "ぜんぶ 止めました",
+              settings.stopped ? "一斉停止を解除しました" : "AI チェックを一斉停止しました",
             )
           }
           className="border-hairline text-navy rounded-2xl border-2 bg-white px-5 py-2.5 text-sm font-bold disabled:opacity-40"
         >
-          {settings.stopped ? "動かす（組ごとの 時間に もどす）" : "ぜんぶ 止める（非常ボタン）"}
+          {settings.stopped
+            ? "一斉停止を解除する（授業の組みごとの時間に戻す）"
+            : "AI チェックの一斉停止（非常ボタン）"}
         </button>
       </div>
     </section>
@@ -1058,7 +1061,7 @@ function VisibilityEditor({
   return (
     <div className="bg-panel-tint mt-3 rounded-xl px-4 py-3">
       <p className="text-ink-soft text-xs font-bold">
-        チェックを 外した ものが、この 組の 生徒から 見えなく なります。
+        チェックを外したものが、この授業の組みの生徒から見えなくなります。
       </p>
       <ul className="mt-2 grid gap-2">
         {stages.map((stage) => {

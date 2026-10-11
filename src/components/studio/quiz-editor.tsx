@@ -90,12 +90,12 @@ export function describeWordbankIssues(question: WordbankQuestion): string[] {
 
   const missing = question.blanks.filter((blank) => !question.bank.includes(blank));
   if (missing.length > 0) {
-    notices.push(`こたえの「${missing.join("、")}」が 語群に ありません。語群に 足してください。`);
+    notices.push(`答えの「${missing.join("、")}」が選択肢にありません。選択肢に足してください。`);
   }
 
   // 語群がこたえだけだと、読まなくても順に置くだけで解けてしまう。
   if (question.bank.length <= question.blanks.length) {
-    notices.push("語群が こたえだけです。にた ことばを 足すと もんだいに なります。");
+    notices.push("選択肢が答えだけです。似た言葉を足すと問題になります。");
   }
 
   return notices;
@@ -145,7 +145,7 @@ export function describeQuestionIssues(question: QuizQuestion): string[] {
         notices.push("こたえの ことばが 空の ものが あります。");
       }
       if (question.placeholders && question.placeholders.length !== question.groups.length) {
-        notices.push("うすい字の 数が こたえの 数と ちがいます。");
+        notices.push("入力例の数が答えの数と違います。");
       }
       return notices;
     }
@@ -281,7 +281,7 @@ const QUIZ_TYPE_OPTIONS: readonly { value: QuizQuestion["type"]; label: string }
   { value: "keyword", label: "じぶんで 書く" },
   // 順不同で いくつか 打つ（「5つの サービスを 書く」）。語群と ちがい ふだを 出さない
   { value: "list", label: "いくつか 書く（順番なし）" },
-  { value: "wordbank", label: "語群から あなうめ" },
+  { value: "wordbank", label: "選択肢から穴うめ" },
   { value: "emotion", label: "気もち → 言い方" },
   // 正解が 無い 問い（「なぜ そう 思いましたか」）。書けば 点が 入る
   { value: "free", label: "じゆうに 書く（正解なし）" },
@@ -682,7 +682,7 @@ function QuestionBody({
             読まずに 写すだけの 問いに なる（2026-08-27 の 指定で 足した）。
           */}
           <TextField
-            label="うすい字（書く 形の 見本）"
+            label="入力例（書く形の見本）"
             value={question.placeholder ?? ""}
             onChange={(placeholder) =>
               onChange({
@@ -716,10 +716,10 @@ function QuestionBody({
             }
           />
           <StringListEditor
-            label="うすい字（欄の 数だけ・なくても よい）"
+            label="入力例（入力欄の数だけ・なくてもよい）"
             items={question.placeholders ?? []}
-            itemLabel="うすい字"
-            addLabel="＋ うすい字を 追加"
+            itemLabel="入力例"
+            addLabel="＋入力例を追加"
             onChange={(placeholders) =>
               onChange({
                 ...question,
@@ -742,7 +742,7 @@ function QuestionBody({
             onChange={(lines) => onChange({ ...question, lines })}
           />
           <p className="text-ink-soft text-xs font-bold">
-            文の 空欄 {countBlanks(question.lines)}こ ／ こたえ {question.blanks.length}こ ／ 語群{" "}
+            文の 空欄 {countBlanks(question.lines)}こ ／ こたえ {question.blanks.length}こ ／ 選択肢{" "}
             {question.bank.length}こ
           </p>
           <StringListEditor
@@ -753,7 +753,7 @@ function QuestionBody({
             onChange={(blanks) => onChange({ ...question, blanks })}
           />
           <StringListEditor
-            label="語群（こたえ ＋ にた ことば）"
+            label="選択肢（答え＋似た言葉）"
             items={question.bank}
             itemLabel="ことば"
             addLabel="＋ ことばを 追加"
@@ -805,7 +805,7 @@ function QuestionBody({
       return (
         <div className="space-y-3">
           <TextField
-            label="うすい字（書く 形の 見本）"
+            label="入力例（書く形の見本）"
             value={question.placeholder ?? ""}
             onChange={(placeholder) =>
               onChange({ ...question, placeholder: optional(placeholder) })
@@ -1063,7 +1063,7 @@ function FillinBlanksEditor({
             hint="この ことばが 入って いれば 合格に します。"
           />
           <TextField
-            label="うすい字（なくても よい）"
+            label="入力例（なくてもよい）"
             value={blank.placeholder ?? ""}
             onChange={(placeholder) =>
               put(

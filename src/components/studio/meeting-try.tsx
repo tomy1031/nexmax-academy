@@ -139,13 +139,13 @@ export function MeetingTryPanel({
     setCardNote(
       found
         ? `ことばでは あたりませんでしたが、AIが 見つけました → ${found.label}`
-        : "どの 話題にも あたりませんでした。ことばを 足すか、話題の 書き方を 見なおして ください。",
+        : "どのエピソードにも当たりませんでした。「当たる ことば」を足すか、カードに出す言葉の書き方を見直してください。",
     );
   }
 
   return (
     <StudioSection
-      title="ためす（しつもんごと）"
+      title="試す（質問ごと）"
       hint="いま 書いて ある ままで、AIに 1回 きいて みます。保存しなくても ためせます。"
       right={
         <MiniButton tone="plain" onClick={() => setOpen((v) => !v)}>
@@ -155,12 +155,12 @@ export function MeetingTryPanel({
     >
       {!open ? (
         <p className="text-ink-soft text-xs font-bold">
-          しつもんを 1つ えらんで、学生の こたえを 打つと、AIの 見かたが かえって きます。
+          質問を1つ選んで学生の答えを打つと、AI の採点が返ってきます。
         </p>
       ) : (
         <>
           <SelectField
-            label="どの しつもんで ためすか"
+            label="どの質問で試すか"
             value={String(at)}
             onChange={(next) => {
               setAt(Number(next));
@@ -192,17 +192,17 @@ export function MeetingTryPanel({
                 value={question.hint}
                 onChange={(hint) => patchQuestion({ hint })}
                 rows={2}
-                hint="判定の 文に 入ります。ここを 変えると 見かたの きびしさも 変わります。"
+                hint="判定の文に入ります。ここを変えると、採点のきびしさも変わります。"
               />
             </div>
           ) : null}
 
           <TextAreaField
-            label="日本語の 見かた（教材ぜんぶで 1つ）"
+            label="採点の指示（教材全体で1つ）"
             value={value.judgePrompt ?? ""}
             onChange={(judgePrompt) => onChange({ ...value, judgePrompt })}
             rows={4}
-            hint="直したら すぐ 下の「AIに きく」で ためせます。上の 欄と 同じ ものなので、そのまま 保存できます。"
+            hint="直したら、すぐ下の「AIに きく」で試せます。上の入力欄と同じものなので、そのまま保存できます。"
           />
 
           <TextAreaField
@@ -211,7 +211,7 @@ export function MeetingTryPanel({
             onChange={setUtterance}
             rows={2}
             placeholder="わたしは ソクです。"
-            hint="言い方を 変えて 何回か ためすと、きびしすぎる ところが 見つかります。"
+            hint="言い方を変えて何回か試すと、きびしすぎるところが見つかります。"
           />
 
           <div className="flex flex-wrap items-center gap-2">
@@ -253,7 +253,7 @@ export function MeetingTryPanel({
 
           {topics.length > 0 ? (
             <div className="border-hairline space-y-3 rounded-2xl border-2 border-dashed p-3">
-              <p className="text-navy text-sm font-black">🔎 聞く ばんの ためし（札に あたるか）</p>
+              <p className="text-navy text-sm font-black">🔎 カード判定のテスト（ラウンド2）</p>
               <TextAreaField
                 label="学生の しつもん"
                 value={asked}
@@ -266,7 +266,7 @@ export function MeetingTryPanel({
                 disabled={cardPhase === "asking" || asked.trim() === ""}
                 onClick={() => void tryCard()}
               >
-                {cardPhase === "asking" ? "きいて います…" : "あたるか みる"}
+                {cardPhase === "asking" ? "きいて います…" : "テストする"}
               </MiniButton>
               {cardNote ? (
                 <p className="bg-panel-tint text-ink rounded-2xl px-3 py-2 text-xs font-bold">
