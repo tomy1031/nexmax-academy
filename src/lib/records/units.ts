@@ -42,6 +42,7 @@ import {
 } from "@/lib/content";
 import { LINK_ANSWER_PROMPTS } from "@/content/link-answers";
 import { formPrompt } from "@/lib/answers/form-answers";
+import { resolveGates } from "@/components/stage/stage-progress";
 import { isOnMap, sortStages } from "@/lib/map-data";
 
 /** 1つの 教材（＝記録の id が 指す もの）。 */
@@ -55,6 +56,12 @@ export interface UnitRef {
   readonly stageTitle: string;
   /** ステージの 中の 並び（学習順）。どこにも 入って いなければ -1。 */
   readonly order: number;
+  /**
+   * ステージの 関門か（地図の クリア判定と 同じ `resolveGates`）。スライドの ような
+   * 関門で ない 教材は、終えて いなくても ステージは クリアに なる。
+   * 単語の セットは ステージの 関門では ない。省略は 関門（古い 呼び出し向け）。
+   */
+  readonly gates?: boolean;
 }
 
 export interface UnitIndex {
@@ -210,8 +217,16 @@ export async function loadUnitIndex(): Promise<UnitIndex> {
 
   for (const stage of ordered) {
     const inStage = [
-      ...stage.contents.map((content) => ({ id: content.ref, type: content.type })),
-      ...stage.wordStageIds.map((id) => ({ id, type: "wordstage" as ContentRefType })),
+      ...stage.contents.map((content) => ({
+        id: content.ref,
+        type: content.type,
+        gates: resolveGates(content.type, content.gates),
+      })),
+      ...stage.wordStageIds.map((id) => ({
+        id,
+        type: "wordstage" as ContentRefType,
+        gates: false,
+      })),
     ];
     inStage.forEach((content, order) => {
       // 同じ 教材が 2つの ステージに 入って いる ことは ありうる。地図の 順で
@@ -225,6 +240,7 @@ export async function loadUnitIndex(): Promise<UnitIndex> {
         stageId: stage.id,
         stageTitle: stage.title,
         order,
+        gates: content.gates,
       });
     });
   }
