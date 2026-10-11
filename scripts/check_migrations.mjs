@@ -20,12 +20,17 @@
  *   2026-08-26 に台帳を突き合わせた（baseline）ので、**ファイル名の版と
  *   DBの版は1対1で対応する**。それ以前は別系統で、名前だけが似ていた。
  *
+ *   その1対1が崩れる形が1つある——**同じ版のファイルが2本**（2026-10-11 の事故）。
+ *   DB に記録されるのは1本ぶんだけなので、2本目は流れないのに「流れている」と
+ *   数えてしまう。だから DB に聞く前に、ファイル名だけで重複を見る。
+ *
  * どう確かめるか:
  *   `SUPABASE_DB_URL`（接続文字列）があれば Supabase CLI に聞く。
  *   無ければ**確かめられないと正直に言う**。黙って「問題なし」と言わないのが、
  *   この見張りのいちばん大事な性質である。
  *
  * 終わりかたを2つに分けてある。**「流し忘れがある」と「確かめられない」は別物**だから:
+ *   - 版が重複している    → いつでも失敗（1）。鍵が無くてもファイル名だけで分かる
  *   - 流し忘れがある      → いつでも失敗（1）。これは分かっている事実で、握りつぶさない
  *   - 確かめられない      → 既定は成功（0）＋警告。`--strict` のときだけ失敗（1）
  *
@@ -108,6 +113,57 @@ export function pendingMigrations(repo, applied) {
 }
 
 /**
+ * 同じ版の移行SQLが2本以上あるもの。**DBに繋がずに**ファイル名だけで分かる。
+ *
+ * なぜ要るか（2026-10-11 の事故）:
+ *   `20261011150000_client_error_events.sql` と `20261011150000_class_reports.sql` が
+ *   同じ版のまま integration に入った（#607）。CI は check・e2e・size とも緑だったが、
+ *   「デプロイ（DB）」の `supabase db push --include-all` が `schema_migrations_pkey` の
+ *   重複で止まり、class_reports の表は作られなかった。
+ *
+ *   `pendingMigrations` は版で突き合わせるので、2本目も「流れている」と数える。
+ *   この見張りが**嘘の合格**を出す形だったので、DB に聞く前にここで止める。
+ *
+ * @param {readonly Migration[]} repo
+ * @returns {{ version: string, files: string[] }[]} 版の順。重複が無ければ空
+ */
+export function duplicateVersions(repo) {
+  /** @type {Map<string, string[]>} */
+  const byVersion = new Map();
+  for (const migration of repo) {
+    const files = byVersion.get(migration.version) ?? [];
+    files.push(migration.file);
+    byVersion.set(migration.version, files);
+  }
+  return [...byVersion]
+    .filter(([, files]) => files.length > 1)
+    .map(([version, files]) => ({ version, files: [...files].sort() }))
+    .sort((a, b) => a.version.localeCompare(b.version));
+}
+
+/**
+ * 版の重複を知らせる文。単体テスト（CI の check）と この見張りの本体が同じ文を出す。
+ * @param {readonly { version: string, files: readonly string[] }[]} duplicates
+ * @returns {string}
+ */
+export function duplicateVersionsReport(duplicates) {
+  return [
+    `🛑 移行SQLの版（ファイル名の頭の14桁）がぶつかっています（${duplicates.length}組）:`,
+    ...duplicates.flatMap(({ version, files }) => [
+      `   ${version}`,
+      ...files.map((file) => `     - supabase/migrations/${file}`),
+    ]),
+    "",
+    "同じ版が2本あると、「デプロイ（DB）」の `supabase db push` が2本目を",
+    "schema_migrations_pkey の重複で弾き、その移行SQLは流れません（2026-10-11 に実発生）。",
+    "ほかの検査は緑のままなので、ここで止めます。",
+    "",
+    "直しかた: あとから足したほうを、空いている版へ改名する。",
+    "  開いている PR の版も `gh pr view <n> --json files` で見る（並行の PR とまたぶつからないように）。",
+  ].join("\n");
+}
+
+/**
  * 鍵が 無い ときの 手順書。**コネクタで 流す 手**をここに 書く。
  *
  * 2026-08-27 の 決定「両方」に 合わせた。ワークフロー（自動）は そのまま 置いて おき、
@@ -148,6 +204,14 @@ function main() {
   const strict = process.argv.includes("--strict");
   const repo = readRepoMigrations(readdirSync(MIGRATIONS_DIR));
   const dbUrl = process.env.SUPABASE_DB_URL ?? "";
+
+  // 版の重複は DB に聞かなくても分かる事実なので、鍵の有無より先に見て、いつでも落とす。
+  const duplicates = duplicateVersions(repo);
+  if (duplicates.length > 0) {
+    console.error(`\n${duplicateVersionsReport(duplicates)}\n`);
+    process.exit(1);
+    return;
+  }
 
   if (!dbUrl) {
     // **ここで「問題なし」と言わない。** 言った瞬間に、この見張りは
