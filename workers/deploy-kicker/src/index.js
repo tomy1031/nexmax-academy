@@ -29,6 +29,7 @@
  *   - var    `GITHUB_REPO`  … "tomy1031/nexmax-academy"
  *   - var    `WORKFLOW`     … "deploy.yml"
  *   - var    `PROD_URL`     … "https://academy.nexmax.workers.dev"
+ *   - service `PROD`        … 本番の Worker `academy`（PROD_URL へは これを 通して 行く）
  */
 
 const UA = "nexmax-deploy-kicker";
@@ -60,8 +61,10 @@ async function kick(env) {
 /** 本番と integration が そろって いるかを 読むだけで 見る（鍵は 要らない）。 */
 async function status(env) {
   const headers = { "User-Agent": UA, Accept: "application/vnd.github+json" };
+  // 本番は サービスバインディングで 読む（同じ アカウントの workers.dev は 公開 URL で 呼べない・1042）
+  const prodFetch = env.PROD ? (url, init) => env.PROD.fetch(url, init) : fetch;
   const [liveRes, refRes] = await Promise.all([
-    fetch(`${env.PROD_URL}/api/version`, { headers: { "User-Agent": UA } }),
+    prodFetch(`${env.PROD_URL}/api/version`, { headers: { "User-Agent": UA } }),
     fetch(`https://api.github.com/repos/${env.GITHUB_REPO}/commits/integration`, { headers }),
   ]);
   const live = liveRes.ok ? await liveRes.json() : null;
