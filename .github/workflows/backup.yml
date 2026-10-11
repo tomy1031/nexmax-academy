@@ -172,8 +172,8 @@ jobs:
           (
             cd "$DRILL"
             npx --yes "$SUPABASE_CLI" init > /dev/null
-            # 戻すのは public と auth だけ。storage・realtime の 準備は 要らない
-            sed -i -E '/^\[(storage|realtime)\]$/,/^\[/ s/^enabled = true/enabled = false/' supabase/config.toml
+            # storage・realtime の 準備も 省かない。本物の プロジェクトに 近づける ため
+            # （省くと realtime の 役割 supabase_realtime_admin が 無く、roles.sql で 落ちた。2026-10-11）
             npx --yes "$SUPABASE_CLI" db start
           )
           # 戻す 先は ランナーの 中の DB だけ。本番の 鍵は この ステップに 渡して いない
