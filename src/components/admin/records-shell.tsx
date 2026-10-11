@@ -41,6 +41,7 @@ import {
   fetchCertificateByCode,
   fetchCertificateRecords,
   fetchContentProgress,
+  fetchProfileRows,
   fetchLearnerRoster,
   fetchListeningRecords,
   fetchMeetingRecords,
@@ -80,7 +81,17 @@ import {
 } from "@/lib/records/table";
 import { buildLearnerWork, type LearnerRecords } from "@/lib/records/learner-work";
 import { buildRoster, rosterStudents } from "@/lib/records/roster";
-import type { LearnerQuizFirstRow, LearnerSummaryRow } from "@/lib/records/records-db";
+import type {
+  ContentProgressRecord,
+  LearnerQuizFirstRow,
+  LearnerSummaryRow,
+  ListeningRecord,
+  MeetingRecord,
+  QuizRecord,
+  TalkRecord,
+  WordAnswerRecord,
+  WordTestRecord,
+} from "@/lib/records/records-db";
 import {
   browserStorage,
   hasAnyFilter,
@@ -296,7 +307,10 @@ export function RecordsShell({
     if (loading) return;
     let active = true;
     void (async () => {
-      const got = await fetchLearnerRoster(rosterKey === "" ? [] : rosterKey.split(","));
+      const got = await fetchLearnerRoster(
+        rosterKey === "" ? [] : rosterKey.split(","),
+        Object.keys(index.passRates),
+      );
       if (!active) return;
       setRosterData(
         got.ok
@@ -307,7 +321,7 @@ export function RecordsShell({
     return () => {
       active = false;
     };
-  }, [loading, rosterKey]);
+  }, [loading, rosterKey, index.passRates]);
   const rosterFresh = rosterData !== null && rosterData.key === rosterKey;
   const rosterRows = useMemo(
     () =>
@@ -329,19 +343,21 @@ export function RecordsShell({
     if (loading || pickedId === "") return;
     let active = true;
     void (async () => {
-      const one: RecordsQuery = { profileIds: [pickedId], unitIds: null };
-      const got = await Promise.all([
-        fetchContentProgress(one),
-        fetchQuizRecords(one),
-        fetchWordTestRecords(one),
-        fetchWordAnswerRecords(one),
-        fetchMeetingRecords(one),
-        fetchTalkRecords(one),
-        fetchListeningRecords(one),
-      ]);
+      // 1人ぶんは 表ごとに ページを 送って ぜんぶ 読む（古い つまずきから 消えない ように）
+      const [progress, quiz, wordTests, wordAnswers, meetings, talks, listening] =
+        await Promise.all([
+          fetchProfileRows<ContentProgressRecord>("content_progress", "updated_at", pickedId),
+          fetchProfileRows<QuizRecord>("quiz_results", "created_at", pickedId),
+          fetchProfileRows<WordTestRecord>("word_test_results", "created_at", pickedId),
+          fetchProfileRows<WordAnswerRecord>("word_test_answers", "created_at", pickedId),
+          fetchProfileRows<MeetingRecord>("meeting_turn_logs", "created_at", pickedId),
+          fetchProfileRows<TalkRecord>("talk_turn_logs", "created_at", pickedId),
+          fetchProfileRows<ListeningRecord>("listening_results", "updated_at", pickedId),
+        ]);
       if (!active) return;
-      const [progress, quiz, wordTests, wordAnswers, meetings, talks, listening] = got;
+      const got = [progress, quiz, wordTests, wordAnswers, meetings, talks, listening];
       const failed = got.find((result) => !result.ok);
+      const cut = got.some((result) => result.ok && result.truncated);
       setWorkData({
         profileId: pickedId,
         records: {
@@ -353,7 +369,12 @@ export function RecordsShell({
           talks: talks.ok ? talks.rows : [],
           listening: listening.ok ? listening.rows : [],
         },
-        note: failed && !failed.ok ? failed.message : null,
+        note:
+          failed && !failed.ok
+            ? `${failed.message}（読めた 記録だけを 出して います）`
+            : cut
+              ? "記録が とても 多いので、古い ほうから 一部だけを 出して います。"
+              : null,
       });
     })();
     return () => {
