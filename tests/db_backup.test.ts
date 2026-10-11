@@ -228,6 +228,21 @@ describe("復元の 失敗ログを 伏せる（Actions の ログは 公開）"
     expect(out[1]).toBe("  （users の 3行目）");
   });
 
+  it("DB の 部品の 名前（role・relation・column など）は 伏せない（直すのに 要る）", () => {
+    const out = redactLog(
+      [
+        'psql:/tmp/roles.sql:13: ERROR:  role "supabase_etl_admin" does not exist',
+        'ERROR:  column "is_anonymous" of relation "users" does not exist',
+        'ERROR:  invalid input syntax for type uuid: "yamada@example.com"',
+      ].join("\n"),
+    );
+    expect(out).toEqual([
+      'ERROR roles.sql:13 role "supabase_etl_admin" does not exist',
+      'ERROR column "is_anonymous" of relation "users" does not exist',
+      'ERROR invalid input syntax for type uuid: "…"',
+    ]);
+  });
+
   it("ERROR が 無い ログは 何も 出さない（中身を 含む かも しれない ため）", () => {
     expect(redactLog("COPY 35\nsomething else")).toEqual([expect.stringContaining("出しません")]);
   });

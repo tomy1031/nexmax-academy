@@ -231,6 +231,10 @@ export function selectPrunable(keys, { now, keepDays, keepMin }) {
     .map((item) => item.key);
 }
 
+/** `role "anon"` の ように 部品の 種類が 前に ある 引用（残す）か、ただの 引用（伏せる）。 */
+const OBJECT_NAME_OR_QUOTE =
+  /(\b(?:role|relation|schema|column|constraint|table|type|function|extension|index|sequence|trigger|policy|publication|view) )?"[^"]*"/g;
+
 /**
  * 復元の 失敗ログを、**行の 中身を 落として** 出す。
  *
@@ -238,6 +242,11 @@ export function selectPrunable(keys, { now, keepDays, keepMin }) {
  * `DETAIL: Key (email)=(...)` を 出す。Actions の ログは 公開なので、そのまま
  * 出すと **学習者の メールや 名前が 世界に 出る**。だから ERROR の 1行目だけを、
  * 引用の 中身を 伏せて 出す。
+ *
+ * ただし **DB の 部品の 名前**（role "anon"・relation "public.users" など）は 残す。
+ * 学習者の データでは なく、これが 無いと 何が 足りないのか 分からない
+ * （2026-10-11 の 試し走りで `role "…" does not exist` だけが 出て 直せなかった）。
+ * 値（`for type uuid: "…"`）は 部品の 名前の 前に 来ないので、伏せた ままに なる。
  *
  * @param {string} log
  * @returns {string[]}
@@ -250,7 +259,7 @@ export function redactLog(log) {
     if (error) {
       const where = error[1] ? `${error[1].split("/").pop()}:${error[2]} ` : "";
       const message = error[3]
-        .replace(/"[^"]*"/g, '"…"')
+        .replace(OBJECT_NAME_OR_QUOTE, (match, kind) => (kind ? match : '"…"'))
         .replace(/'[^']*'/g, "'…'")
         .replace(/\(([^()]*)\)=\(([^()]*)\)/g, "(…)=(…)")
         .slice(0, 200);
