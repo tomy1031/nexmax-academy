@@ -323,6 +323,82 @@ export async function fetchRecordIndex(): Promise<RecordsResult<RecordIndexRow>>
   return { ok: true, rows: (data ?? []) as RecordIndexRow[], truncated: false };
 }
 
+/** 生徒の 一覧の 1人ぶん（view `learner_summary`・願い #599）。 */
+export interface LearnerSummaryRow {
+  profile_id: string;
+  /** 終えた 教材の id（どの ステージかは 画面が 教材の 台帳と 照らす）。 */
+  completed_ids: string[];
+  word_sets: number;
+  word_passed_sets: number;
+  /** 同じ ことばの テストで 3回 以上 不合格の まま の セット数。 */
+  word_stuck_sets: number;
+  /** ミーティングで 評価の ついた 発言の 数と、そのうち miss の 数。 */
+  talk_graded: number;
+  talk_miss: number;
+  certificates: number;
+  /** 最後に 動いた 時刻（何も して いなければ null）。 */
+  last_at: string | null;
+}
+
+/** もんだいセットの 初回の 点（view `learner_quiz_first`）。 */
+export interface LearnerQuizFirstRow {
+  profile_id: string;
+  quiz_set_id: string;
+  first_score: number;
+  first_max: number;
+  first_at: string;
+  /** 丸ごと 通した 回数。 */
+  runs: number;
+}
+
+/**
+ * 生徒の 一覧の 材料を 2つの view から 読む。行は **人数**（と 人数 × セット数）
+ * なので、生の 記録の 2000行の 上限に 当たらない——学期の 途中で 古い 記録が
+ * 数から 消えない ように、数えるのを DB に させて いる。
+ */
+export async function fetchLearnerRoster(profileIds: readonly string[] | null): Promise<
+  | {
+      readonly ok: true;
+      readonly summaries: LearnerSummaryRow[];
+      readonly quizFirst: LearnerQuizFirstRow[];
+    }
+  | { readonly ok: false; readonly preparing: boolean; readonly message: string }
+> {
+  const supabase = createClient();
+  if (!supabase) {
+    return {
+      ok: false,
+      preparing: true,
+      message: "生徒の 一覧は じゅんびちゅう（データベースの設定後に 見られます）",
+    };
+  }
+  if (profileIds?.length === 0) return { ok: true, summaries: [], quizFirst: [] };
+
+  let summaryRequest = supabase.from("learner_summary").select("*");
+  let quizRequest = supabase.from("learner_quiz_first").select("*");
+  if (profileIds) {
+    summaryRequest = summaryRequest.in("profile_id", [...profileIds]);
+    quizRequest = quizRequest.in("profile_id", [...profileIds]);
+  }
+  const [summary, quiz] = await Promise.all([summaryRequest, quizRequest]);
+  const error = summary.error ?? quiz.error;
+  if (error) {
+    const preparing = MISSING_TABLE_CODES.has(error.code ?? "");
+    return {
+      ok: false,
+      preparing,
+      message: preparing
+        ? "生徒の 一覧の 材料（learner_summary）が まだ ありません。supabase/migrations が 流れると 見られます。"
+        : "生徒の 一覧を 読めませんでした。少し待って もう一度 ためしてください。",
+    };
+  }
+  return {
+    ok: true,
+    summaries: (summary.data ?? []) as LearnerSummaryRow[],
+    quizFirst: (quiz.data ?? []) as LearnerQuizFirstRow[],
+  };
+}
+
 export function fetchListeningRecords(
   query: RecordsQuery = NO_QUERY,
 ): Promise<RecordsResult<ListeningRecord>> {

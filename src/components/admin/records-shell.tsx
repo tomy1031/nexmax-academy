@@ -32,6 +32,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AdminError, AdminHeader, AdminLoading, AdminPageFrame } from "@/components/admin/admin-ui";
+import { LearnerRoster } from "@/components/admin/learner-roster";
 import { fetchAllProfiles, fetchOwnProfile, type ProfileRow } from "@/lib/profile-db";
 import { AFFILIATIONS, COHORTS, formatSchool } from "@/lib/school";
 import { createClient } from "@/lib/supabase/client";
@@ -39,6 +40,7 @@ import {
   fetchCertificateByCode,
   fetchCertificateRecords,
   fetchContentProgress,
+  fetchLearnerRoster,
   fetchListeningRecords,
   fetchMeetingRecords,
   fetchQuizRecords,
@@ -75,6 +77,8 @@ import {
   type RecordKind,
   type RecordTable,
 } from "@/lib/records/table";
+import { buildRoster, rosterStudents } from "@/lib/records/roster";
+import type { LearnerQuizFirstRow, LearnerSummaryRow } from "@/lib/records/records-db";
 import {
   browserStorage,
   hasAnyFilter,
@@ -127,6 +131,16 @@ export function RecordsShell({
     note: string | null;
   } | null>(null);
   const [shown, setShown] = useState(PAGE_SIZE);
+  /**
+   * 生徒の 一覧の 材料と、それが **どの 生徒たちの ものか**（`key`）。
+   * 表と 同じく「中身が 今の 条件の ものか」で 読み込み中かを 決める。
+   */
+  const [rosterData, setRosterData] = useState<{
+    key: string;
+    summaries: LearnerSummaryRow[];
+    quizFirst: LearnerQuizFirstRow[];
+    note: string | null;
+  } | null>(null);
 
   const lookups = useMemo(
     () => buildLookups(profiles, index.units, index.prompts),
@@ -269,6 +283,35 @@ export function RecordsShell({
       active = false;
     };
   }, [kind, loading, lookups, query, certificateCode]);
+
+  /*
+   * 生徒の 一覧（願い #599）。所属・期生・メンバーで 絞った 生徒だけ。
+   * ステージ・単元の 絞り込みは 効かせない——一覧は「人」の 全体を 見る ための もの。
+   */
+  const students = useMemo(() => rosterStudents(profiles, filter), [profiles, filter]);
+  const rosterKey = useMemo(() => students.map((one) => one.id).join(","), [students]);
+  useEffect(() => {
+    if (loading) return;
+    let active = true;
+    void (async () => {
+      const got = await fetchLearnerRoster(rosterKey === "" ? [] : rosterKey.split(","));
+      if (!active) return;
+      setRosterData(
+        got.ok
+          ? { key: rosterKey, summaries: got.summaries, quizFirst: got.quizFirst, note: null }
+          : { key: rosterKey, summaries: [], quizFirst: [], note: got.message },
+      );
+    })();
+    return () => {
+      active = false;
+    };
+  }, [loading, rosterKey]);
+  const rosterFresh = rosterData !== null && rosterData.key === rosterKey;
+  const rosterRows = useMemo(
+    () =>
+      rosterFresh ? buildRoster(students, rosterData.summaries, rosterData.quizFirst, index) : [],
+    [rosterFresh, rosterData, students, index],
+  );
 
   const rows = useMemo(
     () => (table ? filterRows(table, filter, lookups) : []),
@@ -459,6 +502,12 @@ export function RecordsShell({
           </Field>
         </div>
       </section>
+
+      <LearnerRoster
+        rows={rosterRows}
+        busy={!rosterFresh}
+        note={rosterFresh ? rosterData.note : null}
+      />
 
       {[indexNote, note]
         .filter((one): one is string => one !== null)
