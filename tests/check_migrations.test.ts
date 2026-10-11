@@ -1,3 +1,4 @@
+import { readdirSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import {
   connectorHandbook,
@@ -136,5 +137,26 @@ describe("鍵が 無い ときの 手順書", () => {
 
   it("1本も 無くても 落ちない", () => {
     expect(connectorHandbook([])).toContain("<版>");
+  });
+});
+
+describe("リポジトリの移行SQLの版", () => {
+  /*
+   * 2026-10-11 に2回起きた。並行して作った移行SQLが同じ版（時刻の14桁）になり、
+   * 先に DB へ入った方の版で台帳がふさがって「デプロイ（DB）」が止まった
+   * （duplicate key value violates unique constraint "schema_migrations_pkey"）。
+   * 後から来た方は DB に入らないまま、CI は緑だった。
+   * 名前が同じで版が違うのは正常（README の「2つの経路」）。だめなのは版の重複だけ。
+   */
+  it("同じ版の移行SQLが2つない", () => {
+    const entries = readdirSync(new URL("../supabase/migrations/", import.meta.url));
+    const seen = new Map<string, string>();
+    const duplicates: string[] = [];
+    for (const migration of readRepoMigrations(entries)) {
+      const first = seen.get(migration.version);
+      if (first) duplicates.push(`${first} と ${migration.file}`);
+      else seen.set(migration.version, migration.file);
+    }
+    expect(duplicates).toEqual([]);
   });
 });
