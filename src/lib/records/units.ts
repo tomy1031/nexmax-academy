@@ -42,7 +42,7 @@ import {
 } from "@/lib/content";
 import { LINK_ANSWER_PROMPTS } from "@/content/link-answers";
 import { formPrompt } from "@/lib/answers/form-answers";
-import { sortStages } from "@/lib/map-data";
+import { isOnMap, sortStages } from "@/lib/map-data";
 
 /** 1つの 教材（＝記録の id が 指す もの）。 */
 export interface UnitRef {
@@ -58,8 +58,21 @@ export interface UnitRef {
 }
 
 export interface UnitIndex {
-  readonly stages: readonly { readonly id: string; readonly title: string }[];
+  readonly stages: readonly {
+    readonly id: string;
+    readonly title: string;
+    /**
+     * 地図に 出る ステージか（「はじめに」の ような 案内は 出ない）。生徒の 一覧の
+     * **全体の 進み**は 地図の ステージだけで 数える（学習者が 見て いる 道と そろえる）。
+     */
+    readonly onMap: boolean;
+  }[];
   readonly units: readonly UnitRef[];
+  /**
+   * もんだいセットの 合格ライン（%）。鍵は セットの id。
+   * 初回の 点が これに 届いたかは **教材の 側に しか ない** 値で 決める（DB の view は 持たない）。
+   */
+  readonly passRates: Readonly<Record<string, number>>;
   /**
    * 問いの 文。鍵は `<教材id>:<問いid>`。
    *
@@ -235,8 +248,9 @@ export async function loadUnitIndex(): Promise<UnitIndex> {
   }
 
   return {
-    stages: ordered.map((stage) => ({ id: stage.id, title: stage.title })),
+    stages: ordered.map((stage) => ({ id: stage.id, title: stage.title, onMap: isOnMap(stage) })),
     units,
     prompts,
+    passRates: Object.fromEntries(quizSets.map((set) => [set.id, set.passRate])),
   };
 }
