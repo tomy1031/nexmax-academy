@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { FOLLOW_RULES, flagLabel, type RosterRow } from "@/lib/records/roster";
 
 /**
@@ -6,7 +5,7 @@ import { FOLLOW_RULES, flagLabel, type RosterRow } from "@/lib/records/roster";
  *
  * 1行 = 1人。**全体の 進み**と **できの 目安**と **フォローの 印**だけを 出す。
  * 教材ごとの 細かい 記録は この 下の 表に 残して ある。行の 名前を 押すと、
- * その 生徒の 画面へ 行く。
+ * その 生徒の「工程ごとの 行った こと」が 下に 出る（学習の きろくの 中で 開く）。
  *
  * 色は 明るい 地に 濃い 文字だけ（濃い 地を 使わない）。印の ある 行は 薄い 珊瑚色に する。
  */
@@ -14,10 +13,13 @@ export function LearnerRoster({
   rows,
   busy,
   note,
+  onPick,
 }: {
   rows: readonly RosterRow[];
   busy: boolean;
   note: string | null;
+  /** 名前を 押した とき（その 生徒の「工程ごとの 行った こと」を 開く）。 */
+  onPick: (profileId: string) => void;
 }) {
   const flagged = rows.filter((row) => row.flags.length > 0).length;
   return (
@@ -36,7 +38,7 @@ export function LearnerRoster({
         フォローの 印が つくのは 3つの とき —— もんだいの 1回目が 合格ラインに 届かない セットが{" "}
         {FOLLOW_RULES.firstLowSets}つ 以上 ・ 同じ ことばの テストで 3回 以上 不合格の まま ・
         会話の 発言の {Math.round(FOLLOW_RULES.talkMissRatio * 100)}% 以上が miss。名前を 押すと
-        その 生徒の 画面へ 行きます。
+        その 生徒の 「工程ごとの 行った こと」が 下に 出ます。
       </p>
 
       {busy ? (
@@ -69,7 +71,7 @@ export function LearnerRoster({
             </thead>
             <tbody>
               {rows.map((row) => (
-                <RosterLine key={row.profileId} row={row} />
+                <RosterLine key={row.profileId} row={row} onPick={onPick} />
               ))}
             </tbody>
           </table>
@@ -79,7 +81,7 @@ export function LearnerRoster({
   );
 }
 
-function RosterLine({ row }: { row: RosterRow }) {
+function RosterLine({ row, onPick }: { row: RosterRow; onPick: (profileId: string) => void }) {
   const { progress } = row;
   const share = progress.total === 0 ? 0 : progress.done / progress.total;
   return (
@@ -88,12 +90,13 @@ function RosterLine({ row }: { row: RosterRow }) {
       style={row.flags.length > 0 ? { background: "#fff4f0" } : undefined}
     >
       <td className="py-2 pr-3">
-        <Link
-          href={`/admin/students/${row.profileId}`}
-          className="text-sky underline underline-offset-2"
+        <button
+          type="button"
+          onClick={() => onPick(row.profileId)}
+          className="text-sky text-left font-bold underline underline-offset-2"
         >
           {row.name}
-        </Link>
+        </button>
         {row.school ? <span className="text-ink-soft block text-xs">{row.school}</span> : null}
       </td>
       <td className="w-48 py-2 pr-3">

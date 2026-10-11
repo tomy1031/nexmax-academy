@@ -33,6 +33,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AdminError, AdminHeader, AdminLoading, AdminPageFrame } from "@/components/admin/admin-ui";
 import { LearnerRoster } from "@/components/admin/learner-roster";
+import { LearnerWorkPanel } from "@/components/admin/learner-work-panel";
 import { fetchAllProfiles, fetchOwnProfile, type ProfileRow } from "@/lib/profile-db";
 import { AFFILIATIONS, COHORTS, formatSchool } from "@/lib/school";
 import { createClient } from "@/lib/supabase/client";
@@ -77,6 +78,7 @@ import {
   type RecordKind,
   type RecordTable,
 } from "@/lib/records/table";
+import { buildLearnerWork, type LearnerRecords } from "@/lib/records/learner-work";
 import { buildRoster, rosterStudents } from "@/lib/records/roster";
 import type { LearnerQuizFirstRow, LearnerSummaryRow } from "@/lib/records/records-db";
 import {
@@ -313,6 +315,61 @@ export function RecordsShell({
     [rosterFresh, rosterData, students, index],
   );
 
+  /*
+   * 1人を えらんで いる ときの「工程ごとの 行った こと」（願い #599 第3段）。
+   * その 人の 記録を 種類ごとに 読む（1人ぶんなので 上限に 当たらない）。
+   */
+  const pickedId = filter.profileId;
+  const [workData, setWorkData] = useState<{
+    profileId: string;
+    records: LearnerRecords;
+    note: string | null;
+  } | null>(null);
+  useEffect(() => {
+    if (loading || pickedId === "") return;
+    let active = true;
+    void (async () => {
+      const one: RecordsQuery = { profileIds: [pickedId], unitIds: null };
+      const got = await Promise.all([
+        fetchContentProgress(one),
+        fetchQuizRecords(one),
+        fetchWordTestRecords(one),
+        fetchWordAnswerRecords(one),
+        fetchMeetingRecords(one),
+        fetchTalkRecords(one),
+        fetchListeningRecords(one),
+      ]);
+      if (!active) return;
+      const [progress, quiz, wordTests, wordAnswers, meetings, talks, listening] = got;
+      const failed = got.find((result) => !result.ok);
+      setWorkData({
+        profileId: pickedId,
+        records: {
+          progress: progress.ok ? progress.rows : [],
+          quiz: quiz.ok ? quiz.rows : [],
+          wordTests: wordTests.ok ? wordTests.rows : [],
+          wordAnswers: wordAnswers.ok ? wordAnswers.rows : [],
+          meetings: meetings.ok ? meetings.rows : [],
+          talks: talks.ok ? talks.rows : [],
+          listening: listening.ok ? listening.rows : [],
+        },
+        note: failed && !failed.ok ? failed.message : null,
+      });
+    })();
+    return () => {
+      active = false;
+    };
+  }, [loading, pickedId]);
+  const workFresh = workData !== null && workData.profileId === pickedId;
+  const workStages = useMemo(
+    () => (workFresh ? buildLearnerWork(workData.records, index, lookups) : []),
+    [workFresh, workData, index, lookups],
+  );
+  const pickedName = useMemo(() => {
+    const picked = profiles.find((profile) => profile.id === pickedId);
+    return picked ? picked.display_name || picked.email : "";
+  }, [profiles, pickedId]);
+
   const rows = useMemo(
     () => (table ? filterRows(table, filter, lookups) : []),
     [table, filter, lookups],
@@ -507,7 +564,19 @@ export function RecordsShell({
         rows={rosterRows}
         busy={!rosterFresh}
         note={rosterFresh ? rosterData.note : null}
+        onPick={(profileId) => changeFilter({ profileId })}
       />
+
+      {pickedId !== "" ? (
+        <LearnerWorkPanel
+          name={pickedName}
+          profileId={pickedId}
+          stages={workStages}
+          busy={!workFresh}
+          note={workFresh ? workData.note : null}
+          onClose={() => changeFilter({ profileId: "" })}
+        />
+      ) : null}
 
       {[indexNote, note]
         .filter((one): one is string => one !== null)
