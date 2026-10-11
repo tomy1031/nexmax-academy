@@ -1294,7 +1294,7 @@ curl -s -o /dev/null -D - -H 'Range: bytes=1000-1999' "https://staging-academy.n
   `events` 表へ 1行（`src/lib/error-report.ts`）。だれかは 残さない・端末ごとに 間引く・
   DB で 10分 30行の ふた・14日で 消える（移行SQL `20261011150000`）
 - **外形の 見張り** … 別の Worker `workers/watch`（Cloudflare Cron・10分ごと／授業は 5分ごと）が
-  ページ・健康しらべ・画面の エラーの 件数を 見て、**続いたら** Slack／メールへ
+  ページ・健康しらべ・画面の エラーの 件数を 見て、**続いたら** Telegram（2026-10-11 に 選んだ。Slack／メールも 使える）へ
 
 守る こと（詳細は [`workers/watch/README.md`](../workers/watch/README.md)）:
 

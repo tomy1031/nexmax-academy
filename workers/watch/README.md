@@ -18,7 +18,7 @@ Worker の 失敗・画面の エラーは、学習者や 先生の 申告で �
                                     ├─ GET /api/health/content   （Next の サーバ＋DB＋教材の 警告）
                                     └─ client_error_counts()     （画面の エラーの 件数だけ）
                                               │
-                                   続いて いれば ─→ Slack ／ メール
+                                   続いて いれば ─→ Telegram（本命）／ Slack ／ メール
 ```
 
 | 見る もの         | 異常と みなす とき                                                                          |
@@ -67,8 +67,15 @@ curl -s https://academy.nexmax.workers.dev/api/health/content | python3 -c "impo
 
 `[]` なら 出して よい。
 
-### 1. 知らせ先の 鍵を 作る（どちらか 一方）
+### 1. 知らせ先の 鍵を 作る
 
+**本命は Telegram**（2026-10-11 に tomy さんが 選んだ。カンボジアでは 先生も 使って いて、
+飾りの ない 文で 送るので 書式の 差しこみも 起きない）。
+
+- **Telegram**: Telegram で @BotFather に `/newbot` → 名前を 決める → 鍵（`数字:AA…` の 形・
+  **数字と `:` も 含めて 全部**）が 届く。鍵は チャットや リポジトリに 貼らない
+  （漏れたら BotFather で `/revoke`）。送り先は **鍵を 入れた あと ボットに 1通 送れば**
+  見張りが 覚える（先生の グループに 届けたい ときは、ボットを その グループに 入れる）
 - **Slack**: Slack の アプリ設定 → Incoming Webhooks → 知らせたい チャンネルを えらんで URL を 作る
 - **メール**: [Resend](https://resend.com) に 登録 → API Keys で 作る（無料枠 1日100通。
   送り元は `onboarding@resend.dev` の まま で、**Resend に 登録した 自分の アドレスにだけ** 届く）
@@ -78,6 +85,15 @@ curl -s https://academy.nexmax.workers.dev/api/health/content | python3 -c "impo
 ```bash
 npx wrangler deploy -c workers/watch/wrangler.jsonc
 ```
+
+Telegram の とき（入れた あと、ボットに `/start` を 1通 送る）:
+
+```bash
+npx wrangler secret put TELEGRAM_BOT_TOKEN -c workers/watch/wrangler.jsonc
+```
+
+送り先を 決めて おきたい とき（グループを 変えた など）は `TELEGRAM_CHAT_ID` も 入れる。
+入れて あれば、覚えた 送り先より こちらが 勝つ。
 
 Slack の とき:
 
@@ -111,8 +127,9 @@ npx wrangler secret put SUPABASE_ANON_KEY -c workers/watch/wrangler.jsonc
 curl -s https://academy-watch.nexmax.workers.dev | python3 -m json.tool
 ```
 
-`startedAt` が 入って いれば 1回 走った。`notifyTo` が `true` の 先に「見張りを はじめました」が
-届いて いる はず。`open` が 空なら 正常。
+`startedAt` が 入って いれば「見張りを はじめました」が 届いた。`notifyTo.telegramChat` が
+`false` の ままなら、まだ ボットに 1通も 送って いない。`open` が 空なら 正常。
+知らせ先が 1つも 無い あいだは「はじめました」を 取って おき、鍵が 入った あとの 最初の 回に 送る。
 
 ## 画面の エラーの 中身を 見る
 

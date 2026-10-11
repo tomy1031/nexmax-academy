@@ -394,13 +394,63 @@ export function escapeSlack(text) {
 }
 
 /**
- * 知らせる。どこへ 送るかは 入って いる 鍵で 決まる（両方 入って いれば 両方）。
- *   Slack … SLACK_WEBHOOK_URL（Incoming Webhook）
- *   メール … RESEND_API_KEY ＋ ALERT_EMAIL_TO（Resend。無料枠 1日100通）
- * 返すのは { configured, sent }。configured が 0 なら ログに 出すだけ。
+ * Telegram の 送り先（chat_id）を 探す。鍵（TELEGRAM_BOT_TOKEN）を 入れて、
+ * ボットに 1通 送って もらえば 見つかる（グループに 入れた ときは その グループ）。
+ * **いちばん 古い 1件**を とる——ボットを 作った 直後に 送るのは 作った 本人だから。
+ * 見つけたら 状態に 覚えて、もう 探さない（TELEGRAM_CHAT_ID が あれば そちらが 勝つ）。
  */
-export async function notify(env, message, fetchImpl) {
+export async function findTelegramChat(env, fetchImpl) {
+  try {
+    const res = await fetchWithTimeout(
+      fetchImpl,
+      `https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/getUpdates`,
+      { method: "GET" },
+    );
+    if (!res.ok) return null;
+    const data = await res.json();
+    for (const update of Array.isArray(data?.result) ? data.result : []) {
+      const chat = update?.message?.chat ?? update?.my_chat_member?.chat;
+      if (chat && (typeof chat.id === "number" || typeof chat.id === "string")) {
+        return String(chat.id);
+      }
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * 知らせる。どこへ 送るかは 入って いる 鍵で 決まる（いくつ 入って いても 全部へ）。
+ *   Telegram … TELEGRAM_BOT_TOKEN（送り先は findTelegramChat が 見つける）。**2026-10-11 に tomy さんが 選んだ 本命**
+ *   Slack    … SLACK_WEBHOOK_URL（Incoming Webhook）
+ *   メール   … RESEND_API_KEY ＋ ALERT_EMAIL_TO（Resend。無料枠 1日100通）
+ * 返すのは { configured, sent }。configured が 0 なら ログに 出すだけ。
+ * Telegram は 飾りの ない 文で 送る（parse_mode を 付けない）ので、文に 何が 混ざっても 書式に ならない。
+ *
+ * @param {Record<string, string | undefined>} env
+ * @param {{ kind: string, title: string, text: string }} message
+ * @param {(url: string, init: RequestInit) => Promise<Response>} fetchImpl
+ * @param {{ telegramChatId?: string | null }} [opts]
+ */
+export async function notify(env, message, fetchImpl, { telegramChatId = null } = {}) {
   const jobs = [];
+  if (env.TELEGRAM_BOT_TOKEN) {
+    // 送り先が まだ 分からない あいだは「送れなかった」に 数える（次の 回に 送り直す）
+    jobs.push(
+      telegramChatId
+        ? fetchImpl(`https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              chat_id: telegramChatId,
+              text: message.text,
+              disable_web_page_preview: true,
+            }),
+          })
+        : Promise.reject(new Error("Telegram の 送り先が まだ 分からない")),
+    );
+  }
   if (env.SLACK_WEBHOOK_URL) {
     jobs.push(
       fetchImpl(env.SLACK_WEBHOOK_URL, {
@@ -453,19 +503,27 @@ export async function runWatch(env, deps) {
   const judged = judge(prev, probeResults, clientErrors, now);
   const { messages, next } = decide(prev, judged, now, baseUrl);
 
-  let delivered = true;
-  for (const message of messages) {
-    const { configured, sent } = await notify(env, message, deps.fetch);
-    deps.log(`[${message.kind}] ${message.text}`);
-    if (configured > 0 && sent === 0) delivered = false;
+  // Telegram の 送り先。入れて あれば それ、覚えて いれば それ、無ければ 探す
+  let telegramChatId = env.TELEGRAM_CHAT_ID || prev?.telegramChatId || null;
+  if (env.TELEGRAM_BOT_TOKEN && !telegramChatId) {
+    telegramChatId = await findTelegramChat(env, deps.fetch);
   }
 
-  // 知らせが 1通も 届かなかったら、次の 回に もう一度 知らせる（黙って 落とさない）
+  let delivered = true;
+  for (const message of messages) {
+    const { configured, sent } = await notify(env, message, deps.fetch, { telegramChatId });
+    deps.log(`[${message.kind}] ${message.text}${configured === 0 ? "（知らせ先が 未設定）" : ""}`);
+    if (sent === 0) delivered = false;
+  }
+
+  // 知らせが 1通も 届かなかったら、次の 回に もう一度 知らせる（黙って 落とさない）。
+  // 知らせ先が まだ 無い ときも 同じ——鍵を 入れた あとの 最初の 回に「はじめました」が 届く
   const saved = delivered
     ? next
     : { ...next, startedAt: prev?.startedAt ?? null, open: prev?.open ?? {} };
   await deps.saveState({
     ...saved,
+    telegramChatId: env.TELEGRAM_CHAT_ID ? (prev?.telegramChatId ?? null) : telegramChatId,
     last: {
       at: now,
       probes: probeResults.map((r) => ({ id: r.id, code: r.code, failures: r.failures })),

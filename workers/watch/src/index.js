@@ -58,6 +58,9 @@ const handler = {
       {
         prod: env.PROD_URL,
         notifyTo: {
+          telegram: Boolean(env.TELEGRAM_BOT_TOKEN),
+          // 送り先が 見つかったか（ボットに 1通 送れば 次の 回に 見つかる）。番号は 出さない
+          telegramChat: Boolean(env.TELEGRAM_CHAT_ID || state?.telegramChatId),
           slack: Boolean(env.SLACK_WEBHOOK_URL),
           email: Boolean(env.RESEND_API_KEY && env.ALERT_EMAIL_TO),
         },

@@ -41,7 +41,10 @@
   "migrations": [{ "tag": "v1", "new_sqlite_classes": ["WatchState"] }],
 
   // secret（`wrangler secret put` で 入れる。ここにも ビルド環境にも 書かない）:
-  //   知らせ先（どちらか 一方 または 両方）
+  //   知らせ先（いくつ 入れても よい。入って いる ぜんぶへ 送る）
+  //     TELEGRAM_BOT_TOKEN … Telegram の ボットの 鍵（@BotFather で 作る。「数字:AA…」の 形）。
+  //                          **本命**（2026-10-11 に tomy さんが 選んだ）。送り先は ボットに 1通
+  //                          送れば 見張りが 覚える。決めて おきたい ときは TELEGRAM_CHAT_ID
   //     SLACK_WEBHOOK_URL … Slack の Incoming Webhook の URL
   //     RESEND_API_KEY    … メール（Resend）の API キー ＋ ALERT_EMAIL_TO（宛先・カンマ区切り）
   //   画面の エラーの 数（無くても 動く。無ければ ページだけ 見る）

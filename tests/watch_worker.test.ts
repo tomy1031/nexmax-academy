@@ -11,6 +11,7 @@ import {
   classifyResponse,
   decide,
   escapeSlack,
+  findTelegramChat,
   ictLabel,
   isQuietHour,
   judge,
@@ -443,6 +444,34 @@ describe("notify — 知らせ先は 入って いる 鍵で 決まる", () => {
     });
   });
 
+  it("Telegram へは 飾りの ない 文で 送る（parse_mode なし＝ 何が 混ざっても 書式に ならない）", async () => {
+    const sent: { url: string; body: Record<string, unknown> }[] = [];
+    const fetchImpl = async (url: string, init: RequestInit) => {
+      sent.push({ url, body: JSON.parse(String(init.body)) });
+      return Response.json({ ok: true });
+    };
+    const r = await notify(
+      { TELEGRAM_BOT_TOKEN: "123:AAF-test" },
+      { kind: "alert", title: "t", text: "🚨 <b>x</b> [y](z)" },
+      fetchImpl,
+      { telegramChatId: "42" },
+    );
+    expect(r).toEqual({ configured: 1, sent: 1 });
+    expect(sent[0]!.url).toBe("https://api.telegram.org/bot123:AAF-test/sendMessage");
+    expect(sent[0]!.body).toEqual({
+      chat_id: "42",
+      text: "🚨 <b>x</b> [y](z)",
+      disable_web_page_preview: true,
+    });
+  });
+
+  it("Telegram の 送り先が まだ 分からない ときは「送れなかった」に 数える（次の 回に 送り直す）", async () => {
+    const r = await notify({ TELEGRAM_BOT_TOKEN: "123:AAF-test" }, message, async () => {
+      throw new Error("呼ばれない はず");
+    });
+    expect(r).toEqual({ configured: 1, sent: 0 });
+  });
+
   it("鍵が 無ければ どこにも 送らない（ログだけ）", async () => {
     expect(await notify({}, message, async () => new Response())).toEqual({
       configured: 0,
@@ -517,6 +546,108 @@ describe("runWatch — 1回の 見張りの 通し", () => {
       "https://db.example.co/rest/v1/rpc/client_error_counts",
     ]);
     expect(h.state().last.clientErrors).toBe(1);
+  });
+});
+
+describe("findTelegramChat — 送り先を ボットへの 1通から 見つける", () => {
+  it("いちばん 古い 1件の 送り主（作った 本人）を とる", async () => {
+    const fetchImpl = async (url: string) => {
+      expect(url).toBe("https://api.telegram.org/bot123:AAF-test/getUpdates");
+      return Response.json({
+        ok: true,
+        result: [
+          { update_id: 1, message: { chat: { id: 111, type: "private" }, text: "/start" } },
+          { update_id: 2, message: { chat: { id: 222, type: "private" }, text: "hi" } },
+        ],
+      });
+    };
+    expect(await findTelegramChat({ TELEGRAM_BOT_TOKEN: "123:AAF-test" }, fetchImpl)).toBe("111");
+  });
+
+  it("グループに 入れた ときは その グループ", async () => {
+    const fetchImpl = async () =>
+      Response.json({
+        ok: true,
+        result: [{ update_id: 1, my_chat_member: { chat: { id: -100123 } } }],
+      });
+    expect(await findTelegramChat({ TELEGRAM_BOT_TOKEN: "t" }, fetchImpl)).toBe("-100123");
+  });
+
+  it("まだ だれも 送って いなければ null（落ちない）", async () => {
+    expect(
+      await findTelegramChat({ TELEGRAM_BOT_TOKEN: "t" }, async () =>
+        Response.json({ ok: true, result: [] }),
+      ),
+    ).toBeNull();
+    expect(
+      await findTelegramChat(
+        { TELEGRAM_BOT_TOKEN: "t" },
+        async () => new Response("x", { status: 401 }),
+      ),
+    ).toBeNull();
+    expect(
+      await findTelegramChat({ TELEGRAM_BOT_TOKEN: "t" }, async () => {
+        throw new TypeError("fetch failed");
+      }),
+    ).toBeNull();
+  });
+});
+
+describe("runWatch — Telegram の 通し", () => {
+  it("鍵だけ 入れれば、送り先を 見つけて「はじめました」を 送り、2回目からは 探さない", async () => {
+    let state: unknown = null;
+    const urls: string[] = [];
+    const base = fakeFetch(OK_ALL);
+    const deps = {
+      fetch: async (url: string) => {
+        urls.push(url);
+        if (url.endsWith("/getUpdates")) {
+          return Response.json({
+            ok: true,
+            result: [{ update_id: 1, message: { chat: { id: 7 } } }],
+          });
+        }
+        if (url.endsWith("/sendMessage")) return Response.json({ ok: true });
+        return base(url);
+      },
+      sleep: noSleep,
+      now: () => T0,
+      loadState: async () => state,
+      saveState: async (s: unknown) => void (state = s),
+      log: () => {},
+    };
+    const env = { PROD_URL: PROD, TELEGRAM_BOT_TOKEN: "123:AAF-test" };
+    const first = await runWatch(env, deps);
+    expect(first.messages[0]).toMatchObject({ kind: "start" });
+    expect(first.delivered).toBe(true);
+    expect(state).toMatchObject({ telegramChatId: "7", startedAt: T0 });
+
+    urls.length = 0;
+    await runWatch(env, { ...deps, now: () => T0 + 600_000 });
+    expect(urls.some((u) => u.endsWith("/getUpdates"))).toBe(false);
+  });
+
+  it("知らせ先が まだ 無い あいだは「はじめました」を 取って おく（鍵を 入れた あとに 届く）", async () => {
+    let state: unknown = null;
+    const base = fakeFetch(OK_ALL);
+    const deps = {
+      fetch: async (url: string) =>
+        url.endsWith("/sendMessage") ? Response.json({ ok: true }) : base(url),
+      sleep: noSleep,
+      now: () => T0,
+      loadState: async () => state,
+      saveState: async (s: unknown) => void (state = s),
+      log: () => {},
+    };
+    const none = await runWatch({ PROD_URL: PROD }, deps);
+    expect(none.delivered).toBe(false);
+    expect(state).toMatchObject({ startedAt: null });
+    const later = await runWatch(
+      { PROD_URL: PROD, TELEGRAM_BOT_TOKEN: "t", TELEGRAM_CHAT_ID: "9" },
+      { ...deps, now: () => T0 + 600_000 },
+    );
+    expect(later.messages[0]).toMatchObject({ kind: "start" });
+    expect(later.delivered).toBe(true);
   });
 });
 
