@@ -3,6 +3,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import {
   AUTH_TABLES_TO_KEEP,
+  cleanRoles,
   countCopyRows,
   countSql,
   dataExcludes,
@@ -71,6 +72,21 @@ describe("中身を 書き出さない 表", () => {
 
   it("GoTrue が 表を 足しても、名指し せずに 自動で 外れる", () => {
     expect(dataExcludes(["auth.users", "auth.some_new_table"])).toEqual(["auth.some_new_table"]);
+  });
+});
+
+describe("roles.sql の 下ごしらえ", () => {
+  it("Supabase が 付ける 設定値の 権限は 注記つきで 外す（戻すと permission denied で 止まる）", () => {
+    const sql = [
+      "SET default_transaction_read_only = off;",
+      'ALTER ROLE "anon" SET "statement_timeout" TO \'3s\';',
+      'GRANT SET ON PARAMETER "log_min_messages" TO "supabase_realtime_admin" GRANTED BY "supabase_admin";',
+      "RESET ALL;",
+    ].join("\n");
+    const lines = cleanRoles(sql).split("\n");
+    expect(lines[1]).toBe('ALTER ROLE "anon" SET "statement_timeout" TO \'3s\';');
+    expect(lines[2]).toMatch(/^-- \[db_backup\] .*GRANT SET ON PARAMETER "log_min_messages"/);
+    expect(lines[3]).toBe("RESET ALL;");
   });
 });
 

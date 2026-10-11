@@ -9,6 +9,7 @@
  *
  * ワークフローは 薄く して、判断は ここに 寄せる（テストで 押さえる ため）:
  *   - data-excludes … 中身を 書き出さない 表を 選ぶ（storage 全部・auth の 大半）
+ *   - clean-roles   … roles.sql から Supabase が 付ける 権限の 行を 外す
  *   - count-copy    … 書き出した data.sql の 行数を 表ごとに 数える
  *   - count-sql     … 戻した 先で 同じ 表を 数える SQL を 作る
  *   - verify        … 「書き出した 行数」と「戻せた 行数」を 突き合わせる
@@ -21,7 +22,7 @@
  * ここは 行の 中身（名前・メール・解答）を 1文字も 出さない。出すのは 表の 名前と 数だけ。
  */
 import { createHash } from "node:crypto";
-import { readFileSync, readdirSync, statSync } from "node:fs";
+import { readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 /**
@@ -71,6 +72,31 @@ export function dataExcludes(tables) {
     .filter((name) => /^(auth|storage)\.[A-Za-z0-9_]+$/.test(name))
     .filter((name) => !(name.startsWith("auth.") && AUTH_TABLES_TO_KEEP.includes(name.slice(5))))
     .sort();
+}
+
+/**
+ * roles.sql から **設定値への 権限**（`GRANT SET ON PARAMETER …`）を 外す。
+ *
+ * `supabase db dump --role-only` は Supabase が 付けた 役割の 行を 落とすが、
+ * この 形だけは 素通しで 書き出す。本番には realtime 用の
+ * `GRANT SET ON PARAMETER "log_min_messages" TO "supabase_realtime_admin" GRANTED BY "supabase_admin"`
+ * が あり、戻す 側の postgres には 付け直す 権限が 無いので **復元が 丸ごと 止まる**
+ * （2026-10-11 の 試し走りで `permission denied for parameter log_min_messages`）。
+ * どれも Supabase が 付ける もので、新しい プロジェクトには 最初から ある。
+ * 消さずに 注記つきで 無効に する（何を 外したかが 書き出しに 残る）。
+ *
+ * @param {string} sql
+ * @returns {string}
+ */
+export function cleanRoles(sql) {
+  return sql
+    .split("\n")
+    .map((line) =>
+      /^(GRANT|REVOKE)\s.*\sON PARAMETER\s/i.test(line)
+        ? `-- [db_backup] Supabase が 付ける 権限なので 戻さない: ${line}`
+        : line,
+    )
+    .join("\n");
 }
 
 /** 識別子 1つ（`"quiz_results"` か `quiz_results`）。 */
@@ -313,6 +339,11 @@ function main(argv) {
   switch (command) {
     case "data-excludes": {
       process.stdout.write(dataExcludes(readStdin().split("\n")).join(","));
+      return 0;
+    }
+    case "clean-roles": {
+      const path = args[0];
+      writeFileSync(path, cleanRoles(readFileSync(path, "utf8")));
       return 0;
     }
     case "count-copy": {

@@ -128,6 +128,8 @@ jobs:
             | node scripts/db_backup.mjs data-excludes)"
 
           npx --yes "$SUPABASE_CLI" db dump --db-url "$SUPABASE_DB_URL" --role-only -f "$WORK/roles.sql"
+          # Supabase が 付ける 設定値の 権限は 戻せない（戻すと 止まる）ので 注記つきで 外す
+          node scripts/db_backup.mjs clean-roles "$WORK/roles.sql"
           npx --yes "$SUPABASE_CLI" db dump --db-url "$SUPABASE_DB_URL" -f "$WORK/schema.sql"
           npx --yes "$SUPABASE_CLI" db dump --db-url "$SUPABASE_DB_URL" --data-only --use-copy \
             ${EXCLUDE:+--exclude "$EXCLUDE"} -f "$WORK/data.sql"
