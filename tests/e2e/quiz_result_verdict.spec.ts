@@ -80,8 +80,11 @@ test("全問 正解で 出すと ⭕ 合格。合格ラインと「つぎへ」�
   await expect(page.getByText(/ライン 3もん（60%）/)).toBeVisible();
   await expect(page.getByText(/もん せいかいで/)).toHaveCount(0);
   // 次の 一手は 1つ（つぎへ）
-  // 札の 文には ルビ（下した）が 混ざる ので、かなの 続く ところで 見る
-  await expect(page.getByRole("status")).toContainText("ボタンで つぎへ");
+  /*
+   * 札の 文には ルビ（下した）が 混ざる ので、かなの 続く ところで 見る。
+   * 修了証を 作って いる あいだは もう1つ role="status" が 出る ので、文で 絞る
+   */
+  await expect(page.getByRole("status").filter({ hasText: "ボタンで つぎへ" })).toBeVisible();
   // 中身の ない ことばは 出さない（規律1・2026-09-10）
   await expect(page.getByText("よく できました")).toHaveCount(0);
   await expect(page.getByText("ここまで すすんだね")).toHaveCount(0);
@@ -105,7 +108,7 @@ test("全問 外して 出すと ❌ 不合格。あと 何もんかと「もう
   await expect(page.getByText(/ライン 3もん（60%）/)).toBeVisible();
   await expect(page.getByText(/あと 3もん せいかいで/)).toBeVisible();
   // 次の 一手は「もう一度 やる」で 直す
-  await expect(page.getByRole("status")).toContainText("もう一度");
+  await expect(page.getByRole("status").filter({ hasText: "もう一度" })).toBeVisible();
   await expect(page.getByRole("button", { name: "もう一度 やる" })).toBeVisible();
   await expect(page.getByText("ここまで すすんだね")).toHaveCount(0);
 
