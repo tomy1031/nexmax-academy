@@ -82,8 +82,8 @@ export default function Page() {
       setSettings(saved);
       setNotice(
         next
-          ? `鍵を 外しました。学習者の 画面には おそくとも ${REFLECT_MINUTES}分で 反映されます。`
-          : `鍵を かけ直しました。学習者の 画面には おそくとも ${REFLECT_MINUTES}分で 反映されます。`,
+          ? `ロックを外しました。学習者の画面には、おそくとも${REFLECT_MINUTES}分で反映されます。`
+          : `ロックをかけ直しました。学習者の画面には、おそくとも${REFLECT_MINUTES}分で反映されます。`,
       );
     } catch (error) {
       setNotice(`保存できませんでした: ${error instanceof Error ? error.message : String(error)}`);
@@ -100,8 +100,8 @@ export default function Page() {
   return (
     <AdminPageFrame>
       <AdminHeader
-        title="じゅんろの 鍵"
-        note="関門（まえの 教材を おえないと つぎへ 進めない しくみ）を、全員ぶん まとめて 外します。"
+        title="ロック解除"
+        note="ロック（前の教材を終えないと次へ進めない仕組み）を、全員分まとめて外します。"
       />
 
       <section className="card-pop px-5 py-5">
@@ -116,7 +116,7 @@ export default function Page() {
           </span>
           <div className="min-w-0">
             <p className="text-navy text-lg font-black">
-              {unlocked ? "いま 鍵は 外れています" : "いま 鍵は かかっています"}
+              {unlocked ? "いまロックは外れています" : "いまロックはかかっています"}
             </p>
             <p className="text-ink-soft text-sm font-bold">
               {unlocked
@@ -133,7 +133,7 @@ export default function Page() {
             onClick={() => void toggle(true)}
             className="btn-game px-5 py-2.5 text-sm disabled:opacity-40"
           >
-            鍵を 外す（全員）
+            ロックを外す（全員）
           </button>
           <button
             type="button"
@@ -141,7 +141,7 @@ export default function Page() {
             onClick={() => void toggle(false)}
             className="border-hairline text-navy rounded-2xl border-2 bg-white px-5 py-2.5 text-sm font-bold disabled:opacity-40"
           >
-            鍵を かけ直す
+            ロックをかけ直す
           </button>
         </div>
 
