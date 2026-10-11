@@ -399,6 +399,63 @@ export async function fetchLearnerRoster(profileIds: readonly string[] | null): 
   };
 }
 
+/** 授業ごとの回答分析（表 `class_reports`。定期タスクが書く・要望 #599）。 */
+export interface ClassReportRow {
+  id: string;
+  class_date: string;
+  university: string;
+  cohort: number;
+  students: number;
+  summary: string;
+  follow_up: { profile_id?: string; name: string; reasons?: string[]; quotes?: string[] }[];
+  ai_suspects: { profile_id?: string; name: string; quote: string; reason: string }[];
+  stumbles: { title: string; detail?: string; quotes?: string[] }[];
+  next_steps: string[];
+  source: string;
+  updated_at: string;
+}
+
+/** いちどに読む分析の数（組ごとに授業3回×数か月ぶん）。 */
+const CLASS_REPORTS_LIMIT = 120;
+
+/**
+ * 授業ごとの回答分析を新しい順に読む。組を選んでいればその組だけ。
+ * 読めなかったときは空と理由を返す（画面ごと落とさない）。
+ */
+export async function fetchClassReports(group: {
+  university: string;
+  cohort: number;
+}): Promise<RecordsResult<ClassReportRow>> {
+  const supabase = createClient();
+  if (!supabase) {
+    return {
+      ok: false,
+      preparing: true,
+      message: "授業ごとの分析は準備中です（データベースの設定後に見られます）。",
+    };
+  }
+  let request = supabase.from("class_reports").select("*");
+  if (group.university !== "") request = request.eq("university", group.university);
+  if (group.cohort > 0) request = request.eq("cohort", group.cohort);
+  const { data, error } = await request
+    .order("class_date", { ascending: false })
+    .order("university")
+    .order("cohort")
+    .limit(CLASS_REPORTS_LIMIT);
+  if (error) {
+    const preparing = MISSING_TABLE_CODES.has(error.code ?? "");
+    return {
+      ok: false,
+      preparing,
+      message: preparing
+        ? "授業ごとの分析の表がまだありません。データベースの更新が流れると見られます。"
+        : "授業ごとの分析を読めませんでした。少し待ってもう一度ためしてください。",
+    };
+  }
+  const rows = (data ?? []) as ClassReportRow[];
+  return { ok: true, rows, truncated: rows.length >= CLASS_REPORTS_LIMIT };
+}
+
 export function fetchListeningRecords(
   query: RecordsQuery = NO_QUERY,
 ): Promise<RecordsResult<ListeningRecord>> {
