@@ -150,6 +150,17 @@ describe("報告の 途中", () => {
     expect(readAsakaiDraft("m", "wed", backend), "別の 日に 漏れて いる").toBeNull();
   });
 
+  it("チャットの時刻も戻る（古い控えの時刻の無い行もそのまま読める）", () => {
+    const backend = memory();
+    const at = new Date(2026, 9, 11, 9, 2).getTime();
+    const lines = [
+      { who: "ヘンディ", speakerId: "hendy", text: "おはよう ございます。", at },
+      { who: "あなた", speakerId: "self", text: "おはようございます。", self: true },
+    ];
+    saveAsakaiDraft("m", "tue", { ...draft(["kinou1"]), lines }, backend);
+    expect(readAsakaiDraft("m", "tue", backend)?.lines).toEqual(lines);
+  });
+
   it("終わった日を 書いても 途中は 消えない", () => {
     const backend = memory();
     saveAsakaiDraft("m", "tue", draft(["kinou1"]), backend);

@@ -15,6 +15,7 @@ import type { ReactNode, RefObject } from "react";
  *
  * 行の 描き方は 画面ごとに ちがう（ミーティングは `ChatLine`、朝礼は 名前＋字）ので
  * **`children` に 任せる**。ここが 持つのは 殻と 入力欄だけ。
+ * 行に 添える 時刻だけは 両方で 同じ 形に したいので、下の `ChatTime` を 使う。
  */
 export function ChatPanel({
   logRef,
@@ -87,5 +88,28 @@ export function ChatPanel({
         </button>
       </form>
     </div>
+  );
+}
+
+/**
+ * チャットの行に添える時刻（Zoom のチャットと同じ「9:02」の形）。
+ *
+ * 2026-08-20 の見本の画面は「右にテキストチャット（時刻つき）」だった。作り直しのときに
+ * 時刻だけが抜けていたので、2026-10-11 の回答（#142「付ける」）で足した。
+ * 行を積んだ瞬間の端末の時計で押す。会話は端末の中で進むので、サーバの時計は使わない。
+ */
+export function chatTimeLabel(at: number): string {
+  const date = new Date(at);
+  return `${date.getHours()}:${String(date.getMinutes()).padStart(2, "0")}`;
+}
+
+export function ChatTime({ at }: { readonly at: number }) {
+  return (
+    <time
+      dateTime={new Date(at).toISOString()}
+      className="text-ink-soft ml-1.5 text-[10px] font-bold tabular-nums"
+    >
+      {chatTimeLabel(at)}
+    </time>
   );
 }

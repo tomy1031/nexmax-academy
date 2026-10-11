@@ -46,7 +46,7 @@ import { useCertificateIssuer } from "@/components/certificate/use-certificate-i
 import { CertificateCorner } from "@/components/certificate/certificate-corner";
 import { asakaiResult } from "@/lib/certificate/model";
 import { AskPanel } from "@/components/meeting/ask-panel";
-import { ChatPanel } from "@/components/meeting/chat-panel";
+import { ChatPanel, ChatTime } from "@/components/meeting/chat-panel";
 import { SpeechSpeedPicker } from "@/components/meeting/speech-speed-picker";
 import { StepTabs } from "@/components/meeting/step-tabs";
 import { useLiveVoice } from "@/components/meeting/use-live-voice";
@@ -211,6 +211,8 @@ interface ChatLine {
   readonly self?: boolean;
   /** 作り置きの こえ（教材の `audio`）。あれば 🔊 で 聞き返せる。 */
   readonly audio?: string;
+  /** 行を積んだ時刻（ミリ秒）。名前の横に「9:02」の形で出す。古い控えから戻した行には無い。 */
+  readonly at?: number;
 }
 
 /**
@@ -234,6 +236,7 @@ function toChatLine(
     speakerId: line.speakerId,
     text: fillCallName(line.text, learnerName),
     audio: line.audio,
+    at: Date.now(),
   };
 }
 
@@ -1367,7 +1370,10 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
       const text = (spoken ?? answer).trim();
       if (!text || !scene || !asakai) return;
       if (spoken === undefined) setAnswer("");
-      setLines((prev) => [...prev, { who: "あなた", speakerId: "self", text, self: true }]);
+      setLines((prev) => [
+        ...prev,
+        { who: "あなた", speakerId: "self", text, self: true, at: Date.now() },
+      ]);
 
       if (!getGeminiKey()) {
         apply(text, null, "noKey");
@@ -2903,6 +2909,7 @@ function Chat({
             {/* 名前も 教材の 字（富田・奥田）。ルビを 通さないと 裸の 漢字に なる。 */}
             <span className="text-ink-soft mr-1 text-[11px] font-black">
               <RubyText text={line.who} index={index} show />
+              {line.at ? <ChatTime at={line.at} /> : null}
             </span>
             <RubyText text={line.text} index={index} show />
             {/* 流れて いった ことばを 聞き直せる（`MeetingSession` と 同じ 逃げ道）。 */}

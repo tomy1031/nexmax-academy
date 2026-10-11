@@ -116,6 +116,8 @@ const chatLineSchema = z.object({
   text: z.string(),
   self: z.boolean().optional(),
   audio: z.string().optional(),
+  /** 行を積んだ時刻（ミリ秒）。開き直してもチャットの時刻が変わらないように残す。2026-10-11 より前の控えには無い。 */
+  at: z.number().optional(),
 });
 
 const panelStateSchema = z.object({

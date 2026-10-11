@@ -67,7 +67,7 @@ import { CertificateModal } from "./certificate-modal";
 import { JudgeModal } from "./judge-modal";
 import { AiWaitingOverlay } from "./ai-waiting";
 import { AskPanel } from "./ask-panel";
-import { ChatPanel } from "./chat-panel";
+import { ChatPanel, ChatTime } from "./chat-panel";
 import { SpeakButton } from "./speak-button";
 import { StepTabs } from "./step-tabs";
 import { SpeechSpeedPicker } from "./speech-speed-picker";
@@ -207,7 +207,8 @@ type ChatBody =
       reason?: string | null;
     };
 
-type ChatEntry = ChatBody & { id: string };
+/** `at` は行を積んだ時刻（ミリ秒）。チャットの行に「9:02」の形で添える。 */
+type ChatEntry = ChatBody & { id: string; at: number };
 
 const NOTICE = {
   empty: "まだ 何も 書いて いません。ヒントの 文を そのまま 書いても いいです。",
@@ -357,7 +358,7 @@ export function MeetingSession({
   /** AIに 通せなかった 理由（ポップアップの 下に 小さく 出す）。 */
   const [judgeNote, setJudgeNote] = useState<string | null>(null);
   const pushChat = useCallback((entry: ChatBody) => {
-    setChat((prev) => [...prev, { ...entry, id: `${prev.length}-${entry.kind}` }]);
+    setChat((prev) => [...prev, { ...entry, id: `${prev.length}-${entry.kind}`, at: Date.now() }]);
   }, []);
   const [draft, setDraft] = useState("");
   const [reply, setReply] = useState<Reply | null>(null);
@@ -1949,6 +1950,7 @@ function ChatLine({
       >
         <p className={`text-[11px] font-extrabold ${mine ? "text-navy" : "text-sky"}`}>
           {mine ? "あなた" : <RubyText text={hostName} index={furigana} show />}
+          <ChatTime at={entry.at} />
           {/* 作り置きの こえが ある ときだけ、その 行を 聞き直せる */}
           {onReplay ? (
             <button
