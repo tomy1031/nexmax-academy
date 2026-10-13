@@ -53,7 +53,7 @@ DB 全体 24MB（無料枠 500MB）。Postgres 17.6。書き出しは 暗号化�
 | 1 | `supabase db dump`（**`supabase@2.120.0` に 固定**）で `roles.sql`・`schema.sql`・`data.sql`、psql で `extras.sql` を 書き出す。**本番へは 読むだけ**（pg_dump は 読み取りの スナップショット、psql も `set transaction read only`） | 赤。本番は 何も 変わって いない |
 | 2 | 表ごとの 件数と ハッシュの 目録 `manifest.json` を 作り、`tar.gz` に して **age で 暗号化**（宛先は `scripts/db_backup_recipients.txt`） | 赤 |
 | 3 | R2 の `daily/nexmax-db-<UTC時刻>.tar.gz.age` に 置く | 赤 |
-| 4 | **ランナーの 中に 空の Supabase の DB を 立て**（`supabase db start`）、Supabase 公式の 手順と 同じ 並びで 戻し、**表ごとの 件数を 突き合わせる**。要る 表（auth.users・修了証 など）が 0件でも 落とす | 赤。3 で 置いた ものは **残す**（消さない） |
+| 4 | **ランナーの 中に 空の Supabase の DB を 立て**（`supabase db start`）、Supabase 公式の 手順と 同じ 並びで 戻し、**表ごとの 件数を 突き合わせる**。要る 表（auth.users・修了証 など）が 0件でも、外した はずの 表（auth の 合鍵・storage）が 入って いても 落とす | 赤。3 で 置いた ものは **残す**（消さない） |
 | 5 | 4 が 通った 夜だけ: その 月の 最初の 1本を `monthly/` にも 置き、古い ものを 消す | 赤 |
 
 **ログは 公開。** 行の 中身は 出さない。4 が 落ちた ときも ERROR の 行だけを、
@@ -73,6 +73,7 @@ monthly 3本は、どれだけ 古くても 消さない**。書き出しが 何
 | 4 で `column "…" of relation "users" does not exist` | 本番の 認証（GoTrue）が 新しく なり、固定した CLI の 認証より 列が 多い。`SUPABASE_CLI` を 上げて、4 が 通るのを 見る |
 | 4 で 件数が 合わない | 本当に 戻せて いない。**放置しない**。ログの 表名から 調べる |
 | 「要る 表が 1件も 入って いない」 | 鍵が 別の DB を 指して いる／本番が 空に なった。**すぐ 本番を 見る** |
+| 「書き出さない はずの 表です」／「外す 表の 一覧が 空です」 | auth・storage の 除外が 効いて いない（CLI の 版を 上げた ときに 起きうる）。ログインの 合鍵まで 書き出す ことに なるので、直すまで 保存しない |
 | ラン が 灰色で ジョブ 0件（`action_required`） | GitHub が「怪しい ワークフロー」と して 止めた（docs/deploy.md §0.16）。画面で Approve and run |
 
 ### 2.1 置き場の 用意（1回だけ・tomy の 手作業）
@@ -135,6 +136,11 @@ echo ok | age -R scripts/db_backup_recipients.txt | age -d -i ~/.config/nexmax-a
   書き出し そのもの（1〜3）は 通って いるので、その 夜の ぶんは 保存されて いる。
 - **GitHub が ワークフローを 止める ことが ある**（docs/deploy.md §0.16）。止まると
   書き出しも 止まる。週に 1回 Actions の 一覧で 緑が 並んで いるかを 見る。
+- **定期実行は 黙って 止まる ことも ある。** public の リポジトリで **60日 コミットが 無い**と、
+  GitHub は schedule の ワークフローを 自動で 止める（ワークフローを 最後に 触った 人の
+  権限が 無くなった ときも 同じ）。どちらも 赤に ならず、メールも 来ない。止まって いたら
+  Actions →「DBの書き出し（毎晩）」→ Enable workflow。止まった ことを 機械で 知らせる
+  見張り（R2 の 最新が 48時間より 古ければ 知らせる）は まだ 無い。
 - **2026-08-20 の 調査に あった「git に 無い SQL」**（`academy_core_schema` ほか）は、
   その後 `supabase/migrations/` に 入った。いずれに しても 書き出しは **DB の 今の 姿**を 写す。
 
@@ -185,17 +191,22 @@ cd nexmax-db-*/ && shasum -a 256 *.sql && cat manifest.json
 
 1. Supabase で 新しい プロジェクトを 作る（Postgres 17・同じ 地域）。
    Connect → **Session pooler** の 接続文字列を 控える（docs/deploy.md §0.8）
-2. 新しい プロジェクトの 既定の 権限を 外す（書き出しの 権限を そのまま 効かせる ため。
-   Supabase CLI の 文書に ある 手順）:
-
-```bash
-psql "$NEW_DB_URL" -c 'ALTER DEFAULT PRIVILEGES IN SCHEMA public REVOKE ALL ON TABLES FROM anon, authenticated;'
-```
-
-3. 戻す（Supabase 公式「Backup and restore using the CLI」と 同じ 並び。1つの トランザクション）:
+2. 戻す（Supabase 公式「Backup and restore using the CLI」と 同じ 並び。1つの トランザクション）:
 
 ```bash
 psql "$NEW_DB_URL" --single-transaction -v ON_ERROR_STOP=1 -f roles.sql -f schema.sql -c 'SET session_replication_role = replica' -f data.sql -f extras.sql
+```
+
+   **戻す 前に 既定の 権限（`ALTER DEFAULT PRIVILEGES … REVOKE`）を 外さない。** 公式の 手順に 無く、
+   外すと その あと `supabase db push` で 作る 表が API から 読めなく なる（移行SQLの 多くは
+   GRANT を 書かず 既定の 権限に 頼って いる）。2026-10-11 の レビューで 取り下げた。
+
+3. 既定の 権限が 本番と 同じかを 見る。`schema.sql` の `ALTER DEFAULT PRIVILEGES` の 行が
+   本番の 姿だが、2026-05-30 より あとに 作った プロジェクトは 既定で 公開しない 設定に
+   なって いる ことが ある。違えば、新しい 表に GRANT を 書くか 既定を 本番に 合わせる:
+
+```bash
+psql "$NEW_DB_URL" -c "select pg_get_userbyid(defaclrole), defaclnamespace::regnamespace, defaclobjtype, defaclacl from pg_default_acl order by 1, 2, 3"
 ```
 
 4. Storage: `supabase/migrations/20260805001747_studio_assets_bucket.sql` の 中身を 流し、
