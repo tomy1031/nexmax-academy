@@ -30,7 +30,17 @@ import { readContentProgress, recordContentProgress } from "@/lib/progress/store
  * **タップで 大きく**する（スマホでは ふりがなまで 読むには 小さい。2026-09-25 の 指定）。
  *
  * 進捗はコマ単位。見たいちばん先のコマを しおり に残し、最後まで行ったら「よみおわり」。
+ * 最後のコマまで読んだまんがを また開いたら、1コマ目から始める（startPanel）。
  */
+
+/**
+ * 開いたときのコマ。しおり（前に見た いちばん先のコマ）から続ける。
+ * ただし しおりが最後のコマなら、読み終えたまんがなので 1コマ目に戻す
+ * （2026-10-13 の指定「最終ページにいった場合はリセットして、最初のページを初期ページに」）。
+ */
+export function startPanel(saved: unknown, count: number): number {
+  return typeof saved === "number" && saved >= 0 && saved < count - 1 ? saved : 0;
+}
 
 /** 話者チップの色。characters の並び順で配る（テーマのアクセント）。 */
 const SPEAKER_ACCENTS = [
@@ -91,11 +101,10 @@ export function MangaSlides({ manga, embedded }: { manga: Manga; embedded: boole
     [manga.pages],
   );
 
-  /** しおり。前に見た いちばん先のコマから始める。 */
-  const [index, setIndex] = useState(() => {
-    const saved = readContentProgress(manga.id)?.position?.panel;
-    return typeof saved === "number" && saved >= 0 && saved < slides.length ? saved : 0;
-  });
+  /** しおり。前に見た いちばん先のコマから始める（読み終えていたら 1コマ目から）。 */
+  const [index, setIndex] = useState(() =>
+    startPanel(readContentProgress(manga.id)?.position?.panel, slides.length),
+  );
   const [finished, setFinished] = useState(false);
   /**
    * いちばん先まで見たコマ。描画（点の色）にも使うので ref ではなく state で持つ
