@@ -89,6 +89,11 @@ export interface RowView {
    */
   readonly hint: string;
   /**
+   * ヒントが **「あと いくつ」の 文**か（型文では ない・2026-10-13）。
+   * 見出しの「この 形で 言って みましょう」を 付けない。
+   */
+  readonly hintLeft?: boolean;
+  /**
    * **2回 聞いても 開かず、打ち切った 札**（もう 聞かれない）。
    *
    * ヒントを 出すと「この 形で 言って みましょう」と 言いながら、その 札は
@@ -572,7 +577,12 @@ function BrushCell({
   return (
     <>
       {yours}
-      {box(HINT, "💡 ヒント（この 形で 言って みましょう）", row.hint, index)}
+      {box(
+        HINT,
+        row.hintLeft ? "💡 ヒント" : "💡 ヒント（この 形で 言って みましょう）",
+        row.hint,
+        index,
+      )}
       {next ? (
         <p className="text-coral-deep mt-1 text-[11px] leading-[1.9] font-black">
           {/* **短く 1行**（2026-09-20 の 指定）。何を 聞かれるかは 司会が 声で 言う。 */}

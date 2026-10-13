@@ -44,6 +44,8 @@ describe.each(MEETINGS)("%s の 画面の 字", (id) => {
       "上から〔うえから〕",
     ],
     ["作業記録を そのまま 読み上げて います。", "読み上げて〔よみあげて〕"],
+    /* 一部だけ 言えた 札の ヒント（2026-10-13）。 */
+    ["もう 1つ 足して ください。", "足して〔たして〕"],
   ])("「%s」は %s と 読む", (text, expected) => {
     const got = read(text, id);
     expect(got).toContain(expected);

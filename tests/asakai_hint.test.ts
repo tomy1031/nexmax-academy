@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { hintOf } from "../src/lib/meeting/asakai-hint";
+import { hintOf, leftHint } from "../src/lib/meeting/asakai-hint";
 
 /*
  * 言えて いない 札の ヒント（2026-09-19 の 指定「数値など 正しく 言えて いない 場合は
@@ -74,5 +74,28 @@ describe("hintOf — 聞き返しから 型文を 取る", () => {
         }
       }
     }
+  });
+});
+
+/*
+ * **一部だけ 言えた 札は「あと いくつ」**（2026-10-13 の 指定「NG の 指摘が おかしい」→
+ *「2つの 決まりは 残し、ヒントを 直す」）。月曜の「明日 行うこと」で スキルグラフだけ
+ * 言えた 人に、もう 言えて いる 型文「明日は、○○を します。」を 見せて いた。
+ */
+describe("leftHint — 足りない 数だけ 言う", () => {
+  it("2つの うち 1つ 言えた", () => {
+    expect(leftHint({ label: "明日 行うこと", need: 2, have: 1 })).toBe(
+      "明日 行うことは 2つ あります。もう 1つ 足して ください。",
+    );
+  });
+
+  it("1つも 言えて いない・ぜんぶ 言えた ときは 空（型文に 戻る）", () => {
+    expect(leftHint({ label: "明日 行うこと", need: 2, have: 0 })).toBe("");
+    expect(leftHint({ label: "明日 行うこと", need: 2, have: 2 })).toBe("");
+  });
+
+  it("答えの 中身（作業の 名前）は 入らない", () => {
+    const hint = leftHint({ label: "明日 行うこと", need: 2, have: 1 });
+    expect(hint).not.toMatch(/スキルグラフ|学生詳細|移動/u);
   });
 });
