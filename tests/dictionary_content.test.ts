@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { listVocabBooks, listWordStages } from "../src/lib/content";
 import { buildDictionary, findDictionaryTerms } from "../src/lib/dictionary";
+import { meetingSchema } from "../src/content/schema";
+import { buildFuriganaIndex, rubyInnerPositions } from "../src/lib/text/furigana";
+import muzukashii from "../content/meetings/asakai_muzukashii.json";
 
 /**
  * **ポップアップ辞書と 単語テストは 別**（2026-08-25 の指定）。
@@ -38,6 +41,24 @@ describe("辞書は テストと 別（実データ）", () => {
     for (const entry of entries) {
       expect(entry.stageId.length > 0).toBe(inTest.has(entry.term));
     }
+  });
+
+  /**
+   * 夕礼（火曜）の 作業記録の ことば（2026-10-13 の 指定「仮データの『仮』『点数』『未登録』
+   *『表記』に 辞書を 入れて」）。画面と 同じく ルビの ことばの 途中では 切らない 形で 引く。
+   */
+  it("夕礼の 作業記録で 仮・点数・未登録・表記 が 引ける", async () => {
+    const [books, stages] = await Promise.all([listVocabBooks(), listWordStages()]);
+    const entries = buildDictionary(books, stages);
+    const index = buildFuriganaIndex(meetingSchema.parse(muzukashii).furigana ?? []);
+    const found = (text: string) =>
+      findDictionaryTerms(text, entries, rubyInnerPositions(text, index)).map(
+        (one) => one.entry.term,
+      );
+    expect(found("仮データで グラフ表示")).toContain("仮");
+    expect(found("奥田さんの 学生詳細画面で 仮グラフの 表示を 確認")).toContain("仮");
+    expect(found("スキル名の 表記を そろえる 処理を 作成")).toContain("表記");
+    expect(found("点数未登録の スキルを 除外")).toEqual(expect.arrayContaining(["点数", "未登録"]));
   });
 
   it("画面に わたす 荷物が ふくらんで いない（20人同時アクセスの 制約）", async () => {
