@@ -1,0 +1,238 @@
+name: DBの書き出し（毎晩）
+
+# 本番DB（Supabase）を 毎晩 書き出し、暗号化して Cloudflare R2 に 置く。
+#
+# なぜ要るか:
+#   Supabase の 無料プランには 自動バックアップが 無い。2026-08-20 の 調査で
+#   「戻せる 時点が 1つも 無い」と 分かり（docs/backup-recovery.md）、2026-10-11 に
+#   tomy が「毎晩 自動で 書き出す（無料）」を 選んだ（月1の 手作業・Supabase Pro と 比べて）。
+#
+# 毎晩 やること（上から 順に。どこかで 落ちたら 赤に なり、GitHub から メールが 届く）:
+#   1. 書き出す   … `supabase db dump`（版を 固定）。public・app の 作りと 中身、
+#                   auth は users と identities の 中身だけ（scripts/db_backup.mjs の dataExcludes）。
+#                   **本番へは 読むだけ**（pg_dump も 下の psql も 読み取りの トランザクション）
+#   2. 暗号化する … age で、リポジトリの 公開鍵（scripts/db_backup_recipients.txt）宛てに。
+#                   開けられるのは tomy の 秘密鍵だけ。**平文は ランナーの 外へ 出さない**
+#   3. 置き場へ   … R2 の daily/ へ
+#   4. 戻して みる … ランナーの 中に 空の Supabase の DB を 立て、そこへ 戻して
+#                   **表ごとの 件数が 1件も 違わない**ことを 確かめる（本番には 書かない）
+#   5. 片づける   … 4 が 通った 夜だけ。月の 最初の 1本を monthly/ にも 置き、
+#                   古い ものを 消す（新しい ものは 日数に 関係なく 必ず 残す）
+#
+# Storage（まんが画像・音声の ファイル）は **対象外**。docs/backup-recovery.md §4。
+#
+# **このリポジトリは public で、ログも 誰でも 読める。** だから:
+#   - 書き出しを artifact に しない・リポジトリに 置かない（暗号化の 前も 後も）
+#   - 行の 中身を ログに 出さない（復元の 失敗ログも scripts/db_backup.mjs が 伏せて 出す）
+#   - secrets は env: でだけ 渡す。run: の 中に `${{ }}` を 書かない
+#     （GitHub が「怪しい ワークフロー」と して 止める 形。docs/deploy.md §0.16）
+#
+# 必要な Secret（Environment「Preview」）:
+#   - SUPABASE_DB_URL       … すでに ある（Session pooler。docs/deploy.md §0.8）
+#   - R2_ENDPOINT           … https://<アカウントID>.r2.cloudflarestorage.com
+#   - R2_ACCESS_KEY_ID      … R2 の API トークン（この バケットだけ・Object Read & Write）
+#   - R2_SECRET_ACCESS_KEY  … 同上
+#   R2 の 3つが まだ 無い 夜は、書き出しと 戻して みる までは 走り、最後に 赤で 止まる
+#   （「保存されて いない」を 緑で 隠さない）。
+
+on:
+  schedule:
+    # 毎日 19:17 UTC（カンボジア 2:17・日本 4:17）。GitHub の 定期実行は 3〜5時間
+    # 遅れる（docs/deploy.md §0.11）が、夜の うちに 終われば よい。授業（17:30 ICT）には かからない。
+    # 定期実行は **既定の ブランチ（main）に 載った あと** から 動く。
+    - cron: "17 19 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# 2本 同時に 走らせない（片づけが 互いの ファイルを 数え まちがえない ように）
+concurrency:
+  group: db-backup
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  backup:
+    # 版を 固定する（ubuntu-latest が 次の 版に 変わっても、psql・age・aws が 急に 変わらない）
+    runs-on: ubuntu-24.04
+    # 鍵は Environment「Preview」に ある。名指し しないと 見えない（docs/deploy.md §0 罠6）
+    environment: Preview
+    timeout-minutes: 40
+    env:
+      # @latest を 使わない。上げる ときは 戻して みる（4）が 通るのを 見てから
+      SUPABASE_CLI: supabase@2.120.0
+      BUCKET: nexmax-academy-db-backup
+      KEEP_DAILY_DAYS: "35"
+      KEEP_MONTHLY_DAYS: "400"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: 鍵が そろって いるか
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+        run: |
+          if [ -z "$SUPABASE_DB_URL" ]; then
+            echo "::error::SUPABASE_DB_URL が ありません。Settings → Environments → Preview に 登録してください。"
+            exit 1
+          fi
+          if [ -n "$R2_ENDPOINT" ] && [ -n "$R2_ACCESS_KEY_ID" ] && [ -n "$R2_SECRET_ACCESS_KEY" ]; then
+            echo "STORE=yes" >> "$GITHUB_ENV"
+            echo "→ 置き場（R2）の 鍵 あり"
+          else
+            echo "STORE=no" >> "$GITHUB_ENV"
+            echo "::warning::置き場（R2）の 鍵が ありません。書き出しと 戻して みる までは 走りますが、どこにも 保存されません。"
+          fi
+
+      - name: age（暗号化の 道具）を 入れる
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq age > /dev/null
+          age --version
+
+      - name: 書き出す（本番は 読むだけ）
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          STAMP="$(date -u +%Y-%m-%dT%H%MZ)"
+          WORK="$RUNNER_TEMP/nexmax-db-$STAMP"
+          mkdir -m 700 "$WORK"
+          echo "STAMP=$STAMP" >> "$GITHUB_ENV"
+          echo "WORK=$WORK" >> "$GITHUB_ENV"
+
+          # 本番への 問い合わせは ぜんぶ 読み取りの トランザクションで
+          ro() { psql "$SUPABASE_DB_URL" -X -q -A -t -v ON_ERROR_STOP=1 -1 -c 'set transaction read only' "$@"; }
+
+          SERVER="$(ro -c 'show server_version')"
+          echo "SERVER=$SERVER" >> "$GITHUB_ENV"
+          echo "→ 本番の Postgres: $SERVER"
+
+          # 中身は「外す ものを 名指し」: storage は 全部、auth は users と identities 以外
+          # （理由は scripts/db_backup.mjs の dataExcludes。新しい 表は 自動で 外れる／入る）
+          EXCLUDE="$(ro -c "select schemaname || '.' || tablename from pg_tables where schemaname in ('auth', 'storage')" \
+            | node scripts/db_backup.mjs data-excludes)"
+
+          npx --yes "$SUPABASE_CLI" db dump --db-url "$SUPABASE_DB_URL" --role-only -f "$WORK/roles.sql"
+          # Supabase が 付ける 設定値の 権限は 戻せない（戻すと 止まる）ので 注記つきで 外す
+          node scripts/db_backup.mjs clean-roles "$WORK/roles.sql"
+          npx --yes "$SUPABASE_CLI" db dump --db-url "$SUPABASE_DB_URL" -f "$WORK/schema.sql"
+          npx --yes "$SUPABASE_CLI" db dump --db-url "$SUPABASE_DB_URL" --data-only --use-copy \
+            ${EXCLUDE:+--exclude "$EXCLUDE"} -f "$WORK/data.sql"
+          # CLI が 落とす 2つ（移行の 台帳・auth.users の トリガー）
+          ro -f scripts/db_backup_extras.sql > "$WORK/extras.sql"
+
+      - name: 中身を 数える
+        run: |
+          node scripts/db_backup.mjs count-copy "$WORK/data.sql" > "$RUNNER_TEMP/rows.json"
+          node scripts/db_backup.mjs manifest "$WORK" --stamp "$STAMP" --rows "$RUNNER_TEMP/rows.json" \
+            --cli "$SUPABASE_CLI" --server "$SERVER" > "$WORK/manifest.json"
+          ls -l "$WORK" | awk 'NR > 1 { print "→ " $NF ": " $5 " bytes" }'
+
+      - name: 暗号化する（開けられるのは tomy の 秘密鍵だけ）
+        run: |
+          OUT="$RUNNER_TEMP/nexmax-db-$STAMP.tar.gz.age"
+          tar -C "$RUNNER_TEMP" -czf - "nexmax-db-$STAMP" | age -R scripts/db_backup_recipients.txt -o "$OUT"
+          # 暗号化されて いる ことを 頭の 印で 確かめる（平文の まま 送らない）
+          head -c 21 "$OUT" | grep -qx 'age-encryption.org/v1'
+          echo "OUT=$OUT" >> "$GITHUB_ENV"
+          echo "→ $(stat -c %s "$OUT") bytes（暗号化ずみ）"
+
+      - name: 置き場へ 送る（daily/）
+        if: env.STORE == 'yes'
+        env:
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+          # R2 は 新しい aws CLI の 既定の 整合チェック（CRC）に 応えない ことが ある
+          AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+          AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+        run: |
+          KEY="$(node scripts/db_backup.mjs key --kind daily --stamp "$STAMP")"
+          aws --endpoint-url "$R2_ENDPOINT" s3 cp "$OUT" "s3://$BUCKET/$KEY" --only-show-errors
+          echo "→ 置いた: $KEY"
+
+      - name: 空の DB へ 戻して みる（ランナーの 中だけ。本番には 書かない）
+        run: |
+          DRILL="$RUNNER_TEMP/drill"
+          mkdir -p "$DRILL"
+          (
+            cd "$DRILL"
+            npx --yes "$SUPABASE_CLI" init > /dev/null
+            # storage・realtime の 準備も 省かない。本物の プロジェクトに 近づける ため
+            # （省くと realtime の 役割 supabase_realtime_admin が 無く、roles.sql で 落ちた。2026-10-11）
+            npx --yes "$SUPABASE_CLI" db start
+          )
+          # 戻す 先は ランナーの 中の DB だけ。本番の 鍵は この ステップに 渡して いない
+          LOCAL="postgresql://postgres:postgres@127.0.0.1:54322/postgres"
+
+          # 手順は Supabase 公式の「Backup and restore using the CLI」と 同じ並び
+          if ! psql "$LOCAL" -X -q -1 -v ON_ERROR_STOP=1 \
+            -f "$WORK/roles.sql" -f "$WORK/schema.sql" \
+            -c 'SET session_replication_role = replica' \
+            -f "$WORK/data.sql" -f "$WORK/extras.sql" > "$RUNNER_TEMP/restore.log" 2>&1; then
+            echo "::error::空の DB へ 戻せません でした。ログは 行の 中身を 含む ので、ERROR の 行だけ 伏せて 出します。"
+            node scripts/db_backup.mjs redact-log "$RUNNER_TEMP/restore.log"
+            exit 1
+          fi
+
+          node scripts/db_backup.mjs count-sql "$RUNNER_TEMP/rows.json" \
+            | psql "$LOCAL" -X -q -A -t -F $'\t' -v ON_ERROR_STOP=1 > "$RUNNER_TEMP/restored.tsv"
+          node scripts/db_backup.mjs verify "$RUNNER_TEMP/rows.json" "$RUNNER_TEMP/restored.tsv"
+          echo "DRILL=ok" >> "$GITHUB_ENV"
+
+      - name: 月の 写しと、古い ものの 片づけ
+        if: env.STORE == 'yes' && env.DRILL == 'ok'
+        env:
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+          AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+          AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+        run: |
+          s3() { aws --endpoint-url "$R2_ENDPOINT" "$@"; }
+          list() { s3 s3api list-objects-v2 --bucket "$BUCKET" --prefix "$1" --query 'Contents[].Key' --output text; }
+          NOW="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+
+          # 月の 写し: その 月の monthly/ が まだ 無ければ、今夜の ぶん（戻せると 確かめた もの）を 置く
+          if [ "$(list monthly/ | node scripts/db_backup.mjs needs-monthly --now "$NOW")" = yes ]; then
+            KEY="$(node scripts/db_backup.mjs key --kind monthly --stamp "$STAMP")"
+            s3 s3 cp "$OUT" "s3://$BUCKET/$KEY" --only-show-errors
+            echo "→ 今月の 写しを 置いた: $KEY"
+          fi
+
+          # 古い ものを 消す。新しい 順に daily は 7本・monthly は 3本、日数に 関係なく 残す
+          {
+            list daily/ | node scripts/db_backup.mjs prune --now "$NOW" --keep-days "$KEEP_DAILY_DAYS" --keep-min 7
+            list monthly/ | node scripts/db_backup.mjs prune --now "$NOW" --keep-days "$KEEP_MONTHLY_DAYS" --keep-min 3
+          } > "$RUNNER_TEMP/prune.txt"
+          while read -r key; do
+            [ -n "$key" ] || continue
+            s3 s3 rm "s3://$BUCKET/$key" --only-show-errors
+            echo "→ 消した: $key"
+          done < "$RUNNER_TEMP/prune.txt"
+
+      - name: 保存できたか
+        run: |
+          if [ "$STORE" != yes ]; then
+            echo "::error::置き場（R2）の 鍵が 無いので、今夜の 書き出しは どこにも 保存されて いません。docs/backup-recovery.md §2 の 用意を してください。"
+            exit 1
+          fi
+          echo "✓ 今夜の 書き出し: daily/nexmax-db-$STAMP.tar.gz.age（戻せる ことも 確かめた）"
+
+      - name: 平文を 消す
+        if: always()
+        run: rm -rf "$RUNNER_TEMP"/nexmax-db-* "$RUNNER_TEMP"/drill "$RUNNER_TEMP"/restore.log "$RUNNER_TEMP"/rows.json "$RUNNER_TEMP"/restored.tsv

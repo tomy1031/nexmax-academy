@@ -1303,6 +1303,21 @@ curl -s -o /dev/null -D - -H 'Range: bytes=1000-1999' "https://staging-academy.n
 - **Cron Trigger は アカウントで 5本まで**。deploy-kicker 3本 ＋ 見張り 2本 で 埋まって いる
 - 鍵（知らせ先）は `wrangler secret` だけ。ビルド環境に 置かない（罠1）
 
+### 0.20 DBの バックアップ —— 毎晩 書き出して、毎晩 戻して みる（2026-10-11）
+
+Supabase の 無料プランには 自動バックアップが 無い。2026-10-11 から
+「DBの書き出し（毎晩）」（`.github/workflows/backup.yml`）が 毎晩 本番DBを **読むだけで**
+書き出し、age で 暗号化して R2（`nexmax-academy-db-backup`）に 置く。
+置く 前に **ランナーの 中の 空の DB へ 戻して、表ごとの 件数を 突き合わせる**。
+
+- 鍵は `SUPABASE_DB_URL`（§0.8 と 同じ）と R2 の 3つ（`R2_ENDPOINT`・`R2_ACCESS_KEY_ID`・
+  `R2_SECRET_ACCESS_KEY`）。どれも Environment「Preview」
+- **書き出しを artifact に しない・リポジトリに 置かない**（public。暗号化の 前も 後も）
+- **開けるのは tomy の 秘密鍵だけ**。公開鍵は `scripts/db_backup_recipients.txt`
+- Storage の ファイル（画像・音声）は 対象外
+
+戻しかた・鍵・置き場の 用意・落ちた ときの 読みかたは **`docs/backup-recovery.md`**。
+
 ## 1. 環境の位置づけ
 
 現行（Cloudflare 移行後）:
