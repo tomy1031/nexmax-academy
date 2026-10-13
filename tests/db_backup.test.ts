@@ -13,6 +13,7 @@ import {
   parseCountRows,
   redactLog,
   REQUIRED_TABLES,
+  scopeProblems,
   selectPrunable,
   stampOf,
   verifyCounts,
@@ -162,6 +163,21 @@ describe("戻した 先で 数えて 突き合わせる", () => {
   it("要る 表が 空なら 不合格（別の DB を 指した・全部 消えた を 黙って 保存しない）", () => {
     const empty = { ...full, "auth.users": 0 };
     expect(verifyCounts(empty, { ...empty })).toEqual([expect.stringContaining("auth.users")]);
+  });
+
+  it("外した はずの 表（storage・auth の 合鍵）が 入って いたら 不合格（除外が 黙って 効かない ときの 見張り）", () => {
+    const leaked = { ...full, "auth.refresh_tokens": 5, "storage.objects": 21 };
+    expect(verifyCounts(leaked, { ...leaked })).toEqual([
+      expect.stringContaining("auth.refresh_tokens"),
+      expect.stringContaining("storage.objects"),
+    ]);
+  });
+
+  it("外した はずの 表の 見張りは 単独でも 呼べる（保存の 前に 止める ため）", () => {
+    expect(scopeProblems(full)).toEqual([]);
+    expect(scopeProblems({ ...full, "auth.sessions": 1 })).toEqual([
+      expect.stringContaining("auth.sessions"),
+    ]);
   });
 
   it("守る ものの 一覧に、学習者・修了証・解答・先生の 直した 教材が 入って いる", () => {

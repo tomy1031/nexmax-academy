@@ -11,6 +11,7 @@
  *   - data-excludes … 中身を 書き出さない 表を 選ぶ（storage 全部・auth の 大半）
  *   - clean-roles   … roles.sql から Supabase が 付ける 権限の 行を 外す
  *   - count-copy    … 書き出した data.sql の 行数を 表ごとに 数える
+ *   - scope         … 外した はずの 表が 入って いないか（暗号化・保存の 前に）
  *   - count-sql     … 戻した 先で 同じ 表を 数える SQL を 作る
  *   - verify        … 「書き出した 行数」と「戻せた 行数」を 突き合わせる
  *   - manifest      … 中身の 目録（行数・ハッシュ）を 作る
@@ -176,6 +177,23 @@ export function parseCountRows(text) {
 }
 
 /**
+ * 外した はずの 表が 書き出しに 入って いないか。
+ *
+ * 除外が 効かなくても、戻して みる 側にも 同じ 表が ある ので 件数は 合い、
+ * **黙って ログインの 合鍵まで 書き出す**ことに なる（2026-10-11 の レビューの 指摘）。
+ * dataExcludes と 同じ 決まりで 見る。暗号化・保存より **前に** 呼ぶ。
+ *
+ * @param {Record<string, number>} dumped
+ * @returns {string[]}
+ */
+export function scopeProblems(dumped) {
+  return Object.keys(dumped)
+    .sort()
+    .filter((name) => dataExcludes([name]).length > 0)
+    .map((name) => `${name} は 書き出さない はずの 表です（除外が 効いて いません）`);
+}
+
+/**
  * 書き出した 行数と 戻せた 行数を 突き合わせる。
  * @param {Record<string, number>} dumped
  * @param {Record<string, number>} restored
@@ -187,6 +205,8 @@ export function verifyCounts(dumped, restored, required = REQUIRED_TABLES) {
   for (const name of required) {
     if (!(dumped[name] > 0)) problems.push(`${name} が 書き出しに 1件も 入って いません`);
   }
+  problems.push(...scopeProblems(dumped));
+
   for (const [name, expected] of Object.entries(dumped).sort()) {
     const actual = restored[name];
     if (actual === undefined) problems.push(`${name} を 戻した 先で 数えられません でした`);
@@ -354,6 +374,11 @@ function main(argv) {
     case "count-sql": {
       process.stdout.write(countSql(JSON.parse(readFileSync(args[0], "utf8"))));
       return 0;
+    }
+    case "scope": {
+      const problems = scopeProblems(JSON.parse(readFileSync(args[0], "utf8")));
+      for (const problem of problems) console.error(`✗ ${problem}`);
+      return problems.length > 0 ? 1 : 0;
     }
     case "verify": {
       const dumped = JSON.parse(readFileSync(args[0], "utf8"));
