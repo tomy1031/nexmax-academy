@@ -103,6 +103,21 @@ describe("buildAsakaiJudgePrompt — 渡す 文", () => {
     expect(asa).not.toContain("時刻（09:00 など）を いくつも 並べて いる");
   });
 
+  /**
+   * **長さは 点に ほとんど 響かせない**（2026-10-13 の 指定）。
+   * まとめた 人にも「まとめましょう」の 一言だけが 返って いた。長い 報告は 中身で 見て、
+   * まとめた 言い方は 項目ごとの ブラッシュアップで 見せる。記録の 写しは 別で、数えない まま。
+   */
+  it("夕礼の 長い 報告は 点を ほとんど 下げず、ブラッシュアップで まとめた 言い方を 見せる", () => {
+    const prompt = buildAsakaiJudgePrompt(base);
+    expect(prompt).toContain("長さは 点に ほとんど 響かせません");
+    expect(prompt).toContain("japanese は 長さでは 下げません");
+    expect(prompt).toContain("**まとめた 言い方**");
+    expect(prompt).toContain("写しは これまでどおり true に します");
+    /* 朝礼（記録が 無い）には 出さない */
+    expect(buildAsakaiJudgePrompt({ ...base, hasLog: false })).not.toContain("# 長い 報告");
+  });
+
   it("行を 持たない 札（進捗率）は 出さない", () => {
     const prompt = buildAsakaiJudgePrompt({
       ...base,

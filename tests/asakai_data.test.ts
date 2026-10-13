@@ -8,6 +8,7 @@ import { ASSET_VERSIONS } from "@/content/asset-versions.generated";
 import kantan from "../content/meetings/asakai_kantan.json";
 import muzukashii from "../content/meetings/asakai_muzukashii.json";
 import { meetingSchema } from "@/content/schema";
+import { hintOf } from "@/lib/meeting/asakai-hint";
 import {
   applyUtterance,
   hasNumber,
@@ -278,6 +279,35 @@ describe("曜日ごとの 見かた", () => {
       expect(stray).toEqual([]);
     });
   }
+});
+
+/**
+ * **まとめた 人に「まとめて」と 言わない**（2026-10-13 の 指定）
+ *
+ * 「今日 行ったこと」が 開かない ときの 2つめの 聞き返しは「作業記録を そのまま 読まずに、
+ * まとめて 話して ください」で、表の ヒントにも そのまま 出て いた——**まとめて 話したのに
+ * 中身が 足りなかった 人**にも「まとめて」と 返って いた。記録の 写しは 別の 帯
+ *（`ReadLogBand`）が 言うので、ヒントは 教材の 型文（「今日は、◯◯を しました。」）に する。
+ * 長さで 点を 下げる 指示も 教材ぜんたいの 見かたから 外した。
+ */
+describe("夕礼 — 長さを 罰に しない", () => {
+  const meeting = meetingSchema.parse(muzukashii);
+  const asakai = meeting.asakai!;
+
+  it("「今日 行ったこと」の ヒントは 型文で、「まとめて」と 言わない", () => {
+    for (const scene of asakai.scenes) {
+      const kyou = scene.panels.find((panel) => panel.id === "kyou");
+      const hint = hintOf((kyou?.followups ?? []).map((one) => one.text));
+      expect(hint).toBe("「今日は、◯◯を しました。」");
+      expect((kyou?.followups ?? []).some((one) => one.text.includes("まとめて"))).toBe(false);
+    }
+  });
+
+  it("教材ぜんたいの 見かたが 長さで 日本語の 点を 下げさせない", () => {
+    const prompt = meeting.judgePrompt ?? "";
+    expect(prompt).not.toContain("rough の 幅");
+    expect(prompt).toContain("長くても 言えたと 見ます");
+  });
 });
 
 /** おわびの ことばか どうか。 */
