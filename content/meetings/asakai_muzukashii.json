@@ -285,7 +285,8 @@
               },
               {
                 "speakerId": "hendy",
-                "text": "「今日は、◯◯を しました。」の 形で、大きな 作業を 2つか 3つ お願いします。"
+                "text": "「今日は、◯◯を しました。」の 形で、大きな 作業を 2つか 3つ お願いします。",
+                "audio": "/audio/meetings/asakai_muzukashii/s0-kyou-fu1-caa610fd.wav"
               }
             ],
             "example": {
@@ -645,7 +646,8 @@
               },
               {
                 "speakerId": "hendy",
-                "text": "「今日は、◯◯を しました。」の 形で、大きな 作業を 2つか 3つ お願いします。"
+                "text": "「今日は、◯◯を しました。」の 形で、大きな 作業を 2つか 3つ お願いします。",
+                "audio": "/audio/meetings/asakai_muzukashii/s1-kyou-fu1-caa610fd.wav"
               }
             ],
             "example": {
@@ -999,7 +1001,8 @@
               },
               {
                 "speakerId": "hendy",
-                "text": "「今日は、◯◯を しました。」の 形で、大きな 作業を 2つか 3つ お願いします。"
+                "text": "「今日は、◯◯を しました。」の 形で、大きな 作業を 2つか 3つ お願いします。",
+                "audio": "/audio/meetings/asakai_muzukashii/s2-kyou-fu1-caa610fd.wav"
               }
             ],
             "example": {
@@ -1411,7 +1414,8 @@
               },
               {
                 "speakerId": "hendy",
-                "text": "「今日は、◯◯を しました。」の 形で、大きな 作業を 2つか 3つ お願いします。"
+                "text": "「今日は、◯◯を しました。」の 形で、大きな 作業を 2つか 3つ お願いします。",
+                "audio": "/audio/meetings/asakai_muzukashii/s3-kyou-fu1-caa610fd.wav"
               }
             ],
             "example": {
@@ -1774,7 +1778,8 @@
               },
               {
                 "speakerId": "hendy",
-                "text": "「今日は、◯◯を しました。」の 形で、大きな 作業を 2つか 3つ お願いします。"
+                "text": "「今日は、◯◯を しました。」の 形で、大きな 作業を 2つか 3つ お願いします。",
+                "audio": "/audio/meetings/asakai_muzukashii/s4-kyou-fu1-caa610fd.wav"
               }
             ],
             "example": {
