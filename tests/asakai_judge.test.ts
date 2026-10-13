@@ -119,6 +119,9 @@ describe("buildAsakaiJudgePrompt — 渡す 文", () => {
     expect(prompt).toContain("japanese は 長さでは 下げません");
     expect(prompt).toContain("**まとめた 言い方**");
     expect(prompt).toContain("写しは これまでどおり true に します");
+    /* OK（直す ところが 無い）でも 長ければ まとめる——当たる 形を 数で 決める（2026-10-13） */
+    expect(prompt).toContain("直す ところが 無くても（中身が そろって いても）");
+    expect(prompt).toContain("**2文 以上 ある、または 作業を 3つ 以上 並べて いる**");
     /* 朝礼（記録が 無い）には 出さない */
     expect(buildAsakaiJudgePrompt({ ...base, hasLog: false })).not.toContain("# 長い 報告");
   });
