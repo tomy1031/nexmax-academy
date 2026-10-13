@@ -1,12 +1,17 @@
 import { describe, expect, it } from "vitest";
 
+import muzukashii from "../content/meetings/asakai_muzukashii.json";
+import { meetingSchema } from "@/content/schema";
 import {
+  asakaiAiFurigana,
   buildAsakaiJudgePrompt,
   NO_JUDGE,
   parseAsakaiJudge,
+  readableAsakaiText,
   type AsakaiJudgeContext,
   type JudgeablePanel,
 } from "@/lib/meeting/asakai-judge";
+import { buildFuriganaIndex } from "@/lib/text/furigana";
 
 /**
  * 報告の AI判定（朝礼・夕礼・2026-09-14）
@@ -116,6 +121,22 @@ describe("buildAsakaiJudgePrompt — 渡す 文", () => {
     expect(prompt).toContain("写しは これまでどおり true に します");
     /* 朝礼（記録が 無い）には 出さない */
     expect(buildAsakaiJudgePrompt({ ...base, hasLog: false })).not.toContain("# 長い 報告");
+  });
+
+  /**
+   * **まとめた ブラッシュアップが 読みの 検査で 捨てられない**（2026-10-13 の code review）。
+   * まとめた 文は said と ちがう ので 検査を 通る。教材の 読み辞書は「再」「仮」を 1字で
+   * しか 持たず、「再テストまで 完了しました」の まとめが 空に なって 表が「—」だった。
+   * 夕礼の お手本（司会の れい）は まとめた 報告の 見本なので、それが ぜんぶ 通る ことを 見る。
+   */
+  it("夕礼の お手本と 同じ 言い方の まとめは 読みの 検査を 通る", () => {
+    const meeting = meetingSchema.parse(muzukashii);
+    const index = buildFuriganaIndex(asakaiAiFurigana(meeting.furigana ?? []));
+    const dropped = meeting
+      .asakai!.scenes.flatMap((scene) => scene.panels.map((panel) => panel.example?.text ?? ""))
+      .map((text) => text.replace(/[「」]/gu, ""))
+      .filter((text) => text !== "" && readableAsakaiText(text, index) === "");
+    expect(dropped).toEqual([]);
   });
 
   it("行を 持たない 札（進捗率）は 出さない", () => {
