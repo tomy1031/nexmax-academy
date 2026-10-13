@@ -21,9 +21,9 @@ export const PROBES = [
   // 全員が 最初に 開く 画面。作りおき（force-static）なので Next の サーバは 起きない
   { id: "title", label: "タイトル画面", path: "/", ok: [200] },
   // 門番（src/middleware.ts）を 通る 道。ログインなしは タイトルへ 307 で 返る のが 正常
-  { id: "gate", label: "まなびマップ（門番）", path: "/map", ok: [200, 307, 308] },
+  { id: "gate", label: "まなびマップ（ログイン前の転送）", path: "/map", ok: [200, 307, 308] },
   // Next の サーバ本体と DB を 通る 道。warnings が 空なら 教材も 健康
-  { id: "health", label: "教材の 健康しらべ", path: "/api/health/content", ok: [200] },
+  { id: "health", label: "教材の自動チェック", path: "/api/health/content", ok: [200] },
 ];
 
 /** 1回の 見張りで 1つの ページを 試す 回数と 間（その 回の 中で「続いたか」を 見る）。 */
@@ -60,15 +60,15 @@ export function classifyResponse(probe, status, bodyText = "") {
 export function describeCode(code) {
   switch (code) {
     case "1102":
-      return "Error 1102（Worker の 上限を 超えた）";
+      return "Error 1102（Worker の上限を超えた）";
     case "1101":
-      return "Error 1101（Worker が 例外で 止まった）";
+      return "Error 1101（Worker が例外で止まった）";
     case "timeout":
-      return `${TIMEOUT_MS / 1000}秒 待っても 返事が 無い`;
+      return `${TIMEOUT_MS / 1000}秒待っても返事がない`;
     case "network":
       return "つながらない";
     case "bad-json":
-      return "返事の 形が おかしい（JSON で ない）";
+      return "返事の形がおかしい（JSON ではない）";
     default:
       return `HTTP ${code}`;
   }
@@ -118,7 +118,14 @@ export async function runProbe(probe, { baseUrl, fetchImpl, sleep = sleepDefault
         }
       }
     } catch (error) {
-      code = error && error.name === "AbortError" ? "timeout" : "network";
+      // サービスバインディング越しでは 1102 は 画面では なく 例外で 返る
+      const text = String(error?.message ?? "");
+      code =
+        error && error.name === "AbortError"
+          ? "timeout"
+          : /exceeded|resource limits|cpu time/i.test(text)
+            ? "1102"
+            : "network";
     }
     if (!code) {
       return { id: probe.id, failures, attempts: attempt + 1, code: null, lastFailCode, body };
@@ -161,6 +168,19 @@ export async function readClientErrors(env, fetchImpl) {
   }
 }
 
+/**
+ * 一時的に 黙らせる 警告（var `MUTE_WARNINGS`・カンマ区切りの 部分一致）。
+ * **直しが 決まって いる 既知の 誤報だけ**に 使う。deploy の とき `--var` で 渡し、
+ * wrangler.jsonc には 書かない——次の ふつうの deploy で 自然に 外れる ように。
+ * 2026-10-11: 健康しらべが quest を 数えず 誤報を 出して いた（#598 で 直し中）ため。
+ */
+export function parseMutes(value) {
+  return String(value ?? "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
 /** 健康しらべの 警告を 1つの 印に する（同じ 警告が 続いて いるかを 見る ため）。 */
 function warningsKey(warnings) {
   return warnings.slice().sort().join("\n").slice(0, 500);
@@ -183,8 +203,14 @@ export function safePath(path) {
  *   hold      … 測れなかった（健康しらべ・DB が 落ちた）。前の 回の 異常を そのまま 残す
  *               ——測れない ことを「直った」と 取り違えない ため
  * 返す recentFail・pending は 次の 回に 引き継ぐ もの。
+ *
+ * @param {any} prev
+ * @param {any[]} probeResults
+ * @param {any} clientErrors
+ * @param {number} now
+ * @param {{ mutes?: string[] }} [opts]
  */
-export function judge(prev, probeResults, clientErrors, now) {
+export function judge(prev, probeResults, clientErrors, now, { mutes = [] } = {}) {
   const findings = [];
   const recentFail = {};
   const pending = {};
@@ -201,7 +227,9 @@ export function judge(prev, probeResults, clientErrors, now) {
 
     // 健康しらべの 警告（教材が 隠れる・404 に なる）。2回 続いたら 知らせる
     if (r.id === "health") {
-      const warnings = Array.isArray(r.body?.warnings) ? r.body.warnings : [];
+      const warnings = (Array.isArray(r.body?.warnings) ? r.body.warnings : []).filter(
+        (w) => !mutes.some((m) => String(w).includes(m)),
+      );
       if (r.code) {
         // 測れなかった。警告の 続きぐあいも 異常も 前の まま
         if (lastPending.health) pending.health = lastPending.health;
@@ -212,7 +240,7 @@ export function judge(prev, probeResults, clientErrors, now) {
         findings.push({
           key: "content",
           level: lastPending.health === key ? "confirmed" : "suspect",
-          text: `教材の 健康しらべに 警告 ${warnings.length}件 — ${String(warnings[0]).slice(0, 160)}`,
+          text: `教材の自動チェックで警告${warnings.length}件: ${String(warnings[0]).slice(0, 160)}`,
         });
       }
     }
@@ -223,11 +251,11 @@ export function judge(prev, probeResults, clientErrors, now) {
     // 後者が 無いと「3割だけ 1102」の ような 間欠的な 異常を 拾えない（毎回 2回目で 通る）
     const carried = typeof lastFail[r.id] === "number" && now - lastFail[r.id] <= CARRY_MS;
     const level = r.failures >= 2 || carried ? "confirmed" : "suspect";
-    const tail = r.code ? "" : "・いまは 通る";
+    const tail = r.code ? "" : "・いまは通る";
     findings.push({
       key: `page:${r.id}`,
       level,
-      text: `${probe.label}（${probe.path}）: ${describeCode(r.lastFailCode)}（${r.attempts}回中 ${r.failures}回 失敗${tail}）`,
+      text: `${probe.label}（${probe.path}）: ${describeCode(r.lastFailCode)}（${r.attempts}回中${r.failures}回失敗${tail}）`,
     });
   }
 
@@ -237,7 +265,7 @@ export function judge(prev, probeResults, clientErrors, now) {
       findings.push({
         key: "db",
         level: lastPending.db ? "confirmed" : "suspect",
-        text: `DB（Supabase）に 届かない: ${clientErrors.failed}`,
+        text: `データベース（Supabase）に届かない: ${clientErrors.failed}`,
       });
       hold("client-errors");
     } else {
@@ -248,13 +276,13 @@ export function judge(prev, probeResults, clientErrors, now) {
           .slice(0, 3)
           .map(
             (row) =>
-              `${safePath(row.path)} ${Number(row.n) || 0}件${row.kind === "stale" ? "（部品の 読みこみ）" : ""}`,
+              `${safePath(row.path)} ${Number(row.n) || 0}件${row.kind === "stale" ? "（部品の読み込み）" : ""}`,
           )
           .join("・");
         findings.push({
           key: "client-errors",
           level: "confirmed",
-          text: `画面の エラーが ${CLIENT_ERROR_MINUTES}分で ${total}件（${where}）`,
+          text: `ブラウザのエラーが${CLIENT_ERROR_MINUTES}分で${total}件（${where}）`,
         });
       }
     }
@@ -282,8 +310,14 @@ export function isQuietHour(now) {
  *   念押し … 開いた まま 2時間 たった とき（夜は 送らない）
  *   閉じる … **30分 続けて** 何も 出なかった とき（✅ で 1通）。その 間に また 出たら
  *            黙って 開いた まま に 戻す（行き来で 鳴らさない）
+ *
+ * @param {any} prev
+ * @param {any} judged
+ * @param {number} now
+ * @param {string} prodUrl
+ * @param {{ mutes?: string[] }} [opts]
  */
-export function decide(prev, judged, now, prodUrl) {
+export function decide(prev, judged, now, prodUrl, { mutes = [] } = {}) {
   const open = {};
   const fresh = [];
   const reminded = [];
@@ -333,14 +367,17 @@ export function decide(prev, judged, now, prodUrl) {
     const openKeys = Object.keys(open);
     messages.push({
       kind: "start",
-      title: "本番の 見張りを はじめました",
+      title: "本番サイトの自動チェックを始めました",
       text: [
-        `👀 本番の 見張りを はじめました（${time}）`,
-        "10分ごと（授業の 火・水・金 17:05〜18:55 は 5分ごと）に 見ます。",
-        "知らせるのは 異常が 続いた とき・2時間ごとの 念押し（夜は なし）・直った ときだけです。",
+        `👀 本番サイトの自動チェックを始めました（${time}）`,
+        "10分ごと（授業がある火・水・金の17:05〜18:55は5分ごと）にチェックします。",
+        "知らせるのは、異常が続いたとき・続いている異常の2時間ごとの再通知（夜は送らない）・直ったときだけです。",
         openKeys.length === 0
-          ? "✅ いまは ぜんぶ 正常です。"
-          : `いま 開いて いる 異常:\n${lines(openKeys, "・").join("\n")}`,
+          ? "✅ いまはすべて正常です。"
+          : `いま続いている異常:\n${lines(openKeys, "・").join("\n")}`,
+        ...(mutes.length > 0
+          ? [`（修正待ちの既知の誤報は知らせません: ${mutes.join("・")}）`]
+          : []),
         prodUrl,
       ].join("\n"),
     });
@@ -348,13 +385,13 @@ export function decide(prev, judged, now, prodUrl) {
     const others = Object.keys(open).filter((k) => !fresh.includes(k) && !reminded.includes(k));
     messages.push({
       kind: "alert",
-      title: fresh.length > 0 ? "本番に 異常が あります" : "本番の 異常が 続いて います",
+      title: fresh.length > 0 ? "本番サイトに異常があります" : "本番サイトの異常が続いています",
       text: [
-        `${fresh.length > 0 ? "🚨 本番に 異常が あります" : "⏰ 本番の 異常が 続いて います"}（${time}）`,
+        `${fresh.length > 0 ? "🚨 本番サイトに異常があります" : "⏰ 本番サイトの異常が続いています"}（${time}）`,
         ...lines(fresh, "🆕"),
         ...lines(reminded, "・"),
         ...lines(others, "・"),
-        `たしかめる: ${prodUrl}/api/health/content`,
+        `確認: ${prodUrl}/admin/logs`,
       ].join("\n"),
     });
   }
@@ -362,15 +399,13 @@ export function decide(prev, judged, now, prodUrl) {
     const stillOpen = Object.keys(open).length;
     messages.push({
       kind: "recovered",
-      title: "本番の 異常が 直りました",
+      title: "本番サイトの異常が直りました",
       text: [
-        `✅ 直りました（${time}・${RECOVER_QUIET_MS / 60_000}分 正常が 続いた）`,
+        `✅ 直りました（${time}・${RECOVER_QUIET_MS / 60_000}分正常が続いた）`,
         ...recovered.map(
-          (r) => `・${r.text}（${Math.max(1, Math.round((r.until - r.since) / 60_000))}分 続いた）`,
+          (r) => `・${r.text}（${Math.max(1, Math.round((r.until - r.since) / 60_000))}分続いた）`,
         ),
-        stillOpen > 0
-          ? `まだ 開いて いる 異常が ${stillOpen}件 あります。`
-          : "いまは ぜんぶ 正常です。",
+        stillOpen > 0 ? `まだ続いている異常が${stillOpen}件あります。` : "いまはすべて正常です。",
       ].join("\n"),
     });
   }
@@ -398,24 +433,45 @@ export function escapeSlack(text) {
  * ボットに 1通 送って もらえば 見つかる（グループに 入れた ときは その グループ）。
  * **いちばん 古い 1件**を とる——ボットを 作った 直後に 送るのは 作った 本人だから。
  * 見つけたら 状態に 覚えて、もう 探さない（TELEGRAM_CHAT_ID が あれば そちらが 勝つ）。
+ *
+ * @param {Record<string, string | undefined>} env
+ * @param {(url: string, init: RequestInit) => Promise<Response>} fetchImpl
+ * @param {(note: string) => void} [onNote]
+ * @returns {Promise<string | null>}
  */
-export async function findTelegramChat(env, fetchImpl) {
+export async function findTelegramChat(env, fetchImpl, onNote = () => {}) {
+  // 見つからない 理由を 1行 残す（鍵の 中身は 出さない）。状態の URL の last.telegram に 出る
   try {
     const res = await fetchWithTimeout(
       fetchImpl,
       `https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/getUpdates`,
       { method: "GET" },
     );
-    if (!res.ok) return null;
+    if (!res.ok) {
+      const why =
+        res.status === 401 || res.status === 404
+          ? "鍵が違う（BotFather の鍵をまるごと入れ直す）"
+          : res.status === 409
+            ? "ボットに webhook が設定されている"
+            : "Telegram が答えない";
+      onNote(`getUpdates HTTP ${res.status}: ${why}`);
+      return null;
+    }
     const data = await res.json();
-    for (const update of Array.isArray(data?.result) ? data.result : []) {
+    const updates = Array.isArray(data?.result) ? data.result : [];
+    for (const update of updates) {
       const chat = update?.message?.chat ?? update?.my_chat_member?.chat;
       if (chat && (typeof chat.id === "number" || typeof chat.id === "string")) {
+        onNote("送り先を見つけた");
         return String(chat.id);
       }
     }
+    onNote(
+      `更新${updates.length}件: まだボットに1通も届いていない（24時間で消えるので、/start をもう一度）`,
+    );
     return null;
   } catch {
+    onNote("Telegram につながらない");
     return null;
   }
 }
@@ -448,7 +504,7 @@ export async function notify(env, message, fetchImpl, { telegramChatId = null } 
               disable_web_page_preview: true,
             }),
           })
-        : Promise.reject(new Error("Telegram の 送り先が まだ 分からない")),
+        : Promise.reject(new Error("Telegram の送り先がまだ分からない")),
     );
   }
   if (env.SLACK_WEBHOOK_URL) {
@@ -469,7 +525,7 @@ export async function notify(env, message, fetchImpl, { telegramChatId = null } 
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          from: env.ALERT_EMAIL_FROM || "NexmaxAcademy 見張り <onboarding@resend.dev>",
+          from: env.ALERT_EMAIL_FROM || "NexmaxAcademy 自動チェック <onboarding@resend.dev>",
           to: env.ALERT_EMAIL_TO.split(",")
             .map((s) => s.trim())
             .filter(Boolean),
@@ -487,6 +543,9 @@ export async function notify(env, message, fetchImpl, { telegramChatId = null } 
 /**
  * 1回の 見張り。Cloudflare の ものは 全部 外から 渡す（テストで 差しかえる ため）。
  *   deps.fetch / deps.sleep / deps.now / deps.loadState / deps.saveState / deps.log
+ *   deps.probeFetch … 本番を 見る ときだけ 使う fetch（無ければ deps.fetch）。
+ *     **同じ アカウントの Worker は workers.dev の 公開 URL では 呼べない**（2026-10-11 に
+ *     3か所とも 404 が 返った）ので、本番の Worker へは サービスバインディング（env.PROD）で 行く
  */
 export async function runWatch(env, deps) {
   const baseUrl = (env.PROD_URL || "").replace(/\/+$/, "");
@@ -495,43 +554,51 @@ export async function runWatch(env, deps) {
 
   const [probeResults, clientErrors] = await Promise.all([
     Promise.all(
-      PROBES.map((probe) => runProbe(probe, { baseUrl, fetchImpl: deps.fetch, sleep: deps.sleep })),
+      PROBES.map((probe) =>
+        runProbe(probe, { baseUrl, fetchImpl: deps.probeFetch ?? deps.fetch, sleep: deps.sleep }),
+      ),
     ),
     readClientErrors(env, deps.fetch),
   ]);
 
-  const judged = judge(prev, probeResults, clientErrors, now);
-  const { messages, next } = decide(prev, judged, now, baseUrl);
+  const mutes = parseMutes(env.MUTE_WARNINGS);
+  const judged = judge(prev, probeResults, clientErrors, now, { mutes });
+  const { messages, next } = decide(prev, judged, now, baseUrl, { mutes });
 
   // Telegram の 送り先。入れて あれば それ、覚えて いれば それ、無ければ 探す
   let telegramChatId = env.TELEGRAM_CHAT_ID || prev?.telegramChatId || null;
+  let telegramNote = env.TELEGRAM_BOT_TOKEN ? (telegramChatId ? "送り先あり" : null) : "鍵なし";
   if (env.TELEGRAM_BOT_TOKEN && !telegramChatId) {
-    telegramChatId = await findTelegramChat(env, deps.fetch);
+    telegramChatId = await findTelegramChat(env, deps.fetch, (note) => (telegramNote = note));
   }
 
+  // 通知は おまけ。状態（管理画面のエラーログに 出る）は 届いたかに 関係なく いつも 正しく 残す。
+  // 通知先が あるのに 届かなかった 通知だけ、次の回に 送り直す（3通まで）
+  const queue = [...(Array.isArray(prev?.retry) ? prev.retry : []), ...messages].slice(-3);
+  const retry = [];
   let delivered = true;
-  for (const message of messages) {
+  for (const message of queue) {
     const { configured, sent } = await notify(env, message, deps.fetch, { telegramChatId });
-    deps.log(`[${message.kind}] ${message.text}${configured === 0 ? "（知らせ先が 未設定）" : ""}`);
-    if (sent === 0) delivered = false;
+    deps.log(`[${message.kind}] ${message.text}${configured === 0 ? "（通知先が未設定）" : ""}`);
+    if (configured > 0 && sent === 0) {
+      delivered = false;
+      retry.push(message);
+    }
   }
 
-  // 知らせが 1通も 届かなかったら、次の 回に もう一度 知らせる（黙って 落とさない）。
-  // 知らせ先が まだ 無い ときも 同じ——鍵を 入れた あとの 最初の 回に「はじめました」が 届く
-  const saved = delivered
-    ? next
-    : { ...next, startedAt: prev?.startedAt ?? null, open: prev?.open ?? {} };
   await deps.saveState({
-    ...saved,
+    ...next,
+    retry,
     telegramChatId: env.TELEGRAM_CHAT_ID ? (prev?.telegramChatId ?? null) : telegramChatId,
     last: {
       at: now,
       probes: probeResults.map((r) => ({ id: r.id, code: r.code, failures: r.failures })),
       clientErrors: clientErrors.skipped
-        ? "見ていない（SUPABASE_URL が 無い）"
+        ? "見ていない（SUPABASE_URL がない）"
         : (clientErrors.failed ??
           (clientErrors.rows ?? []).reduce((s, r) => s + (Number(r.n) || 0), 0)),
       delivered,
+      telegram: telegramNote,
     },
   });
   return { messages, delivered, findings: judged.findings };

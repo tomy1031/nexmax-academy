@@ -44,6 +44,11 @@ Worker の 失敗・画面の エラーは、学習者や 先生の 申告で �
 
 ## 無料枠と 本番の 枠を 守る 決まり
 
+- **本番へは サービスバインディング（`env.PROD` → Worker `academy`）で 行く。** 同じ アカウントの
+  Worker は workers.dev の 公開 URL では 呼べず、2026-10-11 の 初回は 3か所とも 404 だった
+  （本番は 正常）。つなぐ 先は いま 本番に 出て いる 版。上限超え（1102）は 画面では なく
+  例外で 返るので、`exceeded` 等の 文面で 1102 と みなす
+
 - **KV に 書かない。** 本番の KV は 書き込み 1000件/日 の 枠を デプロイと 作りおきが 使う
   （docs/deploy.md §0.9）。状態は **Durable Object（SQLite）に 1件**だけ（無料枠 1日 10万行・別枠）。
 - **見に 行く ページは 作り直しを 起こさない ものだけ。** `/` は 作りおき（force-static）、
@@ -66,6 +71,17 @@ curl -s https://academy.nexmax.workers.dev/api/health/content | python3 -c "impo
 ```
 
 `[]` なら 出して よい。
+
+**直し待ちの 既知の 誤報が 残って いる ときは、その 警告だけ 黙らせて 出せる**（部分一致・カンマ区切り）。
+wrangler.jsonc には 書かず、その deploy だけに 付ける——次の ふつうの deploy で 自然に 外れる:
+
+```bash
+npx wrangler deploy -c workers/watch/wrangler.jsonc --var MUTE_WARNINGS:waterfall_quest
+```
+
+黙らせて いる ものは「見張りを はじめました」と 状態の URL（`muted`）に 出る。
+2026-10-11 は これで 出した（Telegram の `/start` は 24時間で 消えるので、#598 を 待てなかった）。
+**#598 が 本番に 出たら、`--var` なしで 出し直す。**
 
 ### 1. 知らせ先の 鍵を 作る
 

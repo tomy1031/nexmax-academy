@@ -33,6 +33,8 @@ const handler = {
     ctx.waitUntil(
       runWatch(env, {
         fetch: (url, init) => fetch(url, init),
+        // 本番は サービスバインディングで 見る（同じ アカウントの workers.dev は 公開 URL で 呼べない）
+        probeFetch: env.PROD ? (url, init) => env.PROD.fetch(url, init) : undefined,
         sleep: (ms) => new Promise((resolve) => setTimeout(resolve, ms)),
         now: () => Date.now(),
         loadState: () => stub.load(),
@@ -41,7 +43,7 @@ const handler = {
       }).then((result) => {
         if (result.findings.length > 0) {
           console.log(
-            `見えた 異常: ${result.findings.map((f) => `${f.key}=${f.level}`).join(" ")}`,
+            `見つかった異常: ${result.findings.map((f) => `${f.key}=${f.level}`).join(" ")}`,
           );
         }
       }),
@@ -65,13 +67,21 @@ const handler = {
           email: Boolean(env.RESEND_API_KEY && env.ALERT_EMAIL_TO),
         },
         clientErrors: Boolean(env.SUPABASE_URL && env.SUPABASE_ANON_KEY),
+        // 一時的に 黙らせて いる 既知の 誤報（deploy の --var で 渡した ときだけ）
+        muted: env.MUTE_WARNINGS ?? null,
         startedAt: state?.startedAt ? new Date(state.startedAt).toISOString() : null,
         lastRunAt: state?.lastRunAt ? new Date(state.lastRunAt).toISOString() : null,
         open: state?.open ?? {},
         last: state?.last ?? null,
-        note: "読むだけの 画面です。ここから 見張りや 知らせは 起きません。",
+        note: "読むだけのページです。ここから自動チェックや通知は起きません。",
       },
-      { headers: { "cache-control": "no-store" } },
+      {
+        headers: {
+          "cache-control": "no-store",
+          // 管理画面のエラーログ（/admin/logs）がブラウザから読む。中身は公開してよい結果だけ
+          "access-control-allow-origin": "*",
+        },
+      },
     );
   },
 };
