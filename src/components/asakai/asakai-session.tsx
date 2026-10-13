@@ -52,6 +52,7 @@ import { StepTabs } from "@/components/meeting/step-tabs";
 import { useLiveVoice } from "@/components/meeting/use-live-voice";
 import { VisemeFace } from "@/components/meeting/viseme-face";
 import { RubyText } from "@/components/ruby-text";
+import { useIsAdmin } from "@/lib/admin-flag";
 import {
   rateOf,
   readSpeechSpeed,
@@ -281,6 +282,15 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
    * `useState` の 初期化関数で 1回だけ 読む——描くたびに 端末を 触らない。
    */
   const start = useState(() => restoreAsakai(meeting.id, asakai?.scenes.length ?? 0))[0];
+
+  /*
+   * **管理ユーザーは 最初から どの 曜日へも 行ける**（2026-10-13 の 指定「管理ユーザーは
+   * 初期で 曜日を スキップ できる ように して ください。（全ての ミーティング画面）」）。
+   * 曜日の 鍵は 学習者の ための 順番で、教材を 確かめる 人には 通せんぼでしか ない
+   *（教材の ロックを 管理ユーザーに かけない のと 同じ 考え・`content-frame.tsx`）。
+   * 飛んだ 先で 話しても、5日 そろわなければ「おわった」も 修了証も 出ない。
+   */
+  const isAdmin = useIsAdmin();
 
   const [sceneAt, setSceneAt] = useState(start.sceneAt);
   const [states, setStates] = useState<readonly PanelState[]>(() =>
@@ -1863,10 +1873,16 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
           key: String(at),
           label: DAY_NAME[one.day],
           cleared: doneDays[at],
-          locked: at > openUpTo,
+          locked: !isAdmin && at > openUpTo,
         }))}
         current={String(sceneAt)}
-        note={openUpTo + 1 < asakai.scenes.length ? "ぜんぶ 報告すると 開きます" : undefined}
+        note={
+          isAdmin
+            ? "🛡️ せんせいは ぜんぶ ひらけます"
+            : openUpTo + 1 < asakai.scenes.length
+              ? "ぜんぶ 報告すると 開きます"
+              : undefined
+        }
         disabled={waiting}
         index={index}
         onPick={(key) => goToScene(Number(key))}

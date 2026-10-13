@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { expect, test, type Locator, type Page } from "@playwright/test";
 
-import { bareKanjiTexts, joinCall, seedCompleted, shot } from "./helpers";
+import { bareKanjiTexts, joinCall, seedAdmin, seedCompleted, shot } from "./helpers";
 
 /**
  * 朝礼・夕礼ステージ（台帳 #366）の 通し — **390px の 実機幅で 撮る**
@@ -965,6 +965,30 @@ test("月曜を 終えて 開き直すと、火曜から つづく", async ({ pa
   );
   await shot(page, "asakai-09b-locked-thu");
 });
+
+/**
+ * **管理ユーザーは 最初から どの 曜日へも 行ける**（2026-10-13 の 指定「管理ユーザーは
+ * 初期で 曜日を スキップ できる ように して ください。（全ての ミーティング画面）」）
+ *
+ * 学習者は 上の とおり 終わった 日の つぎまで。管理ユーザーは 月曜を 話さずに 金曜へ 飛べる。
+ */
+for (const id of ["asakai_kantan", "asakai_muzukashii"] as const) {
+  test(`${id}: 管理ユーザーは 最初から 金曜日へ 飛べる`, async ({ page, context }) => {
+    const refs = stageRefs();
+    await seedCompleted(context, refs.slice(0, refs.indexOf(id)));
+    await seedAdmin(context);
+    await page.goto(`/asakai/meeting-${id}`);
+    await joinCall(page);
+    await closeDuty(page);
+
+    const friday = page.getByRole("button", { name: /金曜日/ });
+    await expect(friday).toBeEnabled();
+    await expectOnScreen(page, "せんせいは ぜんぶ ひらけます");
+    await friday.click();
+    await expect(friday).toHaveAttribute("aria-current", "step");
+    expect(await bareKanjiTexts(page)).toEqual([]);
+  });
+}
 
 /**
  * **5日目を 終えた 瞬間に 修了証が 出る**（2026-10-06 の 指定・願い #562 の 第2段）
