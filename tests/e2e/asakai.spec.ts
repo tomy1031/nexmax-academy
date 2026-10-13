@@ -526,6 +526,33 @@ test("夕礼 — 作業記録を そのまま 読み上げると 差し戻され
 });
 
 /**
+ * **一部だけ 言えた 札は「あと いくつ」**（2026-10-13 の 指定「NG の 指摘が おかしい」）
+ *
+ * 月曜の「明日 行うこと」は 2つ（学生詳細画面への 移動・スキルグラフ）で ✅。
+ * スキルグラフだけ 言った 人に、もう その 形で 言えて いる 型文「明日は、○○を します。」を
+ * 見せて いた。✅ に 2つ 要る 決まりは 残し、足りない 数だけを 言う（答えは 出さない）。
+ */
+test("夕礼 — 予定を 1つだけ 言えた ときは「もう 1つ」と 出る", async ({ page, context }) => {
+  const refs = stageRefs();
+  const at = refs.indexOf("asakai_muzukashii");
+  await seedCompleted(context, refs.slice(0, at));
+
+  await page.goto("/asakai/meeting-asakai_muzukashii");
+  await joinCall(page);
+  await closeDuty(page);
+
+  await page.getByLabel("こたえを 入力する").fill("明日は スキルグラフを 作る 予定です。");
+  await page.getByRole("button", { name: "おくる" }).click();
+
+  const judge = page.getByRole("dialog", { name: "報告の 見かた" });
+  await expect(judge).toBeVisible();
+  const text = await dialogText(judge);
+  expect(text).toContain("明日行うことは2つあります。もう1つ足してください。");
+  expect(text).not.toContain("「明日は、◯◯をします。」");
+  expect(await bareKanjiTexts(page)).toEqual([]);
+});
+
+/**
  * **夕礼も 同じ — 伝わらない 回は「もう一度報告」だけ**（2026-10-09 の 決定）
  *
  * 聞き返しの ポップアップは 朝礼と 夕礼で 同じ 部品。伝わらない 回の 道は

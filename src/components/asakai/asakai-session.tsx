@@ -86,7 +86,7 @@ import {
   type PanelState,
   type ReportPanel,
 } from "@/lib/meeting/panels";
-import { hintOf } from "@/lib/meeting/asakai-hint";
+import { hintOf, leftHint } from "@/lib/meeting/asakai-hint";
 import {
   asakaiAiFurigana,
   type AsakaiItem,
@@ -1072,6 +1072,19 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
             attempts: asked,
             wrongNumber: wrongAll.includes(panel.id),
           });
+          /*
+           * 「あと いくつ」は **作業を 並べる 札**（今日 行ったこと・明日 行うこと）だけ。
+           * 問題点の 行は 1つの 問題の 面（起きた こと・いま どう なったか）なので、
+           * 数で 言うと「問題が 2つ ある」と 読める——これまでどおり 型文に する。
+           */
+          const left =
+            panel.rule === "number" || panel.id === "komari" || panel.facts.some((fact) => fact.box)
+              ? ""
+              : leftHint({
+                  label: panel.label,
+                  need: panel.fullAt ?? panel.facts.length,
+                  have: state?.said.length ?? 0,
+                });
           const item = itemOf(panel.id);
           /* AIの 見立て → この 1本の 照合 → その日 前の ターンで 引いた ぶん の 順。 */
           const said =
@@ -1108,8 +1121,13 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
              * 正しい 数に 見える——まだの 札は 下の ヒント（型文）に する。
              */
             polished: mark !== "missing" ? (item?.polished ?? "") : "",
-            /* 答えを 出さない 型文（教材の 聞き返しから。`asakai-hint.ts`）。 */
-            hint: hintOf((data?.followups ?? []).map((one) => one.text)),
+            /*
+             * 答えを 出さない ヒント（`asakai-hint.ts`）。**一部だけ 言えた 札は「あと いくつ」**
+             *（2026-10-13「NG の 指摘が おかしい」→「2つの 決まりは 残し、ヒントを 直す」）——
+             * もう その 形で 言えて いる 人に 型文を 見せても 足りない ものが 読めない。
+             */
+            hint: left !== "" ? left : hintOf((data?.followups ?? []).map((one) => one.text)),
+            hintLeft: left !== "",
           };
         });
       };
