@@ -123,19 +123,26 @@ jobs:
           # （理由は scripts/db_backup.mjs の dataExcludes。新しい 表は 自動で 外れる／入る）
           EXCLUDE="$(ro -c "select schemaname || '.' || tablename from pg_tables where schemaname in ('auth', 'storage')" \
             | node scripts/db_backup.mjs data-excludes)"
+          # 空なら 止める（空だと 下の --exclude が 黙って 消え、合鍵まで 書き出す）
+          if [ -z "$EXCLUDE" ]; then
+            echo "::error::外す 表の 一覧が 空です（auth・storage の 表が 見つからない）。書き出しを 止めます。"
+            exit 1
+          fi
 
           npx --yes "$SUPABASE_CLI" db dump --db-url "$SUPABASE_DB_URL" --role-only -f "$WORK/roles.sql"
           # Supabase が 付ける 設定値の 権限は 戻せない（戻すと 止まる）ので 注記つきで 外す
           node scripts/db_backup.mjs clean-roles "$WORK/roles.sql"
           npx --yes "$SUPABASE_CLI" db dump --db-url "$SUPABASE_DB_URL" -f "$WORK/schema.sql"
           npx --yes "$SUPABASE_CLI" db dump --db-url "$SUPABASE_DB_URL" --data-only --use-copy \
-            ${EXCLUDE:+--exclude "$EXCLUDE"} -f "$WORK/data.sql"
+            --exclude "$EXCLUDE" -f "$WORK/data.sql"
           # CLI が 落とす 2つ（移行の 台帳・auth.users の トリガー）
           ro -f scripts/db_backup_extras.sql > "$WORK/extras.sql"
 
       - name: 中身を 数える
         run: |
           node scripts/db_backup.mjs count-copy "$WORK/data.sql" > "$RUNNER_TEMP/rows.json"
+          # 外した はずの 表（auth の 合鍵・storage）が 入って いたら、暗号化・保存の 前に 止める
+          node scripts/db_backup.mjs scope "$RUNNER_TEMP/rows.json"
           node scripts/db_backup.mjs manifest "$WORK" --stamp "$STAMP" --rows "$RUNNER_TEMP/rows.json" \
             --cli "$SUPABASE_CLI" --server "$SERVER" > "$WORK/manifest.json"
           ls -l "$WORK" | awk 'NR > 1 { print "→ " $NF ": " $5 " bytes" }'
@@ -207,8 +214,10 @@ jobs:
           list() { s3 s3api list-objects-v2 --bucket "$BUCKET" --prefix "$1" --query 'Contents[].Key' --output text; }
           NOW="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 
-          # 月の 写し: その 月の monthly/ が まだ 無ければ、今夜の ぶん（戻せると 確かめた もの）を 置く
-          if [ "$(list monthly/ | node scripts/db_backup.mjs needs-monthly --now "$NOW")" = yes ]; then
+          # 月の 写し: その 月の monthly/ が まだ 無ければ、今夜の ぶん（戻せると 確かめた もの）を 置く。
+          # 一覧は 先に 変数へ 取る（`[ "$(…)" ]` の 中だと 取れなくても 止まらず、毎晩 写しを 足し続ける）
+          MONTHLY="$(list monthly/)"
+          if [ "$(printf '%s' "$MONTHLY" | node scripts/db_backup.mjs needs-monthly --now "$NOW")" = yes ]; then
             KEY="$(node scripts/db_backup.mjs key --kind monthly --stamp "$STAMP")"
             s3 s3 cp "$OUT" "s3://$BUCKET/$KEY" --only-show-errors
             echo "→ 今月の 写しを 置いた: $KEY"
