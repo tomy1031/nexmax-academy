@@ -56,7 +56,7 @@ export function EditorFrame({
             onClick={() => onSave(false)}
             className="border-hairline text-navy rounded-2xl border-2 bg-white px-5 py-2.5 text-sm font-black disabled:opacity-40"
           >
-            したがきを ほぞん
+            下書きを保存
           </button>
           <button
             type="button"
@@ -64,7 +64,7 @@ export function EditorFrame({
             onClick={() => onSave(true)}
             className="btn-game px-5 py-2.5 text-sm [--btn-face:#004f8d] [--btn-shadow:#003c6b] disabled:opacity-40"
           >
-            こうかい
+            公開
           </button>
         </div>
       </div>

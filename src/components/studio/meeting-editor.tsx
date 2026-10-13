@@ -165,7 +165,7 @@ export function MeetingEditor({
       </StudioSection>
 
       <StudioSection
-        title="日本語の 見かた（判定の 指示）"
+        title="採点の指示"
         hint="話し方と 分けて あります。言い回しを 直しても、見る ところは 動きません。"
       >
         {/*
@@ -187,11 +187,11 @@ export function MeetingEditor({
             })),
             { value: "none", label: "なし（できるまで つづける）" },
           ]}
-          hint="この 回数を こえると、どんな 見かたでも かならず つぎの しつもんへ 進みます。「なし」は 学生が つまずいた ところで 止まる ことが あります。"
+          hint="この回数をこえると、どんな採点の結果でも、必ず次の質問へ進みます。「なし」は、学生がつまずいたところで止まることがあります。"
         />
 
         <TextAreaField
-          label="見かた"
+          label="採点の指示"
           value={value.judgePrompt ?? ""}
           onChange={(judgePrompt) => patch({ judgePrompt })}
           rows={7}
@@ -210,13 +210,13 @@ export function MeetingEditor({
         {value.asakai ? (
           <div className="space-y-3">
             <p className="text-ink-soft text-xs font-bold">
-              曜日ごとの ひとこと — 上の「見かた」に 足されます。その 日に しか あてはまらない
-              ことだけを 書いて ください。
+              曜日ごとのひとこと —
+              上の「採点の指示」に足されます。その日にしか当てはまらないことだけを書いてください。
             </p>
             {value.asakai.scenes.map((scene, index) => (
               <TextAreaField
                 key={scene.day}
-                label={`${DAY_LABEL[scene.day]}だけの 見かた`}
+                label={`${DAY_LABEL[scene.day]}だけの採点の指示`}
                 value={scene.judgeNote ?? ""}
                 onChange={(judgeNote) =>
                   patch({
@@ -230,7 +230,7 @@ export function MeetingEditor({
                   })
                 }
                 rows={3}
-                placeholder="この 日だけの 見かた（空でも かまいません）"
+                placeholder="この日だけの採点の指示（空でもかまいません）"
               />
             ))}
           </div>
@@ -289,7 +289,7 @@ export function MeetingEditor({
                 placeholder="「わたしは ◯◯です。」"
               />
               <TextAreaField
-                label="うけこたえ（答えた あとに 言う ことば）"
+                label="返事（答えたあとに言う言葉）"
                 value={question.echo}
                 onChange={(echo) => updateQuestion(index, { echo })}
                 rows={2}
@@ -349,7 +349,7 @@ export function MeetingEditor({
       */}
       <StudioSection
         title={`聞き出す こと（${(value.discover ?? []).length}つ）`}
-        hint="ぜんぶ 答えた あとの ばんで、学生が 聞くと 答えて くれる ことです。カードの 表に 出ます。"
+        hint="全部答えたあとのラウンドで、学生が聞くと答えてくれることです。カードの一覧に出ます。"
       >
         <ol className="space-y-3">
           {(value.discover ?? []).map((item, index) => (
@@ -367,7 +367,7 @@ export function MeetingEditor({
                 <RowTools
                   index={index}
                   count={(value.discover ?? []).length}
-                  label="話題"
+                  label="エピソード"
                   onMove={(delta) =>
                     patch({ discover: moveItem(value.discover ?? [], index, delta) })
                   }
@@ -376,7 +376,7 @@ export function MeetingEditor({
               </div>
 
               <TextField
-                label="カードの 表（聞く ための 話題）"
+                label="カードに出す言葉（何について聞くか）"
                 value={item.label}
                 onChange={(label) => updateDiscover(index, { label })}
                 placeholder="日本語の むずかしい ところ"
@@ -414,7 +414,7 @@ export function MeetingEditor({
           tone="accent"
           onClick={() => patch({ discover: [...(value.discover ?? []), emptyMeetingDiscover()] })}
         >
-          ＋ 話題を 追加
+          ＋エピソードを追加
         </MiniButton>
       </StudioSection>
 
@@ -496,7 +496,7 @@ export function MeetingEditor({
         content={value}
         entries={value.furigana ?? []}
         onChange={(furigana) => patch({ furigana })}
-        emptyNote="しつもんと うけこたえの 漢字に よみを つけます。"
+        emptyNote="質問と返事の漢字に読みを付けます。"
       />
     </div>
   );

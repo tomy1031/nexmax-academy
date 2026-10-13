@@ -194,13 +194,13 @@ export default function AdminDashboardPage() {
   return (
     <AdminPageFrame>
       <AdminHeader
-        title="性格診断ダッシュボード"
+        title="性格診断の集計"
         note="学生一人ひとりの傾向と、クラス全体のバランス"
         onCsv={downloadCsv}
       />
       <div className="mx-auto max-w-[96rem] space-y-6">
         <section>
-          <h1 className="text-navy text-3xl font-black sm:text-4xl">性格診断ダッシュボード</h1>
+          <h1 className="text-navy text-3xl font-black sm:text-4xl">性格診断の集計</h1>
           <p className="text-ink-soft mt-2 font-medium">
             学生一人ひとりの傾向と、クラス全体のバランスを確認できます。
           </p>

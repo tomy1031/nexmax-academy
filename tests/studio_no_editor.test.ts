@@ -21,7 +21,7 @@ describe("エディタが 無い 種別の 知らせ", () => {
 
   it("たいわの 文は これまでと 1字も 変わらない", () => {
     expect(noEditorMessage("scenario")).toBe(
-      "たいわは まだ スタジオで 直せません（content/scenarios の JSON で 作ります）。",
+      "たいわは、まだ管理画面で直せません（content/scenarios の JSON で作ります）。",
     );
   });
 
@@ -33,7 +33,7 @@ describe("エディタが 無い 種別の 知らせ", () => {
   ] as const)("%s は 呼び名と 置き場を 言う", (type, label, dir) => {
     expect(contentKindMeta(type).label).toBe(label);
     expect(noEditorMessage(type)).toBe(
-      `${label}は まだ スタジオで 直せません（${dir} の JSON で 作ります）。`,
+      `${label}は、まだ管理画面で直せません（${dir} の JSON で作ります）。`,
     );
   });
 

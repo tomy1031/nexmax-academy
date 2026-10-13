@@ -43,7 +43,7 @@ const GROUPS: readonly { title: string; items: readonly Item[] }[] = [
   {
     title: "みる",
     items: [
-      { href: "/admin", icon: "📊", label: "ダッシュボード" },
+      { href: "/admin", icon: "📊", label: "性格診断の集計" },
       { href: "/admin/users", icon: "👥", label: "ユーザー", match: "/admin/users" },
       /*
        * 学習の きろく。ここに **ミーティングと テストの きろくを 畳んだ**
@@ -64,7 +64,7 @@ const GROUPS: readonly { title: string; items: readonly Item[] }[] = [
        * じゅんろの 鍵。教材の 不具合で 関門が 開かなく なって 授業が 止まった とき、
        * 先生が 全員ぶんを まとめて 外すための レバー（願い #333・#246）。
        */
-      { href: "/admin/lock", icon: "🔓", label: "じゅんろの 鍵", match: "/admin/lock" },
+      { href: "/admin/lock", icon: "🔓", label: "ロック解除", match: "/admin/lock" },
       /*
        * クラスの 設定。大学 × 期生 ごとに、AIの 時間（願い #586・設定の 無い 組は 使えない）と
        * 表示する 教材（願い #589・設定の 無い 組は 全部 見える）を 決める。

@@ -299,7 +299,7 @@ const QUIZ_TYPE_LABEL: Record<string, string> = {
   choose: "4たく",
   multi: "ぜんぶ えらぶ",
   keyword: "じぶんで 書く",
-  wordbank: "語群から あなうめ",
+  wordbank: "選択肢から穴うめ",
   emotion: "気もち → 言い方",
   // 自由記述（`free`）と 順不同の 入力（`list`）。これまで 生の 英語が 出て いた。
   // ※ `list` は 採点する（`draft.ts` の `hits === groups.length`）。無採点なのは `free`・
@@ -605,12 +605,12 @@ export function talkTable(
       { key: "body", label: "話した こと" },
       { key: "topic", label: "聞き出せた こと" },
       { key: "way", label: "やりかた" },
-      { key: "note", label: "見かた" },
+      { key: "note", label: "採点" },
       { key: "reply", label: "あいての 返事" },
       { key: "praise", label: "ほめた ところ" },
       { key: "fix", label: "直す ところ" },
       { key: "example", label: "お手本" },
-      { key: "axes", label: "見かたの ないわけ" },
+      { key: "axes", label: "採点の内訳" },
       { key: "attempt", label: "何回目" },
       { key: "at", label: "日時" },
     ],

@@ -90,7 +90,7 @@ export function StageList({
                   <p className="text-navy font-black">
                     {stage.title.length > 0 ? stage.title : "（見出しが まだ）"}
                     {stage.status === "draft" ? (
-                      <span className="text-ink-soft ml-2 text-xs font-black">したがき</span>
+                      <span className="text-ink-soft ml-2 text-xs font-black">下書き</span>
                     ) : null}
                     {/* 地図に出ないステージ。「消えている」のか「そういう設定」なのかが
                         一覧で分からないと、先生は毎回 中を開いて確かめることになる。 */}
@@ -149,7 +149,7 @@ export function StageList({
                       onClick={() => onRemove(stage)}
                       title={
                         gitBacked(stage.id)
-                          ? "スタジオで 直す 前の 中身に もどします（一覧からは 消えません）。"
+                          ? "管理画面で直す前の中身に戻します（一覧からは消えません）。"
                           : "この ステージを けします。"
                       }
                     >
