@@ -349,6 +349,46 @@ export interface LearnerQuizFirstRow {
   first_at: string;
   /** 丸ごと 通した 回数。 */
   runs: number;
+  /**
+   * 初回の 正解した 問題の 数と 問題の 数。合否は これで 決める（学習者の 画面と 同じ式）。
+   * 移行SQL 20261011130000 より 前の view には 無いので 省略可（そのときは 点で 代わりに 数える）。
+   */
+  first_correct?: number | null;
+  first_questions?: number | null;
+}
+
+/** サーバが 1回に 返す 行の 上限（Supabase の 既定）。これを 1ページと して 読む。 */
+const PAGE_ROWS = 1000;
+/** 1回の 読み込みで 読む 行の 上限（ここまで 来たら 打ち切って 知らせる）。 */
+const MAX_PAGED_ROWS = 20000;
+
+/**
+ * 並びを 決めた 問い合わせを、ページを 送って **ぜんぶ** 読む。
+ *
+ * サーバは 1回に 返す 行数に 上限が あり、超えた ぶんは **黙って 切られる**（エラーに ならない）。
+ * 先生の 画面で それが 起きると、古い 記録や 一部の 生徒が 理由なく 消える（2026-10-11 の レビュー）。
+ */
+async function readAllPages<Row>(
+  page: (
+    from: number,
+    to: number,
+  ) => PromiseLike<{
+    data: unknown[] | null;
+    error: { code?: string; message: string } | null;
+  }>,
+): Promise<
+  | { readonly ok: true; readonly rows: Row[]; readonly truncated: boolean }
+  | { readonly ok: false; readonly error: { code?: string; message: string } }
+> {
+  const rows: Row[] = [];
+  for (let from = 0; from < MAX_PAGED_ROWS; from += PAGE_ROWS) {
+    const { data, error } = await page(from, from + PAGE_ROWS - 1);
+    if (error) return { ok: false, error };
+    const got = (data ?? []) as Row[];
+    rows.push(...got);
+    if (got.length < PAGE_ROWS) return { ok: true, rows, truncated: false };
+  }
+  return { ok: true, rows, truncated: true };
 }
 
 /**
@@ -356,11 +396,16 @@ export interface LearnerQuizFirstRow {
  * なので、生の 記録の 2000行の 上限に 当たらない——学期の 途中で 古い 記録が
  * 数から 消えない ように、数えるのを DB に させて いる。
  */
-export async function fetchLearnerRoster(profileIds: readonly string[] | null): Promise<
+export async function fetchLearnerRoster(
+  profileIds: readonly string[] | null,
+  /** 合格ラインの ある もんだいセット（ページの 書きこみフォーム等は 読まない）。 */
+  quizSetIds: readonly string[],
+): Promise<
   | {
       readonly ok: true;
       readonly summaries: LearnerSummaryRow[];
       readonly quizFirst: LearnerQuizFirstRow[];
+      readonly truncated: boolean;
     }
   | { readonly ok: false; readonly preparing: boolean; readonly message: string }
 > {
@@ -372,18 +417,30 @@ export async function fetchLearnerRoster(profileIds: readonly string[] | null): 
       message: "生徒の 一覧は じゅんびちゅう（データベースの設定後に 見られます）",
     };
   }
-  if (profileIds?.length === 0) return { ok: true, summaries: [], quizFirst: [] };
-
-  let summaryRequest = supabase.from("learner_summary").select("*");
-  let quizRequest = supabase.from("learner_quiz_first").select("*");
-  if (profileIds) {
-    summaryRequest = summaryRequest.in("profile_id", [...profileIds]);
-    quizRequest = quizRequest.in("profile_id", [...profileIds]);
+  if (profileIds?.length === 0) {
+    return { ok: true, summaries: [], quizFirst: [], truncated: false };
   }
-  const [summary, quiz] = await Promise.all([summaryRequest, quizRequest]);
-  const error = summary.error ?? quiz.error;
-  if (error) {
-    const preparing = MISSING_TABLE_CODES.has(error.code ?? "");
+
+  const [summary, quiz] = await Promise.all([
+    readAllPages<LearnerSummaryRow>((from, to) => {
+      let request = supabase.from("learner_summary").select("*");
+      if (profileIds) request = request.in("profile_id", [...profileIds]);
+      return request.order("profile_id").range(from, to);
+    }),
+    quizSetIds.length === 0
+      ? Promise.resolve({ ok: true as const, rows: [] as LearnerQuizFirstRow[], truncated: false })
+      : readAllPages<LearnerQuizFirstRow>((from, to) => {
+          let request = supabase
+            .from("learner_quiz_first")
+            .select("*")
+            .in("quiz_set_id", [...quizSetIds]);
+          if (profileIds) request = request.in("profile_id", [...profileIds]);
+          return request.order("profile_id").order("quiz_set_id").range(from, to);
+        }),
+  ]);
+  const failed = !summary.ok ? summary.error : !quiz.ok ? quiz.error : null;
+  if (failed || !summary.ok || !quiz.ok) {
+    const preparing = MISSING_TABLE_CODES.has(failed?.code ?? "");
     return {
       ok: false,
       preparing,
@@ -394,9 +451,107 @@ export async function fetchLearnerRoster(profileIds: readonly string[] | null): 
   }
   return {
     ok: true,
-    summaries: (summary.data ?? []) as LearnerSummaryRow[],
-    quizFirst: (quiz.data ?? []) as LearnerQuizFirstRow[],
+    summaries: summary.rows,
+    quizFirst: quiz.rows,
+    truncated: summary.truncated || quiz.truncated,
   };
+}
+
+/**
+ * 1人の 記録を、表ごとに **ぜんぶ** 読む（工程ごとの 行った こと・2026-10-11 の レビュー）。
+ *
+ * `fetchTable` は 新しい ほうから 決まった 数までしか 読まないので、ことばの 明細（1語 1行）の
+ * ように 1人で 1000行を 超える 表では、いちばん 古い ＝ 最初の つまずきから 消えて いた。
+ */
+export async function fetchProfileRows<Row>(
+  table: string,
+  order: string,
+  profileId: string,
+): Promise<RecordsResult<Row>> {
+  const supabase = createClient();
+  if (!supabase) {
+    return {
+      ok: false,
+      preparing: true,
+      message: "きろくは じゅんびちゅう（データベースの設定後に 見られます）",
+    };
+  }
+  const got = await readAllPages<Row>((from, to) =>
+    supabase
+      .from(table)
+      .select("*")
+      .eq("profile_id", profileId)
+      .order(order, { ascending: true })
+      .range(from, to),
+  );
+  if (!got.ok) {
+    const preparing = MISSING_TABLE_CODES.has(got.error.code ?? "");
+    return {
+      ok: false,
+      preparing,
+      message: preparing
+        ? `きろくの 表（${table}）が まだ ありません。supabase/migrations が 流れると 見られます。`
+        : "きろくを 読めませんでした。少し待って もう一度 ためしてください。",
+    };
+  }
+  return { ok: true, rows: got.rows, truncated: got.truncated };
+}
+
+/** 授業ごとの回答分析（表 `class_reports`。定期タスクが書く・要望 #599）。 */
+export interface ClassReportRow {
+  id: string;
+  class_date: string;
+  university: string;
+  cohort: number;
+  students: number;
+  summary: string;
+  follow_up: { profile_id?: string; name: string; reasons?: string[]; quotes?: string[] }[];
+  ai_suspects: { profile_id?: string; name: string; quote: string; reason: string }[];
+  stumbles: { title: string; detail?: string; quotes?: string[] }[];
+  next_steps: string[];
+  source: string;
+  updated_at: string;
+}
+
+/** いちどに読む分析の数（組ごとに授業3回×数か月ぶん）。 */
+const CLASS_REPORTS_LIMIT = 120;
+
+/**
+ * 授業ごとの回答分析を新しい順に読む。組を選んでいればその組だけ。
+ * 読めなかったときは空と理由を返す（画面ごと落とさない）。
+ */
+export async function fetchClassReports(group: {
+  university: string;
+  cohort: number;
+}): Promise<RecordsResult<ClassReportRow>> {
+  const supabase = createClient();
+  if (!supabase) {
+    return {
+      ok: false,
+      preparing: true,
+      message: "授業ごとの分析は準備中です（データベースの設定後に見られます）。",
+    };
+  }
+  let request = supabase.from("class_reports").select("*");
+  if (group.university !== "") request = request.eq("university", group.university);
+  if (group.cohort > 0) request = request.eq("cohort", group.cohort);
+  const { data, error } = await request
+    .order("class_date", { ascending: false })
+    .order("university")
+    .order("cohort")
+    .limit(CLASS_REPORTS_LIMIT);
+  if (error) {
+    const preparing = MISSING_TABLE_CODES.has(error.code ?? "");
+    return {
+      ok: false,
+      preparing,
+      message: preparing
+        ? "授業ごとの分析の表がまだありません。データベースの更新が流れると見られます。"
+        : "授業ごとの分析を読めませんでした。少し待ってもう一度ためしてください。",
+    };
+  }
+  const rows = (data ?? []) as ClassReportRow[];
+  return { ok: true, rows, truncated: rows.length >= CLASS_REPORTS_LIMIT };
 }
 
 export function fetchListeningRecords(

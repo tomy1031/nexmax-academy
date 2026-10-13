@@ -29,6 +29,7 @@
  *   - var    `GITHUB_REPO`  … "tomy1031/nexmax-academy"
  *   - var    `WORKFLOW`     … "deploy.yml"
  *   - var    `PROD_URL`     … "https://academy.nexmax.workers.dev"
+ *   - service `PROD`        … 本番の Worker `academy`（PROD_URL へは これを 通して 行く）
  */
 
 const UA = "nexmax-deploy-kicker";
@@ -57,11 +58,17 @@ async function kick(env) {
   }
 }
 
-/** 本番と integration が そろって いるかを 読むだけで 見る（鍵は 要らない）。 */
+/** 本番と integration が そろって いるかを 読むだけで 見る。 */
 async function status(env) {
   const headers = { "User-Agent": UA, Accept: "application/vnd.github+json" };
+  // 鍵なしの 読みは IP ごとに 60回/時。Cloudflare の 出口 IP は 共有なので 使い切られて いて
+  // 403 に なる ことが ある（2026-10-11 実測）。鍵を 付けると 鍵ごとの 枠に なる。
+  // 公開リポジトリなので Actions だけの 鍵でも 読める。
+  if (env.GITHUB_TOKEN) headers.Authorization = `Bearer ${env.GITHUB_TOKEN}`;
+  // 本番は サービスバインディングで 読む（同じ アカウントの workers.dev は 公開 URL で 呼べない・1042）
+  const prodFetch = env.PROD ? (url, init) => env.PROD.fetch(url, init) : fetch;
   const [liveRes, refRes] = await Promise.all([
-    fetch(`${env.PROD_URL}/api/version`, { headers: { "User-Agent": UA } }),
+    prodFetch(`${env.PROD_URL}/api/version`, { headers: { "User-Agent": UA } }),
     fetch(`https://api.github.com/repos/${env.GITHUB_REPO}/commits/integration`, { headers }),
   ]);
   const live = liveRes.ok ? await liveRes.json() : null;

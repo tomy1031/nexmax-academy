@@ -32,14 +32,18 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AdminError, AdminHeader, AdminLoading, AdminPageFrame } from "@/components/admin/admin-ui";
+import { ClassReportPanel } from "@/components/admin/class-report-panel";
 import { LearnerRoster } from "@/components/admin/learner-roster";
+import { LearnerWorkPanel } from "@/components/admin/learner-work-panel";
 import { fetchAllProfiles, fetchOwnProfile, type ProfileRow } from "@/lib/profile-db";
 import { AFFILIATIONS, COHORTS, formatSchool } from "@/lib/school";
 import { createClient } from "@/lib/supabase/client";
 import {
   fetchCertificateByCode,
   fetchCertificateRecords,
+  fetchClassReports,
   fetchContentProgress,
+  fetchProfileRows,
   fetchLearnerRoster,
   fetchListeningRecords,
   fetchMeetingRecords,
@@ -77,8 +81,21 @@ import {
   type RecordKind,
   type RecordTable,
 } from "@/lib/records/table";
+import { toClassReportView } from "@/lib/records/class-report";
+import { buildLearnerWork, type LearnerRecords } from "@/lib/records/learner-work";
 import { buildRoster, rosterStudents } from "@/lib/records/roster";
-import type { LearnerQuizFirstRow, LearnerSummaryRow } from "@/lib/records/records-db";
+import type {
+  ClassReportRow,
+  ContentProgressRecord,
+  LearnerQuizFirstRow,
+  LearnerSummaryRow,
+  ListeningRecord,
+  MeetingRecord,
+  QuizRecord,
+  TalkRecord,
+  WordAnswerRecord,
+  WordTestRecord,
+} from "@/lib/records/records-db";
 import {
   browserStorage,
   hasAnyFilter,
@@ -294,7 +311,10 @@ export function RecordsShell({
     if (loading) return;
     let active = true;
     void (async () => {
-      const got = await fetchLearnerRoster(rosterKey === "" ? [] : rosterKey.split(","));
+      const got = await fetchLearnerRoster(
+        rosterKey === "" ? [] : rosterKey.split(","),
+        Object.keys(index.passRates),
+      );
       if (!active) return;
       setRosterData(
         got.ok
@@ -305,13 +325,108 @@ export function RecordsShell({
     return () => {
       active = false;
     };
-  }, [loading, rosterKey]);
+  }, [loading, rosterKey, index.passRates]);
   const rosterFresh = rosterData !== null && rosterData.key === rosterKey;
   const rosterRows = useMemo(
     () =>
       rosterFresh ? buildRoster(students, rosterData.summaries, rosterData.quizFirst, index) : [],
     [rosterFresh, rosterData, students, index],
   );
+
+  /*
+   * 授業ごとの分析（要望 #599）。所属・期生で選んだ組の分析を読む（選んでいなければ全部の組）。
+   * Claude の定期タスクが授業のあとに DB へ登録したもの。
+   */
+  const reportKey = `${filter.university}|${filter.cohort}`;
+  const [reportData, setReportData] = useState<{
+    key: string;
+    rows: ClassReportRow[];
+    note: string | null;
+  } | null>(null);
+  useEffect(() => {
+    if (loading) return;
+    let active = true;
+    const [university = "", cohort = "0"] = reportKey.split("|");
+    void (async () => {
+      const got = await fetchClassReports({ university, cohort: Number(cohort) });
+      if (!active) return;
+      setReportData(
+        got.ok
+          ? { key: reportKey, rows: got.rows, note: null }
+          : { key: reportKey, rows: [], note: got.message },
+      );
+    })();
+    return () => {
+      active = false;
+    };
+  }, [loading, reportKey]);
+  const reportFresh = reportData !== null && reportData.key === reportKey;
+  const reports = useMemo(
+    () => (reportFresh ? reportData.rows.map(toClassReportView) : []),
+    [reportFresh, reportData],
+  );
+
+  /*
+   * 1人を えらんで いる ときの「工程ごとの 行った こと」（願い #599 第3段）。
+   * その 人の 記録を 種類ごとに 読む（1人ぶんなので 上限に 当たらない）。
+   */
+  const pickedId = filter.profileId;
+  const [workData, setWorkData] = useState<{
+    profileId: string;
+    records: LearnerRecords;
+    note: string | null;
+  } | null>(null);
+  useEffect(() => {
+    if (loading || pickedId === "") return;
+    let active = true;
+    void (async () => {
+      // 1人ぶんは 表ごとに ページを 送って ぜんぶ 読む（古い つまずきから 消えない ように）
+      const [progress, quiz, wordTests, wordAnswers, meetings, talks, listening] =
+        await Promise.all([
+          fetchProfileRows<ContentProgressRecord>("content_progress", "updated_at", pickedId),
+          fetchProfileRows<QuizRecord>("quiz_results", "created_at", pickedId),
+          fetchProfileRows<WordTestRecord>("word_test_results", "created_at", pickedId),
+          fetchProfileRows<WordAnswerRecord>("word_test_answers", "created_at", pickedId),
+          fetchProfileRows<MeetingRecord>("meeting_turn_logs", "created_at", pickedId),
+          fetchProfileRows<TalkRecord>("talk_turn_logs", "created_at", pickedId),
+          fetchProfileRows<ListeningRecord>("listening_results", "updated_at", pickedId),
+        ]);
+      if (!active) return;
+      const got = [progress, quiz, wordTests, wordAnswers, meetings, talks, listening];
+      const failed = got.find((result) => !result.ok);
+      const cut = got.some((result) => result.ok && result.truncated);
+      setWorkData({
+        profileId: pickedId,
+        records: {
+          progress: progress.ok ? progress.rows : [],
+          quiz: quiz.ok ? quiz.rows : [],
+          wordTests: wordTests.ok ? wordTests.rows : [],
+          wordAnswers: wordAnswers.ok ? wordAnswers.rows : [],
+          meetings: meetings.ok ? meetings.rows : [],
+          talks: talks.ok ? talks.rows : [],
+          listening: listening.ok ? listening.rows : [],
+        },
+        note:
+          failed && !failed.ok
+            ? `${failed.message}（読めた 記録だけを 出して います）`
+            : cut
+              ? "記録が とても 多いので、古い ほうから 一部だけを 出して います。"
+              : null,
+      });
+    })();
+    return () => {
+      active = false;
+    };
+  }, [loading, pickedId]);
+  const workFresh = workData !== null && workData.profileId === pickedId;
+  const workStages = useMemo(
+    () => (workFresh ? buildLearnerWork(workData.records, index, lookups) : []),
+    [workFresh, workData, index, lookups],
+  );
+  const pickedName = useMemo(() => {
+    const picked = profiles.find((profile) => profile.id === pickedId);
+    return picked ? picked.display_name || picked.email : "";
+  }, [profiles, pickedId]);
 
   const rows = useMemo(
     () => (table ? filterRows(table, filter, lookups) : []),
@@ -503,11 +618,30 @@ export function RecordsShell({
         </div>
       </section>
 
+      <ClassReportPanel
+        reports={reports}
+        busy={!reportFresh}
+        note={reportFresh ? reportData.note : null}
+        onPick={(profileId) => changeFilter({ profileId })}
+      />
+
       <LearnerRoster
         rows={rosterRows}
         busy={!rosterFresh}
         note={rosterFresh ? rosterData.note : null}
+        onPick={(profileId) => changeFilter({ profileId })}
       />
+
+      {pickedId !== "" ? (
+        <LearnerWorkPanel
+          name={pickedName}
+          profileId={pickedId}
+          stages={workStages}
+          busy={!workFresh}
+          note={workFresh ? workData.note : null}
+          onClose={() => changeFilter({ profileId: "" })}
+        />
+      ) : null}
 
       {[indexNote, note]
         .filter((one): one is string => one !== null)

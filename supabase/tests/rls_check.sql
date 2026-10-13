@@ -161,6 +161,12 @@ begin
     raise notice 'ℹ record_index は まだ ありません（移行SQL 20260909120000 の 前）';
   end;
 
+  -- 画面の エラー（だれの でもない 行・移行SQL 20261011150000）は 学習者に 見せない。
+  -- 見えるのは 管理者だけ（どの 画面で だれが つまずいたかの 手がかりに なるため）。
+  n := (select count(*) from public.events where user_id is null);
+  if n = 0 then raise notice '✓ 拒否 だれの でもない events（画面の エラー）は 見えない';
+  else bad := bad + 1; raise warning '✗ だれの でもない events が % 件 見えている', n; end if;
+
   -- 教材は 公開ぶんだけ
   n := (select count(*) from public.studio_contents);
   if n = published then raise notice '✓ 教材は 公開ぶんだけ 見える（%/% 件）', n, all_studio;
@@ -229,6 +235,50 @@ begin
     raise exception 'RLS の 検査で % 件 だめでした（上の ✗ を 見てください）', bad;
   end if;
   raise notice '── RLS の 検査は ぜんぶ 通りました ──';
+end $$;
+
+-- ── 4. ログインして いない 人（anon）── 画面の エラーを 入れる だけ（移行SQL 20261011150000）──
+--
+-- 鍵（anon key）は 公開なので、ブラウザを 通らずに 直に 叩かれても よい 範囲だけを 開けて ある。
+-- 入れるのは 決まった 形の 1行だけ。読む・ほかの 形で 入れる は できない。
+-- 入れる 試しは この トランザクションごと 巻き戻る。
+reset role;
+select count(set_config('request.jwt.claims', json_build_object('role', 'anon')::text, true)) as ok;
+set local role anon;
+
+do $$
+declare
+  bad int := 0;
+begin
+  begin
+    perform 1 from public.events limit 1;
+    bad := bad + 1;
+    raise warning '✗ anon が events を 読めた';
+  exception when insufficient_privilege then
+    raise notice '✓ 拒否 anon は events を 読めない（42501）';
+  end;
+
+  begin
+    insert into public.events (verb, object) values ('__rls_probe__', '/');
+    bad := bad + 1;
+    raise warning '✗ anon が client_error 以外の events を 入れられた';
+  exception when insufficient_privilege then
+    raise notice '✓ 拒否 anon は client_error 以外を 入れられない（42501）';
+  end;
+
+  begin
+    insert into public.events (verb, object, result)
+    values ('client_error', '/__rls_probe__', '{"kind":"render"}'::jsonb);
+    raise notice '✓ 許可 anon は 画面の エラーを 1行 入れられる（巻き戻る）';
+  exception when insufficient_privilege then
+    bad := bad + 1;
+    raise warning '✗ anon が 画面の エラーを 入れられない（見張りに 何も 届かない）';
+  end;
+
+  if bad > 0 then
+    raise exception 'anon の 検査で % 件 だめでした（上の ✗ を 見てください）', bad;
+  end if;
+  raise notice '── anon の 検査は ぜんぶ 通りました ──';
 end $$;
 
 rollback;
