@@ -18562,6 +18562,106 @@
       "meaningJa": "朝から お昼までの あいだです。",
       "englishTerm": "During the morning",
       "example": "午前中に 確認します。"
+    },
+    {
+      "id": "kari",
+      "term": "仮",
+      "reading": "かり",
+      "romaji": "kari",
+      "meaningJa": "本物が できる 前に、しばらく 使う ものです。",
+      "englishTerm": "Temporary (for now)",
+      "example": "仮データで グラフを 表示します。",
+      "furigana": [
+        [
+          "本物",
+          "ほんもの"
+        ],
+        [
+          "前",
+          "まえ"
+        ],
+        [
+          "使う",
+          "つかう"
+        ],
+        [
+          "表示",
+          "ひょうじ"
+        ]
+      ]
+    },
+    {
+      "id": "tensuu",
+      "term": "点数",
+      "reading": "てんすう",
+      "romaji": "tensuu",
+      "meaningJa": "どれだけ できるかを 数で あらわした ものです。",
+      "englishTerm": "Score",
+      "example": "点数の 高い 順に スキルを 並べます。",
+      "furigana": [
+        [
+          "数",
+          "かず"
+        ],
+        [
+          "高い",
+          "たかい"
+        ],
+        [
+          "順",
+          "じゅん"
+        ],
+        [
+          "並べます",
+          "ならべます"
+        ]
+      ]
+    },
+    {
+      "id": "mitouroku",
+      "term": "未登録",
+      "reading": "みとうろく",
+      "romaji": "mitouroku",
+      "meaningJa": "まだ 登録されて いない ことです。",
+      "englishTerm": "Not registered yet",
+      "example": "点数が 未登録の スキルは 表示しません。",
+      "furigana": [
+        [
+          "登録",
+          "とうろく"
+        ],
+        [
+          "点数",
+          "てんすう"
+        ],
+        [
+          "表示",
+          "ひょうじ"
+        ]
+      ]
+    },
+    {
+      "id": "hyouki",
+      "term": "表記",
+      "reading": "ひょうき",
+      "romaji": "hyouki",
+      "meaningJa": "ことばを 文字で どう 書くか です。",
+      "englishTerm": "Spelling (how a word is written)",
+      "example": "スキル名の 表記を そろえます。",
+      "furigana": [
+        [
+          "文字",
+          "もじ"
+        ],
+        [
+          "書く",
+          "かく"
+        ],
+        [
+          "名",
+          "めい"
+        ]
+      ]
     }
   ]
 }
