@@ -208,8 +208,7 @@
         ],
         "sample": {
           "speakerId": "hendy",
-          "text": "今日は、大学、JLPTレベル、スキルによる 検索APIを 作りました。複数条件でも 検索できるように しました。現在、学生検索バックエンド機能の 進捗は 50％です。明日は、キーワード検索と 検索結果の 並び替えを 作ります。今のところ 問題は ありません。",
-          "audio": "/audio/meetings/asakai_muzukashii/s0-sample-ef160c4d.wav"
+          "text": "今日は、大学、JLPTレベル、スキルによる 検索APIを 作りました。複数条件でも 検索できるように しました。現在、学生検索バックエンド機能の 進捗は 50％です。明日は、キーワード検索と 検索結果の 並び替えを 作ります。今のところ 問題は ありません。"
         },
         "prompt": {
           "speakerId": "hendy",
@@ -280,8 +279,7 @@
             "followups": [
               {
                 "speakerId": "hendy",
-                "text": "今日 行ったことを、もう一度 お願いします。",
-                "audio": "/audio/meetings/asakai_muzukashii/s0-kyou-fu0-b047f41a.wav"
+                "text": "今日 行ったことを、もう一度 お願いします。"
               },
               {
                 "speakerId": "hendy",
@@ -563,8 +561,7 @@
         "opening": [
           {
             "speakerId": "hendy",
-            "text": "お疲れさまです。火曜日の 夕礼を 始めます。まず 私から。",
-            "audio": "/audio/meetings/asakai_muzukashii/s1-opening-0-fb23f6b2.wav"
+            "text": "お疲れさまです。火曜日の 夕礼を 始めます。まず 私から。"
           }
         ],
         "sample": {
@@ -641,8 +638,7 @@
             "followups": [
               {
                 "speakerId": "hendy",
-                "text": "今日 行ったことを、もう一度 お願いします。",
-                "audio": "/audio/meetings/asakai_muzukashii/s1-kyou-fu0-b047f41a.wav"
+                "text": "今日 行ったことを、もう一度 お願いします。"
               },
               {
                 "speakerId": "hendy",
@@ -652,8 +648,7 @@
             ],
             "example": {
               "speakerId": "hendy",
-              "text": "「今日は、学生一覧から 学生詳細画面へ 移動できるように しました。それから、スキルグラフを 作りました。スキル名を そろえて、点数が 高い順に 並べ、上位6スキルを 表示できるように しました。」",
-              "audio": "/audio/meetings/asakai_muzukashii/s1-kyou-ex-0c932039.wav"
+              "text": "「今日は、学生一覧から 学生詳細画面へ 移動できるように しました。それから、スキルグラフを 作りました。スキル名を そろえて、点数が 高い順に 並べ、上位6スキルを 表示できるように しました。」"
             }
           },
           {
@@ -719,8 +714,7 @@
             ],
             "example": {
               "speakerId": "hendy",
-              "text": "「明日は、実際の AUPPと CADTの 学生データを 使って、スキルグラフを 確認します。」",
-              "audio": "/audio/meetings/asakai_muzukashii/s1-ashita-ex-03df436a.wav"
+              "text": "「明日は、実際の AUPPと CADTの 学生データを 使って、スキルグラフを 確認します。」"
             }
           },
           {
@@ -996,8 +990,7 @@
             "followups": [
               {
                 "speakerId": "hendy",
-                "text": "今日 行ったことを、もう一度 お願いします。",
-                "audio": "/audio/meetings/asakai_muzukashii/s2-kyou-fu0-b047f41a.wav"
+                "text": "今日 行ったことを、もう一度 お願いします。"
               },
               {
                 "speakerId": "hendy",
@@ -1030,8 +1023,7 @@
             ],
             "example": {
               "speakerId": "hendy",
-              "text": "「現在、学生検索・スキル可視化フロントエンド機能の 進捗は 70％です。」",
-              "audio": "/audio/meetings/asakai_muzukashii/s2-shinchoku-ex-7bcbcce2.wav"
+              "text": "「現在、学生検索・スキル可視化フロントエンド機能の 進捗は 70％です。」"
             }
           },
           {
@@ -1409,8 +1401,7 @@
             "followups": [
               {
                 "speakerId": "hendy",
-                "text": "今日 行ったことを、もう一度 お願いします。",
-                "audio": "/audio/meetings/asakai_muzukashii/s3-kyou-fu0-b047f41a.wav"
+                "text": "今日 行ったことを、もう一度 お願いします。"
               },
               {
                 "speakerId": "hendy",
@@ -1420,8 +1411,7 @@
             ],
             "example": {
               "speakerId": "hendy",
-              "text": "「今日は、昨日 見つかった スキルデータの 問題について、修正された データで 再テストしました。そのあと、検索画面から 学生詳細画面、スキルグラフまで 全体を 通して テストしました。」",
-              "audio": "/audio/meetings/asakai_muzukashii/s3-kyou-ex-dd5ff324.wav"
+              "text": "「今日は、昨日 見つかった スキルデータの 問題について、修正された データで 再テストしました。そのあと、検索画面から 学生詳細画面、スキルグラフまで 全体を 通して テストしました。」"
             }
           },
           {
@@ -1483,8 +1473,7 @@
             ],
             "example": {
               "speakerId": "hendy",
-              "text": "「明日は、最終テストと コードレビューを します。」",
-              "audio": "/audio/meetings/asakai_muzukashii/s3-ashita-ex-49932e4f.wav"
+              "text": "「明日は、最終テストと コードレビューを します。」"
             }
           },
           {
@@ -1737,8 +1726,7 @@
           },
           {
             "speakerId": "hendy",
-            "text": "皆さん、1週間 お疲れさまでした。Next Talent の 学生検索と スキル可視化は これで 完了です。来週は 改善項目の 整理から 始めます。",
-            "audio": "/audio/meetings/asakai_muzukashii/s4-closing-1-4ef8c935.wav"
+            "text": "皆さん、1週間 お疲れさまでした。Next Talent の 学生検索と スキル可視化は これで 完了です。来週は 改善項目の 整理から 始めます。"
           }
         ],
         "panels": [
@@ -1773,8 +1761,7 @@
             "followups": [
               {
                 "speakerId": "hendy",
-                "text": "今日 行ったことを、もう一度 お願いします。",
-                "audio": "/audio/meetings/asakai_muzukashii/s4-kyou-fu0-b047f41a.wav"
+                "text": "今日 行ったことを、もう一度 お願いします。"
               },
               {
                 "speakerId": "hendy",
