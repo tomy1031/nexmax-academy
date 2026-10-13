@@ -361,6 +361,7 @@ export const MEDIA_FILES: Readonly<Record<string, readonly [size: number, etag: 
   "/audio/meetings/asakai_muzukashii/s0-sample-57a7b457.wav": [1126124, "9364f879"],
   "/audio/meetings/asakai_muzukashii/s0-sample-b9978ead.wav": [1208684, "7ecfea7a"],
   "/audio/meetings/asakai_muzukashii/s0-sample-d88ea421.wav": [1329674, "e8a4d874"],
+  "/audio/meetings/asakai_muzukashii/s0-sample-ef160c4d.wav": [1056046, "9569a5dd"],
   "/audio/meetings/asakai_muzukashii/s0-shinchoku-ex-67cbf174.wav": [299566, "83a1aa17"],
   "/audio/meetings/asakai_muzukashii/s0-shinchoku-ex-803ac0be.wav": [370126, "45081619"],
   "/audio/meetings/asakai_muzukashii/s0-shinchoku-ex-9b12cc03.wav": [310124, "f3bd652e"],
