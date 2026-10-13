@@ -24,7 +24,7 @@ interface Item {
   match?: string;
 }
 
-const GROUPS: readonly { title: string; items: readonly Item[] }[] = [
+export const GROUPS: readonly { title: string; items: readonly Item[] }[] = [
   {
     title: "つくる",
     items: [
@@ -74,8 +74,13 @@ const GROUPS: readonly { title: string; items: readonly Item[] }[] = [
   },
 ];
 
-function isActive(pathname: string, item: Item): boolean {
-  return item.match ? pathname.startsWith(item.match) : pathname === item.href;
+/**
+ * 接頭辞だけで比べると `/admin/ai-time`（クラスの 設定）が `/admin/ai`（AI設定）にも当たり、
+ * 2つが同時に光っていた。接頭辞の次が「/」のとき（子ページ）か、完全一致のときだけ当てる。
+ */
+export function isActive(pathname: string, item: Item): boolean {
+  if (!item.match) return pathname === item.href;
+  return pathname === item.match || pathname.startsWith(`${item.match}/`);
 }
 
 export function AdminSidebar() {
