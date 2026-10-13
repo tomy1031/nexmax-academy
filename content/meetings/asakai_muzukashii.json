@@ -208,7 +208,8 @@
         ],
         "sample": {
           "speakerId": "hendy",
-          "text": "今日は、大学、JLPTレベル、スキルによる 検索APIを 作りました。複数条件でも 検索できるように しました。現在、学生検索バックエンド機能の 進捗は 50％です。明日は、キーワード検索と 検索結果の 並び替えを 作ります。今のところ 問題は ありません。"
+          "text": "今日は、大学、JLPTレベル、スキルによる 検索APIを 作りました。複数条件でも 検索できるように しました。現在、学生検索バックエンド機能の 進捗は 50％です。明日は、キーワード検索と 検索結果の 並び替えを 作ります。今のところ 問題は ありません。",
+          "audio": "/audio/meetings/asakai_muzukashii/s0-sample-ef160c4d.wav"
         },
         "prompt": {
           "speakerId": "hendy",
@@ -718,7 +719,8 @@
             ],
             "example": {
               "speakerId": "hendy",
-              "text": "「明日は、実際の AUPPと CADTの 学生データを 使って、スキルグラフを 確認します。」"
+              "text": "「明日は、実際の AUPPと CADTの 学生データを 使って、スキルグラフを 確認します。」",
+              "audio": "/audio/meetings/asakai_muzukashii/s1-ashita-ex-03df436a.wav"
             }
           },
           {
@@ -1481,7 +1483,8 @@
             ],
             "example": {
               "speakerId": "hendy",
-              "text": "「明日は、最終テストと コードレビューを します。」"
+              "text": "「明日は、最終テストと コードレビューを します。」",
+              "audio": "/audio/meetings/asakai_muzukashii/s3-ashita-ex-49932e4f.wav"
             }
           },
           {
