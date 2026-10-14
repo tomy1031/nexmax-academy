@@ -65,7 +65,7 @@ test.describe("Live の 控えへ 落ちる（鍵が あるときだけ）", () 
               config: {
                 responseModalities: [Modality.AUDIO],
                 systemInstruction: "あなたは 日本の IT会社の 社長です。",
-                inputAudioTranscription: {},
+                inputAudioTranscription: { languageCodes: ["ja-JP"] },
                 outputAudioTranscription: {},
                 realtimeInputConfig: { automaticActivityDetection: { disabled: true } },
                 speechConfig: { languageCode: "ja-JP" },
