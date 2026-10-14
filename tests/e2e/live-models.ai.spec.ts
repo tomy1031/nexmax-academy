@@ -234,7 +234,7 @@ test.describe("Live の 先頭の モデル（鍵が あるときだけ）", () 
     const live = await openLive(evalKey(), model, {
       responseModalities: [Modality.AUDIO],
       systemInstruction: HOST_SYSTEM,
-      inputAudioTranscription: {},
+      inputAudioTranscription: { languageCodes: ["ja-JP"] },
       outputAudioTranscription: {},
       realtimeInputConfig: { automaticActivityDetection: { disabled: true } },
       speechConfig: {
@@ -295,7 +295,7 @@ test.describe("Live の 先頭の モデル（鍵が あるときだけ）", () 
     const live = await openLive(evalKey(), model, {
       responseModalities: [Modality.AUDIO],
       systemInstruction: HOST_SYSTEM,
-      inputAudioTranscription: {},
+      inputAudioTranscription: { languageCodes: ["ja-JP"] },
       outputAudioTranscription: {},
       realtimeInputConfig: { automaticActivityDetection: { disabled: true } },
       speechConfig: {
@@ -370,7 +370,7 @@ test.describe("Live の 先頭の モデル（鍵が あるときだけ）", () 
           "しつもんも しません。あいづちも 打ちません。ただ 聞くだけです。",
           "つぎに 何を 聞くかは 画面が 決めます。",
         ].join("\n"),
-        inputAudioTranscription: {},
+        inputAudioTranscription: { languageCodes: ["ja-JP"] },
         outputAudioTranscription: {},
         realtimeInputConfig: { automaticActivityDetection: { disabled: true } },
         speechConfig: { languageCode: "ja-JP" },
