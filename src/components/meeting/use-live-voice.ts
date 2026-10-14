@@ -618,7 +618,8 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
                * 声は**人物カードで決めたもの**を使う（characters の voice）。
                * 決めていないときは Live の既定に任せる——ここで別の声を勝手に
                * 当てると、まんがのヘンディさんと声が違う人になる。
-               * 言語を伝えるのは、日本語として聞き取らせるため。
+               * `languageCode` は 相手の 声の 言語。学習者の 声を 何語として 聞くかは
+               * 上の `inputAudioTranscription` で 決める。
                */
               speechConfig: {
                 languageCode: "ja-JP",
