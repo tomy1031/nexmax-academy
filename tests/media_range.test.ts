@@ -10,6 +10,7 @@ import {
   type AssetsBinding,
 } from "@/lib/media-range";
 import { MEDIA_FILES } from "@/content/media-files.generated";
+import { LOGIN_ONLY_DIRS } from "@/lib/login-only-assets";
 import { assetEtag, ETAG_PREFIX_LENGTH } from "../scripts/lib/asset_etag.mjs";
 
 /**
@@ -439,12 +440,16 @@ describe("設定と そろって いる", () => {
     }
   });
 
-  it("wrangler.jsonc は 入口に worker.mjs を 使い、音・動画だけ Worker を 先に 通す", () => {
+  it("wrangler.jsonc は 入口に worker.mjs を 使い、音・動画（と ログインの 内側の ゲーム）だけ Worker を 先に 通す", () => {
     const text = fs.readFileSync(path.join(ROOT, "wrangler.jsonc"), "utf-8");
     expect(/"main":\s*"([^"]+)"/.exec(text)?.[1]).toBe("worker.mjs");
     const list = /"run_worker_first":\s*\[([^\]]*)\]/.exec(text)?.[1] ?? "";
     const patterns = [...list.matchAll(/"([^"]+)"/g)].map((m) => m[1]);
-    expect(patterns.sort()).toEqual(Object.keys(MEDIA_CACHE_CONTROL).map((p) => `${p}*`));
+    // ログインの 内側の 道（2026-10-16）は tests/login_only_assets.test.ts が 見る
+    const loginOnly = LOGIN_ONLY_DIRS.flatMap((dir) => [dir, `${dir}/*`]);
+    expect(patterns.sort()).toEqual(
+      [...Object.keys(MEDIA_CACHE_CONTROL).map((p) => `${p}*`), ...loginOnly].sort(),
+    );
   });
 
   it("入口は OpenNext を 包み、音・動画を serveMedia へ 回す", () => {
