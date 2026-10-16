@@ -1,0 +1,31 @@
+name: CADT Japanese IT Pathway 動画の スピーチ 文字起こし（一時ブランチ）
+# 学生スピーチの 字幕の 時刻を 合わせる ための 一時ワークフロー。作業が 終わったら ブランチごと 消す。
+on:
+  push:
+    branches: ['tts/cadt-pathway-video']
+    paths: ['tts/cadt/speech/**', 'tts/cadt/transcribe.mjs']
+concurrency:
+  group: cadt-pathway-transcribe
+  cancel-in-progress: false
+jobs:
+  transcribe:
+    runs-on: ubuntu-latest
+    environment: Preview
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: 文字起こし
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: node tts/cadt/transcribe.mjs tts/cadt/speech out
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cadt-transcribe-out
+          path: out
+          retention-days: 7
