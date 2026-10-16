@@ -34,10 +34,16 @@
 
 const UA = "nexmax-deploy-kicker";
 
-/** GitHub の workflow_dispatch を 叩く。 */
-async function kick(env) {
+/**
+ * 鍵の 権限を 試す ときに 頼む ref。`..` を 含む 名前は git の ブランチに できないので、
+ * GitHub は 必ず「No ref found」（422）で 断り、ランは 1本も 作られない。
+ */
+const PROBE_REF = "deploy-kicker..permission-probe";
+
+/** GitHub の workflow_dispatch に 頼む（中身は body）。 */
+function dispatch(env, body) {
   const url = `https://api.github.com/repos/${env.GITHUB_REPO}/actions/workflows/${env.WORKFLOW}/dispatches`;
-  const res = await fetch(url, {
+  return fetch(url, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${env.GITHUB_TOKEN}`,
@@ -46,16 +52,51 @@ async function kick(env) {
       "User-Agent": UA,
       "Content-Type": "application/json",
     },
-    // ref=main は cron と 同じ（schedule は 既定ブランチで 始まる）。
-    // target=auto が「cron と 同じ 道」＝ integration を 取り込む → 検査 →
-    // main を 早送り → 本番へ 出す、を 通す。
-    body: JSON.stringify({ ref: "main", inputs: { target: "auto" } }),
+    body: JSON.stringify(body),
   });
+}
+
+/** 断られた ときの 番号を、何を 直せば よいかの 文に する。 */
+function explainRefusal(status) {
+  if (status === 401) return "鍵が 無効（期限切れ・消された・入れ間違い）。作り直して 入れ直す";
+  if (status === 403)
+    return "鍵に「Actions: Read and write」が 無い（Repository access に nexmax-academy が あるかも 見る）。鍵の 編集画面で 足す";
+  if (status === 404) return "鍵から nexmax-academy が 見えない。Repository access に 足す";
+  return `GitHub が ${status} で 断った`;
+}
+
+/** GitHub の workflow_dispatch を 叩く。 */
+async function kick(env) {
+  // ref=main は cron と 同じ（schedule は 既定ブランチで 始まる）。
+  // target=auto が「cron と 同じ 道」＝ integration を 取り込む → 検査 →
+  // main を 早送り → 本番へ 出す、を 通す。
+  const res = await dispatch(env, { ref: "main", inputs: { target: "auto" } });
   // 成功は 204 No Content。
   if (res.status !== 204) {
     const body = await res.text();
-    throw new Error(`workflow_dispatch が 失敗しました: ${res.status} ${body.slice(0, 300)}`);
+    throw new Error(
+      `workflow_dispatch が 失敗しました: ${res.status} ${explainRefusal(res.status)} ${body.slice(0, 300)}`,
+    );
   }
+}
+
+/**
+ * 鍵で 起こせるかを、デプロイを 起こさずに 確かめる。
+ *
+ * 2026-10-12・10-13 は 起こそうと した 6回が すべて 例外で 終わり、1本も 起きなかった。
+ * 本番と integration を 読む ところは 鍵で 通って いた（10-15 は「同じ」で 正しく 止まった）ので、
+ * 読めても 起こせない 鍵だった ことに なる。授業の 当日に 初めて 分かるのでは 遅いので、
+ * 状態の ページで いつでも 見られる ように する。
+ *
+ * 無い ref（PROBE_REF）で 頼むと、権限が あれば 422（No ref found）、権限が 無ければ 403、
+ * 鍵が 無効なら 401 が 返る。どれでも ランは 作られない。
+ */
+async function probeDispatch(env) {
+  if (!env.GITHUB_TOKEN)
+    return { ok: false, status: null, reason: "鍵（GITHUB_TOKEN）が 入って いない" };
+  const res = await dispatch(env, { ref: PROBE_REF });
+  if (res.status === 422) return { ok: true, status: 422 };
+  return { ok: false, status: res.status, reason: explainRefusal(res.status) };
 }
 
 /** 本番と integration が そろって いるかを 読むだけで 見る。 */
@@ -99,11 +140,14 @@ const handler = {
     );
   },
 
-  /** 目で 見る ための 状態。鍵は 出さない。デプロイは ここからは 起こせない。 */
+  /**
+   * 目で 見る ための 状態。鍵は 出さない。デプロイは ここからは 起こせない。
+   * `canDispatch.ok` が false なら、授業前に 時計が 起きても GitHub に 断られる。
+   */
   async fetch(request, env) {
-    const s = await status(env);
+    const [s, canDispatch] = await Promise.all([status(env), probeDispatch(env)]);
     return Response.json(
-      { ...s, note: "読むだけの 画面です。ここから デプロイは 起きません。" },
+      { ...s, canDispatch, note: "読むだけの 画面です。ここから デプロイは 起きません。" },
       { headers: { "cache-control": "no-store" } },
     );
   },

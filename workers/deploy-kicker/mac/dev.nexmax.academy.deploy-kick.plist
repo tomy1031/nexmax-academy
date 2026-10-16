@@ -2,13 +2,17 @@
 <!--
   この Mac から 授業前の 本番デプロイを 起こす（保険）。入れかたは ../README.md。
 
-  この Mac の タイムゾーンは ICT（+07）なので、下の 時刻は **そのまま ICT**。
-  Cloudflare 側（workers/deploy-kicker/wrangler.jsonc）は UTC で 書いて あるが、
-  指して いる 時刻は 同じ: 16:10 / 16:52 / 17:02 ICT（授業は 17:30 ICT）。
+  **毎時 02・10・52分に 起こすだけ。** 曜日と 時刻は スクリプトが UTC で 見て、
+  授業前の 窓（火・水・金 16:05〜17:10 ICT）の 外なら 何も しない。
+  Cloudflare 側（workers/deploy-kicker/wrangler.jsonc）と 同じ 16:10 / 16:52 / 17:02 ICT に 当たる。
+
+  2026-10-16 まで ここに 曜日と 時刻（16:10 など）を 書いて いたが、この Mac の launchd は
+  毎回 2時間 早い 14:10 ICT に 動いて いた（JST の 時刻で 数えて いた とみられる）。分だけなら、地域の 時刻が
+  ICT でも JST でも 同じ 分に 当たる（どちらも 1時間 単位の ずれ）。
 
   Mac が 寝て いた 時刻の ぶんは、起きた ときに まとめて 1回 走る（launchd の 仕様）。
-  そのとき すでに Cloudflare 側が 出して いれば、スクリプトが 本番と integration を
-  見比べて 何も しない。
+  そのとき 窓の 外なら 何も しないし、窓の 中で すでに Cloudflare 側が 出して いれば、
+  スクリプトが 本番と integration を 見比べて 何も しない。
 -->
 <plist version="1.0">
   <dict>
@@ -23,51 +27,9 @@
 
     <key>StartCalendarInterval</key>
     <array>
-      <dict>
-        <key>Weekday</key><integer>2</integer>
-        <key>Hour</key><integer>16</integer>
-        <key>Minute</key><integer>10</integer>
-      </dict>
-      <dict>
-        <key>Weekday</key><integer>2</integer>
-        <key>Hour</key><integer>16</integer>
-        <key>Minute</key><integer>52</integer>
-      </dict>
-      <dict>
-        <key>Weekday</key><integer>2</integer>
-        <key>Hour</key><integer>17</integer>
-        <key>Minute</key><integer>2</integer>
-      </dict>
-      <dict>
-        <key>Weekday</key><integer>3</integer>
-        <key>Hour</key><integer>16</integer>
-        <key>Minute</key><integer>10</integer>
-      </dict>
-      <dict>
-        <key>Weekday</key><integer>3</integer>
-        <key>Hour</key><integer>16</integer>
-        <key>Minute</key><integer>52</integer>
-      </dict>
-      <dict>
-        <key>Weekday</key><integer>3</integer>
-        <key>Hour</key><integer>17</integer>
-        <key>Minute</key><integer>2</integer>
-      </dict>
-      <dict>
-        <key>Weekday</key><integer>5</integer>
-        <key>Hour</key><integer>16</integer>
-        <key>Minute</key><integer>10</integer>
-      </dict>
-      <dict>
-        <key>Weekday</key><integer>5</integer>
-        <key>Hour</key><integer>16</integer>
-        <key>Minute</key><integer>52</integer>
-      </dict>
-      <dict>
-        <key>Weekday</key><integer>5</integer>
-        <key>Hour</key><integer>17</integer>
-        <key>Minute</key><integer>2</integer>
-      </dict>
+      <dict><key>Minute</key><integer>2</integer></dict>
+      <dict><key>Minute</key><integer>10</integer></dict>
+      <dict><key>Minute</key><integer>52</integer></dict>
     </array>
 
     <key>StandardOutPath</key>

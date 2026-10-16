@@ -11,8 +11,35 @@
 # 動いたかは `tail ~/Library/Logs/nexmax-deploy-kick.log`。
 #
 # 確かめるだけ（叩かない）: nexmax-deploy-kick.sh --dry-run
+# いまが 授業前の 窓かだけを 見る:   nexmax-deploy-kick.sh --check-window（窓の 中なら 0）
+#
+# **時刻は UTC で ここが 決める。** launchd は 地域の 時刻で 動くが、2026-10 の この Mac では
+# 16:10 の つもりが 14:10 ICT に 動いて いた（2時間 早い。JST の 時刻で 数えて いた とみられる）。
+# 10-16 は その 14:10〜15:02 には まだ 新しい 教材が 無く「同じ」で 止まり、
+# 教材が 入った 16時台には 起きなかった。だから plist は「毎時 02・10・52分」に 起こすだけにして、
+# 授業前の 窓に 入って いるかは 下の in_window が UTC で 見る（Mac の 地域が どこでも 同じ）。
 
 set -eu
+
+# 授業前の 窓: 火・水・金 09:05〜10:10 UTC（16:05〜17:10 ICT）。授業は 17:30 ICT。
+# Cloudflare 側（wrangler.jsonc）の 09:10 / 09:52 / 10:02 UTC が この 中に 入る。
+in_window() {
+  # shellcheck disable=SC2046
+  set -- $(date -u '+%u %H %M') # 曜日（1＝月 … 7＝日）・時・分
+  case "$1" in 2 | 3 | 5) ;; *) return 1 ;; esac
+  now=$((${2#0} * 60 + ${3#0}))
+  [ "$now" -ge $((9 * 60 + 5)) ] && [ "$now" -le $((10 * 60 + 10)) ]
+}
+
+if [ "${1:-}" = "--check-window" ]; then
+  in_window
+  exit $?
+fi
+
+# 窓の 外では 何も しない（毎時 起きるので、記録も 残さない）。--dry-run は 窓の 外でも 判定を 見せる。
+if [ "${1:-}" != "--dry-run" ] && ! in_window; then
+  exit 0
+fi
 
 REPO="tomy1031/nexmax-academy"
 WORKFLOW="deploy.yml"
@@ -48,8 +75,9 @@ if [ -n "$prod_sha" ] && [ "$prod_sha" = "$integ_sha" ]; then
 fi
 
 if [ "$DRY" = "1" ]; then
-  log "dry-run 起こす ところでした 本番=${prod_sha:-取得できず} → integration=$integ_sha"
-  echo "dry-run: 本番=${prod_sha:-取得できず} / integration=$integ_sha → 叩けば 出ます"
+  if in_window; then win="授業前の 窓の 中"; else win="授業前の 窓の 外（定刻なら 何も しない）"; fi
+  log "dry-run 起こす ところでした 本番=${prod_sha:-取得できず} → integration=$integ_sha（$win）"
+  echo "dry-run: 本番=${prod_sha:-取得できず} / integration=$integ_sha → 叩けば 出ます（いまは $win）"
   exit 0
 fi
 
