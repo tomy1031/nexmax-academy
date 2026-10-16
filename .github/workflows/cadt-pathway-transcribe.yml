@@ -11,7 +11,7 @@ jobs:
   transcribe:
     runs-on: ubuntu-latest
     environment: Preview
-    timeout-minutes: 15
+    timeout-minutes: 30
     permissions:
       contents: read
     steps:
@@ -22,7 +22,7 @@ jobs:
       - name: 文字起こし
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: node tts/cadt/segcheck.mjs tts/cadt/chunks out
+        run: SKIP=A_000,A_001,A_002,A_003,A_004,A_005,A_006,A_007,A_008,A_009,A_010,A_011,A_013,A_015 node tts/cadt/segcheck.mjs tts/cadt/chunks out
       - uses: actions/upload-artifact@v4
         if: always()
         with:
