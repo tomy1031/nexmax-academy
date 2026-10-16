@@ -125,6 +125,9 @@ const eslintConfig = defineConfig([
      */
     "public/tools/hourensou/app.js",
     "public/tools/hourensou/styles.css",
+    // 空気読みゲーム（別の リポジトリの ゲームを そのまま 写した もの。
+    // `scripts/sync_kuuki_yomi.mjs`）。直す先は ゲームの リポジトリ。
+    "public/tools/kuuki-yomi/js/**",
   ]),
 ]);
 
