@@ -35,6 +35,8 @@ const handler = {
         fetch: (url, init) => fetch(url, init),
         // 本番は サービスバインディングで 見る（同じ アカウントの workers.dev は 公開 URL で 呼べない）
         probeFetch: env.PROD ? (url, init) => env.PROD.fetch(url, init) : undefined,
+        // 授業前の 本番デプロイの 起こし役も 同じ 理由で サービスバインディング（1日 1回だけ 見る）
+        kickerFetch: env.KICKER ? (url, init) => env.KICKER.fetch(url, init) : undefined,
         sleep: (ms) => new Promise((resolve) => setTimeout(resolve, ms)),
         now: () => Date.now(),
         loadState: () => stub.load(),
@@ -71,6 +73,10 @@ const handler = {
         muted: env.MUTE_WARNINGS ?? null,
         startedAt: state?.startedAt ? new Date(state.startedAt).toISOString() : null,
         lastRunAt: state?.lastRunAt ? new Date(state.lastRunAt).toISOString() : null,
+        // 授業前の 本番デプロイの 起こし役を 最後に 見た とき（ok が false なら GitHub に 断られる）
+        kicker: state?.kicker
+          ? { ...state.kicker, at: new Date(state.kicker.at).toISOString() }
+          : null,
         open: state?.open ?? {},
         last: state?.last ?? null,
         note: "読むだけのページです。ここから自動チェックや通知は起きません。",

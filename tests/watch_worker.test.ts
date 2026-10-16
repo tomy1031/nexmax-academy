@@ -4,19 +4,23 @@ import {
   ATTEMPTS,
   CARRY_MS,
   CLIENT_ERROR_THRESHOLD,
+  KICKER_RECHECK_MS,
   PROBES,
   RECOVER_QUIET_MS,
   REMIND_MS,
   RETRY_WAIT_MS,
   classifyResponse,
   decide,
+  describeKickerRefusal,
   escapeSlack,
   findTelegramChat,
   ictLabel,
   isQuietHour,
   judge,
+  kickerDue,
   notify,
   parseMutes,
+  readKicker,
   runProbe,
   runWatch,
   safePath,
@@ -768,6 +772,236 @@ describe("runWatch — Telegram の 通し", () => {
   });
 });
 
+/*
+ * 授業前の 本番デプロイの 起こし役（workers/deploy-kicker）の 鍵。2026-10-16 は 鍵に Actions の
+ * 書き込み権限が 無く（403）、授業の 当日まで だれも 気づかなかった。状態ページを 開く たびに
+ * GitHub へ 試しの 起こしを 1回 投げるので、10分ごとには 見ない。
+ */
+describe("起こし役の 鍵 — 授業前の 本番デプロイが GitHub に 断られないか", () => {
+  const KICKER = "https://academy-deploy-kicker.nexmax.workers.dev";
+  const MON_0850 = Date.UTC(2026, 9, 12, 1, 50); // 月 08:50 ICT（火曜の 授業の 前日）
+  const MIN = 60_000;
+  const canDispatch = (status: number | null) =>
+    Response.json({ same: false, canDispatch: { ok: status === 422, status, reason: "…" } });
+
+  describe("kickerDue — いつ 見るか", () => {
+    it("一度も 見て いなければ すぐ 見る（出した 直後に つながりを 確かめる）", () => {
+      expect(kickerDue(null, false, MON_0850)).toBe(true);
+      expect(kickerDue(undefined, false, MON_0850)).toBe(true);
+    });
+
+    it("正常なら 1日 1回。カンボジア時間の 朝 9時を 過ぎた 最初の 回", () => {
+      const yesterday = { at: MON_0850 - 24 * 60 * MIN + 20 * MIN, ok: true }; // 前日 09:10
+      expect(kickerDue(yesterday, false, MON_0850)).toBe(false); // 08:50
+      expect(kickerDue(yesterday, false, MON_0850 + 10 * MIN)).toBe(true); // 09:00
+      const today = { at: MON_0850 + 10 * MIN, ok: true };
+      expect(kickerDue(today, false, MON_0850 + 20 * MIN)).toBe(false);
+      expect(kickerDue(today, false, MON_0850 + 14 * 60 * MIN)).toBe(false); // 同じ日の 22:50
+      expect(kickerDue(today, false, MON_0850 + 16 * 60 * MIN)).toBe(false); // 翌日 00:50
+    });
+
+    it("1回 断られたら 次の 回（10分後）に もう一度", () => {
+      const refused = { at: MON_0850, ok: false };
+      expect(kickerDue(refused, false, MON_0850 + 10 * MIN)).toBe(true);
+    });
+
+    it(`知らせた あとと 測れなかった ときは ${KICKER_RECHECK_MS / MIN}分ごと`, () => {
+      for (const [last, isOpen] of [
+        [{ at: MON_0850, ok: false }, true],
+        [{ at: MON_0850, ok: true }, true], // 正常に 見えた。続くかを 1時間後に 見て 閉じる
+        [{ at: MON_0850, ok: null }, false],
+      ] as const) {
+        expect(kickerDue(last, isOpen, MON_0850 + 50 * MIN)).toBe(false);
+        expect(kickerDue(last, isOpen, MON_0850 + KICKER_RECHECK_MS)).toBe(true);
+      }
+    });
+  });
+
+  describe("readKicker — 状態ページの canDispatch を 読む", () => {
+    it("ok と GitHub の 番号を 取る", async () => {
+      expect(await readKicker(KICKER, async () => canDispatch(403))).toEqual({
+        ok: false,
+        status: 403,
+      });
+      expect(await readKicker(KICKER, async () => canDispatch(422))).toEqual({
+        ok: true,
+        status: 422,
+      });
+      expect(await readKicker(KICKER, async () => canDispatch(null))).toEqual({
+        ok: false,
+        status: null,
+      });
+    });
+
+    it("答えない・形が ちがう ときは「測れなかった」（断られたとは 言わない）", async () => {
+      const cases: [() => Promise<Response>, string][] = [
+        [async () => new Response("x", { status: 500 }), "HTTP 500"],
+        [async () => new Response("<html>"), "bad-json"],
+        [async () => Response.json({ same: true }), "bad-json"],
+        [
+          async () => {
+            throw new TypeError("fetch failed");
+          },
+          "network",
+        ],
+      ];
+      for (const [fetchImpl, failed] of cases) {
+        expect(await readKicker(KICKER, fetchImpl)).toEqual({ failed });
+      }
+    });
+  });
+
+  describe("judge — 2回 続けて 断られたら 知らせる", () => {
+    it("1回だけでは 鳴らさない。2回 続いたら 直しかたを 添えて confirmed", () => {
+      const refused = { kicker: { ok: false, status: 403 } };
+      const first = judge(null, allOk(), { skipped: true }, T0, refused);
+      expect(first.findings).toEqual([
+        expect.objectContaining({ key: "kicker", level: "suspect" }),
+      ]);
+      const second = judge(first, allOk(), { skipped: true }, T0 + 10 * MIN, refused);
+      expect(second.findings).toEqual([
+        expect.objectContaining({ key: "kicker", level: "confirmed" }),
+      ]);
+      expect(second.findings[0]!.text).toBe(
+        `授業前の自動反映が GitHub に断られる（HTTP 403）: ${describeKickerRefusal(403)}`,
+      );
+      expect(second.findings[0]!.text).toContain("Actions を Read and write にする");
+    });
+
+    it("401・404・トークンなしも、何を 直せば よいかが 分かる 文に する", () => {
+      expect(describeKickerRefusal(401)).toContain("無効");
+      expect(describeKickerRefusal(404)).toContain("Repository access");
+      expect(describeKickerRefusal(null)).toContain("入っていない");
+      const none = judge({ pending: { kicker: true } }, allOk(), { skipped: true }, T0, {
+        kicker: { ok: false, status: null },
+      });
+      expect(none.findings[0]!.text).toContain("（トークンなし）");
+    });
+
+    it("見ない 回は、開いて いる 異常も 続きぐあいも そのまま（正常とは 数えない）", () => {
+      const open = {
+        kicker: { since: T0, notifiedAt: T0, text: "授業前の自動反映が…", quietSince: null },
+      };
+      const j = judge({ open, pending: { kicker: true } }, allOk(), { skipped: true }, T0, {
+        kicker: { skipped: true },
+      });
+      expect(j.findings).toEqual([expect.objectContaining({ key: "kicker", level: "keep" })]);
+      expect(j.pending.kicker).toBe(true);
+      // 断られた 1回目の あとも、次に 見る までは 続きぐあいを 残す
+      expect(judge({ pending: { kicker: true } }, allOk(), { skipped: true }, T0).pending).toEqual({
+        kicker: true,
+      });
+    });
+
+    it("状態ページが 答えない 回は「測れなかった」——開いて いる 異常を 閉じない", () => {
+      const open = {
+        kicker: { since: T0, notifiedAt: T0, text: "授業前の自動反映が…", quietSince: null },
+      };
+      const j = judge({ open }, allOk(), { skipped: true }, T0, {
+        kicker: { failed: "HTTP 500" },
+      });
+      expect(j.findings).toEqual([expect.objectContaining({ key: "kicker", level: "hold" })]);
+    });
+  });
+
+  it("runWatch の 通し: 2回目で 知らせ、直れば「直りました」。見に 行くのは その 間だけ 1時間ごと、ふだんは 1日 1回", async () => {
+    let state: unknown = {
+      startedAt: MON_0850 - 3 * 24 * 60 * MIN,
+      open: {},
+      recentFail: {},
+      pending: {},
+      kicker: { at: MON_0850 - 24 * 60 * MIN + 20 * MIN, ok: true, status: 422 }, // 前日 09:10 は 正常
+    };
+    let now = MON_0850;
+    let github = 403;
+    const kickerCalls: string[] = [];
+    const sent: string[] = [];
+    const site = fakeFetch(OK_ALL);
+    const deps = {
+      fetch: async (url: string, init?: RequestInit) => {
+        if (url.startsWith("https://hooks.")) {
+          sent.push(JSON.parse(String(init?.body)).text);
+          return new Response("ok");
+        }
+        return site(url);
+      },
+      kickerFetch: async (url: string) => {
+        expect(url).toBe(KICKER);
+        kickerCalls.push(ictLabel(now));
+        return canDispatch(github);
+      },
+      sleep: noSleep,
+      now: () => now,
+      loadState: async () => state,
+      saveState: async (s: unknown) => void (state = s),
+      log: () => {},
+    };
+    const env = {
+      PROD_URL: PROD,
+      KICKER_URL: KICKER,
+      SLACK_WEBHOOK_URL: "https://hooks.slack.test/x",
+    };
+    /** 10分ごとの 回を n回 回す。 */
+    const runs = async (n: number) => {
+      for (let i = 0; i < n; i++) {
+        await runWatch(env, deps);
+        now += 10 * MIN;
+      }
+    };
+    const open = () => Object.keys((state as SavedState).open);
+
+    await runs(2); // 08:50（見ない）・09:00（1回目の 403。まだ 鳴らさない）
+    expect(kickerCalls).toEqual(["10/12 09:00 ICT"]);
+    expect(sent).toEqual([]);
+
+    await runs(1); // 09:10 もう一度 → 続いたので 知らせる
+    expect(sent).toHaveLength(1);
+    expect(sent[0]).toContain("🆕 授業前の自動反映が GitHub に断られる（HTTP 403）");
+    expect(open()).toEqual(["kicker"]);
+
+    await runs(6); // 09:20〜10:00 は 見ない（開いた まま・管理画面にも 出る）、10:10 に また 見る
+    expect(kickerCalls).toEqual(["10/12 09:00 ICT", "10/12 09:10 ICT", "10/12 10:10 ICT"]);
+    expect(open()).toEqual(["kicker"]);
+    expect(sent).toHaveLength(1);
+
+    github = 422; // 10:15 に tomy さんが トークンを 直した
+    await runs(6); // 11:10 に 正常を 見る。1回では 閉じない
+    expect(kickerCalls.at(-1)).toBe("10/12 11:10 ICT");
+    expect(open()).toEqual(["kicker"]);
+    expect(sent).toHaveLength(1);
+
+    await runs(6); // 12:10 にも 正常 → 1時間 正常が 続いたので「直りました」
+    expect(kickerCalls.at(-1)).toBe("10/12 12:10 ICT");
+    expect(open()).toEqual([]);
+    expect(sent).toHaveLength(2);
+    expect(sent[1]).toContain("✅ 直りました");
+    expect(sent[1]).toContain("授業前の自動反映");
+
+    const before = kickerCalls.length;
+    await runs(6 * 21); // 12:20〜翌日 09:10。ふだんは 翌朝 9時に 1回だけ
+    expect(kickerCalls.slice(before)).toEqual(["10/13 09:00 ICT"]);
+    expect(sent).toHaveLength(2);
+  });
+
+  it("起こし役が つながって いない（KICKER が 無い）ときは 見ない", async () => {
+    let state: unknown = null;
+    const calls: string[] = [];
+    await runWatch(
+      { PROD_URL: PROD, KICKER_URL: KICKER },
+      {
+        fetch: fakeFetch(OK_ALL, calls),
+        sleep: noSleep,
+        now: () => T0,
+        loadState: async () => state,
+        saveState: async (s: unknown) => void (state = s),
+        log: () => {},
+      },
+    );
+    expect(calls.some((u) => u.startsWith(KICKER))).toBe(false);
+    expect(state).toMatchObject({ kicker: null });
+  });
+});
+
 describe("ictLabel", () => {
   it("カンボジア時間（UTC+7）で 出す", () => {
     expect(ictLabel(Date.UTC(2026, 9, 13, 10, 40))).toBe("10/13 17:40 ICT");
@@ -814,6 +1048,15 @@ describe("wrangler.jsonc — 無料枠と 本番の 枠を 守る", () => {
     expect(hour).toBe("10,11");
     for (let m = 5; m < 60; m += 10) expect(minutes.has(m)).toBe(true);
     expect(config.triggers.crons).toContain("*/10 * * * *");
+  });
+
+  it("起こし役へも サービスバインディングで つなぐ（同じ アカウントの workers.dev は 1042）", () => {
+    expect(config.services).toContainEqual({ binding: "PROD", service: "academy" });
+    expect(config.services).toContainEqual({
+      binding: "KICKER",
+      service: "academy-deploy-kicker",
+    });
+    expect(config.vars.KICKER_URL).toBe("https://academy-deploy-kicker.nexmax.workers.dev");
   });
 
   it("状態は Durable Object（SQLite）に 置く", () => {

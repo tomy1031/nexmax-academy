@@ -1157,6 +1157,9 @@ GitHub の cron（受け皿）は いつも どおり 3〜5時間 遅れで、�
 - `wrangler.jsonc` の 曜日を `TUE,WED,FRI` と 名前で 書いた（見張り `workers/watch` は もともと 名前で 書いて いた）
 - 状態の ページ（`https://academy-deploy-kicker.nexmax.workers.dev`）に `canDispatch` を 足した。
   `ok: false` なら 授業の 日を 待たずに 鍵を 直す。断られた ときの 例外にも 直しかたを 書く
+- 見張り（`workers/watch`）が その `canDispatch` を **毎朝 9時（ICT）に 1回** 見て、2回 続けて 断られたら
+  Telegram と 管理画面の エラーログに 出す（人が 状態の ページを 開きに 行かなくても 気づける。
+  試しの 起こしを 毎回 投げるので 10分ごとには 見ない。workers/watch/README.md）
 - Mac の plist は **毎時 02・10・52分**に 起こすだけに して、授業前の 窓（火・水・金 09:05〜10:10 UTC）かは
   スクリプトが UTC で 見る。Mac の 地域の 時刻が ICT でも JST でも 同じ 時刻に 当たる
 - 3つの 時計が 同じ 時刻を 指すかを `tests/deploy_kicker.test.ts` が 見る

@@ -33,10 +33,18 @@
   // 本番の Worker（name=academy）へ 直に つなぐ。**同じ アカウントの Worker は workers.dev の
   // 公開 URL では 呼べない**（2026-10-11 に 3か所とも 404 が 返った）。つなぐ 先は いま 本番に
   // 出て いる 版（STG の 別名では ない）。中身は 公開の ページを 読むだけ。
-  "services": [{ "binding": "PROD", "service": "academy" }],
+  //
+  // KICKER は 授業前の 本番デプロイの 起こし役（workers/deploy-kicker）。状態ページの
+  // `canDispatch` で、鍵が GitHub に 断られないかを 見る。開く たびに GitHub へ 試しの 起こしを
+  // 1回 投げる（ランは 作られない）ので、1日 1回だけ（src/watch.js の kickerDue）。
+  "services": [
+    { "binding": "PROD", "service": "academy" },
+    { "binding": "KICKER", "service": "academy-deploy-kicker" },
+  ],
 
   "vars": {
     "PROD_URL": "https://academy.nexmax.workers.dev",
+    "KICKER_URL": "https://academy-deploy-kicker.nexmax.workers.dev",
   },
 
   // 状態は Durable Object（SQLite・無料枠）に 1件。**KV は 使わない**（src/index.js の 冒頭）。

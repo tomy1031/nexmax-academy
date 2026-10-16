@@ -142,7 +142,9 @@ rm ~/Library/LaunchAgents/dev.nexmax.academy.deploy-kick.plist
 
 - `npm run handoff` … 本番と main の 差が 出る
 - 上の Worker の URL … `same: false` が 授業前に 続いて いたら 起こし役が 全部 黙って いる。
-  `canDispatch.ok: false` なら 鍵で 起こせない（授業の 日を 待たずに 鍵を 直す）
+  `canDispatch.ok: false` なら 鍵で 起こせない（授業の 日を 待たずに 鍵を 直す）。
+  **見張り（`workers/watch`）が 毎朝 9時（ICT）に ここを 見て、2回 続けて 断られたら Telegram と
+  管理画面の エラーログに 出す**（2026-10-16 から。サービスバインディング `KICKER` で つなぐ）
 - `launchctl print gui/$(id -u)/dev.nexmax.academy.deploy-kick | grep runs` … Mac の launchd が 起きた 回数（毎時 3回 増える）
 - `tail ~/Library/Logs/nexmax-deploy-kick.log` … Mac 側が 何を したか
 

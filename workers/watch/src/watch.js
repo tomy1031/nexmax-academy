@@ -45,6 +45,17 @@ export const RECOVER_QUIET_MS = 60 * 60_000;
  */
 export const CLIENT_ERROR_MINUTES = 15;
 export const CLIENT_ERROR_THRESHOLD = 3;
+/**
+ * 授業前の 本番デプロイの 起こし役（workers/deploy-kicker）が GitHub に 起こして もらえるか を 見る 間。
+ * 起こし役の 状態ページは 開く たびに GitHub へ 試しの 起こしを 1回 投げる（ランは 作られない）ので、
+ * 10分ごとには 見ない。正常なら 1日 1回（カンボジア時間の 朝 9時を 過ぎた 最初の 回。
+ * 授業の 前日にも 当日の 朝にも 当たる）、1回 断られたら 次の 回に もう一度、知らせた あとは 1時間ごと。
+ * 2026-10-16 は 鍵に Actions の 書き込み権限が 無く（403）、授業の 当日まで だれも 気づかなかった。
+ */
+export const KICKER_CHECK_HOUR_ICT = 9;
+export const KICKER_RECHECK_MS = 60 * 60_000;
+/** 1回 断られた あと、続いたかを 見に 行く までの 間（次の 10分ごとの 回に 当たる）。 */
+export const KICKER_CONFIRM_MS = 5 * 60_000;
 
 /** 応答が 正常か を 見分ける。正常なら null、だめなら 短い 印。 */
 export function classifyResponse(probe, status, bodyText = "") {
@@ -168,6 +179,71 @@ export async function readClientErrors(env, fetchImpl) {
   }
 }
 
+/** 日付と 時を カンボジア時間（UTC+7）で。 */
+function ictDay(now) {
+  return new Date(now + 7 * 60 * 60_000).toISOString().slice(0, 10);
+}
+function ictHour(now) {
+  return new Date(now + 7 * 60 * 60_000).getUTCHours();
+}
+
+/**
+ * この 回に 起こし役の 鍵を 見に 行くか。last は 前に 見た ときの 結果（状態の kicker）、
+ * isOpen は 知らせた 異常が 開いて いるか。
+ */
+export function kickerDue(last, isOpen, now) {
+  // 一度も 見て いない（出した 直後）。つながって いるかを すぐ 確かめる
+  if (typeof last?.at !== "number") return true;
+  const since = now - last.at;
+  // 知らせた あとは 1時間ごと（直ったら「直りました」を 言う ため）
+  if (isOpen) return since >= KICKER_RECHECK_MS;
+  // 1回 断られた。次の 回に もう一度（2回 続いたら 知らせる）
+  if (last.ok === false) return since >= KICKER_CONFIRM_MS;
+  // 測れなかった（状態ページが 答えない）。1時間 おいて もう一度
+  if (last.ok !== true) return since >= KICKER_RECHECK_MS;
+  return ictDay(now) !== ictDay(last.at) && ictHour(now) >= KICKER_CHECK_HOUR_ICT;
+}
+
+/**
+ * 起こし役の 状態ページの `canDispatch` を 読む。ok が false なら、授業前に 時計が 起きても
+ * GitHub に 断られる。status は GitHub の 答え（401・403・404。鍵が 無ければ null）。
+ */
+export async function readKicker(url, fetchImpl) {
+  try {
+    const res = await fetchWithTimeout(fetchImpl, url, {
+      headers: { "User-Agent": "nexmax-watch", "Cache-Control": "no-cache" },
+    });
+    if (!res.ok) return { failed: `HTTP ${res.status}` };
+    let data;
+    try {
+      data = await res.json();
+    } catch {
+      return { failed: "bad-json" };
+    }
+    const can = data?.canDispatch;
+    if (!can || typeof can.ok !== "boolean") return { failed: "bad-json" };
+    return { ok: can.ok, status: typeof can.status === "number" ? can.status : null };
+  } catch (error) {
+    return { failed: error && error.name === "AbortError" ? "timeout" : "network" };
+  }
+}
+
+/** GitHub に 断られた 番号を、何を 直せば よいかの 文に する（起こし役の README と 同じ 中身）。 */
+export function describeKickerRefusal(status) {
+  switch (status) {
+    case null:
+      return "アクセストークンが Cloudflare に入っていない（wrangler secret put GITHUB_TOKEN）";
+    case 401:
+      return "アクセストークンが無効（期限切れ・削除・入れ間違い）。作り直して入れ直す";
+    case 403:
+      return "アクセストークンに Actions の書き込み権限がない。GitHub のトークンの編集画面で Actions を Read and write にする";
+    case 404:
+      return "アクセストークンから nexmax-academy が見えない。トークンの Repository access に足す";
+    default:
+      return `GitHub が HTTP ${status} で断った`;
+  }
+}
+
 /**
  * 一時的に 黙らせる 警告（var `MUTE_WARNINGS`・カンマ区切りの 部分一致）。
  * **直しが 決まって いる 既知の 誤報だけ**に 使う。deploy の とき `--var` で 渡し、
@@ -202,15 +278,18 @@ export function safePath(path) {
  *   suspect   … まだ 1回だけ。新しくは 知らせないが、開いて いる 異常は 閉じない
  *   hold      … 測れなかった（健康しらべ・DB が 落ちた）。前の 回の 異常を そのまま 残す
  *               ——測れない ことを「直った」と 取り違えない ため
+ *   keep      … この 回は 見て いない（起こし役の 鍵は 1日 1回だけ 見る）。開いて いる 異常を
+ *               何も 変えずに 残す——見て いない 回を 正常と 数えると、1時間後に うその「直りました」が 出る
  * 返す recentFail・pending は 次の 回に 引き継ぐ もの。
  *
  * @param {any} prev
  * @param {any[]} probeResults
  * @param {any} clientErrors
  * @param {number} now
- * @param {{ mutes?: string[] }} [opts]
+ * @param {{ mutes?: string[], kicker?: any }} [opts]
+ *   kicker … readKicker の 結果。見て いない 回は 無し か { skipped: true }
  */
-export function judge(prev, probeResults, clientErrors, now, { mutes = [] } = {}) {
+export function judge(prev, probeResults, clientErrors, now, { mutes = [], kicker } = {}) {
   const findings = [];
   const recentFail = {};
   const pending = {};
@@ -288,6 +367,23 @@ export function judge(prev, probeResults, clientErrors, now, { mutes = [] } = {}
     }
   }
 
+  // 授業前の 本番デプロイの 起こし役。GitHub に 2回 続けて 断られたら 知らせる
+  if (!kicker || kicker.skipped) {
+    if (lastPending.kicker) pending.kicker = lastPending.kicker;
+    if (lastOpen.kicker)
+      findings.push({ key: "kicker", level: "keep", text: lastOpen.kicker.text });
+  } else if (kicker.failed) {
+    if (lastPending.kicker) pending.kicker = lastPending.kicker;
+    hold("kicker");
+  } else if (!kicker.ok) {
+    pending.kicker = true;
+    findings.push({
+      key: "kicker",
+      level: lastPending.kicker ? "confirmed" : "suspect",
+      text: `授業前の自動反映が GitHub に断られる（${kicker.status === null ? "トークンなし" : `HTTP ${kicker.status}`}）: ${describeKickerRefusal(kicker.status)}`,
+    });
+  }
+
   return { findings, recentFail, pending };
 }
 
@@ -343,6 +439,9 @@ export function decide(prev, judged, now, prodUrl, { mutes = [] } = {}) {
         };
         if (remind) reminded.push(f.key);
       }
+    } else if (f.level === "keep") {
+      // 見て いない 回。正常が 続いた 時間（quietSince）も そのまま——閉じるかは 次に 見た 回で 決める
+      if (was) open[f.key] = { ...was };
     } else if (was) {
       // ゆれて いる／測れない。閉じも 鳴らしも しない
       open[f.key] = { ...was, text: f.level === "hold" ? was.text : f.text, quietSince: null };
@@ -546,23 +645,28 @@ export async function notify(env, message, fetchImpl, { telegramChatId = null } 
  *   deps.probeFetch … 本番を 見る ときだけ 使う fetch（無ければ deps.fetch）。
  *     **同じ アカウントの Worker は workers.dev の 公開 URL では 呼べない**（2026-10-11 に
  *     3か所とも 404 が 返った）ので、本番の Worker へは サービスバインディング（env.PROD）で 行く
+ *   deps.kickerFetch … 起こし役（env.KICKER）へ 行く fetch。無ければ 鍵は 見ない。同じ 理由で サービスバインディング
  */
 export async function runWatch(env, deps) {
   const baseUrl = (env.PROD_URL || "").replace(/\/+$/, "");
   const prev = await deps.loadState();
   const now = deps.now();
+  const checkKicker =
+    Boolean(deps.kickerFetch && env.KICKER_URL) &&
+    kickerDue(prev?.kicker, Boolean(prev?.open?.kicker), now);
 
-  const [probeResults, clientErrors] = await Promise.all([
+  const [probeResults, clientErrors, kicker] = await Promise.all([
     Promise.all(
       PROBES.map((probe) =>
         runProbe(probe, { baseUrl, fetchImpl: deps.probeFetch ?? deps.fetch, sleep: deps.sleep }),
       ),
     ),
     readClientErrors(env, deps.fetch),
+    checkKicker ? readKicker(env.KICKER_URL, deps.kickerFetch) : { skipped: true },
   ]);
 
   const mutes = parseMutes(env.MUTE_WARNINGS);
-  const judged = judge(prev, probeResults, clientErrors, now, { mutes });
+  const judged = judge(prev, probeResults, clientErrors, now, { mutes, kicker });
   const { messages, next } = decide(prev, judged, now, baseUrl, { mutes });
 
   // Telegram の 送り先。入れて あれば それ、覚えて いれば それ、無ければ 探す
@@ -590,6 +694,15 @@ export async function runWatch(env, deps) {
     ...next,
     retry,
     telegramChatId: env.TELEGRAM_CHAT_ID ? (prev?.telegramChatId ?? null) : telegramChatId,
+    // 起こし役を 最後に 見た とき（次に いつ 見るかを kickerDue が ここから 決める）
+    kicker: kicker.skipped
+      ? (prev?.kicker ?? null)
+      : {
+          at: now,
+          ok: kicker.failed ? null : kicker.ok,
+          status: kicker.status ?? null,
+          failed: kicker.failed ?? null,
+        },
     last: {
       at: now,
       probes: probeResults.map((r) => ({ id: r.id, code: r.code, failures: r.failures })),
