@@ -40,13 +40,11 @@ async function seedGame(page: Page, played: readonly string[]) {
 async function openGame(page: Page) {
   await page.goto("/kuuki/link");
   /*
-   * ゲームは 関門では ない（リンク教材は `gates: false`）ので、まんがを 終えた 時点で
-   * ステージは クリア扱いに なり、開いた とたんに お祝いの 板が 出る（連絡の もんだいと
-   * 同じ 動き）。板は 進み具合を 読んだ あとに 出るので、待ってから 閉じる。
+   * ゲームは この ステージだけ 関門に して ある（content/stages/kuuki.json の gates: true）。
+   * 関門で ないと、まんがの 最後の ページ（ゲームの 案内）に 着いた とたん
+   * 「ステージ クリア」の 板が かぶさり、ゲームを 飛ばして 戻れて しまう。
+   * だから まんがを 終えて 開いた 時点では、板は 出ない。
    */
-  const stay = page.getByRole("button", { name: "ここに のこる" });
-  await expect(stay).toBeVisible({ timeout: 15_000 });
-  await stay.click();
   await expect(page.getByRole("dialog", { name: "ステージ クリア" })).toHaveCount(0);
   await page
     .getByRole("button", { name: /ひらく/ })
@@ -88,6 +86,8 @@ test("ゲームは 写した まま 開き、最後の 1ステージを 遊ぶ�
   }, STAGE_IDS.at(-1)!);
 
   await expect(page.getByText("✅ おわりました").first()).toBeVisible();
+  // ゲームを 終えて はじめて ステージが クリアに なる
+  await expect(page.getByRole("dialog", { name: "ステージ クリア" })).toBeVisible();
   await shot(page, "kuuki-03-done");
 });
 

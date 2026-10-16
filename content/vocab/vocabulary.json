@@ -4248,8 +4248,22 @@
       "id": "ouen2",
       "term": "応援",
       "reading": "おうえん",
-      "meaningJa": "cheering for you, support の ことばです。",
-      "englishTerm": "cheering for you, support"
+      "meaningJa": "がんばって いる 人を、声や 気もちで ささえる ことです。",
+      "englishTerm": "cheering for you, support",
+      "furigana": [
+        [
+          "人",
+          "ひと"
+        ],
+        [
+          "声",
+          "こえ"
+        ],
+        [
+          "気",
+          "き"
+        ]
+      ]
     },
     {
       "id": "junban",
@@ -19185,6 +19199,75 @@
         [
           "着ます",
           "きます"
+        ]
+      ]
+    },
+    {
+      "id": "yaku_ni",
+      "term": "役に",
+      "reading": "やくに",
+      "romaji": "yakuni",
+      "meaningJa": "「役に 立つ」は、つかえて たすかる と いう 意味です。",
+      "englishTerm": "Useful / Helpful",
+      "example": "この 本は 仕事の 役に 立ちます。",
+      "furigana": [
+        [
+          "役",
+          "やく"
+        ],
+        [
+          "立",
+          "た"
+        ],
+        [
+          "本",
+          "ほん"
+        ],
+        [
+          "意味",
+          "いみ"
+        ],
+        [
+          "仕事",
+          "しごと"
+        ]
+      ]
+    },
+    {
+      "id": "sutto",
+      "term": "すっと",
+      "reading": "すっと",
+      "romaji": "sutto",
+      "meaningJa": "しずかに、すばやく する ようすです。",
+      "englishTerm": "Smoothly / Quietly",
+      "example": "すっと 立ちます。",
+      "furigana": [
+        [
+          "立",
+          "た"
+        ]
+      ]
+    },
+    {
+      "id": "shichatta",
+      "term": "しちゃった",
+      "reading": "しちゃった",
+      "romaji": "shichatta",
+      "meaningJa": "「して しまった」の くだけた 言い方です。",
+      "englishTerm": "I did (by mistake)",
+      "example": "まちがえて 消しちゃった。",
+      "furigana": [
+        [
+          "言",
+          "い"
+        ],
+        [
+          "言い方",
+          "いいかた"
+        ],
+        [
+          "消",
+          "け"
         ]
       ]
     }
