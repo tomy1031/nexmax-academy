@@ -3,7 +3,7 @@ name: CADT Japanese IT Pathway 動画の スピーチ 文字起こし（一時�
 on:
   push:
     branches: ['tts/cadt-pathway-video']
-    paths: ['tts/cadt/voicecheck/**']
+    paths: ['tts/cadt/segcheck/**']
 concurrency:
   group: cadt-pathway-transcribe
   cancel-in-progress: false
@@ -22,7 +22,7 @@ jobs:
       - name: 文字起こし
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: node tts/cadt/voicecheck.mjs tts/cadt/voicecheck/voice.mp3 out
+        run: node tts/cadt/segcheck.mjs tts/cadt/segcheck out
       - uses: actions/upload-artifact@v4
         if: always()
         with:
