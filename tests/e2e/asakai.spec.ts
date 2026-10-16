@@ -731,8 +731,11 @@ for (const id of ["asakai_kantan", "asakai_muzukashii"] as const) {
     await expect(memoButton, "消さずに 灰色で 残る").toBeVisible();
     await shot(page, `asakai-memo-locked-while-talking-${id}`);
 
-    /* 話しおわる → また 開ける。 */
-    await stop.click();
+    /*
+     * 話しおわる → また 開ける。赤い マイクは 話して いる あいだ ずっと 脈打つ
+     *（`SpeakButton` の scale の くり返し）ので、「止まって から 押す」を 待つと 永久に 押せない。
+     */
+    await stop.click({ force: true });
     await expect(memoButton, "マイクを 止めたら 開ける").toBeEnabled();
     await memoButton.click();
     const memo = page.getByRole("dialog", { name: "報告メモ" });
