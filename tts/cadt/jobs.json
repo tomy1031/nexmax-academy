@@ -1,0 +1,19 @@
+{
+ "model": "gemini-3.8-flash-tts",
+ "delay": 21000,
+ "check": true,
+ "lines": [
+  {
+   "key": "partA",
+   "text": "Where could your IT skills take you? <long pause> Imagine building a career in Japan, learning a new language, and working with people from different backgrounds. <long pause> For Cambodian students, this is more than a dream. <long pause> It is the opportunity offered by the Japanese IT Pathway Program. <long pause> The Japanese IT Pathway Program prepares Cambodian IT students for professional careers in Japan. <long pause> Over two years, students first focus on learning Japanese, then develop their IT skills through classes conducted in Japanese. <long pause> Along the way, they practice communication, teamwork, problem-solving, and the professional habits expected in Japanese workplaces. <long pause> Our goal is not simply to help students pass a language test. <long pause> It is to help them become IT professionals who can communicate, contribute to a team, and continue growing in Japan. <long pause> This opportunity exists because the Cambodian government believes in the potential of its young people. <long pause> With financial support from the Ministry of Post and Telecommunications, M P T C, this program makes specialized Japanese language and IT education accessible to students. <long pause> This is more than support for individual careers. <long pause> It reflects the government's hope that Cambodian students will gain international experience, strengthen their abilities, and contribute to Cambodia's future. <long pause> The government is investing in education because it believes your growth matters. <long pause> Your education is an investment in the future of Cambodia.",
+   "voice": "Charon",
+   "style": "Warm, sincere and inspiring documentary narration. Calm, clear and measured pace for students whose first language is not English. Leave a clear pause at every pause tag."
+  },
+  {
+   "key": "partB",
+   "text": "This government support gives you a valuable opportunity. <long pause> Your university, your teachers, Next Make, and the government are working together to create an environment where you can learn and grow. <long pause> But there is one thing they cannot do for you. <long pause> They cannot make the effort for you. <long pause> Learning Japanese takes patience. Developing IT skills takes practice. <long pause> Some days will be difficult. <long pause> What matters is attending class, asking questions, and continuing to learn, even when things are challenging. <long pause> The opportunity is being provided. <long pause> What you do with it is up to you. <long pause> Now, let's hear from two CADT students who have completed their first year of Japanese language study. <long pause> You have just heard from two students after their first year of Japanese language study. <long pause> They are still on their journey. <long pause> But their experiences show what dedication and consistent effort can achieve. <long pause> The Cambodian government has helped create this opportunity. <long pause> Your university, teachers, and Next Make are here to support you. <long pause> We hope you will appreciate this support and show your gratitude through your actions. <long pause> Attend class. Keep learning. Support each other. <long pause> Your future will not be built in a single day. <long pause> It will be built through the effort you make, day after day. <long pause> The opportunity is here. <long pause> Your future begins with your commitment. <long pause> Welcome to the Japanese IT Pathway Program.",
+   "voice": "Charon",
+   "style": "Warm, sincere and inspiring documentary narration. Calm, clear and measured pace for students whose first language is not English. Leave a clear pause at every pause tag."
+  }
+ ]
+}

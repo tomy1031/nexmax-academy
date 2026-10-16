@@ -1,0 +1,37 @@
+name: CADT Japanese IT Pathway 動画の ナレーション（一時ブランチ）
+
+# CADT 向け Japanese IT Pathway 紹介動画の 英語ナレーションを作る。
+# 鍵は Environment「Preview」の Secrets にだけ あるので、この 一時ブランチで 回して、
+# 音は artifact で 受け取る。作業が 終わったら ブランチごと 消す。
+# Gemini 3.8 Flash TTS は 1日の 回数制限が あるので、文を <long pause> で つないで 2回で 読ませ、あとで 切る。
+on:
+  push:
+    branches: ['tts/cadt-pathway-video']
+    paths: ['tts/cadt/jobs.json']
+
+concurrency:
+  group: cadt-pathway-tts
+  cancel-in-progress: false
+
+jobs:
+  tts38:
+    runs-on: ubuntu-latest
+    environment: Preview
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: 3.8 TTS
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: node tts/gen.mjs tts/cadt/jobs.json out
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cadt-tts-out
+          path: out
+          retention-days: 7
