@@ -1,0 +1,674 @@
+{
+  "kind": "manga",
+  "id": "kuuki_manga",
+  "format": "story",
+  "title": "まんが：空気を 読むって なに？",
+  "description": "日本の 会社で よく 聞く「空気を 読む」。どういう ことでしょうか。3つの クイズで 考えます。",
+  "characters": [
+    {
+      "id": "hendy",
+      "name": "ヘンディ",
+      "role": "先輩エンジニア"
+    },
+    {
+      "id": "anata",
+      "name": "あなた",
+      "role": "新人エンジニア（あなた）"
+    },
+    {
+      "id": "futari",
+      "name": "二人の お客さん",
+      "role": "ラーメン屋の お客さん"
+    },
+    {
+      "id": "shashin",
+      "name": "写真を とる 二人",
+      "role": "観光地に いる 人"
+    },
+    {
+      "id": "senpai",
+      "name": "先輩",
+      "role": "同じ 会社の 先輩"
+    }
+  ],
+  "castIds": [
+    "hendy"
+  ],
+  "speechInImage": true,
+  "vocabIds": [
+    "kuuki",
+    "seki",
+    "aite_iru",
+    "mannaka",
+    "zureru",
+    "kauntaa",
+    "raamen_ya",
+    "sofuto_kuriimu",
+    "piisu",
+    "yokeru",
+    "kizuku",
+    "ugoku",
+    "doa",
+    "akeru",
+    "tasukatta",
+    "kokoro",
+    "daijoubu",
+    "karasugita",
+    "karee",
+    "hakkiri",
+    "suteru",
+    "zenzen",
+    "kuizu",
+    "geemu",
+    "akai",
+    "kankouchi",
+    "shashin",
+    "komatte",
+    "ouen2",
+    "iken"
+  ],
+  "pages": [
+    {
+      "title": "「空気を 読む」って なに？",
+      "panels": [
+        {
+          "size": "page",
+          "image": {
+            "refs": [
+              "/img/characters/hendy/sheet.webp"
+            ],
+            "status": "empty",
+            "prompt": "scripts/images/kuuki_manga.json の p01"
+          },
+          "lines": [
+            {
+              "speaker": "hendy",
+              "text": "「空気を 読む」って 聞いた ことが ありますか？"
+            },
+            {
+              "speaker": "hendy",
+              "text": "空気は 見えません。字も 書いて ありません。"
+            },
+            {
+              "speaker": "hendy",
+              "text": "でも 日本では、空気を「読み」ます。クイズで 見て みましょう！"
+            }
+          ],
+          "bakedText": [
+            "「空気を 読む」って 聞いた ことが ありますか？",
+            "空気は 見えません。字も 書いて ありません。",
+            "でも 日本では、空気を「読み」ます。クイズで 見て みましょう！"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "クイズ①　ラーメン屋で",
+      "panels": [
+        {
+          "size": "page",
+          "image": {
+            "refs": [
+              "/img/characters/hendy/sheet.webp"
+            ],
+            "status": "empty",
+            "prompt": "scripts/images/kuuki_manga.json の p02"
+          },
+          "lines": [
+            {
+              "speaker": "narration",
+              "text": "ラーメン屋の カウンター。あなたは 真ん中の 席です。"
+            },
+            {
+              "speaker": "narration",
+              "text": "空いて いる 席は、あなたの 右と 左だけ。"
+            },
+            {
+              "speaker": "hendy",
+              "text": "あなたなら、どうする？"
+            }
+          ],
+          "bakedText": [
+            "ラーメン屋の カウンター。あなたは 真ん中の 席です。",
+            "空いて いる 席は、あなたの 右と 左だけ。",
+            "あなたなら、どうする？"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "クイズ①　こたえ",
+      "panels": [
+        {
+          "size": "page",
+          "image": {
+            "refs": [
+              "/img/characters/hendy/sheet.webp"
+            ],
+            "status": "empty",
+            "prompt": "scripts/images/kuuki_manga.json の p03"
+          },
+          "lines": [
+            {
+              "speaker": "narration",
+              "text": "❌ そのまま 食べて いると…"
+            },
+            {
+              "speaker": "narration",
+              "text": "⭕ 1つ ずれると…"
+            },
+            {
+              "speaker": "anata",
+              "text": "1つ ずれましょうか？"
+            },
+            {
+              "speaker": "futari",
+              "text": "ありがとう ございます！"
+            },
+            {
+              "speaker": "hendy",
+              "text": "だれも「ずれて」とは 言って いません。でも、見れば 分かります。"
+            },
+            {
+              "speaker": "hendy",
+              "text": "これが「空気を 読む」です。"
+            }
+          ],
+          "bakedText": [
+            "❌ そのまま 食べて いると…",
+            "⭕ 1つ ずれると…",
+            "1つ ずれましょうか？",
+            "ありがとう ございます！",
+            "だれも「ずれて」とは 言って いません。でも、見れば 分かります。",
+            "これが「空気を 読む」です。"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "クイズ②　観光地で",
+      "panels": [
+        {
+          "size": "page",
+          "image": {
+            "refs": [
+              "/img/characters/hendy/sheet.webp"
+            ],
+            "status": "empty",
+            "prompt": "scripts/images/kuuki_manga.json の p04"
+          },
+          "lines": [
+            {
+              "speaker": "narration",
+              "text": "あなたは ソフトクリームを 食べて います。"
+            },
+            {
+              "speaker": "hendy",
+              "text": "あなたなら、どうする？"
+            }
+          ],
+          "bakedText": [
+            "あなたは ソフトクリームを 食べて います。",
+            "あなたなら、どうする？"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "クイズ②　こたえ",
+      "panels": [
+        {
+          "size": "page",
+          "image": {
+            "refs": [
+              "/img/characters/hendy/sheet.webp"
+            ],
+            "status": "empty",
+            "prompt": "scripts/images/kuuki_manga.json の p05"
+          },
+          "lines": [
+            {
+              "speaker": "narration",
+              "text": "❌ いっしょに ピースを すると…"
+            },
+            {
+              "speaker": "narration",
+              "text": "⭕ すっと よけると…"
+            },
+            {
+              "speaker": "shashin",
+              "text": "パシャ！"
+            },
+            {
+              "speaker": "hendy",
+              "text": "困って いる 人に 気づいて、動く。言われる 前に。"
+            }
+          ],
+          "bakedText": [
+            "❌ いっしょに ピースを すると…",
+            "⭕ すっと よけると…",
+            "パシャ！",
+            "困って いる 人に 気づいて、動く。言われる 前に。"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "クイズ③　会社で",
+      "panels": [
+        {
+          "size": "page",
+          "image": {
+            "refs": [
+              "/img/characters/hendy/sheet.webp"
+            ],
+            "status": "empty",
+            "prompt": "scripts/images/kuuki_manga.json の p06"
+          },
+          "lines": [
+            {
+              "speaker": "narration",
+              "text": "あなたの 席は、ドアの すぐ 横です。"
+            },
+            {
+              "speaker": "senpai",
+              "text": "よいしょ…"
+            },
+            {
+              "speaker": "hendy",
+              "text": "あなたなら、どうする？"
+            }
+          ],
+          "bakedText": [
+            "あなたの 席は、ドアの すぐ 横です。",
+            "よいしょ…",
+            "あなたなら、どうする？"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "クイズ③　こたえ",
+      "panels": [
+        {
+          "size": "page",
+          "image": {
+            "refs": [
+              "/img/characters/hendy/sheet.webp"
+            ],
+            "status": "empty",
+            "prompt": "scripts/images/kuuki_manga.json の p07"
+          },
+          "lines": [
+            {
+              "speaker": "narration",
+              "text": "❌ 応援するだけ だと…"
+            },
+            {
+              "speaker": "anata",
+              "text": "がんばって ください！"
+            },
+            {
+              "speaker": "narration",
+              "text": "⭕ すっと ドアを 開けると…"
+            },
+            {
+              "speaker": "senpai",
+              "text": "助かった！　ありがとう。"
+            },
+            {
+              "speaker": "hendy",
+              "text": "会社でも 同じです。だれも「開けて」とは 言いません。"
+            }
+          ],
+          "bakedText": [
+            "❌ 応援するだけ だと…",
+            "がんばって ください！",
+            "⭕ すっと ドアを 開けると…",
+            "助かった！　ありがとう。",
+            "会社でも 同じです。だれも「開けて」とは 言いません。"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "心まで 読まなくて いい",
+      "panels": [
+        {
+          "size": "page",
+          "image": {
+            "refs": [
+              "/img/characters/hendy/sheet.webp"
+            ],
+            "status": "empty",
+            "prompt": "scripts/images/kuuki_manga.json の p08"
+          },
+          "lines": [
+            {
+              "speaker": "senpai",
+              "text": "はあ…"
+            },
+            {
+              "speaker": "anata",
+              "text": "わたし、何か しちゃった…？"
+            },
+            {
+              "speaker": "hendy",
+              "text": "心まで 読まなくて いいんです。分からない ときは、聞きましょう。"
+            },
+            {
+              "speaker": "anata",
+              "text": "大丈夫ですか？"
+            },
+            {
+              "speaker": "senpai",
+              "text": "あ… お昼の カレーが 辛すぎた だけです。"
+            }
+          ],
+          "bakedText": [
+            "はあ…",
+            "わたし、何か しちゃった…？",
+            "心まで 読まなくて いいんです。分からない ときは、聞きましょう。",
+            "大丈夫ですか？",
+            "あ… お昼の カレーが 辛すぎた だけです。"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "ヘンディさんの 話",
+      "panels": [
+        {
+          "size": "page",
+          "image": {
+            "refs": [
+              "/img/characters/hendy/sheet.webp"
+            ],
+            "status": "empty",
+            "prompt": "scripts/images/kuuki_manga.json の p09"
+          },
+          "lines": [
+            {
+              "speaker": "hendy",
+              "text": "わたしも 日本に 来た とき、全然 読めませんでした。"
+            },
+            {
+              "speaker": "hendy",
+              "text": "日本の 会社では、はっきり 言わない ことが 多いです。"
+            },
+            {
+              "speaker": "hendy",
+              "text": "だから、見て 気づく 力が 役に 立ちます。"
+            },
+            {
+              "speaker": "hendy",
+              "text": "でも、空気を 読むのは、自分の 意見を 捨てる ことでは ありません。"
+            },
+            {
+              "speaker": "hendy",
+              "text": "言いたい ことは、言って いいんです。"
+            }
+          ],
+          "bakedText": [
+            "わたしも 日本に 来た とき、全然 読めませんでした。",
+            "日本の 会社では、はっきり 言わない ことが 多いです。",
+            "だから、見て 気づく 力が 役に 立ちます。",
+            "でも、空気を 読むのは、自分の 意見を 捨てる ことでは ありません。",
+            "言いたい ことは、言って いいんです。"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "ふりかえり",
+      "panels": [
+        {
+          "size": "page",
+          "image": {
+            "refs": [
+              "/img/characters/hendy/sheet.webp"
+            ],
+            "status": "empty",
+            "prompt": "scripts/images/kuuki_manga.json の p10"
+          },
+          "lines": [
+            {
+              "speaker": "narration",
+              "text": "① 見る"
+            },
+            {
+              "speaker": "narration",
+              "text": "② 気づく"
+            },
+            {
+              "speaker": "narration",
+              "text": "③ 動く"
+            },
+            {
+              "speaker": "narration",
+              "text": "分からない ときは 聞く"
+            },
+            {
+              "speaker": "hendy",
+              "text": "この あとの ゲームでは、あなたは 赤い 人です。"
+            },
+            {
+              "speaker": "hendy",
+              "text": "何を するかは 書いて いません。見て、気づいて、動いて みましょう！"
+            }
+          ],
+          "bakedText": [
+            "① 見る",
+            "② 気づく",
+            "③ 動く",
+            "分からない ときは 聞く",
+            "この あとの ゲームでは、あなたは 赤い 人です。",
+            "何を するかは 書いて いません。見て、気づいて、動いて みましょう！"
+          ]
+        }
+      ]
+    }
+  ],
+  "furigana": [
+    [
+      "空気",
+      "くうき"
+    ],
+    [
+      "読",
+      "よ"
+    ],
+    [
+      "聞",
+      "き"
+    ],
+    [
+      "見",
+      "み"
+    ],
+    [
+      "字",
+      "じ"
+    ],
+    [
+      "書",
+      "か"
+    ],
+    [
+      "日本",
+      "にほん"
+    ],
+    [
+      "屋",
+      "や"
+    ],
+    [
+      "真ん中",
+      "まんなか"
+    ],
+    [
+      "席",
+      "せき"
+    ],
+    [
+      "空い",
+      "あい"
+    ],
+    [
+      "右",
+      "みぎ"
+    ],
+    [
+      "左",
+      "ひだり"
+    ],
+    [
+      "食",
+      "た"
+    ],
+    [
+      "言",
+      "い"
+    ],
+    [
+      "分か",
+      "わか"
+    ],
+    [
+      "観光地",
+      "かんこうち"
+    ],
+    [
+      "困",
+      "こま"
+    ],
+    [
+      "人",
+      "ひと"
+    ],
+    [
+      "二人",
+      "ふたり"
+    ],
+    [
+      "気",
+      "き"
+    ],
+    [
+      "動",
+      "うご"
+    ],
+    [
+      "前",
+      "まえ"
+    ],
+    [
+      "会社",
+      "かいしゃ"
+    ],
+    [
+      "横",
+      "よこ"
+    ],
+    [
+      "応援",
+      "おうえん"
+    ],
+    [
+      "開け",
+      "あけ"
+    ],
+    [
+      "助",
+      "たす"
+    ],
+    [
+      "同じ",
+      "おなじ"
+    ],
+    [
+      "心",
+      "こころ"
+    ],
+    [
+      "何",
+      "なに"
+    ],
+    [
+      "大丈夫",
+      "だいじょうぶ"
+    ],
+    [
+      "昼",
+      "ひる"
+    ],
+    [
+      "辛",
+      "から"
+    ],
+    [
+      "話",
+      "はなし"
+    ],
+    [
+      "来",
+      "き"
+    ],
+    [
+      "全然",
+      "ぜんぜん"
+    ],
+    [
+      "多",
+      "おお"
+    ],
+    [
+      "力",
+      "ちから"
+    ],
+    [
+      "役",
+      "やく"
+    ],
+    [
+      "立",
+      "た"
+    ],
+    [
+      "自分",
+      "じぶん"
+    ],
+    [
+      "意見",
+      "いけん"
+    ],
+    [
+      "捨",
+      "す"
+    ],
+    [
+      "赤",
+      "あか"
+    ],
+    [
+      "先輩",
+      "せんぱい"
+    ],
+    [
+      "客",
+      "きゃく"
+    ],
+    [
+      "写真",
+      "しゃしん"
+    ],
+    [
+      "新人",
+      "しんじん"
+    ],
+    [
+      "考",
+      "かんが"
+    ]
+  ]
+}

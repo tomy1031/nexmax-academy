@@ -1,0 +1,30 @@
+/* 空気読み〜IT業界編〜 — design tokens */
+:root {
+  --ink: #1f1f1f;
+  --ink-2: #555555;
+  --ink-3: #8a8a8a;
+  --line: #e4e4e4;
+  --paper: #ffffff;
+  --bg: #f1f0ec;
+  --red: #e60012;          /* ONLY for things the player can operate */
+  --red-soft: #ffe9eb;
+  --red-shadow: #b8000e;
+  --hanko: #d7261e;        /* stamp ink */
+  --gold: #c9a45c;
+  --must: #2e7d4f;
+  --depends: #b7791f;
+  --myth: #7b4fb0;
+  --great: #d7261e;
+  --ok: #c98a12;
+  --ky: #2b2b2b;
+
+  --font: "Noto Sans", "Noto Sans JP", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, system-ui, sans-serif;
+  --font-stamp: "Yuji Syuku", "Hiragino Mincho ProN", "Yu Mincho", serif;
+
+  --r-s: 8px;
+  --r-m: 14px;
+  --r-l: 22px;
+  --shadow: 0 10px 30px rgba(0, 0, 0, .08), 0 2px 6px rgba(0, 0, 0, .05);
+  --ease: cubic-bezier(.2, .8, .2, 1);
+  --app-w: 460px;
+}

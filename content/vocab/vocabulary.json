@@ -18662,6 +18662,532 @@
           "めい"
         ]
       ]
+    },
+    {
+      "id": "kuuki",
+      "term": "空気",
+      "reading": "くうき",
+      "romaji": "kuuki",
+      "meaningJa": "その 場の ようすや、みんなの 気もちです。",
+      "englishTerm": "Air / The mood of a place",
+      "example": "空気を 読んで、1つ ずれます。",
+      "englishMeaning": "'Kuuki wo yomu' (read the air) means noticing what people need without being told.",
+      "furigana": [
+        [
+          "読",
+          "よ"
+        ],
+        [
+          "気",
+          "き"
+        ],
+        [
+          "場",
+          "ば"
+        ]
+      ]
+    },
+    {
+      "id": "seki",
+      "term": "席",
+      "reading": "せき",
+      "romaji": "seki",
+      "meaningJa": "すわる ところです。",
+      "englishTerm": "Seat",
+      "example": "真ん中の 席に すわります。",
+      "furigana": [
+        [
+          "真ん中",
+          "まんなか"
+        ],
+        [
+          "中",
+          "なか"
+        ]
+      ]
+    },
+    {
+      "id": "aite_iru",
+      "term": "空いて",
+      "reading": "あいて",
+      "romaji": "aiteiru",
+      "meaningJa": "だれも つかって いない ようすです。",
+      "englishTerm": "Empty / Free (seat)",
+      "example": "右の 席が 空いて います。",
+      "furigana": [
+        [
+          "席",
+          "せき"
+        ],
+        [
+          "空い",
+          "あい"
+        ],
+        [
+          "右",
+          "みぎ"
+        ]
+      ]
+    },
+    {
+      "id": "mannaka",
+      "term": "真ん中",
+      "reading": "まんなか",
+      "romaji": "mannaka",
+      "meaningJa": "いちばん 中の ところです。",
+      "englishTerm": "Middle / Center",
+      "example": "あなたは 真ん中に すわって います。",
+      "furigana": [
+        [
+          "中",
+          "なか"
+        ]
+      ]
+    },
+    {
+      "id": "zureru",
+      "term": "ずれる",
+      "reading": "ずれる",
+      "romaji": "zureru",
+      "meaningJa": "すこし よこへ うごく ことです。",
+      "englishTerm": "To move over (a little)",
+      "example": "1つ 右に ずれます。",
+      "furigana": [
+        [
+          "右",
+          "みぎ"
+        ]
+      ]
+    },
+    {
+      "id": "kauntaa",
+      "term": "カウンター",
+      "reading": "かうんたー",
+      "romaji": "kauntaa",
+      "meaningJa": "お店で、よこに ならんで すわる 長い テーブルです。",
+      "englishTerm": "Counter (seats in a row)",
+      "example": "カウンターで ラーメンを 食べます。",
+      "furigana": [
+        [
+          "食",
+          "た"
+        ],
+        [
+          "店",
+          "みせ"
+        ],
+        [
+          "長い",
+          "ながい"
+        ]
+      ]
+    },
+    {
+      "id": "raamen_ya",
+      "term": "ラーメン屋",
+      "reading": "らーめんや",
+      "romaji": "raamenya",
+      "meaningJa": "ラーメンを 食べる お店です。",
+      "englishTerm": "Ramen shop",
+      "example": "ラーメン屋は お昼に こみます。",
+      "furigana": [
+        [
+          "屋",
+          "や"
+        ],
+        [
+          "食",
+          "た"
+        ],
+        [
+          "昼",
+          "ひる"
+        ],
+        [
+          "店",
+          "みせ"
+        ]
+      ]
+    },
+    {
+      "id": "sofuto_kuriimu",
+      "term": "ソフトクリーム",
+      "reading": "そふとくりーむ",
+      "romaji": "sofutokuriimu",
+      "meaningJa": "やわらかい アイスクリームです。",
+      "englishTerm": "Soft-serve ice cream",
+      "example": "あつい 日に ソフトクリームを 食べます。",
+      "furigana": [
+        [
+          "食",
+          "た"
+        ],
+        [
+          "日",
+          "ひ"
+        ]
+      ]
+    },
+    {
+      "id": "piisu",
+      "term": "ピース",
+      "reading": "ぴーす",
+      "romaji": "piisu",
+      "meaningJa": "写真で 指を 2本 立てる ポーズです。",
+      "englishTerm": "Peace sign (V sign)",
+      "example": "写真で ピースを します。",
+      "furigana": [
+        [
+          "立",
+          "た"
+        ],
+        [
+          "写真",
+          "しゃしん"
+        ],
+        [
+          "指",
+          "ゆび"
+        ],
+        [
+          "本",
+          "ほん"
+        ]
+      ]
+    },
+    {
+      "id": "yokeru",
+      "term": "よける",
+      "reading": "よける",
+      "romaji": "yokeru",
+      "meaningJa": "ぶつからない ように、よこへ うごく ことです。",
+      "englishTerm": "To step aside",
+      "example": "自転車が 来たので よけます。",
+      "furigana": [
+        [
+          "来",
+          "き"
+        ],
+        [
+          "自転車",
+          "じてんしゃ"
+        ]
+      ]
+    },
+    {
+      "id": "kizuku",
+      "term": "気づく",
+      "reading": "きづく",
+      "romaji": "kizuku",
+      "meaningJa": "見たり 聞いたり して、分かる ことです。",
+      "englishTerm": "To notice",
+      "example": "先輩が 困って いる ことに 気づきます。",
+      "furigana": [
+        [
+          "聞",
+          "き"
+        ],
+        [
+          "見",
+          "み"
+        ],
+        [
+          "分か",
+          "わか"
+        ],
+        [
+          "困",
+          "こま"
+        ],
+        [
+          "気",
+          "き"
+        ],
+        [
+          "先輩",
+          "せんぱい"
+        ]
+      ]
+    },
+    {
+      "id": "ugoku",
+      "term": "動く",
+      "reading": "うごく",
+      "romaji": "ugoku",
+      "meaningJa": "体を うごかして、何かを する ことです。",
+      "englishTerm": "To move / To take action",
+      "example": "言われる 前に 動きます。",
+      "furigana": [
+        [
+          "言",
+          "い"
+        ],
+        [
+          "動",
+          "うご"
+        ],
+        [
+          "前",
+          "まえ"
+        ],
+        [
+          "何",
+          "なに"
+        ],
+        [
+          "体",
+          "からだ"
+        ]
+      ]
+    },
+    {
+      "id": "doa",
+      "term": "ドア",
+      "reading": "どあ",
+      "romaji": "doa",
+      "meaningJa": "部屋の 入口に ある、開けたり しめたり する ものです。",
+      "englishTerm": "Door",
+      "example": "ドアを 開けます。",
+      "furigana": [
+        [
+          "屋",
+          "や"
+        ],
+        [
+          "開け",
+          "あけ"
+        ],
+        [
+          "部屋",
+          "へや"
+        ],
+        [
+          "入口",
+          "いりぐち"
+        ]
+      ]
+    },
+    {
+      "id": "akeru",
+      "term": "開ける",
+      "reading": "あける",
+      "romaji": "akeru",
+      "meaningJa": "しまって いる ものを ひらく ことです。",
+      "englishTerm": "To open",
+      "example": "まどを 開けます。",
+      "furigana": [
+        [
+          "開け",
+          "あけ"
+        ]
+      ]
+    },
+    {
+      "id": "tasukatta",
+      "term": "助かった",
+      "reading": "たすかった",
+      "romaji": "tasukatta",
+      "meaningJa": "手伝って もらって、うれしい ときに 言う ことばです。",
+      "englishTerm": "That helps! / Thanks a lot",
+      "example": "助かった！　ありがとう。",
+      "furigana": [
+        [
+          "言",
+          "い"
+        ],
+        [
+          "助",
+          "たす"
+        ],
+        [
+          "手伝",
+          "てつだ"
+        ]
+      ]
+    },
+    {
+      "id": "kokoro",
+      "term": "心",
+      "reading": "こころ",
+      "romaji": "kokoro",
+      "meaningJa": "人の 気もちや 考えの ことです。",
+      "englishTerm": "Heart / Mind",
+      "example": "心の 中は 見えません。",
+      "furigana": [
+        [
+          "見",
+          "み"
+        ],
+        [
+          "人",
+          "ひと"
+        ],
+        [
+          "気",
+          "き"
+        ],
+        [
+          "考",
+          "かんが"
+        ],
+        [
+          "中",
+          "なか"
+        ]
+      ]
+    },
+    {
+      "id": "daijoubu",
+      "term": "大丈夫",
+      "reading": "だいじょうぶ",
+      "romaji": "daijoubu",
+      "meaningJa": "問題が ない ようすです。",
+      "englishTerm": "All right / OK",
+      "example": "大丈夫ですか？",
+      "furigana": [
+        [
+          "問題",
+          "もんだい"
+        ]
+      ]
+    },
+    {
+      "id": "karasugita",
+      "term": "辛すぎた",
+      "reading": "からすぎた",
+      "romaji": "karasugita",
+      "meaningJa": "カレーなどが とても 辛い ようすです。",
+      "englishTerm": "Too spicy",
+      "example": "カレーが 辛すぎました。",
+      "furigana": [
+        [
+          "辛",
+          "から"
+        ]
+      ]
+    },
+    {
+      "id": "karee",
+      "term": "カレー",
+      "reading": "かれー",
+      "romaji": "karee",
+      "meaningJa": "からい ソースを ごはんに かけた 食べものです。",
+      "englishTerm": "Curry",
+      "example": "お昼に カレーを 食べます。",
+      "furigana": [
+        [
+          "食",
+          "た"
+        ],
+        [
+          "昼",
+          "ひる"
+        ]
+      ]
+    },
+    {
+      "id": "hakkiri",
+      "term": "はっきり",
+      "reading": "はっきり",
+      "romaji": "hakkiri",
+      "meaningJa": "よく 分かる ように、ということです。",
+      "englishTerm": "Clearly",
+      "example": "はっきり 言います。",
+      "furigana": [
+        [
+          "言",
+          "い"
+        ],
+        [
+          "分か",
+          "わか"
+        ]
+      ]
+    },
+    {
+      "id": "suteru",
+      "term": "捨てる",
+      "reading": "すてる",
+      "romaji": "suteru",
+      "meaningJa": "いらない ものを なくす ことです。",
+      "englishTerm": "To throw away / To give up",
+      "example": "ゴミを 捨てます。",
+      "furigana": [
+        [
+          "捨",
+          "す"
+        ]
+      ]
+    },
+    {
+      "id": "zenzen",
+      "term": "全然",
+      "reading": "ぜんぜん",
+      "romaji": "zenzen",
+      "meaningJa": "すこしも、と いう 意味です。あとに「ない」が つきます。",
+      "englishTerm": "(Not) at all",
+      "example": "全然 分かりません。",
+      "furigana": [
+        [
+          "分か",
+          "わか"
+        ],
+        [
+          "意味",
+          "いみ"
+        ]
+      ]
+    },
+    {
+      "id": "kuizu",
+      "term": "クイズ",
+      "reading": "くいず",
+      "romaji": "kuizu",
+      "meaningJa": "こたえを 考える もんだいです。",
+      "englishTerm": "Quiz",
+      "example": "クイズを 出します。",
+      "furigana": [
+        [
+          "考",
+          "かんが"
+        ],
+        [
+          "出し",
+          "だし"
+        ]
+      ]
+    },
+    {
+      "id": "geemu",
+      "term": "ゲーム",
+      "reading": "げーむ",
+      "romaji": "geemu",
+      "meaningJa": "あそびです。",
+      "englishTerm": "Game",
+      "example": "スマホで ゲームを します。"
+    },
+    {
+      "id": "akai",
+      "term": "赤い",
+      "reading": "あかい",
+      "romaji": "akai",
+      "meaningJa": "りんごのような 色です。",
+      "englishTerm": "Red",
+      "example": "赤い ジャケットを 着ます。",
+      "furigana": [
+        [
+          "赤",
+          "あか"
+        ],
+        [
+          "色",
+          "いろ"
+        ],
+        [
+          "着ます",
+          "きます"
+        ]
+      ]
     }
   ]
 }

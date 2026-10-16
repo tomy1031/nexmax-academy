@@ -95,4 +95,5 @@ export const GENERATED_GLOSSARY: readonly GlossaryEntry[] = [
   {"term":"止まった","kanji":"止まった","reading":"とまった","meaning":"動いて いた ものが、動かなく なった ことです。","englishTerm":"stopped","englishMeaning":"something that was moving is not moving now"},
   {"term":"始めます","kanji":"始めます","reading":"はじめます","meaning":"まだ やって いない ことを、これから やる ことです。","englishTerm":"to start","englishMeaning":"to begin doing something new"},
   {"term":"落ち着いて","kanji":"落ち着いて","reading":"おちついて","meaning":"急がないで、気持ちを 静かに して いる ようすです。","englishTerm":"calmly","englishMeaning":"without hurrying or panicking"},
+  {"term":"空気","kanji":"空気","reading":"くうき","meaning":"その 場の ようすや、みんなの 気もちです。","englishTerm":"Air / The mood of a place","englishMeaning":"'Kuuki wo yomu' (read the air) means noticing what people need without being told."},
 ];
