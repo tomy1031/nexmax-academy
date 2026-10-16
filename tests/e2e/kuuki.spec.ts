@@ -1,7 +1,7 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { expect, test, type Page } from "@playwright/test";
-import { seedCompleted, shot } from "./helpers";
+import { bareKanjiTexts, seedCompleted, shot } from "./helpers";
 
 /**
  * ステージ「空気を 読む」— まんがの あとに 空気読みゲームを 全画面で 開く
@@ -39,6 +39,15 @@ async function seedGame(page: Page, played: readonly string[]) {
 
 async function openGame(page: Page) {
   await page.goto("/kuuki/link");
+  /*
+   * ゲームは 関門では ない（リンク教材は `gates: false`）ので、まんがを 終えた 時点で
+   * ステージは クリア扱いに なり、開いた とたんに お祝いの 板が 出る（連絡の もんだいと
+   * 同じ 動き）。板は 進み具合を 読んだ あとに 出るので、待ってから 閉じる。
+   */
+  const stay = page.getByRole("button", { name: "ここに のこる" });
+  await expect(stay).toBeVisible({ timeout: 15_000 });
+  await stay.click();
+  await expect(page.getByRole("dialog", { name: "ステージ クリア" })).toHaveCount(0);
   await page
     .getByRole("button", { name: /ひらく/ })
     .first()
@@ -88,3 +97,12 @@ test("前に ぜんぶ 遊んで いた 端末は、開いた だけで ✅ に 
   await openGame(page);
   await expect(page.getByText("✅ おわりました").first()).toBeVisible();
 });
+
+for (const path of ["/kuuki", "/kuuki/manga", "/kuuki/link"]) {
+  test(`ルビの 外に 裸の漢字が 無い — ${path}`, async ({ page }) => {
+    await seedCompleted(page.context(), ["kuuki_manga"]);
+    await page.goto(path);
+    await page.waitForLoadState("networkidle");
+    expect(await bareKanjiTexts(page)).toEqual([]);
+  });
+}
