@@ -110,10 +110,11 @@ for (const path of ["/kuuki", "/kuuki/manga", "/kuuki/link"]) {
 /**
  * まんがの ページ絵が **引き伸ばされずに** 出るか（2026-10-16「まんがが縦に引き伸ばされていました」）。
  *
- * この まんがの ページは 横長（1536×1024）。前は 絵を 作る 指示が「横長」と「1024×1536」で
- * 食い違い、Codex が 横長で 描いた 絵を 縦長に 引き伸ばして 保存して いた。わくも 2:3 に
- * 決めて あったので、画面の 形だけ 見ても 気づけない。だから **出て いる 絵の 縦横比が
- * 絵そのものの 縦横比と 同じか**を 見る。
+ * ページは ふつうの 漫画と 同じ 縦長（1024×1536）。最初の 版は 絵を 作る 指示が「横長」と
+ *「1024×1536」で 食い違い、Codex が 横長で 描いた 絵を 縦長に 引き伸ばして 保存して いた。
+ * ファイルの 大きさは 縦長の ままなので、大きさを 見ても 気づけない（引き伸ばしは 中身に ある）。
+ * だから ファイルの 縦横比と、**出て いる 絵の 縦横比が 絵そのものと 同じか**を 見る。
+ * 中身が 引き伸ばされて いないかは、作った ときに 目で 見る（台帳の 各ページに output を 書く）。
  */
 test("まんがの ページ絵は 絵の 縦横比の まま 出る（引き伸ばさない）", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
@@ -127,7 +128,7 @@ test("まんがの ページ絵は 絵の 縦横比の まま 出る（引き伸
     const box = el.getBoundingClientRect();
     return { natural: el.naturalWidth / el.naturalHeight, shown: box.width / box.height };
   });
-  expect(natural).toBeCloseTo(1536 / 1024, 2);
+  expect(natural).toBeCloseTo(1024 / 1536, 2);
   expect(Math.abs(shown - natural)).toBeLessThan(0.03);
   await shot(page, "kuuki-04-manga-390");
 });
