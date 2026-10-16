@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { expect, test, type Locator, type Page } from "@playwright/test";
 
-import { bareKanjiTexts, joinCall, seedAdmin, seedCompleted, shot } from "./helpers";
+import { bareKanjiTexts, joinCall, seedAdmin, seedCompleted, seedGeminiKey, shot } from "./helpers";
 
 /**
  * 朝礼・夕礼ステージ（台帳 #366）の 通し — **390px の 実機幅で 撮る**
@@ -662,6 +662,88 @@ test("390px で 板 → マイク → チャット の 順に 並ぶ", async ({ 
   expect(chat!.y).toBeLessThan(PHONE.height * 3);
   await shot(page, "asakai-08-order-390");
 });
+
+/**
+ * Live（Google の 声の つなぎ）を **にせもの**に 差しかえる。
+ *
+ * 鍵の 無い 検証では 🎤 は「スタート」の まま で、丸い マイクが 赤い（話して いる）
+ * 状態を 一度も 作れない。短命トークンを 作る 呼び出しと WebSocket の 両方を ここで
+ * 受けて、したくの 合図（setupComplete）だけ 返す。相手は 何も 話さず、聞き取りの 字も
+ * 返らない ので、判定も 走らない。本物の Google には 1本も 出て いかない。
+ * マイクの 音は 設定の にせの マイク（`--use-fake-device-for-media-stream`）。
+ */
+async function stubLive(page: Page): Promise<void> {
+  const cors = {
+    "access-control-allow-origin": "*",
+    "access-control-allow-headers": "*",
+    "access-control-allow-methods": "POST, OPTIONS",
+  };
+  await page.route("https://generativelanguage.googleapis.com/**", async (route) => {
+    if (route.request().method() === "OPTIONS") {
+      await route.fulfill({ status: 204, headers: cors });
+      return;
+    }
+    await route.fulfill({
+      status: 200,
+      headers: cors,
+      contentType: "application/json",
+      body: JSON.stringify({ name: "auth_tokens/e2e-stub" }),
+    });
+  });
+  await page.routeWebSocket(/generativelanguage\.googleapis\.com/u, (ws) => {
+    ws.onMessage((message) => {
+      if (typeof message === "string" && message.includes('"setup"')) {
+        ws.send(JSON.stringify({ setupComplete: {} }));
+      }
+    });
+  });
+}
+
+/**
+ * **マイクで 話して いる あいだは 報告メモを 開けない**（2026-10-16 の 指定
+ *「マイク使用中に朝礼・夕礼のモーダルを開けないようにしてください。報告メモです。」）。
+ *
+ * ボタンは 消さずに 灰色で 残し（2026-08-20 の 指定）、マイクを 止めたら また 開ける。
+ * 逆向きも 見る——報告メモを 開いて いる あいだは 🎤 も 押せない。
+ * 幕の うしろの ボタンは 名前引きに 頼らず、`aria-label` で 直に 指す。
+ */
+for (const id of ["asakai_kantan", "asakai_muzukashii"] as const) {
+  test(`${id}: マイクで 話して いる あいだは 報告メモを 開けない`, async ({ page, context }) => {
+    const refs = stageRefs();
+    await seedCompleted(context, refs.slice(0, refs.indexOf(id)));
+    await seedGeminiKey(context, "e2e-dummy");
+    await stubLive(page);
+    await page.goto(`/asakai/meeting-${id}`);
+    await joinCall(page);
+    await closeDuty(page);
+
+    const memoButton = page.getByRole("button", { name: "報告メモを 見る" });
+    const mic = page.locator('button[aria-label="おして はなす"]');
+    await page.getByRole("button", { name: /マイクを つなぐ/ }).click();
+    await expect(mic, "にせの つなぎで 丸い マイクが 出る").toBeEnabled({ timeout: 20_000 });
+    await expect(memoButton).toBeEnabled();
+
+    /* 話しはじめる（赤い ⏹）。 */
+    await mic.click();
+    const stop = page.getByRole("button", { name: "はなすのを おわる" });
+    await expect(stop).toBeVisible();
+    await expect(memoButton, "話して いる あいだは 報告メモを 開けない").toBeDisabled();
+    await expect(memoButton, "消さずに 灰色で 残る").toBeVisible();
+    await shot(page, `asakai-memo-locked-while-talking-${id}`);
+
+    /* 話しおわる → また 開ける。 */
+    await stop.click();
+    await expect(memoButton, "マイクを 止めたら 開ける").toBeEnabled();
+    await memoButton.click();
+    const memo = page.getByRole("dialog", { name: "報告メモ" });
+    await expect(memo).toBeVisible();
+    await expect(mic, "報告メモを 開いて いる あいだは 🎤 も 押せない").toBeDisabled();
+
+    await memo.getByRole("button", { name: "とじる" }).click();
+    await expect(memo).toBeHidden();
+    await expect(mic, "閉じたら また 話せる").toBeEnabled();
+  });
+}
 
 /**
  * しごとの 表の 絵（願い #441）— **絵が どの しごとかを 言う**
