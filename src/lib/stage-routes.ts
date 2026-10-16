@@ -124,6 +124,34 @@ export function splitContentSegment(segment: string): { type: ContentRefType; re
 }
 
 /**
+ * **単独の ページを 持たない 種別**。`/<種別>/<ID>`（`contentHref` が 返す 形）は
+ * `src/app/[stage]/[content]` が 受けて、その教材が 入って いる ステージの URL へ 送る。
+ *
+ * ほかの 種別は `src/app/<種別>/[id]` が あり、そこが 同じように 送り返す
+ *（`src/app/link/[id]/page.tsx` など）。ミーティングだけ その ページが 無く、
+ * 記事の「つぎは これ」カード（articleBlock の `link`）が `/meeting/<ID>` を 指して
+ * **押すと「この ページは ありません」**に なって いた（2026-10-16。朝礼の
+ * 「KhmerSabaiの 朝礼」→ 月曜の 朝礼、夕礼の「Next Talent の 夕礼」→ 月曜の 夕礼）。
+ *
+ * 1段目の ルートを 足さずに `[stage]` の ページで 受けるのは、ミーティングは
+ * どれも ステージの 中でしか 開かない（単独で 出す 画面が 要らない）から。
+ * `meeting` という ステージが もし 作られたら、そちらが 先に 引ける（`resolve`）。
+ */
+export const NO_STANDALONE_PAGE: readonly ContentRefType[] = ["meeting"];
+
+/**
+ * URLの 1段目が 単独の ページを 持たない 種別の 名前なら（`/meeting/asakai_kantan`）、
+ * 種別と ID。ちがえば null。
+ */
+export function standaloneContent(
+  first: string,
+  second: string,
+): { type: ContentRefType; ref: string } | null {
+  const type = NO_STANDALONE_PAGE.find((one) => CONTENT_SEGMENTS[one] === first);
+  return type && second ? { type, ref: second } : null;
+}
+
+/**
  * **ステージの 中で 別の 教材に 差し替えた** もの（古い 種別＋ID → いまの 種別＋ID）。
  *
  * 2026-09-18 に 調査（リサーチ）を 別ページ（link `houkoku_search`）から もんだい

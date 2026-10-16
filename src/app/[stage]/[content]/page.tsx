@@ -37,11 +37,14 @@ import {
 } from "@/lib/content";
 import { stageStepNumber } from "@/lib/map-data";
 import {
+  CONTENT_SEGMENTS,
+  NO_STANDALONE_PAGE,
   resolveStageContent,
   replacedContent,
   splitContentSegment,
   stageContentPath,
   stageContentSegments,
+  standaloneContent,
 } from "@/lib/stage-routes";
 import { canonicalContentPath } from "@/lib/stage-lookup";
 import { loadRef } from "@/lib/stage-refs";
@@ -95,9 +98,26 @@ export const dynamic = "force-static";
 
 export async function generateStaticParams() {
   const stages = await listStages();
-  return stages.flatMap((stage) =>
+  const inStage = stages.flatMap((stage) =>
     stageContentSegments(stage.contents).map((content) => ({ stage: stage.id, content })),
   );
+  /*
+   * 単独の ページを 持たない 種別の `/meeting/<ID>` も 作りおきに 入れる（中身は
+   * 本来の URL への 転送だけ）。入れないと、授業中に 最初に 押した 人の ところで
+   * フルSSR が 走る。`/link/<id>` が 転送を 作りおきに して いるのと 同じ。
+   */
+  const standalone = stages.flatMap((stage) =>
+    stage.contents
+      .filter((item) => NO_STANDALONE_PAGE.includes(item.type))
+      .map((item) => ({ stage: CONTENT_SEGMENTS[item.type], content: item.ref })),
+  );
+  const seen = new Set<string>();
+  return [...inStage, ...standalone].filter(({ stage, content }) => {
+    const key = `${stage}/${content}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 }
 
 /** URL から「どのステージの どの教材か」まで解く。無ければ null。 */
@@ -227,8 +247,13 @@ export default async function StageContentPage({
      *
      * 引けるのは **ID が URL に 残って いる 形**だけ（`splitContentSegment`）。
      * 差し替えた 教材（`/houkoku/link` → もんだい）は 短い形も 引く（`replacedContent`）。
+     * 単独の ページを 持たない 種別の `/meeting/<ID>`（記事の「つぎは これ」カードの
+     * 行き先）も ここで 本来の URL へ 送る（`standaloneContent`）。
      */
-    const moved = replacedContent(stageId, content) ?? splitContentSegment(content);
+    const moved =
+      standaloneContent(stageId, content) ??
+      replacedContent(stageId, content) ??
+      splitContentSegment(content);
     const canonical = moved ? await canonicalContentPath(moved.type, moved.ref) : null;
     if (canonical) redirect(canonical);
     notFound();
