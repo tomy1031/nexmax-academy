@@ -1891,12 +1891,18 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
           **報告メモは 帯の 右はし**（2026-09-15 の 指定「添付の『自分の こたえを 見る』の
           部分に 変えて 欲しい」）。ミーティングの `AnswerNotebook` と 同じ 席・同じ 見た目に する。
           話す ボタンの 下に 大きく 置いて いた ころは、**その 画面にしか 無い ボタン**だった。
+
+          **マイクが 赤い（話して いる）あいだは 開けない**（2026-10-16 の 指定「マイク使用中に
+          朝礼・夕礼のモーダルを開けないようにしてください。報告メモです。」）。消さずに
+          灰色で 残し（2026-08-20 の 指定）、話しおわって マイクを 止めたら また 押せる。
+          逆向きも そろえる——メモを 開いて いる あいだは マイクも 押せない（下の `speak`）。
         */}
         <button
           type="button"
           onClick={() => setDuty(true)}
+          disabled={voice.talking}
           aria-label="報告メモを 見る"
-          className="border-hairline bg-panel text-navy ml-auto shrink-0 rounded-full border-2 px-3 py-1.5 text-xs font-extrabold"
+          className="border-hairline bg-panel text-navy ml-auto shrink-0 rounded-full border-2 px-3 py-1.5 text-xs font-extrabold disabled:opacity-45"
         >
           📋 <RubyText text="報告メモ" index={index} show />
         </button>
@@ -1970,7 +1976,13 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
               status: voice.status,
               reason: voice.reason,
               talking: voice.talking,
-              disabled: judge !== null || waiting,
+              /*
+               * 報告メモを 開いて いる あいだも 押せない（2026-10-16）。幕が 指を 止めるが、
+               * キーボードの Tab では 幕の うしろの マイクに 届く。メモを 開いた まま
+               * 話しはじめると、上の「話して いる あいだは メモを 開けない」と 食い違う。
+               * 曜日を 移って メモが 自動で 開く ときは `goToScene` が 先に マイクを 止める。
+               */
+              disabled: judge !== null || waiting || duty,
               waitNote: judge
                 ? "見かたを 読んでから 話します。"
                 : waiting
