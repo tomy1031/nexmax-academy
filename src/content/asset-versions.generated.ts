@@ -60,7 +60,7 @@ export const ASSET_VERSIONS: Readonly<Record<string, string>> = {
   "/audio/listening/houkoku_chousa_listening/17.wav": "d5ca81da",
   "/audio/listening/houkoku_chousa_listening/18.wav": "d24eba59",
   "/audio/listening/houkoku_chousa_listening/19.wav": "7afa2219",
-  "/audio/listening/houkoku_chousa_listening/sentences.json": "2e3a697a",
+  "/audio/listening/houkoku_chousa_listening/sentences.json": "75c796cf",
   "/audio/listening/houkoku_kanryou_listening.wav": "8057a9f9",
   "/audio/listening/houkoku_kanryou_listening/01.wav": "e6443b0a",
   "/audio/listening/houkoku_kanryou_listening/02.wav": "47534108",

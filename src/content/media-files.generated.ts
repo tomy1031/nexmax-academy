@@ -61,7 +61,7 @@ export const MEDIA_FILES: Readonly<Record<string, readonly [size: number, etag: 
   "/audio/listening/houkoku_chousa_listening/17.wav": [131564, "1e45ba4f"],
   "/audio/listening/houkoku_chousa_listening/18.wav": [229484, "bc9ba098"],
   "/audio/listening/houkoku_chousa_listening/19.wav": [73964, "8e45a0a8"],
-  "/audio/listening/houkoku_chousa_listening/sentences.json": [12266, "796e6665"],
+  "/audio/listening/houkoku_chousa_listening/sentences.json": [12483, "739e788d"],
   "/audio/listening/houkoku_kanryou_listening.wav": [3621166, "cb74978d"],
   "/audio/listening/houkoku_kanryou_listening/01.wav": [124364, "275cf820"],
   "/audio/listening/houkoku_kanryou_listening/02.wav": [143084, "b986fb94"],

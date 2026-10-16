@@ -146,6 +146,32 @@ describe("打ちかたの ゆれ（実際の 教材で）", () => {
     }
   });
 
+  /*
+   * 加藤さんは「ひゃくぎが」と 言うので 原稿も「100ギガ」（小林さんの「100GB」は ぎがばいと）。
+   * 2026-10-16「100Gもしくは100ギガが正しい」——「100G」と 打っても 加藤さんの 文が ひらく。
+   */
+  it("「100G」「100ギガ」「ひゃくぎが」の どれでも 加藤さんの「100ギガ」が ひらく", () => {
+    const id = "houkoku_chousa_listening";
+    const listening = load(id);
+    const transcript = listening.script.map((line) => line.text).join("\n");
+    const at = transcript.indexOf("100ギガで");
+    expect(at).toBeGreaterThan(0);
+    for (const input of ["100G", "100ギガ", "ひゃくぎが", "百ギガ"]) {
+      const state = submitListening(
+        createListening(
+          transcript,
+          listening.keywords,
+          { minLength: listening.check.minLength, maxMiss: listening.check.maxMiss },
+          buildFuriganaIndex(listening.furigana ?? []),
+          buildSoundsIndex(LISTENING_SOUNDS_LIKE[id]),
+        ),
+        input,
+      );
+      const opened = [..."100ギガ"].every((_, k) => state.revealed.has(at + k));
+      expect(opened, input).toBe(true);
+    }
+  });
+
   it("読みの ゆれを 打ち分けても 同じ 語で 二度は 稼げない", () => {
     const id = "houkoku_chourei_listening";
     const listening = load(id);

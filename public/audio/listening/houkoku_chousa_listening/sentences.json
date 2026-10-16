@@ -247,17 +247,17 @@
     },
     {
       "speaker": "kato",
-      "text": "100GBで、月360円ですか。",
+      "text": "100ギガで、月360円ですか。",
       "file": "16.wav",
       "voice": "Gacrux",
       "model": "gemini-3.8-live",
       "seconds": 3.06,
       "longestPause": 0.16,
       "transcript": "100GB で 月 360円 です か ?",
-      "transcriptBy": "gemini-3.5-flash-lite",
+      "transcriptBy": "gemini-3.5-flash-lite（「100GB」と 書いたが 音は ひゃくぎが。2026-10-16 ユーザーが 耳で 指摘し、波形で「ばいと」の「と」の 前の 無音が 無い ことを 確かめた。原稿を「100ギガ」に 直した）",
       "reading": {
-        "expected": "ひゃくぎがばいとでつきさんびゃくろくじゅうえんですか",
-        "spoken": "ひゃくぎがばいとでつきさんびゃくろくじゅうえんですか",
+        "expected": "ひゃくぎがでつきさんびゃくろくじゅうえんですか",
+        "spoken": "ひゃくぎがでつきさんびゃくろくじゅうえんですか",
         "distance": 0
       }
     },
