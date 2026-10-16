@@ -986,7 +986,7 @@ export const ASSET_VERSIONS: Readonly<Record<string, string>> = {
   "/img/manga/kuuki_manga/p06.webp": "186bd9e6",
   "/img/manga/kuuki_manga/p07.webp": "516d59d0",
   "/img/manga/kuuki_manga/p08.webp": "80ad9f47",
-  "/img/manga/kuuki_manga/p09.webp": "3928f5ce",
+  "/img/manga/kuuki_manga/p09.webp": "6caca696",
   "/img/manga/kuuki_manga/p10.webp": "170a80aa",
   "/img/manga/m2-asakai-manga/panel1.webp": "42ecf7f6",
   "/img/manga/m2-asakai-manga/panel2.webp": "243e2046",
