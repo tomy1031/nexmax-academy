@@ -39,7 +39,12 @@
     // 失敗しうる）。ほかの public/ は これまでどおり Worker を 通らない。
     // ここを 変えたら src/lib/media-range.ts の MEDIA_CACHE_CONTROL も そろえる
     //（tests/media_range.test.ts が 突き合わせる）。docs/deploy.md §0.17。
-    "run_worker_first": ["/audio/*", "/video/*"],
+    //
+    // `/tools/kuuki-yomi` は ログインした 人だけに 配る ゲーム（2026-10-16）。
+    // クッキーを 見て 分けるのは src/lib/login-only-assets.ts（LOGIN_ONLY_DIRS。`/道` と `/道/*` の
+    // 2つを 書く。tests/login_only_assets.test.ts が 突き合わせる）。
+    // ほかの `/tools/*` は ここに 書かないので、これまでどおり ログインなしで 開ける。
+    "run_worker_first": ["/audio/*", "/video/*", "/tools/kuuki-yomi", "/tools/kuuki-yomi/*"],
   },
   "kv_namespaces": [
     {
