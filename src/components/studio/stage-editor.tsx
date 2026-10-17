@@ -196,6 +196,9 @@ const FLOW_TYPES: readonly ContentRefType[] = [
   "slides",
   "listening",
   "quizset",
+  // ミーティングは 2026-08-13 に エディタと「ステージの 中で つくる」処理を 足したのに
+  // ここだけ 足し忘れ、2026-09-30 まで スタジオから 入れられなかった。
+  "meeting",
   "scenario",
 ];
 
@@ -206,6 +209,7 @@ const CREATABLE: ReadonlySet<ContentRefType> = new Set([
   "slides",
   "listening",
   "quizset",
+  "meeting",
 ]);
 
 /**
