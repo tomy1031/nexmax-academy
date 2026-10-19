@@ -6,30 +6,7 @@
   "missing": [
     13,
     14,
-    39,
-    40,
-    41,
-    42,
-    43,
-    44,
-    45,
-    46,
-    47,
-    48,
-    49,
-    50,
-    51,
-    52,
-    53,
-    54,
-    55,
-    56,
-    57,
-    58,
-    59,
-    60,
-    61,
-    62
+    50
   ],
   "sentences": [
     {
@@ -606,6 +583,374 @@
         "expected": "でぃいなにもしなくてもがぞうがきえるから",
         "spoken": "でなにもしなくてもがぞうがきえるから",
         "distance": 2
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "問題7。",
+      "file": "39.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 0.95,
+      "longestPause": 0,
+      "transcript": "問題 7",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "もんだいなな",
+        "spoken": "もんだいなな",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "S3を使うと、今のサーバーについて、どんなよいことがありますか。",
+      "file": "40.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 5.42,
+      "longestPause": 0.5,
+      "transcript": "3 を 使う と 、 今 の サーバー に つい て 、 どんな 良い こと が あり ます か ?",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "sさんをつかうといまのさあばあについてどんなよいことがありますか",
+        "spoken": "さんをつかうといまのさあばあについてどんなよいことがありますか",
+        "distance": 1
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "エー、サーバーを使わなくなる。",
+      "file": "41.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 2.54,
+      "longestPause": 0.2,
+      "transcript": "え 、 サーバ を 使わ なく なる 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "ええさあばあをつかわなくなる",
+        "spoken": "えさあばをつかわなくなる",
+        "distance": 2
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "ビー、サーバーにたくさんの画像を保存しなくてもよい。",
+      "file": "42.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 3.87,
+      "longestPause": 0.44,
+      "transcript": "ビー、サーバーにたくさんの画像を保存しなくてもよい。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "びいさあばあにたくさんのがぞうをほぞんしなくてもよい",
+        "spoken": "びいさあばあにたくさんのがぞうをほぞんしなくてもよい",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "シー、サーバーの料金が必ず0円になる。",
+      "file": "43.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 3.96,
+      "longestPause": 0.39,
+      "transcript": "C サーバー の 料金 が 必ず 0 円 に なる 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "しいさあばあのりょうきんがかならずぜろえんになる",
+        "spoken": "しいさあばあのりょうきんがかならずぜろえんになる",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "ディー、サーバーのログが消える。",
+      "file": "44.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 2.39,
+      "longestPause": 0.45,
+      "transcript": "D サーバーのログ が 消える",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "でぃいさあばあのろぐがきえる",
+        "spoken": "でぃいさあばあのろぐがきえる",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "問題8。",
+      "file": "45.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 0.72,
+      "longestPause": 0,
+      "transcript": "問題 8",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "もんだいはち",
+        "spoken": "もんだいはち",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "小林さんの説明では、100GB保存すると、月にだいたいいくらですか。",
+      "file": "46.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 5.43,
+      "longestPause": 0.24,
+      "transcript": "小林さんの説明では、100GB保存すると、月にだいたいいくらですか。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "こばやしさんのせつめいではひゃくぎがばいとほぞんするとつきにだいたいいくらですか",
+        "spoken": "こばやしさんのせつめいではひゃくぎがばいとほぞんするとつきにだいたいいくらですか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "エー、36円。",
+      "file": "47.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 1.77,
+      "longestPause": 0.02,
+      "transcript": "エー、36円。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "ええさんじゅうろくえん",
+        "spoken": "ええさんじゅうろくえん",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "ビー、360円。",
+      "file": "48.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 2.22,
+      "longestPause": 0.42,
+      "transcript": "B 360円",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "びいさんびゃくろくじゅうえん",
+        "spoken": "びいさんびゃくろくじゅうえん",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "シー、3,600円。",
+      "file": "49.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 2.04,
+      "longestPause": 0.2,
+      "transcript": "C 3600 円",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "しいさんぜんろっぴゃくえん",
+        "spoken": "しいさんぜんろっぴゃくえん",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "問題9。",
+      "file": "51.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 1.05,
+      "longestPause": 0.06,
+      "transcript": "問題 9",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "もんだいきゅう",
+        "spoken": "もんだいきゅう",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "保存料金のほかに、料金がかかる場合があるのは何ですか。",
+      "file": "52.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 4.42,
+      "longestPause": 0.24,
+      "transcript": "保存料金のほかに、料金がかかる場合があるのは何ですか。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "ほぞんりょうきんのほかにりょうきんがかかるばあいがあるのはなんですか",
+        "spoken": "ほぞんりょうきんのほかにりょうきんがかかるばあいがあるのはなんですか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "エー、データの送信やリクエスト。",
+      "file": "53.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 3.05,
+      "longestPause": 0.13,
+      "transcript": "データ の 送信 や リクエスト",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "ええでえたのそうしんやりくえすと",
+        "spoken": "でえたのそうしんやりくえすと",
+        "distance": 2
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "ビー、会議の時間。",
+      "file": "54.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 1.94,
+      "longestPause": 0.52,
+      "transcript": "B 会議 の 時間",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "びいかいぎのじかん",
+        "spoken": "びいかいぎのじかん",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "シー、GitHubのIssueの文章。",
+      "file": "55.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 2.46,
+      "longestPause": 0.28,
+      "transcript": "C, GitHub の 1 週 の 文章",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "しいぎっとはぶのいしゅうのぶんしょう",
+        "spoken": "しいぎっとはぶのいちしゅうのぶんしょう",
+        "distance": 1
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "ディー、画像のファイル名。",
+      "file": "56.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 1.96,
+      "longestPause": 0.38,
+      "transcript": "D ガゾ の ファイル 名",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "でぃいがぞうのふぁいるめい",
+        "spoken": "でぃいがぞのふぁいるめい",
+        "distance": 1
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "問題10。",
+      "file": "57.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 1.1,
+      "longestPause": 0,
+      "transcript": "問題 10",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "もんだいじゅう",
+        "spoken": "もんだいじゅう",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "加藤さんは、最後に何をお願いしましたか。",
+      "file": "58.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 3.28,
+      "longestPause": 0.24,
+      "transcript": "加藤 さん は 最後 に 何 を お 願い し まし た か ?",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "かとうさんはさいごになにをおねがいしましたか",
+        "spoken": "かとうさんはさいごになにをおねがいしましたか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "エー、画像をすべて消す。",
+      "file": "59.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 2.47,
+      "longestPause": 0.55,
+      "transcript": "A 、 画像 を 全て 消す 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "ええがぞうをすべてけす",
+        "spoken": "ええがぞうをすべてけす",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "ビー、今日中にS3を使い始める。",
+      "file": "60.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 3.23,
+      "longestPause": 0.44,
+      "transcript": "B 急中 に S 3 を 使い 始める 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "びいきょうじゅうにえすすりいをつかいはじめる",
+        "spoken": "びいきゅうちゅうにえすすりいをつかいはじめる",
+        "distance": 2
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "シー、料金と調査結果をGitHubのIssueにまとめる。",
+      "file": "61.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 3.93,
+      "longestPause": 0.19,
+      "transcript": "シー、料金と調査結果をGitHubのissueにまとめる。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "しいりょうきんとちょうさけっかをぎっとはぶのいしゅうにまとめる",
+        "spoken": "しいりょうきんとちょうさけっかをぎっとはぶのいしゅうにまとめる",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "ディー、もう一度同じ方法を調べる。",
+      "file": "62.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 2.58,
+      "longestPause": 0.26,
+      "transcript": "ディー、もう一度同じ方法を調べる。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "でぃいもういちどおなじほうほうをしらべる",
+        "spoken": "でぃいもういちどおなじほうほうをしらべる",
+        "distance": 0
       }
     }
   ]
