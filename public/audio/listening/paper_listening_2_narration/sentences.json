@@ -4,7 +4,6 @@
   "compareGapSeconds": [],
   "complete": false,
   "missing": [
-    13,
     14,
     50
   ],
@@ -199,6 +198,22 @@
         "expected": "びいふたつ",
         "spoken": "びいふたつ",
         "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "シー、3つ。",
+      "file": "13.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 1.48,
+      "longestPause": 0.18,
+      "transcript": "3 つ",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "しいみっつ",
+        "spoken": "みっつ",
+        "distance": 2
       }
     },
     {
