@@ -116,6 +116,31 @@ describe("報告の ポップアップの 表", () => {
     expect(kyou).toContain("「きょうは ◯◯を します。」");
   });
 
+  /*
+   * **一部だけ 言えた 札は「あと いくつ」**（2026-10-13「NG の 指摘が おかしい」）。
+   * 型文では ないので、見出しに「この 形で 言って みましょう」を 付けない。
+   */
+  it("「あと いくつ」の ヒントには「この 形で」を 付けない", () => {
+    const [ashita] = rowsText(
+      render([
+        row({
+          id: "ashita",
+          label: "明日 行うこと",
+          mark: "missing",
+          said: "明日はスキルグラフを生成する予定です。",
+          advice: "明日 行うことを お願いします。",
+          hint: "明日 行うことは 2つ あります。もう 1つ 足して ください。",
+          hintLeft: true,
+        }),
+      ]),
+    );
+    expect(ashita).toContain("💡 ヒント");
+    expect(ashita).toContain("もう 1つ 足して ください。");
+    expect(ashita).not.toContain("この 形で");
+    const [, shinchoku] = rowsText(render(ROWS));
+    expect(shinchoku).toContain("この 形で 言って みましょう");
+  });
+
   it("司会が つぎに 聞く 1つにだけ 👉（次の 行動は 1つ）", () => {
     const text = rowsText(render(ROWS));
     expect(text.filter((one) => one.includes("👉"))).toHaveLength(1);

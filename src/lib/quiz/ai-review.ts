@@ -28,7 +28,7 @@
  * 画面（fetch）は ここに 置かない。テストから 呼べる 純粋な 関数だけを 置く。
  */
 
-import { FORBIDDEN_LEARNER_WORDS } from "@/content/schema";
+import { FORBIDDEN_LEARNER_WORDS, type QuizQuestion } from "@/content/schema";
 import { AI_KANJI_WORDS } from "@/lib/ai-kanji";
 
 /** 見て もらう 単位（メールの 欄、または Slackの 観点）。 */
@@ -299,4 +299,19 @@ export function reviewWithoutAi(
       .map((item) => ({ id: item.id, ok: item.ok === true, note: "" })),
     polished: "",
   };
+}
+
+/**
+ * **こたえの チェックが 関門に なる もんだいか**（⭕に なるまで つぎを 開かない・
+ * ぜんぶ ⭕で はじめて 出せる）。
+ *
+ * - バグ報告（`bugreport`）… いつも 関門（60点 より 上で 合格）
+ * - 観点・欄の チェック（`ai`）を 持つ `free`／`fillin` … 既定で 関門（連絡文の 上級・初級）
+ * - ただし `ai.gate: false` は **見せるだけ**——書けば 点の 自由記述に 補助として 足した もの
+ *  （2026-10-08 の 指定・願い #586 の A）。進みかたは これまでどおり
+ */
+export function gatesOnAnswerCheck(question: QuizQuestion): boolean {
+  if (question.type === "bugreport") return true;
+  if (question.type !== "free" && question.type !== "fillin") return false;
+  return question.ai !== undefined && question.ai.gate !== false;
 }

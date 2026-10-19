@@ -34,6 +34,7 @@ import { CelebrationBurst, StampRow } from "./celebration";
 import { QuestionBody } from "./question-types";
 import { AnswerCheckProvider, type AnswerCheck, type AnswerChecks } from "./answer-check";
 import { dropJudgeSession } from "@/components/meeting/judge-api";
+import { gatesOnAnswerCheck } from "@/lib/quiz/ai-review";
 import { checkedText, fillinModelText } from "@/lib/quiz/fillin";
 import {
   BUG_REPORT_SHOW_ANSWER_AFTER,
@@ -618,11 +619,7 @@ export function QuizRunner({
               resumed={resumed}
               reopened={reopened}
               answerMode={set.answerMode}
-              gated={set.questions.some(
-                (q) =>
-                  ((q.type === "fillin" || q.type === "free") && q.ai !== undefined) ||
-                  q.type === "bugreport",
-              )}
+              gated={set.questions.some(gatesOnAnswerCheck)}
               answeredCount={submitMode ? written : start.results.length}
               startIndex={state.index}
               onContinue={() => {
@@ -1494,9 +1491,7 @@ function AllQuestionsCard({
    *  - ぜんぶ ⭕に なるまで **出せない**
    * チェックの 無い 教材（これまでの もんだい）は 何も 変わらない。
    */
-  const needsCheck = (question: QuizQuestion): boolean =>
-    ((question.type === "fillin" || question.type === "free") && question.ai !== undefined) ||
-    question.type === "bugreport";
+  const needsCheck = gatesOnAnswerCheck;
   const passed = (question: QuizQuestion): boolean => {
     // バグ報告は 点が 下書きに 入って いる（60点 より 上で 合格）
     if (question.type === "bugreport") {

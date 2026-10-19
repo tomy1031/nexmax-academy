@@ -1,0 +1,1132 @@
+"use client";
+
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { AdminError, AdminHeader, AdminLoading, AdminPageFrame } from "@/components/admin/admin-ui";
+import { claudeStatus } from "@/lib/ai/claude-check";
+import {
+  AI_STAFF_AFFILIATION,
+  clockMinutes,
+  effectiveOverride,
+  phnomPenhDate,
+  phnomPenhMonthStart,
+  phnomPenhNextMidnight,
+  ruleOpenNow,
+  type AiDateException,
+  type AiGroupRule,
+  type AiWindow,
+} from "@/lib/ai/claude-gate";
+import {
+  deleteAiRule,
+  fetchAiRules,
+  fetchAiSettings,
+  fetchAiUsageSince,
+  saveAiRule,
+  saveAiSettings,
+  type AiSettingsRow,
+  type AiUsageRow,
+} from "@/lib/ai/claude-settings-db";
+import {
+  fetchAllGroupVisibility,
+  saveGroupVisibility,
+  type GroupVisibilityRow,
+} from "@/lib/group-visibility-db";
+import { contentVisibilityKey } from "@/lib/group-visibility";
+import { contentKindMeta } from "@/lib/content-kinds";
+import type { ContentRefType } from "@/content/schema";
+import { fetchAllProfiles, fetchOwnProfile, type ProfileRow } from "@/lib/profile-db";
+import { COHORTS, UNIVERSITIES } from "@/lib/school";
+import { createClient } from "@/lib/supabase/client";
+
+/**
+ * クラスの 設定（先生向け・管理者だけ）— 願い #586・#589
+ *
+ * 大学 × 期生 ごとに 2つを 決める:
+ * - **AIの 時間**（#586）… こたえの チェック（Claude）を 使える 時間。設定の 無い 組は 使えない
+ * - **表示する 教材**（#589）… 隠す ステージ・教材。設定の 無い 組は 全部 見える
+ *   （2026-10-08「デフォルトはどの学校のどの期も同じ表示状態からスタートしたいけど、
+ *   場合によって非表示にしたりするものもあって欲しい」）
+ *
+ * ステージと 教材の 一覧は サーバで 読んで 渡す（`src/app/admin/ai-time/page.tsx`）。
+ *
+ * ## AIの 時間
+ * こたえの チェック（Claude・Haiku 5.5）を **使える 時間**を、**大学 × 期生 ごと**に 決める。
+ * 2026-10-08 の 指定:「火・水・金 17:30〜19:00ですが、それらを設定できる画面も作りたいです。
+ * 大学、○期生ごとに設定できる。設定のないものは常時使用不可」。
+ *
+ * - 時刻は **カンボジア時間**。判定は AIを 呼ぶ 関数が する（`src/lib/ai/claude-gate.ts`）
+ * - **曜日ごとに ちがう 時間**と、**その 日だけの 例外**（なし／この 時間）を 入れられる
+ *  （同日の 指定「日によって違う可能性も0ではないので、入力に柔軟性を持たせてください」）。
+ *   新しい 組を 開いた ときは 何も 入れて おかない——どの 組も 同じ 時間に 見えない ように
+ * - 使えない ときも 学習者は 止まらない（いまの 動き＝Gemini／お手本に 落ちる）
+ * - 認可は ここでは 決めない。画面は 入口を 隠すだけで、関所は RLS（`public.is_admin()`）
+ */
+
+/** 画面に 並べる 曜日の 順（月はじまり）。値は 0＝日 … 6＝土。 */
+const DAYS: readonly { value: number; label: string }[] = [
+  { value: 1, label: "月" },
+  { value: 2, label: "火" },
+  { value: 3, label: "水" },
+  { value: 4, label: "木" },
+  { value: 5, label: "金" },
+  { value: 6, label: "土" },
+  { value: 0, label: "日" },
+];
+
+/** いまの 授業（2026-10-08 の 指定）。ボタン 1つで 入れられる ように する。 */
+const CLASS_PRESET: AiWindow = { days: [2, 3, 5], start: "17:30", end: "19:00" };
+
+/** 手動で ON に する 長さ。 */
+const MANUAL_ON_HOURS = 2;
+
+interface Group {
+  readonly university: string;
+  readonly cohort: number;
+}
+
+const GROUPS: readonly Group[] = [
+  ...UNIVERSITIES.flatMap((university) => COHORTS.map((cohort) => ({ university, cohort }))),
+  { university: AI_STAFF_AFFILIATION, cohort: 0 },
+];
+
+function groupKey(group: Group): string {
+  return `${group.university}:${group.cohort}`;
+}
+
+function groupName(group: Group): string {
+  return group.university === AI_STAFF_AFFILIATION
+    ? AI_STAFF_AFFILIATION
+    : `${group.university} ${group.cohort}期`;
+}
+
+function windowText(window: AiWindow): string {
+  const days = DAYS.filter((day) => window.days.includes(day.value))
+    .map((day) => day.label)
+    .join("・");
+  return `${days} ${window.start}〜${window.end}`;
+}
+
+function clockText(iso: string): string {
+  const at = new Date(iso);
+  if (Number.isNaN(at.getTime())) return "—";
+  return at.toLocaleString("ja-JP", {
+    timeZone: "Asia/Phnom_Penh",
+    month: "numeric",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
+function dollars(value: number): string {
+  return `${value.toFixed(2)}ドル`;
+}
+
+/** 組の「いま」を 1行で 言う。 */
+function nowText(
+  rule: AiGroupRule | undefined,
+  settings: AiSettingsRow,
+  monthCost: number,
+  now: Date,
+) {
+  if (settings.stopped) return { open: false, text: "AI チェックを一斉停止しています" };
+  if (monthCost >= settings.monthlyBudgetUsd)
+    return { open: false, text: "今月の 上限に 届きました" };
+  if (!rule) return { open: false, text: "設定が ありません（使えません）" };
+  const override = effectiveOverride(rule, now);
+  const until = rule.overrideUntil ? `（${clockText(rule.overrideUntil)} まで）` : "";
+  if (override === "on") return { open: true, text: `手動で ON${until}` };
+  if (override === "off") return { open: false, text: `手動で OFF${until}` };
+  return ruleOpenNow(rule, now)
+    ? { open: true, text: "授業の 時間です" }
+    : { open: false, text: "時間の 外です" };
+}
+
+/** 鍵（関数の 秘密）の ようす。先生が 自分で 窓口に 問いあわせて 知る。 */
+function keyText(reason: string | null): string {
+  if (reason === null) return "たしかめて います…";
+  if (reason === "unconfigured") return "まだ 入って いません（タスクボードの カード）";
+  if (reason === "notDeployed") return "窓口が まだ 出て いません";
+  if (reason === "network" || reason === "upstream" || reason === "badShape") {
+    return "窓口に つながりませんでした";
+  }
+  return "入って います";
+}
+
+/** 一覧に 出す ステージ（地図に 出る もの・学習順）。 */
+export interface ClassStage {
+  readonly id: string;
+  /** 地図の 番号（STEP 01…）。 */
+  readonly number: number;
+  readonly title: string;
+  readonly contents: readonly {
+    readonly id: string;
+    readonly type: ContentRefType;
+    readonly title: string;
+  }[];
+}
+
+export function ClassSettings({ stages }: { stages: readonly ClassStage[] }) {
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [settings, setSettings] = useState<AiSettingsRow | null>(null);
+  const [rules, setRules] = useState<AiGroupRule[]>([]);
+  const [usage, setUsage] = useState<AiUsageRow[]>([]);
+  const [profiles, setProfiles] = useState<ProfileRow[]>([]);
+  const [keyReason, setKeyReason] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [editing, setEditing] = useState<string | null>(null);
+  const [visibilities, setVisibilities] = useState<GroupVisibilityRow[]>([]);
+  const [showing, setShowing] = useState<string | null>(null);
+  const [now, setNow] = useState(() => new Date());
+
+  const reload = useCallback(async () => {
+    const [nextSettings, nextRules, nextUsage, nextVisibilities] = await Promise.all([
+      fetchAiSettings(),
+      fetchAiRules(),
+      fetchAiUsageSince(phnomPenhMonthStart(new Date()).toISOString()),
+      fetchAllGroupVisibility(),
+    ]);
+    setSettings(nextSettings);
+    setRules(nextRules);
+    setUsage(nextUsage);
+    setVisibilities(nextVisibilities);
+    setNow(new Date());
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    void (async () => {
+      const supabase = createClient();
+      if (!supabase) {
+        router.replace("/welcome");
+        return;
+      }
+      try {
+        const own = await fetchOwnProfile();
+        if (!active) return;
+        if (!own) {
+          router.replace("/welcome");
+          return;
+        }
+        if (!own.is_admin) {
+          router.replace("/map");
+          return;
+        }
+        const [, allProfiles] = await Promise.all([reload(), fetchAllProfiles()]);
+        if (!active) return;
+        setProfiles(allProfiles);
+        setLoading(false);
+        const status = await claudeStatus();
+        if (active) setKeyReason(status.open ? "" : status.reason);
+      } catch (error) {
+        if (!active) return;
+        setErrorMessage(error instanceof Error ? error.message : String(error));
+        setLoading(false);
+      }
+    })();
+    return () => {
+      active = false;
+    };
+  }, [reload, router]);
+
+  // 「いま」の 札を 1分ごとに 描き直す（授業が 始まったら 画面でも 分かる）
+  useEffect(() => {
+    const timer = setInterval(() => setNow(new Date()), 60_000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const run = useCallback(
+    async (label: string, work: () => Promise<void>) => {
+      setSaving(true);
+      setNotice(null);
+      try {
+        await work();
+        await reload();
+        setNotice(`${label}。本番と STG の 両方に すぐ 効きます。`);
+      } catch (error) {
+        setNotice(
+          `保存できませんでした: ${error instanceof Error ? error.message : String(error)}`,
+        );
+      } finally {
+        setSaving(false);
+      }
+    },
+    [reload],
+  );
+
+  const monthCost = useMemo(() => usage.reduce((sum, row) => sum + row.costUsd, 0), [usage]);
+  const studentsOf = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const profile of profiles) {
+      const university = profile.university ?? "";
+      const cohort = university === AI_STAFF_AFFILIATION ? 0 : (profile.cohort ?? 0);
+      const key = `${university}:${cohort}`;
+      counts.set(key, (counts.get(key) ?? 0) + 1);
+    }
+    return counts;
+  }, [profiles]);
+  const usageOf = useMemo(() => {
+    const totals = new Map<string, { cost: number; calls: number }>();
+    for (const row of usage) {
+      const key = `${row.university}:${row.cohort}`;
+      const one = totals.get(key) ?? { cost: 0, calls: 0 };
+      totals.set(key, { cost: one.cost + row.costUsd, calls: one.calls + 1 });
+    }
+    return totals;
+  }, [usage]);
+
+  if (loading) return <AdminLoading />;
+  if (errorMessage || !settings) return <AdminError message={errorMessage ?? "読めませんでした"} />;
+
+  const ruleOf = (group: Group) =>
+    rules.find((rule) => rule.university === group.university && rule.cohort === group.cohort);
+  const visibilityOf = (group: Group) =>
+    visibilities.find((row) => row.university === group.university && row.cohort === group.cohort);
+
+  return (
+    <AdminPageFrame>
+      <AdminHeader
+        title="クラスの 設定"
+        note="大学 × 期生 ごとに、AIの 時間（こたえの チェックを 使える 時間）と、表示する 教材を 決めます。時刻は カンボジア時間です。"
+      />
+
+      {notice ? (
+        <p
+          role="status"
+          className="text-navy bg-panel-tint mb-4 rounded-xl px-3 py-2 text-sm font-bold"
+        >
+          {notice}
+        </p>
+      ) : null}
+
+      <GlobalCard
+        settings={settings}
+        monthCost={monthCost}
+        monthCalls={usage.length}
+        keyReason={keyReason}
+        saving={saving}
+        onSave={(next, label) => void run(label, () => saveAiSettings(next))}
+      />
+
+      <section className="card-pop mt-4 px-5 py-5">
+        <h2 className="text-navy text-base font-black">授業の組みごとの設定</h2>
+        <p className="text-ink-soft mt-1 text-xs font-bold">
+          AI
+          の時間は、設定のない授業の組みでは使えません。表示する教材は、設定のない授業の組みでは全部見えます。
+        </p>
+        <ul className="mt-3 divide-y divide-[color:var(--hairline,#e5e7eb)]">
+          {GROUPS.map((group) => {
+            const key = groupKey(group);
+            const rule = ruleOf(group);
+            const state = nowText(rule, settings, monthCost, now);
+            const spent = usageOf.get(key);
+            return (
+              <li key={key} className="py-3" data-group={key}>
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                  <span className="text-navy min-w-24 font-black">{groupName(group)}</span>
+                  <span className="text-ink-soft text-xs font-bold">
+                    {studentsOf.get(key) ?? 0}人
+                  </span>
+                  <span
+                    data-open={state.open ? "yes" : "no"}
+                    className={`rounded-full px-2.5 py-0.5 text-xs font-black ${
+                      state.open ? "bg-[#d9f7d6] text-[#1d6b2a]" : "bg-panel-tint text-ink-soft"
+                    }`}
+                  >
+                    {state.open ? "● 使える" : "○ 使えない"}・{state.text}
+                  </span>
+                  {spent ? (
+                    <span className="text-ink-soft text-xs font-bold">
+                      今月 {spent.calls}回・{dollars(spent.cost)}
+                    </span>
+                  ) : null}
+                </div>
+                <p className="text-ink mt-1 text-sm font-bold">
+                  {rule && rule.windows.length > 0
+                    ? rule.windows.map(windowText).join(" ／ ")
+                    : "曜日の 時間は まだ ありません"}
+                </p>
+                {rule && upcomingExceptions(rule.exceptions, now).length > 0 ? (
+                  <p className="text-ink-soft mt-0.5 text-xs font-bold">
+                    この 日だけ:{" "}
+                    {upcomingExceptions(rule.exceptions, now).map(exceptionText).join(" ／ ")}
+                  </p>
+                ) : null}
+                <p className="text-ink-soft mt-0.5 text-xs font-bold" data-visibility={key}>
+                  表示: {visibilityText(visibilityOf(group))}
+                </p>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  <SmallButton
+                    disabled={saving}
+                    onClick={() => setEditing(editing === key ? null : key)}
+                  >
+                    {editing === key ? "閉じる" : "時間を 決める"}
+                  </SmallButton>
+                  <SmallButton
+                    disabled={saving}
+                    onClick={() => setShowing(showing === key ? null : key)}
+                  >
+                    {showing === key ? "閉じる" : "表示する 教材"}
+                  </SmallButton>
+                  <SmallButton
+                    disabled={saving}
+                    onClick={() =>
+                      void run(`${groupName(group)}を ${MANUAL_ON_HOURS}時間 ON に しました`, () =>
+                        saveAiRule({
+                          university: group.university,
+                          cohort: group.cohort,
+                          windows: rule?.windows ?? [],
+                          exceptions: rule?.exceptions ?? [],
+                          override: "on",
+                          overrideUntil: new Date(
+                            Date.now() + MANUAL_ON_HOURS * 60 * 60_000,
+                          ).toISOString(),
+                        }),
+                      )
+                    }
+                  >
+                    いまから {MANUAL_ON_HOURS}時間 ON
+                  </SmallButton>
+                  {rule ? (
+                    <SmallButton
+                      disabled={saving}
+                      onClick={() =>
+                        void run(`${groupName(group)}を きょうは OFF に しました`, () =>
+                          saveAiRule({
+                            ...rule,
+                            override: "off",
+                            overrideUntil: phnomPenhNextMidnight(new Date()).toISOString(),
+                          }),
+                        )
+                      }
+                    >
+                      きょうは OFF
+                    </SmallButton>
+                  ) : null}
+                  {rule && rule.override !== "auto" ? (
+                    <SmallButton
+                      disabled={saving}
+                      onClick={() =>
+                        void run(`${groupName(group)}を 時間どおりに もどしました`, () =>
+                          saveAiRule({ ...rule, override: "auto", overrideUntil: null }),
+                        )
+                      }
+                    >
+                      時間どおりに もどす
+                    </SmallButton>
+                  ) : null}
+                </div>
+                {editing === key ? (
+                  <ScheduleEditor
+                    initialWindows={rule?.windows ?? []}
+                    initialExceptions={rule?.exceptions ?? []}
+                    saving={saving}
+                    canDelete={rule !== undefined}
+                    onSave={(windows, exceptions) =>
+                      void run(`${groupName(group)}の 時間を 保存しました`, async () => {
+                        await saveAiRule({
+                          university: group.university,
+                          cohort: group.cohort,
+                          windows,
+                          exceptions,
+                          override: rule?.override ?? "auto",
+                          overrideUntil: rule?.overrideUntil ?? null,
+                        });
+                        setEditing(null);
+                      })
+                    }
+                    onDelete={() =>
+                      void run(
+                        `${groupName(group)}の 設定を 消しました（使えません）`,
+                        async () => {
+                          await deleteAiRule(group.university, group.cohort);
+                          setEditing(null);
+                        },
+                      )
+                    }
+                  />
+                ) : null}
+                {showing === key ? (
+                  <VisibilityEditor
+                    stages={stages}
+                    initial={visibilityOf(group)}
+                    saving={saving}
+                    onSave={(hiddenStages, hiddenContents) =>
+                      void run(`${groupName(group)}の 表示する 教材を 保存しました`, async () => {
+                        await saveGroupVisibility({
+                          university: group.university,
+                          cohort: group.cohort,
+                          hiddenStages,
+                          hiddenContents,
+                        });
+                        setShowing(null);
+                      })
+                    }
+                  />
+                ) : null}
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+
+      <section className="card-pop mt-4 px-5 py-5">
+        <h2 className="text-navy text-base font-black">つかう まえに</h2>
+        <ul className="text-ink mt-3 space-y-2 text-sm font-bold">
+          <li>
+            <strong className="text-navy">本番と STG の 両方に 同時に 効きます。</strong> DB は
+            全環境で 1つを 共有しています。
+          </li>
+          <li>
+            使えない 時間も、学習者は 止まりません。生徒が 自分の Gemini の 鍵を 入れて いれば
+            Gemini が 見て、無ければ お手本と アプリの ⭕✗で 進みます。
+          </li>
+          <li>
+            学習者の 端末は「使えるか」を 1分 ためます。時間に なってから 1分 ほどで
+            切りかわります。
+          </li>
+          <li>大学・期生をまだ選んでいない生徒は、どの授業の組みの設定でも使えません。</li>
+          <li>
+            隠したステージ・教材は、その授業の組みの生徒の地図とステージの画面から消え、ロックと進み具合の数からも外れます。URL
+            を直接開けば見られます。生徒の端末は表示を3分ためます。
+          </li>
+        </ul>
+      </section>
+    </AdminPageFrame>
+  );
+}
+
+function SmallButton({
+  children,
+  disabled,
+  onClick,
+}: {
+  children: React.ReactNode;
+  disabled?: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      disabled={disabled}
+      onClick={onClick}
+      className="border-hairline text-navy rounded-xl border-2 bg-white px-3 py-1.5 text-xs font-bold disabled:opacity-40"
+    >
+      {children}
+    </button>
+  );
+}
+
+function GlobalCard({
+  settings,
+  monthCost,
+  monthCalls,
+  keyReason,
+  saving,
+  onSave,
+}: {
+  settings: AiSettingsRow;
+  monthCost: number;
+  monthCalls: number;
+  keyReason: string | null;
+  saving: boolean;
+  onSave: (next: AiSettingsRow, label: string) => void;
+}) {
+  const [budget, setBudget] = useState(String(settings.monthlyBudgetUsd));
+  const [daily, setDaily] = useState(String(settings.dailyUserLimit));
+  const budgetValue = Number(budget);
+  const dailyValue = Number(daily);
+  const valid =
+    Number.isFinite(budgetValue) &&
+    budgetValue >= 0 &&
+    budgetValue <= 100 &&
+    Number.isInteger(dailyValue) &&
+    dailyValue >= 0 &&
+    dailyValue <= 1000;
+  const ratio =
+    settings.monthlyBudgetUsd > 0 ? Math.min(1, monthCost / settings.monthlyBudgetUsd) : 1;
+
+  return (
+    <section className="card-pop px-5 py-5">
+      <div className="flex flex-wrap items-center gap-3">
+        <span
+          aria-hidden
+          className={`grid h-12 w-12 place-items-center rounded-full text-2xl ${
+            settings.stopped ? "bg-panel-tint" : "bg-[#d9f7d6]"
+          }`}
+        >
+          {settings.stopped ? "⏸️" : "▶️"}
+        </span>
+        <div className="min-w-0">
+          <p className="text-navy text-lg font-black">
+            {settings.stopped
+              ? "いま AI チェックを一斉停止しています"
+              : "授業の組みごとの時間で動いています"}
+          </p>
+          <p className="text-ink-soft text-sm font-bold">
+            Claude の 鍵: {keyText(keyReason)}・モデル: {settings.model}
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-4">
+        <p className="text-navy text-sm font-black">
+          今月 {dollars(monthCost)} ／ 上限 {dollars(settings.monthlyBudgetUsd)}（{monthCalls}回）
+        </p>
+        <div className="bg-panel-tint mt-1 h-2 overflow-hidden rounded-full">
+          <div
+            className="h-full rounded-full bg-[#4c8dff]"
+            style={{ width: `${Math.round(ratio * 100)}%` }}
+          />
+        </div>
+      </div>
+
+      <div className="mt-4 flex flex-wrap items-end gap-3">
+        <label className="text-ink text-sm font-bold">
+          月の 上限（ドル・100まで）
+          <input
+            type="number"
+            min={0}
+            max={100}
+            step={1}
+            value={budget}
+            onChange={(event) => setBudget(event.target.value)}
+            className="border-hairline mt-1 block w-28 rounded-lg border-2 px-2 py-1"
+          />
+        </label>
+        <label className="text-ink text-sm font-bold">
+          1人 1日の 上限（回）
+          <input
+            type="number"
+            min={0}
+            max={1000}
+            step={1}
+            value={daily}
+            onChange={(event) => setDaily(event.target.value)}
+            className="border-hairline mt-1 block w-28 rounded-lg border-2 px-2 py-1"
+          />
+        </label>
+        <button
+          type="button"
+          disabled={saving || !valid}
+          onClick={() =>
+            onSave(
+              { ...settings, monthlyBudgetUsd: budgetValue, dailyUserLimit: dailyValue },
+              "上限を 保存しました",
+            )
+          }
+          className="btn-game px-4 py-2 text-sm disabled:opacity-40"
+        >
+          上限を 保存
+        </button>
+      </div>
+
+      <div className="mt-4">
+        <button
+          type="button"
+          disabled={saving}
+          onClick={() =>
+            onSave(
+              { ...settings, stopped: !settings.stopped },
+              settings.stopped ? "一斉停止を解除しました" : "AI チェックを一斉停止しました",
+            )
+          }
+          className="border-hairline text-navy rounded-2xl border-2 bg-white px-5 py-2.5 text-sm font-bold disabled:opacity-40"
+        >
+          {settings.stopped
+            ? "一斉停止を解除する（授業の組みごとの時間に戻す）"
+            : "AI チェックの一斉停止（非常ボタン）"}
+        </button>
+      </div>
+    </section>
+  );
+}
+
+/** 今日と それより 後の 例外（過ぎた 日は 出さない）。 */
+function upcomingExceptions(exceptions: readonly AiDateException[], now: Date): AiDateException[] {
+  const today = phnomPenhDate(now);
+  return exceptions.filter((one) => one.date >= today);
+}
+
+/** "2026-10-14" → "10/14"。 */
+function shortDate(date: string): string {
+  const [, month, day] = date.split("-");
+  return `${Number(month)}/${Number(day)}`;
+}
+
+function exceptionText(one: AiDateException): string {
+  return one.start && one.end
+    ? `${shortDate(one.date)} ${one.start}〜${one.end}`
+    : `${shortDate(one.date)} なし`;
+}
+
+/** 1つの 時間（はじめ〜おわり）。 */
+interface Slot {
+  readonly start: string;
+  readonly end: string;
+}
+
+/** 例外の 入力中の 形（「なし」と「この 時間」を 切りかえる）。 */
+interface ExceptionDraft {
+  readonly date: string;
+  readonly mode: "none" | "time";
+  readonly start: string;
+  readonly end: string;
+}
+
+const EMPTY_SLOT: Slot = { start: "17:30", end: "19:00" };
+
+function slotProblem(slot: Slot): string {
+  const start = clockMinutes(slot.start);
+  const end = clockMinutes(slot.end);
+  if (start === null || end === null) return "時刻を 入れて ください";
+  if (start >= end) return "おわりは はじめより 後に して ください";
+  return "";
+}
+
+/** 曜日ごとの わく（windows）を、曜日 → 時間の 並び に ほどく。 */
+function slotsByDay(windows: readonly AiWindow[]): Record<number, Slot[]> {
+  const out: Record<number, Slot[]> = {};
+  for (const window of windows) {
+    for (const day of window.days) {
+      (out[day] ??= []).push({ start: window.start, end: window.end });
+    }
+  }
+  for (const day of Object.keys(out)) {
+    out[Number(day)]!.sort((a, b) => a.start.localeCompare(b.start));
+  }
+  return out;
+}
+
+/**
+ * 曜日 → 時間 を わく（windows）に もどす。**同じ 時間の 曜日は 1つの わくに まとめる**
+ *（一覧の 1行が「火・水・金 17:30〜19:00」と 読める ように）。
+ */
+function windowsFromDays(byDay: Record<number, Slot[]>): AiWindow[] {
+  const grouped = new Map<string, number[]>();
+  for (const day of DAYS.map((one) => one.value)) {
+    for (const slot of byDay[day] ?? []) {
+      const key = `${slot.start}-${slot.end}`;
+      grouped.set(key, [...(grouped.get(key) ?? []), day]);
+    }
+  }
+  return [...grouped.entries()]
+    .map(([key, days]) => {
+      const [start = "", end = ""] = key.split("-");
+      return { days: [...new Set(days)].sort((a, b) => a - b), start, end };
+    })
+    .sort((a, b) => (a.days[0] ?? 0) - (b.days[0] ?? 0) || a.start.localeCompare(b.start));
+}
+
+/**
+ * 時間を 決める（曜日ごと ＋ その 日だけ）。
+ *
+ * - **曜日ごと**: 曜日を 押すと その 曜日が 入り、時間を 入れる。1日に 2回 ある ときは
+ *   「もう 1つ」。曜日ごとに ちがう 時間で よい
+ * - **その 日だけ**: 日付を えらび「なし」か「この 時間」。その 日は 曜日の 時間を 見ない
+ * - 新しい 組は 空から 始める（決まった 時間を 先に 入れない）。いつもの 授業は
+ *   ボタン 1つで 入れられる
+ */
+export function ScheduleEditor({
+  initialWindows,
+  initialExceptions,
+  saving,
+  canDelete,
+  onSave,
+  onDelete,
+}: {
+  initialWindows: readonly AiWindow[];
+  initialExceptions: readonly AiDateException[];
+  saving: boolean;
+  canDelete: boolean;
+  onSave: (windows: AiWindow[], exceptions: AiDateException[]) => void;
+  onDelete: () => void;
+}) {
+  const [byDay, setByDay] = useState<Record<number, Slot[]>>(() => slotsByDay(initialWindows));
+  const [today] = useState(() => phnomPenhDate(new Date()));
+  const [exceptions, setExceptions] = useState<ExceptionDraft[]>(() =>
+    initialExceptions
+      .filter((one) => one.date >= today)
+      .map((one) => ({
+        date: one.date,
+        mode: one.start && one.end ? "time" : "none",
+        start: one.start ?? EMPTY_SLOT.start,
+        end: one.end ?? EMPTY_SLOT.end,
+      })),
+  );
+
+  const setDay = (day: number, slots: Slot[]) =>
+    setByDay((all) => {
+      const next = { ...all };
+      if (slots.length === 0) delete next[day];
+      else next[day] = slots;
+      return next;
+    });
+  const updateException = (index: number, next: ExceptionDraft) =>
+    setExceptions((all) => all.map((one, at) => (at === index ? next : one)));
+
+  const dayProblems = Object.values(byDay)
+    .flat()
+    .map(slotProblem)
+    .filter((one) => one !== "");
+  const exceptionProblems = exceptions.map((one) => {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(one.date)) return "日付を えらんで ください";
+    if (one.date < today) return "過ぎた 日付です";
+    return one.mode === "time" ? slotProblem(one) : "";
+  });
+  const valid = dayProblems.length === 0 && exceptionProblems.every((one) => one === "");
+  const empty = Object.keys(byDay).length === 0 && exceptions.length === 0;
+
+  return (
+    <div className="bg-panel-tint mt-3 rounded-xl px-4 py-3">
+      <h3 className="text-navy text-sm font-black">曜日ごとの 時間</h3>
+      <p className="text-ink-soft text-xs font-bold">
+        曜日を 押して 入れます。曜日ごとに ちがう 時間で だいじょうぶです。
+      </p>
+      <ul className="mt-2 grid gap-1.5">
+        {DAYS.map((day) => {
+          const slots = byDay[day.value] ?? [];
+          const on = slots.length > 0;
+          return (
+            <li
+              key={day.value}
+              className="border-hairline flex flex-wrap items-start gap-2 rounded-lg border-2 bg-white px-2 py-1.5"
+            >
+              <button
+                type="button"
+                aria-pressed={on}
+                onClick={() => setDay(day.value, on ? [] : [{ ...EMPTY_SLOT }])}
+                className={`h-8 w-8 shrink-0 rounded-full text-sm font-black ${
+                  on ? "bg-navy text-white" : "border-hairline text-navy border-2 bg-white"
+                }`}
+              >
+                {day.label}
+              </button>
+              {on ? (
+                <div className="grid gap-1">
+                  {slots.map((slot, index) => (
+                    <div
+                      key={index}
+                      className="flex flex-wrap items-center gap-1.5 text-sm font-bold"
+                    >
+                      <input
+                        type="time"
+                        aria-label={`${day.label} はじめ`}
+                        value={slot.start}
+                        onChange={(event) =>
+                          setDay(
+                            day.value,
+                            slots.map((one, at) =>
+                              at === index ? { ...one, start: event.target.value } : one,
+                            ),
+                          )
+                        }
+                        className="border-hairline rounded-lg border-2 px-2 py-0.5"
+                      />
+                      〜
+                      <input
+                        type="time"
+                        aria-label={`${day.label} おわり`}
+                        value={slot.end}
+                        onChange={(event) =>
+                          setDay(
+                            day.value,
+                            slots.map((one, at) =>
+                              at === index ? { ...one, end: event.target.value } : one,
+                            ),
+                          )
+                        }
+                        className="border-hairline rounded-lg border-2 px-2 py-0.5"
+                      />
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setDay(
+                            day.value,
+                            slots.filter((_, at) => at !== index),
+                          )
+                        }
+                        className="text-ink-soft text-xs font-bold underline"
+                      >
+                        消す
+                      </button>
+                      {slotProblem(slot) ? (
+                        <span className="text-xs font-bold text-[#b42318]">
+                          {slotProblem(slot)}
+                        </span>
+                      ) : null}
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => setDay(day.value, [...slots, { ...EMPTY_SLOT }])}
+                    className="text-navy w-fit text-xs font-bold underline"
+                  >
+                    この 曜日に もう 1つ
+                  </button>
+                </div>
+              ) : (
+                <span className="text-ink-faint self-center text-xs font-bold">なし</span>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+      <div className="mt-2 flex flex-wrap gap-2">
+        <SmallButton
+          onClick={() =>
+            setByDay((all) => {
+              const next = { ...all };
+              for (const day of CLASS_PRESET.days) {
+                next[day] = [{ start: CLASS_PRESET.start, end: CLASS_PRESET.end }];
+              }
+              return next;
+            })
+          }
+        >
+          火・水・金 17:30〜19:00 を 入れる
+        </SmallButton>
+        <SmallButton onClick={() => setByDay({})}>曜日を ぜんぶ 空に する</SmallButton>
+      </div>
+
+      <h3 className="text-navy mt-4 text-sm font-black">この 日だけ（休み・時間が ちがう 日）</h3>
+      <p className="text-ink-soft text-xs font-bold">
+        その 日は 曜日の 時間を 使いません。「なし」か「この 時間」を えらびます。
+      </p>
+      <ul className="mt-2 grid gap-1.5">
+        {exceptions.map((one, index) => (
+          <li
+            key={index}
+            className="border-hairline flex flex-wrap items-center gap-2 rounded-lg border-2 bg-white px-2 py-1.5 text-sm font-bold"
+          >
+            <input
+              type="date"
+              aria-label="日付"
+              value={one.date}
+              min={today}
+              onChange={(event) => updateException(index, { ...one, date: event.target.value })}
+              className="border-hairline rounded-lg border-2 px-2 py-0.5"
+            />
+            <select
+              aria-label="その 日"
+              value={one.mode}
+              onChange={(event) =>
+                updateException(index, {
+                  ...one,
+                  mode: event.target.value === "time" ? "time" : "none",
+                })
+              }
+              className="border-hairline rounded-lg border-2 px-2 py-0.5"
+            >
+              <option value="none">なし（使えない）</option>
+              <option value="time">この 時間だけ</option>
+            </select>
+            {one.mode === "time" ? (
+              <>
+                <input
+                  type="time"
+                  aria-label="その 日の はじめ"
+                  value={one.start}
+                  onChange={(event) =>
+                    updateException(index, { ...one, start: event.target.value })
+                  }
+                  className="border-hairline rounded-lg border-2 px-2 py-0.5"
+                />
+                〜
+                <input
+                  type="time"
+                  aria-label="その 日の おわり"
+                  value={one.end}
+                  onChange={(event) => updateException(index, { ...one, end: event.target.value })}
+                  className="border-hairline rounded-lg border-2 px-2 py-0.5"
+                />
+              </>
+            ) : null}
+            <button
+              type="button"
+              onClick={() => setExceptions((all) => all.filter((_, at) => at !== index))}
+              className="text-ink-soft ml-auto text-xs font-bold underline"
+            >
+              消す
+            </button>
+            {exceptionProblems[index] ? (
+              <span className="w-full text-xs font-bold text-[#b42318]">
+                {exceptionProblems[index]}
+              </span>
+            ) : null}
+          </li>
+        ))}
+      </ul>
+      <div className="mt-2">
+        <SmallButton
+          onClick={() =>
+            setExceptions((all) => [
+              ...all,
+              { date: today, mode: "none", start: EMPTY_SLOT.start, end: EMPTY_SLOT.end },
+            ])
+          }
+        >
+          日付を 足す
+        </SmallButton>
+      </div>
+
+      <div className="mt-4 flex flex-wrap gap-3">
+        <button
+          type="button"
+          disabled={saving || !valid || empty}
+          onClick={() =>
+            onSave(
+              windowsFromDays(byDay),
+              exceptions.map((one) =>
+                one.mode === "time"
+                  ? { date: one.date, start: one.start, end: one.end }
+                  : { date: one.date },
+              ),
+            )
+          }
+          className="btn-game px-4 py-2 text-sm disabled:opacity-40"
+        >
+          保存
+        </button>
+        {canDelete ? (
+          <button
+            type="button"
+            disabled={saving}
+            onClick={onDelete}
+            className="border-hairline text-navy rounded-2xl border-2 bg-white px-4 py-2 text-sm font-bold disabled:opacity-40"
+          >
+            設定を 消す（使えなく する）
+          </button>
+        ) : null}
+      </div>
+      {empty ? (
+        <p className="text-ink-soft mt-1 text-xs font-bold">
+          曜日か 日付を 1つ 以上 入れると 保存できます。
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
+/** 組の 表示の ようすを 1行で 言う。 */
+function visibilityText(row: GroupVisibilityRow | undefined): string {
+  if (!row || (row.hiddenStages.length === 0 && row.hiddenContents.length === 0)) {
+    return "ぜんぶ 見せて います";
+  }
+  const parts: string[] = [];
+  if (row.hiddenStages.length > 0) parts.push(`ステージ ${row.hiddenStages.length}つ`);
+  if (row.hiddenContents.length > 0) parts.push(`教材 ${row.hiddenContents.length}つ`);
+  return `${parts.join("・")}を 隠して います`;
+}
+
+/**
+ * 表示する 教材を えらぶ（チェックが ついて いる もの が 見える）。
+ *
+ * **隠す もの だけを 保存する**——あとから 足した ステージ・教材は、どの 組でも
+ * 自動で 見える（既定は 全部 見える・2026-10-08 の 指定）。
+ * ステージを 隠すと 中の 教材も 見えなく なる ので、中の チェックは 出さない。
+ */
+function VisibilityEditor({
+  stages,
+  initial,
+  saving,
+  onSave,
+}: {
+  stages: readonly ClassStage[];
+  initial: GroupVisibilityRow | undefined;
+  saving: boolean;
+  onSave: (hiddenStages: string[], hiddenContents: string[]) => void;
+}) {
+  const [hiddenStages, setHiddenStages] = useState<Set<string>>(
+    () => new Set(initial?.hiddenStages ?? []),
+  );
+  const [hiddenContents, setHiddenContents] = useState<Set<string>>(
+    () => new Set(initial?.hiddenContents ?? []),
+  );
+  const toggle = (set: Set<string>, key: string, update: (next: Set<string>) => void) => {
+    const next = new Set(set);
+    if (next.has(key)) next.delete(key);
+    else next.add(key);
+    update(next);
+  };
+  // いまの 一覧に 無い もの（消えた 教材）は 保存の ときに 落とす
+  const knownStages = new Set(stages.map((stage) => stage.id));
+  const knownContents = new Set(
+    stages.flatMap((stage) => stage.contents.map((one) => contentVisibilityKey(stage.id, one.id))),
+  );
+
+  return (
+    <div className="bg-panel-tint mt-3 rounded-xl px-4 py-3">
+      <p className="text-ink-soft text-xs font-bold">
+        チェックを外したものが、この授業の組みの生徒から見えなくなります。
+      </p>
+      <ul className="mt-2 grid gap-2">
+        {stages.map((stage) => {
+          const stageShown = !hiddenStages.has(stage.id);
+          return (
+            <li key={stage.id} className="border-hairline rounded-lg border-2 bg-white px-3 py-2">
+              <label className="text-navy flex items-center gap-2 text-sm font-black">
+                <input
+                  type="checkbox"
+                  checked={stageShown}
+                  onChange={() => toggle(hiddenStages, stage.id, setHiddenStages)}
+                />
+                STEP {String(stage.number).padStart(2, "0")} {stage.title}
+              </label>
+              {stageShown ? (
+                <ul className="mt-1.5 ml-6 grid gap-1">
+                  {stage.contents.map((one) => {
+                    const key = contentVisibilityKey(stage.id, one.id);
+                    return (
+                      <li key={key}>
+                        <label className="text-ink flex items-center gap-2 text-xs font-bold">
+                          <input
+                            type="checkbox"
+                            checked={!hiddenContents.has(key)}
+                            onChange={() => toggle(hiddenContents, key, setHiddenContents)}
+                          />
+                          {contentKindMeta(one.type).icon} {one.title}
+                        </label>
+                      </li>
+                    );
+                  })}
+                </ul>
+              ) : (
+                <p className="text-ink-soft mt-1 ml-6 text-xs font-bold">
+                  この ステージは 隠して います（中の 教材も 見えません）
+                </p>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+      <div className="mt-3 flex flex-wrap gap-3">
+        <button
+          type="button"
+          disabled={saving}
+          onClick={() =>
+            onSave(
+              [...hiddenStages].filter((id) => knownStages.has(id)),
+              [...hiddenContents].filter((key) => knownContents.has(key)),
+            )
+          }
+          className="btn-game px-4 py-2 text-sm disabled:opacity-40"
+        >
+          保存
+        </button>
+        <SmallButton
+          disabled={saving}
+          onClick={() => {
+            setHiddenStages(new Set());
+            setHiddenContents(new Set());
+          }}
+        >
+          ぜんぶ 見せる に もどす
+        </SmallButton>
+      </div>
+    </div>
+  );
+}

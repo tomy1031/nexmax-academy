@@ -23,6 +23,11 @@ import { BrushUp, CheckBand, CheckButton, CheckMark, CheckNote } from "./check-p
  *
  * ## お手本は ここでは 出さない
  * 「模範解答は答え合わせの時だけでいいです」（同日の 指定）。
+ *
+ * ## 関門に しない 問い（`ai.gate: false`）でも この 部品を 使う
+ * 書けば 点の 自由記述（報告・会社・仕事）に、⭕✗と ブラッシュアップを **補助として**
+ * 足した もの（2026-10-08 の 指定・願い #586 の A）。見せかたは 同じで、帯だけ
+ * 「進む」話を しない（`CheckBand` の `gated`）。進みかたは `gatesOnAnswerCheck` が 決める。
  */
 
 /** 画面じたいの 文言の 読み辞書（教材の 辞書は UIの 文言まで 覆わない・規律2）。 */
@@ -169,6 +174,7 @@ export function SlackQuestion({
                 left={check.items.filter((one) => !one.ok).length}
                 aiNote={check.aiNote}
                 furigana={aiFurigana}
+                gated={question.ai.gate !== false}
               />
               <BrushUp text={check.polished} furigana={aiFurigana} />
             </>

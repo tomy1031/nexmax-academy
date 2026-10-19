@@ -1,0 +1,718 @@
+/**
+ * watch — 本番の 見張りの 中身（判定と 知らせの 文）。Cloudflare に 依らない 部分だけを
+ * ここに 置き、tests/watch_worker.test.ts が そのまま 読む。入口は src/index.js。
+ *
+ * **なぜ 要るか。** 本番の 異常（Error 1102・5xx・画面の エラー・教材の 消えかけ）は
+ * これまで 学習者や 先生の 申告で はじめて 分かって いた。ここが 10分ごと
+ * （授業の 時間は 5分ごと）に 外から 見て、**続いて いれば** 知らせる。
+ *
+ * 守る こと:
+ *   - **1回の つまずきでは 知らせない。** その 回の 中で 2回 失敗するか、
+ *     前の 回に 続いて 失敗した ときだけ。教材の 警告と DB の 不通は 2回 続いたら。
+ *   - **鳴らしっぱなしに しない。** 新しい 異常で 1回、続いて いれば 2時間ごとに 1回、
+ *     直ったら 1回。最初の 1回は「見張りを はじめました」（知らせ先の 試しを 兼ねる）。
+ *   - **KV に 書かない。** 状態は Durable Object（SQLite・無料枠）に 1件だけ。
+ *     見に 行く ページは 作りおき（force-static）・門番の 転送・作りおき しない API だけ
+ *     ——どれも 作り直しを 起こさないので、本番の KV の 書き込み枠を 1件も 使わない。
+ */
+
+/** 見に 行く ところ。ログインは しない（鍵を 持たない）。 */
+export const PROBES = [
+  // 全員が 最初に 開く 画面。作りおき（force-static）なので Next の サーバは 起きない
+  { id: "title", label: "タイトル画面", path: "/", ok: [200] },
+  // 門番（src/middleware.ts）を 通る 道。ログインなしは タイトルへ 307 で 返る のが 正常
+  { id: "gate", label: "まなびマップ（ログイン前の転送）", path: "/map", ok: [200, 307, 308] },
+  // Next の サーバ本体と DB を 通る 道。warnings が 空なら 教材も 健康
+  { id: "health", label: "教材の自動チェック", path: "/api/health/content", ok: [200] },
+];
+
+/** 1回の 見張りで 1つの ページを 試す 回数と 間（その 回の 中で「続いたか」を 見る）。 */
+export const ATTEMPTS = 3;
+export const RETRY_WAIT_MS = 20_000;
+export const TIMEOUT_MS = 15_000;
+/** 前の 回の 失敗を「続いた」と 数える 長さ（10分 間隔 ＋ ゆとり）。 */
+export const CARRY_MS = 25 * 60_000;
+/** 続いて いる 異常を もう一度 知らせる 間。夜（22〜7時 ICT）は 念押し しない。 */
+export const REMIND_MS = 2 * 60 * 60_000;
+/**
+ * 「直りました」と 言う までに 正常が 続く 長さ。1回 通った だけで 閉じると、
+ * 時々だけ 落ちる 異常（3割だけ 1102 など）で「異常あり」と「直りました」が 交互に 届く。
+ */
+export const RECOVER_QUIET_MS = 60 * 60_000;
+/**
+ * 画面の エラーを 数える 幅と、知らせる 数。端末ごとに 同じ エラーは 30分に 1回まで
+ * なので、3件は「3人」か「1人が ちがう 画面で 3回」——どちらも 見る 価値が ある。
+ */
+export const CLIENT_ERROR_MINUTES = 15;
+export const CLIENT_ERROR_THRESHOLD = 3;
+/**
+ * 授業前の 本番デプロイの 起こし役（workers/deploy-kicker）が GitHub に 起こして もらえるか を 見る 間。
+ * 起こし役の 状態ページは 開く たびに GitHub へ 試しの 起こしを 1回 投げる（ランは 作られない）ので、
+ * 10分ごとには 見ない。正常なら 1日 1回（カンボジア時間の 朝 9時を 過ぎた 最初の 回。
+ * 授業の 前日にも 当日の 朝にも 当たる）、1回 断られたら 次の 回に もう一度、知らせた あとは 1時間ごと。
+ * 2026-10-16 は 鍵に Actions の 書き込み権限が 無く（403）、授業の 当日まで だれも 気づかなかった。
+ */
+export const KICKER_CHECK_HOUR_ICT = 9;
+export const KICKER_RECHECK_MS = 60 * 60_000;
+/** 1回 断られた あと、続いたかを 見に 行く までの 間（次の 10分ごとの 回に 当たる）。 */
+export const KICKER_CONFIRM_MS = 5 * 60_000;
+
+/** 応答が 正常か を 見分ける。正常なら null、だめなら 短い 印。 */
+export function classifyResponse(probe, status, bodyText = "") {
+  if (probe.ok.includes(status)) return null;
+  if (status >= 500) {
+    if (/\b1102\b|exceeded resource limits|exceeded cpu/i.test(bodyText)) return "1102";
+    if (/\b1101\b|threw (a javascript )?exception/i.test(bodyText)) return "1101";
+  }
+  return String(status);
+}
+
+/** 印を 人の ことばに する。 */
+export function describeCode(code) {
+  switch (code) {
+    case "1102":
+      return "Error 1102（Worker の上限を超えた）";
+    case "1101":
+      return "Error 1101（Worker が例外で止まった）";
+    case "timeout":
+      return `${TIMEOUT_MS / 1000}秒待っても返事がない`;
+    case "network":
+      return "つながらない";
+    case "bad-json":
+      return "返事の形がおかしい（JSON ではない）";
+    default:
+      return `HTTP ${code}`;
+  }
+}
+
+const sleepDefault = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+async function fetchWithTimeout(fetchImpl, url, init) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
+  try {
+    return await fetchImpl(url, { ...init, signal: controller.signal });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+/**
+ * 1つの ページを 最大 ATTEMPTS 回 試す（成功したら そこで やめる）。
+ * 返すのは 失敗の 数・最後まで だめなら その 印（code）・途中の 失敗の 印（lastFailCode）・
+ * 健康しらべの 中身（取れたとき）。
+ */
+export async function runProbe(probe, { baseUrl, fetchImpl, sleep = sleepDefault }) {
+  let failures = 0;
+  let lastFailCode = null;
+  for (let attempt = 0; attempt < ATTEMPTS; attempt++) {
+    if (attempt > 0) await sleep(RETRY_WAIT_MS);
+    let code = null;
+    let body = null;
+    try {
+      const res = await fetchWithTimeout(fetchImpl, `${baseUrl}${probe.path}`, {
+        redirect: "manual",
+        headers: { "User-Agent": "nexmax-watch", "Cache-Control": "no-cache" },
+      });
+      // 本文は「だめな とき」と 健康しらべ だけ 読む（CPU を 使わない）
+      if (probe.ok.includes(res.status) && probe.id !== "health") {
+        await res.body?.cancel();
+      } else {
+        const text = await res.text();
+        code = classifyResponse(probe, res.status, text);
+        if (!code) {
+          try {
+            body = JSON.parse(text);
+          } catch {
+            code = "bad-json";
+          }
+        }
+      }
+    } catch (error) {
+      // サービスバインディング越しでは 1102 は 画面では なく 例外で 返る
+      const text = String(error?.message ?? "");
+      code =
+        error && error.name === "AbortError"
+          ? "timeout"
+          : /exceeded|resource limits|cpu time/i.test(text)
+            ? "1102"
+            : "network";
+    }
+    if (!code) {
+      return { id: probe.id, failures, attempts: attempt + 1, code: null, lastFailCode, body };
+    }
+    failures++;
+    lastFailCode = code;
+  }
+  return {
+    id: probe.id,
+    failures,
+    attempts: ATTEMPTS,
+    code: lastFailCode,
+    lastFailCode,
+    body: null,
+  };
+}
+
+/** 画面の エラーの 数を DB から 読む（鍵が 無ければ 見ない）。 */
+export async function readClientErrors(env, fetchImpl) {
+  if (!env.SUPABASE_URL || !env.SUPABASE_ANON_KEY) return { skipped: true };
+  try {
+    const res = await fetchWithTimeout(
+      fetchImpl,
+      `${env.SUPABASE_URL.replace(/\/+$/, "")}/rest/v1/rpc/client_error_counts`,
+      {
+        method: "POST",
+        headers: {
+          apikey: env.SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${env.SUPABASE_ANON_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ p_minutes: CLIENT_ERROR_MINUTES }),
+      },
+    );
+    if (!res.ok) return { failed: `HTTP ${res.status}` };
+    const rows = await res.json();
+    return { rows: Array.isArray(rows) ? rows : [] };
+  } catch (error) {
+    return { failed: error && error.name === "AbortError" ? "timeout" : "network" };
+  }
+}
+
+/** 日付と 時を カンボジア時間（UTC+7）で。 */
+function ictDay(now) {
+  return new Date(now + 7 * 60 * 60_000).toISOString().slice(0, 10);
+}
+function ictHour(now) {
+  return new Date(now + 7 * 60 * 60_000).getUTCHours();
+}
+
+/**
+ * この 回に 起こし役の 鍵を 見に 行くか。last は 前に 見た ときの 結果（状態の kicker）、
+ * isOpen は 知らせた 異常が 開いて いるか。
+ */
+export function kickerDue(last, isOpen, now) {
+  // 一度も 見て いない（出した 直後）。つながって いるかを すぐ 確かめる
+  if (typeof last?.at !== "number") return true;
+  const since = now - last.at;
+  // 知らせた あとは 1時間ごと（直ったら「直りました」を 言う ため）
+  if (isOpen) return since >= KICKER_RECHECK_MS;
+  // 1回 断られた。次の 回に もう一度（2回 続いたら 知らせる）
+  if (last.ok === false) return since >= KICKER_CONFIRM_MS;
+  // 測れなかった（状態ページが 答えない）。1時間 おいて もう一度
+  if (last.ok !== true) return since >= KICKER_RECHECK_MS;
+  return ictDay(now) !== ictDay(last.at) && ictHour(now) >= KICKER_CHECK_HOUR_ICT;
+}
+
+/**
+ * 起こし役の 状態ページの `canDispatch` を 読む。ok が false なら、授業前に 時計が 起きても
+ * GitHub に 断られる。status は GitHub の 答え（401・403・404。鍵が 無ければ null）。
+ */
+export async function readKicker(url, fetchImpl) {
+  try {
+    const res = await fetchWithTimeout(fetchImpl, url, {
+      headers: { "User-Agent": "nexmax-watch", "Cache-Control": "no-cache" },
+    });
+    if (!res.ok) return { failed: `HTTP ${res.status}` };
+    let data;
+    try {
+      data = await res.json();
+    } catch {
+      return { failed: "bad-json" };
+    }
+    const can = data?.canDispatch;
+    if (!can || typeof can.ok !== "boolean") return { failed: "bad-json" };
+    return { ok: can.ok, status: typeof can.status === "number" ? can.status : null };
+  } catch (error) {
+    return { failed: error && error.name === "AbortError" ? "timeout" : "network" };
+  }
+}
+
+/** GitHub に 断られた 番号を、何を 直せば よいかの 文に する（起こし役の README と 同じ 中身）。 */
+export function describeKickerRefusal(status) {
+  switch (status) {
+    case null:
+      return "アクセストークンが Cloudflare に入っていない（wrangler secret put GITHUB_TOKEN）";
+    case 401:
+      return "アクセストークンが無効（期限切れ・削除・入れ間違い）。作り直して入れ直す";
+    case 403:
+      return "アクセストークンに Actions の書き込み権限がない。GitHub のトークンの編集画面で Actions を Read and write にする";
+    case 404:
+      return "アクセストークンから nexmax-academy が見えない。トークンの Repository access に足す";
+    default:
+      return `GitHub が HTTP ${status} で断った`;
+  }
+}
+
+/**
+ * 一時的に 黙らせる 警告（var `MUTE_WARNINGS`・カンマ区切りの 部分一致）。
+ * **直しが 決まって いる 既知の 誤報だけ**に 使う。deploy の とき `--var` で 渡し、
+ * wrangler.jsonc には 書かない——次の ふつうの deploy で 自然に 外れる ように。
+ * 2026-10-11: 健康しらべが quest を 数えず 誤報を 出して いた（#598 で 直し中）ため。
+ */
+export function parseMutes(value) {
+  return String(value ?? "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
+/** 健康しらべの 警告を 1つの 印に する（同じ 警告が 続いて いるかを 見る ため）。 */
+function warningsKey(warnings) {
+  return warnings.slice().sort().join("\n").slice(0, 500);
+}
+
+/**
+ * 画面の エラーの ページの 道を 見せて よい 形に する。道は **だれでも 書きこめる**
+ * （公開の anon 鍵で 入る）ので、知らせの 文に そのまま 混ぜない。
+ */
+export function safePath(path) {
+  return String(path ?? "?")
+    .replace(/[^\w/.~%<>@:+-]/g, "?")
+    .slice(0, 60);
+}
+
+/**
+ * その 回の 結果から「異常」を 作る。
+ *   confirmed … 知らせて よい（続いて いる）
+ *   suspect   … まだ 1回だけ。新しくは 知らせないが、開いて いる 異常は 閉じない
+ *   hold      … 測れなかった（健康しらべ・DB が 落ちた）。前の 回の 異常を そのまま 残す
+ *               ——測れない ことを「直った」と 取り違えない ため
+ *   keep      … この 回は 見て いない（起こし役の 鍵は 1日 1回だけ 見る）。開いて いる 異常を
+ *               何も 変えずに 残す——見て いない 回を 正常と 数えると、1時間後に うその「直りました」が 出る
+ * 返す recentFail・pending は 次の 回に 引き継ぐ もの。
+ *
+ * @param {any} prev
+ * @param {any[]} probeResults
+ * @param {any} clientErrors
+ * @param {number} now
+ * @param {{ mutes?: string[], kicker?: any }} [opts]
+ *   kicker … readKicker の 結果。見て いない 回は 無し か { skipped: true }
+ */
+export function judge(prev, probeResults, clientErrors, now, { mutes = [], kicker } = {}) {
+  const findings = [];
+  const recentFail = {};
+  const pending = {};
+  const lastFail = prev?.recentFail ?? {};
+  const lastPending = prev?.pending ?? {};
+  const lastOpen = prev?.open ?? {};
+  const hold = (key) => {
+    if (lastOpen[key]) findings.push({ key, level: "hold", text: lastOpen[key].text });
+  };
+
+  for (const r of probeResults) {
+    const probe = PROBES.find((p) => p.id === r.id);
+    if (!probe) continue;
+
+    // 健康しらべの 警告（教材が 隠れる・404 に なる）。2回 続いたら 知らせる
+    if (r.id === "health") {
+      const warnings = (Array.isArray(r.body?.warnings) ? r.body.warnings : []).filter(
+        (w) => !mutes.some((m) => String(w).includes(m)),
+      );
+      if (r.code) {
+        // 測れなかった。警告の 続きぐあいも 異常も 前の まま
+        if (lastPending.health) pending.health = lastPending.health;
+        hold("content");
+      } else if (warnings.length > 0) {
+        const key = warningsKey(warnings);
+        pending.health = key;
+        findings.push({
+          key: "content",
+          level: lastPending.health === key ? "confirmed" : "suspect",
+          text: `教材の自動チェックで警告${warnings.length}件: ${String(warnings[0]).slice(0, 160)}`,
+        });
+      }
+    }
+
+    if (r.failures === 0) continue;
+    recentFail[r.id] = now;
+    // 続いた ＝ この 回で 2回 失敗した か、前の 回に 続いて 失敗した。
+    // 後者が 無いと「3割だけ 1102」の ような 間欠的な 異常を 拾えない（毎回 2回目で 通る）
+    const carried = typeof lastFail[r.id] === "number" && now - lastFail[r.id] <= CARRY_MS;
+    const level = r.failures >= 2 || carried ? "confirmed" : "suspect";
+    const tail = r.code ? "" : "・いまは通る";
+    findings.push({
+      key: `page:${r.id}`,
+      level,
+      text: `${probe.label}（${probe.path}）: ${describeCode(r.lastFailCode)}（${r.attempts}回中${r.failures}回失敗${tail}）`,
+    });
+  }
+
+  if (clientErrors && !clientErrors.skipped) {
+    if (clientErrors.failed) {
+      pending.db = true;
+      findings.push({
+        key: "db",
+        level: lastPending.db ? "confirmed" : "suspect",
+        text: `データベース（Supabase）に届かない: ${clientErrors.failed}`,
+      });
+      hold("client-errors");
+    } else {
+      const rows = clientErrors.rows ?? [];
+      const total = rows.reduce((sum, row) => sum + (Number(row.n) || 0), 0);
+      if (total >= CLIENT_ERROR_THRESHOLD) {
+        const where = rows
+          .slice(0, 3)
+          .map(
+            (row) =>
+              `${safePath(row.path)} ${Number(row.n) || 0}件${row.kind === "stale" ? "（部品の読み込み）" : ""}`,
+          )
+          .join("・");
+        findings.push({
+          key: "client-errors",
+          level: "confirmed",
+          text: `ブラウザのエラーが${CLIENT_ERROR_MINUTES}分で${total}件（${where}）`,
+        });
+      }
+    }
+  }
+
+  // 授業前の 本番デプロイの 起こし役。GitHub に 2回 続けて 断られたら 知らせる
+  if (!kicker || kicker.skipped) {
+    if (lastPending.kicker) pending.kicker = lastPending.kicker;
+    if (lastOpen.kicker)
+      findings.push({ key: "kicker", level: "keep", text: lastOpen.kicker.text });
+  } else if (kicker.failed) {
+    if (lastPending.kicker) pending.kicker = lastPending.kicker;
+    hold("kicker");
+  } else if (!kicker.ok) {
+    pending.kicker = true;
+    findings.push({
+      key: "kicker",
+      level: lastPending.kicker ? "confirmed" : "suspect",
+      text: `授業前の自動反映が GitHub に断られる（${kicker.status === null ? "トークンなし" : `HTTP ${kicker.status}`}）: ${describeKickerRefusal(kicker.status)}`,
+    });
+  }
+
+  return { findings, recentFail, pending };
+}
+
+/** 時刻を カンボジア時間（UTC+7・夏時間 なし）で 短く。 */
+export function ictLabel(now) {
+  const d = new Date(now + 7 * 60 * 60_000).toISOString();
+  return `${d.slice(5, 10).replace("-", "/")} ${d.slice(11, 16)} ICT`;
+}
+
+/** 夜（22〜7時 ICT）か。念押しだけ 止める（新しい 異常と 直った 知らせは 送る）。 */
+export function isQuietHour(now) {
+  const hour = new Date(now + 7 * 60 * 60_000).getUTCHours();
+  return hour >= 22 || hour < 7;
+}
+
+/**
+ * 前の 状態と その 回の 異常から、知らせる 文と 次の 状態を 決める。
+ *
+ *   開く   … confirmed が 新しく 出た とき（🆕 で 1通）
+ *   念押し … 開いた まま 2時間 たった とき（夜は 送らない）
+ *   閉じる … **30分 続けて** 何も 出なかった とき（✅ で 1通）。その 間に また 出たら
+ *            黙って 開いた まま に 戻す（行き来で 鳴らさない）
+ *
+ * @param {any} prev
+ * @param {any} judged
+ * @param {number} now
+ * @param {string} prodUrl
+ * @param {{ mutes?: string[] }} [opts]
+ */
+export function decide(prev, judged, now, prodUrl, { mutes = [] } = {}) {
+  const open = {};
+  const fresh = [];
+  const reminded = [];
+  const recovered = [];
+
+  for (const [key, was] of Object.entries(prev?.open ?? {})) open[key] = { ...was };
+
+  const seen = new Set();
+  for (const f of judged.findings) {
+    seen.add(f.key);
+    const was = open[f.key];
+    if (f.level === "confirmed") {
+      if (!was) {
+        open[f.key] = { since: now, notifiedAt: now, text: f.text, quietSince: null };
+        fresh.push(f.key);
+      } else {
+        const remind = now - was.notifiedAt >= REMIND_MS && !isQuietHour(now);
+        open[f.key] = {
+          ...was,
+          text: f.text,
+          quietSince: null,
+          notifiedAt: remind ? now : was.notifiedAt,
+        };
+        if (remind) reminded.push(f.key);
+      }
+    } else if (f.level === "keep") {
+      // 見て いない 回。正常が 続いた 時間（quietSince）も そのまま——閉じるかは 次に 見た 回で 決める
+      if (was) open[f.key] = { ...was };
+    } else if (was) {
+      // ゆれて いる／測れない。閉じも 鳴らしも しない
+      open[f.key] = { ...was, text: f.level === "hold" ? was.text : f.text, quietSince: null };
+    }
+  }
+  for (const [key, was] of Object.entries(open)) {
+    if (seen.has(key)) continue;
+    const quietSince = typeof was.quietSince === "number" ? was.quietSince : now;
+    if (now - quietSince >= RECOVER_QUIET_MS) {
+      delete open[key];
+      recovered.push({ key, text: was.text, since: was.since, until: quietSince });
+    } else {
+      open[key] = { ...was, quietSince };
+    }
+  }
+
+  const time = ictLabel(now);
+  const lines = (keys, mark) => keys.map((key) => `${mark} ${open[key].text}`);
+  const messages = [];
+
+  if (!prev?.startedAt) {
+    const openKeys = Object.keys(open);
+    messages.push({
+      kind: "start",
+      title: "本番サイトの自動チェックを始めました",
+      text: [
+        `👀 本番サイトの自動チェックを始めました（${time}）`,
+        "10分ごと（授業がある火・水・金の17:05〜18:55は5分ごと）にチェックします。",
+        "知らせるのは、異常が続いたとき・続いている異常の2時間ごとの再通知（夜は送らない）・直ったときだけです。",
+        openKeys.length === 0
+          ? "✅ いまはすべて正常です。"
+          : `いま続いている異常:\n${lines(openKeys, "・").join("\n")}`,
+        ...(mutes.length > 0
+          ? [`（修正待ちの既知の誤報は知らせません: ${mutes.join("・")}）`]
+          : []),
+        prodUrl,
+      ].join("\n"),
+    });
+  } else if (fresh.length > 0 || reminded.length > 0) {
+    const others = Object.keys(open).filter((k) => !fresh.includes(k) && !reminded.includes(k));
+    messages.push({
+      kind: "alert",
+      title: fresh.length > 0 ? "本番サイトに異常があります" : "本番サイトの異常が続いています",
+      text: [
+        `${fresh.length > 0 ? "🚨 本番サイトに異常があります" : "⏰ 本番サイトの異常が続いています"}（${time}）`,
+        ...lines(fresh, "🆕"),
+        ...lines(reminded, "・"),
+        ...lines(others, "・"),
+        `確認: ${prodUrl}/admin/logs`,
+      ].join("\n"),
+    });
+  }
+  if (prev?.startedAt && recovered.length > 0) {
+    const stillOpen = Object.keys(open).length;
+    messages.push({
+      kind: "recovered",
+      title: "本番サイトの異常が直りました",
+      text: [
+        `✅ 直りました（${time}・${RECOVER_QUIET_MS / 60_000}分正常が続いた）`,
+        ...recovered.map(
+          (r) => `・${r.text}（${Math.max(1, Math.round((r.until - r.since) / 60_000))}分続いた）`,
+        ),
+        stillOpen > 0 ? `まだ続いている異常が${stillOpen}件あります。` : "いまはすべて正常です。",
+      ].join("\n"),
+    });
+  }
+
+  const next = {
+    startedAt: prev?.startedAt ?? now,
+    lastRunAt: now,
+    open,
+    recentFail: judged.recentFail,
+    pending: judged.pending,
+  };
+  return { messages, next };
+}
+
+/**
+ * Slack の mrkdwn で 意味を 持つ 3文字を 消す。知らせの 文には だれでも 書きこめる
+ * 部分（画面の エラーの 道）が 混ざるので、`<!channel>` や `<https://…|…>` を 効かせない。
+ */
+export function escapeSlack(text) {
+  return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+/**
+ * Telegram の 送り先（chat_id）を 探す。鍵（TELEGRAM_BOT_TOKEN）を 入れて、
+ * ボットに 1通 送って もらえば 見つかる（グループに 入れた ときは その グループ）。
+ * **いちばん 古い 1件**を とる——ボットを 作った 直後に 送るのは 作った 本人だから。
+ * 見つけたら 状態に 覚えて、もう 探さない（TELEGRAM_CHAT_ID が あれば そちらが 勝つ）。
+ *
+ * @param {Record<string, string | undefined>} env
+ * @param {(url: string, init: RequestInit) => Promise<Response>} fetchImpl
+ * @param {(note: string) => void} [onNote]
+ * @returns {Promise<string | null>}
+ */
+export async function findTelegramChat(env, fetchImpl, onNote = () => {}) {
+  // 見つからない 理由を 1行 残す（鍵の 中身は 出さない）。状態の URL の last.telegram に 出る
+  try {
+    const res = await fetchWithTimeout(
+      fetchImpl,
+      `https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/getUpdates`,
+      { method: "GET" },
+    );
+    if (!res.ok) {
+      const why =
+        res.status === 401 || res.status === 404
+          ? "鍵が違う（BotFather の鍵をまるごと入れ直す）"
+          : res.status === 409
+            ? "ボットに webhook が設定されている"
+            : "Telegram が答えない";
+      onNote(`getUpdates HTTP ${res.status}: ${why}`);
+      return null;
+    }
+    const data = await res.json();
+    const updates = Array.isArray(data?.result) ? data.result : [];
+    for (const update of updates) {
+      const chat = update?.message?.chat ?? update?.my_chat_member?.chat;
+      if (chat && (typeof chat.id === "number" || typeof chat.id === "string")) {
+        onNote("送り先を見つけた");
+        return String(chat.id);
+      }
+    }
+    onNote(
+      `更新${updates.length}件: まだボットに1通も届いていない（24時間で消えるので、/start をもう一度）`,
+    );
+    return null;
+  } catch {
+    onNote("Telegram につながらない");
+    return null;
+  }
+}
+
+/**
+ * 知らせる。どこへ 送るかは 入って いる 鍵で 決まる（いくつ 入って いても 全部へ）。
+ *   Telegram … TELEGRAM_BOT_TOKEN（送り先は findTelegramChat が 見つける）。**2026-10-11 に tomy さんが 選んだ 本命**
+ *   Slack    … SLACK_WEBHOOK_URL（Incoming Webhook）
+ *   メール   … RESEND_API_KEY ＋ ALERT_EMAIL_TO（Resend。無料枠 1日100通）
+ * 返すのは { configured, sent }。configured が 0 なら ログに 出すだけ。
+ * Telegram は 飾りの ない 文で 送る（parse_mode を 付けない）ので、文に 何が 混ざっても 書式に ならない。
+ *
+ * @param {Record<string, string | undefined>} env
+ * @param {{ kind: string, title: string, text: string }} message
+ * @param {(url: string, init: RequestInit) => Promise<Response>} fetchImpl
+ * @param {{ telegramChatId?: string | null }} [opts]
+ */
+export async function notify(env, message, fetchImpl, { telegramChatId = null } = {}) {
+  const jobs = [];
+  if (env.TELEGRAM_BOT_TOKEN) {
+    // 送り先が まだ 分からない あいだは「送れなかった」に 数える（次の 回に 送り直す）
+    jobs.push(
+      telegramChatId
+        ? fetchImpl(`https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              chat_id: telegramChatId,
+              text: message.text,
+              disable_web_page_preview: true,
+            }),
+          })
+        : Promise.reject(new Error("Telegram の送り先がまだ分からない")),
+    );
+  }
+  if (env.SLACK_WEBHOOK_URL) {
+    jobs.push(
+      fetchImpl(env.SLACK_WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: escapeSlack(message.text) }),
+      }),
+    );
+  }
+  if (env.RESEND_API_KEY && env.ALERT_EMAIL_TO) {
+    jobs.push(
+      fetchImpl("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${env.RESEND_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          from: env.ALERT_EMAIL_FROM || "NexmaxAcademy 自動チェック <onboarding@resend.dev>",
+          to: env.ALERT_EMAIL_TO.split(",")
+            .map((s) => s.trim())
+            .filter(Boolean),
+          subject: `[NexmaxAcademy] ${message.title}`,
+          text: message.text,
+        }),
+      }),
+    );
+  }
+  const results = await Promise.allSettled(jobs);
+  const sent = results.filter((r) => r.status === "fulfilled" && r.value.ok).length;
+  return { configured: jobs.length, sent };
+}
+
+/**
+ * 1回の 見張り。Cloudflare の ものは 全部 外から 渡す（テストで 差しかえる ため）。
+ *   deps.fetch / deps.sleep / deps.now / deps.loadState / deps.saveState / deps.log
+ *   deps.probeFetch … 本番を 見る ときだけ 使う fetch（無ければ deps.fetch）。
+ *     **同じ アカウントの Worker は workers.dev の 公開 URL では 呼べない**（2026-10-11 に
+ *     3か所とも 404 が 返った）ので、本番の Worker へは サービスバインディング（env.PROD）で 行く
+ *   deps.kickerFetch … 起こし役（env.KICKER）へ 行く fetch。無ければ 鍵は 見ない。同じ 理由で サービスバインディング
+ */
+export async function runWatch(env, deps) {
+  const baseUrl = (env.PROD_URL || "").replace(/\/+$/, "");
+  const prev = await deps.loadState();
+  const now = deps.now();
+  const checkKicker =
+    Boolean(deps.kickerFetch && env.KICKER_URL) &&
+    kickerDue(prev?.kicker, Boolean(prev?.open?.kicker), now);
+
+  const [probeResults, clientErrors, kicker] = await Promise.all([
+    Promise.all(
+      PROBES.map((probe) =>
+        runProbe(probe, { baseUrl, fetchImpl: deps.probeFetch ?? deps.fetch, sleep: deps.sleep }),
+      ),
+    ),
+    readClientErrors(env, deps.fetch),
+    checkKicker ? readKicker(env.KICKER_URL, deps.kickerFetch) : { skipped: true },
+  ]);
+
+  const mutes = parseMutes(env.MUTE_WARNINGS);
+  const judged = judge(prev, probeResults, clientErrors, now, { mutes, kicker });
+  const { messages, next } = decide(prev, judged, now, baseUrl, { mutes });
+
+  // Telegram の 送り先。入れて あれば それ、覚えて いれば それ、無ければ 探す
+  let telegramChatId = env.TELEGRAM_CHAT_ID || prev?.telegramChatId || null;
+  let telegramNote = env.TELEGRAM_BOT_TOKEN ? (telegramChatId ? "送り先あり" : null) : "鍵なし";
+  if (env.TELEGRAM_BOT_TOKEN && !telegramChatId) {
+    telegramChatId = await findTelegramChat(env, deps.fetch, (note) => (telegramNote = note));
+  }
+
+  // 通知は おまけ。状態（管理画面のエラーログに 出る）は 届いたかに 関係なく いつも 正しく 残す。
+  // 通知先が あるのに 届かなかった 通知だけ、次の回に 送り直す（3通まで）
+  const queue = [...(Array.isArray(prev?.retry) ? prev.retry : []), ...messages].slice(-3);
+  const retry = [];
+  let delivered = true;
+  for (const message of queue) {
+    const { configured, sent } = await notify(env, message, deps.fetch, { telegramChatId });
+    deps.log(`[${message.kind}] ${message.text}${configured === 0 ? "（通知先が未設定）" : ""}`);
+    if (configured > 0 && sent === 0) {
+      delivered = false;
+      retry.push(message);
+    }
+  }
+
+  await deps.saveState({
+    ...next,
+    retry,
+    telegramChatId: env.TELEGRAM_CHAT_ID ? (prev?.telegramChatId ?? null) : telegramChatId,
+    // 起こし役を 最後に 見た とき（次に いつ 見るかを kickerDue が ここから 決める）
+    kicker: kicker.skipped
+      ? (prev?.kicker ?? null)
+      : {
+          at: now,
+          ok: kicker.failed ? null : kicker.ok,
+          status: kicker.status ?? null,
+          failed: kicker.failed ?? null,
+        },
+    last: {
+      at: now,
+      probes: probeResults.map((r) => ({ id: r.id, code: r.code, failures: r.failures })),
+      clientErrors: clientErrors.skipped
+        ? "見ていない（SUPABASE_URL がない）"
+        : (clientErrors.failed ??
+          (clientErrors.rows ?? []).reduce((s, r) => s + (Number(r.n) || 0), 0)),
+      delivered,
+      telegram: telegramNote,
+    },
+  });
+  return { messages, delivered, findings: judged.findings };
+}

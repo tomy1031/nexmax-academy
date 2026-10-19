@@ -80,8 +80,8 @@
       "title": "報告②：担当の 機能の 進捗",
       "where": "content/articles/asakai_team.json 話す ことは 4つです カード2",
       "priority": "A",
-      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the whole payment front-end feature is twenty percent done, and you say that number. Close view of a large monitor on a desk showing a clean progress screen: a label panel at the top carrying its Japanese label, and below it ONE thick horizontal progress bar, filled with sky blue for only the first fifth of its length and pale grey for the rest, with 20% printed large just after the filled part. the new engineer — a young Cambodian man in his early twenties with warm light-brown skin, short black hair with a neat side part, a friendly open face, wearing a light blue short-sleeved shirt, dark grey chinos and a lanyard with a blank white card sits beside the monitor and points at the filled part of the bar with one hand, with a small confident smile. Nothing else is written anywhere.",
-      "text": ["決済フロントエンド機能", "20%"],
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the payment front-end is twenty percent done, and you say that number. Close view of a large monitor on a desk showing a clean progress screen: a label panel at the top carrying its Japanese label, and below it ONE thick horizontal progress bar, filled with sky blue for only the first fifth of its length and pale grey for the rest, with 20% printed large just after the filled part. the new engineer — a young Cambodian man in his early twenties with warm light-brown skin, short black hair with a neat side part, a friendly open face, wearing a light blue short-sleeved shirt, dark grey chinos and a lanyard with a blank white card sits beside the monitor and points at the filled part of the bar with one hand, with a small confident smile. Nothing else is written anywhere.",
+      "text": ["決済フロントエンド", "20%"],
       "output": "Output: one square illustration, 1024x1024. Close view — the subject fills the frame edge to edge."
     },
     {

@@ -1,0 +1,64 @@
+{
+  "kind": "stage",
+  "id": "kuuki",
+  "order": 4,
+  "title": "空気を 読む",
+  "reading": "くうきを よむ",
+  "description": "日本の 会社で よく 聞く「空気を 読む」を 知ります。まず まんがで、どういう ことか 見ます。つぎに ゲームで、日本の 会社の いろいろな 場面で 動いて みます。",
+  "color": "coral",
+  "status": "published",
+  "area": {
+    "image": "/img/scenes/area_pagoda_lane.webp",
+    "note": "いしだたみの さかに、ごじゅうのとうが たつ まちです。"
+  },
+  "contents": [
+    {
+      "ref": "kuuki_manga",
+      "type": "manga"
+    },
+    {
+      "ref": "kuuki_yomi_game",
+      "type": "link",
+      "gates": true
+    }
+  ],
+  "wordStageIds": [],
+  "furigana": [
+    [
+      "空気",
+      "くうき"
+    ],
+    [
+      "読む",
+      "よむ"
+    ],
+    [
+      "日本",
+      "にほん"
+    ],
+    [
+      "会社",
+      "かいしゃ"
+    ],
+    [
+      "聞く",
+      "きく"
+    ],
+    [
+      "知ります",
+      "しります"
+    ],
+    [
+      "見ます",
+      "みます"
+    ],
+    [
+      "場面",
+      "ばめん"
+    ],
+    [
+      "動いて",
+      "うごいて"
+    ]
+  ]
+}

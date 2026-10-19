@@ -198,7 +198,7 @@ export async function deleteContent(id: string): Promise<DeleteResult> {
     if (reason === "gitContent") {
       return {
         ok: false,
-        message: "これは git の ファイルで つくった 教材です。スタジオからは けせません。",
+        message: "これは開発側で入れた教材です。管理画面からは消せません。",
       };
     }
     if (reason === "deleteFailed") {

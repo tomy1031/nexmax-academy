@@ -7,6 +7,7 @@ import type { Manga, MangaLine, MangaPanel } from "@/content/schema";
 import { NexMax } from "@/components/nexmax";
 import { RubyText } from "@/components/ruby-text";
 import { CelebrationBurst } from "@/components/quiz/celebration";
+import { closeOnOutsideClick } from "@/components/media/zoomable-image";
 import { buildFuriganaIndex, type FuriganaIndex } from "@/lib/text/furigana";
 import { readContentProgress, recordContentProgress } from "@/lib/progress/store";
 
@@ -25,11 +26,22 @@ import { readContentProgress, recordContentProgress } from "@/lib/progress/store
  * つまり `speechInImage` は「絵に焼くかどうか」だけを意味する。
  *
  * ## ページ絵（`size: "page"`）
- * 1枚の 絵が カラー漫画の 1ページ（縦長・3コマ前後）。縦長の わくで 出し、
+ * 1枚の 絵が カラー漫画の 1ページ（3コマ前後）。ふつうは 縦長（1024×1536）だが、
+ * 横長（1536×1024）の ページも ある ので、**わくは 絵の 縦横比に 合わせる**（2026-10-16）。
  * **タップで 大きく**する（スマホでは ふりがなまで 読むには 小さい。2026-09-25 の 指定）。
  *
  * 進捗はコマ単位。見たいちばん先のコマを しおり に残し、最後まで行ったら「よみおわり」。
+ * 最後のコマまで読んだまんがを また開いたら、1コマ目から始める（startPanel）。
  */
+
+/**
+ * 開いたときのコマ。しおり（前に見た いちばん先のコマ）から続ける。
+ * ただし しおりが最後のコマなら、読み終えたまんがなので 1コマ目に戻す
+ * （2026-10-13 の指定「最終ページにいった場合はリセットして、最初のページを初期ページに」）。
+ */
+export function startPanel(saved: unknown, count: number): number {
+  return typeof saved === "number" && saved >= 0 && saved < count - 1 ? saved : 0;
+}
 
 /** 話者チップの色。characters の並び順で配る（テーマのアクセント）。 */
 const SPEAKER_ACCENTS = [
@@ -90,11 +102,10 @@ export function MangaSlides({ manga, embedded }: { manga: Manga; embedded: boole
     [manga.pages],
   );
 
-  /** しおり。前に見た いちばん先のコマから始める。 */
-  const [index, setIndex] = useState(() => {
-    const saved = readContentProgress(manga.id)?.position?.panel;
-    return typeof saved === "number" && saved >= 0 && saved < slides.length ? saved : 0;
-  });
+  /** しおり。前に見た いちばん先のコマから始める（読み終えていたら 1コマ目から）。 */
+  const [index, setIndex] = useState(() =>
+    startPanel(readContentProgress(manga.id)?.position?.panel, slides.length),
+  );
   const [finished, setFinished] = useState(false);
   /**
    * いちばん先まで見たコマ。描画（点の色）にも使うので ref ではなく state で持つ
@@ -399,7 +410,7 @@ function PanelView({
  * 読みは 借りた 語が 運んで くる（`hydrateManga`）。
  */
 /**
- * カラー漫画の 1ページ（縦長）。タップで 大きく する。
+ * カラー漫画の 1ページ（縦長でも 横長でも、絵の 縦横比の まま 出す）。タップで 大きく する。
  *
  * 大きく した 画面は **2だんかい**: まず 画面の はばいっぱい → もう 1回 タップで 2ばい
  *（ふりがなまで 読める 大きさ）。はみ出した ぶんは スクロールで 見る。
@@ -407,6 +418,11 @@ function PanelView({
  * ネイティブの `<dialog>`（`showModal`）に する。うしろの 画面を 押せなく し、
  * フォーカスを 中に 閉じこめ、Esc で 閉じる——自前の `div` では うしろの「つぎ →」を
  * Tab で 押せて、ページが 変わって 閉じて いた（code-critic の 指摘）。
+ *
+ * **絵の 外側（黒い 地）を 押しても 閉じる**（2026-10-09 の 回答「B」＝拡大した 絵は
+ * アプリ全体で 外側クリックで もどる。`ZoomableImage` と 同じ `closeOnOutsideClick`）。
+ * 絵そのものを 押すと 「もっと おおきく」／「もとの おおきさ」の 切り替えに なる ので、
+ * 絵の 上では 閉じない（`target` が 絵に なる）。
  */
 function PageArt({ src }: { src: string }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -458,15 +474,23 @@ function PageArt({ src }: { src: string }) {
           setDouble(false);
           setOpen(true);
         }}
-        className="bg-panel-tint relative mx-auto block aspect-[2/3] max-h-[78vh] w-full cursor-zoom-in"
+        className="bg-panel-tint relative mx-auto block w-full cursor-zoom-in"
         aria-label="まんがの ページを おおきく する"
       >
+        {/*
+          わくの 形は 絵に 任せる（h-auto）。width/height は 読みこむ 前の 目安（縦長 2:3）で、
+          読みこんだ あとは 絵の 本当の 縦横比に なる。前は わくを 2:3 に 決めて いたので、
+          横長の ページ絵（空気を 読む の まんが・1536×1024）を 縦長に 引き伸ばして 作った
+          絵しか 置けなかった（2026-10-16「まんがが縦に引き伸ばされていました」）。
+          高すぎる ときは 画面の 高さで 頭打ちに し、object-contain で 左右を 余らせる。
+        */}
         <Image
           src={src}
           alt=""
-          fill
+          width={1024}
+          height={1536}
           sizes="(max-width: 768px) 100vw, 768px"
-          className="object-contain"
+          className="h-auto max-h-[78vh] w-full object-contain"
           unoptimized
         />
         <span className="bg-ink/70 absolute right-2 bottom-2 rounded-full px-3 py-1 text-xs font-black text-white">
@@ -478,6 +502,7 @@ function PageArt({ src }: { src: string }) {
         ref={dialogRef}
         aria-label="まんがの ページ"
         data-testid="manga-page-zoom"
+        onClick={(event) => closeOnOutsideClick(event, close)}
         onCancel={(event) => {
           // Esc。ブラウザに 閉じさせず、状態から 閉じる（フォーカスを 元へ 戻すため）
           event.preventDefault();

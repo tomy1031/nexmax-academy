@@ -386,8 +386,8 @@ function AddPanel({
         </div>
       ) : (
         <p className="text-ink-soft text-xs font-bold">
-          {meta.label}は まだ スタジオで 作れません。content/ の JSON で 作った ものから
-          えらんでください。
+          {meta.label}は、まだ管理画面で作れません。content/ の JSON
+          で作ったものから選んでください。
         </p>
       )}
 

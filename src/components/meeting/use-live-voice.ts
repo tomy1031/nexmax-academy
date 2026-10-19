@@ -594,7 +594,13 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
             config: {
               responseModalities: [Modality.AUDIO],
               systemInstruction: latest.systemInstruction,
-              inputAudioTranscription: {},
+              /*
+               * **学習者の 声は 日本語として 文字に する**（2026-10-14）。
+               * 言語を 書かないと 相手の サーバが 言語を 当てに いき、たどたどしい
+               * 日本語が 韓国語などの 字で 返って くる ことが あった。
+               * 下の `speechConfig.languageCode` は 相手の 声の ほうで、聞き取りには 効かない。
+               */
+              inputAudioTranscription: { languageCodes: ["ja-JP"] },
               outputAudioTranscription: {},
               /*
                * **区切りは こちらが 決める**（自動の 声の 検出を 切る）。
@@ -612,7 +618,8 @@ export function useLiveVoice(options: LiveVoiceOptions = {}): LiveVoice {
                * 声は**人物カードで決めたもの**を使う（characters の voice）。
                * 決めていないときは Live の既定に任せる——ここで別の声を勝手に
                * 当てると、まんがのヘンディさんと声が違う人になる。
-               * 言語を伝えるのは、日本語として聞き取らせるため。
+               * `languageCode` は 相手の 声の 言語。学習者の 声を 何語として 聞くかは
+               * 上の `inputAudioTranscription` で 決める。
                */
               speechConfig: {
                 languageCode: "ja-JP",

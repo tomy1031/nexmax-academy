@@ -131,12 +131,17 @@ export function ModelAnswer({ text, furigana }: { text: string; furigana: Furiga
 /**
  * その 問いの まとめの 帯。**はっきり 言う**（規律1）: OKか、いくつ 直すか。
  * OKの ときだけ「つぎへ すすめます」と 言う——進める 条件を 画面の ことばで 見せる。
+ *
+ * **関門に しない 問い**（`ai.gate: false`・願い #586 の A）では 進む 話を しない——
+ * もともと 進める ので、「次へ 進めます」は 意味が 無く、✗の ときに「進めない」と
+ * 読まれる。言うのは OKか、いくつ 直すか、直したら もう一度 見られる こと だけ。
  */
 export function CheckBand({
   ok,
   left,
   aiNote,
   furigana,
+  gated = true,
 }: {
   ok: boolean;
   /** 直す ところの 数（OKの ときは 0）。 */
@@ -144,6 +149,8 @@ export function CheckBand({
   /** AIに つながらなかった ときの 一言（空なら つながった）。 */
   aiNote: string;
   furigana: FuriganaIndex;
+  /** 関門か（既定 true）。false は 見せるだけの チェック。 */
+  gated?: boolean;
 }) {
   return (
     <div
@@ -153,10 +160,17 @@ export function CheckBand({
     >
       <p className="text-ink text-sm font-black">
         {ok ? (
-          <RubyText text="⭕ OKです。次の もんだいに 進めます" index={UI_FURIGANA} />
+          <RubyText
+            text={gated ? "⭕ OKです。次の もんだいに 進めます" : "⭕ OKです"}
+            index={UI_FURIGANA}
+          />
         ) : (
           <RubyText
-            text={`✗ なおす ところが ${left}こ あります。直して もう いちど チェック`}
+            text={
+              gated
+                ? `✗ なおす ところが ${left}こ あります。直して もう いちど チェック`
+                : `✗ なおす ところが ${left}こ あります。直して もう いちど チェック できます`
+            }
             index={UI_FURIGANA}
           />
         )}

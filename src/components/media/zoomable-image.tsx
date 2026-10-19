@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type MouseEvent, type RefObject } from "react";
 
 /**
  * 絵を「ひろげて」見る — 教材の 絵は どれも これで 包む
@@ -24,6 +24,14 @@ import { useCallback, useEffect, useRef, useState } from "react";
  *   ① 自前で `fixed inset-0` に 広げる（どの 端末でも 効く）
  *   ② そのうえで 本物の 全画面も 頼む（効く 端末では ブラウザの 枠まで 消える）
  * の順に 重ねる。②が 断られても ①が 残る。
+ *
+ * ## もどす 道は 3つ（どの 絵も 同じ）
+ * 「✕ もどす」・Esc・**絵の 外側を 押す**。外側を 押して もどるのは 2026-10-09 の 指定
+ *「写真を 拡大した 場合に、右上の「もどす」ボタンだけでなく、写真の 外側の 領域クリックでも
+ * 戻すと 同じ 挙動に」で 始まり、同日の 回答「B」で **アプリ全体**に 広げた
+ *（朝礼の 報告メモだけの 約束だった `closeOnBackdrop` は 外した）。
+ * 絵そのものを 押しても もどらない（拡大した 絵の 文字を 指で 探す ときに 閉じて しまう）。
+ * まんがの ページ絵（`manga-slides.tsx` の `PageArt`）も 同じ 作法で もどる。
  */
 export function ZoomableImage({
   children,
@@ -106,27 +114,72 @@ export function ZoomableImage({
       </button>
 
       {wide ? (
-        <div
-          ref={shellRef}
-          className="fixed inset-0 z-50 flex flex-col gap-2 bg-[#0b2138] p-2 sm:p-3"
-        >
-          {/*
-            中身は そのまま 入れ子に する。`[&_img]:…` で 中の 絵だけを
-            画面いっぱいに 伸ばす——包んで いる 側（記事・クイズ・スキット）が
-            それぞれ 別の 大きさの class を 付けて いる ので、ここで 上書きする。
-          */}
-          <div className="grid min-h-0 flex-1 place-items-center [&_img]:!h-auto [&_img]:!max-h-[92vh] [&_img]:!w-auto [&_img]:!max-w-full [&_img]:!object-contain">
-            {children}
-          </div>
-          <button
-            type="button"
-            onClick={collapse}
-            className="absolute top-3 right-3 rounded-full bg-black/45 px-3 py-1.5 text-xs font-black text-white"
-          >
-            ✕ もどす
-          </button>
-        </div>
+        <ZoomedView shellRef={shellRef} onClose={collapse}>
+          {children}
+        </ZoomedView>
       ) : null}
     </>
+  );
+}
+
+/**
+ * 「外側を 押したら もどす」の 手。**絵の 外側**（暗い 幕・絵を 真ん中に 置く 枠・
+ * `<dialog>` の 地）の `onClick` から 呼ぶ。`(event) => closeOnOutsideClick(event, onClose)` の
+ * 形で 渡す——`onClose` が ref を 読む ものでも、描く 最中には 触らない（React の lint）。
+ *
+ * 見分けは `event.target === event.currentTarget`——絵（子）を 押した click は
+ * `target` が 絵に なる ので、ここでは 閉じない。
+ *
+ * 閉じる click は **ここで 止める**（`stopPropagation`）。親の ポップアップ
+ *（`ModalShell` の 幕）まで 届くと、絵だけ 閉じるつもりが 報告メモごと 閉じて しまう。
+ * 絵を 押した click は 止めない（絵の 上の 操作を 邪魔しない）。
+ */
+export function closeOnOutsideClick(event: MouseEvent<HTMLElement>, onClose: () => void) {
+  if (event.target !== event.currentTarget) return;
+  event.stopPropagation();
+  onClose();
+}
+
+/**
+ * ひろげた 全画面の 中身。**フックを 持たない**（ふるまいは 呼ぶ側の `collapse` に 任せる）。
+ *
+ * **絵の 外側を 押すと `onClose` を 呼ぶ**（`closeOnOutsideClick`）。どの 絵も 同じ
+ *（2026-10-09 の 回答「B」＝アプリ全体）。「✕ もどす」は 自分の `onClick` だけで 動く。
+ */
+export function ZoomedView({
+  shellRef,
+  onClose,
+  children,
+}: {
+  shellRef?: RefObject<HTMLDivElement | null>;
+  onClose: () => void;
+  children: React.ReactNode;
+}) {
+  const closeFromBackdrop = (event: MouseEvent<HTMLElement>) => closeOnOutsideClick(event, onClose);
+  return (
+    <div
+      ref={shellRef}
+      onClick={closeFromBackdrop}
+      className="fixed inset-0 z-50 flex flex-col gap-2 bg-[#0b2138] p-2 sm:p-3"
+    >
+      {/*
+        中身は そのまま 入れ子に する。`[&_img]:…` で 中の 絵だけを
+        画面いっぱいに 伸ばす——包んで いる 側（記事・クイズ・スキット）が
+        それぞれ 別の 大きさの class を 付けて いる ので、ここで 上書きする。
+      */}
+      <div
+        onClick={closeFromBackdrop}
+        className="grid min-h-0 flex-1 place-items-center [&_img]:!h-auto [&_img]:!max-h-[92vh] [&_img]:!w-auto [&_img]:!max-w-full [&_img]:!object-contain"
+      >
+        {children}
+      </div>
+      <button
+        type="button"
+        onClick={onClose}
+        className="absolute top-3 right-3 rounded-full bg-black/45 px-3 py-1.5 text-xs font-black text-white"
+      >
+        ✕ もどす
+      </button>
+    </div>
   );
 }

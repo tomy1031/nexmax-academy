@@ -8,6 +8,7 @@ import { RubyText } from "@/components/ruby-text";
 import { CelebrationBurst } from "@/components/quiz/celebration";
 import { useIsAdmin } from "@/lib/admin-flag";
 import { useGatesUnlocked } from "@/lib/unlock-flag";
+import { useGroupVisibility, visibleFrame } from "@/lib/group-visibility";
 import { contentKindMeta } from "@/lib/content-kinds";
 import {
   getClearedStageIds,
@@ -85,8 +86,8 @@ export interface FrameStage {
 
 export function ContentFrame({
   stage,
-  items,
-  currentIndex,
+  items: allItems,
+  currentIndex: allIndex,
   tools,
   children,
 }: {
@@ -97,6 +98,16 @@ export function ContentFrame({
   tools?: ReactNode;
   children: ReactNode;
 }) {
+  /*
+   * **組ごとに 隠した 教材は 並びから 抜く**（願い #589）。関門・「つぎは」・クリアの
+   * 計算は ぜんぶ 抜いた あとの 並びで する——隠した 関門の 前で 止まらない ため。
+   * いま 開いて いる 教材だけは 隠して いても 残す（URL を 直接 開いた とき）。
+   */
+  const visibility = useGroupVisibility();
+  const { items, currentIndex } = useMemo(
+    () => visibleFrame(allItems, allIndex, stage.id, visibility),
+    [allItems, allIndex, stage.id, visibility],
+  );
   const [navOpen, setNavOpen] = useState(false);
   const [forced, setForced] = useState(false);
   /*

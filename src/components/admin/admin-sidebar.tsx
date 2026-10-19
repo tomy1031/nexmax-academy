@@ -24,7 +24,7 @@ interface Item {
   match?: string;
 }
 
-const GROUPS: readonly { title: string; items: readonly Item[] }[] = [
+export const GROUPS: readonly { title: string; items: readonly Item[] }[] = [
   {
     title: "つくる",
     items: [
@@ -43,7 +43,7 @@ const GROUPS: readonly { title: string; items: readonly Item[] }[] = [
   {
     title: "みる",
     items: [
-      { href: "/admin", icon: "📊", label: "ダッシュボード" },
+      { href: "/admin", icon: "📊", label: "性格診断の集計" },
       { href: "/admin/users", icon: "👥", label: "ユーザー", match: "/admin/users" },
       /*
        * 学習の きろく。ここに **ミーティングと テストの きろくを 畳んだ**
@@ -58,19 +58,34 @@ const GROUPS: readonly { title: string; items: readonly Item[] }[] = [
         label: "学習の きろく",
         match: "/admin/records",
       },
+      /*
+       * エラーログ（2026-10-11）。本番サイトの自動チェックの結果と、学習者のブラウザで
+       * 起きたエラー。連絡を受ける前に気づくため。
+       */
+      { href: "/admin/logs", icon: "🩺", label: "エラーログ", match: "/admin/logs" },
       { href: "/nexmax", icon: "🧑‍🎨", label: "ネクマックス16人" },
       { href: "/admin/ai", icon: "🤖", label: "AI設定", match: "/admin/ai" },
       /*
        * じゅんろの 鍵。教材の 不具合で 関門が 開かなく なって 授業が 止まった とき、
        * 先生が 全員ぶんを まとめて 外すための レバー（願い #333・#246）。
        */
-      { href: "/admin/lock", icon: "🔓", label: "じゅんろの 鍵", match: "/admin/lock" },
+      { href: "/admin/lock", icon: "🔓", label: "ロック解除", match: "/admin/lock" },
+      /*
+       * クラスの 設定。大学 × 期生 ごとに、AIの 時間（願い #586・設定の 無い 組は 使えない）と
+       * 表示する 教材（願い #589・設定の 無い 組は 全部 見える）を 決める。
+       */
+      { href: "/admin/ai-time", icon: "🏫", label: "クラスの 設定", match: "/admin/ai-time" },
     ],
   },
 ];
 
-function isActive(pathname: string, item: Item): boolean {
-  return item.match ? pathname.startsWith(item.match) : pathname === item.href;
+/**
+ * 接頭辞だけで比べると `/admin/ai-time`（クラスの 設定）が `/admin/ai`（AI設定）にも当たり、
+ * 2つが同時に光っていた。接頭辞の次が「/」のとき（子ページ）か、完全一致のときだけ当てる。
+ */
+export function isActive(pathname: string, item: Item): boolean {
+  if (!item.match) return pathname === item.href;
+  return pathname === item.match || pathname.startsWith(`${item.match}/`);
 }
 
 export function AdminSidebar() {

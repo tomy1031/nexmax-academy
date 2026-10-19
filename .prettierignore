@@ -32,3 +32,9 @@ public/pdfjs/
 # 中身は 旧アプリが 正（scripts/migrate_hourensou_tools.mjs が 写す）。
 public/tools/hourensou/app.js
 public/tools/hourensou/styles.css
+
+# 空気読みゲーム（別の リポジトリの ゲームを そのまま 写した もの。scripts/sync_kuuki_yomi.mjs）。
+# 整形すると ゲーム本体との 差分が 読めなくなり、写し直しの たびに 全行が 動く。
+# 中身は ゲームの リポジトリが 正。アプリ側で 足した nexmax-bridge.js だけは 整形する。
+public/tools/kuuki-yomi/js/
+public/tools/kuuki-yomi/css/

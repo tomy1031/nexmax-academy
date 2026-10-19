@@ -8,7 +8,7 @@
  */
 
 /** DB未設定のときに一覧の上に出す一言。 */
-export const DB_PREPARING_MESSAGE = "ほぞん・こうかいは じゅんびちゅう（DB設定後に使えます）";
+export const DB_PREPARING_MESSAGE = "保存・公開は準備中（DB設定後に使えます）";
 
 /** 直すべき1か所。where は日本語の場所名、message は理由。 */
 export interface SaveIssue {
@@ -66,7 +66,7 @@ const FIELD_LABELS: Record<string, string> = {
   answers: "こたえ",
   accept: "べつの 言い方",
   blanks: "空欄の こたえ",
-  bank: "語群",
+  bank: "選択肢",
   feelings: "気もち",
   answerFeeling: "気もちの こたえ",
   replyQ: "2つめの とい",
@@ -117,11 +117,11 @@ const LABELS_BY_KIND: Record<string, Record<string, string>> = {
     focus: "きょう やること",
     host: "あいての 人",
     persona: "あいての 話し方",
-    judgePrompt: "日本語の 見かた",
+    judgePrompt: "採点の指示",
     questions: "しつもん",
     ask: "しつもん（あいてが 言う ことば）",
     hint: "ヒント",
-    echo: "うけこたえ",
+    echo: "返事",
     keywords: "言えたら うれしい ことば",
     closing: "おわりの ひとこと",
   },

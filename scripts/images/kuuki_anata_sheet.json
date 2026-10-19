@@ -1,0 +1,15 @@
+{
+  "refs": ["public/img/characters/nishida/sheet.webp"],
+  "_comment": "まんが「空気を 読むって なに？」の「あなた」（読む 人＝主人公・名前なし）の 設定画。プロンプトは buildCharacterSheetPrompt の 出力を 逐語で 使い、参照の 役わりだけを 1行 足す。参照＝絵柄と 割りつけの 見本（西田。人物は 写さない）。赤い 上着は ゲーム「空気読み〜IT業界編〜」で 自分が「赤い 人」に なる ことに そろえた（2026-10-16）。人物カード（content/characters/）には しない——まんが 1本だけの 役で、勝手に 変えては いけない 画像の 置き場（public/img/characters/）を 増やさない ため。",
+  "style": "",
+  "noText": "",
+  "negative": "",
+  "scenes": [
+    {
+      "out": "anata_sheet",
+      "title": "あなた の 設定画",
+      "scene": "A character model sheet for a Japanese language-learning manga.\nLayout: front view (full body, T-pose) on the left, right side view and back view next to it,\nand a column of 6 bust-up facial expressions on the right\n(neutral, smiling, worried, surprised, thinking, apologetic).\nWhite background. Light grid lines overlay to keep eye level consistent across views.\nCharacter: 新人エンジニア（まんがの 主人公。読む 人＝あなた） — Japanese-style anime character, a young new-hire engineer in their early twenties with a gender-neutral look, slim build, about 165cm, friendly open face and relaxed posture. Short straight black hair in a neat chin-length bob with soft straight bangs. Dark brown eyes, warm light-brown skin. Outfit: a bright red zip-up jacket (#E53935) worn open over a plain white crew-neck T-shirt, dark grey slim trousers (#3A3F4A), white low-top sneakers. No lanyard, no glasses, no bag, no hat, no writing or logo on any clothes.\nPersonality (affects posture and expression): まじめで、まわりを よく 見ようと して います。まちがえても すぐに 笑って、もう一度 やって みます。\nStyle: clean modern Japanese manga / anime style, soft cel shading, bright friendly palette, rounded shapes, no harsh shadows, office and school settings, contemporary Japan.\nAvoid: no text, no letters, no kanji, no kana, no numbers anywhere in the image, speech balloons must be completely EMPTY (white inside, no writing), no watermark, no signature, no logo, no frame border, no six fingers, no extra limbs, no costume changes between panels, no duplicate faces of the same character in one panel.\nDo NOT write the character's name or any label on the sheet.\nReference image: the image is only an example of the sheet layout and the drawing style (clean anime line art, soft flat cel shading, simple anime faces without realistic wrinkles or hatching) — match that style exactly, but do NOT copy that woman: draw the new character described above (chin-length black bob, red open jacket, white T-shirt).",
+      "output": "Output: one landscape character sheet, 1536x1024."
+    }
+  ]
+}

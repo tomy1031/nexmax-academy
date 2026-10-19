@@ -432,8 +432,7 @@ export function StudioShell({
           return;
         case "scenario":
           setToast({
-            message:
-              "たいわは まだ スタジオで 作れません（content/scenarios の JSON で 作ります）。",
+            message: "たいわは、まだ管理画面で作れません（content/scenarios の JSON で作ります）。",
             tone: "ng",
           });
           return;
@@ -457,8 +456,8 @@ export function StudioShell({
       const name = title.length > 0 ? title : id;
       const fromGit = isGitBacked(kind, id);
       const question = fromGit
-        ? `「${name}」を スタジオで 直す 前に もどしますか。この 教材は アプリに 元から 入って いるので、一覧からは 消えません。`
-        : `「${name}」を けしますか。こうかい中の ものは 学習者の 画面から すぐ 消えます。`;
+        ? `「${name}」を、管理画面で直す前に戻しますか。この教材はアプリに元から入っているので、一覧からは消えません。`
+        : `「${name}」を消しますか。公開中のものは、学習者の画面からすぐ消えます。`;
       if (!window.confirm(question)) return;
       const result = await deleteContent(id);
       if (!result.ok) {
@@ -467,7 +466,7 @@ export function StudioShell({
       }
       setToast({
         message: result.revertedToGit
-          ? "スタジオの 直しを もどしました。この 教材は アプリに 元から 入って いるので 一覧に のこります。マップから 外すなら、ひらいて「まなびマップ」を「地図に 出さない」に します。"
+          ? "管理画面での直しを戻しました。この教材はアプリに元から入っているので、一覧に残ります。マップから外すなら、開いて「まなびマップ」を「地図に 出さない」にします。"
           : "けしました。",
         tone: "ok",
       });
@@ -507,8 +506,8 @@ export function StudioShell({
        * 効いていて、配られるのを 待つ 時間だった）。
        */
       setToast({
-        message: `${publish ? "こうかいしました。" : "したがきを ほぞんしました。"}${
-          draft.kind === "stage" ? "学習者の マップに とどくまで さいだい 6分 かかります。" : ""
+        message: `${publish ? "公開しました。" : "下書きを保存しました。"}${
+          draft.kind === "stage" ? "学習者のマップに届くまで、最大6分かかります。" : ""
         }`,
         tone: "ok",
       });
@@ -812,7 +811,7 @@ export function StudioShell({
         {view.mode === "meeting" ? (
           <ChildFrame
             title={view.draft.title.length > 0 ? view.draft.title : "あたらしい ミーティング"}
-            hint="あいての 話し方と、日本語の 見かたを ここで 直せます。"
+            hint="相手の話し方と、採点の指示をここで直せます。"
             parent={view.parent}
             onBack={closeChild}
             onSave={(publish) => void handleSave(publish)}

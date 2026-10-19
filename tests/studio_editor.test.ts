@@ -71,7 +71,7 @@ describe("issue-text", () => {
     );
     expect(describePath("focus", "meeting")).toBe("きょう やること");
     expect(describePath("focus", "listening")).toBe("聞く まえに 配る 見かた");
-    expect(describePath("judgePrompt", "meeting")).toBe("日本語の 見かた");
+    expect(describePath("judgePrompt", "meeting")).toBe("採点の指示");
     // 種類を渡さないときは今までどおり
     expect(describePath("focus")).toBe("聞く まえに 配る 見かた");
   });

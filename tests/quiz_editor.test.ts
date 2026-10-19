@@ -54,7 +54,7 @@ describe("describeWordbankIssues", () => {
     const notices = describeWordbankIssues(wordbank({ bank: ["でんわ", "ほうこく"] }));
     expect(notices).toHaveLength(1);
     expect(notices[0]).toContain("メール");
-    expect(notices[0]).toContain("語群");
+    expect(notices[0]).toContain("選択肢");
   });
 
   it("語群が こたえだけ（まぎらわしい語なし）のときに 気づかせる", () => {
@@ -66,7 +66,7 @@ describe("describeWordbankIssues", () => {
       }),
     );
     expect(notices).toHaveLength(1);
-    expect(notices[0]).toContain("にた ことば");
+    expect(notices[0]).toContain("似た言葉");
   });
 
   it("そろっていないところが 重なれば まとめて 出す", () => {

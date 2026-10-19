@@ -1,0 +1,28 @@
+/* 空気読み〜IT業界編〜 — print layout: only the certificate paper (A4 portrait) */
+@page { size: A4 portrait; margin: 0; }
+
+@media print {
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; box-shadow: none !important; text-shadow: none !important; }
+  html, body {
+    height: auto !important; margin: 0 !important; padding: 0 !important; overflow: visible !important;
+    display: block !important; background: #fff !important;
+  }
+  #app {
+    position: static !important; width: auto !important; max-width: none !important; height: auto !important;
+    margin: 0 !important; overflow: visible !important; border-radius: 0 !important; background: #fff !important;
+  }
+  .screen, #modal-root, .dict { display: none !important; }
+  #scr-cert {
+    display: block !important; position: static !important; opacity: 1 !important; visibility: visible !important;
+    overflow: visible !important; background: #fff !important;
+  }
+  #scr-cert > :not(.cert-body) { display: none !important; }
+  .cert-body { padding: 0 !important; }
+  .cert-body > :not(.cert-sheet) { display: none !important; }
+  .cert-sheet {
+    width: 210mm !important; height: 296.5mm !important; aspect-ratio: auto !important; overflow: hidden !important;
+    margin: 0 !important; background: #fff !important; break-inside: avoid; break-after: avoid; page-break-inside: avoid; page-break-after: avoid;
+  }
+  .cert-paper { position: static !important; width: 100% !important; height: 100% !important; transform: none !important; }
+  .cert-paper .gl { text-decoration: none !important; background: none !important; }
+}

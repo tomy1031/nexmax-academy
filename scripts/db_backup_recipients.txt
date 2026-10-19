@@ -1,0 +1,7 @@
+# 毎晩の DB 書き出し（.github/workflows/backup.yml）を 暗号化する 宛先。age の 公開鍵。
+# 公開鍵なので リポジトリに 置いて よい。**秘密鍵（AGE-SECRET-KEY-…）は 絶対に 置かない**
+# （tests/db_backup.test.ts が 見張る）。秘密鍵は tomy の 手元だけ。
+# 鍵の 置き場・替えかた・足しかたは docs/backup-recovery.md §3。
+#
+# tomy（2026-10-11 作成）
+age13y6y7jng3avpu2xwpn84tq4gj4qtw6jgmmr9w3clzyc4vmg04ayswfeeaw

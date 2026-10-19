@@ -21,5 +21,5 @@ export type NoEditorType = keyof typeof NO_EDITOR_DIRS;
 
 /** 「✎ ひらく」を 押したときの 知らせ。押しても 何も 起きないより、理由を 出す。 */
 export function noEditorMessage(type: NoEditorType): string {
-  return `${contentKindMeta(type).label}は まだ スタジオで 直せません（content/${NO_EDITOR_DIRS[type]} の JSON で 作ります）。`;
+  return `${contentKindMeta(type).label}は、まだ管理画面で直せません（content/${NO_EDITOR_DIRS[type]} の JSON で作ります）。`;
 }

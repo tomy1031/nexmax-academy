@@ -6,6 +6,7 @@
 
 import { useEffect } from "react";
 import "./globals.css";
+import { reportClientError } from "@/lib/error-report";
 import { isStaleAssetError, takeReloadTicket } from "@/lib/stale-asset";
 
 /**
@@ -24,10 +25,18 @@ import { isStaleAssetError, takeReloadTicket } from "@/lib/stale-asset";
  *
  * global-error は ルートの レイアウトごと 差し替わるため、`<html>` と `<body>` を
  * 自分で 書き、CSS も 自分で 読み込む。
+ *
+ * ## 記録を 残す（2026-10-11）
+ * ここに 来た エラーは 要約だけ `events` 表へ 送る（src/lib/error-report.ts）。
+ * 本番の 見張り（workers/watch）が 数えて、続けば 知らせる。部品の 取りこぼしは
+ * 読み直せば 直る ので 送らず、**自動の 読み直しでも 直らなかった ときだけ** 送る。
  */
 export default function GlobalError({ error }: { error: Error & { digest?: string } }) {
   useEffect(() => {
-    if (!isStaleAssetError(error)) return;
+    if (!isStaleAssetError(error)) {
+      reportClientError(error);
+      return;
+    }
     // クッキーを 止めている ブラウザでは **参照した だけで** 例外に なる。
     // ここで 落ちると 画面が 白く なるので、取れなければ 手で 押す道に 落とす。
     let store: Storage | null = null;
@@ -36,7 +45,10 @@ export default function GlobalError({ error }: { error: Error & { digest?: strin
     } catch {
       store = null;
     }
-    if (!takeReloadTicket(store, Date.now())) return;
+    if (!takeReloadTicket(store, Date.now())) {
+      reportClientError(error, "stale");
+      return;
+    }
     window.location.reload();
   }, [error]);
 

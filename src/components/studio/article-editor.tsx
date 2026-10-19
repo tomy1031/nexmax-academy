@@ -963,7 +963,7 @@ function BlockEditor({
                 </div>
                 <div className="min-w-[10rem] flex-1">
                   <TextField
-                    label="欄の 名前"
+                    label="入力欄の名前"
                     value={field.title}
                     onChange={(title) => patchField(index, { title })}
                   />
@@ -971,7 +971,7 @@ function BlockEditor({
                 <RowTools
                   index={index}
                   count={block.fields.length}
-                  label="欄"
+                  label="入力欄"
                   onMove={(delta) =>
                     onChange({ ...block, fields: moveItem(block.fields, index, delta) })
                   }
@@ -1005,7 +1005,7 @@ function BlockEditor({
               });
             }}
           >
-            ＋ 欄を 追加
+            ＋入力欄を追加
           </MiniButton>
         </div>
       );

@@ -11,6 +11,8 @@
     "noFallthroughCasesInSwitch": true,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
+    // Supabase の 関数（Deno）は import に `.ts` を 付ける。テストが それを 読む ため（noEmit なので 出力は 無い）
+    "allowImportingTsExtensions": true,
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "bundler",
@@ -42,5 +44,7 @@
   // 通しの自動検証（Playwright）はここから外す。@playwright/test は E2E の
   // ジョブでだけ入れるので、ここに含めると `npm run typecheck` が
   // 「@playwright/test が無い」で落ちる。型は tests/e2e/tsconfig.json で見る。
-  "exclude": ["node_modules", "tests/e2e", "playwright.config.ts"]
+  // Supabase の 関数（supabase/functions/）は Deno で 動く（`npm:` の import・`Deno` の 型）。
+  // 中身は vitest が 見る（tests/ai_check_handler.test.ts）。
+  "exclude": ["node_modules", "tests/e2e", "playwright.config.ts", "supabase/functions"]
 }

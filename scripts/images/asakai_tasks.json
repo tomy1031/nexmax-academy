@@ -18,7 +18,7 @@
     {
       "out": "task_loading",
       "dest": "public/img/asakai/tasks/loading.webp",
-      "title": "7 処理中の 表示",
+      "title": "7 処理中の アニメーション",
       "where": "content/meetings/asakai_kantan.json asakai.scenes[].card.progress[].image",
       "priority": "A",
       "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: while the payment is being processed, the screen shows a spinning wait ring. Very close view of the hands of the new engineer — a young Cambodian woman in her early twenties with warm light-brown skin, a round friendly face and black hair tied back in a low ponytail, wearing a mint-green blouse, beige trousers and a lanyard with a blank white card holding one smartphone upright and waiting, the phone FILLING most of the frame, her face and shoulders visible behind it at the top, watching the screen patiently with her chin slightly lowered. The whole screen is plain white except for one huge SKY-BLUE loading ring in the middle — a thick circular arc, open at one side, with a rounded tip and three short curved motion lines following the tip to show it is spinning. Patient, waiting expression.",

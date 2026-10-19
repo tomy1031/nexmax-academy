@@ -1137,6 +1137,39 @@ cron は 16:12〜17:12 ICT に 5本。実際に ランが 作られるのは **2
 **教訓**: 「冗長化した」と 書く 前に、**冗長に なって いるかを 測る**。
 同じ 仕組みを 5つ 並べても、故障が その 仕組み自体なら 5つ とも 同時に 黙る。
 
+#### 追記（2026-10-16）: 外の 時計が 2つ とも 授業前に 起こせなかった
+
+**症状**: 10-16（金）の 授業前に 本番デプロイが 1回も 起きず、本番は 10-14 の 版の まま だった。
+人が 10:22 UTC（17:22 ICT）に 手で `target=auto` を 起こした。
+
+**原因は 3つ。どれも「時計が 動いて いる」ことしか 確かめて いなかった。**
+
+| 起こし役   | 何が 起きて いたか                                                                                                                                                         | 確かめかた                                                                     |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| Cloudflare | **曜日の 数字が 1つ ずれて いた。** Cloudflare は 1＝日曜。`"2,3,5"` が 月・火・木に なり、水・金は 0回（10-12 月・10-13 火・10-15 木 に 起動）                             | GraphQL の `workersInvocationsScheduled`（`academy-deploy-kicker`）            |
+| Cloudflare | **起きた 日も 断られて いた。** 鍵は 読めるが 起こせない（Actions の 書き込み権限が 無い・403）。10-12・10-13 の 6回が すべて 例外で、ランは 0本                           | 状態の ページの `canDispatch`（無い ブランチ名で 頼むので ランは 作られない） |
+| この Mac   | **2時間 早く 動いて いた。** plist の 16:10 が 14:10 ICT に 当たって いた（JST の 時刻で 数えて いた とみられる）。10-16 は その 時刻に 教材が まだ 無く「同じ」で 止まった | `~/Library/Logs/nexmax-deploy-kick.log` の 時刻                                |
+
+GitHub の cron（受け皿）は いつも どおり 3〜5時間 遅れで、授業には 間に合わない。
+
+**直した こと**:
+
+- `wrangler.jsonc` の 曜日を `TUE,WED,FRI` と 名前で 書いた（見張り `workers/watch` は もともと 名前で 書いて いた）
+- 状態の ページ（`https://academy-deploy-kicker.nexmax.workers.dev`）に `canDispatch` を 足した。
+  `ok: false` なら 授業の 日を 待たずに 鍵を 直す。断られた ときの 例外にも 直しかたを 書く
+- 見張り（`workers/watch`）が その `canDispatch` を **毎朝 9時（ICT）に 1回** 見て、2回 続けて 断られたら
+  Telegram と 管理画面の エラーログに 出す（人が 状態の ページを 開きに 行かなくても 気づける。
+  試しの 起こしを 毎回 投げるので 10分ごとには 見ない。workers/watch/README.md）
+- Mac の plist は **毎時 02・10・52分**に 起こすだけに して、授業前の 窓（火・水・金 09:05〜10:10 UTC）かは
+  スクリプトが UTC で 見る。Mac の 地域の 時刻が ICT でも JST でも 同じ 時刻に 当たる
+- 3つの 時計が 同じ 時刻を 指すかを `tests/deploy_kicker.test.ts` が 見る
+
+**鍵の 権限だけは 人が 直す**（GitHub の 鍵を 作れるのは tomy さんだけ）。
+
+**教訓**: 「時計が 起きた」と「GitHub が 受け取った」は 別。起こし役は **起こせるか**まで 確かめて
+はじめて 動いて いると 言える。2026-09-22 の「launchd が 定刻に 起きない」も、実は 2時間 早く 起きて いたのを
+見落として いた（その 日は 16:49 ICT に 入れたので、14:52 ICT の 発火は もう 過ぎて いた）。
+
 ### 0.16 GitHub が デプロイを 止める ——「怪しい ワークフロー」の 足止め（2026-09-22）
 
 **症状**: 2026-09-22 10:09 UTC から、「デプロイ」ワークフローの ランが **ぜんぶ
@@ -1253,6 +1286,70 @@ curl -s -o /dev/null -D - -H 'Range: bytes=1000-1999' "https://staging-academy.n
 リスニングの 音を「1回 まるごと 取って Blob で 鳴らす」画面側の 直し（同じ日に 別スレッドで
 入れた `use-seekable-audio.ts`）は、これが 入った あとも 害は 無い（Range の 無い 頼みには
 これまでどおり 200＋全体を 返す）。
+
+### 0.18 AIチェック（Claude）の 窓口は Supabase の 関数 —— Cloudflare から 呼ばない（2026-10-08）
+
+こたえの チェック（メール・Slack・バグ報告）を 授業の 時間だけ Claude（Haiku 5.5）で 見る
+（願い #586・`docs/proposals/2026-10-08_ClaudeAPIで学習を補助する計画.md`）。
+
+**呼ぶ 場所は Supabase の Edge Function `ai-check`**（`supabase/functions/ai-check/`）。
+
+- Cloudflare の Worker は 香港で 動く ことが あり、**Claude API は 香港から 使えない**
+  （Anthropic の 対応地域一覧で 確認）。Gemini を ブラウザ直に 移した のも 同じ 理由
+- 画面は 関数を **シンガポール（`ap-southeast-1`）に 固定して** 呼ぶ（`src/lib/ai/claude-check.ts`）
+- 鍵 `ANTHROPIC_API_KEY` は **関数の 秘密だけ**（Supabase の 管理画面 → Edge Functions → Secrets）。
+  Cloudflare・GitHub・`.env` には 置かない。`scripts/check_build_env.mjs` が ビルドへの 混入を 止める
+- 鍵が 入る まで・関数が 出る まで・時間の 外は、画面は **いまの 動き**（Gemini／お手本）の まま
+
+**出しかた**（関数の 中身を 変えた とき）:
+
+1. 門番（`src/lib/ai/claude-gate.ts`）を 直したら `node scripts/sync_ai_check.mjs` で 関数の 側へ 写す
+   （`tests/claude_gate.test.ts` が 2つの ずれを 落とす）
+2. `integration` へ マージして 移行SQL（`ai_settings`・`ai_windows`・`ai_usage`）を 先に 流す（§0.8）
+3. 関数を 出す。どちらかで:
+   - Supabase の コネクタ（AIの セッション）: `deploy_edge_function`（名前 `ai-check`・入口 `index.ts`・
+     ファイルは `index.ts`／`handler.ts`／`claude-gate.ts` の 3つ・**`verify_jwt` は false**）
+   - CLI: `supabase functions deploy ai-check --no-verify-jwt`
+4. `verify_jwt` を 切るのは、ログインの 確かめを **関数の 中で** する ため（`auth.getUser`）。
+   門の 前で 切ると ブラウザの 下見（OPTIONS）が 通らない
+
+**DBは 全環境で 1つ**なので、関数も 1つ。STG と 本番が 同じ 関数を 呼ぶ。
+
+**使える 時間は 先生の 画面**（`/admin/ai-time`「AIの 時間」）で 大学 × 期生ごとに 決める。
+設定の 無い 組は 使えない。月の 上限（100ドルまで）と 1人 1日の 上限も ここ。
+
+### 0.19 本番の 見張り —— 申告より 先に 知る（2026-10-11）
+
+それまで 本番の 異常を 知らせる 仕組みは **0件**だった（Error 1102・画面の エラー・
+教材の 消えかけは、学習者や 先生の 申告で はじめて 分かった）。2つ 足した。
+
+- **画面の エラー** … `src/app/global-error.tsx` が 要約（ページ・メッセージ・ログインの 有無）を
+  `events` 表へ 1行（`src/lib/error-report.ts`）。だれかは 残さない・端末ごとに 間引く・
+  DB で 10分 30行の ふた・14日で 消える（移行SQL `20261011150000`）
+- **外形の 見張り** … 別の Worker `workers/watch`（Cloudflare Cron・10分ごと／授業は 5分ごと）が
+  ページ・健康しらべ・画面の エラーの 件数を 見て、**続いたら** Telegram（2026-10-11 に 選んだ。Slack／メールも 使える）へ
+
+守る こと（詳細は [`workers/watch/README.md`](../workers/watch/README.md)）:
+
+- 見張りは **KV に 書かない**（状態は Durable Object）。叩く ページは **作り直しを 起こさない もの**だけ
+  （ISR の ページを 叩くと その たび KV へ 書く——§0.9 の 枠を 食う）
+- **Cron Trigger は アカウントで 5本まで**。deploy-kicker 3本 ＋ 見張り 2本 で 埋まって いる
+- 鍵（知らせ先）は `wrangler secret` だけ。ビルド環境に 置かない（罠1）
+
+### 0.20 DBの バックアップ —— 毎晩 書き出して、毎晩 戻して みる（2026-10-11）
+
+Supabase の 無料プランには 自動バックアップが 無い。2026-10-11 から
+「DBの書き出し（毎晩）」（`.github/workflows/backup.yml`）が 毎晩 本番DBを **読むだけで**
+書き出し、age で 暗号化して R2（`nexmax-academy-db-backup`）に 置く。
+置く 前に **ランナーの 中の 空の DB へ 戻して、表ごとの 件数を 突き合わせる**。
+
+- 鍵は `SUPABASE_DB_URL`（§0.8 と 同じ）と R2 の 3つ（`R2_ENDPOINT`・`R2_ACCESS_KEY_ID`・
+  `R2_SECRET_ACCESS_KEY`）。どれも Environment「Preview」
+- **書き出しを artifact に しない・リポジトリに 置かない**（public。暗号化の 前も 後も）
+- **開けるのは tomy の 秘密鍵だけ**。公開鍵は `scripts/db_backup_recipients.txt`
+- Storage の ファイル（画像・音声）は 対象外
+
+戻しかた・鍵・置き場の 用意・落ちた ときの 読みかたは **`docs/backup-recovery.md`**。
 
 ## 1. 環境の位置づけ
 

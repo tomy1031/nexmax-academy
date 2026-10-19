@@ -52,6 +52,7 @@ import { StepTabs } from "@/components/meeting/step-tabs";
 import { useLiveVoice } from "@/components/meeting/use-live-voice";
 import { VisemeFace } from "@/components/meeting/viseme-face";
 import { RubyText } from "@/components/ruby-text";
+import { useIsAdmin } from "@/lib/admin-flag";
 import {
   rateOf,
   readSpeechSpeed,
@@ -66,6 +67,7 @@ import {
   CountBoxes,
   DayProgress,
   ProgressBoxes,
+  RowTaskPictures,
   SkyStrip,
   DayCount,
 } from "@/components/asakai/asakai-parts";
@@ -85,7 +87,7 @@ import {
   type PanelState,
   type ReportPanel,
 } from "@/lib/meeting/panels";
-import { hintOf } from "@/lib/meeting/asakai-hint";
+import { hintOf, leftHint } from "@/lib/meeting/asakai-hint";
 import {
   asakaiAiFurigana,
   type AsakaiItem,
@@ -127,7 +129,11 @@ type Asakai = NonNullable<Meeting["asakai"]>;
 type Scene = Asakai["scenes"][number];
 type Line = Scene["sample"];
 
-/** 同じ カードを 聞き返すのは 2回まで。3回目は 会話が 止まる。 */
+/**
+ * 同じ カードを 聞き返すのは 2回まで。3回目は 会話が 止まる。
+ * 2026-10-09 から 朝礼の 聞き返しの「もう一度報告」は 回数に 数えない——打ち切りが
+ * 起きるのは 夕礼の 作業記録の 読み上げ（`readLog`）だけ。
+ */
 const MAX_PROBE = 2;
 
 const DAY_NAME: Record<Scene["day"], string> = {
@@ -162,6 +168,7 @@ const KIND_NAME: Record<Scene["kind"], string> = { asa: "朝礼", yuu: "夕礼" 
  * 仕組みだったが、**答えを そのまま 読み上げて しまう**——進捗の 札なら
  *「今、決済フロントエンド機能の 進捗は 20%です。」が 画面に 出るので、
  * 学習者は 考えずに 写せる（ユーザーの 指摘）。
+ *（引用は 当時の まま。いまは「決済フロントエンドの 進捗」・2026-10-09）
  *
  * いまは **言えなかった ことを はっきり 言って 次へ 行く**（規律1）。
  * 答えは 見せない。材料は 報告メモに あるので、次の 日に 自分で 取りに いける。
@@ -275,6 +282,15 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
    * `useState` の 初期化関数で 1回だけ 読む——描くたびに 端末を 触らない。
    */
   const start = useState(() => restoreAsakai(meeting.id, asakai?.scenes.length ?? 0))[0];
+
+  /*
+   * **管理ユーザーは 最初から どの 曜日へも 行ける**（2026-10-13 の 指定「管理ユーザーは
+   * 初期で 曜日を スキップ できる ように して ください。（全ての ミーティング画面）」）。
+   * 曜日の 鍵は 学習者の ための 順番で、教材を 確かめる 人には 通せんぼでしか ない
+   *（教材の ロックを 管理ユーザーに かけない のと 同じ 考え・`content-frame.tsx`）。
+   * 飛んだ 先で 話しても、5日 そろわなければ「おわった」も 修了証も 出ない。
+   */
+  const isAdmin = useIsAdmin();
 
   const [sceneAt, setSceneAt] = useState(start.sceneAt);
   const [states, setStates] = useState<readonly PanelState[]>(() =>
@@ -457,16 +473,21 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
      * **この 回で 打ち切った 札の 名前**（2回 聞いても 開かなかった。無ければ null）。
      *
      * 2026-09-28 の 点検。打ち切った 回にも「もう いちど お願いします」＋ヒント＋
-     *「言い直す」を 出して いた ので、閉じると 司会が「◯◯は 聞けませんでした」と
-     * 言うのと **画面が 逆の ことを 言って いた**（規律1）。
+     *「もう一度報告」（当時は「言い直す」）を 出して いた ので、閉じると 司会が
+     *「◯◯は 聞けませんでした」と 言うのと **画面が 逆の ことを 言って いた**（規律1）。
      */
     readonly gaveUp: string | null;
     /**
-     * 言い直す（同じ 問いに もう いちど 答える）。**伝わらなかった 回だけ** 入る。
+     * もう一度報告（同じ 問いに もう いちど 答える）。**伝わらなかった 回だけ** 入る。
      *
      * 前は いつでも ポップアップを 閉じるだけ だった ので、聞き返しの 回数だけ
      * 使われて、型文つきの 2回目の 問いが 流れない まま 打ち切られて いた。
      * 伝わった 回に 押すと、次の 札が 1回目を 飛ばして いた（2026-09-28）。
+     *
+     * 2026-10-09 から、伝わらなかった 回の **道は これ 1つだけ**（「つぎの しつもんを 聞く」は
+     * 出さない）。押すたびに 回数を 戻す ので、伝わるまで 何回でも 同じ 問いに 答えられる——
+     * 朝礼の 聞き返しは 打ち切りに ならない。**入らない のは 作業記録の 読み上げ（夕礼）**で、
+     * そこは 司会が「もう いちど」と 頼む いつもの 動き（回数も 数える＝打ち切りが 残る）。
      */
     readonly retry: (() => void) | null;
     readonly after: (() => void) | null;
@@ -1061,6 +1082,19 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
             attempts: asked,
             wrongNumber: wrongAll.includes(panel.id),
           });
+          /*
+           * 「あと いくつ」は **作業を 並べる 札**（今日 行ったこと・明日 行うこと）だけ。
+           * 問題点の 行は 1つの 問題の 面（起きた こと・いま どう なったか）なので、
+           * 数で 言うと「問題が 2つ ある」と 読める——これまでどおり 型文に する。
+           */
+          const left =
+            panel.rule === "number" || panel.id === "komari" || panel.facts.some((fact) => fact.box)
+              ? ""
+              : leftHint({
+                  label: panel.label,
+                  need: panel.fullAt ?? panel.facts.length,
+                  have: state?.said.length ?? 0,
+                });
           const item = itemOf(panel.id);
           /* AIの 見立て → この 1本の 照合 → その日 前の ターンで 引いた ぶん の 順。 */
           const said =
@@ -1097,8 +1131,13 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
              * 正しい 数に 見える——まだの 札は 下の ヒント（型文）に する。
              */
             polished: mark !== "missing" ? (item?.polished ?? "") : "",
-            /* 答えを 出さない 型文（教材の 聞き返しから。`asakai-hint.ts`）。 */
-            hint: hintOf((data?.followups ?? []).map((one) => one.text)),
+            /*
+             * 答えを 出さない ヒント（`asakai-hint.ts`）。**一部だけ 言えた 札は「あと いくつ」**
+             *（2026-10-13「NG の 指摘が おかしい」→「2つの 決まりは 残し、ヒントを 直す」）——
+             * もう その 形で 言えて いる 人に 型文を 見せても 足りない ものが 読めない。
+             */
+            hint: left !== "" ? left : hintOf((data?.followups ?? []).map((one) => one.text)),
+            hintLeft: left !== "",
           };
         });
       };
@@ -1235,7 +1274,9 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
         return;
       }
 
-      /* 2回 聞いても 開かない カードは、司会が れいを 見せて 先へ 進める。 */
+      /* 2回 聞いても 開かない カードは、司会が れいを 見せて 先へ 進める。
+       * 2026-10-09 から 朝礼の「もう一度報告」は 回数に 数えない——ここへ 来るのは
+       * 夕礼の 作業記録の 読み上げ（`readLog`）だけ。 */
       if (count > MAX_PROBE) {
         const passed = step.states.map((one) =>
           one.id === target.id ? { ...one, gaveUp: true } : one,
@@ -1296,7 +1337,8 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
         readLog,
         sceneOver: false,
         /*
-         * **言い直しは 伝わらなかった 聞き返しの あとだけ**（2026-09-28）。
+         * **もう一度報告は 伝わらなかった 聞き返しの あとだけ**（2026-09-28。
+         * 2026-10-09 から これが 唯一の 道）。
          * 押したら この 回を 数えなかった ことに する（同じ 問いの まま・司会は 何も 言わない）。
          * 伝わった 回・作業記録の 差し戻し には 置かない（次の 行動は 1つ）。
          */
@@ -1831,10 +1873,16 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
           key: String(at),
           label: DAY_NAME[one.day],
           cleared: doneDays[at],
-          locked: at > openUpTo,
+          locked: !isAdmin && at > openUpTo,
         }))}
         current={String(sceneAt)}
-        note={openUpTo + 1 < asakai.scenes.length ? "ぜんぶ 報告すると 開きます" : undefined}
+        note={
+          isAdmin
+            ? "🛡️ せんせいは ぜんぶ ひらけます"
+            : openUpTo + 1 < asakai.scenes.length
+              ? "ぜんぶ 報告すると 開きます"
+              : undefined
+        }
         disabled={waiting}
         index={index}
         onPick={(key) => goToScene(Number(key))}
@@ -1843,12 +1891,18 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
           **報告メモは 帯の 右はし**（2026-09-15 の 指定「添付の『自分の こたえを 見る』の
           部分に 変えて 欲しい」）。ミーティングの `AnswerNotebook` と 同じ 席・同じ 見た目に する。
           話す ボタンの 下に 大きく 置いて いた ころは、**その 画面にしか 無い ボタン**だった。
+
+          **マイクが 赤い（話して いる）あいだは 開けない**（2026-10-16 の 指定「マイク使用中に
+          朝礼・夕礼のモーダルを開けないようにしてください。報告メモです。」）。消さずに
+          灰色で 残し（2026-08-20 の 指定）、話しおわって マイクを 止めたら また 押せる。
+          逆向きも そろえる——メモを 開いて いる あいだは マイクも 押せない（下の `speak`）。
         */}
         <button
           type="button"
           onClick={() => setDuty(true)}
+          disabled={voice.talking}
           aria-label="報告メモを 見る"
-          className="border-hairline bg-panel text-navy ml-auto shrink-0 rounded-full border-2 px-3 py-1.5 text-xs font-extrabold"
+          className="border-hairline bg-panel text-navy ml-auto shrink-0 rounded-full border-2 px-3 py-1.5 text-xs font-extrabold disabled:opacity-45"
         >
           📋 <RubyText text="報告メモ" index={index} show />
         </button>
@@ -1922,7 +1976,13 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
               status: voice.status,
               reason: voice.reason,
               talking: voice.talking,
-              disabled: judge !== null || waiting,
+              /*
+               * 報告メモを 開いて いる あいだも 押せない（2026-10-16）。幕が 指を 止めるが、
+               * キーボードの Tab では 幕の うしろの マイクに 届く。メモを 開いた まま
+               * 話しはじめると、上の「話して いる あいだは メモを 開けない」と 食い違う。
+               * 曜日を 移って メモが 自動で 開く ときは `goToScene` が 先に マイクを 止める。
+               */
+              disabled: judge !== null || waiting || duty,
               waitNote: judge
                 ? "見かたを 読んでから 話します。"
                 : waiting
@@ -1976,9 +2036,21 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
    * 同じ 形の 箱に 入れて、位置も 並びの 中に きちんと 置く。
    * `kinou` の 無い 教材では いちばん 後ろに 付く。
    */
-  const memoRows: { key: string; label: string; text: string; count?: RowCount }[] = [];
+  const memoRows: {
+    key: string;
+    label: string;
+    text: string;
+    count?: RowCount;
+    tasks?: readonly string[];
+  }[] = [];
   for (const row of scene.card.rows ?? []) {
-    memoRows.push({ key: row.key, label: row.label, text: row.text, count: row.count });
+    memoRows.push({
+      key: row.key,
+      label: row.label,
+      text: row.text,
+      count: row.count,
+      tasks: row.tasks,
+    });
     if (row.key === "kinou" && scene.card.pin) {
       memoRows.push({ key: "shinchoku", label: "進捗", text: scene.card.pin });
     }
@@ -2045,6 +2117,13 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
                   <DictionaryText text={row.text} index={index} />
                   {row.count ? (
                     <CountBoxes total={row.count.total} done={row.count.done} now={row.count.now} />
+                  ) : null}
+                  {/*
+                    その 行の しごとの 絵（2026-10-09 の 指定）。絵の ファイルは 下の 表が
+                    持って いる ので、名前で 引く。`tasks` が ある 行だけ。
+                  */}
+                  {row.tasks?.length ? (
+                    <RowTaskPictures tasks={row.tasks} progress={scene.card.progress} />
                   ) : null}
                 </dd>
               </div>
@@ -2264,9 +2343,12 @@ export function AsakaiSession({ meeting }: { meeting: Meeting }) {
               copied={judge.copied}
               askRedo={!judge.sceneOver && judge.gaveUp === null}
               /*
-              言い直す … 同じ しつもんの まま、もう いちど 書く（司会は 何も 言わない）。
-              **伝わらなかった 回だけ**（`retry`）。その日が 終わって いる とき・
-              打ち切った とき・伝わった ときは 出さない（2026-09-28）。
+              もう一度報告 … 同じ しつもんの まま、もう いちど 書く（司会は 何も 言わない・
+              回数にも 数えない）。**伝わらなかった 回だけ**（`retry`）で、その 回は
+              この ボタンが 唯一の 道（2026-10-09 の 決定。伝わるまで 何回でも）。
+              その日が 終わって いる とき・打ち切った とき・伝わった ときは 出さない。
+              作業記録の 読み上げ（夕礼）は `retry` が 無い ので、主ボタンの 字だけ
+             「もう一度報告」に なり、押すと いつもの `closeJudge`（司会が もう いちど 頼む）。
             */
               onRetry={judge.sceneOver ? undefined : (judge.retry ?? undefined)}
               onClose={closeJudge}

@@ -362,7 +362,8 @@ export function useLiveSession(): LiveSession {
               responseModalities: [Modality.AUDIO],
               systemInstruction,
               // 文字起こしを必ず出す。学習者が「何を言ったか」を目で確かめられるようにする。
-              inputAudioTranscription: {},
+              // 言語は 日本語に 決める（書かないと 韓国語などの 字に なる ことが あった・2026-10-14。use-live-voice と 同じ）
+              inputAudioTranscription: { languageCodes: ["ja-JP"] },
               outputAudioTranscription: {},
               /*
                * **区切りは こちらが 決める**（自動の 声の 検出を 切る・2026-09-16）。

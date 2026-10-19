@@ -287,7 +287,7 @@ export function VocabExtractor({
       onCreated(draft.id);
       setNote(
         `ことばの セット「${draft.label ?? draft.title}」を つくりました（${count}語${added}）。` +
-          "上の「したがきを ほぞん」か「こうかい」を おすと、この ステージから 開けるように なります。",
+          "上の「下書きを保存」か「公開」を押すと、このステージから開けるようになります。",
       );
     }
     /*

@@ -47,14 +47,29 @@
 
 ## 時刻（授業は 17:30 ICT）
 
-| 起こし役       | 時刻（ICT）              | 書きかた                                    |
-| -------------- | ------------------------ | ------------------------------------------- |
-| Cloudflare     | 16:10 / 16:52 / 17:02    | `wrangler.jsonc` の `triggers.crons`（UTC） |
-| この Mac       | 16:10 / 16:52 / 17:02    | `mac/…plist`（Mac が ICT なので そのまま）  |
-| GitHub（保険） | 16:12 / 16:26 / …/ 17:12 | `deploy.yml` の `schedule`（UTC・遅れる）   |
+| 起こし役       | 時刻（ICT）              | 書きかた                                                                  |
+| -------------- | ------------------------ | ------------------------------------------------------------------------- |
+| Cloudflare     | 16:10 / 16:52 / 17:02    | `wrangler.jsonc` の `triggers.crons`（UTC・曜日は 名前）                  |
+| この Mac       | 16:10 / 16:52 / 17:02    | plist は 毎時 02・10・52分。窓（16:05〜17:10）は スクリプトが UTC で 見る |
+| GitHub（保険） | 16:12 / 16:26 / …/ 17:12 | `deploy.yml` の `schedule`（UTC・遅れる）                                 |
 
 16:10 に 出れば 16:22 ごろ 本番に 載る（ビルド 6〜10分）。16:52 は それ以降に 入った
 教材を 拾う ための 2回目（30分の 間隔は `should_deploy` の 条件に 合わせて ある）。
+
+**3つの 時計が 同じ 時刻を 指して いるかは `tests/deploy_kicker.test.ts` が 見る。**
+2026-10-16（金）は 外の 時計が 2つ とも 授業前に 起こせず、人が 10:22 UTC（17:22 ICT）に 手で 出した。
+原因は 3つ あった（docs/deploy.md §0.15 の 追記）:
+
+1. **Cloudflare の 曜日の 数字は 1＝日曜。** `"2,3,5"` が 月・火・木に なり、水・金には 1回も 起きて いなかった
+   （10-12 月・10-13 火・10-15 木 に 起動、10-14 水・10-16 金 は 0回）。いまは `TUE,WED,FRI` と 名前で 書く。
+2. **起きた 日も、鍵に 起こす 権限が 無かった。** 10-12・10-13 の 6回は すべて 例外で 終わり、
+   ランは 1本も 作られなかった。本番と integration を 読む ところは 鍵で 通って いた（10-15 は 正しく「同じ」で 止まった）。
+   10-16 に 状態の ページへ `canDispatch` を 足して 試すと **403**（鍵に Actions の 書き込み権限が 無い）だった。
+   直すのは 鍵の 編集画面（GitHub → Settings → Developer settings → Fine-grained tokens → その 鍵 → Edit）で、
+   Actions を Read and write に する だけ。鍵の 文字列は 変わらないので、Worker に 入れ直さなくて よい。
+3. **この Mac の launchd は 2時間 早く 動いて いた**（16:10 の つもりが 14:10 ICT。JST の 時刻で 数えて いた とみられる）。
+   10-16 は その 時刻には まだ 新しい 教材が 無く「同じ」で 止まった。いまは plist に 分だけを 書き、
+   曜日と 時刻は スクリプトが UTC で 見る。
 
 ## 1. Cloudflare 側（本命・この Mac に 依らない）
 
@@ -78,6 +93,17 @@ curl -s https://academy-deploy-kicker.nexmax.workers.dev | python3 -m json.tool
 ```
 
 `{"same": true}` なら 本番と integration が そろって いる。
+`"canDispatch": {"ok": true, "status": 422}` なら 鍵で 起こせる（無い ブランチ名で 頼んで 断られた＝ 権限は 通った。ランは 作られない）。
+`ok: false` なら 授業前に 起きても GitHub に 断られる。`reason` に 直しかたが 出る（401＝鍵が 無効／403＝ Actions の 書き込み権限が 無い／404＝ リポジトリが 選ばれて いない）。
+
+**本番の 版は サービスバインディング（`env.PROD` → Worker `academy`）で 読む。**
+同じ アカウントの Worker は workers.dev の 公開 URL では 呼べない（`error code: 1042`・404）。
+2026-10-11 まで 公開 URL で 読んで いたので、本番の 版が 常に 読めず（`prodSha: null`）、
+`same` が 常に false の まま **毎回 起こして いた**（出すかは `should_deploy` が 決めるので 空振りで 済んだ）。
+この URL 自体も 1042 で 開けなかった。
+直した あとも `integrationSha` が ときどき null に なった。GitHub の 鍵なしの 読みは IP ごとに
+60回/時で、Cloudflare の 共有の 出口 IP では 使い切られて いる ことが ある（403 `API rate limit exceeded`）。
+だから GitHub の 読みにも `GITHUB_TOKEN` を 付けて いる（鍵ごとの 枠に なる）。見張り（`workers/watch`・#608）も 同じ 理由で 同じ つなぎかたに した。
 
 ## 2. この Mac 側（保険・鍵ゼロ）
 
@@ -93,10 +119,15 @@ sed -e "s|REPLACE_WITH_ABSOLUTE_PATH|$HOME/.local/bin|" -e "s|REPLACE_WITH_HOME|
 launchctl bootstrap "gui/$(id -u)" ~/Library/LaunchAgents/dev.nexmax.academy.deploy-kick.plist
 ```
 
+plist は **毎時 02・10・52分**に スクリプトを 起こすだけで、授業前の 窓
+（火・水・金 16:05〜17:10 ICT）の 外なら スクリプトが 何も せず 終わる（記録も 残さない）。
+曜日と 時刻を plist に 書くと、launchd が Mac の 地域の 時刻で 数えて ずれる（上の 3）。
+
 確かめる:
 
 ```bash
-~/.local/bin/nexmax-deploy-kick.sh --dry-run   # 叩かずに 判定だけ
+~/.local/bin/nexmax-deploy-kick.sh --dry-run   # 叩かずに 判定だけ（窓の 外でも 判定を 出す）
+~/.local/bin/nexmax-deploy-kick.sh --check-window; echo $?   # 0 なら いま 窓の 中
 tail ~/Library/Logs/nexmax-deploy-kick.log     # 起きた 記録
 ```
 
@@ -110,7 +141,11 @@ rm ~/Library/LaunchAgents/dev.nexmax.academy.deploy-kick.plist
 ## 落ちて いないかの 見かた
 
 - `npm run handoff` … 本番と main の 差が 出る
-- 上の Worker の URL … `same: false` が 授業前に 続いて いたら 起こし役が 全部 黙って いる
+- 上の Worker の URL … `same: false` が 授業前に 続いて いたら 起こし役が 全部 黙って いる。
+  `canDispatch.ok: false` なら 鍵で 起こせない（授業の 日を 待たずに 鍵を 直す）。
+  **見張り（`workers/watch`）が 毎朝 9時（ICT）に ここを 見て、2回 続けて 断られたら Telegram と
+  管理画面の エラーログに 出す**（2026-10-16 から。サービスバインディング `KICKER` で つなぐ）
+- `launchctl print gui/$(id -u)/dev.nexmax.academy.deploy-kick | grep runs` … Mac の launchd が 起きた 回数（毎時 3回 増える）
 - `tail ~/Library/Logs/nexmax-deploy-kick.log` … Mac 側が 何を したか
 
 **GitHub の cron は 消して いない。** 外の 時計が 2つ とも 黙った ときの

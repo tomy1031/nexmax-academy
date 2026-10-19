@@ -490,7 +490,7 @@ export function SourceBadge({ status }: { status: "draft" | "published" | null }
   if (!status) {
     return (
       <span className="border-hairline text-ink-soft rounded-full border-2 px-3 py-1 text-xs font-black">
-        git版
+        元のまま
       </span>
     );
   }
@@ -501,7 +501,7 @@ export function SourceBadge({ status }: { status: "draft" | "published" | null }
         background: status === "published" ? "var(--color-leaf-deep)" : "var(--color-sun-deep)",
       }}
     >
-      {status === "published" ? "DB版（こうかい）" : "DB版（したがき）"}
+      {status === "published" ? "公開" : "下書き"}
     </span>
   );
 }

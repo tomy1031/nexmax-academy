@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="空気読み〜IT業界編〜 — learn Japanese workplace manners by reading the air.">
+  <title>空気読み〜IT業界編〜 · KUUKI YOMI: IT Edition</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;700;900&family=Noto+Sans+JP:wght@400;500;700;900&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Yuji+Syuku&text=%E8%AA%AD%E5%8F%AF%E7%A9%BA%E6%B0%97KY&display=swap">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/print.css" media="print">
+</head>
+<body>
+  <div id="app">
+    <section id="scr-title" class="screen" aria-label="Title"></section>
+    <section id="scr-map" class="screen" aria-label="Chapters"></section>
+    <section id="scr-play" class="screen noscroll" aria-label="Play">
+      <header class="play-head">
+        <span class="play-no" id="play-no">1-1</span>
+ <div class="play-title" id="play-title"></div>
+        <span id="play-en"></span>
+        <button class="icon-btn" id="btn-pause" type="button" aria-label="Pause">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><rect x="5" y="4" width="3.5" height="12" rx="1" fill="currentColor"/><rect x="11.5" y="4" width="3.5" height="12" rx="1" fill="currentColor"/></svg>
+        </button>
+      </header>
+      <div class="timer" id="timer"><i></i></div>
+      <div class="stage-wrap">
+        <div class="scene-host" id="scene-host"></div>
+        <div id="play-layer"></div>
+      </div>
+    </section>
+    <section id="scr-card" class="screen" aria-label="Manner card"></section>
+    <section id="scr-binder" class="screen" aria-label="Card file"></section>
+    <section id="scr-result" class="screen" aria-label="Chapter result"></section>
+    <section id="scr-final" class="screen" aria-label="Final result"></section>
+    <section id="scr-cert" class="screen" aria-label="Certificate"></section>
+    <section id="scr-test" class="screen" aria-label="Test runner"></section>
+    <div id="modal-root"></div>
+  </div>
+
+  <!-- core -->
+  <script src="js/core/ns.js"></script>
+  <script src="js/core/text.js"></script>
+  <script src="js/core/glossary.js"></script>
+  <script src="js/core/glossary-a.js"></script>
+  <script src="js/core/glossary-b.js"></script>
+  <script src="js/core/glossary-kanji.js"></script>
+  <script src="js/core/glossary-kana.js"></script>
+  <script src="js/core/strings.js"></script>
+  <script src="js/core/storage.js"></script>
+  <script src="js/core/audio.js"></script>
+  <script src="js/core/settings.js"></script>
+  <script src="js/core/scoring.js"></script>
+  <!-- engine -->
+  <script src="js/engine/svg.js"></script>
+  <script src="js/engine/figure.js"></script>
+  <script src="js/engine/props.js"></script>
+  <script src="js/engine/scene.js"></script>
+  <script src="js/engine/diagram.js"></script>
+  <!-- mechanics -->
+  <script src="js/mechanics/place.js"></script>
+  <script src="js/mechanics/timing.js"></script>
+  <script src="js/mechanics/adjust.js"></script>
+  <script src="js/mechanics/choice.js"></script>
+  <script src="js/mechanics/order.js"></script>
+  <!-- stages -->
+  <script src="js/stages/ch1.js"></script>
+  <script src="js/stages/ch2.js"></script>
+  <script src="js/stages/ch3.js"></script>
+  <script src="js/stages/ch4.js"></script>
+  <script src="js/stages/ch5.js"></script>
+  <script src="js/stages/ch6.js"></script>
+  <!-- ui -->
+  <script src="js/ui/common.js"></script>
+  <script src="js/ui/dict.js"></script>
+  <script src="js/ui/title.js"></script>
+  <script src="js/ui/map.js"></script>
+  <script src="js/ui/play.js"></script>
+  <script src="js/ui/card.js"></script>
+  <script src="js/ui/binder.js"></script>
+  <script src="js/ui/result.js"></script>
+  <script src="js/ui/certificate.js"></script>
+  <script src="js/ui/cert-image.js"></script>
+  <script src="js/ui/settings.js"></script>
+  <script src="js/ui/testrunner.js"></script>
+  <script src="js/main.js"></script>
+  <script src="nexmax-bridge.js"></script>
+</body>
+</html>
