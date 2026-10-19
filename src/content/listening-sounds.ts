@@ -131,6 +131,37 @@ const LEDGER: Readonly<Record<string, readonly FuriganaEntry[]>> = {
   ],
 };
 
+/*
+ * 紙の リスニング問題（2026-10-19）の 読み上げ。使い捨ての ブランチでのみ 使う。
+ * 選択肢の 記号（A〜D）は、原稿と 文字起こしの どちらが 英字でも かなでも 同じ 読みに なる ように 置く。
+ */
+const PAPER_NARRATION: readonly FuriganaEntry[] = [
+  ...LEDGER.houkoku_shougai_listening!,
+  ...LEDGER.houkoku_chousa_listening!,
+  ["A", "えー"],
+  ["B", "びー"],
+  ["C", "しー"],
+  ["D", "でぃー"],
+  ["CSV", "しーえすぶい"],
+  ["Slack", "すらっく"],
+  ["8時", "はちじ"],
+  ["5時", "ごじ"],
+  ["五時", "ごじ"],
+  ["八時", "はちじ"],
+  ["1つ", "ひとつ"],
+  ["3つ", "みっつ"],
+  ["4つ", "よっつ"],
+  ["10", "じゅう"],
+  ["36円", "さんじゅうろくえん"],
+  ["3,600円", "さんぜんろっぴゃくえん"],
+  ["3600円", "さんぜんろっぴゃくえん"],
+  ["36,000円", "さんまんろくせんえん"],
+  ["36000円", "さんまんろくせんえん"],
+  ["0円", "ぜろえん"],
+];
+(LEDGER as Record<string, readonly FuriganaEntry[]>).paper_listening_1_narration = PAPER_NARRATION;
+(LEDGER as Record<string, readonly FuriganaEntry[]>).paper_listening_2_narration = PAPER_NARRATION;
+
 /** 台帳に 載せた 教材ごとの 聞き取り専用の 読み（かなの 語の 漢字形も 足した もの）。 */
 export const LISTENING_SOUNDS_LIKE: Readonly<Record<string, readonly FuriganaEntry[]>> =
   Object.fromEntries(
