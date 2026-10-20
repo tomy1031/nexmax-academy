@@ -4,26 +4,8 @@
   "compareGapSeconds": [],
   "complete": false,
   "missing": [
-    3,
-    4,
-    8,
     9,
-    13,
-    14,
-    18,
-    19,
-    23,
-    24,
-    28,
-    29,
-    33,
-    34,
-    38,
-    39,
-    43,
-    44,
-    48,
-    49
+    18
   ],
   "sentences": [
     {
@@ -56,6 +38,38 @@
         "expected": "かいわをきいてただしいこたえをえらんでください",
         "spoken": "かいわをきいてただしいこたえをえらんでください",
         "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "問題1、小林さんは、何について調査しましたか。",
+      "file": "03.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 4.68,
+      "longestPause": 0.73,
+      "transcript": "問題 1 小林 さん は 何 に つい て 調査 し まし た か ?",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "もんだいいちこばやしさんはなにについてちょうさしましたか",
+        "spoken": "もんだいいちこばやしさんはなにについてちょうさしましたか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "A、画像を保存する方法。",
+      "file": "04.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 2.89,
+      "longestPause": 0.58,
+      "transcript": "画像 を 保存 する 方法",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "aがぞうをほぞんするほうほう",
+        "spoken": "がぞうをほぞんするほうほう",
+        "distance": 1
       }
     },
     {
@@ -103,6 +117,22 @@
       "reading": {
         "expected": "でぃいよやくするほうほう",
         "spoken": "でぃいよやくするほうほう",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "問題2、小林さんは、いくつの方法を調べましたか。",
+      "file": "08.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 4.22,
+      "longestPause": 0.48,
+      "transcript": "問題 2 小林 さん は いくつ の 方法 を 調べ まし た か ?",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "もんだいにこばやしさんはいくつのほうほうをしらべましたか",
+        "spoken": "もんだいにこばやしさんはいくつのほうほうをしらべましたか",
         "distance": 0
       }
     },
@@ -156,6 +186,38 @@
     },
     {
       "speaker": "narration",
+      "text": "問題3、一つ目は、どこに画像を保存する方法ですか。",
+      "file": "13.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 5.53,
+      "longestPause": 0.5,
+      "transcript": "問題 3 。 1 つ 目 は どこ に 画像 を 保存 する 方法 です か ?",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "もんだいさんひとつめはどこにがぞうをほぞんするほうほうですか",
+        "spoken": "もんだいさんひとつめはどこにがぞうをほぞんするほうほうですか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "A、スマートフォン。",
+      "file": "14.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 1.89,
+      "longestPause": 0.67,
+      "transcript": "あ スマートフォン",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "aすまあとふぉん",
+        "spoken": "あすまあとふぉん",
+        "distance": 1
+      }
+    },
+    {
+      "speaker": "narration",
       "text": "ビー、AWSのS3。",
       "file": "15.wav",
       "voice": "Puck",
@@ -199,6 +261,22 @@
       "reading": {
         "expected": "でぃいぱそこん",
         "spoken": "でぃいぱそこん",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "A、AWSのS3。",
+      "file": "19.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 2.84,
+      "longestPause": 0.52,
+      "transcript": "A、AWSのS3。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "ええええだぶりゅうえすのえすすりい",
+        "spoken": "ええええだぶりゅうえすのえすすりい",
         "distance": 0
       }
     },
@@ -252,6 +330,38 @@
     },
     {
       "speaker": "narration",
+      "text": "問題5、小林さんが今回よいと思った方法はどれですか。",
+      "file": "23.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 4.53,
+      "longestPause": 0.55,
+      "transcript": "問題 5 小林 さん が 今回 良い と 思っ た 方法 は どれ です か ?",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "もんだいごこばやしさんがこんかいよいとおもったほうほうはどれですか",
+        "spoken": "もんだいごこばやしさんがこんかいよいとおもったほうほうはどれですか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "A、今のサーバーを使う方法。",
+      "file": "24.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 2.5,
+      "longestPause": 0.39,
+      "transcript": "あ 、 今 の サーバー を 使う 方法",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "aいまのさあばあをつかうほうほう",
+        "spoken": "あいまのさあばあをつかうほうほう",
+        "distance": 1
+      }
+    },
+    {
+      "speaker": "narration",
       "text": "ビー、AWSのS3を使う方法。",
       "file": "25.wav",
       "voice": "Puck",
@@ -295,6 +405,38 @@
       "reading": {
         "expected": "でぃいめえるにがぞうをおくるほうほう",
         "spoken": "でぃいめえるにがぞうをおくるほうほう",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "問題6、その方法がよい理由は何ですか。",
+      "file": "28.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 3.53,
+      "longestPause": 0.32,
+      "transcript": "問題 6 その 方法 が よい 理由 は なん です か ?",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "もんだいろくそのほうほうがよいりゆうはなんですか",
+        "spoken": "もんだいろくそのほうほうがよいりゆうはなんですか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "A、商品画像が増えても管理しやすいから。",
+      "file": "29.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 3.33,
+      "longestPause": 0.41,
+      "transcript": "A、商品画像が増えても管理しやすいから。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "ええしょうひんがぞうがふえてもかんりしやすいから",
+        "spoken": "ええしょうひんがぞうがふえてもかんりしやすいから",
         "distance": 0
       }
     },
@@ -348,6 +490,38 @@
     },
     {
       "speaker": "narration",
+      "text": "問題7、S3を使うと、今のサーバーについて、どんなよいことがありますか。",
+      "file": "33.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 6.35,
+      "longestPause": 0.65,
+      "transcript": "問題 7 S 3 を 使う と 、 今 の サーバー に つい て 、 どんな 良い こと が あり ます か ?",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "もんだいななsさんをつかうといまのさあばあについてどんなよいことがありますか",
+        "spoken": "もんだいななsさんをつかうといまのさあばあについてどんなよいことがありますか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "A、サーバーを使わなくなる。",
+      "file": "34.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 2.28,
+      "longestPause": 0.17,
+      "transcript": "サーバーを使わなくなる。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "aさあばあをつかわなくなる",
+        "spoken": "さあばあをつかわなくなる",
+        "distance": 1
+      }
+    },
+    {
+      "speaker": "narration",
       "text": "ビー、サーバーにたくさんの画像を保存しなくてもよい。",
       "file": "35.wav",
       "voice": "Puck",
@@ -392,6 +566,38 @@
         "expected": "でぃいさあばあのろぐがきえる",
         "spoken": "でぃいさあばあのろぐがきえる",
         "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "問題8、小林さんの説明では、100GB保存すると、月にだいたいいくらですか。",
+      "file": "38.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 7.01,
+      "longestPause": 0.68,
+      "transcript": "問題 8 小林 さん の 説明 で は 100GB 保存 する と 、 月 に 大体 いくら です か ?",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "もんだいはちこばやしさんのせつめいではひゃくぎがばいとほぞんするとつきにだいたいいくらですか",
+        "spoken": "もんだいはちこばやしさんのせつめいではひゃくぎがばいとほぞんするとつきにだいたいいくらですか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "A、36円。",
+      "file": "39.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 1.79,
+      "longestPause": 0.5,
+      "transcript": "あ 、36円",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "aさんろくえん",
+        "spoken": "あさんろくえん",
+        "distance": 1
       }
     },
     {
@@ -444,6 +650,38 @@
     },
     {
       "speaker": "narration",
+      "text": "問題9、保存料金のほかに、料金がかかる場合があるのは何ですか。",
+      "file": "43.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 5.21,
+      "longestPause": 0.48,
+      "transcript": "問題 9 保存 料金 の 他 に 料金 が かかる 場合 が ある の は 何 です か ?",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "もんだいきゅうほぞんりょうきんのほかにりょうきんがかかるばあいがあるのはなんですか",
+        "spoken": "もんだいきゅうほぞんりょうきんのほかにりょうきんがかかるばあいがあるのはなんですか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "A、データの送信やリクエスト。",
+      "file": "44.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 3.09,
+      "longestPause": 0.63,
+      "transcript": "A、データの送信やリクエスト。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "ええでえたのそうしんやりくえすと",
+        "spoken": "ええでえたのそうしんやりくえすと",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
       "text": "ビー、会議の時間。",
       "file": "45.wav",
       "voice": "Puck",
@@ -488,6 +726,38 @@
         "expected": "でぃいがぞうのふぁいるめい",
         "spoken": "でぃいがぞのふぁいるめい",
         "distance": 1
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "問題10、加藤さんは、最後に何をお願いしましたか。",
+      "file": "48.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 3.72,
+      "longestPause": 0.37,
+      "transcript": "問題 10 加藤 さん は 最後 に 何 を お 願い し まし た か ?",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "もんだいじゅうかとうさんはさいごになにをおねがいしましたか",
+        "spoken": "もんだいじゅうかとうさんはさいごになにをおねがいしましたか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "A、画像をすべて消す。",
+      "file": "49.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 2.46,
+      "longestPause": 0.53,
+      "transcript": "A、画像をすべて消す。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "ええがぞうをすべてけす",
+        "spoken": "ええがぞうをすべてけす",
+        "distance": 0
       }
     },
     {
