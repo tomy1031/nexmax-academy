@@ -2,8 +2,10 @@
   "listeningId": "paper_listening_2_narration",
   "gapSeconds": 0.5,
   "compareGapSeconds": [],
-  "complete": true,
-  "missing": [],
+  "complete": false,
+  "missing": [
+    5
+  ],
   "sentences": [
     {
       "speaker": "narration",
@@ -67,22 +69,6 @@
         "expected": "こばやしさんはなにについてちょうさしましたか",
         "spoken": "こばやしさんはなにについてちょうさしましたか",
         "distance": 0
-      }
-    },
-    {
-      "speaker": "narration",
-      "text": "エー、画像を保存する方法。",
-      "file": "05.wav",
-      "voice": "Puck",
-      "model": "gemini-3.8-live",
-      "seconds": 2.8,
-      "longestPause": 0.01,
-      "transcript": "画像を保存する方法。",
-      "transcriptBy": "gemini-3.8-live",
-      "reading": {
-        "expected": "ええがぞうをほぞんするほうほう",
-        "spoken": "がぞうをほぞんするほうほう",
-        "distance": 2
       }
     },
     {
