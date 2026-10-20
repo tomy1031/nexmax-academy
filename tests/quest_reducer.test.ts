@@ -275,7 +275,8 @@ describe("隠れリスクの 爆発", () => {
     return { before, after: advance(before) };
   }
 
-  it("第8章テストの 入口（phaseId 22）で 鳴る", () => {
+  it("場面5（第2章の 2問目）の 入口で 鳴る — 原典どおり", () => {
+    expect(RISK_PHASE_ID).toBe(5);
     const { before, after } = atExplosion(RISK_PHASE_ID, 4);
     expect(before.hiddenRisk).toBe(4);
     expect(quest.phases[after.phaseIndex]!.id).toBe(RISK_PHASE_ID);
@@ -289,9 +290,9 @@ describe("隠れリスクの 爆発", () => {
     expect(after.hiddenRisk).toBe(0);
   });
 
-  it("原典の phaseId 5（第2章の 1問目）では 鳴らない — 旧版の 名残の バグ", () => {
-    const { before, after } = atExplosion(5, 9);
-    expect(quest.phases[after.phaseIndex]!.id).toBe(5);
+  it("第8章テストの 入口（phaseId 22）では 鳴らない — 鳴るのは 場面5の 1回だけ", () => {
+    const { before, after } = atExplosion(22, 9);
+    expect(quest.phases[after.phaseIndex]!.id).toBe(22);
     expect(after.event).toBeNull();
     expect(after.hiddenRisk).toBe(9);
     after.players.forEach((player, index) => {
@@ -321,7 +322,7 @@ describe("隠れリスクの 爆発", () => {
     expect(state.hiddenRisk).toBe(20);
   });
 
-  it("しらせを 読み終えると そのまま テストの 場面が 始まる", () => {
+  it("しらせを 読み終えると そのまま 場面5が 始まる", () => {
     const state = advance(atExplosion(RISK_PHASE_ID, 3).after);
     expect(state.event).toBeNull();
     expect(quest.phases[state.phaseIndex]!.id).toBe(RISK_PHASE_ID);
