@@ -67,8 +67,8 @@ export const YOMI_ALLOW: readonly YomiAllowEntry[] = [
   {
     surface: "注ぐ",
     reading: "つぐ",
-    where: "どんどん",
-    note: "まんが「空気を 読むって なに？」の 選択肢「だまって どんどん 注ぐ」（グラスに 飲みものを）",
+    where: "ビール",
+    note: "まんが「空気を 読むって なに？」の 選択肢「だまって ビールを 注ぐ」（グラスに 飲みものを）",
   },
   {
     surface: "注ぎます。",
