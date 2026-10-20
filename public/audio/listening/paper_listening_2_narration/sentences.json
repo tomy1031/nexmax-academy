@@ -4,7 +4,6 @@
   "compareGapSeconds": [],
   "complete": false,
   "missing": [
-    14,
     19
   ],
   "sentences": [
@@ -213,6 +212,22 @@
       "reading": {
         "expected": "もんだいさんひとつめはどこにがぞうをほぞんするほうほうですか",
         "spoken": "もんだいさんひとつめはどこにがぞうをほぞんするほうほうですか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "エイ、スマートフォン。",
+      "file": "14.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 1.52,
+      "longestPause": 0.35,
+      "transcript": "A スマートフォン",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "えいすまあとふぉん",
+        "spoken": "えいすまあとふぉん",
         "distance": 0
       }
     },
