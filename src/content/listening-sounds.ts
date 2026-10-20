@@ -138,7 +138,8 @@ const LEDGER: Readonly<Record<string, readonly FuriganaEntry[]>> = {
 const PAPER_NARRATION: readonly FuriganaEntry[] = [
   ...LEDGER.houkoku_shougai_listening!,
   ...LEDGER.houkoku_chousa_listening!,
-  ["A", "えー"],
+  ["A", "えい"],
+  ["エイ", "えい"],
   ["B", "びー"],
   ["C", "しー"],
   ["D", "でぃー"],
@@ -157,6 +158,8 @@ const PAPER_NARRATION: readonly FuriganaEntry[] = [
   ["36,000円", "さんまんろくせんえん"],
   ["36000円", "さんまんろくせんえん"],
   ["0円", "ぜろえん"],
+  ["2つめ", "ふたつめ"],
+  ["二つめ", "ふたつめ"],
   ["Cloudflare", "くらうどふれあ"],
   ["R2", "あーるつー"],
   // 文字起こしが 漢数字や 万で 書く 形

@@ -4,8 +4,17 @@
   "compareGapSeconds": [],
   "complete": false,
   "missing": [
+    4,
     9,
-    18
+    14,
+    18,
+    19,
+    24,
+    29,
+    34,
+    39,
+    44,
+    49
   ],
   "sentences": [
     {
@@ -54,22 +63,6 @@
         "expected": "もんだいいちこばやしさんはなにについてちょうさしましたか",
         "spoken": "もんだいいちこばやしさんはなにについてちょうさしましたか",
         "distance": 0
-      }
-    },
-    {
-      "speaker": "narration",
-      "text": "A、画像を保存する方法。",
-      "file": "04.wav",
-      "voice": "Puck",
-      "model": "gemini-3.8-live",
-      "seconds": 2.89,
-      "longestPause": 0.58,
-      "transcript": "画像 を 保存 する 方法",
-      "transcriptBy": "gemini-3.5-flash-lite",
-      "reading": {
-        "expected": "aがぞうをほぞんするほうほう",
-        "spoken": "がぞうをほぞんするほうほう",
-        "distance": 1
       }
     },
     {
@@ -202,22 +195,6 @@
     },
     {
       "speaker": "narration",
-      "text": "A、スマートフォン。",
-      "file": "14.wav",
-      "voice": "Puck",
-      "model": "gemini-3.8-live",
-      "seconds": 1.89,
-      "longestPause": 0.67,
-      "transcript": "あ スマートフォン",
-      "transcriptBy": "gemini-3.5-flash-lite",
-      "reading": {
-        "expected": "aすまあとふぉん",
-        "spoken": "あすまあとふぉん",
-        "distance": 1
-      }
-    },
-    {
-      "speaker": "narration",
       "text": "ビー、AWSのS3。",
       "file": "15.wav",
       "voice": "Puck",
@@ -261,22 +238,6 @@
       "reading": {
         "expected": "でぃいぱそこん",
         "spoken": "でぃいぱそこん",
-        "distance": 0
-      }
-    },
-    {
-      "speaker": "narration",
-      "text": "A、AWSのS3。",
-      "file": "19.wav",
-      "voice": "Puck",
-      "model": "gemini-3.8-live",
-      "seconds": 2.84,
-      "longestPause": 0.52,
-      "transcript": "A、AWSのS3。",
-      "transcriptBy": "gemini-3.8-live",
-      "reading": {
-        "expected": "ええええだぶりゅうえすのえすすりい",
-        "spoken": "ええええだぶりゅうえすのえすすりい",
         "distance": 0
       }
     },
@@ -346,22 +307,6 @@
     },
     {
       "speaker": "narration",
-      "text": "A、今のサーバーを使う方法。",
-      "file": "24.wav",
-      "voice": "Puck",
-      "model": "gemini-3.8-live",
-      "seconds": 2.5,
-      "longestPause": 0.39,
-      "transcript": "あ 、 今 の サーバー を 使う 方法",
-      "transcriptBy": "gemini-3.5-flash-lite",
-      "reading": {
-        "expected": "aいまのさあばあをつかうほうほう",
-        "spoken": "あいまのさあばあをつかうほうほう",
-        "distance": 1
-      }
-    },
-    {
-      "speaker": "narration",
       "text": "ビー、AWSのS3を使う方法。",
       "file": "25.wav",
       "voice": "Puck",
@@ -421,22 +366,6 @@
       "reading": {
         "expected": "もんだいろくそのほうほうがよいりゆうはなんですか",
         "spoken": "もんだいろくそのほうほうがよいりゆうはなんですか",
-        "distance": 0
-      }
-    },
-    {
-      "speaker": "narration",
-      "text": "A、商品画像が増えても管理しやすいから。",
-      "file": "29.wav",
-      "voice": "Puck",
-      "model": "gemini-3.8-live",
-      "seconds": 3.33,
-      "longestPause": 0.41,
-      "transcript": "A、商品画像が増えても管理しやすいから。",
-      "transcriptBy": "gemini-3.8-live",
-      "reading": {
-        "expected": "ええしょうひんがぞうがふえてもかんりしやすいから",
-        "spoken": "ええしょうひんがぞうがふえてもかんりしやすいから",
         "distance": 0
       }
     },
@@ -506,22 +435,6 @@
     },
     {
       "speaker": "narration",
-      "text": "A、サーバーを使わなくなる。",
-      "file": "34.wav",
-      "voice": "Puck",
-      "model": "gemini-3.8-live",
-      "seconds": 2.28,
-      "longestPause": 0.17,
-      "transcript": "サーバーを使わなくなる。",
-      "transcriptBy": "gemini-3.8-live",
-      "reading": {
-        "expected": "aさあばあをつかわなくなる",
-        "spoken": "さあばあをつかわなくなる",
-        "distance": 1
-      }
-    },
-    {
-      "speaker": "narration",
       "text": "ビー、サーバーにたくさんの画像を保存しなくてもよい。",
       "file": "35.wav",
       "voice": "Puck",
@@ -582,22 +495,6 @@
         "expected": "もんだいはちこばやしさんのせつめいではひゃくぎがばいとほぞんするとつきにだいたいいくらですか",
         "spoken": "もんだいはちこばやしさんのせつめいではひゃくぎがばいとほぞんするとつきにだいたいいくらですか",
         "distance": 0
-      }
-    },
-    {
-      "speaker": "narration",
-      "text": "A、36円。",
-      "file": "39.wav",
-      "voice": "Puck",
-      "model": "gemini-3.8-live",
-      "seconds": 1.79,
-      "longestPause": 0.5,
-      "transcript": "あ 、36円",
-      "transcriptBy": "gemini-3.5-flash-lite",
-      "reading": {
-        "expected": "aさんろくえん",
-        "spoken": "あさんろくえん",
-        "distance": 1
       }
     },
     {
@@ -666,22 +563,6 @@
     },
     {
       "speaker": "narration",
-      "text": "A、データの送信やリクエスト。",
-      "file": "44.wav",
-      "voice": "Puck",
-      "model": "gemini-3.8-live",
-      "seconds": 3.09,
-      "longestPause": 0.63,
-      "transcript": "A、データの送信やリクエスト。",
-      "transcriptBy": "gemini-3.8-live",
-      "reading": {
-        "expected": "ええでえたのそうしんやりくえすと",
-        "spoken": "ええでえたのそうしんやりくえすと",
-        "distance": 0
-      }
-    },
-    {
-      "speaker": "narration",
       "text": "ビー、会議の時間。",
       "file": "45.wav",
       "voice": "Puck",
@@ -741,22 +622,6 @@
       "reading": {
         "expected": "もんだいじゅうかとうさんはさいごになにをおねがいしましたか",
         "spoken": "もんだいじゅうかとうさんはさいごになにをおねがいしましたか",
-        "distance": 0
-      }
-    },
-    {
-      "speaker": "narration",
-      "text": "A、画像をすべて消す。",
-      "file": "49.wav",
-      "voice": "Puck",
-      "model": "gemini-3.8-live",
-      "seconds": 2.46,
-      "longestPause": 0.53,
-      "transcript": "A、画像をすべて消す。",
-      "transcriptBy": "gemini-3.8-live",
-      "reading": {
-        "expected": "ええがぞうをすべてけす",
-        "spoken": "ええがぞうをすべてけす",
         "distance": 0
       }
     },
