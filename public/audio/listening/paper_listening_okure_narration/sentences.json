@@ -1,0 +1,265 @@
+{
+  "listeningId": "paper_listening_okure_narration",
+  "gapSeconds": 0.5,
+  "compareGapSeconds": [],
+  "complete": true,
+  "missing": [],
+  "sentences": [
+    {
+      "speaker": "narration",
+      "text": "リスニング問題1。",
+      "file": "01.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 1.93,
+      "longestPause": 0.25,
+      "transcript": "リスニング 問題 1",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "りすにんぐもんだいいち",
+        "spoken": "りすにんぐもんだいいち",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "会話を聞いて、正しい答えを選んでください。",
+      "file": "02.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 3.01,
+      "longestPause": 0.05,
+      "transcript": "会話を聞いて正しい答えを選んでください。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "かいわをきいてただしいこたえをえらんでください",
+        "spoken": "かいわをきいてただしいこたえをえらんでください",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "問題1。",
+      "file": "03.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 1.04,
+      "longestPause": 0.01,
+      "transcript": "問題 1",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "もんだいいち",
+        "spoken": "もんだいいち",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "山田さんは、何について報告しましたか。",
+      "file": "04.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 2.78,
+      "longestPause": 0.03,
+      "transcript": "山田 さん は 何 について 報告 し まし た か ?",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "やまださんはなにについてほうこくしましたか",
+        "spoken": "やまださんはなにについてほうこくしましたか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "問題2。",
+      "file": "05.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 0.79,
+      "longestPause": 0,
+      "transcript": "問題 2",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "もんだいに",
+        "spoken": "もんだいに",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "その仕事は、いつ終わる予定でしたか。",
+      "file": "06.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 2.85,
+      "longestPause": 0.31,
+      "transcript": "その 仕事 は いつ 終わる 予定 でし た か ?",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "そのしごとはいつおわるよていでしたか",
+        "spoken": "そのしごとはいつおわるよていでしたか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "問題3。",
+      "file": "07.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 1.1,
+      "longestPause": 0,
+      "transcript": "問題 3",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "もんだいさん",
+        "spoken": "もんだいさん",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "山田さんが遅れそうな理由は何ですか。",
+      "file": "08.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 2.75,
+      "longestPause": 0.03,
+      "transcript": "山田 さん が 遅れ そう な 理由 は 何 です か ?",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "やまださんがおくれそうなりゆうはなんですか",
+        "spoken": "やまださんがおくれそうなりゆうはなんですか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "問題4。",
+      "file": "09.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 1.13,
+      "longestPause": 0,
+      "transcript": "問題 4",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "もんだいよん",
+        "spoken": "もんだいよん",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "山田さんは今、CSVのデータについて何をしていますか。",
+      "file": "10.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 4.71,
+      "longestPause": 0.16,
+      "transcript": "山田さんは今、CSVのデータについて何をしていますか。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "やまださんはいましいえすぶいのでえたについてなにをしていますか",
+        "spoken": "やまださんはいましいえすぶいのでえたについてなにをしていますか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "問題5。",
+      "file": "11.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 0.97,
+      "longestPause": 0,
+      "transcript": "問題 5",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "もんだいご",
+        "spoken": "もんだいご",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "山田さんは、エラーについて何をテストしていますか。",
+      "file": "12.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 3.87,
+      "longestPause": 0.23,
+      "transcript": "山田さんは、エラーについて何をテストしていますか。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "やまださんはえらあについてなにをてすとしていますか",
+        "spoken": "やまださんはえらあについてなにをてすとしていますか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "問題6。",
+      "file": "13.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 1.37,
+      "longestPause": 0.24,
+      "transcript": "問題 6",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "もんだいろく",
+        "spoken": "もんだいろく",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "山田さんは、いつまでに仕事が終わると思っていますか。",
+      "file": "14.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 3.73,
+      "longestPause": 0.25,
+      "transcript": "山田 さん は いつ まで に 仕事 が 終わる と 思っ て い ます か ?",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "やまださんはいつまでにしごとがおわるとおもっていますか",
+        "spoken": "やまださんはいつまでにしごとがおわるとおもっていますか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "問題7。",
+      "file": "15.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 0.98,
+      "longestPause": 0,
+      "transcript": "問題 7",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "もんだいなな",
+        "spoken": "もんだいなな",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "鈴木さんは、いつまでにもう一度状況を報告するように言いましたか。",
+      "file": "16.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 5.05,
+      "longestPause": 0.28,
+      "transcript": "鈴木さんは、いつまでにもう一度状況を報告するように言いましたか。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "すずきさんはいつまでにもういちどじょうきょうをほうこくするようにいいましたか",
+        "spoken": "すずきさんはいつまでにもういちどじょうきょうをほうこくするようにいいましたか",
+        "distance": 0
+      }
+    }
+  ]
+}
