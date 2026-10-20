@@ -2,12 +2,8 @@
   "listeningId": "paper_listening_1_narration",
   "gapSeconds": 0.5,
   "compareGapSeconds": [],
-  "complete": false,
-  "missing": [
-    18,
-    25,
-    49
-  ],
+  "complete": true,
+  "missing": [],
   "sentences": [
     {
       "speaker": "narration",
@@ -283,18 +279,18 @@
     },
     {
       "speaker": "narration",
-      "text": "ビー、商品が見えない。",
+      "text": "ビー、商品が表示されない。",
       "file": "18.wav",
       "voice": "Puck",
       "model": "gemini-3.8-live",
-      "seconds": 2.18,
-      "longestPause": 0.6,
-      "transcript": "B商品 が 見え ない 。",
-      "transcriptBy": "gemini-3.5-flash-lite",
+      "seconds": 2.47,
+      "longestPause": 0.29,
+      "transcript": "ビー、商品が表示され",
+      "transcriptBy": "gemini-3.8-live",
       "reading": {
-        "expected": "びいしょうひんがみえない",
-        "spoken": "びいしょうひんがみえない",
-        "distance": 0
+        "expected": "びいしょうひんがひょうじされない",
+        "spoken": "びいしょうひんがひょうじされ",
+        "distance": 2
       }
     },
     {
@@ -395,18 +391,18 @@
     },
     {
       "speaker": "narration",
-      "text": "シー、カードを使わないで支払うユーザー。",
+      "text": "シー、現金で支払うユーザー。",
       "file": "25.wav",
       "voice": "Puck",
       "model": "gemini-3.8-live",
-      "seconds": 3.16,
-      "longestPause": 0.16,
-      "transcript": "次 、 カード を 使わ ない で 支払う ユーザー 。",
-      "transcriptBy": "gemini-3.5-flash-lite",
+      "seconds": 2.68,
+      "longestPause": 0.43,
+      "transcript": "シー、現金で支払うユーザー。",
+      "transcriptBy": "gemini-3.8-live",
       "reading": {
-        "expected": "しいかあどをつかわないでしはらうゆうざあ",
-        "spoken": "つぎかあどをつかわないでしはらうゆうざあ",
-        "distance": 2
+        "expected": "しいげんきんでしはらうゆうざあ",
+        "spoken": "しいげんきんでしはらうゆうざあ",
+        "distance": 0
       }
     },
     {
@@ -779,18 +775,18 @@
     },
     {
       "speaker": "narration",
-      "text": "シー、自分でやることを決めてよい。",
+      "text": "シー、自分で決めて良い。",
       "file": "49.wav",
       "voice": "Puck",
       "model": "gemini-3.8-live",
-      "seconds": 2.96,
-      "longestPause": 0.55,
-      "transcript": "し 、 自分 で やる こと を 決め て 良い 。",
+      "seconds": 1.96,
+      "longestPause": 0.36,
+      "transcript": "自分 で 決め て いい 。",
       "transcriptBy": "gemini-3.5-flash-lite",
       "reading": {
-        "expected": "しいじぶんでやることをきめてよい",
-        "spoken": "しじぶんでやることをきめてよい",
-        "distance": 1
+        "expected": "しいじぶんできめていい",
+        "spoken": "じぶんできめていい",
+        "distance": 2
       }
     },
     {
