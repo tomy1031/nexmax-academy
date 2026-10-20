@@ -2,8 +2,12 @@
   "listeningId": "paper_listening_1_narration",
   "gapSeconds": 0.5,
   "compareGapSeconds": [],
-  "complete": true,
-  "missing": [],
+  "complete": false,
+  "missing": [
+    18,
+    25,
+    49
+  ],
   "sentences": [
     {
       "speaker": "narration",
