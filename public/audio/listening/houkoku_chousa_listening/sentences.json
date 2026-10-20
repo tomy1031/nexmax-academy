@@ -59,9 +59,9 @@
       "file": "04.wav",
       "voice": "Gacrux",
       "model": "gemini-3.8-live",
-      "seconds": 0.71,
+      "seconds": 0.88,
       "longestPause": 0,
-      "transcript": "お願い し ます 。",
+      "transcript": "お願いします",
       "transcriptBy": "gemini-3.5-flash-lite",
       "reading": {
         "expected": "おねがいします",
