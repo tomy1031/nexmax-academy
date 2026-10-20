@@ -2,11 +2,8 @@
   "listeningId": "paper_listening_okure_narration",
   "gapSeconds": 0.5,
   "compareGapSeconds": [],
-  "complete": false,
-  "missing": [
-    6,
-    14
-  ],
+  "complete": true,
+  "missing": [],
   "sentences": [
     {
       "speaker": "narration",
@@ -90,17 +87,17 @@
     },
     {
       "speaker": "narration",
-      "text": "その仕事は、いつ終わる予定でしたか。",
+      "text": "その作業は、いつ終わる予定でしたか。",
       "file": "06.wav",
       "voice": "Puck",
       "model": "gemini-3.8-live",
-      "seconds": 2.85,
-      "longestPause": 0.31,
-      "transcript": "その 仕事 は いつ 終わる 予定 でし た か ?",
-      "transcriptBy": "gemini-3.5-flash-lite",
+      "seconds": 2.84,
+      "longestPause": 0.33,
+      "transcript": "その作業は、いつ終わる予定でしたか。",
+      "transcriptBy": "gemini-3.8-live",
       "reading": {
-        "expected": "そのしごとはいつおわるよていでしたか",
-        "spoken": "そのしごとはいつおわるよていでしたか",
+        "expected": "そのさぎょうはいつおわるよていでしたか",
+        "spoken": "そのさぎょうはいつおわるよていでしたか",
         "distance": 0
       }
     },
@@ -218,17 +215,17 @@
     },
     {
       "speaker": "narration",
-      "text": "山田さんは、いつまでに仕事が終わると思っていますか。",
+      "text": "山田さんは、いつまでに作業が終わると思っていますか。",
       "file": "14.wav",
       "voice": "Puck",
       "model": "gemini-3.8-live",
-      "seconds": 3.73,
-      "longestPause": 0.25,
-      "transcript": "山田 さん は いつ まで に 仕事 が 終わる と 思っ て い ます か ?",
-      "transcriptBy": "gemini-3.5-flash-lite",
+      "seconds": 3.88,
+      "longestPause": 0.12,
+      "transcript": "山田さんは、いつまでに作業が終わると思っていますか。",
+      "transcriptBy": "gemini-3.8-live",
       "reading": {
-        "expected": "やまださんはいつまでにしごとがおわるとおもっていますか",
-        "spoken": "やまださんはいつまでにしごとがおわるとおもっていますか",
+        "expected": "やまださんはいつまでにさぎょうがおわるとおもっていますか",
+        "spoken": "やまださんはいつまでにさぎょうがおわるとおもっていますか",
         "distance": 0
       }
     },
