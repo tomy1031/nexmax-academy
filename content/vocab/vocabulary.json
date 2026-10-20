@@ -19270,6 +19270,374 @@
           "け"
         ]
       ]
+    },
+    {
+      "id": "kappuru",
+      "term": "カップル",
+      "reading": "かっぷる",
+      "romaji": "kappuru",
+      "meaningJa": "つきあって いる 二人です。",
+      "englishTerm": "Couple",
+      "example": "カップルが 電車に 乗って きました。",
+      "furigana": [
+        [
+          "電車",
+          "でんしゃ"
+        ],
+        [
+          "乗",
+          "の"
+        ],
+        [
+          "二人",
+          "ふたり"
+        ],
+        [
+          "人",
+          "ひと"
+        ]
+      ]
+    },
+    {
+      "id": "yarisugi",
+      "term": "やりすぎ",
+      "reading": "やりすぎ",
+      "romaji": "yarisugi",
+      "meaningJa": "ひつようより たくさん する ことです。",
+      "englishTerm": "Overdoing it",
+      "example": "それは やりすぎです。"
+    },
+    {
+      "id": "nomikai",
+      "term": "飲み会",
+      "reading": "のみかい",
+      "romaji": "nomikai",
+      "meaningJa": "仕事の あとに、みんなで 食べたり 飲んだり する 会です。",
+      "englishTerm": "Drinking party (after work)",
+      "example": "金曜日に 飲み会が あります。",
+      "furigana": [
+        [
+          "食",
+          "た"
+        ],
+        [
+          "日",
+          "ひ"
+        ],
+        [
+          "仕事",
+          "しごと"
+        ],
+        [
+          "飲",
+          "の"
+        ],
+        [
+          "会です",
+          "かいです"
+        ],
+        [
+          "金曜日",
+          "きんようび"
+        ]
+      ]
+    },
+    {
+      "id": "gurasu",
+      "term": "グラス",
+      "reading": "ぐらす",
+      "romaji": "gurasu",
+      "meaningJa": "飲みものを 入れる コップです。",
+      "englishTerm": "Glass",
+      "example": "グラスに 水を 入れます。",
+      "furigana": [
+        [
+          "飲",
+          "の"
+        ],
+        [
+          "水",
+          "みず"
+        ],
+        [
+          "入れ",
+          "いれ"
+        ]
+      ]
+    },
+    {
+      "id": "tsugu",
+      "term": "注ぐ",
+      "reading": "つぐ",
+      "romaji": "tsugu",
+      "meaningJa": "グラスに 飲みものを 入れる ことです。",
+      "englishTerm": "To pour (a drink)",
+      "example": "先輩の グラスに お茶を 注ぎます。",
+      "furigana": [
+        [
+          "先輩",
+          "せんぱい"
+        ],
+        [
+          "注",
+          "つ"
+        ],
+        [
+          "飲",
+          "の"
+        ],
+        [
+          "入れ",
+          "いれ"
+        ],
+        [
+          "茶",
+          "ちゃ"
+        ]
+      ]
+    },
+    {
+      "id": "otsugi",
+      "term": "お注ぎしましょうか",
+      "reading": "おつぎしましょうか",
+      "romaji": "otsugi",
+      "meaningJa": "「飲みものを 注ぎましょうか」の ていねいな 言い方です。",
+      "englishTerm": "Shall I pour for you?",
+      "example": "お注ぎしましょうか？",
+      "furigana": [
+        [
+          "言",
+          "い"
+        ],
+        [
+          "注",
+          "つ"
+        ],
+        [
+          "言い方",
+          "いいかた"
+        ],
+        [
+          "飲",
+          "の"
+        ]
+      ]
+    },
+    {
+      "id": "karaage",
+      "term": "からあげ",
+      "reading": "からあげ",
+      "romaji": "karaage",
+      "meaningJa": "とりにくを あぶらで あげた 食べものです。",
+      "englishTerm": "Fried chicken (karaage)",
+      "example": "からあげが 1こ 残って います。",
+      "furigana": [
+        [
+          "残",
+          "のこ"
+        ],
+        [
+          "食",
+          "た"
+        ]
+      ]
+    },
+    {
+      "id": "enryo",
+      "term": "遠慮",
+      "reading": "えんりょ",
+      "romaji": "enryo",
+      "meaningJa": "ほかの 人の ことを 思って、したい ことを しない ことです。",
+      "englishTerm": "Holding back (out of consideration)",
+      "example": "遠慮しないで 食べて ください。",
+      "furigana": [
+        [
+          "食",
+          "た"
+        ],
+        [
+          "人",
+          "ひと"
+        ],
+        [
+          "思",
+          "おも"
+        ]
+      ]
+    },
+    {
+      "id": "nenpai",
+      "term": "年配",
+      "reading": "ねんぱい",
+      "romaji": "nenpai",
+      "meaningJa": "年を とって いる ことです。",
+      "englishTerm": "Elderly / Older",
+      "example": "年配の 人に 席を ゆずります。",
+      "furigana": [
+        [
+          "席",
+          "せき"
+        ],
+        [
+          "人",
+          "ひと"
+        ],
+        [
+          "年を",
+          "としを"
+        ]
+      ]
+    },
+    {
+      "id": "yuusenseki",
+      "term": "優先席",
+      "reading": "ゆうせんせき",
+      "romaji": "yuusenseki",
+      "meaningJa": "お年寄りや からだの 弱い 人の ための 席です。シルバーシートとも 言います。",
+      "englishTerm": "Priority seat",
+      "example": "ここは 優先席です。",
+      "furigana": [
+        [
+          "席",
+          "せき"
+        ],
+        [
+          "言",
+          "い"
+        ],
+        [
+          "人",
+          "ひと"
+        ],
+        [
+          "年寄り",
+          "としより"
+        ],
+        [
+          "弱",
+          "よわ"
+        ]
+      ]
+    },
+    {
+      "id": "yuzuru",
+      "term": "ゆずる",
+      "reading": "ゆずる",
+      "romaji": "yuzuru",
+      "meaningJa": "自分の 席などを、ほかの 人に つかって もらう ことです。",
+      "englishTerm": "To give up (your seat) for someone",
+      "example": "席を ゆずります。",
+      "furigana": [
+        [
+          "席",
+          "せき"
+        ],
+        [
+          "人",
+          "ひと"
+        ],
+        [
+          "自分",
+          "じぶん"
+        ]
+      ]
+    },
+    {
+      "id": "toshiyori",
+      "term": "年寄り",
+      "reading": "としより",
+      "romaji": "toshiyori",
+      "meaningJa": "年を とった 人です。言い方に よっては 失礼に 聞こえます。",
+      "englishTerm": "Old person (can sound rude)",
+      "example": "わたしは まだ 年寄りでは ありません。",
+      "furigana": [
+        [
+          "聞",
+          "き"
+        ],
+        [
+          "言",
+          "い"
+        ],
+        [
+          "人",
+          "ひと"
+        ],
+        [
+          "言い方",
+          "いいかた"
+        ],
+        [
+          "年を",
+          "としを"
+        ],
+        [
+          "失礼",
+          "しつれい"
+        ]
+      ]
+    },
+    {
+      "id": "yousu",
+      "term": "ようす",
+      "reading": "ようす",
+      "romaji": "yousu",
+      "meaningJa": "見て 分かる、人の 元気さや 気もちです。",
+      "englishTerm": "Condition / How someone looks",
+      "example": "先輩の ようすを 見ます。",
+      "furigana": [
+        [
+          "見",
+          "み"
+        ],
+        [
+          "分か",
+          "わか"
+        ],
+        [
+          "先輩",
+          "せんぱい"
+        ],
+        [
+          "気",
+          "き"
+        ],
+        [
+          "人",
+          "ひと"
+        ],
+        [
+          "元気",
+          "げんき"
+        ]
+      ]
+    },
+    {
+      "id": "tsukareru",
+      "term": "疲れて",
+      "reading": "つかれて",
+      "romaji": "tsukareru",
+      "meaningJa": "たくさん 動いて、力が なく なった ようすです。",
+      "englishTerm": "Tired",
+      "example": "仕事の あとで 疲れて います。",
+      "furigana": [
+        [
+          "動",
+          "うご"
+        ],
+        [
+          "疲",
+          "つか"
+        ],
+        [
+          "力",
+          "ちから"
+        ],
+        [
+          "仕事",
+          "しごと"
+        ]
+      ]
     }
   ]
 }

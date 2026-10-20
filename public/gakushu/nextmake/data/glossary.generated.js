@@ -2110,6 +2110,12 @@ export const GLOSSARY = [
     en: "Requirements definition",
   },
   {
+    term: "ようす",
+    reading: "ようす",
+    meaning: "見て 分かる、人の 元気さや 気もちです。",
+    en: "Condition / How someone looks",
+  },
+  {
     term: "要望",
     reading: "ようぼう",
     meaning: "こう して ほしい、と いう ねがいです。",

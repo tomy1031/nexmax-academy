@@ -16,19 +16,24 @@
       "role": "新人エンジニア（あなた）"
     },
     {
-      "id": "futari",
-      "name": "二人の お客さん",
-      "role": "ラーメン屋の お客さん"
-    },
-    {
-      "id": "shashin",
-      "name": "写真を とる 二人",
-      "role": "観光地に いる 人"
+      "id": "couple",
+      "name": "カップル",
+      "role": "電車に 乗って きた 二人"
     },
     {
       "id": "senpai",
       "name": "先輩",
       "role": "同じ 会社の 先輩"
+    },
+    {
+      "id": "bucho",
+      "name": "部長",
+      "role": "同じ 会社の 部長"
+    },
+    {
+      "id": "obaasan",
+      "name": "年配の 女性",
+      "role": "電車の 中の 人"
     }
   ],
   "castIds": [
@@ -39,22 +44,24 @@
     "kuuki",
     "seki",
     "aite_iru",
-    "mannaka",
     "zureru",
-    "kauntaa",
-    "raamen_ya",
-    "sofuto_kuriimu",
-    "piisu",
-    "yokeru",
+    "kappuru",
+    "sharyou",
+    "yarisugi",
+    "nomikai",
+    "gurasu",
+    "tsugu",
+    "otsugi",
+    "karaage",
+    "enryo",
+    "nenpai",
+    "yuusenseki",
+    "yuzuru",
+    "toshiyori",
+    "yousu",
+    "tsukareru",
     "kizuku",
     "ugoku",
-    "doa",
-    "akeru",
-    "tasukatta",
-    "kokoro",
-    "daijoubu",
-    "karasugita",
-    "karee",
     "hakkiri",
     "suteru",
     "zenzen",
@@ -62,13 +69,8 @@
     "geemu",
     "akai",
     "yaku_ni",
-    "sutto",
-    "shichatta",
-    "kankouchi",
-    "shashin",
-    "komatte",
-    "ouen2",
-    "iken"
+    "iken",
+    "senpai"
   ],
   "pages": [
     {
@@ -77,12 +79,10 @@
         {
           "size": "page",
           "image": {
-            "src": "/img/manga/kuuki_manga/p01.webp",
             "refs": [
-              "/img/characters/hendy/sheet.webp",
-              "scripts/images/refs/kuuki_anata_sheet.webp"
+              "/img/characters/hendy/sheet.webp"
             ],
-            "status": "done",
+            "status": "empty",
             "prompt": "scripts/images/kuuki_manga.json の p01"
           },
           "lines": [
@@ -108,27 +108,41 @@
       ]
     },
     {
-      "title": "クイズ①　ラーメン屋で",
+      "title": "クイズ①　電車で",
       "panels": [
         {
           "size": "page",
           "image": {
-            "src": "/img/manga/kuuki_manga/p02.webp",
             "refs": [
-              "/img/characters/hendy/sheet.webp",
-              "scripts/images/refs/kuuki_anata_sheet.webp"
+              "/img/characters/hendy/sheet.webp"
             ],
-            "status": "done",
+            "status": "empty",
             "prompt": "scripts/images/kuuki_manga.json の p02"
           },
           "lines": [
             {
               "speaker": "narration",
-              "text": "ラーメン屋の カウンター。あなたは 真ん中の 席です。"
+              "text": "電車の 中。あなたは すわって います。"
+            },
+            {
+              "speaker": "narration",
+              "text": "カップルが 乗って きました。"
             },
             {
               "speaker": "narration",
               "text": "空いて いる 席は、あなたの 右と 左だけ。"
+            },
+            {
+              "speaker": "narration",
+              "text": "A　そのまま すわって いる"
+            },
+            {
+              "speaker": "narration",
+              "text": "B　1つ ずれる"
+            },
+            {
+              "speaker": "narration",
+              "text": "C　立って、ほかの 車両へ 行く"
             },
             {
               "speaker": "hendy",
@@ -136,8 +150,12 @@
             }
           ],
           "bakedText": [
-            "ラーメン屋の カウンター。あなたは 真ん中の 席です。",
+            "電車の 中。あなたは すわって います。",
+            "カップルが 乗って きました。",
             "空いて いる 席は、あなたの 右と 左だけ。",
+            "A　そのまま すわって いる",
+            "B　1つ ずれる",
+            "C　立って、ほかの 車両へ 行く",
             "あなたなら、どうする？"
           ]
         }
@@ -149,29 +167,27 @@
         {
           "size": "page",
           "image": {
-            "src": "/img/manga/kuuki_manga/p03.webp",
             "refs": [
-              "/img/characters/hendy/sheet.webp",
-              "scripts/images/refs/kuuki_anata_sheet.webp"
+              "/img/characters/hendy/sheet.webp"
             ],
-            "status": "done",
+            "status": "empty",
             "prompt": "scripts/images/kuuki_manga.json の p03"
           },
           "lines": [
             {
               "speaker": "narration",
-              "text": "❌ そのまま 食べて いると…"
+              "text": "❌ A　そのまま すわって いる"
             },
             {
               "speaker": "narration",
-              "text": "⭕ 1つ ずれると…"
+              "text": "⭕ B　1つ ずれる"
             },
             {
-              "speaker": "anata",
-              "text": "1つ ずれましょうか？"
+              "speaker": "narration",
+              "text": "❌ C　立って、ほかの 車両へ 行く"
             },
             {
-              "speaker": "futari",
+              "speaker": "couple",
               "text": "ありがとう ございます！"
             },
             {
@@ -180,38 +196,48 @@
             },
             {
               "speaker": "hendy",
-              "text": "これが「空気を 読む」です。"
+              "text": "C は やりすぎです。二人が 困ります。"
             }
           ],
           "bakedText": [
-            "❌ そのまま 食べて いると…",
-            "⭕ 1つ ずれると…",
-            "1つ ずれましょうか？",
+            "❌ A　そのまま すわって いる",
+            "⭕ B　1つ ずれる",
+            "❌ C　立って、ほかの 車両へ 行く",
             "ありがとう ございます！",
             "だれも「ずれて」とは 言って いません。でも、見れば 分かります。",
-            "これが「空気を 読む」です。"
+            "C は やりすぎです。二人が 困ります。"
           ]
         }
       ]
     },
     {
-      "title": "クイズ②　観光地で",
+      "title": "クイズ②　飲み会で",
       "panels": [
         {
           "size": "page",
           "image": {
-            "src": "/img/manga/kuuki_manga/p04.webp",
             "refs": [
-              "/img/characters/hendy/sheet.webp",
-              "scripts/images/refs/kuuki_anata_sheet.webp"
+              "/img/characters/hendy/sheet.webp"
             ],
-            "status": "done",
+            "status": "empty",
             "prompt": "scripts/images/kuuki_manga.json の p04"
           },
           "lines": [
             {
               "speaker": "narration",
-              "text": "あなたは ソフトクリームを 食べて います。"
+              "text": "飲み会。となりの 先輩の グラスが、もうすぐ 空に なりそうです。"
+            },
+            {
+              "speaker": "narration",
+              "text": "A　何も しない"
+            },
+            {
+              "speaker": "narration",
+              "text": "B　「お注ぎしましょうか？」と 聞く"
+            },
+            {
+              "speaker": "narration",
+              "text": "C　だまって どんどん 注ぐ"
             },
             {
               "speaker": "hendy",
@@ -219,7 +245,10 @@
             }
           ],
           "bakedText": [
-            "あなたは ソフトクリームを 食べて います。",
+            "飲み会。となりの 先輩の グラスが、もうすぐ 空に なりそうです。",
+            "A　何も しない",
+            "B　「お注ぎしましょうか？」と 聞く",
+            "C　だまって どんどん 注ぐ",
             "あなたなら、どうする？"
           ]
         }
@@ -231,63 +260,77 @@
         {
           "size": "page",
           "image": {
-            "src": "/img/manga/kuuki_manga/p05.webp",
             "refs": [
-              "/img/characters/hendy/sheet.webp",
-              "scripts/images/refs/kuuki_anata_sheet.webp"
+              "/img/characters/hendy/sheet.webp"
             ],
-            "status": "done",
+            "status": "empty",
             "prompt": "scripts/images/kuuki_manga.json の p05"
           },
           "lines": [
             {
               "speaker": "narration",
-              "text": "❌ いっしょに ピースを すると…"
+              "text": "❌ A　何も しない"
             },
             {
               "speaker": "narration",
-              "text": "⭕ すっと よけると…"
+              "text": "⭕ B　「お注ぎしましょうか？」と 聞く"
             },
             {
-              "speaker": "shashin",
-              "text": "パシャ！"
+              "speaker": "narration",
+              "text": "❌ C　だまって どんどん 注ぐ"
+            },
+            {
+              "speaker": "senpai",
+              "text": "ありがとう。じゃあ、少しだけ。"
+            },
+            {
+              "speaker": "senpai",
+              "text": "まだ 入って いるよ！"
             },
             {
               "speaker": "hendy",
-              "text": "困って いる 人に 気づいて、動く。言われる 前に。"
+              "text": "言われる 前に 気づいて、ひとこと 聞いてから 動きます。"
             }
           ],
           "bakedText": [
-            "❌ いっしょに ピースを すると…",
-            "⭕ すっと よけると…",
-            "パシャ！",
-            "困って いる 人に 気づいて、動く。言われる 前に。"
+            "❌ A　何も しない",
+            "⭕ B　「お注ぎしましょうか？」と 聞く",
+            "❌ C　だまって どんどん 注ぐ",
+            "ありがとう。じゃあ、少しだけ。",
+            "まだ 入って いるよ！",
+            "言われる 前に 気づいて、ひとこと 聞いてから 動きます。"
           ]
         }
       ]
     },
     {
-      "title": "クイズ③　会社で",
+      "title": "クイズ③　飲み会の さいご",
       "panels": [
         {
           "size": "page",
           "image": {
-            "src": "/img/manga/kuuki_manga/p06.webp",
             "refs": [
-              "/img/characters/hendy/sheet.webp",
-              "scripts/images/refs/kuuki_anata_sheet.webp"
+              "/img/characters/hendy/sheet.webp"
             ],
-            "status": "done",
+            "status": "empty",
             "prompt": "scripts/images/kuuki_manga.json の p06"
           },
           "lines": [
             {
               "speaker": "narration",
-              "text": "あなたの 席は、ドアの すぐ 横です。"
+              "text": "からあげが 1こだけ 残って います。"
             },
             {
-              "speaker": "senpai",
-              "text": "よいしょ…"
+              "speaker": "narration",
+              "text": "みんな 見て いますが、だれも 取りません。"
+            },
+            {
+              "speaker": "narration",
+              "text": "A　だまって 食べる"
+            },
+            {
+              "speaker": "narration",
+              "text": "B　「どなたか、いかがですか？」と 聞く"
             },
             {
               "speaker": "hendy",
@@ -295,8 +338,10 @@
             }
           ],
           "bakedText": [
-            "あなたの 席は、ドアの すぐ 横です。",
-            "よいしょ…",
+            "からあげが 1こだけ 残って います。",
+            "みんな 見て いますが、だれも 取りません。",
+            "A　だまって 食べる",
+            "B　「どなたか、いかがですか？」と 聞く",
             "あなたなら、どうする？"
           ]
         }
@@ -308,88 +353,138 @@
         {
           "size": "page",
           "image": {
-            "src": "/img/manga/kuuki_manga/p07.webp",
             "refs": [
-              "/img/characters/hendy/sheet.webp",
-              "scripts/images/refs/kuuki_anata_sheet.webp"
+              "/img/characters/hendy/sheet.webp"
             ],
-            "status": "done",
+            "status": "empty",
             "prompt": "scripts/images/kuuki_manga.json の p07"
           },
           "lines": [
             {
               "speaker": "narration",
-              "text": "❌ 応援するだけ だと…"
-            },
-            {
-              "speaker": "anata",
-              "text": "がんばって ください！"
+              "text": "❌ A　だまって 食べる"
             },
             {
               "speaker": "narration",
-              "text": "⭕ すっと ドアを 開けると…"
+              "text": "⭕ B　「どなたか、いかがですか？」と 聞く"
             },
             {
-              "speaker": "senpai",
-              "text": "助かった！　ありがとう。"
+              "speaker": "bucho",
+              "text": "きみが 食べなよ。"
+            },
+            {
+              "speaker": "anata",
+              "text": "いただきます！"
             },
             {
               "speaker": "hendy",
-              "text": "会社でも 同じです。だれも「開けて」とは 言いません。"
+              "text": "だれも 取らない 最後の 1こを「遠慮の かたまり」と 言います。"
             }
           ],
           "bakedText": [
-            "❌ 応援するだけ だと…",
-            "がんばって ください！",
-            "⭕ すっと ドアを 開けると…",
-            "助かった！　ありがとう。",
-            "会社でも 同じです。だれも「開けて」とは 言いません。"
+            "❌ A　だまって 食べる",
+            "⭕ B　「どなたか、いかがですか？」と 聞く",
+            "きみが 食べなよ。",
+            "いただきます！",
+            "だれも 取らない 最後の 1こを「遠慮の かたまり」と 言います。"
           ]
         }
       ]
     },
     {
-      "title": "心まで 読まなくて いい",
+      "title": "クイズ④　電車の 席",
       "panels": [
         {
           "size": "page",
           "image": {
-            "src": "/img/manga/kuuki_manga/p08.webp",
             "refs": [
-              "/img/characters/hendy/sheet.webp",
-              "scripts/images/refs/kuuki_anata_sheet.webp"
+              "/img/characters/hendy/sheet.webp"
             ],
-            "status": "done",
+            "status": "empty",
             "prompt": "scripts/images/kuuki_manga.json の p08"
           },
           "lines": [
             {
-              "speaker": "senpai",
-              "text": "はあ…"
+              "speaker": "narration",
+              "text": "電車で すわって いると、年配の 女性が 前に 立ちました。"
             },
             {
-              "speaker": "anata",
-              "text": "わたし、何か しちゃった…？"
+              "speaker": "narration",
+              "text": "若い 人のような 服を 着て います。すぐ となりは 優先席です。"
+            },
+            {
+              "speaker": "narration",
+              "text": "A　「どうぞ」と 席を ゆずる"
+            },
+            {
+              "speaker": "narration",
+              "text": "B　何も しない"
             },
             {
               "speaker": "hendy",
-              "text": "心まで 読まなくて いいんです。分からない ときは、聞きましょう。"
-            },
-            {
-              "speaker": "anata",
-              "text": "大丈夫ですか？"
-            },
-            {
-              "speaker": "senpai",
-              "text": "あ… お昼の カレーが 辛すぎた だけです。"
+              "text": "あなたなら、どうする？"
             }
           ],
           "bakedText": [
-            "はあ…",
-            "わたし、何か しちゃった…？",
-            "心まで 読まなくて いいんです。分からない ときは、聞きましょう。",
-            "大丈夫ですか？",
-            "あ… お昼の カレーが 辛すぎた だけです。"
+            "電車で すわって いると、年配の 女性が 前に 立ちました。",
+            "若い 人のような 服を 着て います。すぐ となりは 優先席です。",
+            "A　「どうぞ」と 席を ゆずる",
+            "B　何も しない",
+            "あなたなら、どうする？"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "クイズ④　こたえ",
+      "panels": [
+        {
+          "size": "page",
+          "image": {
+            "refs": [
+              "/img/characters/hendy/sheet.webp"
+            ],
+            "status": "empty",
+            "prompt": "scripts/images/kuuki_manga.json の p09"
+          },
+          "lines": [
+            {
+              "speaker": "narration",
+              "text": "この クイズには、決まった こたえが ありません。"
+            },
+            {
+              "speaker": "narration",
+              "text": "疲れて いそうな とき"
+            },
+            {
+              "speaker": "obaasan",
+              "text": "ありがとう。助かるわ。"
+            },
+            {
+              "speaker": "narration",
+              "text": "元気そうな とき"
+            },
+            {
+              "speaker": "obaasan",
+              "text": "わたしが 年寄りだと 言いたいの？"
+            },
+            {
+              "speaker": "hendy",
+              "text": "ゆずって ほしい 人も、ゆずられたく ない 人も います。"
+            },
+            {
+              "speaker": "hendy",
+              "text": "声を かける 前に、その 人の ようすを 見ましょう。疲れて いそうか、など。"
+            }
+          ],
+          "bakedText": [
+            "この クイズには、決まった こたえが ありません。",
+            "疲れて いそうな とき",
+            "ありがとう。助かるわ。",
+            "元気そうな とき",
+            "わたしが 年寄りだと 言いたいの？",
+            "ゆずって ほしい 人も、ゆずられたく ない 人も います。",
+            "声を かける 前に、その 人の ようすを 見ましょう。疲れて いそうか、など。"
           ]
         }
       ]
@@ -400,13 +495,11 @@
         {
           "size": "page",
           "image": {
-            "src": "/img/manga/kuuki_manga/p09.webp",
             "refs": [
-              "/img/characters/hendy/sheet.webp",
-              "scripts/images/refs/kuuki_anata_sheet.webp"
+              "/img/characters/hendy/sheet.webp"
             ],
-            "status": "done",
-            "prompt": "scripts/images/kuuki_manga.json の p09"
+            "status": "empty",
+            "prompt": "scripts/images/kuuki_manga.json の p10"
           },
           "lines": [
             {
@@ -446,13 +539,11 @@
         {
           "size": "page",
           "image": {
-            "src": "/img/manga/kuuki_manga/p10.webp",
             "refs": [
-              "/img/characters/hendy/sheet.webp",
-              "scripts/images/refs/kuuki_anata_sheet.webp"
+              "/img/characters/hendy/sheet.webp"
             ],
-            "status": "done",
-            "prompt": "scripts/images/kuuki_manga.json の p10"
+            "status": "empty",
+            "prompt": "scripts/images/kuuki_manga.json の p11"
           },
           "lines": [
             {
@@ -469,7 +560,7 @@
             },
             {
               "speaker": "narration",
-              "text": "分からない ときは 聞く"
+              "text": "④ こたえが ない ときは、ようすを 見る"
             },
             {
               "speaker": "hendy",
@@ -484,7 +575,7 @@
             "① 見る",
             "② 気づく",
             "③ 動く",
-            "分からない ときは 聞く",
+            "④ こたえが ない ときは、ようすを 見る",
             "この あとの ゲームでは、あなたは 赤い 人です。",
             "赤い ものだけ 動かせます。何も しない ほうが いい ときも あります。"
           ]
@@ -496,6 +587,14 @@
     [
       "空気",
       "くうき"
+    ],
+    [
+      "空い",
+      "あい"
+    ],
+    [
+      "空に",
+      "からに"
     ],
     [
       "読",
@@ -522,20 +621,20 @@
       "にほん"
     ],
     [
-      "屋",
-      "や"
+      "電車",
+      "でんしゃ"
     ],
     [
-      "真ん中",
-      "まんなか"
+      "中",
+      "なか"
+    ],
+    [
+      "乗",
+      "の"
     ],
     [
       "席",
       "せき"
-    ],
-    [
-      "空い",
-      "あい"
     ],
     [
       "右",
@@ -546,8 +645,16 @@
       "ひだり"
     ],
     [
-      "食",
+      "立",
       "た"
+    ],
+    [
+      "車両",
+      "しゃりょう"
+    ],
+    [
+      "行",
+      "い"
     ],
     [
       "言",
@@ -558,20 +665,40 @@
       "わか"
     ],
     [
-      "観光地",
-      "かんこうち"
+      "二人",
+      "ふたり"
     ],
     [
       "困",
       "こま"
     ],
     [
-      "人",
-      "ひと"
+      "飲み会",
+      "のみかい"
     ],
     [
-      "二人",
-      "ふたり"
+      "先輩",
+      "せんぱい"
+    ],
+    [
+      "何",
+      "なに"
+    ],
+    [
+      "注",
+      "つ"
+    ],
+    [
+      "少し",
+      "すこし"
+    ],
+    [
+      "入って",
+      "はいって"
+    ],
+    [
+      "前",
+      "まえ"
     ],
     [
       "気",
@@ -582,52 +709,76 @@
       "うご"
     ],
     [
-      "前",
-      "まえ"
+      "残",
+      "のこ"
     ],
     [
-      "会社",
-      "かいしゃ"
+      "取",
+      "と"
     ],
     [
-      "横",
-      "よこ"
+      "食",
+      "た"
     ],
     [
-      "応援",
-      "おうえん"
+      "最後",
+      "さいご"
     ],
     [
-      "開け",
-      "あけ"
+      "遠慮",
+      "えんりょ"
     ],
     [
-      "助",
-      "たす"
+      "年配",
+      "ねんぱい"
     ],
     [
-      "同じ",
-      "おなじ"
+      "女性",
+      "じょせい"
     ],
     [
-      "心",
-      "こころ"
+      "若い",
+      "わかい"
     ],
     [
-      "何",
-      "なに"
+      "人",
+      "ひと"
     ],
     [
-      "大丈夫",
-      "だいじょうぶ"
+      "服",
+      "ふく"
     ],
     [
-      "昼",
-      "ひる"
+      "着て",
+      "きて"
     ],
     [
-      "辛",
-      "から"
+      "優先席",
+      "ゆうせんせき"
+    ],
+    [
+      "決まった",
+      "きまった"
+    ],
+    [
+      "疲",
+      "つか"
+    ],
+    [
+      "助か",
+      "たすか"
+    ],
+    [
+      "元気",
+      "げんき"
+    ],
+    [
+      "年寄り",
+      "としより"
+    ],
+    [
+      "声",
+      "こえ"
     ],
     [
       "話",
@@ -642,6 +793,10 @@
       "ぜんぜん"
     ],
     [
+      "会社",
+      "かいしゃ"
+    ],
+    [
       "多",
       "おお"
     ],
@@ -652,10 +807,6 @@
     [
       "役",
       "やく"
-    ],
-    [
-      "立",
-      "た"
     ],
     [
       "自分",
@@ -674,16 +825,12 @@
       "あか"
     ],
     [
-      "先輩",
-      "せんぱい"
+      "部長",
+      "ぶちょう"
     ],
     [
-      "客",
-      "きゃく"
-    ],
-    [
-      "写真",
-      "しゃしん"
+      "同じ",
+      "おなじ"
     ],
     [
       "新人",
@@ -694,20 +841,24 @@
       "かんが"
     ],
     [
-      "有名",
-      "ゆうめい"
+      "車",
+      "くるま"
     ],
     [
-      "場所",
-      "ばしょ"
+      "先",
+      "さき"
     ],
     [
-      "絵",
-      "え"
+      "入っ",
+      "はいっ"
     ],
     [
-      "思",
-      "おも"
+      "教",
+      "おし"
+    ],
+    [
+      "仕事",
+      "しごと"
     ]
   ]
 }
