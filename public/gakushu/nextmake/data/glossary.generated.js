@@ -2112,8 +2112,8 @@ export const GLOSSARY = [
   {
     term: "ようす",
     reading: "ようす",
-    meaning: "見て 分かる、人の 元気さや 気もちです。",
-    en: "Condition / How someone looks",
+    meaning: "見て 分かる、人や 場所の 今の 感じです。",
+    en: "How someone or something looks / Condition",
   },
   {
     term: "要望",

@@ -1966,6 +1966,10 @@
     [
       "通知",
       "つうち"
+    ],
+    [
+      "感じ",
+      "かんじ"
     ]
   ],
   "words": [
@@ -19582,8 +19586,8 @@
       "term": "ようす",
       "reading": "ようす",
       "romaji": "yousu",
-      "meaningJa": "見て 分かる、人の 元気さや 気もちです。",
-      "englishTerm": "Condition / How someone looks",
+      "meaningJa": "見て 分かる、人や 場所の 今の 感じです。",
+      "englishTerm": "How someone or something looks / Condition",
       "example": "先輩の ようすを 見ます。",
       "furigana": [
         [
@@ -19595,20 +19599,20 @@
           "わか"
         ],
         [
-          "先輩",
-          "せんぱい"
-        ],
-        [
-          "気",
-          "き"
-        ],
-        [
           "人",
           "ひと"
         ],
         [
-          "元気",
-          "げんき"
+          "場所",
+          "ばしょ"
+        ],
+        [
+          "今",
+          "いま"
+        ],
+        [
+          "感じ",
+          "かんじ"
         ]
       ]
     },
