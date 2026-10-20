@@ -4,7 +4,6 @@
   "compareGapSeconds": [],
   "complete": false,
   "missing": [
-    14,
     34
   ],
   "sentences": [
@@ -214,6 +213,22 @@
         "expected": "もんだいさんゆうざあにおきているもんだいはなんですか",
         "spoken": "もんだいさんゆうざあにおきているもんだいはなんですか",
         "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "エイ、ログインできない。",
+      "file": "14.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 1.88,
+      "longestPause": 0.05,
+      "transcript": "ええ 、 ログイン でき ない 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "えいろぐいんできない",
+        "spoken": "ええろぐいんできない",
+        "distance": 1
       }
     },
     {
