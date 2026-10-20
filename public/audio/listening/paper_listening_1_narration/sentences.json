@@ -2,8 +2,25 @@
   "listeningId": "paper_listening_1_narration",
   "gapSeconds": 0.5,
   "compareGapSeconds": [],
-  "complete": true,
-  "missing": [],
+  "complete": false,
+  "missing": [
+    3,
+    4,
+    8,
+    9,
+    13,
+    14,
+    18,
+    19,
+    23,
+    24,
+    28,
+    29,
+    33,
+    34,
+    38,
+    39
+  ],
   "sentences": [
     {
       "speaker": "narration",
@@ -39,56 +56,8 @@
     },
     {
       "speaker": "narration",
-      "text": "問題1。",
-      "file": "03.wav",
-      "voice": "Puck",
-      "model": "gemini-3.8-live",
-      "seconds": 1.01,
-      "longestPause": 0.03,
-      "transcript": "問題 1",
-      "transcriptBy": "gemini-3.5-flash-lite",
-      "reading": {
-        "expected": "もんだいいち",
-        "spoken": "もんだいいち",
-        "distance": 0
-      }
-    },
-    {
-      "speaker": "narration",
-      "text": "中村さんは、何について報告しましたか。",
-      "file": "04.wav",
-      "voice": "Puck",
-      "model": "gemini-3.8-live",
-      "seconds": 3.62,
-      "longestPause": 0.2,
-      "transcript": "中村さんは、何について報告しましたか。",
-      "transcriptBy": "gemini-3.8-live",
-      "reading": {
-        "expected": "なかむらさんはなにについてほうこくしましたか",
-        "spoken": "なかむらさんはなにについてほうこくしましたか",
-        "distance": 0
-      }
-    },
-    {
-      "speaker": "narration",
-      "text": "エー、新しい画面。",
-      "file": "05.wav",
-      "voice": "Puck",
-      "model": "gemini-3.8-live",
-      "seconds": 2.27,
-      "longestPause": 0.49,
-      "transcript": "新しい 画面",
-      "transcriptBy": "gemini-3.5-flash-lite",
-      "reading": {
-        "expected": "ええあたらしいがめん",
-        "spoken": "あたらしいがめん",
-        "distance": 2
-      }
-    },
-    {
-      "speaker": "narration",
       "text": "ビー、システムの問題。",
-      "file": "06.wav",
+      "file": "05.wav",
       "voice": "Puck",
       "model": "gemini-3.8-live",
       "seconds": 2.3,
@@ -104,7 +73,7 @@
     {
       "speaker": "narration",
       "text": "シー、料金。",
-      "file": "07.wav",
+      "file": "06.wav",
       "voice": "Puck",
       "model": "gemini-3.8-live",
       "seconds": 1.83,
@@ -120,7 +89,7 @@
     {
       "speaker": "narration",
       "text": "ディー、次のタスク。",
-      "file": "08.wav",
+      "file": "07.wav",
       "voice": "Puck",
       "model": "gemini-3.8-live",
       "seconds": 1.77,
@@ -135,56 +104,8 @@
     },
     {
       "speaker": "narration",
-      "text": "問題2。",
-      "file": "09.wav",
-      "voice": "Puck",
-      "model": "gemini-3.8-live",
-      "seconds": 0.93,
-      "longestPause": 0,
-      "transcript": "問題 に",
-      "transcriptBy": "gemini-3.5-flash-lite",
-      "reading": {
-        "expected": "もんだいに",
-        "spoken": "もんだいに",
-        "distance": 0
-      }
-    },
-    {
-      "speaker": "narration",
-      "text": "問題はいつごろから発生していますか。",
-      "file": "10.wav",
-      "voice": "Puck",
-      "model": "gemini-3.8-live",
-      "seconds": 2.81,
-      "longestPause": 0,
-      "transcript": "問題 は いつ 頃 から 発生 し て い ます か ?",
-      "transcriptBy": "gemini-3.5-flash-lite",
-      "reading": {
-        "expected": "もんだいはいつごろからはっせいしていますか",
-        "spoken": "もんだいはいつころからはっせいしていますか",
-        "distance": 1
-      }
-    },
-    {
-      "speaker": "narration",
-      "text": "エー、昨日の10時ごろ。",
-      "file": "11.wav",
-      "voice": "Puck",
-      "model": "gemini-3.8-live",
-      "seconds": 2.69,
-      "longestPause": 0.26,
-      "transcript": "えー 、 昨日 の 10 時 頃 、",
-      "transcriptBy": "gemini-3.5-flash-lite",
-      "reading": {
-        "expected": "ええきのうのじゅうじごろ",
-        "spoken": "ええきのうのじゅうじころ",
-        "distance": 1
-      }
-    },
-    {
-      "speaker": "narration",
       "text": "ビー、今日の8時ごろ。",
-      "file": "12.wav",
+      "file": "10.wav",
       "voice": "Puck",
       "model": "gemini-3.8-live",
       "seconds": 2.47,
@@ -200,7 +121,7 @@
     {
       "speaker": "narration",
       "text": "シー、今日の10時ごろ。",
-      "file": "13.wav",
+      "file": "11.wav",
       "voice": "Puck",
       "model": "gemini-3.8-live",
       "seconds": 2.06,
@@ -216,7 +137,7 @@
     {
       "speaker": "narration",
       "text": "ディー、今日の午後5時ごろ。",
-      "file": "14.wav",
+      "file": "12.wav",
       "voice": "Puck",
       "model": "gemini-3.8-live",
       "seconds": 2.44,
@@ -231,56 +152,8 @@
     },
     {
       "speaker": "narration",
-      "text": "問題3。",
-      "file": "15.wav",
-      "voice": "Puck",
-      "model": "gemini-3.8-live",
-      "seconds": 1.06,
-      "longestPause": 0.01,
-      "transcript": "問題 3",
-      "transcriptBy": "gemini-3.5-flash-lite",
-      "reading": {
-        "expected": "もんだいさん",
-        "spoken": "もんだいさん",
-        "distance": 0
-      }
-    },
-    {
-      "speaker": "narration",
-      "text": "ユーザーに起きている問題は何ですか。",
-      "file": "16.wav",
-      "voice": "Puck",
-      "model": "gemini-3.8-live",
-      "seconds": 2.14,
-      "longestPause": 0.02,
-      "transcript": "ユーザーに起きている問題は何ですか。",
-      "transcriptBy": "gemini-3.8-live",
-      "reading": {
-        "expected": "ゆうざあにおきているもんだいはなんですか",
-        "spoken": "ゆうざあにおきているもんだいはなんですか",
-        "distance": 0
-      }
-    },
-    {
-      "speaker": "narration",
-      "text": "エー、ログインできない。",
-      "file": "17.wav",
-      "voice": "Puck",
-      "model": "gemini-3.8-live",
-      "seconds": 2.22,
-      "longestPause": 0.03,
-      "transcript": "ー、ログインできない。",
-      "transcriptBy": "gemini-3.8-live",
-      "reading": {
-        "expected": "ええろぐいんできない",
-        "spoken": "ーろぐいんできない",
-        "distance": 2
-      }
-    },
-    {
-      "speaker": "narration",
       "text": "ビー、商品が表示されない。",
-      "file": "18.wav",
+      "file": "15.wav",
       "voice": "Puck",
       "model": "gemini-3.8-live",
       "seconds": 2.49,
@@ -296,7 +169,7 @@
     {
       "speaker": "narration",
       "text": "シー、予約ができない。",
-      "file": "19.wav",
+      "file": "16.wav",
       "voice": "Puck",
       "model": "gemini-3.8-live",
       "seconds": 1.81,
@@ -312,7 +185,7 @@
     {
       "speaker": "narration",
       "text": "ディー、お知らせを作れない。",
-      "file": "20.wav",
+      "file": "17.wav",
       "voice": "Puck",
       "model": "gemini-3.8-live",
       "seconds": 2.24,
@@ -327,56 +200,8 @@
     },
     {
       "speaker": "narration",
-      "text": "問題4。",
-      "file": "21.wav",
-      "voice": "Puck",
-      "model": "gemini-3.8-live",
-      "seconds": 1.28,
-      "longestPause": 0.17,
-      "transcript": "問題 4",
-      "transcriptBy": "gemini-3.5-flash-lite",
-      "reading": {
-        "expected": "もんだいよん",
-        "spoken": "もんだいよん",
-        "distance": 0
-      }
-    },
-    {
-      "speaker": "narration",
-      "text": "どのユーザーに問題が出ていますか。",
-      "file": "22.wav",
-      "voice": "Puck",
-      "model": "gemini-3.8-live",
-      "seconds": 2.4,
-      "longestPause": 0.03,
-      "transcript": "どのユーザーに問題が出ていますか。",
-      "transcriptBy": "gemini-3.8-live",
-      "reading": {
-        "expected": "どのゆうざあにもんだいがでていますか",
-        "spoken": "どのゆうざあにもんだいがでていますか",
-        "distance": 0
-      }
-    },
-    {
-      "speaker": "narration",
-      "text": "エー、すべてのユーザー。",
-      "file": "23.wav",
-      "voice": "Puck",
-      "model": "gemini-3.8-live",
-      "seconds": 2.16,
-      "longestPause": 0.18,
-      "transcript": "エー、すべてのユーザー。",
-      "transcriptBy": "gemini-3.8-live",
-      "reading": {
-        "expected": "ええすべてのゆうざあ",
-        "spoken": "ええすべてのゆうざあ",
-        "distance": 0
-      }
-    },
-    {
-      "speaker": "narration",
       "text": "ビー、クレジットカードで支払うユーザー。",
-      "file": "24.wav",
+      "file": "20.wav",
       "voice": "Puck",
       "model": "gemini-3.8-live",
       "seconds": 2.89,
@@ -392,7 +217,7 @@
     {
       "speaker": "narration",
       "text": "シー、現金で支払うユーザー。",
-      "file": "25.wav",
+      "file": "21.wav",
       "voice": "Puck",
       "model": "gemini-3.8-live",
       "seconds": 2.68,
@@ -408,7 +233,7 @@
     {
       "speaker": "narration",
       "text": "ディー、はじめて使うユーザー。",
-      "file": "26.wav",
+      "file": "22.wav",
       "voice": "Puck",
       "model": "gemini-3.8-live",
       "seconds": 2.42,
@@ -423,56 +248,8 @@
     },
     {
       "speaker": "narration",
-      "text": "問題5。",
-      "file": "27.wav",
-      "voice": "Puck",
-      "model": "gemini-3.8-live",
-      "seconds": 0.68,
-      "longestPause": 0,
-      "transcript": "問題 5",
-      "transcriptBy": "gemini-3.5-flash-lite",
-      "reading": {
-        "expected": "もんだいご",
-        "spoken": "もんだいご",
-        "distance": 0
-      }
-    },
-    {
-      "speaker": "narration",
-      "text": "中村さんが確認できたことは何ですか。",
-      "file": "28.wav",
-      "voice": "Puck",
-      "model": "gemini-3.8-live",
-      "seconds": 2.94,
-      "longestPause": 0.02,
-      "transcript": "中村 さん が 確認 でき た こと は 何 です か ?",
-      "transcriptBy": "gemini-3.5-flash-lite",
-      "reading": {
-        "expected": "なかむらさんがかくにんできたことはなんですか",
-        "spoken": "なかむらさんがかくにんできたことはなんですか",
-        "distance": 0
-      }
-    },
-    {
-      "speaker": "narration",
-      "text": "エー、APIでエラーが出ている。",
-      "file": "29.wav",
-      "voice": "Puck",
-      "model": "gemini-3.8-live",
-      "seconds": 2.51,
-      "longestPause": 0.31,
-      "transcript": "エー、APIでエラーが出ている。",
-      "transcriptBy": "gemini-3.8-live",
-      "reading": {
-        "expected": "ええええぴいあいでえらあがでている",
-        "spoken": "ええええぴいあいでえらあがでている",
-        "distance": 0
-      }
-    },
-    {
-      "speaker": "narration",
       "text": "ビー、サーバーが止まった原因。",
-      "file": "30.wav",
+      "file": "25.wav",
       "voice": "Puck",
       "model": "gemini-3.8-live",
       "seconds": 2.53,
@@ -488,7 +265,7 @@
     {
       "speaker": "narration",
       "text": "シー、問題が全部直った。",
-      "file": "31.wav",
+      "file": "26.wav",
       "voice": "Puck",
       "model": "gemini-3.8-live",
       "seconds": 2.47,
@@ -504,7 +281,7 @@
     {
       "speaker": "narration",
       "text": "ディー、データがすべて消えた。",
-      "file": "32.wav",
+      "file": "27.wav",
       "voice": "Puck",
       "model": "gemini-3.8-live",
       "seconds": 2.71,
@@ -519,56 +296,8 @@
     },
     {
       "speaker": "narration",
-      "text": "問題6。",
-      "file": "33.wav",
-      "voice": "Puck",
-      "model": "gemini-3.8-live",
-      "seconds": 1.15,
-      "longestPause": 0.06,
-      "transcript": "問題 6",
-      "transcriptBy": "gemini-3.5-flash-lite",
-      "reading": {
-        "expected": "もんだいろく",
-        "spoken": "もんだいろく",
-        "distance": 0
-      }
-    },
-    {
-      "speaker": "narration",
-      "text": "くわしい原因は分かっていますか。",
-      "file": "34.wav",
-      "voice": "Puck",
-      "model": "gemini-3.8-live",
-      "seconds": 2.33,
-      "longestPause": 0.04,
-      "transcript": "詳しい 原因 は わかっ て い ます か ?",
-      "transcriptBy": "gemini-3.5-flash-lite",
-      "reading": {
-        "expected": "くわしいげんいんはわかっていますか",
-        "spoken": "くわしいげんいんはわかっていますか",
-        "distance": 0
-      }
-    },
-    {
-      "speaker": "narration",
-      "text": "エー、全部分かっている。",
-      "file": "35.wav",
-      "voice": "Puck",
-      "model": "gemini-3.8-live",
-      "seconds": 2.47,
-      "longestPause": 0.57,
-      "transcript": "え 全部 分かっ て いる 。",
-      "transcriptBy": "gemini-3.5-flash-lite",
-      "reading": {
-        "expected": "ええぜんぶわかっている",
-        "spoken": "えぜんぶわかっている",
-        "distance": 1
-      }
-    },
-    {
-      "speaker": "narration",
       "text": "ビー、まだ分かっていない。",
-      "file": "36.wav",
+      "file": "30.wav",
       "voice": "Puck",
       "model": "gemini-3.8-live",
       "seconds": 1.99,
@@ -584,7 +313,7 @@
     {
       "speaker": "narration",
       "text": "シー、クレジットカード会社が原因だと分かった。",
-      "file": "37.wav",
+      "file": "31.wav",
       "voice": "Puck",
       "model": "gemini-3.8-live",
       "seconds": 3.82,
@@ -600,7 +329,7 @@
     {
       "speaker": "narration",
       "text": "ディー、もう直った。",
-      "file": "38.wav",
+      "file": "32.wav",
       "voice": "Puck",
       "model": "gemini-3.8-live",
       "seconds": 1.66,
@@ -615,56 +344,8 @@
     },
     {
       "speaker": "narration",
-      "text": "問題7。",
-      "file": "39.wav",
-      "voice": "Puck",
-      "model": "gemini-3.8-live",
-      "seconds": 0.95,
-      "longestPause": 0,
-      "transcript": "問題 7",
-      "transcriptBy": "gemini-3.5-flash-lite",
-      "reading": {
-        "expected": "もんだいなな",
-        "spoken": "もんだいなな",
-        "distance": 0
-      }
-    },
-    {
-      "speaker": "narration",
-      "text": "中村さんは今、何を確認していますか。",
-      "file": "40.wav",
-      "voice": "Puck",
-      "model": "gemini-3.8-live",
-      "seconds": 3.37,
-      "longestPause": 0.34,
-      "transcript": "中村 さん は 今 何 を 確認 し て い ます か ?",
-      "transcriptBy": "gemini-3.5-flash-lite",
-      "reading": {
-        "expected": "なかむらさんはいまなにをかくにんしていますか",
-        "spoken": "なかむらさんはいまなにをかくにんしていますか",
-        "distance": 0
-      }
-    },
-    {
-      "speaker": "narration",
-      "text": "エー、GitHubのIssue。",
-      "file": "41.wav",
-      "voice": "Puck",
-      "model": "gemini-3.8-live",
-      "seconds": 2.32,
-      "longestPause": 0.28,
-      "transcript": "エー、GitHubのissue。",
-      "transcriptBy": "gemini-3.8-live",
-      "reading": {
-        "expected": "ええぎっとはぶのいしゅう",
-        "spoken": "ええぎっとはぶのいしゅう",
-        "distance": 0
-      }
-    },
-    {
-      "speaker": "narration",
       "text": "ビー、ユーザーの名前。",
-      "file": "42.wav",
+      "file": "35.wav",
       "voice": "Puck",
       "model": "gemini-3.8-live",
       "seconds": 1.85,
@@ -680,7 +361,7 @@
     {
       "speaker": "narration",
       "text": "シー、エラーが発生した時間のログ。",
-      "file": "43.wav",
+      "file": "36.wav",
       "voice": "Puck",
       "model": "gemini-3.8-live",
       "seconds": 2.74,
@@ -696,7 +377,7 @@
     {
       "speaker": "narration",
       "text": "ディー、商品の値段。",
-      "file": "44.wav",
+      "file": "37.wav",
       "voice": "Puck",
       "model": "gemini-3.8-live",
       "seconds": 1.77,
@@ -711,56 +392,8 @@
     },
     {
       "speaker": "narration",
-      "text": "問題8。",
-      "file": "45.wav",
-      "voice": "Puck",
-      "model": "gemini-3.8-live",
-      "seconds": 0.72,
-      "longestPause": 0,
-      "transcript": "問題 8",
-      "transcriptBy": "gemini-3.5-flash-lite",
-      "reading": {
-        "expected": "もんだいはち",
-        "spoken": "もんだいはち",
-        "distance": 0
-      }
-    },
-    {
-      "speaker": "narration",
-      "text": "田中さんは、原因が分かったらどうするように言いましたか。",
-      "file": "46.wav",
-      "voice": "Puck",
-      "model": "gemini-3.8-live",
-      "seconds": 4.48,
-      "longestPause": 0.34,
-      "transcript": "田中 さん は 原因 が 分かっ たら どう する よう に 言い まし た か ?",
-      "transcriptBy": "gemini-3.5-flash-lite",
-      "reading": {
-        "expected": "たなかさんはげんいんがわかったらどうするようにいいましたか",
-        "spoken": "たなかさんはげんいんがわかったらどうするようにいいましたか",
-        "distance": 0
-      }
-    },
-    {
-      "speaker": "narration",
-      "text": "エー、自分ですぐにバグを直す。",
-      "file": "47.wav",
-      "voice": "Puck",
-      "model": "gemini-3.8-live",
-      "seconds": 2.63,
-      "longestPause": 0.2,
-      "transcript": "ええ 、 自分 で すぐ に バグ を 直す 。",
-      "transcriptBy": "gemini-3.5-flash-lite",
-      "reading": {
-        "expected": "ええじぶんですぐにばぐをなおす",
-        "spoken": "ええじぶんですぐにばぐをなおす",
-        "distance": 0
-      }
-    },
-    {
-      "speaker": "narration",
       "text": "ビー、すぐに報告する。",
-      "file": "48.wav",
+      "file": "40.wav",
       "voice": "Puck",
       "model": "gemini-3.8-live",
       "seconds": 2.05,
@@ -776,7 +409,7 @@
     {
       "speaker": "narration",
       "text": "シー、自分で決めて良い。",
-      "file": "49.wav",
+      "file": "41.wav",
       "voice": "Puck",
       "model": "gemini-3.8-live",
       "seconds": 1.96,
@@ -792,7 +425,7 @@
     {
       "speaker": "narration",
       "text": "ディー、来週の会議で説明する。",
-      "file": "50.wav",
+      "file": "42.wav",
       "voice": "Puck",
       "model": "gemini-3.8-live",
       "seconds": 2.57,
