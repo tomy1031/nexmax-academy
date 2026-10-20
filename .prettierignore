@@ -38,3 +38,5 @@ public/tools/hourensou/styles.css
 # 中身は ゲームの リポジトリが 正。アプリ側で 足した nexmax-bridge.js だけは 整形する。
 public/tools/kuuki-yomi/js/
 public/tools/kuuki-yomi/css/
+# 紙の リスニング問題の 読み上げ（使い捨ての ブランチだけ）
+public/audio/listening/paper_listening_*

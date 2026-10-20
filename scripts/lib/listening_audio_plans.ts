@@ -98,6 +98,18 @@ export const LISTENING_AUDIO_PLANS: Readonly<Record<string, ListeningAudioPlan>>
   houkoku_shougai_listening: reportPlan(["nakamura", "tanaka"]),
   houkoku_chousa_listening: reportPlan(["kobayashi", "kato"]),
   houkoku_chourei_listening: reportPlan(["takahashi", "sato", "yamada"]),
+
+  /* 紙の リスニング問題（②⑤・2026-10-20）の 読み上げだけ。使い捨ての ブランチでのみ 使う。声は Puck・3.8 */
+  paper_listening_okure_narration: {
+    voices: { narration: "Puck" },
+    models: { narration: "gemini-3.8-live" },
+    gapSeconds: 0.5,
+  },
+  paper_listening_chourei_narration: {
+    voices: { narration: "Puck" },
+    models: { narration: "gemini-3.8-live" },
+    gapSeconds: 0.5,
+  },
 };
 
 /**

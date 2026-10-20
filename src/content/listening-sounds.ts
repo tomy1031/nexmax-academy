@@ -131,6 +131,26 @@ const LEDGER: Readonly<Record<string, readonly FuriganaEntry[]>> = {
   ],
 };
 
+/* 紙の リスニング問題（②⑤）の 読み上げ。使い捨ての ブランチでのみ 使う */
+const PAPER_NARRATION: readonly FuriganaEntry[] = [
+  ...LEDGER.houkoku_okure_listening!,
+  ...LEDGER.houkoku_chourei_listening!,
+  ["問題1", "もんだいいち"],
+  ["問題2", "もんだいに"],
+  ["問題3", "もんだいさん"],
+  ["問題4", "もんだいよん"],
+  ["問題5", "もんだいご"],
+  ["問題6", "もんだいろく"],
+  ["問題7", "もんだいなな"],
+  ["問題8", "もんだいはち"],
+  ["問題9", "もんだいきゅう"],
+  ["問題10", "もんだいじゅう"],
+  ["CSV", "しーえすぶい"],
+  ["4つ", "よっつ"],
+];
+(LEDGER as Record<string, readonly FuriganaEntry[]>).paper_listening_okure_narration = PAPER_NARRATION;
+(LEDGER as Record<string, readonly FuriganaEntry[]>).paper_listening_chourei_narration = PAPER_NARRATION;
+
 /** 台帳に 載せた 教材ごとの 聞き取り専用の 読み（かなの 語の 漢字形も 足した もの）。 */
 export const LISTENING_SOUNDS_LIKE: Readonly<Record<string, readonly FuriganaEntry[]>> =
   Object.fromEntries(
