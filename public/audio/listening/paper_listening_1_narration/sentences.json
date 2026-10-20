@@ -4,14 +4,8 @@
   "compareGapSeconds": [],
   "complete": false,
   "missing": [
-    4,
-    9,
     14,
-    19,
-    24,
-    29,
-    34,
-    39
+    34
   ],
   "sentences": [
     {
@@ -59,6 +53,22 @@
       "reading": {
         "expected": "もんだいいちなかむらさんはなにについてほうこくしましたか",
         "spoken": "もんだいいちなかむらさんはなにについてほうこくしましたか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "エイ、新しい画面。",
+      "file": "04.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 1.86,
+      "longestPause": 0.4,
+      "transcript": "A 新しい 画面",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "えいあたらしいがめん",
+        "spoken": "えいあたらしいがめん",
         "distance": 0
       }
     },
@@ -124,6 +134,22 @@
         "expected": "もんだいにもんだいはいつごろからはっせいしていますか",
         "spoken": "もんだいにもんだいはいつごろからはっせいしていますか",
         "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "エイ、昨日の10時ごろ。",
+      "file": "09.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 2.29,
+      "longestPause": 0.22,
+      "transcript": "A 、 昨日 の 10 時 頃 、",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "えいきのうのじゅうじごろ",
+        "spoken": "えいきのうのじゅうじころ",
+        "distance": 1
       }
     },
     {
@@ -256,6 +282,22 @@
     },
     {
       "speaker": "narration",
+      "text": "エイ、すべてのユーザー。",
+      "file": "19.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 2.2,
+      "longestPause": 0.55,
+      "transcript": "え すべて の ユーザー",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "えいすべてのゆうざあ",
+        "spoken": "えすべてのゆうざあ",
+        "distance": 1
+      }
+    },
+    {
+      "speaker": "narration",
       "text": "ビー、クレジットカードで支払うユーザー。",
       "file": "20.wav",
       "voice": "Puck",
@@ -315,6 +357,22 @@
       "reading": {
         "expected": "もんだいごなかむらさんがかくにんできたことはなんですか",
         "spoken": "もんだいごなかむらさんがかくにんできたことはなんですか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "エイ、APIでエラーが出ている。",
+      "file": "24.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 2.68,
+      "longestPause": 0.42,
+      "transcript": "エイ、APIでエラーが出ている。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "えいええぴいあいでえらあがでている",
+        "spoken": "えいええぴいあいでえらあがでている",
         "distance": 0
       }
     },
@@ -380,6 +438,22 @@
         "expected": "もんだいろくくわしいげんいんはわかっていますか",
         "spoken": "もんだいろくくわしいげんいんはわかっていますか",
         "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "エイ、全部分かっている。",
+      "file": "29.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 2.16,
+      "longestPause": 0.37,
+      "transcript": "おい 、 全部 分かっ て いる 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "えいぜんぶわかっている",
+        "spoken": "おいぜんぶわかっている",
+        "distance": 1
       }
     },
     {
@@ -507,6 +581,22 @@
       "reading": {
         "expected": "もんだいはちたなかさんはげんいんがわかったらどうするようにいいましたか",
         "spoken": "もんだいはちたなかさんはげんいんがわかったらどうするようにいいましたか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "エイ、自分ですぐにバグを直す。",
+      "file": "39.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 2.68,
+      "longestPause": 0.3,
+      "transcript": "A 、 自分 で すぐ に バグ を 直す 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "えいじぶんですぐにばぐをなおす",
+        "spoken": "えいじぶんですぐにばぐをなおす",
         "distance": 0
       }
     },
