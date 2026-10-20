@@ -4,12 +4,7 @@
   "compareGapSeconds": [],
   "complete": false,
   "missing": [
-    18,
-    24,
-    25,
-    26,
-    40,
-    46
+    26
   ],
   "sentences": [
     {
@@ -286,17 +281,17 @@
     },
     {
       "speaker": "narration",
-      "text": "ビー、GitHub。",
+      "text": "ビー、AWSのS3。",
       "file": "18.wav",
       "voice": "Puck",
       "model": "gemini-3.8-live",
-      "seconds": 1.67,
-      "longestPause": 0.37,
-      "transcript": "B Git Hub",
+      "seconds": 2.53,
+      "longestPause": 0.4,
+      "transcript": "B AWS の S 3",
       "transcriptBy": "gemini-3.5-flash-lite",
       "reading": {
-        "expected": "びいgithub",
-        "spoken": "bgithub",
+        "expected": "びいawsのsさん",
+        "spoken": "bawsのsさん",
         "distance": 2
       }
     },
@@ -382,50 +377,34 @@
     },
     {
       "speaker": "narration",
-      "text": "ビー、Slack。",
+      "text": "ビー、CloudflareのR2。",
       "file": "24.wav",
       "voice": "Puck",
       "model": "gemini-3.8-live",
-      "seconds": 1.38,
-      "longestPause": 0.27,
-      "transcript": "ビー、Slack。",
+      "seconds": 2.51,
+      "longestPause": 0.3,
+      "transcript": "ビー、CloudflareのR2。",
       "transcriptBy": "gemini-3.8-live",
       "reading": {
-        "expected": "びいすらっく",
-        "spoken": "びいすらっく",
+        "expected": "びいくらうどふれあのああるつう",
+        "spoken": "びいくらうどふれあのああるつう",
         "distance": 0
       }
     },
     {
       "speaker": "narration",
-      "text": "シー、CSVファイル。",
+      "text": "シー、今使っているサーバー。",
       "file": "25.wav",
       "voice": "Puck",
       "model": "gemini-3.8-live",
-      "seconds": 2.33,
-      "longestPause": 0.47,
-      "transcript": "C CSV ファイル",
+      "seconds": 2.5,
+      "longestPause": 0.45,
+      "transcript": "Sí,今使っているサーバー",
       "transcriptBy": "gemini-3.5-flash-lite",
       "reading": {
-        "expected": "しいcsvふぁいる",
-        "spoken": "ccsvふぁいる",
+        "expected": "しいいまつかっているさあばあ",
+        "spoken": "síいまつかっているさあばあ",
         "distance": 2
-      }
-    },
-    {
-      "speaker": "narration",
-      "text": "ディー、GitHubのIssue。",
-      "file": "26.wav",
-      "voice": "Puck",
-      "model": "gemini-3.8-live",
-      "seconds": 2.31,
-      "longestPause": 0.43,
-      "transcript": "ディー、GitHubのissue。",
-      "transcriptBy": "gemini-3.8-live",
-      "reading": {
-        "expected": "でぃいぎっとはぶのいしゅう",
-        "spoken": "でぃいぎっとはぶのいしゅう",
-        "distance": 0
       }
     },
     {
@@ -638,18 +617,18 @@
     },
     {
       "speaker": "narration",
-      "text": "S3を使うと、今のサーバーに何が良いですか。",
+      "text": "S3を使うと、今のサーバーについて、どんなよいことがありますか。",
       "file": "40.wav",
       "voice": "Puck",
       "model": "gemini-3.8-live",
-      "seconds": 4.06,
-      "longestPause": 0.28,
-      "transcript": "S3を使うと、今のサーバーに何が良いですか。",
+      "seconds": 5.08,
+      "longestPause": 0.29,
+      "transcript": "S3を使うと、今のサーバーについて、どんなよいことがあります",
       "transcriptBy": "gemini-3.8-live",
       "reading": {
-        "expected": "えすすりいをつかうといまのさあばあになにがいいですか",
-        "spoken": "えすすりいをつかうといまのさあばあになにがいいですか",
-        "distance": 0
+        "expected": "えすすりいをつかうといまのさあばあについてどんなよいことがありますか",
+        "spoken": "えすすりいをつかうといまのさあばあについてどんなよいことがあります",
+        "distance": 1
       }
     },
     {
@@ -734,17 +713,17 @@
     },
     {
       "speaker": "narration",
-      "text": "100GB保存すると月にだいたいいくらですか。",
+      "text": "小林さんの説明では、100GB保存すると、月にだいたいいくらですか。",
       "file": "46.wav",
       "voice": "Puck",
       "model": "gemini-3.8-live",
-      "seconds": 3.64,
-      "longestPause": 0.06,
-      "transcript": "100GB 保存 する と 月 に 大体 いくら です か ?",
-      "transcriptBy": "gemini-3.5-flash-lite",
+      "seconds": 5.73,
+      "longestPause": 0.25,
+      "transcript": "小林さんの説明では、100GB保存すると、月にだいたいいくらですか。",
+      "transcriptBy": "gemini-3.8-live",
       "reading": {
-        "expected": "ひゃくぎがばいとほぞんするとつきにだいたいいくらですか",
-        "spoken": "ひゃくぎがばいとほぞんするとつきにだいたいいくらですか",
+        "expected": "こばやしさんのせつめいではひゃくぎがばいとほぞんするとつきにだいたいいくらですか",
+        "spoken": "こばやしさんのせつめいではひゃくぎがばいとほぞんするとつきにだいたいいくらですか",
         "distance": 0
       }
     },
