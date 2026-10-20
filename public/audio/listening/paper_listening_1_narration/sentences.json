@@ -4,22 +4,7 @@
   "compareGapSeconds": [],
   "complete": false,
   "missing": [
-    3,
-    4,
-    8,
-    9,
-    13,
-    14,
-    18,
-    19,
-    23,
-    24,
-    28,
-    29,
-    33,
-    34,
-    38,
-    39
+    9
   ],
   "sentences": [
     {
@@ -52,6 +37,38 @@
         "expected": "かいわをきいてただしいこたえをえらんでください",
         "spoken": "かいわをきいてただしいこたえをえらんでください",
         "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "問題1、中村さんは、何について報告しましたか。",
+      "file": "03.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 4.11,
+      "longestPause": 0.54,
+      "transcript": "問題1、中村さんは、何について報告しましたか。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "もんだいいちなかむらさんはなにについてほうこくしましたか",
+        "spoken": "もんだいいちなかむらさんはなにについてほうこくしましたか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "A、新しい画面。",
+      "file": "04.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 2.39,
+      "longestPause": 0.88,
+      "transcript": "あ 新しい 画面",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "aあたらしいがめん",
+        "spoken": "ああたらしいがめん",
+        "distance": 1
       }
     },
     {
@@ -104,6 +121,22 @@
     },
     {
       "speaker": "narration",
+      "text": "問題2、問題はいつごろから発生していますか。",
+      "file": "08.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 3.69,
+      "longestPause": 0.42,
+      "transcript": "問題2、問題はいつごろから発生していますか。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "もんだいにもんだいはいつごろからはっせいしていますか",
+        "spoken": "もんだいにもんだいはいつごろからはっせいしていますか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
       "text": "ビー、今日の8時ごろ。",
       "file": "10.wav",
       "voice": "Puck",
@@ -147,6 +180,38 @@
       "reading": {
         "expected": "でぃいきょうのごごごじごろ",
         "spoken": "でぃいきょうのごごごじころ",
+        "distance": 1
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "問題3、ユーザーに起きている問題は何ですか。",
+      "file": "13.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 3.52,
+      "longestPause": 0.39,
+      "transcript": "問題3、ユーザーに起きている問題は何ですか。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "もんだいさんゆうざあにおきているもんだいはなんですか",
+        "spoken": "もんだいさんゆうざあにおきているもんだいはなんですか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "A、ログインできない。",
+      "file": "14.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 1.98,
+      "longestPause": 0.36,
+      "transcript": "ログイン でき ない",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "aろぐいんできない",
+        "spoken": "ろぐいんできない",
         "distance": 1
       }
     },
@@ -200,6 +265,38 @@
     },
     {
       "speaker": "narration",
+      "text": "問題4、どのユーザーに問題が出ていますか。",
+      "file": "18.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 3.8,
+      "longestPause": 0.37,
+      "transcript": "問題 4 どの ユーザー に 問題 が 出 て い ます か ?",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "もんだいよんどのゆうざあにもんだいがでていますか",
+        "spoken": "もんだいよんどのゆうざあにもんだいがでていますか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "A、すべてのユーザー。",
+      "file": "19.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 2.03,
+      "longestPause": 0.32,
+      "transcript": "あ 、 全て の ユーザー",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "aすべてのゆうざあ",
+        "spoken": "あすべてのゆうざあ",
+        "distance": 1
+      }
+    },
+    {
+      "speaker": "narration",
       "text": "ビー、クレジットカードで支払うユーザー。",
       "file": "20.wav",
       "voice": "Puck",
@@ -243,6 +340,38 @@
       "reading": {
         "expected": "でぃいはじめてつかうゆうざあ",
         "spoken": "でぃいはじめてつかうゆうざあ",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "問題5、中村さんが確認できたことは何ですか。",
+      "file": "23.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 3.94,
+      "longestPause": 0.45,
+      "transcript": "問題5、中村さんが確認できたことは何ですか。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "もんだいごなかむらさんがかくにんできたことはなんですか",
+        "spoken": "もんだいごなかむらさんがかくにんできたことはなんですか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "A、APIでエラーが出ている。",
+      "file": "24.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 2.82,
+      "longestPause": 0.49,
+      "transcript": "A、APIでエラーが出ている。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "ええええぴいあいでえらあがでている",
+        "spoken": "ええええぴいあいでえらあがでている",
         "distance": 0
       }
     },
@@ -296,6 +425,38 @@
     },
     {
       "speaker": "narration",
+      "text": "問題6、くわしい原因は分かっていますか。",
+      "file": "28.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 3.73,
+      "longestPause": 0.62,
+      "transcript": "問題6、くわしい原因は分かっていますか。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "もんだいろくくわしいげんいんはわかっていますか",
+        "spoken": "もんだいろくくわしいげんいんはわかっていますか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "A、全部分かっている。",
+      "file": "29.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 1.96,
+      "longestPause": 0.48,
+      "transcript": "あ 、 全部 分かっ て いる 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "aぜんぶわかっている",
+        "spoken": "あぜんぶわかっている",
+        "distance": 1
+      }
+    },
+    {
+      "speaker": "narration",
       "text": "ビー、まだ分かっていない。",
       "file": "30.wav",
       "voice": "Puck",
@@ -344,6 +505,38 @@
     },
     {
       "speaker": "narration",
+      "text": "問題7、中村さんは今、何を確認していますか。",
+      "file": "33.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 4.87,
+      "longestPause": 0.48,
+      "transcript": "問題 7 中村 さん は 今 何 を 確認 し て い ます か ?",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "もんだいなななかむらさんはいまなにをかくにんしていますか",
+        "spoken": "もんだいなななかむらさんはいまなにをかくにんしていますか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "A、GitHubのIssue。",
+      "file": "34.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 1.84,
+      "longestPause": 0.23,
+      "transcript": "GitHub の Issue",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "agithubのissue",
+        "spoken": "githubのissue",
+        "distance": 1
+      }
+    },
+    {
+      "speaker": "narration",
       "text": "ビー、ユーザーの名前。",
       "file": "35.wav",
       "voice": "Puck",
@@ -388,6 +581,38 @@
         "expected": "でぃいしょうひんのねだん",
         "spoken": "でぃいしょうひんのねだん",
         "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "問題8、田中さんは、原因が分かったらどうするように言いましたか。",
+      "file": "38.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 5.66,
+      "longestPause": 0.49,
+      "transcript": "問題 8 田中 さん は 原因 が 分かっ たら どう する よう に 言い まし た か ?",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "もんだいはちたなかさんはげんいんがわかったらどうするようにいいましたか",
+        "spoken": "もんだいはちたなかさんはげんいんがわかったらどうするようにいいましたか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "A、自分ですぐにバグを直す。",
+      "file": "39.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 2.57,
+      "longestPause": 0.34,
+      "transcript": "あ 自分 で すぐ に バグ を 直す 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "aじぶんですぐにばぐをなおす",
+        "spoken": "あじぶんですぐにばぐをなおす",
+        "distance": 1
       }
     },
     {
