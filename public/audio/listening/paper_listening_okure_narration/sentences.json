@@ -2,16 +2,8 @@
   "listeningId": "paper_listening_okure_narration",
   "gapSeconds": 0.5,
   "compareGapSeconds": [],
-  "complete": false,
-  "missing": [
-    3,
-    4,
-    5,
-    6,
-    7,
-    8,
-    9
-  ],
+  "complete": true,
+  "missing": [],
   "sentences": [
     {
       "speaker": "narration",
@@ -42,6 +34,118 @@
       "reading": {
         "expected": "かいわをきいてただしいこたえをえらんでください",
         "spoken": "かいわをきいてただしいこたえをえらんでください",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "問題1、山田さんは、何について報告しましたか。",
+      "file": "03.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 4.35,
+      "longestPause": 0.48,
+      "transcript": "問題 1 山田 さん は 何 に つい て 報告 し まし た か ?",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "もんだいいちやまださんはなにについてほうこくしましたか",
+        "spoken": "もんだいいちやまださんはなにについてほうこくしましたか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "問題2、その作業は、いつ終わる予定でしたか。",
+      "file": "04.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 4.11,
+      "longestPause": 0.44,
+      "transcript": "問題2、その作業は、いつ終わる予定でしたか。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "もんだいにそのさぎょうはいつおわるよていでしたか",
+        "spoken": "もんだいにそのさぎょうはいつおわるよていでしたか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "問題3、山田さんが遅れそうな理由は何ですか。",
+      "file": "05.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 3.87,
+      "longestPause": 0.36,
+      "transcript": "問題3、山田さんが遅れそうな理由は何ですか。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "もんだいさんやまださんがおくれそうなりゆうはなんですか",
+        "spoken": "もんだいさんやまださんがおくれそうなりゆうはなんですか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "問題4、山田さんは今、CSVのデータについて何をしていますか。",
+      "file": "06.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 5.43,
+      "longestPause": 0.42,
+      "transcript": "問題4、山田さんは今、CSVのデータについて何をしていますか。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "もんだいよんやまださんはいましいえすぶいのでえたについてなにをしていますか",
+        "spoken": "もんだいよんやまださんはいましいえすぶいのでえたについてなにをしていますか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "問題5、山田さんは、エラーについて何をテストしていますか。",
+      "file": "07.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 5.35,
+      "longestPause": 0.81,
+      "transcript": "問題 5 山田 さん は エラー に つい て 何 を テスト し て い ます か ?",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "もんだいごやまださんはえらあについてなにをてすとしていますか",
+        "spoken": "もんだいごやまださんはえらあについてなにをてすとしていますか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "問題6、山田さんは、いつまでに作業が終わると思っていますか。",
+      "file": "08.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 4.74,
+      "longestPause": 0.49,
+      "transcript": "問題6、山田さんは、いつまでに作業が終わると思っていますか。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "もんだいろくやまださんはいつまでにさぎょうがおわるとおもっていますか",
+        "spoken": "もんだいろくやまださんはいつまでにさぎょうがおわるとおもっていますか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "問題7、鈴木さんは、いつまでにもう一度状況を報告するように言いましたか。",
+      "file": "09.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 6.19,
+      "longestPause": 0.49,
+      "transcript": "問題7、鈴木さんは、いつまでにもう一度状況を報告するように言いましたか。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "もんだいななすずきさんはいつまでにもういちどじょうきょうをほうこくするようにいいましたか",
+        "spoken": "もんだいななすずきさんはいつまでにもういちどじょうきょうをほうこくするようにいいましたか",
         "distance": 0
       }
     }
