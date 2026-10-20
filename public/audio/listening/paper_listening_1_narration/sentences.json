@@ -2,12 +2,8 @@
   "listeningId": "paper_listening_1_narration",
   "gapSeconds": 0.5,
   "compareGapSeconds": [],
-  "complete": false,
-  "missing": [
-    34,
-    47,
-    49
-  ],
+  "complete": true,
+  "missing": [],
   "sentences": [
     {
       "speaker": "narration",
@@ -539,13 +535,13 @@
     },
     {
       "speaker": "narration",
-      "text": "詳しい原因は分かっていますか。",
+      "text": "くわしい原因は分かっていますか。",
       "file": "34.wav",
       "voice": "Puck",
       "model": "gemini-3.8-live",
-      "seconds": 2.24,
-      "longestPause": 0.06,
-      "transcript": "詳しい 原因 は 分かっ て い ます か ?",
+      "seconds": 2.33,
+      "longestPause": 0.04,
+      "transcript": "詳しい 原因 は わかっ て い ます か ?",
       "transcriptBy": "gemini-3.5-flash-lite",
       "reading": {
         "expected": "くわしいげんいんはわかっていますか",
@@ -747,18 +743,18 @@
     },
     {
       "speaker": "narration",
-      "text": "エー、明日報告する。",
+      "text": "エー、自分ですぐにバグを直す。",
       "file": "47.wav",
       "voice": "Puck",
       "model": "gemini-3.8-live",
-      "seconds": 2.06,
-      "longestPause": 0.35,
-      "transcript": "え、 明日報告する。",
+      "seconds": 2.63,
+      "longestPause": 0.2,
+      "transcript": "ええ 、 自分 で すぐ に バグ を 直す 。",
       "transcriptBy": "gemini-3.5-flash-lite",
       "reading": {
-        "expected": "ええあしたほうこくする",
-        "spoken": "えあしたほうこくする",
-        "distance": 1
+        "expected": "ええじぶんですぐにばぐをなおす",
+        "spoken": "ええじぶんですぐにばぐをなおす",
+        "distance": 0
       }
     },
     {
@@ -779,18 +775,18 @@
     },
     {
       "speaker": "narration",
-      "text": "シー、自分で決めて、何も言わない。",
+      "text": "シー、自分でやることを決めてよい。",
       "file": "49.wav",
       "voice": "Puck",
       "model": "gemini-3.8-live",
-      "seconds": 3.68,
-      "longestPause": 0.7,
-      "transcript": "シー、自分で決めて、何も言わない。",
-      "transcriptBy": "gemini-3.8-live",
+      "seconds": 2.96,
+      "longestPause": 0.55,
+      "transcript": "し 、 自分 で やる こと を 決め て 良い 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
       "reading": {
-        "expected": "しいじぶんできめてなにもいわない",
-        "spoken": "しいじぶんできめてなにもいわない",
-        "distance": 0
+        "expected": "しいじぶんでやることをきめてよい",
+        "spoken": "しじぶんでやることをきめてよい",
+        "distance": 1
       }
     },
     {
