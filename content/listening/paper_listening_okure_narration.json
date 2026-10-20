@@ -24,7 +24,7 @@
     },
     {
       "speaker": "narration",
-      "text": "問題2。その仕事は、いつ終わる予定でしたか。"
+      "text": "問題2。その作業は、いつ終わる予定でしたか。"
     },
     {
       "speaker": "narration",
@@ -40,7 +40,7 @@
     },
     {
       "speaker": "narration",
-      "text": "問題6。山田さんは、いつまでに仕事が終わると思っていますか。"
+      "text": "問題6。山田さんは、いつまでに作業が終わると思っていますか。"
     },
     {
       "speaker": "narration",
@@ -96,8 +96,8 @@
       "ほうこく"
     ],
     [
-      "仕事",
-      "しごと"
+      "作業",
+      "さぎょう"
     ],
     [
       "終",
@@ -147,6 +147,5 @@
       "言いました",
       "いいました"
     ]
-  ],
-  "audioUrl": "/audio/listening/paper_listening_okure_narration.wav"
+  ]
 }

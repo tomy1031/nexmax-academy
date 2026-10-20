@@ -2,8 +2,11 @@
   "listeningId": "paper_listening_okure_narration",
   "gapSeconds": 0.5,
   "compareGapSeconds": [],
-  "complete": true,
-  "missing": [],
+  "complete": false,
+  "missing": [
+    6,
+    14
+  ],
   "sentences": [
     {
       "speaker": "narration",
