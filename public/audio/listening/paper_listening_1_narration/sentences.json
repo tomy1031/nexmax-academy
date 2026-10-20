@@ -4,7 +4,14 @@
   "compareGapSeconds": [],
   "complete": false,
   "missing": [
-    9
+    4,
+    9,
+    14,
+    19,
+    24,
+    29,
+    34,
+    39
   ],
   "sentences": [
     {
@@ -53,22 +60,6 @@
         "expected": "もんだいいちなかむらさんはなにについてほうこくしましたか",
         "spoken": "もんだいいちなかむらさんはなにについてほうこくしましたか",
         "distance": 0
-      }
-    },
-    {
-      "speaker": "narration",
-      "text": "A、新しい画面。",
-      "file": "04.wav",
-      "voice": "Puck",
-      "model": "gemini-3.8-live",
-      "seconds": 2.39,
-      "longestPause": 0.88,
-      "transcript": "あ 新しい 画面",
-      "transcriptBy": "gemini-3.5-flash-lite",
-      "reading": {
-        "expected": "aあたらしいがめん",
-        "spoken": "ああたらしいがめん",
-        "distance": 1
       }
     },
     {
@@ -201,22 +192,6 @@
     },
     {
       "speaker": "narration",
-      "text": "A、ログインできない。",
-      "file": "14.wav",
-      "voice": "Puck",
-      "model": "gemini-3.8-live",
-      "seconds": 1.98,
-      "longestPause": 0.36,
-      "transcript": "ログイン でき ない",
-      "transcriptBy": "gemini-3.5-flash-lite",
-      "reading": {
-        "expected": "aろぐいんできない",
-        "spoken": "ろぐいんできない",
-        "distance": 1
-      }
-    },
-    {
-      "speaker": "narration",
       "text": "ビー、商品が表示されない。",
       "file": "15.wav",
       "voice": "Puck",
@@ -281,22 +256,6 @@
     },
     {
       "speaker": "narration",
-      "text": "A、すべてのユーザー。",
-      "file": "19.wav",
-      "voice": "Puck",
-      "model": "gemini-3.8-live",
-      "seconds": 2.03,
-      "longestPause": 0.32,
-      "transcript": "あ 、 全て の ユーザー",
-      "transcriptBy": "gemini-3.5-flash-lite",
-      "reading": {
-        "expected": "aすべてのゆうざあ",
-        "spoken": "あすべてのゆうざあ",
-        "distance": 1
-      }
-    },
-    {
-      "speaker": "narration",
       "text": "ビー、クレジットカードで支払うユーザー。",
       "file": "20.wav",
       "voice": "Puck",
@@ -356,22 +315,6 @@
       "reading": {
         "expected": "もんだいごなかむらさんがかくにんできたことはなんですか",
         "spoken": "もんだいごなかむらさんがかくにんできたことはなんですか",
-        "distance": 0
-      }
-    },
-    {
-      "speaker": "narration",
-      "text": "A、APIでエラーが出ている。",
-      "file": "24.wav",
-      "voice": "Puck",
-      "model": "gemini-3.8-live",
-      "seconds": 2.82,
-      "longestPause": 0.49,
-      "transcript": "A、APIでエラーが出ている。",
-      "transcriptBy": "gemini-3.8-live",
-      "reading": {
-        "expected": "ええええぴいあいでえらあがでている",
-        "spoken": "ええええぴいあいでえらあがでている",
         "distance": 0
       }
     },
@@ -441,22 +384,6 @@
     },
     {
       "speaker": "narration",
-      "text": "A、全部分かっている。",
-      "file": "29.wav",
-      "voice": "Puck",
-      "model": "gemini-3.8-live",
-      "seconds": 1.96,
-      "longestPause": 0.48,
-      "transcript": "あ 、 全部 分かっ て いる 。",
-      "transcriptBy": "gemini-3.5-flash-lite",
-      "reading": {
-        "expected": "aぜんぶわかっている",
-        "spoken": "あぜんぶわかっている",
-        "distance": 1
-      }
-    },
-    {
-      "speaker": "narration",
       "text": "ビー、まだ分かっていない。",
       "file": "30.wav",
       "voice": "Puck",
@@ -521,22 +448,6 @@
     },
     {
       "speaker": "narration",
-      "text": "A、GitHubのIssue。",
-      "file": "34.wav",
-      "voice": "Puck",
-      "model": "gemini-3.8-live",
-      "seconds": 1.84,
-      "longestPause": 0.23,
-      "transcript": "GitHub の Issue",
-      "transcriptBy": "gemini-3.5-flash-lite",
-      "reading": {
-        "expected": "agithubのissue",
-        "spoken": "githubのissue",
-        "distance": 1
-      }
-    },
-    {
-      "speaker": "narration",
       "text": "ビー、ユーザーの名前。",
       "file": "35.wav",
       "voice": "Puck",
@@ -597,22 +508,6 @@
         "expected": "もんだいはちたなかさんはげんいんがわかったらどうするようにいいましたか",
         "spoken": "もんだいはちたなかさんはげんいんがわかったらどうするようにいいましたか",
         "distance": 0
-      }
-    },
-    {
-      "speaker": "narration",
-      "text": "A、自分ですぐにバグを直す。",
-      "file": "39.wav",
-      "voice": "Puck",
-      "model": "gemini-3.8-live",
-      "seconds": 2.57,
-      "longestPause": 0.34,
-      "transcript": "あ 自分 で すぐ に バグ を 直す 。",
-      "transcriptBy": "gemini-3.5-flash-lite",
-      "reading": {
-        "expected": "aじぶんですぐにばぐをなおす",
-        "spoken": "あじぶんですぐにばぐをなおす",
-        "distance": 1
       }
     },
     {
