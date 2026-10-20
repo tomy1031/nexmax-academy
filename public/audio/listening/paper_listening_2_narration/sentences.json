@@ -2,11 +2,8 @@
   "listeningId": "paper_listening_2_narration",
   "gapSeconds": 0.5,
   "compareGapSeconds": [],
-  "complete": false,
-  "missing": [
-    40,
-    46
-  ],
+  "complete": true,
+  "missing": [],
   "sentences": [
     {
       "speaker": "narration",
@@ -634,17 +631,17 @@
     },
     {
       "speaker": "narration",
-      "text": "S3を使うと、今のサーバーについて、どんなよいことがありますか。",
+      "text": "S3を使うと、今のサーバーに何が良いですか。",
       "file": "40.wav",
       "voice": "Puck",
       "model": "gemini-3.8-live",
-      "seconds": 4.63,
-      "longestPause": 0.32,
-      "transcript": "S 3 を 使う と 、 今 の サーバー に つい て どんな よい こと が あり ます か ?",
-      "transcriptBy": "gemini-3.5-flash-lite",
+      "seconds": 4.06,
+      "longestPause": 0.28,
+      "transcript": "S3を使うと、今のサーバーに何が良いですか。",
+      "transcriptBy": "gemini-3.8-live",
       "reading": {
-        "expected": "えすすりいをつかうといまのさあばあについてどんなよいことがありますか",
-        "spoken": "えすすりいをつかうといまのさあばあについてどんなよいことがありますか",
+        "expected": "えすすりいをつかうといまのさあばあになにがいいですか",
+        "spoken": "えすすりいをつかうといまのさあばあになにがいいですか",
         "distance": 0
       }
     },
@@ -730,17 +727,17 @@
     },
     {
       "speaker": "narration",
-      "text": "小林さんの説明では、100GB保存すると、月にだいたいいくらですか。",
+      "text": "100GB保存すると月にだいたいいくらですか。",
       "file": "46.wav",
       "voice": "Puck",
       "model": "gemini-3.8-live",
-      "seconds": 5.43,
-      "longestPause": 0.24,
-      "transcript": "小林さんの説明では、100GB保存すると、月にだいたいいくらですか。",
-      "transcriptBy": "gemini-3.8-live",
+      "seconds": 3.64,
+      "longestPause": 0.06,
+      "transcript": "100GB 保存 する と 月 に 大体 いくら です か ?",
+      "transcriptBy": "gemini-3.5-flash-lite",
       "reading": {
-        "expected": "こばやしさんのせつめいではひゃくぎがばいとほぞんするとつきにだいたいいくらですか",
-        "spoken": "こばやしさんのせつめいではひゃくぎがばいとほぞんするとつきにだいたいいくらですか",
+        "expected": "ひゃくぎがばいとほぞんするとつきにだいたいいくらですか",
+        "spoken": "ひゃくぎがばいとほぞんするとつきにだいたいいくらですか",
         "distance": 0
       }
     },
