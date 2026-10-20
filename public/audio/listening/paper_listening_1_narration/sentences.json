@@ -2,8 +2,10 @@
   "listeningId": "paper_listening_1_narration",
   "gapSeconds": 0.5,
   "compareGapSeconds": [],
-  "complete": true,
-  "missing": [],
+  "complete": false,
+  "missing": [
+    18
+  ],
   "sentences": [
     {
       "speaker": "narration",
@@ -274,22 +276,6 @@
       "reading": {
         "expected": "ええろぐいんできない",
         "spoken": "ーろぐいんできない",
-        "distance": 2
-      }
-    },
-    {
-      "speaker": "narration",
-      "text": "ビー、商品が表示されない。",
-      "file": "18.wav",
-      "voice": "Puck",
-      "model": "gemini-3.8-live",
-      "seconds": 2.47,
-      "longestPause": 0.29,
-      "transcript": "ビー、商品が表示され",
-      "transcriptBy": "gemini-3.8-live",
-      "reading": {
-        "expected": "びいしょうひんがひょうじされない",
-        "spoken": "びいしょうひんがひょうじされ",
         "distance": 2
       }
     },
