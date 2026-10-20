@@ -2,25 +2,11 @@
   "listeningId": "paper_listening_chourei_narration",
   "gapSeconds": 0.5,
   "compareGapSeconds": [],
-  "complete": true,
-  "missing": [],
+  "complete": false,
+  "missing": [
+    1
+  ],
   "sentences": [
-    {
-      "speaker": "narration",
-      "text": "リスニング問題2。",
-      "file": "01.wav",
-      "voice": "Puck",
-      "model": "gemini-3.8-live",
-      "seconds": 0.76,
-      "longestPause": 0,
-      "transcript": "リスニング 問題",
-      "transcriptBy": "gemini-3.5-flash-lite",
-      "reading": {
-        "expected": "りすにんぐもんだいに",
-        "spoken": "りすにんぐもんだい",
-        "distance": 1
-      }
-    },
     {
       "speaker": "narration",
       "text": "会話を聞いて、正しい答えを選んでください。",
