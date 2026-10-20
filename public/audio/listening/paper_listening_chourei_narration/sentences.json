@@ -2,19 +2,8 @@
   "listeningId": "paper_listening_chourei_narration",
   "gapSeconds": 0.5,
   "compareGapSeconds": [],
-  "complete": false,
-  "missing": [
-    3,
-    4,
-    5,
-    6,
-    7,
-    8,
-    9,
-    10,
-    11,
-    12
-  ],
+  "complete": true,
+  "missing": [],
   "sentences": [
     {
       "speaker": "narration",
@@ -45,6 +34,166 @@
       "reading": {
         "expected": "かいわをきいてただしいこたえをえらんでください",
         "spoken": "かいわをきいてただしいこたえをえらんでください",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "問題1、佐藤さんは、昨日何を作成しましたか。",
+      "file": "03.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 4.47,
+      "longestPause": 0.38,
+      "transcript": "問題 1 佐藤 さん は 昨日 何 を 作成 し まし た か ?",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "もんだいいちさとうさんはきのうなにをさくせいしましたか",
+        "spoken": "もんだいいちさとうさんはきのうなにをさくせいしましたか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "問題2、佐藤さんが表示できるようにしたものを、4つ選んでください。",
+      "file": "04.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 5.26,
+      "longestPause": 0.38,
+      "transcript": "問題2、佐藤さんが表示できるようにしたものを、4つ選んでください。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "もんだいにさとうさんがひょうじできるようにしたものをよっつえらんでください",
+        "spoken": "もんだいにさとうさんがひょうじできるようにしたものをよっつえらんでください",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "問題3、佐藤さんの商品詳細機能の進捗は何パーセントですか。",
+      "file": "05.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 5.76,
+      "longestPause": 0.64,
+      "transcript": "問題三、佐藤さんの商品詳細機能の進捗は何パーセントですか。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "もんだいさんさとうさんのしょうひんしょうさいきのうのしんちょくはなんぱあせんとですか",
+        "spoken": "もんだいさんさとうさんのしょうひんしょうさいきのうのしんちょくはなんぱあせんとですか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "問題4、佐藤さんは、今日何を作りますか。",
+      "file": "06.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 3.82,
+      "longestPause": 0.38,
+      "transcript": "問題4 佐藤 さん は 今日 何 を 作り ます か ?",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "もんだいよんさとうさんはきょうなにをつくりますか",
+        "spoken": "もんだいよんさとうさんはきょうなにをつくりますか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "問題5、次に報告した山田さんは、昨日何を作成しましたか。",
+      "file": "07.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 5.64,
+      "longestPause": 0.54,
+      "transcript": "問題 5 次 に 報告 し た 山田 さん は 昨日 何 を 作成 し まし た か ?",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "もんだいごつぎにほうこくしたやまださんはきのうなにをさくせいしましたか",
+        "spoken": "もんだいごつぎにほうこくしたやまださんはきのうなにをさくせいしましたか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "問題6、山田さんの商品検索機能の進捗は何パーセントですか。",
+      "file": "08.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 5.54,
+      "longestPause": 0.53,
+      "transcript": "問題6、山田さんの商品検索機能の進捗は何パーセントですか。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "もんだいろくやまださんのしょうひんけんさくきのうのしんちょくはなんぱあせんとですか",
+        "spoken": "もんだいろくやまださんのしょうひんけんさくきのうのしんちょくはなんぱあせんとですか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "問題7、山田さんは、今日何を修正しますか。",
+      "file": "09.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 4.39,
+      "longestPause": 0.63,
+      "transcript": "問題7、山田さんは、今日何を修正しますか。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "もんだいななやまださんはきょうなにをしゅうせいしますか",
+        "spoken": "もんだいななやまださんはきょうなにをしゅうせいしますか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "問題8、山田さんは、原因についてどう言いましたか。",
+      "file": "10.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 4.58,
+      "longestPause": 0.42,
+      "transcript": "問題8、山田さんは、原因についてどう言いましたか。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "もんだいはちやまださんはげんいんについてどういいましたか",
+        "spoken": "もんだいはちやまださんはげんいんについてどういいましたか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "問題9、カテゴリーで検索すると、どんな問題が起きますか。",
+      "file": "11.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 5.28,
+      "longestPause": 0.51,
+      "transcript": "問題 9 カテゴリ で 検索 する と どんな 問題 が 起き ます か ?",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "もんだいきゅうかてごりいでけんさくするとどんなもんだいがおきますか",
+        "spoken": "もんだいきゅうかてごりでけんさくするとどんなもんだいがおきますか",
+        "distance": 1
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "問題10、山田さんは今、何を確認していますか。",
+      "file": "12.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 4.18,
+      "longestPause": 0.52,
+      "transcript": "問題10、山田さんは今、何を確認していますか。",
+      "transcriptBy": "gemini-3.8-live",
+      "reading": {
+        "expected": "もんだいじゅうやまださんはいまなにをかくにんしていますか",
+        "spoken": "もんだいじゅうやまださんはいまなにをかくにんしていますか",
         "distance": 0
       }
     }
