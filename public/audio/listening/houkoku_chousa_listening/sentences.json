@@ -2,8 +2,8 @@
   "listeningId": "houkoku_chousa_listening",
   "gapSeconds": 1.25,
   "compareGapSeconds": [],
-  "complete": true,
-  "missing": [],
+  "complete": false,
+  "missing": [4],
   "sentences": [
     {
       "speaker": "kobayashi",
@@ -50,22 +50,6 @@
       "reading": {
         "expected": "きのうおねがいされたがぞうをほぞんするほうほうについてちょうさがおわりましたのでほうこくします",
         "spoken": "きのうおねがいされたがぞうをほぞんするほうほうについてちょうさがおわりましたのでほうこくします",
-        "distance": 0
-      }
-    },
-    {
-      "speaker": "kato",
-      "text": "お願いします。",
-      "file": "04.wav",
-      "voice": "Gacrux",
-      "model": "gemini-3.8-live",
-      "seconds": 0.71,
-      "longestPause": 0,
-      "transcript": "お願い し ます 。",
-      "transcriptBy": "gemini-3.5-flash-lite",
-      "reading": {
-        "expected": "おねがいします",
-        "spoken": "おねがいします",
         "distance": 0
       }
     },
