@@ -2,11 +2,8 @@
   "listeningId": "paper_listening_2_narration",
   "gapSeconds": 0.5,
   "compareGapSeconds": [],
-  "complete": false,
-  "missing": [
-    40,
-    60
-  ],
+  "complete": true,
+  "missing": [],
   "sentences": [
     {
       "speaker": "narration",
@@ -634,6 +631,22 @@
     },
     {
       "speaker": "narration",
+      "text": "S3を使うと、今のサーバーについて、どんなよいことがありますか。",
+      "file": "40.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 4.63,
+      "longestPause": 0.32,
+      "transcript": "S 3 を 使う と 、 今 の サーバー に つい て どんな よい こと が あり ます か ?",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "えすすりいをつかうといまのさあばあについてどんなよいことがありますか",
+        "spoken": "えすすりいをつかうといまのさあばあについてどんなよいことがありますか",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
       "text": "エー、サーバーを使わなくなる。",
       "file": "41.wav",
       "voice": "Puck",
@@ -933,6 +946,22 @@
       "reading": {
         "expected": "ええがぞうをすべてけす",
         "spoken": "ええがぞうをすべてけす",
+        "distance": 0
+      }
+    },
+    {
+      "speaker": "narration",
+      "text": "ビー、今日中にS3を使い始める。",
+      "file": "60.wav",
+      "voice": "Puck",
+      "model": "gemini-3.8-live",
+      "seconds": 2.93,
+      "longestPause": 0.34,
+      "transcript": "B 、 今日 中 に S 3 を 使い 始める 。",
+      "transcriptBy": "gemini-3.5-flash-lite",
+      "reading": {
+        "expected": "びいきょうじゅうにえすすりいをつかいはじめる",
+        "spoken": "びいきょうじゅうにえすすりいをつかいはじめる",
         "distance": 0
       }
     },
