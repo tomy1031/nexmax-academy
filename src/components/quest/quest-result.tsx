@@ -37,19 +37,20 @@ const UI_FURIGANA = buildFuriganaIndex([
   ["最終利益", "さいしゅうりえき"],
   ["真", "しん"],
   ["最初", "さいしょ"],
+  ["失敗", "しっぱい"],
 ]);
 
 /**
  * 終わりの 画面 — 旧アプリ `renderEndScreen` の 移植
  *
- * ## 手ぶらで 帰さない
- * 途中で 終わった ときも、**そこまでに 進んだ 場面の 数**を まず 大きく 出す
- *（設計01 P8「0点でも ほめ要素を 1つ 作る」）。そのうえで **次の 一手**を 1つだけ
- * 置く——うまく いかなかった 理由を 並べても、次に 何を するかは 増えない。
+ * ## 言葉は 原典の まま
+ * 倒れたら「GAME OVER」「クエストは 失敗した…」。移植の ときに「TO BE CONTINUED」と
+ * 前向きな 言い方に 変えて いたが、2026-10-21 に tomy さんが「無理して ポジティブっぽく
+ * するのは 気持ち悪い」として 原典に 戻した。結果は はっきり 書き（必ず守るルール 1）、
+ * 次に する ことは「やり直す（コンティニュー）」の ボタンで 示す。
  *
  * ゲーム風UIが 売り（2026-09-01 の 指定）で、**負けの 画面も ゲームの 一部**である。
  * 2026-10-20 から ドット絵の RPG の 見た目（仲間の ネクマックスが 並び、クリアなら 跳ねる）。
- * ことばは 前向きに する（必ず守るルール 1）。
  */
 export function QuestResult({
   quest,
@@ -64,7 +65,6 @@ export function QuestResult({
   onContinue: () => void;
 }) {
   const cleared = state.status.kind === "cleared";
-  const reason = state.status.kind === "over" ? state.status.reason : null;
 
   return (
     <div className="qx-end">
@@ -80,8 +80,8 @@ export function QuestResult({
             </li>
           ))}
         </ul>
-        <h2 className={`qx-end-title mt-3 ${cleared ? "text-[#ffd84a]" : "text-[#8ccdff]"}`}>
-          {cleared ? "PROJECT CLEAR!" : "TO BE CONTINUED"}
+        <h2 className={`qx-end-title mt-3 ${cleared ? "text-[#ffd84a]" : "text-[#ff6464]"}`}>
+          {cleared ? "PROJECT CLEAR!" : "GAME OVER"}
         </h2>
         <p className="qx-t mt-3 text-sm leading-relaxed">
           {cleared ? (
@@ -89,14 +89,10 @@ export function QuestResult({
               text="無事に システムを リリースした！ 君たちは 本当の プロだ！"
               index={UI_FURIGANA}
             />
-          ) : reason === "budget" ? (
-            <RubyText
-              text="お金が つきた ところで 一度 おわり。つぎは もっと 早く 相談してみよう。"
-              index={UI_FURIGANA}
-            />
           ) : (
+            // 原典の 文（2026-10-21 tomy さん「無理して ポジティブっぽく するのは 気持ち悪い」）
             <RubyText
-              text="ここで 一度 おわり。つぎは 体力の 減りかたを 見ながら 進もう。"
+              text="クエストは 失敗した…ウォーターフォールの 闇に 飲まれたのだ。"
               index={UI_FURIGANA}
             />
           )}
