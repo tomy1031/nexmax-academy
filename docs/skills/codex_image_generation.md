@@ -205,6 +205,8 @@ codex -i public/img/characters/nexmax/reference.png \
 | `scripts/images/yuurei_team.json` | 同 2枚（表紙・ゴール。文字なし） | 2026-09-18 |
 | `scripts/images/yuurei_team_fujiki.json` | 同 1枚（担当カード 5枚目の 藤木さん。依頼書の 字は 追加要望・優先順位・仕様変更） | 2026-09-18 |
 | `scripts/images/yuurei_team_kigyou.json` | 同 3枚（企業の 担当者が Next Talent を 使う カード。**設定画を 参照に 渡さない**） | 2026-09-18 |
+| `scripts/images/kaihatsu_zukai.json` | 「システム開発の 流れ」ページの 図 6枚（7つの 工程・設計・テスト・デプロイ・保守運用・ウォーターフォールと アジャイル。**文字あり**）。旧アプリの 絵の 説明の 骨を 保ち、英語を 外した。参照は 合格ずみの 図 2枚（`hourenso.webp`・`yuurei_nexttalent/flow.webp`）で 絵柄だけ 借りる | 2026-10-21 |
+| `scripts/images/kaihatsu_scenes.json` | 同 3枚（要件定義・見積もり・開発。**文字あり**）。`dev_process.webp` を 置いて から 流す（参照の 3枚目） | 2026-10-21 |
 
 **学習者役を 毎回 同じ 顔に しない**（2026-08-28 の 指摘「同じ女性を使いすぎ」「背景にもバリエーションが
 欲しい」）。§6.7 は「学習者役の 学生は 1枚目を 絵柄アンカーに して 顔と 服を そろえる」と 書いて いるが、

@@ -57,12 +57,12 @@ const KAIHATSU_ORDER = [
   [
     "kaihatsu_zukai",
     "文字入りの 図（6枚）",
-    "参照画像なし。1枚目（7つの 工程）が 以後の 絵柄の アンカーに なる",
+    "参照は 合格ずみの 図 2枚（絵柄だけ）。1枚目（7つの 工程）が 以後の 絵柄の アンカーに なる",
   ],
   [
     "kaihatsu_scenes",
-    "場面の 絵（3枚・文字なし）",
-    "本文と カードが ことばを 持つので 絵は 場面だけ",
+    "文字入りの 図（3枚）",
+    "zukai の 1枚目を public/img/kaihatsu/ に 置いて から 流す（refs の 3枚目が それを アンカーに する）",
   ],
 ];
 
@@ -241,8 +241,9 @@ writeDoc("kaihatsu_絵の作り直し台帳", (out) => {
   out("**テスト／デプロイ／保守運用の 名前が 上下 2回 くり返されて いる**。");
   out("同じ 絵の 開発の コマには **Git の ロゴ**（実在の ブランドマーク）も 写り込んで いる。");
   out();
-  out("作り直しの 方針は 1つ: **名前だけ 大きく、中身は 絵で 見せる。** 説明文は 教材の");
-  out("カードが すでに 持って いるので、絵に 二重に 書かない。");
+  out("作り直しの 方針: **説明の 骨は 旧アプリの 絵の まま 保ち**（2026-09-03 の 決まり");
+  out("「前と同じ内容の画像に」）、英語の 副題と 説明文だけを 外す。絵に 書く ことばは 本文の");
+  out("カードと 同じ 語だけに する。2026-10-21 に 9枚 作り直した。");
   out();
   out("## 作業する 場所");
   out();
@@ -262,11 +263,11 @@ writeDoc("kaihatsu_絵の作り直し台帳", (out) => {
   out("## 置き場所の 決まり");
   out();
   out("9枚 ぜんぶ `public/img/kaihatsu/<名前>.webp` に **同じ 名前で 上書き**する。");
-  out("PNG で 出る ので 変換してから 置く: `cwebp -q 84 in.png -o out.webp`");
+  out("PNG で 出る ので 変換してから 置く: `cwebp -q 82 -blend_alpha 0xffffff in.png -o out.webp`");
   out();
-  out("**`content/articles/kaihatsu_lecture.json` を 手で 直さない。**");
-  out("`scripts/gen_kaihatsu_content.mjs` が 作り直すので 消える。絵を 同じ パスに 上書きすれば、");
-  out("データを 触らずに 画面が 変わる。");
+  out("**`scripts/gen_kaihatsu_content.mjs` は 走らせない。** 教材データより 古く、走らせると");
+  out("あとから 直した 本文・読みが 元に 戻る（2026-10-21 に 確かめた）。教材データの `prompt` と");
+  out("`refs` だけを 台帳から 写す（`scripts/lib/image_ledger.mjs` の `loadImageLedgers`）。");
   out();
   out("## いちばん 先に やる こと — ふりがなの 試作");
   out();
@@ -298,7 +299,6 @@ writeDoc("kaihatsu_絵の作り直し台帳", (out) => {
   out("## 差しかえた あとの 確かめ");
   out();
   out("```bash");
-  out("node scripts/gen_kaihatsu_content.mjs   # 教材データを 作り直す");
   out("npm run gen:content                     # 焼き込みモジュール（忘れると 画面が 変わらない）");
   out("npm run lint:content                    # スキーマ・ふりがな・焼き込みずれ");
   out("npm run e2e                             # 通しの 自動検証");

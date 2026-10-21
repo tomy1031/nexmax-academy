@@ -1,37 +1,57 @@
 {
-  "refs": [],
-  "_comment": "開発の 工程の **場面の 絵**（文字なし）。本文と カードが ことばを 持って いるので、絵は 場面だけを 見せる。**kaihatsu_zukai を 先に 流して から**（1枚目が 絵柄の アンカーに なる。gen_images.mjs が 自動で 足す）。",
-  "style": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME.",
-  "noText": "No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts.",
-  "negative": "Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+  "refs": [
+    "public/img/hourensou/houkoku/hourenso.webp",
+    "public/img/articles/yuurei_nexttalent/flow.webp",
+    "public/img/kaihatsu/dev_process.webp"
+  ],
+  "_comment": "開発の 工程の 残り 3枚（要件定義・見積もり・開発）。\n\n## 2026-10-21 に 作り直した（tomy さんの 指定「nexmax_academy の テイストに 合わせて 再生成」）\n9/1 版は「文字なしの 場面」だったが、旧アプリの 絵は 3枚とも **部品に 名前を 付けた 説明の 図**だった（要求定義／システム要件定義・機能要件／非機能要件、WBS → 工数 → 費用、コーディング・Git・進捗）。注意事項 2026-09-03「前と同じ内容の画像に」に 合わせて、**ことばを 焼く 図**に 戻した。書き方は kaihatsu_zukai と 同じ（style・noText・negative は 同文）。\n\n**kaihatsu_zukai を 先に 流して、できた dev_process を `public/img/kaihatsu/dev_process.webp` に 置いて から 流す**——`refs` の 3枚目が それを 絵柄の アンカーに する。",
+  "style": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME. This is a TEACHING picture, not a mood picture: what each person is doing must be readable from the picture alone. This one is a teaching diagram: few large elements, generous spacing, each label sitting on a soft cream panel with a rounded sky-blue border, arranged so the eye reads it in one pass. Roles are told apart by clothes, the same in every picture: ENGINEERS wear light sky-blue shirts or soft green cardigans; the CUSTOMER always wears a dark navy business suit and is the only person in a suit. Screens show only simple shapes — grey bars, coloured blocks, simple buttons, simple graphs — never readable writing. The attached pictures show the drawing style of this app: match their linework, colours, rounded cream label panels and lettering style exactly.",
+  "noText": "Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word LARGE and horizontally in a rounded gothic Japanese font, with generous space around it. Each word is given with its reading in brackets: the bracket is NOT printed — the reading is printed as small hiragana furigana directly above the kanji it belongs to, centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana, and neither do Latin letters or digits. Spell every character exactly as given. No English words or subtitles anywhere. No other letters, numbers, logos or watermarks anywhere in the picture.",
+  "negative": "Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, English captions or subtitles under the Japanese, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots. THE ATTACHED PICTURES ARE ONLY DRAWING-STYLE GUIDES — never copy their layout, their objects, their people or ANY of their words (never write 報告, 連絡, 相談, 学生検索, 学生詳細, スキルグラフ, or the seven stage names of the third picture).",
   "output": "1536x1024",
   "scenes": [
     {
       "out": "youken_teigi",
       "dest": "public/img/kaihatsu/youken_teigi.webp",
-      "title": "要件定義の ようす（お客様に 聞く）",
-      "where": "scripts/gen_kaihatsu_content.mjs kaihatsu_lecture 「1. 要件定義」の image",
-      "priority": "B",
-      "scene": "A bright meeting room with a wide window. A customer in a jacket sits on one side of the table talking with open hands, clearly explaining what she wants, while two engineers sit facing her — one leaning in and listening closely, the other writing on a notepad. A large blank whiteboard stands behind them and a mug sits on the table. Warm daylight, an easy friendly mood.",
-      "text": []
+      "title": "要件定義の 2つの 段階（要求定義 → システム要件定義）",
+      "where": "content/articles/kaihatsu_lecture.json 「1. 要件定義」の image",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: requirements definition has two steps — first listen to what the customer wants to do with the system, then turn that wish into the list of things the system must have. One wide picture split into two equal halves by a soft cream gutter, with one thick sky-blue arrow crossing the gutter from the left half to the right half. LEFT HALF, on a pale sky-blue ground, label panel at the top: 要求定義. The customer in a navy suit sits at a meeting table explaining with one open hand, and an engineer sits facing the customer, listening and writing on a notepad. Behind them a board shows the customer's wish as a simple picture: a small shop and a smartphone with a shopping basket on its screen. RIGHT HALF, on a pale cream ground, label panel at the top: システム要件定義. An engineer sits at a desk, and above the desk float two large rounded cream panels side by side. The first panel is titled 機能要件 and holds two simple screen pictures, each with its small label: a login screen with two input bars and a button (ログイン) and a payment screen with a bank card (決済). The second panel is titled 非機能要件 and holds two simple pictures, each with its small label: a big padlock (セキュリティ) and a speedometer with its needle far to the right (処理速度).",
+      "text": [
+        "要求定義（ようきゅうていぎ）",
+        "システム要件定義（システムようけんていぎ）",
+        "機能要件（きのうようけん）",
+        "非機能要件（ひきのうようけん）",
+        "ログイン",
+        "決済（けっさい）",
+        "セキュリティ",
+        "処理速度（しょりそくど）"
+      ]
     },
     {
       "out": "estimation",
       "dest": "public/img/kaihatsu/estimation.webp",
-      "title": "見積もりの ようす（時間と お金を 出す）",
-      "where": "scripts/gen_kaihatsu_content.mjs kaihatsu_lecture 「2. 見積もり」の image",
-      "priority": "B",
-      "scene": "An engineer sits at a tidy desk working out how long the work will take. One hand rests on a calculator, the other points at a large blank wall calendar beside the desk, and a colleague standing next to him counts something off on his fingers as they talk it through. Sticky notes in soft coral and sky blue are grouped in neat columns on the wall. Warm daylight from the window, a calm and careful mood.",
-      "text": []
+      "title": "見積もりの 流れ（作業を 洗い出す → 工数を 計算する → 費用と スケジュール）",
+      "where": "content/articles/kaihatsu_lecture.json 「2. 見積もり」の image",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: an estimate is made in three steps — list every piece of work, count how many hours each piece takes, then turn the hours into a cost and a schedule for the customer. One wide picture of three equal rounded cream panels in a row, joined by two thick sky-blue arrows pointing right. Each panel has its Japanese name printed large across the top. LEFT PANEL: an engineer sticks small cards onto a whiteboard in a tree shape — one box at the top branching into three boxes, each branching into smaller boxes — and the small label WBS sits at the top of the tree. MIDDLE PANEL: an engineer at a desk with a calculator and a round clock; two cream tags hang on the board beside the desk, each with its words: DB設計 10時間 and 環境構築 5時間 — EVERY kanji on these tags gets furigana, including じかん above 時間 on both tags. RIGHT PANEL: the engineer hands one document to the customer in a navy suit; the document shows a small stack of coins and a calendar page, and the customer reads it with interest. Furigana sit ONLY above kanji: never above hiragana such as を, と, い, す, never above katakana, Latin letters or digits.",
+      "text": [
+        "作業を 洗い出す（さぎょうを あらいだす）",
+        "WBS",
+        "工数を 計算する（こうすうを けいさんする）",
+        "DB設計 10時間（DBせっけい 10じかん）",
+        "環境構築 5時間（かんきょうこうちく 5じかん）",
+        "費用と スケジュール（ひようと スケジュール）"
+      ]
     },
     {
       "out": "development",
       "dest": "public/img/kaihatsu/development.webp",
-      "title": "開発の ようす（手分けして 作る）",
-      "where": "scripts/gen_kaihatsu_content.mjs kaihatsu_lecture 「4. 開発」の image",
-      "priority": "B",
-      "scene": "Three engineers work side by side at a long shared desk of two-monitor workstations, each on their own part of the same job. The one in the middle turns to the one on her right to check something on his screen and he points at it, while the third keeps typing. A blank board on the wall behind them carries a neat row of small cards moved into three columns. Mugs and a small plant on the desk, warm daylight, a busy but relaxed mood.",
-      "text": []
+      "title": "開発の 3つの 仕事（コーディング・バージョン管理・進捗管理）",
+      "where": "content/articles/kaihatsu_lecture.json 「4. 開発」の image",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: in development the engineers split the work and write code, keep a record of who changed what, and check together how far they have got. One wide picture of three equal rounded cream panels in a row. Each panel has its Japanese name printed large across the top. LEFT PANEL: three engineers sit side by side at a long desk, each typing on their own monitor, and each screen shows a different colour of code bars — each person is building a different part. MIDDLE PANEL: an engineer points at a big screen that shows one long horizontal timeline with a row of dots on it and one short branch that splits off and joins back; next to each dot sits a tiny round face picture of the person who made that change. RIGHT PANEL: two engineers stand at a board with three columns of small coloured cards (cards moving from the left column to the right column) and one long progress bar under the columns, about two thirds full; they talk it over with a mug in hand.",
+      "text": ["コーディング", "バージョン管理（バージョンかんり）", "進捗管理（しんちょくかんり）"]
     }
   ]
 }
