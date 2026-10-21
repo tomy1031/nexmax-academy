@@ -99,7 +99,7 @@ function everyLine(): QuestLogLine[] {
   };
   play(weak, "miss", lines);
 
-  // 4) リスクが 溜まった ままの 爆発（第8章の 入口に 座らせる）
+  // 4) リスクが 溜まった ままの 爆発（爆発する 場面の 入口に 座らせる）
   const at = quest.phases.findIndex((phase) => phase.id === RISK_PHASE_ID);
   const loaded: QuestState = {
     ...createQuestState(quest, [MEMBER]),

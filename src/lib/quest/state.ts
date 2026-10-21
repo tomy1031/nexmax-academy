@@ -17,11 +17,12 @@
  * - 場面クリアに 至らなかった 手では `budget -= 人数 × turnCostPerMember`
  * - 必要EXPは `いまのLv × 100`。上がると `maxHp += 20` かつ HP全回復
  *
- * ## 隠れリスクの 爆発を 第8章の 入口へ 直した
- * 原典は `phaseId === 5` で 爆発して いた——**第2章の 1問目**である。
- * 上流の 雑さが 下流で 返って くるのが この 仕掛けの 意味（設計01 P9）なのに、
- * 上流が まだ 始まって いない ところで 鳴って いた。**旧版の 名残の バグ**なので、
- * 「テスト」の 入口（`RISK_PHASE_ID` に 入る 直前）に 移す。中身は 原典どおり。
+ * ## 隠れリスクの 爆発は 原典どおり 場面5の 入口
+ * 原典は `phaseId === 5`（第2章の 2問目「おサイフを きにする 神社長」）に 入る 直前に 鳴る。
+ * 2026-09-01 の 移植では「旧版の 名残の バグ」と 判断して 第8章の 入口（22）へ 動かしたが、
+ * tomy さんに 確かめて いなかった。2026-10-20 に tomy さんが 原典の 時期に 戻すと 決めた
+ *（第8章だと、毎場面 1回 外す 組は バグが 68 たまり、21場面を 進めた あとで 全員 倒れる。
+ * 場面5なら 始めて すぐ「雑に 進めると バグが 返って くる」が 体で 分かり、やり直しも 短い）。
  */
 
 import { isPersonalityTypeCode, type PersonalityTypeCode } from "@/content/personality";
@@ -44,9 +45,9 @@ export const MAX_HP_GAIN = 20;
 
 /**
  * 隠れリスクが 爆発する 場面（**この 場面に 入る 直前**に 鳴る）。
- * 22 = 第8章「テスト」の 1問目。原典の 5（第2章の 1問目）は バグ。
+ * 5 = 第2章「キックオフミーティング」の 2問目（原典どおり。2026-10-20 に tomy さんが 決めた）。
  */
-export const RISK_PHASE_ID = 22;
+export const RISK_PHASE_ID = 5;
 
 /** 爆発の 大きさ（原典）。全員が `risk × これ` を 受け、予算は `risk × 30` 減る。 */
 export const RISK_HP_MULTIPLIER = 10;
@@ -287,7 +288,7 @@ function onAdvance(quest: Quest, state: QuestState): QuestState {
   // おしまい／クリアの ときは 解説を 閉じるだけ（結果の 画面へ）
   if (state.status.kind !== "playing") return { ...state, event: null };
 
-  // 爆発の しらせを 読み終えた——そのまま テストの 場面へ
+  // 爆発の しらせを 読み終えた——そのまま 次の 場面（場面5）へ
   if (state.event.kind === "risk") return { ...state, event: null };
 
   // まだ 両方 見つけて いない 場面は、同じ 場面の つづき（次の 人の 番）

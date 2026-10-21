@@ -369,7 +369,7 @@ function PhaseBody({
 
   const event = state.event;
 
-  /* 1) 隠れリスクの 爆発（第8章の 入口） */
+  /* 1) 隠れリスクの 爆発（場面5の 入口・原典どおり） */
   if (event?.kind === "risk") {
     return (
       <div data-quest="risk" className="mt-1 flex flex-col gap-3">
