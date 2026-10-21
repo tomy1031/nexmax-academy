@@ -138,7 +138,10 @@ export function QuestView({ quest, embedded }: { quest: Quest; embedded?: boolea
        */
       const milestone =
         next.clearedPhases > current.clearedPhases ||
-        (current.status.kind === "playing" && next.status.kind !== "playing");
+        (current.status.kind === "playing" && next.status.kind !== "playing") ||
+        // 倒れた あとの「やり直す」と、反省クイズを 終えた 再開（組の だれが 入り直しても 続きから）
+        (current.status.kind !== "playing" && next.status.kind === "playing") ||
+        (current.reflection !== null && next.reflection === null);
       if (!milestone) return;
 
       if (next.status.kind === "cleared") {
@@ -171,7 +174,14 @@ export function QuestView({ quest, embedded }: { quest: Quest; embedded?: boolea
     }
     if (!state) return <QuestSetup title={quest.title} onStart={onStart} busy={busy} />;
     if (state.status.kind !== "playing" && state.event === null) {
-      return <QuestResult quest={quest} state={state} onRestart={restart} />;
+      return (
+        <QuestResult
+          quest={quest}
+          state={state}
+          onRestart={restart}
+          onContinue={() => dispatch({ type: "continue" })}
+        />
+      );
     }
     return (
       <QuestPlay

@@ -31,8 +31,8 @@ const MEMBERS: QuestMember[] = [
   { id: "b", name: "ソカ", type: null, gender: "male" },
 ];
 
-function ending(status: QuestState["status"]): QuestState {
-  return { ...createQuestState(quest, MEMBERS), clearedPhases: 12, teamExp: 640, status };
+function ending(status: QuestState["status"], relief = 0): QuestState {
+  return { ...createQuestState(quest, MEMBERS), clearedPhases: 12, teamExp: 640, status, relief };
 }
 
 /** `<ruby>` の 外に 残った 漢字（e2e の `bareKanjiTexts` と 同じ 見かた）。 */
@@ -41,16 +41,23 @@ function bareKanji(html: string): string[] {
   return [...new Set([...text].filter((char) => KANJI.test(char)))];
 }
 
-const ENDINGS: readonly { name: string; status: QuestState["status"] }[] = [
+const ENDINGS: readonly { name: string; status: QuestState["status"]; relief?: number }[] = [
   { name: "クリア", status: { kind: "cleared" } },
+  // 特別救済を もらった クリア（救済措置の 合計・真の 最終利益 が 出る）
+  { name: "特別救済つきの クリア", status: { kind: "cleared" }, relief: 300 },
   { name: "お金が つきた", status: { kind: "over", reason: "budget" } },
   { name: "みんな 倒れた", status: { kind: "over", reason: "hp" } },
 ];
 
 describe("終わりの 画面に 裸の 漢字が 無い", () => {
-  it.each(ENDINGS)("$name", ({ status }) => {
+  it.each(ENDINGS)("$name", ({ status, relief }) => {
     const html = renderToStaticMarkup(
-      <QuestResult quest={quest} state={ending(status)} onRestart={() => {}} />,
+      <QuestResult
+        quest={quest}
+        state={ending(status, relief)}
+        onRestart={() => {}}
+        onContinue={() => {}}
+      />,
     );
     expect(bareKanji(html)).toEqual([]);
   });
@@ -58,7 +65,12 @@ describe("終わりの 画面に 裸の 漢字が 無い", () => {
   /** 数えかたが 効いて いる ことの 確かめ（`<ruby>` を 外すと 見つかる）。 */
   it("ルビを 外すと 見つかる（数えかたが 空回りして いない）", () => {
     const html = renderToStaticMarkup(
-      <QuestResult quest={quest} state={ending({ kind: "cleared" })} onRestart={() => {}} />,
+      <QuestResult
+        quest={quest}
+        state={ending({ kind: "cleared" })}
+        onRestart={() => {}}
+        onContinue={() => {}}
+      />,
     );
     expect(html).toContain("<ruby>");
     expect(bareKanji(html.replace(/<\/?ruby>|<rt>.*?<\/rt>/g, "")).length).toBeGreaterThan(0);
