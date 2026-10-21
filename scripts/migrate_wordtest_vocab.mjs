@@ -671,14 +671,14 @@ const STAGES = [
   {
     id: "hourensou_renraku_kihon",
     title: "報連相：連絡の ことば",
-    label: "きほん",
+    label: "初級",
     description: "連絡で まいにち 使う ことばです。チャットや 会話で よく 出ます。",
     pick: (word) => word.stage === 4 && RENRAKU_KIHON.includes(word.oldId),
   },
   {
     id: "hourensou_renraku_ouyou",
     title: "報連相：連絡の ことば",
-    label: "おうよう",
+    label: "上級",
     description: "メールの 型と、障害の ときに 使う ことばです。",
     pick: (word) => word.stage === 4 && !RENRAKU_KIHON.includes(word.oldId),
   },
