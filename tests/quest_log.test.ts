@@ -11,7 +11,9 @@ import {
 import {
   createQuestState,
   currentPhase,
+  isGoodOption,
   questReducer,
+  reflectionPhase,
   RISK_PHASE_ID,
   type QuestMember,
   type QuestState,
@@ -110,6 +112,28 @@ function everyLine(): QuestLogLine[] {
   };
   play(play(loaded, "critical", lines), "hit", lines);
 
+  // 5) 倒れて「やり直す」→ 反省クイズ → 再開（復活・特別救済の しらせ）
+  const broke: QuestState = {
+    ...createQuestState(quest, [MEMBER]),
+    budget: 5,
+    players: createQuestState(quest, [MEMBER]).players.map((p) => ({ ...p, hp: 1 })),
+  };
+  let over = questReducer(quest, broke, {
+    type: "choose",
+    optionIndex: optionIndex(broke, "miss"),
+  });
+  over = questReducer(quest, over, { type: "advance" });
+  let quiz = questReducer(quest, over, { type: "continue" });
+  for (let guard = 0; guard < 10; guard += 1) {
+    const phase = reflectionPhase(quest, quiz);
+    if (!phase) break;
+    const good = phase.options.findIndex(
+      (option, index) => isGoodOption(option) && !quiz.reflection!.picked.includes(index),
+    );
+    quiz = questReducer(quest, quiz, { type: "reflect", optionIndex: good });
+  }
+  lines.push(...questLogLines(quest, questReducer(quest, quiz, { type: "resume" })));
+
   return lines;
 }
 
@@ -124,9 +148,14 @@ const TEMPLATES: readonly { name: string; match: RegExp }[] = [
   { name: "たおれた", match: /は たおれて しまった！$/ },
   { name: "レベルアップ", match: /は レベルが 上がった！$/ },
   { name: "テスト スタート", match: /^===== テスト スタート =====$/ },
-  { name: "バグ ゼロ", match: /^すごい！ バグは ひとつも なかった！$/ },
+  { name: "爆発するぞ", match: /^たまって いた「バグ」が 爆発するぞ…！$/ },
+  { name: "バグ ゼロ", match: /^すごい！ バグは ひとつも なかった！ テストは 順調だ！$/ },
   { name: "警告", match: /^【警告】\d+個の 大きな バグが 見つかった！$/ },
   { name: "やり直し", match: /^やり直しだ！ お金 -\d+万、みんなに \d+の ダメージ！$/ },
+  { name: "生き残った", match: /^なんとか 生き残った…テストを 続けよう…$/ },
+  { name: "復活", match: /^【復活】倒れて いた メンバーの HPが 全回復した！$/ },
+  { name: "場面の 最初から", match: /^場面の 最初から やり直します。$/ },
+  { name: "特別救済", match: /^【特別救済】特別予算 \d+万が 支給された！$/ },
 ];
 
 describe("ログの 文が 出そろって いる", () => {
@@ -163,6 +192,12 @@ describe("読みの 中身", () => {
     const line = OWN_LINES.find((item) => /レベルが 上がった/.test(item.text))!;
     expect(readingOf(line.text, "上が")).toBe("あが");
     expect(annotateRuby(line.text, logIndex).some((s) => s.reading === "うえ")).toBe(false);
+  });
+
+  it("「生き残った」は いきのこった（教材の 生=なま に 負けない）", () => {
+    const line = OWN_LINES.find((item) => /生き残った/.test(item.text))!;
+    expect(readingOf(line.text, "生き残")).toBe("いきのこ");
+    expect(annotateRuby(line.text, logIndex).some((s) => s.reading === "なま")).toBe(false);
   });
 
   it("「警告」は けいこく、「個」は こ", () => {

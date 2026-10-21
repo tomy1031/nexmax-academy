@@ -7,7 +7,10 @@ import {
   currentPhase,
   furtherAlong,
   heroSpeakerIndex,
+  isGoodOption,
+  optionOrder,
   parseQuestState,
+  reflectionPhase,
   questReducer,
   questStateSchema,
   toSaved,
@@ -96,7 +99,14 @@ describe("1手の 結果", () => {
     expect(advance(choose(state, "miss")).turn).toBe(0);
   });
 
-  it("体力の 減りは hpCost × 連続ミス回数（正解なら 倍率1・正解で 0 に 戻る）", () => {
+  it("いい手（critical・hit）では 体力が 減らない（2026-10-21 tomy さんの 判断）", () => {
+    expect(choose(start(), "critical").players[0]!.hp).toBe(quest.startHp);
+    expect(choose(start(), "hit").players[0]!.hp).toBe(quest.startHp);
+    const event = choose(start(), "hit").event;
+    expect(event?.kind === "turn" && event.hpLost).toBe(0);
+  });
+
+  it("外した 手の 体力の 減りは hpCost × 連続ミス回数（正解で 0 に 戻る）", () => {
     const phase = quest.phases[0]!;
     const misses = phase.options.flatMap((option, index) =>
       option.type === "miss" ? [{ option, index }] : [],
@@ -280,7 +290,7 @@ describe("隠れリスクの 爆発", () => {
     const { before, after } = atExplosion(RISK_PHASE_ID, 4);
     expect(before.hiddenRisk).toBe(4);
     expect(quest.phases[after.phaseIndex]!.id).toBe(RISK_PHASE_ID);
-    expect(after.event).toEqual({ kind: "risk", risk: 4, damage: 40, cost: 120 });
+    expect(after.event).toEqual({ kind: "risk", risk: 4, damage: 40, cost: 120, survived: true });
     // 全員が risk × 10 を 受ける
     after.players.forEach((player, index) => {
       expect(player.hp).toBe(before.players[index]!.hp - 40);
@@ -303,7 +313,7 @@ describe("隠れリスクの 爆発", () => {
 
   it("リスクが 0 なら 何も 減らない（バグは ひとつも なかった）", () => {
     const { before, after } = atExplosion(RISK_PHASE_ID, 0);
-    expect(after.event).toEqual({ kind: "risk", risk: 0, damage: 0, cost: 0 });
+    expect(after.event).toEqual({ kind: "risk", risk: 0, damage: 0, cost: 0, survived: true });
     after.players.forEach((player, index) => {
       expect(player.hp).toBe(before.players[index]!.hp);
     });
@@ -409,5 +419,145 @@ describe("通しで 遊べる", () => {
     expect(state.clearedPhases).toBe(quest.phases.length);
     expect(state.budget).toBeGreaterThan(0);
     expect(state.players.every((player) => player.hp > 0)).toBe(true);
+  });
+});
+
+describe("4択の 並び（場面ごとに シャッフル・原典どおり）", () => {
+  it("どの 場面でも 4つ 全部が 1回ずつ 出る", () => {
+    for (const phase of quest.phases) {
+      expect([...optionOrder(12345, phase)].sort()).toEqual(phase.options.map((_, i) => i));
+    }
+  });
+
+  it("同じ 種なら 同じ 並び（開き直しても 押した 札の 位置が 動かない）", () => {
+    const phase = quest.phases[3]!;
+    expect(optionOrder(777, phase)).toEqual(optionOrder(777, phase));
+  });
+
+  /** 教材は 30場面とも「いちばん いい手」を 先頭に 書いて ある。並べた ままだと 左上が いつも 正解。 */
+  it("いちばん いい手が いつも 先頭に 来る ことは ない", () => {
+    for (const seed of [1, 42, 2026, 99999]) {
+      const first = quest.phases.filter(
+        (phase) => phase.options[optionOrder(seed, phase)[0]!]!.type === "critical",
+      ).length;
+      expect(first).toBeLessThan(quest.phases.length / 2);
+    }
+  });
+
+  it("はじめる たびに 種が 変わる（組ごとに ちがう 並び）", () => {
+    const seeds = new Set(Array.from({ length: 8 }, () => start().seed));
+    expect(seeds.size).toBeGreaterThan(1);
+  });
+});
+
+describe("倒れた あとの やり直し（反省クイズ・原典どおり）", () => {
+  /** 1人・体力1 で 外して 倒れ、解説を 閉じた ところ。 */
+  function fallen(): QuestState {
+    const base = start([MEMBERS[0]!]);
+    const weak: QuestState = { ...base, players: base.players.map((p) => ({ ...p, hp: 1 })) };
+    return advance(choose(weak, "miss"));
+  }
+
+  function reflect(state: QuestState, good: boolean): QuestState {
+    const phase = reflectionPhase(quest, state)!;
+    const index = phase.options.findIndex(
+      (option, i) => isGoodOption(option) === good && !state.reflection!.picked.includes(i),
+    );
+    return questReducer(quest, state, { type: "reflect", optionIndex: index });
+  }
+
+  it("外した 問題を 覚えて おく（同じ 場面は 1回）", () => {
+    const state = advance(choose(advance(choose(start(), "miss")), "miss"));
+    expect(state.failed).toEqual([quest.phases[0]!.id]);
+  });
+
+  it("「やり直す」で 反省クイズが 始まる（倒れた ときだけ）", () => {
+    const over = fallen();
+    expect(over.status).toEqual({ kind: "over", reason: "hp" });
+    const quiz = questReducer(quest, over, { type: "continue" });
+    expect(quiz.status.kind).toBe("playing");
+    expect(quiz.reflection?.queue).toEqual([quest.phases[0]!.id]);
+    // 遊んで いる ときは 効かない
+    const playing = start();
+    expect(questReducer(quest, playing, { type: "continue" })).toBe(playing);
+    // 反省クイズの あいだは 4択を 押せない
+    expect(choose(quiz, "critical")).toBe(quiz);
+  });
+
+  it("いい手を 全部 選べたら 次へ。外した 札を 押した 問題は 後ろに もう一度", () => {
+    let quiz = questReducer(quest, fallen(), { type: "continue" });
+    quiz = reflect(quiz, false);
+    expect(quiz.reflection?.last).toBe("wrong");
+    quiz = reflect(quiz, true);
+    expect(quiz.reflection?.last).toBe("one");
+    quiz = reflect(quiz, true);
+    expect(quiz.reflection?.last).toBe("requeue");
+    expect(quiz.reflection?.queue).toEqual([quest.phases[0]!.id, quest.phases[0]!.id]);
+    expect(quiz.reflection?.index).toBe(1);
+    // 2回目は 外さずに 全部 選ぶ
+    quiz = reflect(reflect(quiz, true), true);
+    expect(quiz.reflection?.last).toBe("all");
+    expect(reflectionPhase(quest, quiz)).toBeNull();
+  });
+
+  it("終えると 倒れた 人が 全回復・バグは 0・その 場面の 最初から", () => {
+    let quiz = questReducer(quest, { ...fallen(), hiddenRisk: 7 }, { type: "continue" });
+    quiz = reflect(reflect(quiz, true), true);
+    const resumed = questReducer(quest, quiz, { type: "resume" });
+    expect(resumed.players[0]!.hp).toBe(resumed.players[0]!.maxHp);
+    expect(resumed.players[0]!.missStreak).toBe(0);
+    expect(resumed.hiddenRisk).toBe(0);
+    expect(resumed.failed).toEqual([]);
+    expect(resumed.chosen).toEqual([]);
+    expect(resumed.reflection).toBeNull();
+    expect(resumed.phaseIndex).toBe(0);
+    expect(resumed.status.kind).toBe("playing");
+    expect(resumed.event).toEqual({ kind: "revive", revived: true, relief: 0 });
+    // しらせを 閉じたら また 4択を 押せる
+    expect(choose(advance(resumed), "critical").event?.kind).toBe("turn");
+  });
+
+  it("終える 前に「再開」は 押せない", () => {
+    const quiz = questReducer(quest, fallen(), { type: "continue" });
+    expect(questReducer(quest, quiz, { type: "resume" })).toBe(quiz);
+  });
+
+  it("お金が 尽きて いたら 特別救済（クリア画面で 引く ために 合計を 持つ）", () => {
+    const base = start();
+    const broke = advance(choose({ ...base, budget: 5 }, "miss"));
+    expect(broke.status).toEqual({ kind: "over", reason: "budget" });
+    let quiz = questReducer(quest, broke, { type: "continue" });
+    quiz = reflect(reflect(quiz, true), true);
+    const resumed = questReducer(quest, quiz, { type: "resume" });
+    const turnCost = base.players.length * quest.turnCostPerMember;
+    expect(resumed.budget).toBe(Math.max(100, turnCost * 2));
+    expect(resumed.relief).toBe(Math.max(100, turnCost * 2) - broke.budget);
+    expect(resumed.event).toEqual({ kind: "revive", revived: false, relief: resumed.relief });
+  });
+
+  it("外した 問題が 無ければ すぐ「反省完了」", () => {
+    const base = start();
+    const broke = advance(choose({ ...base, budget: 5 }, "critical"));
+    const quiz = questReducer(quest, broke, { type: "continue" });
+    expect(quiz.reflection?.queue).toEqual([]);
+    expect(questReducer(quest, quiz, { type: "resume" }).event?.kind).toBe("revive");
+  });
+
+  it("反省クイズの 途中も 保存できる（開き直しても 続きから）", () => {
+    const quiz = reflect(questReducer(quest, fallen(), { type: "continue" }), true);
+    const restored = parseQuestState(JSON.parse(JSON.stringify(toSaved(quiz))), quest);
+    expect(restored?.reflection).toEqual(quiz.reflection);
+  });
+
+  it("前の 版の 保存値（種・反省の 欄が 無い）も 読める", () => {
+    const old = { ...toSaved(start()) } as Record<string, unknown>;
+    delete old.seed;
+    delete old.failed;
+    delete old.relief;
+    delete old.reflection;
+    const restored = parseQuestState(old, quest);
+    expect(restored).not.toBeNull();
+    expect(restored?.failed).toEqual([]);
+    expect(restored?.reflection).toBeNull();
   });
 });

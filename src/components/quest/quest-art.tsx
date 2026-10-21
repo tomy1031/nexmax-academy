@@ -75,6 +75,11 @@ const SPEAKER_PLAIN: Record<keyof typeof SPEAKER_NAME, string> = {
   engineer: `${DIR}/enemy/engineer.png`,
 };
 
+/** 登場人物の ふだんの 姿（STORY の 紹介に 使う）。 */
+export function plainSpeakerSprite(speaker: keyof typeof SPEAKER_NAME): string {
+  return assetUrl(SPEAKER_PLAIN[speaker]) ?? "";
+}
+
 /**
  * 会話の 顔。**その 場面の 相手役が 話す ときは 場面の 絵**（気分が そろう）、
  * ほかの 人が 話す ときは ふだんの 顔。

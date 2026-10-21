@@ -50,6 +50,20 @@ export interface QuestLogLine {
  * いるかに 画面の 読みを 頼らせない ため、1字の 語も 省かずに 並べる。
  */
 export const QUEST_LOG_FURIGANA: readonly FuriganaEntry[] = [
+  // 教材の 辞書は「生」を なま と 読む——語ごと 持って 最長一致で 先に 当てる
+  ["生き残", "いきのこ"],
+  ["全回復", "ぜんかいふく"],
+  ["爆発", "ばくはつ"],
+  ["順調", "じゅんちょう"],
+  ["復活", "ふっかつ"],
+  ["特別", "とくべつ"],
+  ["救済", "きゅうさい"],
+  ["予算", "よさん"],
+  ["支給", "しきゅう"],
+  ["場面", "ばめん"],
+  ["最初", "さいしょ"],
+  ["倒", "たお"],
+  ["続", "つづ"],
   ["警告", "けいこく"],
   ["行動", "こうどう"],
   ["上が", "あが"],
@@ -101,15 +115,30 @@ export function questLogLines(quest: Quest, state: QuestState): QuestLogLine[] {
     return lines;
   }
 
+  if (event.kind === "revive") {
+    if (event.revived) {
+      lines.push({ text: "【復活】倒れて いた メンバーの HPが 全回復した！", tone: "critical" });
+    }
+    lines.push({ text: "場面の 最初から やり直します。", tone: "system" });
+    if (event.relief > 0) {
+      lines.push({ text: `【特別救済】特別予算 ${event.relief}万が 支給された！`, tone: "hit" });
+    }
+    return lines;
+  }
+
   lines.push({ text: "===== テスト スタート =====", tone: "system" });
+  lines.push({ text: "たまって いた「バグ」が 爆発するぞ…！", tone: "miss" });
   if (event.damage === 0) {
-    lines.push({ text: "すごい！ バグは ひとつも なかった！", tone: "critical" });
+    lines.push({ text: "すごい！ バグは ひとつも なかった！ テストは 順調だ！", tone: "critical" });
   } else {
     lines.push({ text: `【警告】${event.risk}個の 大きな バグが 見つかった！`, tone: "miss" });
     lines.push({
       text: `やり直しだ！ お金 -${event.cost}万、みんなに ${event.damage}の ダメージ！`,
       tone: "miss",
     });
+    if (event.survived) {
+      lines.push({ text: "なんとか 生き残った…テストを 続けよう…", tone: "system" });
+    }
   }
   return lines;
 }

@@ -32,6 +32,11 @@ const UI_FURIGANA = buildFuriganaIndex([
   ["見", "み"],
   ["金", "かね"],
   ["万", "まん"],
+  ["救済措置", "きゅうさいそち"],
+  ["合計", "ごうけい"],
+  ["最終利益", "さいしゅうりえき"],
+  ["真", "しん"],
+  ["最初", "さいしょ"],
 ]);
 
 /**
@@ -50,10 +55,13 @@ export function QuestResult({
   quest,
   state,
   onRestart,
+  onContinue,
 }: {
   quest: Quest;
   state: QuestState;
   onRestart: () => void;
+  /** 倒れた あとの「やり直す」（反省クイズへ）。クリアの ときは 出さない。 */
+  onContinue: () => void;
 }) {
   const cleared = state.status.kind === "cleared";
   const reason = state.status.kind === "over" ? state.status.reason : null;
@@ -117,6 +125,31 @@ export function QuestResult({
               <RubyText text={`${state.budget} 万`} index={UI_FURIGANA} />
             </span>
           </li>
+          {cleared && state.relief > 0 ? (
+            <li>
+              <span className="flex items-center gap-2 text-[#8d96b4]">
+                <img className="qx-px" src={questIcon("coin")} alt="" />
+                <RubyText text="救済措置の 合計" index={UI_FURIGANA} />
+              </span>
+              <span className="text-[#ff6464]">
+                <RubyText text={`- ${state.relief} 万`} index={UI_FURIGANA} />
+              </span>
+            </li>
+          ) : null}
+          {cleared ? (
+            // 原典の「真の 最終利益」＝ 残高から 特別救済で もらった ぶんを 引いた もの
+            <li>
+              <span className="flex items-center gap-2 text-white">
+                <img className="qx-px" src={questIcon("coin")} alt="" />
+                <RubyText text="真の 最終利益" index={UI_FURIGANA} />
+              </span>
+              <span
+                className={state.budget - state.relief >= 0 ? "text-[#74e886]" : "text-[#ff6464]"}
+              >
+                <RubyText text={`${state.budget - state.relief} 万`} index={UI_FURIGANA} />
+              </span>
+            </li>
+          ) : null}
           <li>
             <span className="flex items-center gap-2 text-[#8d96b4]">
               <img className="qx-px" src={questIcon("star")} alt="" />
@@ -156,9 +189,24 @@ export function QuestResult({
         </ul>
       </QuestWindow>
 
-      <QuestButton tone="blue" data-quest="restart" onClick={onRestart}>
-        <RubyText text="もう一度 遊ぶ" index={UI_FURIGANA} />
-      </QuestButton>
+      {cleared ? (
+        <QuestButton tone="blue" data-quest="restart" onClick={onRestart}>
+          <RubyText text="もう一度 遊ぶ" index={UI_FURIGANA} />
+        </QuestButton>
+      ) : (
+        <div className="grid gap-3">
+          {/*
+           * 原典の「やり直す（コンティニュー）」。その回に 外した 問題の 反省クイズを 解くと、
+           * 倒れた 人が 全回復して その 場面の 最初から（お金が 尽きて いたら 特別救済）。
+           */}
+          <QuestButton tone="primary" data-quest="continue" onClick={onContinue}>
+            <RubyText text="やり直す（コンティニュー）" index={UI_FURIGANA} />
+          </QuestButton>
+          <QuestButton data-quest="restart" onClick={onRestart} className="w-full !py-2">
+            <RubyText text="最初から 遊ぶ" index={UI_FURIGANA} />
+          </QuestButton>
+        </div>
+      )}
     </div>
   );
 }

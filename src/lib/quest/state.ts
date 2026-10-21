@@ -12,10 +12,20 @@
  * ## 遊び方（原典どおり・変えない）
  * - 1台を 囲んで 1〜4人。1手ごとに 手番が 次の 人へ 回る（HP0 の 人は 飛ばす）
  * - EXP は critical=50 / hit=30 / miss=0。**手番の 人と チーム合計の 両方**へ 入る
- * - 体力の 減りは `hpCost × 連続ミス回数`（連続ミスは 人ごと。正解で 0 に 戻る）
+ * - 体力が 減るのは **外した 手だけ**。`hpCost × 連続ミス回数`（連続ミスは 人ごと。正解で 0 に 戻る）
+ *   ——原典は いい手でも hpCost（5・10）を 黙って 引いて いたが、2026-10-21 に tomy さんが
+ *   「正解なのに ダメージを 受けるのは 不自然」として 外した
+ * - 4択は **場面ごとに シャッフル**して 出す（原典どおり。教材の データは 30場面とも
+ *   「いちばん いい手・いい手・外れ・外れ」の 順なので、並べた ままだと 左上が いつも 正解になる）
  * - その場面の critical と hit を **両方 見つけたら 場面クリア**（ミスは 何回でも よい）
  * - 場面クリアに 至らなかった 手では `budget -= 人数 × turnCostPerMember`
  * - 必要EXPは `いまのLv × 100`。上がると `maxHp += 20` かつ HP全回復
+ *
+ * ## 倒れたら やり直せる（原典どおり・2026-10-21 に 戻した）
+ * 倒れた（体力0・お金が 尽きた）あと「やり直す」を 押すと、**その回に 外した 問題の
+ * 反省クイズ**（正しい 手を 全部 選べるまで。途中で 外した 問題は 最後に もう一度）。
+ * 終えると 倒れた 人が 全回復し、たまった バグを 0 に して、**その 場面の 最初から**。
+ * お金が 尽きて いたら 特別救済の 予算が 出る（合計は クリア画面の「真の 最終利益」で 引く）。
  *
  * ## 隠れリスクの 爆発は 原典どおり 場面5の 入口
  * 原典は `phaseId === 5`（第2章の 2問目「おサイフを きにする 神社長」）に 入る 直前に 鳴る。
@@ -74,6 +84,21 @@ export interface QuestPlayer {
   readonly missStreak: number;
 }
 
+/**
+ * 反省クイズの 進み。`queue` は 場面の id の ならび（途中で 外した 問題は 後ろに 足す）。
+ * `index` が `queue.length` に 届いたら おしまい（「反省完了」）。
+ */
+export interface QuestReflection {
+  readonly queue: readonly number[];
+  readonly index: number;
+  /** いまの 問題で もう 押した 札。 */
+  readonly picked: readonly number[];
+  /** いまの 問題で 外した 札を 押したか（押して いたら 正解しても 後ろに 回す）。 */
+  readonly slipped: boolean;
+  /** 直前に 押した 札の 結果（画面の ひとことに 使う）。 */
+  readonly last: "one" | "all" | "requeue" | "wrong" | null;
+}
+
 /** えらぶ 前の 1人ぶん（体力や EXP を まだ 持たない）。 */
 export type QuestMember = Pick<QuestPlayer, "id" | "name" | "type" | "gender">;
 
@@ -97,6 +122,16 @@ export interface QuestRiskEvent {
   readonly risk: number;
   readonly damage: number;
   readonly cost: number;
+  /** 受けきれたか（受けきれたら「なんとか 生き残った…」）。 */
+  readonly survived: boolean;
+}
+
+/** 反省クイズを 終えて 再開した（倒れた 人の 復活・特別救済）。 */
+export interface QuestReviveEvent {
+  readonly kind: "revive";
+  readonly revived: boolean;
+  /** 特別救済で 出た 予算（出なければ 0）。 */
+  readonly relief: number;
 }
 
 /**
@@ -105,7 +140,7 @@ export interface QuestRiskEvent {
  * 進行と 見せ物を 1つの 値で 運ぶのは、解説を 読ませ終える 前に 次の 場面へ
  * 進めない ように するため（設計01 P8「えらんだ 直後に 必ず 解説を 読ませる」）。
  */
-export type QuestEvent = QuestTurnEvent | QuestRiskEvent;
+export type QuestEvent = QuestTurnEvent | QuestRiskEvent | QuestReviveEvent;
 
 export type QuestStatus =
   | { readonly kind: "playing" }
@@ -131,20 +166,43 @@ export interface QuestState {
   readonly chosen: readonly number[];
   /** 何場面 クリアしたか（結果の 画面に 出す）。 */
   readonly clearedPhases: number;
+  /** 4択の 並べかえの 種（組ごとに 1つ。同じ 種なら 同じ 並び——保存して 開き直しても 変わらない）。 */
+  readonly seed: number;
+  /** 外した 問題の 場面id（反省クイズに 出す。やり直したら 空に 戻す）。 */
+  readonly failed: readonly number[];
+  /** 特別救済で もらった 予算の 合計（クリア画面で 引く）。 */
+  readonly relief: number;
+  /** 反省クイズの あいだだけ 値が 入る。 */
+  readonly reflection: QuestReflection | null;
   readonly event: QuestEvent | null;
   readonly status: QuestStatus;
 }
 
 export type QuestAction =
   | { readonly type: "choose"; readonly optionIndex: number }
-  /** 解説（または 爆発の しらせ）を 読み終えた。 */
-  | { readonly type: "advance" };
+  /** 解説（または 爆発・復活の しらせ）を 読み終えた。 */
+  | { readonly type: "advance" }
+  /** 倒れた あとの「やり直す」（反省クイズへ）。 */
+  | { readonly type: "continue" }
+  /** 反省クイズで 札を 押した。 */
+  | { readonly type: "reflect"; readonly optionIndex: number }
+  /** 反省クイズを 終えて その 場面の 最初から。 */
+  | { readonly type: "resume" };
 
 /* ------------------------------------------------------------------ *
  * はじめる
  * ------------------------------------------------------------------ */
 
-export function createQuestState(quest: Quest, members: readonly QuestMember[]): QuestState {
+/** 4択の 並べかえの 種を 作る（組を 決めた ときに 1回だけ）。 */
+export function newQuestSeed(): number {
+  return Math.floor(Math.random() * 2 ** 31);
+}
+
+export function createQuestState(
+  quest: Quest,
+  members: readonly QuestMember[],
+  seed: number = newQuestSeed(),
+): QuestState {
   const count = Math.max(1, members.length);
   return {
     questId: quest.id,
@@ -165,6 +223,10 @@ export function createQuestState(quest: Quest, members: readonly QuestMember[]):
     foundHit: false,
     chosen: [],
     clearedPhases: 0,
+    seed,
+    failed: [],
+    relief: 0,
+    reflection: null,
     event: null,
     status: { kind: "playing" },
   };
@@ -185,6 +247,53 @@ export function currentPlayer(state: QuestState): QuestPlayer | null {
 
 export function isAlive(player: QuestPlayer): boolean {
   return player.hp > 0;
+}
+
+/** いい手（critical / hit）か。反省クイズで「全部 選ぶ」の 対象。 */
+export function isGoodOption(option: QuestOption): boolean {
+  return option.type === "critical" || option.type === "hit";
+}
+
+/** 種から 決まる 乱数（mulberry32）。同じ 種なら 同じ 並び。 */
+function seededRandom(seed: number): () => number {
+  let a = seed >>> 0;
+  return () => {
+    a = (a + 0x6d2b79f5) >>> 0;
+    let t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/**
+ * 4択を 出す 順（`phase.options` の 位置の ならび）。**場面ごとに シャッフル**（原典どおり）。
+ *
+ * 教材の データは 30場面とも「いちばん いい手・いい手・外れ・外れ」の 順に 書いて ある
+ *（書く 人は ふつう 答えから 書く）。並べた ままだと 左上が いつも 正解に なる。
+ * 種と 場面で 決まるので、開き直しても 押した 札の 位置が 動かない。
+ *
+ * @param salt 同じ 場面で 別の 並びが 要る とき（反省クイズの 何回目か）
+ */
+export function optionOrder(seed: number, phase: QuestPhase, salt = 0): number[] {
+  const random = seededRandom(
+    (seed ^ Math.imul(phase.id + 1, 2654435761) ^ Math.imul(salt + 1, 40503)) >>> 0,
+  );
+  const order = phase.options.map((_, index) => index);
+  for (let i = order.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(random() * (i + 1));
+    [order[i], order[j]] = [order[j]!, order[i]!];
+  }
+  return order;
+}
+
+/** 反省クイズで いま 出して いる 場面（終わって いれば null）。 */
+export function reflectionPhase(quest: Quest, state: QuestState): QuestPhase | null {
+  const reflection = state.reflection;
+  if (!reflection) return null;
+  const id = reflection.queue[reflection.index];
+  if (id === undefined) return null;
+  return quest.phases.find((phase) => phase.id === id) ?? null;
 }
 
 /**
@@ -214,12 +323,18 @@ export function questReducer(quest: Quest, state: QuestState, action: QuestActio
       return onChoose(quest, state, action.optionIndex);
     case "advance":
       return onAdvance(quest, state);
+    case "continue":
+      return onContinue(state);
+    case "reflect":
+      return onReflect(quest, state, action.optionIndex);
+    case "resume":
+      return onResume(quest, state);
   }
 }
 
 function onChoose(quest: Quest, state: QuestState, optionIndex: number): QuestState {
-  // 解説を 読んで いる あいだ・終わった あとは 押せない（二重に 数えない）
-  if (state.event !== null || state.status.kind !== "playing") return state;
+  // 解説を 読んで いる あいだ・終わった あと・反省クイズの あいだは 押せない（二重に 数えない）
+  if (state.event !== null || state.status.kind !== "playing" || state.reflection) return state;
 
   const phase = currentPhase(quest, state);
   const option = phase?.options[optionIndex];
@@ -233,8 +348,9 @@ function onChoose(quest: Quest, state: QuestState, optionIndex: number): QuestSt
 
   const missed = option.type === "miss";
   const missStreak = missed ? player.missStreak + 1 : 0;
-  // 「正解なら 倍率1」——連続ミスだけが 傷を 深くする（設計01 P9）
-  const hpLost = option.hpCost * (missed ? missStreak : 1);
+  // 体力が 減るのは 外した 手だけ。連続で 外すと 傷が 深く なる（設計01 P9）。
+  // 原典は いい手でも hpCost を 引いて いたが、2026-10-21 に tomy さんの 判断で 外した
+  const hpLost = missed ? option.hpCost * missStreak : 0;
   const exp = EXP_BY_TYPE[option.type];
 
   const damaged: QuestPlayer = {
@@ -264,6 +380,8 @@ function onChoose(quest: Quest, state: QuestState, optionIndex: number): QuestSt
     foundCritical,
     foundHit,
     chosen: [...state.chosen, optionIndex],
+    // 外した 問題は 反省クイズに 出す（同じ 場面は 1回だけ）
+    failed: missed && !state.failed.includes(phase.id) ? [...state.failed, phase.id] : state.failed,
     turn: nextTurn(players, playerIndex),
     event: {
       kind: "turn",
@@ -288,8 +406,9 @@ function onAdvance(quest: Quest, state: QuestState): QuestState {
   // おしまい／クリアの ときは 解説を 閉じるだけ（結果の 画面へ）
   if (state.status.kind !== "playing") return { ...state, event: null };
 
-  // 爆発の しらせを 読み終えた——そのまま 次の 場面（場面5）へ
-  if (state.event.kind === "risk") return { ...state, event: null };
+  // 爆発・復活の しらせを 読み終えた——その まま 場面へ
+  if (state.event.kind === "risk" || state.event.kind === "revive")
+    return { ...state, event: null };
 
   // まだ 両方 見つけて いない 場面は、同じ 場面の つづき（次の 人の 番）
   if (!state.event.phaseCleared) return { ...state, event: null };
@@ -324,7 +443,7 @@ function onAdvance(quest: Quest, state: QuestState): QuestState {
 function explodeRisk(state: QuestState): QuestState {
   const risk = state.hiddenRisk;
   if (risk <= 0) {
-    return { ...state, event: { kind: "risk", risk: 0, damage: 0, cost: 0 } };
+    return { ...state, event: { kind: "risk", risk: 0, damage: 0, cost: 0, survived: true } };
   }
 
   const damage = risk * RISK_HP_MULTIPLIER;
@@ -333,18 +452,95 @@ function explodeRisk(state: QuestState): QuestState {
     ...player,
     hp: Math.max(0, player.hp - damage),
   }));
-  const survived = players.every(isAlive);
+  const budget = state.budget - cost;
+  const survived = players.every(isAlive) && budget > 0;
 
   const next: QuestState = {
     ...state,
     players,
-    budget: state.budget - cost,
+    budget,
     // 生き残った ときだけ 0 に 戻す（倒れた ときは そのまま おしまいなので 使われない）
     hiddenRisk: survived ? 0 : risk,
-    event: { kind: "risk", risk, damage, cost },
+    event: { kind: "risk", risk, damage, cost, survived },
   };
 
   return { ...next, status: judge(next) };
+}
+
+/** 倒れた あとの「やり直す」。反省クイズを 始める（外した 問題が 無ければ すぐ「反省完了」）。 */
+function onContinue(state: QuestState): QuestState {
+  if (state.status.kind !== "over" || state.event !== null) return state;
+  return {
+    ...state,
+    status: { kind: "playing" },
+    reflection: { queue: [...state.failed], index: 0, picked: [], slipped: false, last: null },
+  };
+}
+
+/**
+ * 反省クイズで 札を 押す（原典 `checkReflectionAnswer` と 同じ 決まり）。
+ * いい手を **全部** 選べたら 次の 問題へ。途中で 外した 札を 押して いたら、
+ * その 問題は 後ろに もう一度 回す。
+ */
+function onReflect(quest: Quest, state: QuestState, optionIndex: number): QuestState {
+  const reflection = state.reflection;
+  const phase = reflectionPhase(quest, state);
+  if (!reflection || !phase) return state;
+  const option = phase.options[optionIndex];
+  if (!option || reflection.picked.includes(optionIndex)) return state;
+
+  const picked = [...reflection.picked, optionIndex];
+  if (!isGoodOption(option)) {
+    return { ...state, reflection: { ...reflection, picked, slipped: true, last: "wrong" } };
+  }
+  const allPicked = phase.options.every(
+    (each, index) => !isGoodOption(each) || picked.includes(index),
+  );
+  if (!allPicked) return { ...state, reflection: { ...reflection, picked, last: "one" } };
+
+  return {
+    ...state,
+    reflection: {
+      queue: reflection.slipped ? [...reflection.queue, phase.id] : reflection.queue,
+      index: reflection.index + 1,
+      picked: [],
+      slipped: false,
+      last: reflection.slipped ? "requeue" : "all",
+    },
+  };
+}
+
+/**
+ * 反省クイズを 終えて 再開（原典 `finishReflection`）。倒れた 人は 全回復、たまった バグは 0、
+ * **その 場面の 最初から**。お金が 尽きて いたら 特別救済
+ *（`max(100, 1手の 人件費 × 2)` まで 戻す。借金の ぶんも 足す）。
+ */
+function onResume(quest: Quest, state: QuestState): QuestState {
+  const reflection = state.reflection;
+  if (!reflection || reflection.index < reflection.queue.length) return state;
+
+  let revived = false;
+  const players = state.players.map((player) => {
+    if (isAlive(player)) return player;
+    revived = true;
+    return { ...player, hp: player.maxHp, missStreak: 0 };
+  });
+  const turnCost = state.players.length * quest.turnCostPerMember;
+  const relief = state.budget <= 0 ? Math.max(100, turnCost * 2) + Math.abs(state.budget) : 0;
+  return {
+    ...state,
+    players,
+    budget: state.budget + relief,
+    relief: state.relief + relief,
+    hiddenRisk: 0,
+    failed: [],
+    foundCritical: false,
+    foundHit: false,
+    chosen: [],
+    reflection: null,
+    event: { kind: "revive", revived, relief },
+    status: { kind: "playing" },
+  };
 }
 
 /** レベルが 上がるだけ 上げる（上がったら 体力の 上限が 増え、**全回復**する）。 */
@@ -416,6 +612,20 @@ export const questStateSchema = z.object({
   foundHit: z.boolean(),
   chosen: z.array(z.number().int().min(0)),
   clearedPhases: z.number().int().min(0),
+  // 2026-10-21 に 足した 欄。前の 版の 保存値にも 無いので、無ければ 初期値で 読む
+  seed: z.number().int().min(0).default(0),
+  failed: z.array(z.number().int()).default([]),
+  relief: z.number().int().min(0).default(0),
+  reflection: z
+    .object({
+      queue: z.array(z.number().int()),
+      index: z.number().int().min(0),
+      picked: z.array(z.number().int().min(0)),
+      slipped: z.boolean(),
+      last: z.enum(["one", "all", "requeue", "wrong"]).nullable(),
+    })
+    .nullable()
+    .default(null),
   // 見せ物は 保存しない。開き直したら 4択から 読み直す（解説だけ 残っても 意味が 無い）
   event: z.null().default(null),
   status: z.union([

@@ -22,6 +22,9 @@ import {
   currentPlayer,
   heroSpeakerIndex,
   isAlive,
+  isGoodOption,
+  optionOrder,
+  reflectionPhase,
   type QuestAction,
   type QuestEvent,
   type QuestPlayer,
@@ -37,6 +40,7 @@ import {
   enemySprite,
   isChapterStart,
   playerSprite,
+  plainSpeakerSprite,
   questIcon,
   speakerFocus,
   speakerSprite,
@@ -73,6 +77,11 @@ const UI_FURIGANA = buildFuriganaIndex([
   ["返", "かえ"],
   // レベルアップの 帯（「上が」は「上」より 長いので 先に 当たる）
   ["上が", "あが"],
+  // バグが 出る ときの 文（教材の 辞書は「生」を なま と 読むので 語ごと 持つ）
+  ["生き残", "いきのこ"],
+  ["爆発", "ばくはつ"],
+  ["順調", "じゅんちょう"],
+  ["続", "つづ"],
 ]);
 
 /** ログの 色（分け方は `QuestLogTone` が 持つ）。 */
@@ -162,6 +171,19 @@ interface Fx {
 }
 
 function fxOf(event: QuestEvent, players: readonly QuestPlayer[], key: number): Fx {
+  if (event.kind === "revive") {
+    return {
+      key,
+      flash: event.revived ? "white" : null,
+      enemyHit: false,
+      enemyText: null,
+      actor: null,
+      hurt: new Map(),
+      bugs: 0,
+      money: 0,
+      banner: null,
+    };
+  }
   if (event.kind === "risk") {
     const hurt = new Map<number, number>();
     if (event.damage > 0) players.forEach((_, index) => hurt.set(index, event.damage));
@@ -274,7 +296,10 @@ export function QuestPlay({
      *（どちらも ゆれると 判定の ちがいが 体で 分からない）。
      * 画面を 作り直さずに 動かす ため、要素の animate を 使う。
      */
-    const rough = event.kind === "risk" ? event.damage > 0 : event.optionType === "miss";
+    const rough =
+      event.kind === "risk"
+        ? event.damage > 0
+        : event.kind === "turn" && event.optionType === "miss";
     if (rough && !prefersReducedMotion()) {
       grid.current?.animate(
         [
@@ -311,16 +336,18 @@ export function QuestPlay({
     event === null &&
     here.line === 0 &&
     !here.cardDone;
-  const step: "risk" | "result" | "card" | "talk" | "choose" =
+  const step: "risk" | "revive" | "result" | "card" | "talk" | "choose" =
     event?.kind === "risk"
       ? "risk"
-      : event?.kind === "turn"
-        ? "result"
-        : cardOpen
-          ? "card"
-          : state.chosen.length === 0 && here.line < phase.dialogue.length
-            ? "talk"
-            : "choose";
+      : event?.kind === "revive"
+        ? "revive"
+        : event?.kind === "turn"
+          ? "result"
+          : cardOpen
+            ? "card"
+            : state.chosen.length === 0 && here.line < phase.dialogue.length
+              ? "talk"
+              : "choose";
   const showTurn = step === "choose";
   const openCard = () => setTalk({ ...here, cardDone: true });
 
@@ -481,7 +508,7 @@ export function QuestPlay({
         {/* ── COMMAND ── */}
         <QuestWindow
           title={
-            step === "risk" || step === "result"
+            step === "risk" || step === "result" || step === "revive"
               ? "RESULT"
               : step === "choose"
                 ? "COMMAND"
@@ -516,6 +543,8 @@ export function QuestPlay({
             />
           ) : step === "risk" && event?.kind === "risk" ? (
             <RiskBody event={event} ui={ui} onNext={() => dispatch({ type: "advance" })} />
+          ) : step === "revive" && event?.kind === "revive" ? (
+            <ReviveBody quest={quest} event={event} onNext={() => dispatch({ type: "advance" })} />
           ) : step === "result" && event?.kind === "turn" ? (
             <ResultBody
               phase={phase}
@@ -537,10 +566,7 @@ export function QuestPlay({
           onClose={() => setModal(null)}
         >
           {modal === "story" ? (
-            <div className="grid gap-3">
-              <p className="qx-t">{ruby(quest.description)}</p>
-              <p className="qx-t qx-tone-critical">{ruby(quest.focus)}</p>
-            </div>
+            <StoryBody quest={quest} state={state} ruby={ruby} show={furiganaOn} />
           ) : modal === "history" ? (
             log.length === 0 ? (
               <p className="qx-t">まだ ありません。</p>
@@ -551,6 +577,10 @@ export function QuestPlay({
             <ProcessChart quest={quest} state={state} ruby={ruby} ui={ui} />
           )}
         </QuestModal>
+      ) : null}
+
+      {state.reflection ? (
+        <ReflectionModal quest={quest} state={state} ruby={ruby} dispatch={dispatch} />
       ) : null}
     </div>
   );
@@ -739,7 +769,10 @@ function Dialogue({
   );
 }
 
-/** 4択。押した 札は 消える（同じ 手を 2度 数えない）。 */
+/**
+ * 4択。**場面ごとに シャッフル**して 出す（原典どおり。`optionOrder`）。
+ * 押した 札は 消えるが、**位置は ずらさない**——ずれると 残った 札を 読み直す ことに なる。
+ */
 function ChooseBody({
   state,
   phase,
@@ -754,6 +787,7 @@ function ChooseBody({
   dispatch: (action: QuestAction) => void;
 }) {
   const player = currentPlayer(state);
+  const order = optionOrder(state.seed, phase);
   return (
     <div className="grid">
       <div className="qx-ask">
@@ -766,8 +800,21 @@ function ChooseBody({
         </span>
       </div>
       <ul className="qx-opts">
-        {phase.options.map((option, index) =>
-          state.chosen.includes(index) ? null : (
+        {order.map((index) => {
+          const option = phase.options[index];
+          if (!option) return null;
+          if (state.chosen.includes(index)) {
+            // 押した 札の 場所は 空けて おく（高さを 保つ ために 字は 見えない ように 置く）
+            return (
+              <li key={index} aria-hidden className="invisible">
+                <span className="qx-opt">
+                  <span />
+                  <span className="qx-t min-w-0">{ruby(option.text)}</span>
+                </span>
+              </li>
+            );
+          }
+          return (
             <li key={index}>
               <button
                 type="button"
@@ -781,8 +828,8 @@ function ChooseBody({
                 <span className="qx-t min-w-0">{ruby(option.text)}</span>
               </button>
             </li>
-          ),
-        )}
+          );
+        })}
       </ul>
     </div>
   );
@@ -818,6 +865,7 @@ function ResultBody({
 /**
  * たまって いた バグが 出る（場面5の 入口・原典どおり）。
  * 画面が 赤く 光って ゆれ、全員の 体力と 予算が 減る（動きは `fxOf`）。
+ * 文は 原典の「たまって いた バグが 爆発するぞ…！」「なんとか 生き残った…」を そのまま 使う。
  */
 function RiskBody({
   event,
@@ -830,37 +878,314 @@ function RiskBody({
 }) {
   return (
     <div data-quest="risk" className="qx-res">
-      <p className={`qx-rt qx-t ${event.damage === 0 ? "qx-tone-critical" : "qx-tone-miss"}`}>
-        <RubyText
-          text={event.damage === 0 ? "バグは ひとつも なかった！" : "たまって いた バグが 出た！"}
-          index={UI_FURIGANA}
-        />
+      <p className="qx-rt qx-t qx-tone-miss">
+        <RubyText text="たまって いた「バグ」が 爆発するぞ…！" index={UI_FURIGANA} />
       </p>
-      {event.damage > 0 ? (
-        <ul className="qx-chips">
-          <li>
-            <img className="qx-px" src={questIcon("bug")} alt="" />
-            {event.risk}
-          </li>
-          <li>
-            <img className="qx-px" src={questIcon("heart")} alt="" />-{event.damage}
-          </li>
-          <li>
-            <img className="qx-px" src={questIcon("coin")} alt="" />-{event.cost}
-            {ui("万")}
-          </li>
-        </ul>
-      ) : (
-        <p className="qx-ex qx-t">
+      {event.damage === 0 ? (
+        <p className="qx-ex qx-t qx-tone-critical">
           <RubyText
-            text="ここまで ていねいに 進めた ぶんが、そのまま 返って きました。"
+            text="すごい！ バグは ひとつも なかった！ テストは 順調だ！"
             index={UI_FURIGANA}
           />
         </p>
+      ) : (
+        <>
+          <ul className="qx-chips">
+            <li>
+              <img className="qx-px" src={questIcon("bug")} alt="" />
+              {event.risk}
+            </li>
+            <li>
+              <img className="qx-px" src={questIcon("heart")} alt="" />-{event.damage}
+            </li>
+            <li>
+              <img className="qx-px" src={questIcon("coin")} alt="" />-{event.cost}
+              {ui("万")}
+            </li>
+          </ul>
+          {event.survived ? (
+            <p className="qx-ex qx-t">
+              <RubyText text="なんとか 生き残った…テストを 続けよう…" index={UI_FURIGANA} />
+            </p>
+          ) : null}
+        </>
       )}
       <QuestButton tone="primary" data-quest="next" onClick={onNext}>
         {ui("次へ")} ▶
       </QuestButton>
+    </div>
+  );
+}
+
+/** 反省クイズを 終えて 再開した ときの しらせ（文は ログと 同じ）。 */
+function ReviveBody({
+  quest,
+  event,
+  onNext,
+}: {
+  quest: Quest;
+  event: Extract<QuestEvent, { kind: "revive" }>;
+  onNext: () => void;
+}) {
+  const index = useMemo(
+    () => buildFuriganaIndex(mergeFuriganaEntries(QUEST_LOG_FURIGANA, quest.furigana)),
+    [quest.furigana],
+  );
+  return (
+    <div data-quest="revive" className="qx-res">
+      {event.revived ? (
+        <p className="qx-rt qx-t qx-tone-critical">
+          <RubyText text="【復活】倒れて いた メンバーの HPが 全回復した！" index={index} />
+        </p>
+      ) : null}
+      {event.relief > 0 ? (
+        <p className="qx-rt qx-t qx-tone-hit">
+          <RubyText text={`【特別救済】特別予算 ${event.relief}万が 支給された！`} index={index} />
+        </p>
+      ) : null}
+      <p className="qx-ex qx-t">
+        <RubyText text="場面の 最初から やり直します。" index={index} />
+      </p>
+      <QuestButton tone="primary" data-quest="next" onClick={onNext}>
+        <RubyText text="次へ" index={UI_FURIGANA} /> ▶
+      </QuestButton>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ *
+ * STORY（登場人物の 紹介つき・原典 renderStoryModal）
+ * ------------------------------------------------------------------ */
+
+/** STORY の 紹介文の 読み（この 窓でしか 使わない 語。全＝まった は ここだけの 読み）。 */
+const STORY_FURIGANA = buildFuriganaIndex([
+  ["主人公", "しゅじんこう"],
+  ["神社長", "かみしゃちょう"],
+  ["山田", "やまだ"],
+  ["営業", "えいぎょう"],
+  ["先輩", "せんぱい"],
+  ["担当", "たんとう"],
+  ["客様", "きゃくさま"],
+  ["神様", "かみさま"],
+  ["社長", "しゃちょう"],
+  ["無理", "むり"],
+  ["無事", "ぶじ"],
+  ["無茶", "むちゃ"],
+  ["使命", "しめい"],
+  ["時間", "じかん"],
+  ["実際", "じっさい"],
+  ["願", "ねが"],
+  ["足", "た"],
+  ["金", "かね"],
+  ["守", "まも"],
+  ["思", "おも"],
+  ["全", "まった"],
+  ["赤", "あか"],
+  ["人", "ひと"],
+  ["追", "お"],
+  ["書", "か"],
+  ["続", "つづ"],
+]);
+
+const CHARACTERS: readonly {
+  speaker: keyof typeof SPEAKER_NAME;
+  name: string;
+  text: string;
+}[] = [
+  {
+    speaker: "yamada",
+    name: "営業の山田さん",
+    text: "主人公の先輩で、営業（セールス）の担当。プロジェクトのアドバイスをくれるが、たまにミスもする。",
+  },
+  {
+    speaker: "god",
+    name: "神社長",
+    text: "「お客様は神様です」と思っている、ゴッドマートの社長。ITのことは全くわからない。「AIでいいカンジによろしく！」「やっぱりボタンは赤にして！」など、神様のような無茶なお願いで、プロジェクトをパニックにする。",
+  },
+  {
+    speaker: "engineer",
+    name: "エンジニア",
+    text: "システムを実際にプログラミングする人。いつも時間に追われながら、パソコンにむかってコードを書き続けている。",
+  },
+];
+
+function StoryBody({
+  quest,
+  state,
+  ruby,
+  show,
+}: {
+  quest: Quest;
+  state: QuestState;
+  ruby: (text: string) => React.ReactNode;
+  show: boolean;
+}) {
+  const story = (text: string) => <RubyText text={text} index={STORY_FURIGANA} show={show} />;
+  return (
+    <div className="grid gap-3">
+      <p className="qx-t">{ruby(quest.description)}</p>
+      <p className="qx-t qx-tone-critical">{ruby(quest.focus)}</p>
+
+      <div className="grid gap-2 border border-[#262d47] p-2">
+        <p className="m-0 text-[#ffd84a]">{story("プレイヤー（あなたたち）")}</p>
+        <ul className="m-0 flex list-none flex-wrap gap-2 p-0">
+          {state.players.map((player) => (
+            <li key={player.id} className="flex items-center gap-1">
+              <SpriteFace src={playerSprite(player)} size={28} />
+              <span className="text-xs">{player.name}</span>
+            </li>
+          ))}
+        </ul>
+        <p className="qx-t m-0 text-xs leading-relaxed">
+          {story(
+            "プロジェクトのリーダー。無理なお願いや、足りない時間とお金...。たくさんのピンチからチームを守り、システムを無事にリリースさせるミッション（使命）がある。",
+          )}
+        </p>
+      </div>
+
+      {CHARACTERS.map((character) => (
+        <div
+          key={character.speaker}
+          className="grid grid-cols-[56px_minmax(0,1fr)] items-start gap-2 border border-[#262d47] p-2"
+        >
+          <img className="qx-px h-14 w-14" src={plainSpeakerSprite(character.speaker)} alt="" />
+          <div className="min-w-0">
+            <p className="m-0 text-[#ffd84a]">{story(character.name)}</p>
+            <p className="qx-t m-0 text-xs leading-relaxed">{story(character.text)}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ *
+ * 反省クイズ（倒れた あとの「やり直す」・原典 renderReflectionModal）
+ * ------------------------------------------------------------------ */
+
+const REFLECT_FURIGANA = buildFuriganaIndex([
+  ["反省完了", "はんせいかんりょう"],
+  ["反省", "はんせい"],
+  ["不正解", "ふせいかい"],
+  ["正解", "せいかい"],
+  ["間違", "まちが"],
+  ["問題", "もんだい"],
+  ["選択", "せんたく"],
+  ["原因", "げんいん"],
+  ["理解", "りかい"],
+  ["復習", "ふくしゅう"],
+  ["見直", "みなお"],
+  ["一度", "いちど"],
+  ["一つ", "ひとつ"],
+  ["復活", "ふっかつ"],
+  ["再開", "さいかい"],
+  ["前", "まえ"],
+  ["正", "ただ"],
+  ["他", "ほか"],
+  ["後", "あと"],
+  ["倒", "たお"],
+]);
+
+/** 直前の 札の 結果の ひとこと（原典の ログの 文）。 */
+const REFLECT_SAY: Record<"one" | "all" | "requeue" | "wrong", { text: string; tone: string }> = {
+  one: { text: "【正解】原因の一つを理解した。まだ他にもあるぞ！", tone: "qx-tone-hit" },
+  all: { text: "【正解】すべての原因を理解できた！", tone: "qx-tone-hit" },
+  requeue: { text: "【正解】だが間違えすぎだ！後でもう一度復習しよう！", tone: "qx-tone-hit" },
+  wrong: { text: "【不正解】もう一度見直そう...", tone: "qx-tone-miss" },
+};
+
+/**
+ * 反省クイズ。**その回に 外した 問題**を 1問ずつ 出し、いい手を 全部 選べたら 次へ。
+ * 札には 解説も 添える（原典どおり——ここは 試験では なく、外した 理由を 読み直す 場）。
+ * 全部 終えたら「プロジェクト再開」で 倒れた 人が 全回復し、その 場面の 最初から。
+ */
+function ReflectionModal({
+  quest,
+  state,
+  ruby,
+  dispatch,
+}: {
+  quest: Quest;
+  state: QuestState;
+  ruby: (text: string) => React.ReactNode;
+  dispatch: (action: QuestAction) => void;
+}) {
+  const reflection = state.reflection;
+  if (!reflection) return null;
+  const phase = reflectionPhase(quest, state);
+  const say = reflection.last ? REFLECT_SAY[reflection.last] : null;
+  const r = (text: string) => <RubyText text={text} index={REFLECT_FURIGANA} />;
+
+  return (
+    <div data-quest="reflection" className="qx-modal">
+      <QuestWindow>
+        {phase ? (
+          <>
+            <h3>
+              <span className="text-[#ff6464]">
+                {r("【反省クイズ】")} {reflection.index + 1} / {reflection.queue.length}
+              </span>
+            </h3>
+            <div className="qx-body grid gap-2">
+              {say ? <p className={`qx-t m-0 ${say.tone}`}>{r(say.text)}</p> : null}
+              <p className="m-0 text-xs text-[#ffd84a]">{ruby(phase.name)}</p>
+              <p className="qx-t m-0 border border-[#39436a] bg-[#070a18] p-2">
+                Q: {ruby(phase.question)}
+              </p>
+              <p className="qx-t m-0 text-xs text-[#cfd5e6]">
+                {r("前に間違えた問題です。どれが正しい選択だったでしょうか？")}
+              </p>
+              <ul className="m-0 grid list-none gap-2 p-0">
+                {optionOrder(state.seed, phase, reflection.index + 1).map((index) => {
+                  const option = phase.options[index];
+                  if (!option) return null;
+                  const picked = reflection.picked.includes(index);
+                  const tone = !picked
+                    ? "border-[#39436a]"
+                    : isGoodOption(option)
+                      ? "border-[#74e886] bg-[#13351c]"
+                      : "border-[#ff6464] bg-[#3a1414]";
+                  return (
+                    <li key={index}>
+                      <button
+                        type="button"
+                        data-quest="reflect"
+                        disabled={picked}
+                        onClick={() => dispatch({ type: "reflect", optionIndex: index })}
+                        className={`qx-t w-full cursor-pointer border-2 bg-transparent p-2 text-left disabled:cursor-default ${tone}`}
+                      >
+                        <span className="block">{ruby(option.text)}</span>
+                        <span className="block text-xs font-normal text-[#8d96b4]">
+                          {ruby(option.explanation)}
+                        </span>
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          </>
+        ) : (
+          <>
+            <h3>
+              <span className="text-[#ffd84a]">{r("【反省完了】")}</span>
+            </h3>
+            <div className="qx-body grid gap-2">
+              {say ? <p className={`qx-t m-0 ${say.tone}`}>{r(say.text)}</p> : null}
+              <p className="qx-t m-0">
+                {r("すべての間違いを理解できたようだ。倒れていたメンバーが復活した！")}
+              </p>
+            </div>
+            <QuestButton
+              tone="primary"
+              data-quest="resume"
+              onClick={() => dispatch({ type: "resume" })}
+            >
+              {r("プロジェクト再開")}
+            </QuestButton>
+          </>
+        )}
+      </QuestWindow>
     </div>
   );
 }

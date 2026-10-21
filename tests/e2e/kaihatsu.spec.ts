@@ -84,3 +84,45 @@ test("クエストから ステージへ もどれる", async ({ page }) => {
   //（見出しは ルビで 分かれる ので 文字では 探さない）
   await expect(page.locator('a[href="/kaihatsu/article"]').first()).toBeVisible();
 });
+
+/**
+ * 倒れても やり直せる（2026-10-21 に 原典の 流れを 戻した）。
+ *
+ * 選択肢は シャッフルされる ので、先頭の 札を 押し続ける——外しが たまって
+ * 体力か、場面5の 入口の バグで 倒れる。倒れたら「やり直す」→ 反省クイズを
+ * 押しきって「プロジェクト再開」→ 復活の しらせ → その 場面に 戻る。
+ */
+test("倒れたら 反省クイズを 解いて その 場面から やり直せる", async ({ page }) => {
+  test.setTimeout(120_000);
+  await page.goto(QUEST);
+  await page.locator('[data-quest="start"]').click();
+  await expect(page.locator('[data-quest="shell"]')).toBeVisible();
+
+  const cont = page.locator('[data-quest="continue"]');
+  for (let i = 0; i < 120; i += 1) {
+    if (await cont.isVisible()) break;
+    const option = page.locator('[data-quest="option"]').first();
+    if (await option.isVisible()) await option.click();
+    else await page.locator('[data-quest="next"]').first().click();
+  }
+  await expect(cont).toBeVisible();
+  await shot(page, "kaihatsu-quest-over");
+  await cont.click();
+
+  // 反省クイズ: 押せる 札を 押し続ければ いずれ「反省完了」
+  await expect(page.locator('[data-quest="reflection"]')).toBeVisible();
+  await shot(page, "kaihatsu-quest-reflection");
+  const resume = page.locator('[data-quest="resume"]');
+  for (let i = 0; i < 80; i += 1) {
+    if (await resume.isVisible()) break;
+    await page.locator('[data-quest="reflect"]:enabled').first().click();
+  }
+  await resume.click();
+
+  // 復活の しらせ → 閉じると また 遊べる
+  await expect(page.locator('[data-quest="revive"]')).toBeVisible();
+  await page.locator('[data-quest="next"]').first().click();
+  await expect(page.locator('[data-quest="reflection"]')).toHaveCount(0);
+  await expect(page.locator('[data-quest="continue"]')).toHaveCount(0);
+  await expect(page.locator('[data-quest="next"], [data-quest="option"]').first()).toBeVisible();
+});
