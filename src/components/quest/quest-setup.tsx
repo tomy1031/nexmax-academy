@@ -1,4 +1,5 @@
 "use client";
+/* eslint-disable @next/next/no-img-element -- ドット絵は next/image に 通さない。縮小・再圧縮で ドットが にじむ うえ、1枚 数KB の PNG なので 最適化の 得も 無い */
 
 import { useEffect, useMemo, useState } from "react";
 import { RubyText } from "@/components/ruby-text";
@@ -8,7 +9,9 @@ import { getProfile } from "@/lib/profile";
 import { createClient } from "@/lib/supabase/client";
 import { readOwnId } from "@/lib/supabase/claims";
 import { MAX_MEMBERS, type QuestMember } from "@/lib/quest/state";
-import { PlayerFace } from "./quest-art";
+import { assetUrl } from "@/lib/asset-url";
+import { PlayerFace, WATERFALL_MAP } from "./quest-art";
+import { QuestButton, QuestWindow } from "./quest-window";
 
 /** 画面の ことばの 読みは 画面が 持つ（教材の 読み辞書とは 混ぜない）。 */
 const UI_FURIGANA = buildFuriganaIndex([
@@ -37,9 +40,10 @@ type Slots = readonly (string | null)[];
 /**
  * タイトルと「だれと 遊ぶか」の 画面 — 旧アプリ `renderTitleOrSetup` の 移植
  *
- * ## 見た目は 原典の タイトル画面
- * 濃い 青の わく・水色の グラデーションの ロゴ・副題。ゲーム風UIが 売り
+ * ## 見た目は ドット絵の タイトル画面（2026-10-20 から）
+ * 10段の 滝の 絵の 上に ロゴと「だれと 遊ぶか」の 窓。ゲーム風UIが 売り
  *（2026-09-01 の 指定）なので、ここから すでに ゲームの 見た目に する。
+ * 滝は 工程の 図と 同じ 絵——「上から 順番に 進む」を 最初の 画面から 見せる。
  *
  * ## 名前は 打たせない（ここだけ 原典と 変える）
  * 原典は 4人ぶんの 名前を **キーボードで 打たせて** いた。日本語入力に 慣れて
@@ -127,100 +131,94 @@ export function QuestSetup({
   }
 
   return (
-    <div className="flex items-center justify-center px-2 py-6">
-      <section className="relative w-full max-w-md rounded-lg border-[3px] border-slate-200 bg-blue-950 p-5 shadow-[0_0_20px_rgba(255,255,255,0.2)] sm:p-6">
-        <h1 className="mb-2 bg-gradient-to-b from-cyan-300 to-blue-600 bg-clip-text text-center text-3xl leading-tight font-black tracking-widest text-transparent uppercase italic drop-shadow-lg md:text-4xl">
-          WATER FALL
-          <br />
-          QUEST
-        </h1>
-        <p className="mb-6 text-center text-xs text-slate-300 md:text-sm">
-          <RubyText text="〜デスマーチを 回避せよ〜" index={UI_FURIGANA} />
-        </p>
+    <div className="px-2 py-4">
+      <section className="qx-title">
+        <img className="qx-px" src={assetUrl(WATERFALL_MAP)} alt="" />
+        <div className="qx-over">
+          <div>
+            <h1 className="qx-logo">
+              WATER FALL
+              <br />
+              <span>QUEST</span>
+            </h1>
+            <p className="qx-logo-sub">
+              <RubyText text="〜デスマーチを 回避せよ〜" index={UI_FURIGANA} />
+            </p>
+          </div>
 
-        <h2 className="mb-1 text-sm font-bold tracking-widest text-yellow-300">
-          <RubyText text="だれと 遊びますか？" index={UI_FURIGANA} />
-        </h2>
-        <p className="mb-3 text-xs text-slate-300">
-          <RubyText text="1台を 囲んで、1人から 4人まで。" index={UI_FURIGANA} />
-        </p>
+          <QuestWindow className="!px-3 !py-3">
+            <h2 className="text-sm tracking-widest text-[#ffd84a]">
+              <RubyText text="だれと 遊びますか？" index={UI_FURIGANA} />
+            </h2>
+            <p className="qx-t mt-1 text-xs text-[#cfd5e6]">
+              <RubyText text="1台を 囲んで、1人から 4人まで。" index={UI_FURIGANA} />
+            </p>
 
-        <ul className="flex flex-col gap-2">
-          <li className="flex items-center gap-2 rounded border border-slate-500 bg-black p-1.5">
-            <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-yellow-300 text-xs font-bold text-black">
-              1
-            </span>
-            {own ? <PlayerFace player={own} size={34} /> : null}
-            <span className="min-w-0 flex-1">
-              <span className="block truncate text-sm font-bold text-white">
-                {own?.name ?? "あなた"}
-              </span>
-              <span className="text-[10px] text-slate-400">あなた</span>
-            </span>
-          </li>
-
-          {slots.map((value, index) => {
-            const taken = new Set(slots.filter((id, i) => id && i !== index) as string[]);
-            const picked = value ? byId.get(value) : undefined;
-            return (
-              <li
-                key={index}
-                className="flex items-center gap-2 rounded border border-slate-600 bg-black p-1.5"
-              >
-                <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full border border-slate-500 bg-slate-800 text-xs font-bold text-slate-300">
-                  {index + 2}
-                </span>
-                {picked ? <PlayerFace player={picked} size={34} /> : null}
-                <label className="min-w-0 flex-1">
-                  {/*
-                   * 名前は `aria-label` で 持つ。前は 画面に 出さない `sr-only` の
-                   * 字を DOM に 置いて いたが、裸の漢字の 見張り（`furigana.spec`）は
-                   * **見えない 字も 数える**（`helpers.ts` の TreeWalker は
-                   * text node を そのまま 拾う）。属性に すれば 読み上げの 名前は
-                   * そのまま「2人目」で、数える 字は 増えない。
-                   */}
-                  <select
-                    aria-label={`${index + 2}人目`}
-                    value={value ?? ""}
-                    onChange={(event) => choose(index, event.target.value)}
-                    disabled={loading || roster.length === 0}
-                    className="w-full rounded border border-slate-500 bg-slate-900 p-1.5 text-sm font-bold text-white outline-none disabled:opacity-50"
-                  >
-                    <option value="">— えらぶ —</option>
-                    {roster
-                      .filter((row) => !taken.has(row.id))
-                      .map((row) => (
-                        <option key={row.id} value={row.id}>
-                          {row.name}
-                        </option>
-                      ))}
-                  </select>
-                </label>
+            <ul className="qx-mlist">
+              <li>
+                <span className="qx-k qx-me">1</span>
+                {own ? <PlayerFace player={own} size={30} /> : null}
+                <span className="min-w-0 flex-1 truncate text-sm">{own?.name ?? "あなた"}</span>
+                <span className="text-[11px] text-[#8d96b4]">あなた</span>
               </li>
-            );
-          })}
-        </ul>
+              {slots.map((value, index) => {
+                const taken = new Set(slots.filter((id, i) => id && i !== index) as string[]);
+                const picked = value ? byId.get(value) : undefined;
+                return (
+                  <li key={index}>
+                    <span className="qx-k">{index + 2}</span>
+                    {picked ? <PlayerFace player={picked} size={30} /> : null}
+                    <label className="min-w-0 flex-1">
+                      {/*
+                       * 名前は `aria-label` で 持つ。前は 画面に 出さない `sr-only` の
+                       * 字を DOM に 置いて いたが、裸の漢字の 見張り（`furigana.spec`）は
+                       * **見えない 字も 数える**（`helpers.ts` の TreeWalker は
+                       * text node を そのまま 拾う）。属性に すれば 読み上げの 名前は
+                       * そのまま「2人目」で、数える 字は 増えない。
+                       */}
+                      <select
+                        aria-label={`${index + 2}人目`}
+                        value={value ?? ""}
+                        onChange={(event) => choose(index, event.target.value)}
+                        disabled={loading || roster.length === 0}
+                        className="qx-select"
+                      >
+                        <option value="">— えらぶ —</option>
+                        {roster
+                          .filter((row) => !taken.has(row.id))
+                          .map((row) => (
+                            <option key={row.id} value={row.id}>
+                              {row.name}
+                            </option>
+                          ))}
+                      </select>
+                    </label>
+                  </li>
+                );
+              })}
+            </ul>
 
-        {!loading && roster.length === 0 ? (
-          <p className="mt-3 text-xs leading-relaxed text-slate-300">
-            <RubyText
-              text="いまは 1人で 進みます。同じ 学校・同じ 期の なかまが 名簿に 入ると、ここに 出ます。"
-              index={UI_FURIGANA}
-            />
-          </p>
-        ) : null}
+            {!loading && roster.length === 0 ? (
+              <p className="qx-t mt-3 text-xs leading-relaxed text-[#cfd5e6]">
+                <RubyText
+                  text="いまは 1人で 進みます。同じ 学校・同じ 期の なかまが 名簿に 入ると、ここに 出ます。"
+                  index={UI_FURIGANA}
+                />
+              </p>
+            ) : null}
 
-        <button
-          type="button"
-          data-quest="start"
-          disabled={busy || members.length === 0 || members.length > MAX_MEMBERS}
-          onClick={() => onStart(members)}
-          className="mt-5 w-full rounded border-2 border-white bg-blue-800 py-3 text-lg font-bold text-white shadow-[0_4px_0_rgba(255,255,255,0.4)] transition-all hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-[0_6px_0_rgba(255,255,255,0.4)] active:translate-y-1 active:shadow-none disabled:translate-y-0 disabled:opacity-45 disabled:shadow-none"
-        >
-          <RubyText text="冒険に 出る" index={UI_FURIGANA} />
-        </button>
-
-        <p className="mt-3 text-center text-[10px] text-slate-400">{title}</p>
+            <QuestButton
+              tone="primary"
+              data-quest="start"
+              disabled={busy || members.length === 0 || members.length > MAX_MEMBERS}
+              onClick={() => onStart(members)}
+              className="mt-4"
+            >
+              <RubyText text="冒険に 出る" index={UI_FURIGANA} />
+            </QuestButton>
+            <p className="mt-2 text-center text-[10px] text-[#8d96b4]">{title}</p>
+          </QuestWindow>
+        </div>
       </section>
     </div>
   );

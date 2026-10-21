@@ -3,40 +3,37 @@
 import type { ReactNode } from "react";
 
 /**
- * JRPG の ウィンドウ枠 — 旧アプリ `renderJrpgWindow` の 移植
+ * JRPG の ウィンドウ枠 — ドットの 白い 枠（2026-10-20 に ドット絵へ 作りかえ）
  *
  * ## サイトの カードに しない
- * ゲーム風UIが この 教材の 売り（2026-09-01 の 指定）。黒地・白い 3px の 枠・
- * 枠の 上に 乗る 黄色い 見出しは、**遊びの 場に 入った ことを 1目で 伝える**
- * 合図なので、アプリの やわらかい カード（`card-island`）に 置きかえない。
+ * ゲーム風UIが この 教材の 売り（2026-09-01 の 指定）。黒地・白い 枠・枠の 上に 乗る
+ * 黄色い 見出しは、**遊びの 場に 入った ことを 1目で 伝える** 合図なので、
+ * アプリの やわらかい カード（`card-island`）に 置きかえない。
  *
- * 見出しは 枠線の 上に かぶせて 置く（`-top-3` ＋ 黒地）。原典と 同じ 見え方。
+ * 枠は `quest-styles.ts` の `.qx-win`（角を 1段 けずった 9分割の 絵）。
+ * 見出しは **本物の 字**で 置く（CSS の `content` に すると 画面の 読み上げにも
+ * e2e の `getByText("PARTY")` にも 見えない）。
  */
 export function QuestWindow({
   title,
   className = "",
   children,
+  ...rest
 }: {
   title?: ReactNode;
   className?: string;
   children: ReactNode;
-}) {
+} & Omit<React.HTMLAttributes<HTMLDivElement>, "title" | "className" | "children">) {
   return (
-    <div
-      className={`relative flex flex-col rounded border-[3px] border-slate-200 bg-black p-1.5 shadow-[inset_0_0_10px_rgba(255,255,255,0.1)] md:p-3 ${className}`}
-    >
-      {title ? (
-        <div className="absolute -top-3 left-3 flex items-center bg-black px-2 text-xs font-bold tracking-widest text-yellow-300 md:text-sm">
-          {title}
-        </div>
-      ) : null}
+    <div className={`qx-win ${className}`} {...rest}>
+      {title ? <div className="qx-win-title">{title}</div> : null}
       {children}
     </div>
   );
 }
 
 /**
- * ゲームの 中の ボタン。**枠と 反転**で 押せる ことを 示す
+ * ゲームの 中の ボタン。**白い 枠と 角の 欠け**で 押せる ことを 示す
  *（アプリの `btn-game` は 色も 影も ちがうので ここでは 使わない）。
  */
 export function QuestButton({
@@ -49,22 +46,24 @@ export function QuestButton({
 }: {
   children: ReactNode;
   onClick?: () => void;
-  tone?: "default" | "primary" | "danger";
+  tone?: "default" | "primary" | "blue" | "danger";
   disabled?: boolean;
   className?: string;
 } & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "onClick" | "className" | "type">) {
   const face =
     tone === "primary"
-      ? "border-yellow-300 bg-yellow-300 text-black hover:bg-yellow-200"
-      : tone === "danger"
-        ? "border-red-400 bg-black text-red-300 hover:bg-red-950"
-        : "border-slate-400 bg-black text-white hover:border-white hover:bg-slate-800";
+      ? "qx-primary"
+      : tone === "blue"
+        ? "qx-blue"
+        : tone === "danger"
+          ? "qx-danger"
+          : "";
   return (
     <button
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={`rounded border-[1.5px] px-4 py-2 text-sm font-bold tracking-wide transition-colors disabled:cursor-default disabled:opacity-40 ${face} ${className}`}
+      className={`qx-btn ${face} ${className}`}
       {...rest}
     >
       {children}

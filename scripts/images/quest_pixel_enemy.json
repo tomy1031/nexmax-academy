@@ -1,0 +1,264 @@
+{
+  "_comment": "ウォーターフォールクエストの ドット絵（2026-10-20 tomy さんの 指定「もっと リッチな ドット絵の RPG 風に」）。生成は scripts/slides/gen_images.mjs と 同じ 手順（bridge 経由）で、場面ごとの refs を 使う。できた 絵は `node scripts/images/place_quest_pixel.mjs <PNG の フォルダ>` で 本物の ドット絵の 粗さに 直して public/img/quest/ に 置く。相手役は 2026-10-21 の 指定「元の 絵に 忠実に なりすぎず、名前に 相応しい 絵に」で、旧アプリの 場面ごとの 絵を 見本に 渡すのを やめ、人物の 姿だけを 渡して 表情・ポーズ・小物は 名前から 決めた（場面1・2・4・13 は その 前に 作った 絵で、名前に 合って いるので 残した）。",
+  "style": "16-bit Japanese console RPG PIXEL ART, like a 1990s Super Famicom role-playing game. The whole picture is drawn on a strict square pixel grid: it is a small low-resolution image enlarged with nearest-neighbour scaling, so every art pixel is a crisp, hard-edged square block of exactly the same size. No anti-aliasing, no blur, no smooth gradients (shading only with flat colour steps and a little ordered dithering), no painterly brush texture, no photographic detail. Limited palette of about 32 colours with clear 1-pixel dark outlines on characters and objects. Bright, warm, friendly and kid-safe: a cheerful office-work RPG about building a software app, never a dark fantasy.",
+  "noText": "No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards and signs are blank or show only simple pictures. No watermark, no signature, no speech balloons.",
+  "negative": "Never: smooth vector illustration, 3D render, painterly or blurry rendering, anti-aliased edges, real company logos or brand marks, national flags, country outlines, maps with borders, scary or violent mood, weapons, blood.",
+  "scenes": [
+    {
+      "out": "enemy_yamada_tanomoshii",
+      "title": "たのもしい 山田さん",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: Mr. Yamada is the RELIABLE senior colleague from our own company who gives us a new job. Redraw the character in the FIRST reference image as a pixel-art RPG sprite, keeping his design exactly: a slim Japanese businessman with neat slicked black hair, a dark navy suit, white shirt, red necktie, brown shoes, a smartphone in his raised right hand and a brown briefcase in his left hand. Show that he is reliable and confident: a calm friendly smile, standing straight, chest out. Use the SECOND reference image only for the pixel-art style and colour palette, not for its content.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 128x128 art pixels and enlarge it exactly 8x, so each art pixel is an 8x8 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). No magenta or pink anywhere on the character itself. One character only, full body, centred, standing on nothing (no floor, no shadow), filling about 80% of the height.",
+      "text": [],
+      "refs": [
+        "(旧 src/components/quest/enemy-svg.ts の 絵を 1024px に 描き出した もの: old_yamada)",
+        "public/img/quest/bg/ch02.png"
+      ]
+    },
+    {
+      "out": "enemy_angel_sekkachi",
+      "title": "せっかちな 神社長",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the customer, the president of a supermarket company, is IMPATIENT and wants everything right now. Redraw the character in the FIRST reference image as a pixel-art RPG enemy sprite, keeping his design exactly: a round light sky-blue body like a big ball, a dark grey hair cap on top, two small white bunny-like ears with salmon-orange bands, a golden halo ring floating above, small white angel wings on both sides, a purple suit jacket with a white collar, a yellow necktie and a small teal badge, short sky-blue legs, a tablet in one hand and a white pen in the other. Show the impatience clearly: angry slanted eyebrows, a frowning mouth, a red anger mark next to his head, and he is tapping the pen on the tablet. Use the SECOND reference image only for the pixel-art style and colour palette, not for its content. Do not draw the kanji on his jacket.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 128x128 art pixels and enlarge it exactly 8x, so each art pixel is an 8x8 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). No magenta or pink anywhere on the character itself. One character only, full body, centred, standing on nothing (no floor, no shadow), filling about 80% of the height.",
+      "text": [],
+      "refs": [
+        "(旧 src/components/quest/enemy-svg.ts の 絵を 1024px に 描き出した もの: old_angel)",
+        "public/img/quest/bg/ch02.png"
+      ]
+    },
+    {
+      "out": "enemy_p03",
+      "title": "場面3 しんぱいしょうな 山田さん",
+      "refs": ["public/img/quest/enemy/p01.png"],
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the Japanese name of this character is 「しんぱいしょうな 山田さん」 — a WORRIER. A student who cannot read Japanese must understand that from the picture alone. Draw: he nervously bites the nails of one hand while staring at his smartphone, knees trembling, several blue sweat drops, little shaky worry lines around him. The character is a slim Japanese businessman with neat slicked black hair, a dark navy suit, white shirt and red necktie, brown shoes (he is a senior colleague at our own software company). Use the reference image ONLY for the character's look (face, body, clothes, colours) and for the pixel-art style. Do NOT copy its expression, pose or props — draw a NEW expression, pose and props that fit the name. Full body, as a pixel-art RPG enemy sprite.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 128x128 art pixels and enlarge it exactly 8x, so each art pixel is an 8x8 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). No magenta or pink anywhere on the character itself. One character only, full body, centred, filling about 80% of the height.",
+      "text": []
+    },
+    {
+      "out": "enemy_p05",
+      "title": "場面5 おサイフを きにする 神社長",
+      "refs": ["public/img/quest/enemy/p04.png"],
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the Japanese name of this character is 「おサイフを きにする 神社長」 — someone who WORRIES ABOUT HIS WALLET. A student who cannot read Japanese must understand that from the picture alone. Draw: he hugs a fat brown wallet tightly to his chest with both arms, eyes fixed nervously on it, a few gold coins about to fall out. The character is a round light sky-blue body like a big ball, a dark grey hair cap on top, two small white bunny-like ears with salmon-orange bands, a golden halo ring floating above, small white angel wings, a purple suit jacket with a white collar, a yellow necktie and a small teal badge, short sky-blue arms and legs (he is the president of a friendly supermarket company and our CUSTOMER). Use the reference image ONLY for the character's look (face, body, clothes, colours) and for the pixel-art style. Do NOT copy its expression, pose or props — draw a NEW expression, pose and props that fit the name. Full body, as a pixel-art RPG enemy sprite.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 128x128 art pixels and enlarge it exactly 8x, so each art pixel is an 8x8 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). No magenta or pink anywhere on the character itself. One character only, full body, centred, filling about 80% of the height.",
+      "text": []
+    },
+    {
+      "out": "enemy_p06",
+      "title": "場面6 かえりたい 神社長",
+      "refs": ["public/img/quest/enemy/p04.png"],
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the Japanese name of this character is 「かえりたい 神社長」 — someone who WANTS TO GO HOME. A student who cannot read Japanese must understand that from the picture alone. Draw: he looks at his wristwatch with a big yawn, a bag already hanging on his shoulder, body half turned away as if leaving, sleepy drooping eyes. The character is a round light sky-blue body like a big ball, a dark grey hair cap on top, two small white bunny-like ears with salmon-orange bands, a golden halo ring floating above, small white angel wings, a purple suit jacket with a white collar, a yellow necktie and a small teal badge, short sky-blue arms and legs (he is the president of a friendly supermarket company and our CUSTOMER). Use the reference image ONLY for the character's look (face, body, clothes, colours) and for the pixel-art style. Do NOT copy its expression, pose or props — draw a NEW expression, pose and props that fit the name. Full body, as a pixel-art RPG enemy sprite.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 128x128 art pixels and enlarge it exactly 8x, so each art pixel is an 8x8 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). No magenta or pink anywhere on the character itself. One character only, full body, centred, filling about 80% of the height.",
+      "text": []
+    },
+    {
+      "out": "enemy_p07",
+      "title": "場面7 よくばりな 神社長",
+      "refs": ["public/img/quest/enemy/p04.png"],
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the Japanese name of this character is 「よくばりな 神社長」 — a GREEDY person who wants everything. A student who cannot read Japanese must understand that from the picture alone. Draw: his short arms are overflowing with far too many things he wants — piles of gift boxes, shopping bags and smartphones stacked higher than his head — with a big greedy grin. The character is a round light sky-blue body like a big ball, a dark grey hair cap on top, two small white bunny-like ears with salmon-orange bands, a golden halo ring floating above, small white angel wings, a purple suit jacket with a white collar, a yellow necktie and a small teal badge, short sky-blue arms and legs (he is the president of a friendly supermarket company and our CUSTOMER). Use the reference image ONLY for the character's look (face, body, clothes, colours) and for the pixel-art style. Do NOT copy its expression, pose or props — draw a NEW expression, pose and props that fit the name. Full body, as a pixel-art RPG enemy sprite.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 128x128 art pixels and enlarge it exactly 8x, so each art pixel is an 8x8 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). No magenta or pink anywhere on the character itself. One character only, full body, centred, filling about 80% of the height.",
+      "text": []
+    },
+    {
+      "out": "enemy_p08",
+      "title": "場面8 ふんわりした 神社長",
+      "refs": ["public/img/quest/enemy/p04.png"],
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the Japanese name of this character is 「ふんわりした 神社長」 — someone whose ideas are VAGUE and fuzzy. A student who cannot read Japanese must understand that from the picture alone. Draw: he floats on a soft fluffy cloud with dreamy unfocused eyes and a sleepy smile, a thought bubble above him containing only a blurry blank cloud. The character is a round light sky-blue body like a big ball, a dark grey hair cap on top, two small white bunny-like ears with salmon-orange bands, a golden halo ring floating above, small white angel wings, a purple suit jacket with a white collar, a yellow necktie and a small teal badge, short sky-blue arms and legs (he is the president of a friendly supermarket company and our CUSTOMER). Use the reference image ONLY for the character's look (face, body, clothes, colours) and for the pixel-art style. Do NOT copy its expression, pose or props — draw a NEW expression, pose and props that fit the name. Full body, as a pixel-art RPG enemy sprite.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 128x128 art pixels and enlarge it exactly 8x, so each art pixel is an 8x8 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). No magenta or pink anywhere on the character itself. One character only, full body, centred, filling about 80% of the height.",
+      "text": []
+    },
+    {
+      "out": "enemy_p09",
+      "title": "場面9 ミーハーな 神社長",
+      "refs": ["public/img/quest/enemy/p04.png"],
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the Japanese name of this character is 「ミーハーな 神社長」 — someone who LOVES WHATEVER IS TRENDY. A student who cannot read Japanese must understand that from the picture alone. Draw: sparkling star-shaped eyes, trendy sunglasses pushed up on his head, he holds up the newest shiny smartphone in one hand and a trendy bubble-tea cup in the other. The character is a round light sky-blue body like a big ball, a dark grey hair cap on top, two small white bunny-like ears with salmon-orange bands, a golden halo ring floating above, small white angel wings, a purple suit jacket with a white collar, a yellow necktie and a small teal badge, short sky-blue arms and legs (he is the president of a friendly supermarket company and our CUSTOMER). Use the reference image ONLY for the character's look (face, body, clothes, colours) and for the pixel-art style. Do NOT copy its expression, pose or props — draw a NEW expression, pose and props that fit the name. Full body, as a pixel-art RPG enemy sprite.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 128x128 art pixels and enlarge it exactly 8x, so each art pixel is an 8x8 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). No magenta or pink anywhere on the character itself. One character only, full body, centred, filling about 80% of the height.",
+      "text": []
+    },
+    {
+      "out": "enemy_p10",
+      "title": "場面10 わがままな 神社長",
+      "refs": ["public/img/quest/enemy/p04.png"],
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the Japanese name of this character is 「わがままな 神社長」 — a SELFISH, DEMANDING person. A student who cannot read Japanese must understand that from the picture alone. Draw: pouting angrily with cheeks puffed, stamping one foot, pointing down firmly with one hand as if ordering 'do it my way'. The character is a round light sky-blue body like a big ball, a dark grey hair cap on top, two small white bunny-like ears with salmon-orange bands, a golden halo ring floating above, small white angel wings, a purple suit jacket with a white collar, a yellow necktie and a small teal badge, short sky-blue arms and legs (he is the president of a friendly supermarket company and our CUSTOMER). Use the reference image ONLY for the character's look (face, body, clothes, colours) and for the pixel-art style. Do NOT copy its expression, pose or props — draw a NEW expression, pose and props that fit the name. Full body, as a pixel-art RPG enemy sprite.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 128x128 art pixels and enlarge it exactly 8x, so each art pixel is an 8x8 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). No magenta or pink anywhere on the character itself. One character only, full body, centred, filling about 80% of the height.",
+      "text": []
+    },
+    {
+      "out": "enemy_p11",
+      "title": "場面11 みまもる 山田さん",
+      "refs": ["public/img/quest/enemy/p01.png"],
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the Japanese name of this character is 「みまもる 山田さん」 — someone KINDLY WATCHING OVER the team. A student who cannot read Japanese must understand that from the picture alone. Draw: standing calmly with his arms gently crossed, a warm proud smile, giving a small thumbs-up like a supportive senior. The character is a slim Japanese businessman with neat slicked black hair, a dark navy suit, white shirt and red necktie, brown shoes (he is a senior colleague at our own software company). Use the reference image ONLY for the character's look (face, body, clothes, colours) and for the pixel-art style. Do NOT copy its expression, pose or props — draw a NEW expression, pose and props that fit the name. Full body, as a pixel-art RPG enemy sprite.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 128x128 art pixels and enlarge it exactly 8x, so each art pixel is an 8x8 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). No magenta or pink anywhere on the character itself. One character only, full body, centred, filling about 80% of the height.",
+      "text": []
+    },
+    {
+      "out": "enemy_p12",
+      "title": "場面12 ハンコを もつ 神社長",
+      "refs": ["public/img/quest/enemy/p04.png"],
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the Japanese name of this character is 「ハンコを もつ 神社長」 — the customer who HOLDS THE APPROVAL STAMP. A student who cannot read Japanese must understand that from the picture alone. Draw: he proudly raises a big red hanko stamp high above his head with both hands, a serious important face, as if about to stamp a document. The character is a round light sky-blue body like a big ball, a dark grey hair cap on top, two small white bunny-like ears with salmon-orange bands, a golden halo ring floating above, small white angel wings, a purple suit jacket with a white collar, a yellow necktie and a small teal badge, short sky-blue arms and legs (he is the president of a friendly supermarket company and our CUSTOMER). Use the reference image ONLY for the character's look (face, body, clothes, colours) and for the pixel-art style. Do NOT copy its expression, pose or props — draw a NEW expression, pose and props that fit the name. Full body, as a pixel-art RPG enemy sprite.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 128x128 art pixels and enlarge it exactly 8x, so each art pixel is an 8x8 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). No magenta or pink anywhere on the character itself. One character only, full body, centred, filling about 80% of the height.",
+      "text": []
+    },
+    {
+      "out": "enemy_p14",
+      "title": "場面14 じぶんを まもる エンジニア",
+      "refs": ["public/img/quest/enemy/p13.png"],
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the Japanese name of this character is 「じぶんを まもる エンジニア」 — an engineer who PROTECTS HIMSELF. A student who cannot read Japanese must understand that from the picture alone. Draw: he crouches behind a big shield and a tall stack of thick soft cushions, only his worried eyes peeking out over the top. The character is a young Japanese man with short black hair and black rectangular glasses, a blue suit jacket, white shirt, purple tie and a white ID badge (he is a software engineer on our team). Use the reference image ONLY for the character's look (face, body, clothes, colours) and for the pixel-art style. Do NOT copy its expression, pose or props — draw a NEW expression, pose and props that fit the name. Full body, as a pixel-art RPG enemy sprite.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 128x128 art pixels and enlarge it exactly 8x, so each art pixel is an 8x8 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). No magenta or pink anywhere on the character itself. One character only, full body, centred, filling about 80% of the height.",
+      "text": []
+    },
+    {
+      "out": "enemy_p15",
+      "title": "場面15 ねぎってくる 神社長",
+      "refs": ["public/img/quest/enemy/p04.png"],
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the Japanese name of this character is 「ねぎってくる 神社長」 — a customer who HAGGLES for a lower price. A student who cannot read Japanese must understand that from the picture alone. Draw: a sly wink and a crooked grin, he holds a calculator in one hand and pushes the other palm downward in a 'make it cheaper' gesture. The character is a round light sky-blue body like a big ball, a dark grey hair cap on top, two small white bunny-like ears with salmon-orange bands, a golden halo ring floating above, small white angel wings, a purple suit jacket with a white collar, a yellow necktie and a small teal badge, short sky-blue arms and legs (he is the president of a friendly supermarket company and our CUSTOMER). Use the reference image ONLY for the character's look (face, body, clothes, colours) and for the pixel-art style. Do NOT copy its expression, pose or props — draw a NEW expression, pose and props that fit the name. Full body, as a pixel-art RPG enemy sprite.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 128x128 art pixels and enlarge it exactly 8x, so each art pixel is an 8x8 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). No magenta or pink anywhere on the character itself. One character only, full body, centred, filling about 80% of the height.",
+      "text": []
+    },
+    {
+      "out": "enemy_p16",
+      "title": "場面16 そうぞうできない 神社長",
+      "refs": ["public/img/quest/enemy/p04.png"],
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the Japanese name of this character is 「そうぞうできない 神社長」 — someone who CANNOT IMAGINE the plan. A student who cannot read Japanese must understand that from the picture alone. Draw: dizzy swirl eyes, scratching his head with one hand, a thought bubble above him that is completely empty except for a big grey question mark. The character is a round light sky-blue body like a big ball, a dark grey hair cap on top, two small white bunny-like ears with salmon-orange bands, a golden halo ring floating above, small white angel wings, a purple suit jacket with a white collar, a yellow necktie and a small teal badge, short sky-blue arms and legs (he is the president of a friendly supermarket company and our CUSTOMER). Use the reference image ONLY for the character's look (face, body, clothes, colours) and for the pixel-art style. Do NOT copy its expression, pose or props — draw a NEW expression, pose and props that fit the name. Full body, as a pixel-art RPG enemy sprite.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 128x128 art pixels and enlarge it exactly 8x, so each art pixel is an 8x8 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). No magenta or pink anywhere on the character itself. One character only, full body, centred, filling about 80% of the height.",
+      "text": []
+    },
+    {
+      "out": "enemy_p17",
+      "title": "場面17 なやめる 神社長",
+      "refs": ["public/img/quest/enemy/p04.png"],
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the Japanese name of this character is 「なやめる 神社長」 — someone who is TROUBLED and agonizing. A student who cannot read Japanese must understand that from the picture alone. Draw: holding his head in both hands, deeply worried eyebrows, a small dark rain cloud hanging above his head. The character is a round light sky-blue body like a big ball, a dark grey hair cap on top, two small white bunny-like ears with salmon-orange bands, a golden halo ring floating above, small white angel wings, a purple suit jacket with a white collar, a yellow necktie and a small teal badge, short sky-blue arms and legs (he is the president of a friendly supermarket company and our CUSTOMER). Use the reference image ONLY for the character's look (face, body, clothes, colours) and for the pixel-art style. Do NOT copy its expression, pose or props — draw a NEW expression, pose and props that fit the name. Full body, as a pixel-art RPG enemy sprite.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 128x128 art pixels and enlarge it exactly 8x, so each art pixel is an 8x8 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). No magenta or pink anywhere on the character itself. One character only, full body, centred, filling about 80% of the height.",
+      "text": []
+    },
+    {
+      "out": "enemy_p18",
+      "title": "場面18 こまかすぎる エンジニア",
+      "refs": ["public/img/quest/enemy/p13.png"],
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the Japanese name of this character is 「こまかすぎる エンジニア」 — an engineer who is TOO DETAILED. A student who cannot read Japanese must understand that from the picture alone. Draw: he leans in very close with a big magnifying glass over a tiny dot on a sheet of paper, holding a ruler in the other hand, completely focused. The character is a young Japanese man with short black hair and black rectangular glasses, a blue suit jacket, white shirt, purple tie and a white ID badge (he is a software engineer on our team). Use the reference image ONLY for the character's look (face, body, clothes, colours) and for the pixel-art style. Do NOT copy its expression, pose or props — draw a NEW expression, pose and props that fit the name. Full body, as a pixel-art RPG enemy sprite.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 128x128 art pixels and enlarge it exactly 8x, so each art pixel is an 8x8 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). No magenta or pink anywhere on the character itself. One character only, full body, centred, filling about 80% of the height.",
+      "text": []
+    },
+    {
+      "out": "enemy_p19",
+      "title": "場面19 しんぱいげな 神社長",
+      "refs": ["public/img/quest/enemy/p04.png"],
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the Japanese name of this character is 「しんぱいげな 神社長」 — someone who LOOKS ANXIOUS. A student who cannot read Japanese must understand that from the picture alone. Draw: fidgeting with both hands, glancing around uneasily, a forced little smile and a blue sweat drop. The character is a round light sky-blue body like a big ball, a dark grey hair cap on top, two small white bunny-like ears with salmon-orange bands, a golden halo ring floating above, small white angel wings, a purple suit jacket with a white collar, a yellow necktie and a small teal badge, short sky-blue arms and legs (he is the president of a friendly supermarket company and our CUSTOMER). Use the reference image ONLY for the character's look (face, body, clothes, colours) and for the pixel-art style. Do NOT copy its expression, pose or props — draw a NEW expression, pose and props that fit the name. Full body, as a pixel-art RPG enemy sprite.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 128x128 art pixels and enlarge it exactly 8x, so each art pixel is an 8x8 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). No magenta or pink anywhere on the character itself. One character only, full body, centred, filling about 80% of the height.",
+      "text": []
+    },
+    {
+      "out": "enemy_p20",
+      "title": "場面20 ごきげんな エンジニア",
+      "refs": ["public/img/quest/enemy/p13.png"],
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the Japanese name of this character is 「ごきげんな エンジニア」 — an engineer in a GREAT MOOD. A student who cannot read Japanese must understand that from the picture alone. Draw: dancing happily on one foot with closed smiling eyes, whistling, pink music notes floating around him. The character is a young Japanese man with short black hair and black rectangular glasses, a blue suit jacket, white shirt, purple tie and a white ID badge (he is a software engineer on our team). Use the reference image ONLY for the character's look (face, body, clothes, colours) and for the pixel-art style. Do NOT copy its expression, pose or props — draw a NEW expression, pose and props that fit the name. Full body, as a pixel-art RPG enemy sprite.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 128x128 art pixels and enlarge it exactly 8x, so each art pixel is an 8x8 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). No magenta or pink anywhere on the character itself. One character only, full body, centred, filling about 80% of the height.",
+      "text": []
+    },
+    {
+      "out": "enemy_p21",
+      "title": "場面21 やりきった エンジニア",
+      "refs": ["public/img/quest/enemy/p13.png"],
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the Japanese name of this character is 「やりきった エンジニア」 — an engineer who has GIVEN EVERYTHING and finished the job. A student who cannot read Japanese must understand that from the picture alone. Draw: sitting on the floor completely exhausted but proud, a peaceful satisfied smile, wiping sweat from his forehead, a closed laptop beside him, little steam rising from his head. The character is a young Japanese man with short black hair and black rectangular glasses, a blue suit jacket, white shirt, purple tie and a white ID badge (he is a software engineer on our team). Use the reference image ONLY for the character's look (face, body, clothes, colours) and for the pixel-art style. Do NOT copy its expression, pose or props — draw a NEW expression, pose and props that fit the name. Full body, as a pixel-art RPG enemy sprite.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 128x128 art pixels and enlarge it exactly 8x, so each art pixel is an 8x8 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). No magenta or pink anywhere on the character itself. One character only, full body, centred, filling about 80% of the height.",
+      "text": []
+    },
+    {
+      "out": "enemy_p22",
+      "title": "場面22 おもいつきの 神社長",
+      "refs": ["public/img/quest/enemy/p04.png"],
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the Japanese name of this character is 「おもいつきの 神社長」 — someone with a SUDDEN NEW IDEA. A student who cannot read Japanese must understand that from the picture alone. Draw: pointing one finger straight up with wide excited eyes, a big glowing yellow light bulb popping above his head. The character is a round light sky-blue body like a big ball, a dark grey hair cap on top, two small white bunny-like ears with salmon-orange bands, a golden halo ring floating above, small white angel wings, a purple suit jacket with a white collar, a yellow necktie and a small teal badge, short sky-blue arms and legs (he is the president of a friendly supermarket company and our CUSTOMER). Use the reference image ONLY for the character's look (face, body, clothes, colours) and for the pixel-art style. Do NOT copy its expression, pose or props — draw a NEW expression, pose and props that fit the name. Full body, as a pixel-art RPG enemy sprite.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 128x128 art pixels and enlarge it exactly 8x, so each art pixel is an 8x8 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). No magenta or pink anywhere on the character itself. One character only, full body, centred, filling about 80% of the height.",
+      "text": []
+    },
+    {
+      "out": "enemy_p23",
+      "title": "場面23 うたぐりぶかい エンジニア",
+      "refs": ["public/img/quest/enemy/p13.png"],
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the Japanese name of this character is 「うたぐりぶかい エンジニア」 — a SUSPICIOUS, doubting engineer. A student who cannot read Japanese must understand that from the picture alone. Draw: squinting one eye, peering through a magnifying glass straight at the viewer with a doubtful frown, the other arm crossed. The character is a young Japanese man with short black hair and black rectangular glasses, a blue suit jacket, white shirt, purple tie and a white ID badge (he is a software engineer on our team). Use the reference image ONLY for the character's look (face, body, clothes, colours) and for the pixel-art style. Do NOT copy its expression, pose or props — draw a NEW expression, pose and props that fit the name. Full body, as a pixel-art RPG enemy sprite.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 128x128 art pixels and enlarge it exactly 8x, so each art pixel is an 8x8 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). No magenta or pink anywhere on the character itself. One character only, full body, centred, filling about 80% of the height.",
+      "text": []
+    },
+    {
+      "out": "enemy_p24",
+      "title": "場面24 めを そらす エンジニア",
+      "refs": ["public/img/quest/enemy/p13.png"],
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the Japanese name of this character is 「めを そらす エンジニア」 — an engineer who AVOIDS EYE CONTACT because he is hiding a problem. A student who cannot read Japanese must understand that from the picture alone. Draw: eyes and head turned far away to the side, pretending to whistle, sweat drops, hiding a small green bug behind his back. The character is a young Japanese man with short black hair and black rectangular glasses, a blue suit jacket, white shirt, purple tie and a white ID badge (he is a software engineer on our team). Use the reference image ONLY for the character's look (face, body, clothes, colours) and for the pixel-art style. Do NOT copy its expression, pose or props — draw a NEW expression, pose and props that fit the name. Full body, as a pixel-art RPG enemy sprite.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 128x128 art pixels and enlarge it exactly 8x, so each art pixel is an 8x8 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). No magenta or pink anywhere on the character itself. One character only, full body, centred, filling about 80% of the height.",
+      "text": []
+    },
+    {
+      "out": "enemy_p25",
+      "title": "場面25 わくわくする 神社長",
+      "refs": ["public/img/quest/enemy/p04.png"],
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the Japanese name of this character is 「わくわくする 神社長」 — someone who is EXCITED. A student who cannot read Japanese must understand that from the picture alone. Draw: jumping up with both hands raised high, a huge open smile, shining eyes, sparkles all around. The character is a round light sky-blue body like a big ball, a dark grey hair cap on top, two small white bunny-like ears with salmon-orange bands, a golden halo ring floating above, small white angel wings, a purple suit jacket with a white collar, a yellow necktie and a small teal badge, short sky-blue arms and legs (he is the president of a friendly supermarket company and our CUSTOMER). Use the reference image ONLY for the character's look (face, body, clothes, colours) and for the pixel-art style. Do NOT copy its expression, pose or props — draw a NEW expression, pose and props that fit the name. Full body, as a pixel-art RPG enemy sprite.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 128x128 art pixels and enlarge it exactly 8x, so each art pixel is an 8x8 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). No magenta or pink anywhere on the character itself. One character only, full body, centred, filling about 80% of the height.",
+      "text": []
+    },
+    {
+      "out": "enemy_p26",
+      "title": "場面26 そわそわする エンジニア",
+      "refs": ["public/img/quest/enemy/p13.png"],
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the Japanese name of this character is 「そわそわする エンジニア」 — a RESTLESS, nervous engineer. A student who cannot read Japanese must understand that from the picture alone. Draw: pacing with one foot mid-step, checking his wristwatch, biting his lip, small motion lines showing he cannot keep still. The character is a young Japanese man with short black hair and black rectangular glasses, a blue suit jacket, white shirt, purple tie and a white ID badge (he is a software engineer on our team). Use the reference image ONLY for the character's look (face, body, clothes, colours) and for the pixel-art style. Do NOT copy its expression, pose or props — draw a NEW expression, pose and props that fit the name. Full body, as a pixel-art RPG enemy sprite.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 128x128 art pixels and enlarge it exactly 8x, so each art pixel is an 8x8 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). No magenta or pink anywhere on the character itself. One character only, full body, centred, filling about 80% of the height.",
+      "text": []
+    },
+    {
+      "out": "enemy_p27",
+      "title": "場面27 えんじょう エンジニア",
+      "refs": ["public/img/quest/enemy/p13.png"],
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the Japanese name of this character is 「えんじょう エンジニア」 — an engineer whose released app has BLOWN UP in a public crisis. A student who cannot read Japanese must understand that from the picture alone. Draw: red and orange pixel flames burst up behind him, he holds a smartphone flooded with red notification badges, a shocked face with sweat. The character is a young Japanese man with short black hair and black rectangular glasses, a blue suit jacket, white shirt, purple tie and a white ID badge (he is a software engineer on our team). Use the reference image ONLY for the character's look (face, body, clothes, colours) and for the pixel-art style. Do NOT copy its expression, pose or props — draw a NEW expression, pose and props that fit the name. Full body, as a pixel-art RPG enemy sprite.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 128x128 art pixels and enlarge it exactly 8x, so each art pixel is an 8x8 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). No magenta or pink anywhere on the character itself. One character only, full body, centred, filling about 80% of the height.",
+      "text": []
+    },
+    {
+      "out": "enemy_p28",
+      "title": "場面28 とまどう 神社長",
+      "refs": ["public/img/quest/enemy/p04.png"],
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the Japanese name of this character is 「とまどう 神社長」 — someone who is BEWILDERED and does not know what to do. A student who cannot read Japanese must understand that from the picture alone. Draw: both palms raised in confusion, mouth wavy, eyes darting, two blue sweat drops and two small question marks. The character is a round light sky-blue body like a big ball, a dark grey hair cap on top, two small white bunny-like ears with salmon-orange bands, a golden halo ring floating above, small white angel wings, a purple suit jacket with a white collar, a yellow necktie and a small teal badge, short sky-blue arms and legs (he is the president of a friendly supermarket company and our CUSTOMER). Use the reference image ONLY for the character's look (face, body, clothes, colours) and for the pixel-art style. Do NOT copy its expression, pose or props — draw a NEW expression, pose and props that fit the name. Full body, as a pixel-art RPG enemy sprite.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 128x128 art pixels and enlarge it exactly 8x, so each art pixel is an 8x8 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). No magenta or pink anywhere on the character itself. One character only, full body, centred, filling about 80% of the height.",
+      "text": []
+    },
+    {
+      "out": "enemy_p29",
+      "title": "場面29 あわてる エンジニア",
+      "refs": ["public/img/quest/enemy/p13.png"],
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the Japanese name of this character is 「あわてる エンジニア」 — a PANICKING, flustered engineer. A student who cannot read Japanese must understand that from the picture alone. Draw: running in a panic with arms flailing, papers flying everywhere, glasses slipping off, many sweat drops. The character is a young Japanese man with short black hair and black rectangular glasses, a blue suit jacket, white shirt, purple tie and a white ID badge (he is a software engineer on our team). Use the reference image ONLY for the character's look (face, body, clothes, colours) and for the pixel-art style. Do NOT copy its expression, pose or props — draw a NEW expression, pose and props that fit the name. Full body, as a pixel-art RPG enemy sprite.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 128x128 art pixels and enlarge it exactly 8x, so each art pixel is an 8x8 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). No magenta or pink anywhere on the character itself. One character only, full body, centred, filling about 80% of the height.",
+      "text": []
+    },
+    {
+      "out": "enemy_p30",
+      "title": "場面30 だいまんぞくの 神社長",
+      "refs": ["public/img/quest/enemy/p04.png"],
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the Japanese name of this character is 「だいまんぞくの 神社長」 — someone who is DELIGHTED and fully satisfied. A student who cannot read Japanese must understand that from the picture alone. Draw: a huge happy smile with closed eyes, giving a big thumbs-up, a warm golden glow and colourful confetti around him. The character is a round light sky-blue body like a big ball, a dark grey hair cap on top, two small white bunny-like ears with salmon-orange bands, a golden halo ring floating above, small white angel wings, a purple suit jacket with a white collar, a yellow necktie and a small teal badge, short sky-blue arms and legs (he is the president of a friendly supermarket company and our CUSTOMER). Use the reference image ONLY for the character's look (face, body, clothes, colours) and for the pixel-art style. Do NOT copy its expression, pose or props — draw a NEW expression, pose and props that fit the name. Full body, as a pixel-art RPG enemy sprite.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 128x128 art pixels and enlarge it exactly 8x, so each art pixel is an 8x8 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). No magenta or pink anywhere on the character itself. One character only, full body, centred, filling about 80% of the height.",
+      "text": []
+    },
+    {
+      "out": "enemy_p02",
+      "title": "場面2 しりたい 山田さん",
+      "note": "2026-10-20 の 旧い 指示書（旧アプリの 場面2 の 絵を 見本に した）で 作った"
+    },
+    {
+      "out": "enemy_p13",
+      "title": "場面13 そろばんを はじく エンジニア",
+      "note": "同上（旧アプリの 場面13 の 絵を 見本に した）"
+    },
+    {
+      "out": "enemy_angel_base",
+      "title": "神社長（ふつうの顔）",
+      "refs": ["public/img/quest/enemy/p04.png"],
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: this is the customer president in a calm, NEUTRAL, friendly mood — used as his face in conversations. Draw: a calm pleasant small smile, standing relaxed, holding a tablet in one hand and a white pen in the other. The character is a round light sky-blue body like a big ball, a dark grey hair cap on top, two small white bunny-like ears with salmon-orange bands, a golden halo ring floating above, small white angel wings, a purple suit jacket with a white collar, a yellow necktie and a small teal badge, short sky-blue arms and legs (he is the president of a friendly supermarket company and our CUSTOMER). Use the reference image ONLY for the character's look and the pixel-art style; draw a new calm expression (no anger mark).",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 128x128 art pixels and enlarge it exactly 8x, so each art pixel is an 8x8 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). No magenta or pink anywhere on the character itself. One character only, full body, centred, filling about 80% of the height.",
+      "text": []
+    },
+    {
+      "out": "enemy_engineer_base",
+      "title": "エンジニア（ふつうの顔）",
+      "refs": ["public/img/quest/enemy/p13.png"],
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: this is the team's engineer in a calm, NEUTRAL, friendly mood — used as his face in conversations. Draw: standing relaxed (no desk), a calm friendly face, holding a closed laptop under one arm. The character is a young Japanese man with short black hair and black rectangular glasses, a blue suit jacket, white shirt, purple tie and a white ID badge (he is a software engineer on our team). Use the reference image ONLY for the character's look and the pixel-art style.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 128x128 art pixels and enlarge it exactly 8x, so each art pixel is an 8x8 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). No magenta or pink anywhere on the character itself. One character only, full body, centred, filling about 80% of the height.",
+      "text": []
+    }
+  ]
+}

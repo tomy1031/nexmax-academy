@@ -33,7 +33,7 @@ test("クエストが ゲーム風UIで 遊べる", async ({ page }) => {
   const shell = page.locator('[data-quest="shell"]');
   await expect(shell).toBeVisible();
   await expect(page.getByText("PARTY")).toBeVisible();
-  await expect(shell.locator("svg").first()).toBeVisible(); // 敵の 絵
+  await expect(shell.locator('[data-quest="enemy"] img')).toBeVisible(); // 相手役の ドット絵
   await expect(page.locator('[data-quest="log"]')).toBeVisible();
 
   // 3) 会話 → 4択

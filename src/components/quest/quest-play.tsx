@@ -1,9 +1,16 @@
 "use client";
+/* eslint-disable @next/next/no-img-element -- ドット絵は next/image に 通さない。縮小・再圧縮で ドットが にじむ うえ、1枚 数KB の PNG なので 最適化の 得も 無い */
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { Quest } from "@/content/schema";
+import type { Quest, QuestPhase } from "@/content/schema";
 import { RubyText } from "@/components/ruby-text";
-import { buildFuriganaIndex, mergeFuriganaEntries, type FuriganaIndex } from "@/lib/text/furigana";
+import {
+  annotateRuby,
+  buildFuriganaIndex,
+  mergeFuriganaEntries,
+  type FuriganaIndex,
+} from "@/lib/text/furigana";
+import { assetUrl } from "@/lib/asset-url";
 import {
   QUEST_LOG_FURIGANA,
   questLogLines,
@@ -16,46 +23,65 @@ import {
   heroSpeakerIndex,
   isAlive,
   type QuestAction,
+  type QuestEvent,
+  type QuestPlayer,
   type QuestState,
 } from "@/lib/quest/state";
-import { PlayerFace, SPEAKER_ART, SPEAKER_NAME } from "./quest-art";
-import { EnemyArt } from "./quest-enemy";
-import { phaseBackground } from "./enemy-svg";
+import {
+  SPEAKER_NAME,
+  SpriteFace,
+  WATERFALL_MAP,
+  chapterBackground,
+  chapterOf,
+  enemyFocus,
+  enemySprite,
+  isChapterStart,
+  playerSprite,
+  questIcon,
+  speakerFocus,
+  speakerSprite,
+} from "./quest-art";
 import { QuestButton, QuestWindow } from "./quest-window";
 
 /**
  * 画面の ことばの 読みは 画面が 持つ（教材の 読み辞書とは 混ぜない）。
  *
  * **ログの 箱は 別**——教材の 字（`option.resultText`）と 画面の 字が 混ざるので、
- * そこだけ 2つを 重ねた 索引で 描く（`logFurigana`）。
+ * そこだけ 2つを 重ねた 索引で 描く（`QuestLogBox`）。
  */
 const UI_FURIGANA = buildFuriganaIndex([
   ["場面", "ばめん"],
   ["一手", "いって"],
-  ["行動", "こうどう"],
-  ["危険", "きけん"],
-  ["体力", "たいりょく"],
+  ["予算", "よさん"],
   ["物語", "ものがたり"],
   ["工程", "こうてい"],
   ["記録", "きろく"],
+  ["英語", "えいご"],
+  ["順番", "じゅんばん"],
   ["閉", "と"],
   ["次", "つぎ"],
+  ["第", "だい"],
   ["章", "しょう"],
-  ["今", "いま"],
+  ["番", "ばん"],
   ["万", "まん"],
+  ["滝", "たき"],
+  ["上", "うえ"],
+  ["前", "まえ"],
+  ["終", "お"],
   ["進", "すす"],
-  ["返", "かえ"],
   ["出", "で"],
-  ["図", "ず"],
+  ["返", "かえ"],
+  // レベルアップの 帯（「上が」は「上」より 長いので 先に 当たる）
+  ["上が", "あが"],
 ]);
 
 /** ログの 色（分け方は `QuestLogTone` が 持つ）。 */
-const LOG_COLOR: Record<QuestLogTone, string> = {
-  normal: "text-white",
-  critical: "font-bold text-yellow-300",
-  hit: "text-green-300",
-  miss: "font-bold text-red-400",
-  system: "text-blue-300",
+const LOG_TONE: Record<QuestLogTone, string> = {
+  normal: "qx-tone-normal",
+  critical: "qx-tone-critical",
+  hit: "qx-tone-hit",
+  miss: "qx-tone-miss",
+  system: "qx-tone-system",
 };
 
 export interface LogLine {
@@ -97,7 +123,7 @@ export function QuestLogBox({
 
   if (lines.length === 0) {
     return (
-      <p className="text-blue-300">
+      <p className="qx-tone-system">
         <RubyText text={questLogOpening(quest)} index={index} show={show} />
       </p>
     );
@@ -105,7 +131,7 @@ export function QuestLogBox({
   return (
     <>
       {lines.map((line) => (
-        <p key={line.id} className={LOG_COLOR[line.tone]}>
+        <p key={line.id} className={LOG_TONE[line.tone]}>
           <RubyText text={line.text} index={index} show={show} />
         </p>
       ))}
@@ -113,14 +139,81 @@ export function QuestLogBox({
   );
 }
 
+/* ------------------------------------------------------------------ *
+ * 動き（当たり・外れ・バグ）
+ * ------------------------------------------------------------------ */
+
+/** 1回の 出来事で 出す 動き。`key` を 変えて 動きを 頭から 流し直す。 */
+interface Fx {
+  readonly key: number;
+  /** 光り（白＝いちばん いい 手・赤＝バグが 出た） */
+  readonly flash: "white" | "red" | null;
+  /** 相手が 点滅する（当たった） */
+  readonly enemyHit: boolean;
+  /** 相手の 上に 出る 数（+50 EXP） */
+  readonly enemyText: string | null;
+  /** 行動した 人（一歩 出る） */
+  readonly actor: number | null;
+  /** 体力が 減った 人と その 数 */
+  readonly hurt: ReadonlyMap<number, number>;
+  readonly bugs: number;
+  readonly money: number;
+  readonly banner: string | null;
+}
+
+function fxOf(event: QuestEvent, players: readonly QuestPlayer[], key: number): Fx {
+  if (event.kind === "risk") {
+    const hurt = new Map<number, number>();
+    if (event.damage > 0) players.forEach((_, index) => hurt.set(index, event.damage));
+    return {
+      key,
+      flash: event.damage > 0 ? "red" : null,
+      enemyHit: false,
+      enemyText: null,
+      actor: null,
+      hurt,
+      bugs: 0,
+      money: event.cost,
+      banner: null,
+    };
+  }
+  const player = players[event.playerIndex];
+  return {
+    key,
+    flash: event.optionType === "critical" ? "white" : null,
+    enemyHit: event.optionType !== "miss",
+    enemyText: event.exp > 0 ? `+${event.exp} EXP` : null,
+    actor: event.playerIndex,
+    hurt: event.hpLost > 0 ? new Map([[event.playerIndex, event.hpLost]]) : new Map(),
+    bugs: Math.max(0, event.riskDelta),
+    money: Math.max(0, event.moneyLost),
+    banner: event.leveledUp && player ? `${player.name}は レベルが 上がった！` : null,
+  };
+}
+
+/* ------------------------------------------------------------------ *
+ * 遊ぶ 画面
+ * ------------------------------------------------------------------ */
+
+/** 場面の 中の 仲間の 立ち位置（左・上 の %）。2列を ずらして 4人まで。 */
+const TROOP_AT: readonly (readonly [number, number])[] = [
+  [0, 0],
+  [50, 18],
+  [4, 42],
+  [54, 60],
+];
+
 /**
- * クエストの 遊ぶ 画面 — 旧アプリ `renderMainGame` の 移植
+ * クエストの 遊ぶ 画面 — ドット絵の RPG（2026-10-20 に 作りかえ）
  *
- * ## サイトの カードに 戻さない
- * 2026-09-01 の 指定「ゲーム風UIが 売り」。黒地・等幅・白い 枠の ウィンドウを 4つ
- *（ヘッダ／敵／ログ／PARTY＋COMMAND）並べる 原典の 組み立てを そのまま 使う。
- * 2026-08-31 の 移植では 中身（HP・レベル・リスク・4択・解説）は 正しく 移したのに
- * **見た目だけ** アプリの カードに 直して しまい、遊びの 手ざわりが 消えて いた。
+ * ## 組み立ては JRPG の まま
+ * ヘッダ（しらべる・予算・たまったバグ・EXP）／PARTY／場面（背景＋相手＋仲間）／ログ／
+ * COMMAND。2026-09-01 の 指定「ゲーム風UIが 売り」の 組み立てを 保ち、**見た目を ドット絵**に した。
+ * スマホでは PARTY を 場面の 上に 横 4つ で 出し、COMMAND が スクロール なしで 見える ように する。
+ *
+ * ## 絵で 分かる
+ * 場面の 背景は 章ごと（いま どの 工程か）、相手は 場面ごと（せっかち・おサイフを きにする…）。
+ * 答える 番の 人は 場面の 中で 一歩 前に 出て、上に ▼ が 付く（1台を 囲んで 遊ぶ ため）。
  *
  * ## 解説は 飛ばせない
  * 当たっても 外しても、次へ 進む 前に **解説の ウィンドウを はさむ**
@@ -143,9 +236,22 @@ export function QuestPlay({
 }) {
   const phase = currentPhase(quest, state);
   const [log, setLog] = useState<readonly LogLine[]>([]);
-  const [shake, setShake] = useState(false);
+  /** 最後の 出来事の 動き。`live` の あいだだけ 数や 光りを 出す。 */
+  const [fx, setFx] = useState<Fx | null>(null);
+  const [live, setLive] = useState(false);
+  const grid = useRef<HTMLDivElement | null>(null);
   const [modal, setModal] = useState<null | "story" | "history" | "process">(null);
+  /*
+   * 場面の 頭の 進み（章の 札 → 会話の 何行目）。場面が 変わったら 頭から。
+   * 場面の 番号と 組で 持ち、ずれて いたら 初期値と みなす（効果で 戻すと 1こま 古い 画面が 出る）。
+   */
+  const [talk, setTalk] = useState({ phaseIndex: state.phaseIndex, line: 0, cardDone: false });
+  const here =
+    talk.phaseIndex === state.phaseIndex
+      ? talk
+      : { phaseIndex: state.phaseIndex, line: 0, cardDone: false };
   const logSeq = useRef(0);
+  const fxSeq = useRef(0);
   const logBox = useRef<HTMLDivElement | null>(null);
 
   /*
@@ -157,16 +263,33 @@ export function QuestPlay({
   useEffect(() => {
     if (!event) return;
     const lines = questLogLines(quest, state);
-    if (lines.length === 0) return;
-    setLog((prev) => [...prev, ...lines.map((line) => ({ ...line, id: (logSeq.current += 1) }))]);
-    const rough =
-      event.kind === "risk" ? event.damage > 0 : event.optionType === "miss" || event.hpLost > 0;
-    if (rough) {
-      setShake(true);
-      const timer = setTimeout(() => setShake(false), 500);
-      return () => clearTimeout(timer);
+    if (lines.length > 0) {
+      setLog((prev) => [...prev, ...lines.map((line) => ({ ...line, id: (logSeq.current += 1) }))]);
     }
-    return undefined;
+    fxSeq.current += 1;
+    setFx(fxOf(event, state.players, fxSeq.current));
+    setLive(true);
+    /*
+     * ゆれは **外した とき**と **バグが 出た とき**だけ。当たりは 光りで 見せる
+     *（どちらも ゆれると 判定の ちがいが 体で 分からない）。
+     * 画面を 作り直さずに 動かす ため、要素の animate を 使う。
+     */
+    const rough = event.kind === "risk" ? event.damage > 0 : event.optionType === "miss";
+    if (rough && !prefersReducedMotion()) {
+      grid.current?.animate(
+        [
+          { transform: "translateX(0)" },
+          { transform: "translateX(-5px)" },
+          { transform: "translateX(5px)" },
+          { transform: "translateX(-5px)" },
+          { transform: "translateX(5px)" },
+          { transform: "translateX(0)" },
+        ],
+        { duration: 450, easing: "steps(6)" },
+      );
+    }
+    const timer = setTimeout(() => setLive(false), 1600);
+    return () => clearTimeout(timer);
     // 出来事が 変わった ときだけ 1回。state 全体を 見ると 同じ 行が 2度 積まれる
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [event]);
@@ -179,164 +302,328 @@ export function QuestPlay({
   if (!phase) return null;
 
   const ruby = (text: string) => <RubyText text={text} index={furigana} show={furiganaOn} />;
-  const chapterLabel = phase.name.replace(/.*：/, "");
+  const ui = (text: string) => <RubyText text={text} index={UI_FURIGANA} show={furiganaOn} />;
+  const chapter = chapterOf(phase);
+
+  const cardOpen =
+    isChapterStart(phase) &&
+    state.chosen.length === 0 &&
+    event === null &&
+    here.line === 0 &&
+    !here.cardDone;
+  const step: "risk" | "result" | "card" | "talk" | "choose" =
+    event?.kind === "risk"
+      ? "risk"
+      : event?.kind === "turn"
+        ? "result"
+        : cardOpen
+          ? "card"
+          : state.chosen.length === 0 && here.line < phase.dialogue.length
+            ? "talk"
+            : "choose";
+  const showTurn = step === "choose";
+  const openCard = () => setTalk({ ...here, cardDone: true });
+
+  const shown = live ? fx : null;
+  const party = (
+    <QuestWindow title="PARTY" className="qx-party">
+      <div
+        className="qx-plist"
+        style={{ ["--qx-n" as string]: state.players.length } as React.CSSProperties}
+      >
+        {state.players.map((player, index) => (
+          <PartyCard
+            key={player.id}
+            player={player}
+            turn={showTurn && index === state.turn}
+            hurt={shown?.hurt.get(index)}
+          />
+        ))}
+      </div>
+    </QuestWindow>
+  );
 
   return (
-    <div
-      className={`mx-auto flex w-full max-w-4xl flex-col gap-2.5 px-1 py-3 md:p-3 ${
-        shake ? "animate-[quest-shake_0.5s_ease-in-out]" : ""
-      }`}
-    >
-      {/* ── ヘッダ: しらべる ボタンと メーター ── */}
-      <QuestWindow className="!p-1.5 md:!p-2">
-        <div className="flex w-full flex-wrap items-center gap-x-2 gap-y-1">
-          <QuestButton
-            data-quest="story"
-            onClick={() => setModal("story")}
-            className="!px-2 !py-0.5 !text-[10px] md:!text-xs"
-          >
-            <RubyText text="物語" index={UI_FURIGANA} />
-          </QuestButton>
-          <QuestButton
-            data-quest="history"
-            onClick={() => setModal("history")}
-            className="!px-2 !py-0.5 !text-[10px] md:!text-xs"
-          >
-            <RubyText text="記録" index={UI_FURIGANA} />
-          </QuestButton>
-          <QuestButton
-            data-quest="process"
-            onClick={() => setModal("process")}
-            className="!px-2 !py-0.5 !text-[10px] md:!text-xs"
-          >
-            <RubyText text="工程" index={UI_FURIGANA} />
-          </QuestButton>
-          <span className="text-[10px] font-bold whitespace-nowrap text-yellow-400 md:text-sm">
-            G: <RubyText text={`${state.budget}万`} index={UI_FURIGANA} />
-          </span>
-          <span className="text-[10px] font-bold whitespace-nowrap text-blue-300 md:text-sm">
-            EXP: {state.teamExp}
-          </span>
-          <span className="text-[10px] font-bold whitespace-nowrap text-purple-400 md:text-sm">
-            <RubyText text="危険" index={UI_FURIGANA} />: {state.hiddenRisk}
-          </span>
-          <span className="ml-auto flex items-center gap-2">
-            <span className="max-w-[9rem] truncate text-[10px] font-bold text-slate-300 md:max-w-none md:text-sm">
-              {ruby(chapterLabel)}
-            </span>
-            <button
-              type="button"
+    <div className="qx-play">
+      <div ref={grid} className="qx-grid">
+        {/* ── ヘッダ: しらべる ボタンと メーター ── */}
+        <QuestWindow className="qx-head">
+          <div className="qx-row">
+            <QuestButton data-quest="story" onClick={() => setModal("story")}>
+              {ui("物語")}
+            </QuestButton>
+            <QuestButton data-quest="history" onClick={() => setModal("history")}>
+              {ui("記録")}
+            </QuestButton>
+            <QuestButton data-quest="process" onClick={() => setModal("process")}>
+              {ui("工程")}
+            </QuestButton>
+            <span className="qx-sp" />
+            <QuestButton
               onClick={onToggleFurigana}
               aria-pressed={furiganaOn}
-              className={`rounded border-[1.5px] px-1.5 py-0.5 text-[10px] font-bold ${
-                furiganaOn
-                  ? "border-yellow-300 bg-yellow-300 text-black"
-                  : "border-slate-400 bg-black text-slate-300"
-              }`}
+              className={furiganaOn ? "qx-on" : ""}
             >
               ふりがな {furiganaOn ? "ON" : "OFF"}
-            </button>
-          </span>
-        </div>
-      </QuestWindow>
-
-      {/* ── 敵 ── */}
-      <QuestWindow
-        className={`relative min-h-[150px] items-center justify-center overflow-hidden md:min-h-[200px] ${phaseBackground(
-          phase.id,
-        )}`}
-      >
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:30px_30px]" />
-        <div className="z-10 flex w-full flex-col items-center justify-center py-2">
-          <EnemyArt phaseId={phase.id} />
-          <div className="mx-2 mt-1 rounded border-2 border-white bg-black/80 px-3 py-1 text-center text-[10px] font-bold tracking-widest text-white shadow-lg md:text-sm">
-            {ruby(phase.enemy.name)}
+            </QuestButton>
           </div>
-        </div>
-      </QuestWindow>
-
-      {/* ── メッセージログ ── */}
-      <QuestWindow className="!p-2">
-        <div
-          ref={logBox}
-          data-quest="log"
-          className="h-16 overflow-y-auto text-xs leading-relaxed md:h-20 md:text-sm"
-        >
-          <QuestLogBox quest={quest} lines={log} show={furiganaOn} />
-        </div>
-      </QuestWindow>
-
-      {/* ── PARTY と COMMAND ── */}
-      <div className="grid grid-cols-1 gap-2.5 md:grid-cols-12">
-        <QuestWindow title="PARTY" className="!p-1.5 md:col-span-4">
-          <ul className="mt-2 flex flex-col">
-            {state.players.map((player, index) => {
-              const turn = index === state.turn;
-              return (
-                <li
-                  key={player.id}
-                  className={`flex items-center justify-between gap-1.5 border-b border-slate-700 p-1.5 ${
-                    turn ? "border-l-4 border-l-yellow-400 bg-slate-800" : ""
-                  } ${isAlive(player) ? "" : "opacity-40 grayscale"}`}
-                >
-                  <span className="flex min-w-0 items-center gap-1.5">
-                    <span aria-hidden className="w-3 shrink-0 text-yellow-400">
-                      {turn ? "▶" : ""}
-                    </span>
-                    <PlayerFace player={player} size={26} bob={turn} />
-                    <span className="truncate text-xs font-bold text-white">{player.name}</span>
-                  </span>
-                  <span className="flex shrink-0 items-center gap-2 text-[10px] text-slate-300">
-                    <span>Lv{player.level}</span>
-                    <span
-                      className={player.hp < player.maxHp * 0.3 ? "text-red-400" : "text-white"}
-                    >
-                      HP {player.hp}
-                    </span>
-                  </span>
-                </li>
-              );
-            })}
-          </ul>
+          <div className="qx-row qx-meters">
+            <span className="qx-meter qx-coin">
+              <img className="qx-px" src={questIcon("coin")} alt="" />
+              <span className="qx-lbl">{ui("予算")}</span>
+              <b>{state.budget}</b>
+              {ui("万")}
+              {shown && shown.money > 0 ? (
+                <Float key={`m${shown.key}`} kind="money" text={`-${shown.money}万`} />
+              ) : null}
+            </span>
+            <span className={`qx-meter qx-bug ${shown && shown.bugs > 0 ? "qx-bump" : ""}`}>
+              <img className="qx-px" src={questIcon("bug")} alt="" />
+              <span className="qx-lbl">たまったバグ</span>
+              <b>{state.hiddenRisk}</b>
+              {shown && shown.bugs > 0 ? (
+                <Float key={`b${shown.key}`} kind="bugs" text={`+${shown.bugs}`} />
+              ) : null}
+            </span>
+            <span className="qx-meter qx-star">
+              <img className="qx-px" src={questIcon("star")} alt="" />
+              <span className="qx-lbl">EXP</span>
+              <b>{state.teamExp}</b>
+            </span>
+          </div>
         </QuestWindow>
 
+        {party}
+
+        {/* ── 場面（背景・相手・仲間） ── */}
+        <QuestWindow className="qx-scene">
+          <img className="qx-bg qx-px" src={chapterBackground(chapter)} alt="" />
+          <div className="qx-shade" />
+          <div className="qx-hud">
+            <span className="qx-ch">
+              <em>{ui(`第${chapter}章`)}</em>
+              {ruby(phase.chapter)}
+            </span>
+            <div className="qx-blocks" aria-hidden>
+              {Array.from({ length: 10 }, (_, k) => (
+                <i
+                  key={k}
+                  className={k + 1 < chapter ? "qx-done" : k + 1 === chapter ? "qx-now" : ""}
+                />
+              ))}
+              <span>
+                {ui("場面")} {phase.id}/{quest.phases.length}
+              </span>
+            </div>
+          </div>
+          <div
+            key={`e${fx?.key ?? 0}`}
+            data-quest="enemy"
+            className={`qx-enemy ${fx?.enemyHit ? "qx-hit" : ""}`}
+          >
+            <img className="qx-px" src={enemySprite(phase.id)} alt="" />
+            {shown?.enemyText ? <Float kind="exp" text={shown.enemyText} top="10%" /> : null}
+          </div>
+          <div className="qx-plate">{ruby(phase.enemy.name)}</div>
+          <div className="qx-troop">
+            {state.players.map((player, index) => {
+              const at = TROOP_AT[index] ?? [0, 0];
+              const hurt = shown?.hurt.get(index);
+              return (
+                <div
+                  key={`${player.id}-${fx?.key ?? 0}`}
+                  className={[
+                    "qx-mem",
+                    showTurn && index === state.turn ? "qx-turn" : "",
+                    isAlive(player) ? "" : "qx-down",
+                    fx?.actor === index ? "qx-act" : "",
+                    fx?.hurt.has(index) ? "qx-hurt" : "",
+                  ].join(" ")}
+                  style={{ left: `${at[0]}%`, top: `${at[1]}%` }}
+                >
+                  <img className="qx-px" src={playerSprite(player)} alt="" />
+                  {hurt ? <Float kind="dmg" text={`-${hurt}`} top="0" /> : null}
+                </div>
+              );
+            })}
+          </div>
+          <div className="qx-fx">
+            {shown?.flash ? (
+              <div
+                key={`f${shown.key}`}
+                className={`qx-flash qx-go ${shown.flash === "red" ? "qx-red" : ""}`}
+              />
+            ) : null}
+            {shown?.flash === "white" ? <Sparks key={`s${shown.key}`} /> : null}
+            {shown?.banner ? (
+              <div key={`l${shown.key}`} className="qx-banner">
+                {ui(shown.banner)}
+              </div>
+            ) : null}
+          </div>
+          {step === "card" ? (
+            <button type="button" className="qx-card" onClick={openCard}>
+              <span className="qx-no">{ui(`第${chapter}章`)}</span>
+              <span className="qx-nm">{ruby(phase.chapter)}</span>
+              <span className="qx-ds qx-t">{ruby(phase.desc)}</span>
+              <span className="qx-go">▼ おして はじめる</span>
+            </button>
+          ) : null}
+        </QuestWindow>
+
+        {/* ── メッセージログ ── */}
+        <QuestWindow className="qx-log">
+          <div ref={logBox} data-quest="log" aria-live="polite" className="h-full overflow-y-auto">
+            <QuestLogBox quest={quest} lines={log} show={furiganaOn} />
+          </div>
+        </QuestWindow>
+
+        {/* ── COMMAND ── */}
         <QuestWindow
-          title={state.event ? "RESULT" : state.chosen.length === 0 ? "STORY" : "COMMAND"}
-          className="!p-2 md:col-span-8"
+          title={
+            step === "risk" || step === "result"
+              ? "RESULT"
+              : step === "choose"
+                ? "COMMAND"
+                : "STORY"
+          }
+          className="qx-cmd"
         >
-          <PhaseBody
-            key={state.phaseIndex}
-            quest={quest}
-            state={state}
-            dispatch={dispatch}
-            ruby={ruby}
-          />
+          {step === "card" ? (
+            <button type="button" data-quest="next" className="qx-talk" onClick={openCard}>
+              <SpriteFace
+                src={enemySprite(phase.id)}
+                focus={enemyFocus(phase.enemy.art)}
+                className="qx-portrait"
+              />
+              <span>
+                <span className="qx-who">{ui(`第${chapter}章`)}</span>
+                <span className="qx-say qx-t">{ruby(`${phase.chapter}が はじまります。`)}</span>
+              </span>
+              <span className="qx-more">
+                おして はじめる <i>▼</i>
+              </span>
+            </button>
+          ) : step === "talk" ? (
+            <Dialogue
+              key={`${state.phaseIndex}-${here.line}`}
+              state={state}
+              phase={phase}
+              line={here.line}
+              furigana={furigana}
+              furiganaOn={furiganaOn}
+              onNext={() => setTalk({ ...here, line: here.line + 1 })}
+            />
+          ) : step === "risk" && event?.kind === "risk" ? (
+            <RiskBody event={event} ui={ui} onNext={() => dispatch({ type: "advance" })} />
+          ) : step === "result" && event?.kind === "turn" ? (
+            <ResultBody
+              phase={phase}
+              optionIndex={event.optionIndex}
+              ruby={ruby}
+              ui={ui}
+              onNext={() => dispatch({ type: "advance" })}
+            />
+          ) : (
+            <ChooseBody state={state} phase={phase} ruby={ruby} ui={ui} dispatch={dispatch} />
+          )}
         </QuestWindow>
       </div>
 
       {modal ? (
         <QuestModal
           title={modal === "story" ? "STORY" : modal === "history" ? "HISTORY" : "PROCESS CHART"}
+          ui={ui}
           onClose={() => setModal(null)}
         >
           {modal === "story" ? (
-            <div className="space-y-3 text-left text-xs leading-relaxed text-slate-200 md:text-sm">
-              <p>{ruby(quest.description)}</p>
-              <p className="text-yellow-300">{ruby(quest.focus)}</p>
+            <div className="grid gap-3">
+              <p className="qx-t">{ruby(quest.description)}</p>
+              <p className="qx-t qx-tone-critical">{ruby(quest.focus)}</p>
             </div>
           ) : modal === "history" ? (
-            <div className="space-y-1 text-left text-xs leading-relaxed md:text-sm">
-              {log.length === 0 ? (
-                <p className="text-slate-400">まだ ありません。</p>
-              ) : (
-                <QuestLogBox quest={quest} lines={log} show={furiganaOn} />
-              )}
-            </div>
+            log.length === 0 ? (
+              <p className="qx-t">まだ ありません。</p>
+            ) : (
+              <QuestLogBox quest={quest} lines={log} show={furiganaOn} />
+            )
           ) : (
-            <ProcessChart quest={quest} state={state} ruby={ruby} />
+            <ProcessChart quest={quest} state={state} ruby={ruby} ui={ui} />
           )}
         </QuestModal>
       ) : null}
+    </div>
+  );
+}
+
+function prefersReducedMotion(): boolean {
+  return (
+    typeof window !== "undefined" &&
+    !!window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
+  );
+}
+
+/* ------------------------------------------------------------------ *
+ * 小さな 部品
+ * ------------------------------------------------------------------ */
+
+function Float({
+  kind,
+  text,
+  top = "-6px",
+}: {
+  kind: "exp" | "dmg" | "bugs" | "money";
+  text: string;
+  top?: string;
+}) {
+  return (
+    <span aria-hidden className={`qx-float qx-${kind}`} style={{ left: "50%", top }}>
+      <RubyText text={text} index={UI_FURIGANA} />
+    </span>
+  );
+}
+
+/** いちばん いい 手の ときの 星。場所は 毎回 同じで よい（動きで 気づかせる）。 */
+function Sparks() {
+  const at: readonly (readonly [number, number])[] = [
+    [18, 30],
+    [30, 18],
+    [40, 44],
+    [22, 58],
+    [34, 66],
+    [12, 46],
+  ];
+  return (
+    <>
+      {at.map(([left, top], index) => (
+        <i
+          key={index}
+          className="qx-spark"
+          style={{ left: `${left}%`, top: `${top}%`, animationDelay: `${index * 60}ms` }}
+        />
+      ))}
+    </>
+  );
+}
+
+/** 仲間 1人の 札（名前・体力の ゲージ・Lv・HP）。 */
+function PartyCard({ player, turn, hurt }: { player: QuestPlayer; turn: boolean; hurt?: number }) {
+  const ratio = player.maxHp > 0 ? player.hp / player.maxHp : 0;
+  const tone = ratio < 0.3 ? "qx-low" : ratio < 0.6 ? "qx-mid" : "";
+  return (
+    <div className={`qx-pcard ${turn ? "qx-turn" : ""} ${isAlive(player) ? "" : "qx-down"}`}>
+      <div className="qx-top">
+        <SpriteFace src={playerSprite(player)} />
+        <span className="qx-nm">{player.name}</span>
+      </div>
+      <div className="qx-hpbar">
+        <i className={tone} style={{ width: `${Math.round(ratio * 100)}%` }} />
+      </div>
+      <div className="qx-nums">
+        <span>Lv{player.level}</span>
+        <span className="qx-hp">HP {player.hp}</span>
+      </div>
+      {hurt ? <Float kind="dmg" text={`-${hurt}`} top="0" /> : null}
     </div>
   );
 }
@@ -346,163 +633,234 @@ export function QuestPlay({
  * ------------------------------------------------------------------ */
 
 /**
- * 会話 → 4択 → 解説。**1つの ウィンドウに 1つだけ**出す
- *（constraints「1画面1文・1コマ1情報」）。
+ * 場面の 頭の 会話（1行ずつ・文字送り・hero は メンバーに 順番で 回る）。
  *
- * 会話は 場面の 頭でだけ 流す。外して 同じ 場面に 戻った ときに 話が 巻き戻ると、
- * 「進んで いない」ように 見える——だから **まだ 1つも 押して いない ときだけ**。
+ * **押すと その 行を 全部 出し、もう 一度 押すと 次の 行へ。** 読むのが 早い 人も
+ * 待たされず、ゆっくりの 人は 自分の ペースで 読める（1画面1文）。
+ * ルビの ついた 語は ひとかたまりで 出す（「打ち合わせ」の 読みが 途中で 切れない）。
  */
-function PhaseBody({
-  quest,
+function Dialogue({
   state,
-  dispatch,
-  ruby,
+  phase,
+  line,
+  furigana,
+  furiganaOn,
+  onNext,
 }: {
-  quest: Quest;
   state: QuestState;
-  dispatch: (action: QuestAction) => void;
-  ruby: (text: string) => React.ReactNode;
+  phase: QuestPhase;
+  line: number;
+  furigana: FuriganaIndex;
+  furiganaOn: boolean;
+  onNext: () => void;
 }) {
-  const phase = currentPhase(quest, state);
-  const [line, setLine] = useState(0);
-  if (!phase) return null;
-
-  const event = state.event;
-
-  /* 1) 隠れリスクの 爆発（第8章の 入口） */
-  if (event?.kind === "risk") {
-    return (
-      <div data-quest="risk" className="mt-1 flex flex-col gap-3">
-        <p className="text-lg font-bold text-red-300">
-          <RubyText
-            text={
-              event.damage === 0
-                ? "🎉 バグは ひとつも なかった！"
-                : "💥 たまって いた バグが 出た！"
-            }
-            index={UI_FURIGANA}
-          />
-        </p>
-        {event.damage > 0 ? (
-          <ul className="flex flex-wrap gap-2 text-xs font-bold text-white">
-            <li className="rounded border border-slate-600 px-2 py-1">⚠ {event.risk}</li>
-            <li className="rounded border border-slate-600 px-2 py-1">💔 -{event.damage}</li>
-            <li className="rounded border border-slate-600 px-2 py-1">💰 -{event.cost} G</li>
-          </ul>
-        ) : (
-          <p className="text-sm leading-relaxed text-slate-200">
-            <RubyText
-              text="ここまで ていねいに 進めた ぶんが、そのまま 返って きました。"
-              index={UI_FURIGANA}
-            />
-          </p>
-        )}
-        <QuestButton tone="primary" data-quest="next" onClick={() => dispatch({ type: "advance" })}>
-          <RubyText text="次へ" index={UI_FURIGANA} />
-        </QuestButton>
-      </div>
+  const current = phase.dialogue[line];
+  const tokens = useMemo(() => {
+    if (!current) return [];
+    const segments = furiganaOn ? annotateRuby(current.text, furigana) : [{ text: current.text }];
+    return segments.flatMap((seg) =>
+      seg.reading ? [seg] : [...seg.text].map((char) => ({ text: char, reading: undefined })),
     );
-  }
+  }, [current, furigana, furiganaOn]);
+  // 動きを 減らす 設定の 人には、はじめから 全部 出す
+  const [shown, setShown] = useState(() => (prefersReducedMotion() ? Number.MAX_SAFE_INTEGER : 0));
+  const done = shown >= tokens.length;
 
-  /* 2) えらんだ あとの 解説（当たっても 外しても 必ず 読ませる） */
-  if (event?.kind === "turn") {
-    const option = phase.options[event.optionIndex];
-    if (!option) return null;
-    return (
-      <div className="mt-1 flex flex-col gap-3">
-        <p
-          className={`text-sm leading-relaxed font-bold break-words md:text-base ${
-            LOG_COLOR[event.optionType]
-          }`}
-        >
-          {ruby(option.resultText)}
-        </p>
-        <p className="max-h-40 overflow-y-auto rounded border border-slate-700 bg-slate-900/80 p-2 text-xs leading-relaxed text-white md:text-sm">
-          {ruby(option.explanation)}
-        </p>
-        <QuestButton tone="primary" data-quest="next" onClick={() => dispatch({ type: "advance" })}>
-          <RubyText text="次の 一手" index={UI_FURIGANA} />
-        </QuestButton>
-      </div>
-    );
-  }
+  useEffect(() => {
+    if (prefersReducedMotion()) return;
+    const timer = setInterval(() => {
+      setShown((n) => {
+        if (n + 1 >= tokens.length) clearInterval(timer);
+        return n + 1;
+      });
+    }, 38);
+    return () => clearInterval(timer);
+  }, [tokens.length]);
 
-  /* 3) 場面の 頭の 会話（1行ずつ・hero は メンバーに 順番で 回る） */
-  if (state.chosen.length === 0 && line < phase.dialogue.length) {
-    const current = phase.dialogue[line];
-    if (!current) return null;
-    const heroOrdinal = phase.dialogue
-      .slice(0, line)
-      .filter((item) => item.speaker === "hero").length;
-    const hero =
-      state.players[heroSpeakerIndex(state.phaseIndex, heroOrdinal, state.players.length)];
+  if (!current) return null;
 
-    return (
-      <button
-        type="button"
-        data-quest="next"
-        onClick={() => setLine((value) => value + 1)}
-        className="mt-1 flex w-full flex-col rounded border border-slate-700 bg-slate-900 p-3 text-left shadow-inner transition-colors hover:bg-slate-800"
-      >
-        {current.speaker === "system" ? (
-          <span className="text-sm leading-relaxed text-slate-300">{ruby(current.text)}</span>
+  const heroOrdinal = phase.dialogue
+    .slice(0, line)
+    .filter((item) => item.speaker === "hero").length;
+  const hero =
+    current.speaker === "hero"
+      ? state.players[heroSpeakerIndex(state.phaseIndex, heroOrdinal, state.players.length)]
+      : undefined;
+
+  const typed = tokens.slice(0, shown).map((tok, i) =>
+    tok.reading ? (
+      <ruby key={i}>
+        {tok.text}
+        <rt>{tok.reading}</rt>
+      </ruby>
+    ) : (
+      <span key={i}>{tok.text}</span>
+    ),
+  );
+
+  return (
+    <button
+      type="button"
+      data-quest="next"
+      className="qx-talk"
+      onClick={() => (done ? onNext() : setShown(tokens.length))}
+    >
+      {current.speaker === "system" ? (
+        <span />
+      ) : current.speaker === "hero" ? (
+        hero ? (
+          <SpriteFace src={playerSprite(hero)} className="qx-portrait" />
         ) : (
-          <>
-            <span className="mb-2 flex items-center gap-2 border-b border-slate-700 pb-1 font-bold text-yellow-400">
-              {current.speaker === "hero" ? (
-                <>
-                  {hero ? <PlayerFace player={hero} size={24} /> : null}
-                  <span className="truncate">{hero?.name ?? "あなた"}</span>
-                </>
-              ) : (
-                <>
-                  <span aria-hidden className="text-xl leading-none">
-                    {SPEAKER_ART[current.speaker]}
-                  </span>
-                  <span>{ruby(SPEAKER_NAME[current.speaker])}</span>
-                </>
-              )}
-            </span>
-            <span className="text-sm leading-relaxed text-white md:text-base">
-              {ruby(current.text)}
-            </span>
-          </>
+          <span />
+        )
+      ) : (
+        <SpriteFace
+          src={speakerSprite(current.speaker, phase)}
+          focus={speakerFocus(current.speaker)}
+          className="qx-portrait"
+        />
+      )}
+      <span>
+        {current.speaker === "system" ? null : current.speaker === "hero" ? (
+          <span className="qx-who">{hero?.name ?? "あなた"}</span>
+        ) : (
+          <span className="qx-who">
+            <RubyText text={SPEAKER_NAME[current.speaker]} index={furigana} show={furiganaOn} />
+          </span>
         )}
-        <span className="mt-2 animate-pulse text-right text-xs text-slate-500">
-          <RubyText text="おして 次へ ▶" index={UI_FURIGANA} />
+        <span className={`qx-say qx-t ${current.speaker === "system" ? "qx-system" : ""}`}>
+          {typed}
         </span>
-      </button>
-    );
-  }
+      </span>
+      <span className="qx-more" style={{ visibility: done ? "visible" : "hidden" }}>
+        <RubyText text="おして 次へ" index={UI_FURIGANA} show={furiganaOn} /> <i>▼</i>
+      </span>
+    </button>
+  );
+}
 
-  /* 4) 4択。押した 札は 消える（同じ 手を 2度 数えない） */
+/** 4択。押した 札は 消える（同じ 手を 2度 数えない）。 */
+function ChooseBody({
+  state,
+  phase,
+  ruby,
+  ui,
+  dispatch,
+}: {
+  state: QuestState;
+  phase: QuestPhase;
+  ruby: (text: string) => React.ReactNode;
+  ui: (text: string) => React.ReactNode;
+  dispatch: (action: QuestAction) => void;
+}) {
   const player = currentPlayer(state);
   return (
-    <div className="mt-1 flex flex-col gap-2">
-      <div className="flex items-center gap-2 rounded border border-slate-700 bg-slate-900/80 p-2 text-xs leading-relaxed font-bold text-white md:text-sm">
-        {player ? <PlayerFace player={player} size={24} bob /> : null}
-        <span className="truncate text-yellow-400">{player?.name}</span>
-        <span className="min-w-0 flex-1">{ruby(phase.question)}</span>
+    <div className="grid">
+      <div className="qx-ask">
+        {player ? <SpriteFace src={playerSprite(player)} /> : null}
+        <span className="min-w-0">
+          <span className="qx-who">
+            {player?.name}の {ui("番")}
+          </span>
+          <span className="qx-q qx-t">{ruby(phase.question)}</span>
+        </span>
       </div>
-      <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+      <ul className="qx-opts">
         {phase.options.map((option, index) =>
           state.chosen.includes(index) ? null : (
             <li key={index}>
               <button
                 type="button"
                 data-quest="option"
+                className="qx-opt"
                 onClick={() => dispatch({ type: "choose", optionIndex: index })}
-                className="flex h-full w-full items-start gap-1.5 rounded border-[1.5px] border-slate-500 bg-black p-2 text-left text-xs leading-relaxed font-bold break-words text-white transition-colors hover:border-white hover:bg-slate-800 md:text-sm"
               >
-                <span aria-hidden className="mt-[3px] shrink-0 text-[10px] text-slate-500">
+                <span aria-hidden className="qx-cur">
                   ▶
                 </span>
-                <span className="min-w-0">{ruby(option.text)}</span>
+                <span className="qx-t min-w-0">{ruby(option.text)}</span>
               </button>
             </li>
           ),
         )}
       </ul>
+    </div>
+  );
+}
+
+/** えらんだ あとの 解説（当たっても 外しても 必ず 読ませる）。 */
+function ResultBody({
+  phase,
+  optionIndex,
+  ruby,
+  ui,
+  onNext,
+}: {
+  phase: QuestPhase;
+  optionIndex: number;
+  ruby: (text: string) => React.ReactNode;
+  ui: (text: string) => React.ReactNode;
+  onNext: () => void;
+}) {
+  const option = phase.options[optionIndex];
+  if (!option) return null;
+  return (
+    <div className="qx-res">
+      <p className={`qx-rt qx-t ${LOG_TONE[option.type]}`}>{ruby(option.resultText)}</p>
+      <p className="qx-ex qx-t">{ruby(option.explanation)}</p>
+      <QuestButton tone="primary" data-quest="next" onClick={onNext}>
+        {ui("次の 一手")} ▶
+      </QuestButton>
+    </div>
+  );
+}
+
+/**
+ * たまって いた バグが 出る（場面5の 入口・原典どおり）。
+ * 画面が 赤く 光って ゆれ、全員の 体力と 予算が 減る（動きは `fxOf`）。
+ */
+function RiskBody({
+  event,
+  ui,
+  onNext,
+}: {
+  event: Extract<QuestEvent, { kind: "risk" }>;
+  ui: (text: string) => React.ReactNode;
+  onNext: () => void;
+}) {
+  return (
+    <div data-quest="risk" className="qx-res">
+      <p className={`qx-rt qx-t ${event.damage === 0 ? "qx-tone-critical" : "qx-tone-miss"}`}>
+        <RubyText
+          text={event.damage === 0 ? "バグは ひとつも なかった！" : "たまって いた バグが 出た！"}
+          index={UI_FURIGANA}
+        />
+      </p>
+      {event.damage > 0 ? (
+        <ul className="qx-chips">
+          <li>
+            <img className="qx-px" src={questIcon("bug")} alt="" />
+            {event.risk}
+          </li>
+          <li>
+            <img className="qx-px" src={questIcon("heart")} alt="" />-{event.damage}
+          </li>
+          <li>
+            <img className="qx-px" src={questIcon("coin")} alt="" />-{event.cost}
+            {ui("万")}
+          </li>
+        </ul>
+      ) : (
+        <p className="qx-ex qx-t">
+          <RubyText
+            text="ここまで ていねいに 進めた ぶんが、そのまま 返って きました。"
+            index={UI_FURIGANA}
+          />
+        </p>
+      )}
+      <QuestButton tone="primary" data-quest="next" onClick={onNext}>
+        {ui("次へ")} ▶
+      </QuestButton>
     </div>
   );
 }
@@ -513,33 +871,27 @@ function PhaseBody({
 
 function QuestModal({
   title,
+  ui,
   onClose,
   children,
 }: {
   title: string;
+  ui: (text: string) => React.ReactNode;
   onClose: () => void;
   children: React.ReactNode;
 }) {
   return (
-    <div
-      data-quest="modal"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4"
-    >
-      <QuestWindow className="w-full max-w-md !bg-slate-900 shadow-[0_0_30px_rgba(40,40,60,0.8)]">
-        <div className="mb-3 flex items-center justify-between border-b border-slate-700 pb-2">
-          <h3 className="text-base font-bold tracking-widest text-teal-400 md:text-lg">{title}</h3>
-          <button
-            type="button"
-            aria-label="とじる"
-            onClick={onClose}
-            className="text-2xl leading-none text-slate-400 hover:text-white"
-          >
+    <div data-quest="modal" className="qx-modal">
+      <QuestWindow>
+        <h3>
+          <span>{title}</span>
+          <button type="button" aria-label="とじる" onClick={onClose} className="qx-x">
             ×
           </button>
-        </div>
-        <div className="max-h-[55vh] overflow-y-auto pr-1">{children}</div>
-        <QuestButton onClick={onClose} className="mt-3 w-full">
-          <RubyText text="閉じる" index={UI_FURIGANA} />
+        </h3>
+        <div className="qx-body">{children}</div>
+        <QuestButton onClick={onClose} className="w-full">
+          {ui("閉じる")}
         </QuestButton>
       </QuestWindow>
     </div>
@@ -547,7 +899,11 @@ function QuestModal({
 }
 
 /**
- * 工程の 一覧（原典 `renderProcessModal` の 移植）。
+ * 工程の 図 — **10段の 滝**。
+ *
+ * レクチャーの「ウォーターフォールは 英語で 滝。上から 順番に 終わらせ、前が 終わらないと
+ * 次に 進まない」を 絵に した もの。いまの 段に 1人目の ネクマックスが 立ち、
+ * 終わった 段には ✓ が 付く。
  *
  * 章の 名前は **データから 集める**——原典は 9つを ソースに 直書きして いて、
  * 第10章「保守」が 抜けて いた。
@@ -556,54 +912,51 @@ function ProcessChart({
   quest,
   state,
   ruby,
+  ui,
 }: {
   quest: Quest;
   state: QuestState;
   ruby: (text: string) => React.ReactNode;
+  ui: (text: string) => React.ReactNode;
 }) {
   const chapters: { num: number; name: string }[] = [];
   for (const phase of quest.phases) {
-    const match = /第(\d+)章/.exec(phase.name);
-    const num = match ? Number(match[1]) : 0;
+    const num = chapterOf(phase);
     if (num > 0 && !chapters.some((item) => item.num === num)) {
       chapters.push({ num, name: phase.chapter });
     }
   }
   chapters.sort((a, b) => a.num - b.num);
 
-  const now = quest.phases[state.phaseIndex]?.name ?? "";
-  const nowNum = Number(/第(\d+)章/.exec(now)?.[1] ?? 1);
+  const now = quest.phases[state.phaseIndex];
+  const nowNum = now ? chapterOf(now) : 1;
+  const lead = state.players[0];
 
   return (
-    <div className="text-left">
-      <p className="mb-3 text-xs text-slate-300">
-        <RubyText text="いま どこを 進んで いるかの 図です。" index={UI_FURIGANA} />
-      </p>
-      <ol className="flex flex-col gap-1.5">
+    <div className="qx-falls">
+      <img className="qx-px" src={assetUrl(WATERFALL_MAP)} alt="" />
+      <ol>
         {chapters.map((chapter) => {
           const past = chapter.num < nowNum;
           const current = chapter.num === nowNum;
-          const tone = current
-            ? "border-yellow-300 bg-yellow-600 text-white shadow-[0_0_15px_rgba(253,224,71,0.5)]"
-            : past
-              ? "border-teal-500 bg-teal-900 text-teal-300"
-              : "border-slate-700 bg-slate-800 text-slate-500";
           return (
-            <li key={chapter.num} className="flex items-center gap-3">
-              <span
-                className={`grid h-8 w-8 shrink-0 place-items-center rounded-full border-2 text-xs font-bold ${tone}`}
-              >
-                {past ? "✓" : chapter.num}
-              </span>
-              <span
-                className={`min-w-0 flex-1 rounded border p-2 text-sm font-bold tracking-wider ${tone}`}
-              >
+            <li key={chapter.num} className={past ? "qx-done" : current ? "qx-now" : ""}>
+              <span className="qx-n">{past ? "✓" : chapter.num}</span>
+              <span className="qx-l qx-t">
                 {ruby(chapter.name)}
+                {current && lead ? (
+                  <img className="qx-me qx-px" src={playerSprite(lead)} alt="" />
+                ) : null}
               </span>
             </li>
           );
         })}
       </ol>
+      <p className="qx-note qx-t">
+        {ui(
+          "ウォーターフォールは 英語で「滝」。上から 順番に 終わらせます。前が 終わらないと 次に 進みません。",
+        )}
+      </p>
     </div>
   );
 }

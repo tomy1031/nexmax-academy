@@ -1,0 +1,104 @@
+{
+  "_comment": "ウォーターフォールクエストの ドット絵（2026-10-20 tomy さんの 指定「もっと リッチな ドット絵の RPG 風に」）。生成は scripts/slides/gen_images.mjs と 同じ 手順（bridge 経由）で、場面ごとの refs を 使う。できた 絵は `node scripts/images/place_quest_pixel.mjs <PNG の フォルダ>` で 本物の ドット絵の 粗さに 直して public/img/quest/ に 置く。相手役は 2026-10-21 の 指定「元の 絵に 忠実に なりすぎず、名前に 相応しい 絵に」で、旧アプリの 場面ごとの 絵を 見本に 渡すのを やめ、人物の 姿だけを 渡して 表情・ポーズ・小物は 名前から 決めた（場面1・2・4・13 は その 前に 作った 絵で、名前に 合って いるので 残した）。 背景は 1枚目（第2章）が 絵柄の 見本で、あとの 背景は それを refs に 入れて 作った。",
+  "style": "16-bit Japanese console RPG PIXEL ART, like a 1990s Super Famicom role-playing game. The whole picture is drawn on a strict square pixel grid: it is a small low-resolution image enlarged with nearest-neighbour scaling, so every art pixel is a crisp, hard-edged square block of exactly the same size. No anti-aliasing, no blur, no smooth gradients (shading only with flat colour steps and a little ordered dithering), no painterly brush texture, no photographic detail. Limited palette of about 32 colours with clear 1-pixel dark outlines on characters and objects. Bright, warm, friendly and kid-safe: a cheerful office-work RPG about building a software app, never a dark fantasy.",
+  "noText": "No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards and signs are blank or show only simple pictures. No watermark, no signature, no speech balloons.",
+  "negative": "Never: smooth vector illustration, 3D render, painterly or blurry rendering, anti-aliased edges, real company logos or brand marks, national flags, country outlines, maps with borders, scary or violent mood, weapons, blood.",
+  "scenes": [
+    {
+      "out": "bg_ch1_office",
+      "title": "第1章 社内ミーティング（自分たちの会社）",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: this is OUR OWN small software company's office, where the team prepares before meeting the customer. A JRPG battle backdrop seen from the front: rows of desks with two computer monitors each along the back wall, office chairs, a whiteboard with simple boxes-and-arrows drawings, a bookshelf with programming books (blank spines), a coffee machine, potted plants, a big window with daylight. No people at all. The FLOOR in the middle-front of the picture is open and empty (a character sprite will be placed there).",
+      "output": "Output: one LANDSCAPE pixel-art picture, 1536x1024 (wider than tall). Draw it at 256x170 art pixels and enlarge it exactly 6x, so each art pixel is a 6x6 block.",
+      "text": [],
+      "refs": []
+    },
+    {
+      "out": "bg_ch2_kickoff",
+      "title": "第2章 キックオフ（お客さまの会社の会議室）",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: we are visiting the CUSTOMER's company — the head office of a friendly local supermarket chain — for the first meeting. A JRPG battle backdrop seen from the front: a bright meeting room with a long wooden meeting table across the back, empty chairs, a big window with a sunny city view, a blank wall screen, and on the walls framed pictures of fresh fruit, vegetables and a shopping cart so it clearly belongs to a supermarket company. A potted plant in a corner. No people at all. The FLOOR in the middle-front of the picture is open and empty (a character sprite will be placed there). Cheerful morning light.",
+      "output": "Output: one LANDSCAPE pixel-art picture, 1536x1024 (wider than tall). Draw it at 256x170 art pixels and enlarge it exactly 6x, so each art pixel is a 6x6 block.",
+      "text": [],
+      "refs": []
+    },
+    {
+      "out": "bg_ch3_youkyu",
+      "title": "第3章 要求定義（お客さまの のぞみを 集める）",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the team is COLLECTING THE CUSTOMER'S WISHES for the new app. A JRPG battle backdrop seen from the front: a bright meeting corner at the friendly supermarket's head office. A huge whiteboard across the back wall is covered with dozens of colourful blank sticky notes and simple drawings of a smartphone, a shopping cart, a coin and a delivery truck; a flip chart with more sticky notes; a table with a smartphone and paper cups; fruit pictures on the side wall show it is the supermarket company. No people at all. The FLOOR in the middle-front of the picture is open and empty (a character sprite will be placed there).",
+      "output": "Output: one LANDSCAPE pixel-art picture, 1536x1024 (wider than tall). Draw it at 256x170 art pixels and enlarge it exactly 6x, so each art pixel is a 6x6 block.",
+      "text": [],
+      "refs": ["public/img/quest/bg/ch02.png"]
+    },
+    {
+      "out": "bg_ch4_youken",
+      "title": "第4章 要件定義（作るものを 決めて ハンコを もらう）",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the team is DECIDING EXACTLY WHAT WILL BE BUILT and getting it approved. A JRPG battle backdrop seen from the front: a tidy meeting room with a thick bound specification document lying open on the table next to a red hanko stamp and a red ink pad, a big wall board with a checklist of tick boxes, a wall screen showing simple app screen layouts (boxes only), a neat stack of folders. No people at all. The FLOOR in the middle-front of the picture is open and empty (a character sprite will be placed there).",
+      "output": "Output: one LANDSCAPE pixel-art picture, 1536x1024 (wider than tall). Draw it at 256x170 art pixels and enlarge it exactly 6x, so each art pixel is a 6x6 block.",
+      "text": [],
+      "refs": ["public/img/quest/bg/ch02.png"]
+    },
+    {
+      "out": "bg_ch5_estimate",
+      "title": "第5章 見積もり（時間とお金を計算する机）",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: this is the place where the team CALCULATES how many people, how many days and how much money the work will take. A JRPG battle backdrop seen from the front: a work corner with a big wall calendar with some days marked by coloured dots, a desk with a calculator, a stack of papers and coins, a whiteboard showing a simple bar chart and rows of small coloured sticky notes, a clock on the wall, a window at dusk with warm orange light. No people at all. The FLOOR in the middle-front of the picture is open and empty (a character sprite will be placed there).",
+      "output": "Output: one LANDSCAPE pixel-art picture, 1536x1024 (wider than tall). Draw it at 256x170 art pixels and enlarge it exactly 6x, so each art pixel is a 6x6 block.",
+      "text": [],
+      "refs": []
+    },
+    {
+      "out": "bg_ch6_sekkei",
+      "title": "第6章 設計（画面と しくみの 図を かく）",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the team is DRAWING THE PLAN of the app before building it. A JRPG battle backdrop seen from the front: a design room with a large table covered in paper sheets of smartphone screen layouts (boxes and buttons only), a big monitor showing boxes connected by lines like a diagram, rulers, pencils and an eraser, a blueprint-blue board on the wall with more box diagrams, a desk lamp. No people at all. The FLOOR in the middle-front of the picture is open and empty (a character sprite will be placed there).",
+      "output": "Output: one LANDSCAPE pixel-art picture, 1536x1024 (wider than tall). Draw it at 256x170 art pixels and enlarge it exactly 6x, so each art pixel is a 6x6 block.",
+      "text": [],
+      "refs": ["public/img/quest/bg/ch02.png"]
+    },
+    {
+      "out": "bg_ch7_kaihatsu",
+      "title": "第7章 開発（プログラムを 作る）",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the engineers are BUILDING THE APP. A JRPG battle backdrop seen from the front: a developers' room in the evening with a long desk of three workstations with two monitors each, the screens show many coloured horizontal bars like code (no letters), keyboards, headphones, coffee mugs, a small server rack with blinking green lights in the corner, warm desk lamps and a window with an evening city view. No people at all. The FLOOR in the middle-front of the picture is open and empty (a character sprite will be placed there).",
+      "output": "Output: one LANDSCAPE pixel-art picture, 1536x1024 (wider than tall). Draw it at 256x170 art pixels and enlarge it exactly 6x, so each art pixel is a 6x6 block.",
+      "text": [],
+      "refs": ["public/img/quest/bg/ch02.png"]
+    },
+    {
+      "out": "bg_ch8_test",
+      "title": "第8章 テスト（バグを さがす）",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the team is TESTING THE APP TO FIND BUGS. A JRPG battle backdrop seen from the front: a test room with a long table where many smartphones and tablets stand in a neat row, each connected by cables, a big monitor showing a list of small green check marks and a few red cross marks, a clipboard checklist and a large magnifying glass on the table, a small cute green bug figure sitting on one phone. No people at all. The FLOOR in the middle-front of the picture is open and empty (a character sprite will be placed there).",
+      "output": "Output: one LANDSCAPE pixel-art picture, 1536x1024 (wider than tall). Draw it at 256x170 art pixels and enlarge it exactly 6x, so each art pixel is a 6x6 block.",
+      "text": [],
+      "refs": ["public/img/quest/bg/ch02.png"]
+    },
+    {
+      "out": "bg_ch9_release",
+      "title": "第9章 リリース（アプリを 出す）",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the app is RELEASED TO THE PUBLIC today. A JRPG battle backdrop seen from the front: the entrance of the friendly local supermarket with glass automatic doors, fruit and vegetables on display stands, stacked shopping baskets, a big standing signboard showing a giant smartphone with the supermarket's new app on its screen (a shopping cart picture and fruit pictures), colourful balloons and a ribbon for the celebration, a sunny morning sky. No people at all. The FLOOR in the middle-front of the picture is open and empty (a character sprite will be placed there).",
+      "output": "Output: one LANDSCAPE pixel-art picture, 1536x1024 (wider than tall). Draw it at 256x170 art pixels and enlarge it exactly 6x, so each art pixel is a 6x6 block.",
+      "text": [],
+      "refs": ["public/img/quest/bg/ch02.png"]
+    },
+    {
+      "out": "bg_ch10_hoshu",
+      "title": "第10章 保守（動いている アプリを 見まもり 直す）",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the team WATCHES OVER AND FIXES the running app after release. A JRPG battle backdrop seen from the front: a calm support desk in the office at night, a desk phone with a glowing light, two monitors showing a line graph with one red spike and a smartphone screen preview, an open toolbox with a wrench and screwdriver next to a laptop, a wall calendar, a mug of tea, a dark window with city lights. No people at all. The FLOOR in the middle-front of the picture is open and empty (a character sprite will be placed there).",
+      "output": "Output: one LANDSCAPE pixel-art picture, 1536x1024 (wider than tall). Draw it at 256x170 art pixels and enlarge it exactly 6x, so each art pixel is a 6x6 block.",
+      "text": [],
+      "refs": ["public/img/quest/bg/ch02.png"]
+    },
+    {
+      "out": "waterfall_map",
+      "title": "工程の図（10段の滝）",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: work flows DOWN step by step like a waterfall and never flows back up. A tall pixel-art landscape: one big waterfall that falls down a mountainside in exactly TEN separate stone steps (terraces), from a small spring at the very top to a calm blue pool at the very bottom. Each step is a flat grassy stone ledge that sticks out clearly, alternating slightly left and right, with the water pouring over the edge of each ledge onto the next one below. The ten ledges are evenly spaced from top to bottom and each one has an empty flat spot where a small marker can stand. Small pixel trees and flowers on the sides, blue sky with small clouds at the top. No people, no animals, no buildings.",
+      "output": "Output: one PORTRAIT pixel-art picture, 1024x1536 (taller than wide). Draw it at 128x192 art pixels and enlarge it exactly 8x, so each art pixel is an 8x8 block.",
+      "text": [],
+      "refs": []
+    },
+    {
+      "out": "icons",
+      "title": "アイコン4つ（予算・危険・体力・経験）",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: four simple game icons that a student understands without words. A 2x2 grid of four separate icons with wide empty space between them: TOP-LEFT a stack of three shiny gold coins (money). TOP-RIGHT a small cute green bug with six legs and two antennae (a software bug). BOTTOM-LEFT a red heart (health). BOTTOM-RIGHT a yellow star with a white sparkle (experience). Each icon is big, bold and simple with a dark 1-pixel outline.",
+      "output": "Output: one SQUARE pixel-art picture, 1024x1024. Draw it at 64x64 art pixels and enlarge it exactly 16x, so each art pixel is a 16x16 block. The whole background is ONE flat solid pure magenta colour (#FF00FF). No magenta or pink in the icons except the heart is pure red.",
+      "text": [],
+      "refs": []
+    }
+  ]
+}

@@ -1344,9 +1344,8 @@ export function collectLabeledTexts(content: Content): LabeledText[] {
        *（`src/app/[stage]/page.tsx` が title・description・furigana を 渡す）ので
        * ほかの 種別と 同じく 数える。
        *
-       * `phases[].desc` は **どこからも 引かれて いない**（2026-09-11 に 全 src を
-       * 確認）。画面に 出ない 字に 読みを 求めると、先生には 直しようの ない 指摘に
-       * なる ので 数えない。出す ように なったら ここへ 足す。
+       * `phases[].desc` は 2026-10-20 から **章の はじめの 札**（`quest-play.tsx` の
+       * `ChapterCard`）に 出る ように なった ので 数える（それまでは どこからも 引かれて いなかった）。
        * `enemy.art` は 絵の 名前、`speaker` は だれが 言うかの id で、字では ない。
        */
       push("title", content.title);
@@ -1356,6 +1355,8 @@ export function collectLabeledTexts(content: Content): LabeledText[] {
         const at = (field: string) => `phases[${i}].${field}`;
         // 章の 名前は 工程表（PROCESS CHART）の 一覧に 出る
         push(at("chapter"), phase.chapter);
+        // 章の はじめの 札に 出る 場面の 説明
+        push(at("desc"), phase.desc);
         /*
          * 場面の 名前。画面（`chapterLabel`）に 出るのは **「：」より 後ろだけ**
          * だが、**まるごと 数える**。切り出した 文字列を 数えると
