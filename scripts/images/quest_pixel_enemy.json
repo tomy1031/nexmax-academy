@@ -1,5 +1,5 @@
 {
-  "_comment": "ウォーターフォールクエストの ドット絵（2026-10-20 tomy さんの 指定「もっと リッチな ドット絵の RPG 風に」）。生成は scripts/slides/gen_images.mjs と 同じ 手順（bridge 経由）で、場面ごとの refs を 使う。できた 絵は `node scripts/images/place_quest_pixel.mjs <PNG の フォルダ>` で 本物の ドット絵の 粗さに 直して public/img/quest/ に 置く。相手役は 2026-10-21 の 指定「元の 絵に 忠実に なりすぎず、名前に 相応しい 絵に」で、旧アプリの 場面ごとの 絵を 見本に 渡すのを やめ、人物の 姿だけを 渡して 表情・ポーズ・小物は 名前から 決めた（場面1・2・4・13 は その 前に 作った 絵で、名前に 合って いるので 残した）。",
+  "_comment": "ウォーターフォールクエストの ドット絵（2026-10-20 tomy さんの 指定「もっと リッチな ドット絵の RPG 風に」）。生成は scripts/slides/gen_images.mjs と 同じ 手順（bridge 経由）で、場面ごとの refs を 使う。できた 絵は `node scripts/images/place_quest_pixel.mjs <PNG の フォルダ>` で 本物の ドット絵の 粗さに 直して public/img/quest/ に 置く。 相手役は 2026-10-21 の 指定「元の 絵に 忠実に なりすぎず、名前に 相応しい 絵に」で、旧アプリの 場面ごとの 絵を 見本に 渡すのを やめ、人物の 姿だけを 渡して 表情・ポーズ・小物は 名前から 決めた。",
   "style": "16-bit Japanese console RPG PIXEL ART, like a 1990s Super Famicom role-playing game. The whole picture is drawn on a strict square pixel grid: it is a small low-resolution image enlarged with nearest-neighbour scaling, so every art pixel is a crisp, hard-edged square block of exactly the same size. No anti-aliasing, no blur, no smooth gradients (shading only with flat colour steps and a little ordered dithering), no painterly brush texture, no photographic detail. Limited palette of about 32 colours with clear 1-pixel dark outlines on characters and objects. Bright, warm, friendly and kid-safe: a cheerful office-work RPG about building a software app, never a dark fantasy.",
   "noText": "No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards and signs are blank or show only simple pictures. No watermark, no signature, no speech balloons.",
   "negative": "Never: smooth vector illustration, 3D render, painterly or blurry rendering, anti-aliased edges, real company logos or brand marks, national flags, country outlines, maps with borders, scary or violent mood, weapons, blood.",
@@ -237,7 +237,7 @@
     {
       "out": "enemy_p02",
       "title": "場面2 しりたい 山田さん",
-      "note": "2026-10-20 の 旧い 指示書（旧アプリの 場面2 の 絵を 見本に した）で 作った"
+      "note": "2026-10-20 の 旧い 指示書（旧アプリの 場面2 の 絵を 見本に した）で 作った。名前に 合って いるので 残した"
     },
     {
       "out": "enemy_p13",

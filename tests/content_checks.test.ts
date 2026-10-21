@@ -977,21 +977,23 @@ describe("ふりがなの覆い漏れ検査", () => {
    *（`src/components/quest/` を 全部 見た）。画面に 出ない 字に 読みを 求めると、
    * 先生には 直しようの ない 指摘に なる。出す ように なったら ここを 裏返す。
    */
-  it("画面に出ない欄（場面の おぼえがき・相手の 絵・話し手のid）は対象にしない", () => {
+  it("画面に出ない欄（相手の 絵・話し手のid）は対象にしない", () => {
     const base = quest() as Extract<Content, { kind: "quest" }>;
     const hidden = quest({
       phases: [
         {
           ...base.phases[0]!,
-          desc: "会社の 中での 準備",
+          desc: "かいしゃの なかでの じゅんび",
           enemy: { name: "やまださん", art: "engineer" },
         },
       ],
     });
     const fields = collectLabeledTexts(hidden).map((t) => t.field);
-    // 集めて いる ことを 確かめた 上で、おぼえがきだけが 外れて いると 言う
     expect(fields).toContain("phases[0].enemy.name");
-    expect(fields).not.toContain("phases[0].desc");
+    // 場面の 説明は 2026-10-20 から 章の はじめの 札に 出る ので 数える
+    expect(fields).toContain("phases[0].desc");
+    // 絵の 名前（engineer）は 字では ないので 集めない
+    expect(collectLabeledTexts(hidden).some((t) => t.text === "engineer")).toBe(false);
     expect(checkFuriganaCoverage([entry(hidden)])).toEqual([]);
   });
 

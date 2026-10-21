@@ -18,7 +18,9 @@
  *
  * 2026-10-20 に ウォーターフォールクエストの ドット絵化（tomy さんの 指定）で 作った。
  */
+import { execFileSync } from "node:child_process";
 import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import sharp from "sharp";
 
@@ -163,14 +165,50 @@ for (const code of CODES) {
       w: 120,
       h: 120,
       key: true,
+      official: `public/img/characters/nexmax/types/${code}${suffix}.webp`,
     });
   }
 }
 JOBS.push({ src: "sprites/nexmax_base.png", dest: "nexmax/base.png", w: 120, h: 120, key: true });
 
+/**
+ * **つなぎ**: Codex の ドット絵が まだ 無い ネクマックスは、公式の 性格タイプの 絵を
+ * 白い 背景から 切りぬいて（へりから 塗りつぶす `cutout_white.mjs`）同じ 升目で ドット化する。
+ * 色と 小物は 公式どおりに なるが、線は Codex の 絵より 柔らかい。
+ * Codex の 絵が できたら この スクリプトを もう一度 流すと 同じ 場所に 上書きされる。
+ */
+async function officialSquare(officialPath) {
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "quest-nexmax-"));
+  const png = path.join(tmp, "in.png");
+  const cut = path.join(tmp, "cut.png");
+  const square = path.join(tmp, "square.png");
+  await sharp(officialPath).flatten({ background: "#ffffff" }).png().toFile(png);
+  execFileSync("node", [path.join("scripts", "images", "cutout_white.mjs"), png, cut], {
+    stdio: "ignore",
+  });
+  const trimmed = await sharp(cut).trim({ threshold: 1 }).png().toBuffer();
+  await sharp(trimmed)
+    .resize(1100, 1100, { fit: "contain", background: { r: 0, g: 0, b: 0, alpha: 0 } })
+    .extend({
+      top: 77,
+      bottom: 77,
+      left: 77,
+      right: 77,
+      background: { r: 0, g: 0, b: 0, alpha: 0 },
+    })
+    .png()
+    .toFile(square);
+  return square;
+}
+
 const missing = [];
+const interim = [];
 for (const job of JOBS) {
-  const src = path.join(rawDir, job.src);
+  let src = path.join(rawDir, job.src);
+  if (!fs.existsSync(src) && job.official && fs.existsSync(job.official)) {
+    src = await officialSquare(job.official);
+    interim.push(job.dest);
+  }
   if (!fs.existsSync(src)) {
     missing.push(job.src);
     continue;
@@ -202,4 +240,5 @@ if (fs.existsSync(icons)) {
 }
 
 console.log(`placed ${JOBS.length + 4 - missing.length} / ${JOBS.length + 4}`);
+if (interim.length) console.log(`つなぎ（公式の 絵を ドット化）: ${interim.join(" ")}`);
 if (missing.length) console.log("missing:", missing.join(" "));

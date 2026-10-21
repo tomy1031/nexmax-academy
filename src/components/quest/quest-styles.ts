@@ -126,7 +126,7 @@ export const QUEST_STYLES = `
 .quest-shell .qx-enemy.qx-hit img { animation: qx-blink .12s steps(2) 6; }
 @keyframes qx-idle { 50% { transform: translateY(-2.5%); } }
 @keyframes qx-blink { 50% { opacity: 0; } }
-.quest-shell .qx-plate { position: absolute; left: 3%; bottom: 4px; z-index: 2; background: rgba(4, 5, 11, .85); border: 2px solid var(--qx-line); padding: 1px 8px; font-size: 12px; max-width: 50%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.quest-shell .qx-plate { position: absolute; left: 3%; bottom: 4px; z-index: 2; background: rgba(4, 5, 11, .85); border: 2px solid var(--qx-line); padding: 1px 6px; font-size: 12px; line-height: 1.7; max-width: 56%; }
 .quest-shell .qx-troop { position: absolute; right: 3%; top: 10%; bottom: 3%; width: 40%; --mw: 44%; z-index: 1; }
 .quest-shell .qx-mem { position: absolute; width: var(--mw); aspect-ratio: 1; transition: transform .3s steps(3); }
 .quest-shell .qx-mem img { width: 100%; height: 100%; }
