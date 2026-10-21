@@ -81,10 +81,12 @@
         {
           "size": "page",
           "image": {
+            "src": "/img/manga/kuuki_manga/p01.webp",
             "refs": [
-              "/img/characters/hendy/sheet.webp"
+              "/img/characters/hendy/sheet.webp",
+              "scripts/images/refs/kuuki_anata_sheet.webp"
             ],
-            "status": "empty",
+            "status": "done",
             "prompt": "scripts/images/kuuki_manga.json の p01"
           },
           "lines": [
@@ -115,10 +117,12 @@
         {
           "size": "page",
           "image": {
+            "src": "/img/manga/kuuki_manga/p02.webp",
             "refs": [
-              "/img/characters/hendy/sheet.webp"
+              "/img/characters/hendy/sheet.webp",
+              "scripts/images/refs/kuuki_anata_sheet.webp"
             ],
-            "status": "empty",
+            "status": "done",
             "prompt": "scripts/images/kuuki_manga.json の p02"
           },
           "lines": [
@@ -169,10 +173,12 @@
         {
           "size": "page",
           "image": {
+            "src": "/img/manga/kuuki_manga/p03.webp",
             "refs": [
-              "/img/characters/hendy/sheet.webp"
+              "/img/characters/hendy/sheet.webp",
+              "scripts/images/refs/kuuki_anata_sheet.webp"
             ],
-            "status": "empty",
+            "status": "done",
             "prompt": "scripts/images/kuuki_manga.json の p03"
           },
           "lines": [
@@ -218,10 +224,12 @@
         {
           "size": "page",
           "image": {
+            "src": "/img/manga/kuuki_manga/p04.webp",
             "refs": [
-              "/img/characters/hendy/sheet.webp"
+              "/img/characters/hendy/sheet.webp",
+              "scripts/images/refs/kuuki_anata_sheet.webp"
             ],
-            "status": "empty",
+            "status": "done",
             "prompt": "scripts/images/kuuki_manga.json の p04"
           },
           "lines": [
@@ -262,10 +270,12 @@
         {
           "size": "page",
           "image": {
+            "src": "/img/manga/kuuki_manga/p05.webp",
             "refs": [
-              "/img/characters/hendy/sheet.webp"
+              "/img/characters/hendy/sheet.webp",
+              "scripts/images/refs/kuuki_anata_sheet.webp"
             ],
-            "status": "empty",
+            "status": "done",
             "prompt": "scripts/images/kuuki_manga.json の p05"
           },
           "lines": [
@@ -311,10 +321,12 @@
         {
           "size": "page",
           "image": {
+            "src": "/img/manga/kuuki_manga/p06.webp",
             "refs": [
-              "/img/characters/hendy/sheet.webp"
+              "/img/characters/hendy/sheet.webp",
+              "scripts/images/refs/kuuki_anata_sheet.webp"
             ],
-            "status": "empty",
+            "status": "done",
             "prompt": "scripts/images/kuuki_manga.json の p06"
           },
           "lines": [
@@ -355,10 +367,12 @@
         {
           "size": "page",
           "image": {
+            "src": "/img/manga/kuuki_manga/p07.webp",
             "refs": [
-              "/img/characters/hendy/sheet.webp"
+              "/img/characters/hendy/sheet.webp",
+              "scripts/images/refs/kuuki_anata_sheet.webp"
             ],
-            "status": "empty",
+            "status": "done",
             "prompt": "scripts/images/kuuki_manga.json の p07"
           },
           "lines": [
@@ -399,10 +413,12 @@
         {
           "size": "page",
           "image": {
+            "src": "/img/manga/kuuki_manga/p08.webp",
             "refs": [
-              "/img/characters/hendy/sheet.webp"
+              "/img/characters/hendy/sheet.webp",
+              "scripts/images/refs/kuuki_anata_sheet.webp"
             ],
-            "status": "empty",
+            "status": "done",
             "prompt": "scripts/images/kuuki_manga.json の p08"
           },
           "lines": [
@@ -443,10 +459,12 @@
         {
           "size": "page",
           "image": {
+            "src": "/img/manga/kuuki_manga/p09.webp",
             "refs": [
-              "/img/characters/hendy/sheet.webp"
+              "/img/characters/hendy/sheet.webp",
+              "scripts/images/refs/kuuki_anata_sheet.webp"
             ],
-            "status": "empty",
+            "status": "done",
             "prompt": "scripts/images/kuuki_manga.json の p09"
           },
           "lines": [
@@ -497,10 +515,12 @@
         {
           "size": "page",
           "image": {
+            "src": "/img/manga/kuuki_manga/p10.webp",
             "refs": [
-              "/img/characters/hendy/sheet.webp"
+              "/img/characters/hendy/sheet.webp",
+              "scripts/images/refs/kuuki_anata_sheet.webp"
             ],
-            "status": "empty",
+            "status": "done",
             "prompt": "scripts/images/kuuki_manga.json の p10"
           },
           "lines": [
@@ -541,10 +561,12 @@
         {
           "size": "page",
           "image": {
+            "src": "/img/manga/kuuki_manga/p11.webp",
             "refs": [
-              "/img/characters/hendy/sheet.webp"
+              "/img/characters/hendy/sheet.webp",
+              "scripts/images/refs/kuuki_anata_sheet.webp"
             ],
-            "status": "empty",
+            "status": "done",
             "prompt": "scripts/images/kuuki_manga.json の p11"
           },
           "lines": [
