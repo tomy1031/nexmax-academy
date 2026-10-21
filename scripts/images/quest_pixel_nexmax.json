@@ -1,0 +1,400 @@
+{
+  "_comment": "ウォーターフォールクエストの ドット絵（2026-10-20 tomy さんの 指定「もっと リッチな ドット絵の RPG 風に」）。生成は scripts/slides/gen_images.mjs と 同じ 手順（bridge 経由）で、場面ごとの refs を 使う。できた 絵は `node scripts/images/place_quest_pixel.mjs <PNG の フォルダ>` で 本物の ドット絵の 粗さに 直して public/img/quest/ に 置く。 ネクマックスは 体の 色と 小物を 文で 書く（2026-10-21、書かずに 公式の 絵だけ 渡すと 白と 青の 別の ロボットに なった）。女性版は まつげ・花飾り・スカート。",
+  "style": "16-bit Japanese console RPG PIXEL ART, like a 1990s Super Famicom role-playing game. The whole picture is drawn on a strict square pixel grid: it is a small low-resolution image enlarged with nearest-neighbour scaling, so every art pixel is a crisp, hard-edged square block of exactly the same size. No anti-aliasing, no blur, no smooth gradients (shading only with flat colour steps and a little ordered dithering), no painterly brush texture, no photographic detail. Limited palette of about 32 colours with clear 1-pixel dark outlines on characters and objects. Bright, warm, friendly and kid-safe: a cheerful office-work RPG about building a software app, never a dark fantasy.",
+  "noText": "No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards and signs are blank or show only simple pictures. No watermark, no signature, no speech balloons.",
+  "negative": "Never: smooth vector illustration, 3D render, painterly or blurry rendering, anti-aliased edges, real company logos or brand marks, national flags, country outlines, maps with borders, scary or violent mood, weapons, blood.",
+  "scenes": [
+    {
+      "out": "nexmax_ENFP",
+      "title": "ネクマックス ENFP",
+      "scene": "Character: \"NexMax\", the official robot mascot of NEXT MAKE.\nAnatomy (must match the reference images exactly):\n- Rounded helmet-like head, wider than tall, with two small rounded ear pods on the sides of the head and a small antenna ball on top.\n- Large white rounded face-screen covering most of the face.\n- Two black oval eyes and a small gentle smile on the white screen.\n- Small trapezoid torso with the NEXT MAKE chest mark: a navy (#004F8D) double-peak \"M\" logo (two triangular mountain shapes).\n- Segmented ball-joint arms with round elbows and mitten hands.\n- Short segmented legs with rounded boots.\nMood: friendly, curious, encouraging. Kid-safe.\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: this is the player's own NexMax as a small pixel-art RPG party member. Redraw the robot in the SECOND reference image (its colour and props) with the body shape of the FIRST reference image, as a chibi pixel-art sprite in three-quarter view turned slightly to the LEFT: bright PINK body colour, holding a small bunch of pink balloons in one hand, the other arm open in a happy gesture. Use the THIRD reference image only for the pixel-art style and palette, not for its content.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 64x64 art pixels and enlarge it exactly 16x, so each art pixel is a 16x16 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). One character only, full body, centred, filling about 85% of the height, no floor, no shadow.",
+      "text": [],
+      "refs": [
+        "public/img/characters/nexmax/reference.png",
+        "public/img/characters/nexmax/types/ENFP.webp",
+        "public/img/quest/bg/ch02.png"
+      ]
+    },
+    {
+      "out": "nexmax_ISTJ",
+      "title": "ネクマックス ISTJ",
+      "scene": "Character: \"NexMax\", the official robot mascot of NEXT MAKE.\nAnatomy (must match the reference images exactly):\n- Rounded helmet-like head, wider than tall, with two small rounded ear pods on the sides of the head and a small antenna ball on top.\n- Large white rounded face-screen covering most of the face.\n- Two black oval eyes and a small gentle smile on the white screen.\n- Small trapezoid torso with the NEXT MAKE chest mark: a navy (#004F8D) double-peak \"M\" logo (two triangular mountain shapes).\n- Segmented ball-joint arms with round elbows and mitten hands.\n- Short segmented legs with rounded boots.\nMood: friendly, curious, encouraging. Kid-safe.\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: this is the player's own NexMax as a small pixel-art RPG party member. Redraw the robot in the SECOND reference image (its colour and props) with the body shape of the FIRST reference image, as a chibi pixel-art sprite in three-quarter view turned slightly to the LEFT: sky BLUE body colour, round glasses on the face-screen, a navy tie, holding a clipboard and a pen. Use the THIRD reference image only for the pixel-art style and palette, not for its content.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 64x64 art pixels and enlarge it exactly 16x, so each art pixel is a 16x16 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). One character only, full body, centred, filling about 85% of the height, no floor, no shadow.",
+      "text": [],
+      "refs": [
+        "public/img/characters/nexmax/reference.png",
+        "public/img/characters/nexmax/types/ISTJ.webp",
+        "public/img/quest/bg/ch02.png"
+      ]
+    },
+    {
+      "out": "nexmax_ENTJ",
+      "title": "ネクマックス ENTJ",
+      "scene": "Character: \"NexMax\", the official robot mascot of NEXT MAKE.\nAnatomy (must match the reference images exactly):\n- Rounded helmet-like head, wider than tall, with two small rounded ear pods on the sides of the head and a small antenna ball on top.\n- Large white rounded face-screen covering most of the face.\n- Two black oval eyes and a small gentle smile on the white screen.\n- Small trapezoid torso with the NEXT MAKE chest mark: a navy (#004F8D) double-peak \"M\" logo (two triangular mountain shapes).\n- Segmented ball-joint arms with round elbows and mitten hands.\n- Short segmented legs with rounded boots.\nMood: friendly, curious, encouraging. Kid-safe.\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: this is the player's own NexMax as a small pixel-art RPG party member. Redraw the robot in the SECOND reference image (its colour and props) with the body shape of the FIRST reference image, as a chibi pixel-art sprite in three-quarter view turned slightly to the LEFT: GREEN body colour, a dark navy cape with a gold edge, holding a gold compass in one hand and pointing forward with the other. Use the THIRD reference image only for the pixel-art style and palette, not for its content.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 64x64 art pixels and enlarge it exactly 16x, so each art pixel is a 16x16 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). One character only, full body, centred, filling about 85% of the height, no floor, no shadow.",
+      "text": [],
+      "refs": [
+        "public/img/characters/nexmax/reference.png",
+        "public/img/characters/nexmax/types/ENTJ.webp",
+        "public/img/quest/bg/ch02.png"
+      ]
+    },
+    {
+      "out": "nexmax_ESTP",
+      "title": "ネクマックス ESTP",
+      "scene": "Character: \"NexMax\", the official robot mascot of NEXT MAKE.\nAnatomy (must match the reference images exactly):\n- Rounded helmet-like head, wider than tall, with two small rounded ear pods on the sides of the head and a small antenna ball on top.\n- Large white rounded face-screen covering most of the face.\n- Two black oval eyes and a small gentle smile on the white screen.\n- Small trapezoid torso with the NEXT MAKE chest mark: a navy (#004F8D) double-peak \"M\" logo (two triangular mountain shapes).\n- Segmented ball-joint arms with round elbows and mitten hands.\n- Short segmented legs with rounded boots.\nMood: friendly, curious, encouraging. Kid-safe.\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: this is the player's own NexMax as a small pixel-art RPG party member. Redraw the robot in the SECOND reference image (its colour and props) with the body shape of the FIRST reference image, as a chibi pixel-art sprite in three-quarter view turned slightly to the LEFT: YELLOW body colour, dark goggles pushed up on the helmet, running pose with one fist forward, a small yellow lightning spark by the feet. Use the THIRD reference image only for the pixel-art style and palette, not for its content.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 64x64 art pixels and enlarge it exactly 16x, so each art pixel is a 16x16 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). One character only, full body, centred, filling about 85% of the height, no floor, no shadow.",
+      "text": [],
+      "refs": [
+        "public/img/characters/nexmax/reference.png",
+        "public/img/characters/nexmax/types/ESTP.webp",
+        "public/img/quest/bg/ch02.png"
+      ]
+    },
+    {
+      "out": "nexmax_ENFP_f",
+      "title": "ネクマックス ENFP_f",
+      "refs": [
+        "public/img/characters/nexmax/reference.png",
+        "public/img/characters/nexmax/types/ENFP_f.webp",
+        "public/img/quest/nexmax/ENFP.png"
+      ],
+      "scene": "Character: \"NexMax\", the official robot mascot of NEXT MAKE.\nAnatomy (must match the reference images exactly):\n- Rounded helmet-like head, wider than tall, with two small rounded ear pods on the sides of the head and a small antenna ball on top.\n- Large white rounded face-screen covering most of the face.\n- Two black oval eyes and a small gentle smile on the white screen.\n- Small trapezoid torso with the NEXT MAKE chest mark: a navy (#004F8D) double-peak \"M\" logo (two triangular mountain shapes).\n- Segmented ball-joint arms with round elbows and mitten hands.\n- Short segmented legs with rounded boots.\nMood: friendly, curious, encouraging. Kid-safe.\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: this is the player's own NexMax as a small pixel-art RPG party member, in its OWN body colour and outfit. Draw it as a chibi pixel-art sprite: bright PINK body (#F48FB1), holding a bunch of three pink balloons in one hand, the other arm open happily. This is the FEMALE version: long eyelashes on the eyes, a small flower on the side of the head, and a short pleated skirt in the body colour (keep everything else the same). The SECOND reference image shows exactly this colour and outfit — follow it. The FIRST reference shows the basic NexMax body shape. Use the THIRD reference image only for the pixel-art style and outline (do NOT copy its pink colour or balloons unless the description above says so). Keep the navy double-peak chest mark visible. Never draw a white or plain robot.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 64x64 art pixels and enlarge it exactly 16x, so each art pixel is a 16x16 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). One character only, full body, centred, filling about 85% of the height, no floor, no shadow.",
+      "text": []
+    },
+    {
+      "out": "nexmax_ENFJ",
+      "title": "ネクマックス ENFJ",
+      "refs": [
+        "public/img/characters/nexmax/reference.png",
+        "public/img/characters/nexmax/types/ENFJ.webp",
+        "public/img/quest/nexmax/ENFP.png"
+      ],
+      "scene": "Character: \"NexMax\", the official robot mascot of NEXT MAKE.\nAnatomy (must match the reference images exactly):\n- Rounded helmet-like head, wider than tall, with two small rounded ear pods on the sides of the head and a small antenna ball on top.\n- Large white rounded face-screen covering most of the face.\n- Two black oval eyes and a small gentle smile on the white screen.\n- Small trapezoid torso with the NEXT MAKE chest mark: a navy (#004F8D) double-peak \"M\" logo (two triangular mountain shapes).\n- Segmented ball-joint arms with round elbows and mitten hands.\n- Short segmented legs with rounded boots.\nMood: friendly, curious, encouraging. Kid-safe.\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: this is the player's own NexMax as a small pixel-art RPG party member, in its OWN body colour and outfit. Draw it as a chibi pixel-art sprite: bright PINK body (#F48FB1), a pale pink sash across the chest, both arms raised in a cheer, a yellow sunburst glow behind. The SECOND reference image shows exactly this colour and outfit — follow it. The FIRST reference shows the basic NexMax body shape. Use the THIRD reference image only for the pixel-art style and outline (do NOT copy its pink colour or balloons unless the description above says so). Keep the navy double-peak chest mark visible. Never draw a white or plain robot.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 64x64 art pixels and enlarge it exactly 16x, so each art pixel is a 16x16 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). One character only, full body, centred, filling about 85% of the height, no floor, no shadow.",
+      "text": []
+    },
+    {
+      "out": "nexmax_ENFJ_f",
+      "title": "ネクマックス ENFJ_f",
+      "refs": [
+        "public/img/characters/nexmax/reference.png",
+        "public/img/characters/nexmax/types/ENFJ_f.webp",
+        "public/img/quest/nexmax/ENFP.png"
+      ],
+      "scene": "Character: \"NexMax\", the official robot mascot of NEXT MAKE.\nAnatomy (must match the reference images exactly):\n- Rounded helmet-like head, wider than tall, with two small rounded ear pods on the sides of the head and a small antenna ball on top.\n- Large white rounded face-screen covering most of the face.\n- Two black oval eyes and a small gentle smile on the white screen.\n- Small trapezoid torso with the NEXT MAKE chest mark: a navy (#004F8D) double-peak \"M\" logo (two triangular mountain shapes).\n- Segmented ball-joint arms with round elbows and mitten hands.\n- Short segmented legs with rounded boots.\nMood: friendly, curious, encouraging. Kid-safe.\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: this is the player's own NexMax as a small pixel-art RPG party member, in its OWN body colour and outfit. Draw it as a chibi pixel-art sprite: bright PINK body (#F48FB1), a pale pink sash across the chest, both arms raised in a cheer, a yellow sunburst glow behind. This is the FEMALE version: long eyelashes on the eyes, a small flower on the side of the head, and a short pleated skirt in the body colour (keep everything else the same). The SECOND reference image shows exactly this colour and outfit — follow it. The FIRST reference shows the basic NexMax body shape. Use the THIRD reference image only for the pixel-art style and outline (do NOT copy its pink colour or balloons unless the description above says so). Keep the navy double-peak chest mark visible. Never draw a white or plain robot.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 64x64 art pixels and enlarge it exactly 16x, so each art pixel is a 16x16 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). One character only, full body, centred, filling about 85% of the height, no floor, no shadow.",
+      "text": []
+    },
+    {
+      "out": "nexmax_ENTP",
+      "title": "ネクマックス ENTP",
+      "refs": [
+        "public/img/characters/nexmax/reference.png",
+        "public/img/characters/nexmax/types/ENTP.webp",
+        "public/img/quest/nexmax/ENFP.png"
+      ],
+      "scene": "Character: \"NexMax\", the official robot mascot of NEXT MAKE.\nAnatomy (must match the reference images exactly):\n- Rounded helmet-like head, wider than tall, with two small rounded ear pods on the sides of the head and a small antenna ball on top.\n- Large white rounded face-screen covering most of the face.\n- Two black oval eyes and a small gentle smile on the white screen.\n- Small trapezoid torso with the NEXT MAKE chest mark: a navy (#004F8D) double-peak \"M\" logo (two triangular mountain shapes).\n- Segmented ball-joint arms with round elbows and mitten hands.\n- Short segmented legs with rounded boots.\nMood: friendly, curious, encouraging. Kid-safe.\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: this is the player's own NexMax as a small pixel-art RPG party member, in its OWN body colour and outfit. Draw it as a chibi pixel-art sprite: GREEN body (#66BB6A), aviator goggles on top of the helmet, one hand raised with a glowing yellow light bulb above it. The SECOND reference image shows exactly this colour and outfit — follow it. The FIRST reference shows the basic NexMax body shape. Use the THIRD reference image only for the pixel-art style and outline (do NOT copy its pink colour or balloons unless the description above says so). Keep the navy double-peak chest mark visible. Never draw a white or plain robot.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 64x64 art pixels and enlarge it exactly 16x, so each art pixel is a 16x16 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). One character only, full body, centred, filling about 85% of the height, no floor, no shadow.",
+      "text": []
+    },
+    {
+      "out": "nexmax_ENTP_f",
+      "title": "ネクマックス ENTP_f",
+      "refs": [
+        "public/img/characters/nexmax/reference.png",
+        "public/img/characters/nexmax/types/ENTP_f.webp",
+        "public/img/quest/nexmax/ENFP.png"
+      ],
+      "scene": "Character: \"NexMax\", the official robot mascot of NEXT MAKE.\nAnatomy (must match the reference images exactly):\n- Rounded helmet-like head, wider than tall, with two small rounded ear pods on the sides of the head and a small antenna ball on top.\n- Large white rounded face-screen covering most of the face.\n- Two black oval eyes and a small gentle smile on the white screen.\n- Small trapezoid torso with the NEXT MAKE chest mark: a navy (#004F8D) double-peak \"M\" logo (two triangular mountain shapes).\n- Segmented ball-joint arms with round elbows and mitten hands.\n- Short segmented legs with rounded boots.\nMood: friendly, curious, encouraging. Kid-safe.\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: this is the player's own NexMax as a small pixel-art RPG party member, in its OWN body colour and outfit. Draw it as a chibi pixel-art sprite: GREEN body (#66BB6A), aviator goggles on top of the helmet, one hand raised with a glowing yellow light bulb above it. This is the FEMALE version: long eyelashes on the eyes, a small flower on the side of the head, and a short pleated skirt in the body colour (keep everything else the same). The SECOND reference image shows exactly this colour and outfit — follow it. The FIRST reference shows the basic NexMax body shape. Use the THIRD reference image only for the pixel-art style and outline (do NOT copy its pink colour or balloons unless the description above says so). Keep the navy double-peak chest mark visible. Never draw a white or plain robot.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 64x64 art pixels and enlarge it exactly 16x, so each art pixel is a 16x16 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). One character only, full body, centred, filling about 85% of the height, no floor, no shadow.",
+      "text": []
+    },
+    {
+      "out": "nexmax_ENTJ_f",
+      "title": "ネクマックス ENTJ_f",
+      "refs": [
+        "public/img/characters/nexmax/reference.png",
+        "public/img/characters/nexmax/types/ENTJ_f.webp",
+        "public/img/quest/nexmax/ENFP.png"
+      ],
+      "scene": "Character: \"NexMax\", the official robot mascot of NEXT MAKE.\nAnatomy (must match the reference images exactly):\n- Rounded helmet-like head, wider than tall, with two small rounded ear pods on the sides of the head and a small antenna ball on top.\n- Large white rounded face-screen covering most of the face.\n- Two black oval eyes and a small gentle smile on the white screen.\n- Small trapezoid torso with the NEXT MAKE chest mark: a navy (#004F8D) double-peak \"M\" logo (two triangular mountain shapes).\n- Segmented ball-joint arms with round elbows and mitten hands.\n- Short segmented legs with rounded boots.\nMood: friendly, curious, encouraging. Kid-safe.\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: this is the player's own NexMax as a small pixel-art RPG party member, in its OWN body colour and outfit. Draw it as a chibi pixel-art sprite: GREEN body (#66BB6A), a dark navy cape with a gold edge, holding a gold compass in one hand and pointing forward with the other. This is the FEMALE version: long eyelashes on the eyes, a small flower on the side of the head, and a short pleated skirt in the body colour (keep everything else the same). The SECOND reference image shows exactly this colour and outfit — follow it. The FIRST reference shows the basic NexMax body shape. Use the THIRD reference image only for the pixel-art style and outline (do NOT copy its pink colour or balloons unless the description above says so). Keep the navy double-peak chest mark visible. Never draw a white or plain robot.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 64x64 art pixels and enlarge it exactly 16x, so each art pixel is a 16x16 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). One character only, full body, centred, filling about 85% of the height, no floor, no shadow.",
+      "text": []
+    },
+    {
+      "out": "nexmax_INFP",
+      "title": "ネクマックス INFP",
+      "refs": [
+        "public/img/characters/nexmax/reference.png",
+        "public/img/characters/nexmax/types/INFP.webp",
+        "public/img/quest/nexmax/ENFP.png"
+      ],
+      "scene": "Character: \"NexMax\", the official robot mascot of NEXT MAKE.\nAnatomy (must match the reference images exactly):\n- Rounded helmet-like head, wider than tall, with two small rounded ear pods on the sides of the head and a small antenna ball on top.\n- Large white rounded face-screen covering most of the face.\n- Two black oval eyes and a small gentle smile on the white screen.\n- Small trapezoid torso with the NEXT MAKE chest mark: a navy (#004F8D) double-peak \"M\" logo (two triangular mountain shapes).\n- Segmented ball-joint arms with round elbows and mitten hands.\n- Short segmented legs with rounded boots.\nMood: friendly, curious, encouraging. Kid-safe.\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: this is the player's own NexMax as a small pixel-art RPG party member, in its OWN body colour and outfit. Draw it as a chibi pixel-art sprite: bright PINK body (#F48FB1), a long soft pink scarf, hugging a pink notebook to the chest, a few cherry petals around. The SECOND reference image shows exactly this colour and outfit — follow it. The FIRST reference shows the basic NexMax body shape. Use the THIRD reference image only for the pixel-art style and outline (do NOT copy its pink colour or balloons unless the description above says so). Keep the navy double-peak chest mark visible. Never draw a white or plain robot.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 64x64 art pixels and enlarge it exactly 16x, so each art pixel is a 16x16 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). One character only, full body, centred, filling about 85% of the height, no floor, no shadow.",
+      "text": []
+    },
+    {
+      "out": "nexmax_INFP_f",
+      "title": "ネクマックス INFP_f",
+      "refs": [
+        "public/img/characters/nexmax/reference.png",
+        "public/img/characters/nexmax/types/INFP_f.webp",
+        "public/img/quest/nexmax/ENFP.png"
+      ],
+      "scene": "Character: \"NexMax\", the official robot mascot of NEXT MAKE.\nAnatomy (must match the reference images exactly):\n- Rounded helmet-like head, wider than tall, with two small rounded ear pods on the sides of the head and a small antenna ball on top.\n- Large white rounded face-screen covering most of the face.\n- Two black oval eyes and a small gentle smile on the white screen.\n- Small trapezoid torso with the NEXT MAKE chest mark: a navy (#004F8D) double-peak \"M\" logo (two triangular mountain shapes).\n- Segmented ball-joint arms with round elbows and mitten hands.\n- Short segmented legs with rounded boots.\nMood: friendly, curious, encouraging. Kid-safe.\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: this is the player's own NexMax as a small pixel-art RPG party member, in its OWN body colour and outfit. Draw it as a chibi pixel-art sprite: bright PINK body (#F48FB1), a long soft pink scarf, hugging a pink notebook to the chest, a few cherry petals around. This is the FEMALE version: long eyelashes on the eyes, a small flower on the side of the head, and a short pleated skirt in the body colour (keep everything else the same). The SECOND reference image shows exactly this colour and outfit — follow it. The FIRST reference shows the basic NexMax body shape. Use the THIRD reference image only for the pixel-art style and outline (do NOT copy its pink colour or balloons unless the description above says so). Keep the navy double-peak chest mark visible. Never draw a white or plain robot.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 64x64 art pixels and enlarge it exactly 16x, so each art pixel is a 16x16 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). One character only, full body, centred, filling about 85% of the height, no floor, no shadow.",
+      "text": []
+    },
+    {
+      "out": "nexmax_INFJ",
+      "title": "ネクマックス INFJ",
+      "refs": [
+        "public/img/characters/nexmax/reference.png",
+        "public/img/characters/nexmax/types/INFJ.webp",
+        "public/img/quest/nexmax/ENFP.png"
+      ],
+      "scene": "Character: \"NexMax\", the official robot mascot of NEXT MAKE.\nAnatomy (must match the reference images exactly):\n- Rounded helmet-like head, wider than tall, with two small rounded ear pods on the sides of the head and a small antenna ball on top.\n- Large white rounded face-screen covering most of the face.\n- Two black oval eyes and a small gentle smile on the white screen.\n- Small trapezoid torso with the NEXT MAKE chest mark: a navy (#004F8D) double-peak \"M\" logo (two triangular mountain shapes).\n- Segmented ball-joint arms with round elbows and mitten hands.\n- Short segmented legs with rounded boots.\nMood: friendly, curious, encouraging. Kid-safe.\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: this is the player's own NexMax as a small pixel-art RPG party member, in its OWN body colour and outfit. Draw it as a chibi pixel-art sprite: bright PINK body (#F48FB1), a pink hooded cloak, holding a small staff topped with a crescent moon. The SECOND reference image shows exactly this colour and outfit — follow it. The FIRST reference shows the basic NexMax body shape. Use the THIRD reference image only for the pixel-art style and outline (do NOT copy its pink colour or balloons unless the description above says so). Keep the navy double-peak chest mark visible. Never draw a white or plain robot.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 64x64 art pixels and enlarge it exactly 16x, so each art pixel is a 16x16 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). One character only, full body, centred, filling about 85% of the height, no floor, no shadow.",
+      "text": []
+    },
+    {
+      "out": "nexmax_INFJ_f",
+      "title": "ネクマックス INFJ_f",
+      "refs": [
+        "public/img/characters/nexmax/reference.png",
+        "public/img/characters/nexmax/types/INFJ_f.webp",
+        "public/img/quest/nexmax/ENFP.png"
+      ],
+      "scene": "Character: \"NexMax\", the official robot mascot of NEXT MAKE.\nAnatomy (must match the reference images exactly):\n- Rounded helmet-like head, wider than tall, with two small rounded ear pods on the sides of the head and a small antenna ball on top.\n- Large white rounded face-screen covering most of the face.\n- Two black oval eyes and a small gentle smile on the white screen.\n- Small trapezoid torso with the NEXT MAKE chest mark: a navy (#004F8D) double-peak \"M\" logo (two triangular mountain shapes).\n- Segmented ball-joint arms with round elbows and mitten hands.\n- Short segmented legs with rounded boots.\nMood: friendly, curious, encouraging. Kid-safe.\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: this is the player's own NexMax as a small pixel-art RPG party member, in its OWN body colour and outfit. Draw it as a chibi pixel-art sprite: bright PINK body (#F48FB1), a pink hooded cloak, holding a small staff topped with a crescent moon. This is the FEMALE version: long eyelashes on the eyes, a small flower on the side of the head, and a short pleated skirt in the body colour (keep everything else the same). The SECOND reference image shows exactly this colour and outfit — follow it. The FIRST reference shows the basic NexMax body shape. Use the THIRD reference image only for the pixel-art style and outline (do NOT copy its pink colour or balloons unless the description above says so). Keep the navy double-peak chest mark visible. Never draw a white or plain robot.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 64x64 art pixels and enlarge it exactly 16x, so each art pixel is a 16x16 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). One character only, full body, centred, filling about 85% of the height, no floor, no shadow.",
+      "text": []
+    },
+    {
+      "out": "nexmax_INTP",
+      "title": "ネクマックス INTP",
+      "refs": [
+        "public/img/characters/nexmax/reference.png",
+        "public/img/characters/nexmax/types/INTP.webp",
+        "public/img/quest/nexmax/ENFP.png"
+      ],
+      "scene": "Character: \"NexMax\", the official robot mascot of NEXT MAKE.\nAnatomy (must match the reference images exactly):\n- Rounded helmet-like head, wider than tall, with two small rounded ear pods on the sides of the head and a small antenna ball on top.\n- Large white rounded face-screen covering most of the face.\n- Two black oval eyes and a small gentle smile on the white screen.\n- Small trapezoid torso with the NEXT MAKE chest mark: a navy (#004F8D) double-peak \"M\" logo (two triangular mountain shapes).\n- Segmented ball-joint arms with round elbows and mitten hands.\n- Short segmented legs with rounded boots.\nMood: friendly, curious, encouraging. Kid-safe.\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: this is the player's own NexMax as a small pixel-art RPG party member, in its OWN body colour and outfit. Draw it as a chibi pixel-art sprite: GREEN body (#66BB6A), holding a big magnifying glass up to one eye, a small brown tool belt. The SECOND reference image shows exactly this colour and outfit — follow it. The FIRST reference shows the basic NexMax body shape. Use the THIRD reference image only for the pixel-art style and outline (do NOT copy its pink colour or balloons unless the description above says so). Keep the navy double-peak chest mark visible. Never draw a white or plain robot.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 64x64 art pixels and enlarge it exactly 16x, so each art pixel is a 16x16 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). One character only, full body, centred, filling about 85% of the height, no floor, no shadow.",
+      "text": []
+    },
+    {
+      "out": "nexmax_INTP_f",
+      "title": "ネクマックス INTP_f",
+      "refs": [
+        "public/img/characters/nexmax/reference.png",
+        "public/img/characters/nexmax/types/INTP_f.webp",
+        "public/img/quest/nexmax/ENFP.png"
+      ],
+      "scene": "Character: \"NexMax\", the official robot mascot of NEXT MAKE.\nAnatomy (must match the reference images exactly):\n- Rounded helmet-like head, wider than tall, with two small rounded ear pods on the sides of the head and a small antenna ball on top.\n- Large white rounded face-screen covering most of the face.\n- Two black oval eyes and a small gentle smile on the white screen.\n- Small trapezoid torso with the NEXT MAKE chest mark: a navy (#004F8D) double-peak \"M\" logo (two triangular mountain shapes).\n- Segmented ball-joint arms with round elbows and mitten hands.\n- Short segmented legs with rounded boots.\nMood: friendly, curious, encouraging. Kid-safe.\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: this is the player's own NexMax as a small pixel-art RPG party member, in its OWN body colour and outfit. Draw it as a chibi pixel-art sprite: GREEN body (#66BB6A), holding a big magnifying glass up to one eye, a small brown tool belt. This is the FEMALE version: long eyelashes on the eyes, a small flower on the side of the head, and a short pleated skirt in the body colour (keep everything else the same). The SECOND reference image shows exactly this colour and outfit — follow it. The FIRST reference shows the basic NexMax body shape. Use the THIRD reference image only for the pixel-art style and outline (do NOT copy its pink colour or balloons unless the description above says so). Keep the navy double-peak chest mark visible. Never draw a white or plain robot.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 64x64 art pixels and enlarge it exactly 16x, so each art pixel is a 16x16 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). One character only, full body, centred, filling about 85% of the height, no floor, no shadow.",
+      "text": []
+    },
+    {
+      "out": "nexmax_INTJ",
+      "title": "ネクマックス INTJ",
+      "refs": [
+        "public/img/characters/nexmax/reference.png",
+        "public/img/characters/nexmax/types/INTJ.webp",
+        "public/img/quest/nexmax/ENFP.png"
+      ],
+      "scene": "Character: \"NexMax\", the official robot mascot of NEXT MAKE.\nAnatomy (must match the reference images exactly):\n- Rounded helmet-like head, wider than tall, with two small rounded ear pods on the sides of the head and a small antenna ball on top.\n- Large white rounded face-screen covering most of the face.\n- Two black oval eyes and a small gentle smile on the white screen.\n- Small trapezoid torso with the NEXT MAKE chest mark: a navy (#004F8D) double-peak \"M\" logo (two triangular mountain shapes).\n- Segmented ball-joint arms with round elbows and mitten hands.\n- Short segmented legs with rounded boots.\nMood: friendly, curious, encouraging. Kid-safe.\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: this is the player's own NexMax as a small pixel-art RPG party member, in its OWN body colour and outfit. Draw it as a chibi pixel-art sprite: GREEN body (#66BB6A), a long green cape, holding up a white chess knight piece. The SECOND reference image shows exactly this colour and outfit — follow it. The FIRST reference shows the basic NexMax body shape. Use the THIRD reference image only for the pixel-art style and outline (do NOT copy its pink colour or balloons unless the description above says so). Keep the navy double-peak chest mark visible. Never draw a white or plain robot.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 64x64 art pixels and enlarge it exactly 16x, so each art pixel is a 16x16 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). One character only, full body, centred, filling about 85% of the height, no floor, no shadow.",
+      "text": []
+    },
+    {
+      "out": "nexmax_INTJ_f",
+      "title": "ネクマックス INTJ_f",
+      "refs": [
+        "public/img/characters/nexmax/reference.png",
+        "public/img/characters/nexmax/types/INTJ_f.webp",
+        "public/img/quest/nexmax/ENFP.png"
+      ],
+      "scene": "Character: \"NexMax\", the official robot mascot of NEXT MAKE.\nAnatomy (must match the reference images exactly):\n- Rounded helmet-like head, wider than tall, with two small rounded ear pods on the sides of the head and a small antenna ball on top.\n- Large white rounded face-screen covering most of the face.\n- Two black oval eyes and a small gentle smile on the white screen.\n- Small trapezoid torso with the NEXT MAKE chest mark: a navy (#004F8D) double-peak \"M\" logo (two triangular mountain shapes).\n- Segmented ball-joint arms with round elbows and mitten hands.\n- Short segmented legs with rounded boots.\nMood: friendly, curious, encouraging. Kid-safe.\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: this is the player's own NexMax as a small pixel-art RPG party member, in its OWN body colour and outfit. Draw it as a chibi pixel-art sprite: GREEN body (#66BB6A), a long green cape, holding up a white chess knight piece. This is the FEMALE version: long eyelashes on the eyes, a small flower on the side of the head, and a short pleated skirt in the body colour (keep everything else the same). The SECOND reference image shows exactly this colour and outfit — follow it. The FIRST reference shows the basic NexMax body shape. Use the THIRD reference image only for the pixel-art style and outline (do NOT copy its pink colour or balloons unless the description above says so). Keep the navy double-peak chest mark visible. Never draw a white or plain robot.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 64x64 art pixels and enlarge it exactly 16x, so each art pixel is a 16x16 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). One character only, full body, centred, filling about 85% of the height, no floor, no shadow.",
+      "text": []
+    },
+    {
+      "out": "nexmax_ESFP",
+      "title": "ネクマックス ESFP",
+      "refs": [
+        "public/img/characters/nexmax/reference.png",
+        "public/img/characters/nexmax/types/ESFP.webp",
+        "public/img/quest/nexmax/ENFP.png"
+      ],
+      "scene": "Character: \"NexMax\", the official robot mascot of NEXT MAKE.\nAnatomy (must match the reference images exactly):\n- Rounded helmet-like head, wider than tall, with two small rounded ear pods on the sides of the head and a small antenna ball on top.\n- Large white rounded face-screen covering most of the face.\n- Two black oval eyes and a small gentle smile on the white screen.\n- Small trapezoid torso with the NEXT MAKE chest mark: a navy (#004F8D) double-peak \"M\" logo (two triangular mountain shapes).\n- Segmented ball-joint arms with round elbows and mitten hands.\n- Short segmented legs with rounded boots.\nMood: friendly, curious, encouraging. Kid-safe.\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: this is the player's own NexMax as a small pixel-art RPG party member, in its OWN body colour and outfit. Draw it as a chibi pixel-art sprite: YELLOW body (#FDD835) with black segment rings on the arms and legs, a navy bow tie, holding a microphone in one hand and a party popper with confetti in the other. The SECOND reference image shows exactly this colour and outfit — follow it. The FIRST reference shows the basic NexMax body shape. Use the THIRD reference image only for the pixel-art style and outline (do NOT copy its pink colour or balloons unless the description above says so). Keep the navy double-peak chest mark visible. Never draw a white or plain robot.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 64x64 art pixels and enlarge it exactly 16x, so each art pixel is a 16x16 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). One character only, full body, centred, filling about 85% of the height, no floor, no shadow.",
+      "text": []
+    },
+    {
+      "out": "nexmax_ESFP_f",
+      "title": "ネクマックス ESFP_f",
+      "refs": [
+        "public/img/characters/nexmax/reference.png",
+        "public/img/characters/nexmax/types/ESFP_f.webp",
+        "public/img/quest/nexmax/ENFP.png"
+      ],
+      "scene": "Character: \"NexMax\", the official robot mascot of NEXT MAKE.\nAnatomy (must match the reference images exactly):\n- Rounded helmet-like head, wider than tall, with two small rounded ear pods on the sides of the head and a small antenna ball on top.\n- Large white rounded face-screen covering most of the face.\n- Two black oval eyes and a small gentle smile on the white screen.\n- Small trapezoid torso with the NEXT MAKE chest mark: a navy (#004F8D) double-peak \"M\" logo (two triangular mountain shapes).\n- Segmented ball-joint arms with round elbows and mitten hands.\n- Short segmented legs with rounded boots.\nMood: friendly, curious, encouraging. Kid-safe.\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: this is the player's own NexMax as a small pixel-art RPG party member, in its OWN body colour and outfit. Draw it as a chibi pixel-art sprite: YELLOW body (#FDD835) with black segment rings on the arms and legs, a navy bow tie, holding a microphone in one hand and a party popper with confetti in the other. This is the FEMALE version: long eyelashes on the eyes, a small flower on the side of the head, and a short pleated skirt in the body colour (keep everything else the same). The SECOND reference image shows exactly this colour and outfit — follow it. The FIRST reference shows the basic NexMax body shape. Use the THIRD reference image only for the pixel-art style and outline (do NOT copy its pink colour or balloons unless the description above says so). Keep the navy double-peak chest mark visible. Never draw a white or plain robot.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 64x64 art pixels and enlarge it exactly 16x, so each art pixel is a 16x16 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). One character only, full body, centred, filling about 85% of the height, no floor, no shadow.",
+      "text": []
+    },
+    {
+      "out": "nexmax_ESFJ",
+      "title": "ネクマックス ESFJ",
+      "refs": [
+        "public/img/characters/nexmax/reference.png",
+        "public/img/characters/nexmax/types/ESFJ.webp",
+        "public/img/quest/nexmax/ENFP.png"
+      ],
+      "scene": "Character: \"NexMax\", the official robot mascot of NEXT MAKE.\nAnatomy (must match the reference images exactly):\n- Rounded helmet-like head, wider than tall, with two small rounded ear pods on the sides of the head and a small antenna ball on top.\n- Large white rounded face-screen covering most of the face.\n- Two black oval eyes and a small gentle smile on the white screen.\n- Small trapezoid torso with the NEXT MAKE chest mark: a navy (#004F8D) double-peak \"M\" logo (two triangular mountain shapes).\n- Segmented ball-joint arms with round elbows and mitten hands.\n- Short segmented legs with rounded boots.\nMood: friendly, curious, encouraging. Kid-safe.\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: this is the player's own NexMax as a small pixel-art RPG party member, in its OWN body colour and outfit. Draw it as a chibi pixel-art sprite: sky-BLUE body (#64B5F6), a pink rosette badge on the chest, both arms spread wide in a warm welcome. The SECOND reference image shows exactly this colour and outfit — follow it. The FIRST reference shows the basic NexMax body shape. Use the THIRD reference image only for the pixel-art style and outline (do NOT copy its pink colour or balloons unless the description above says so). Keep the navy double-peak chest mark visible. Never draw a white or plain robot.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 64x64 art pixels and enlarge it exactly 16x, so each art pixel is a 16x16 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). One character only, full body, centred, filling about 85% of the height, no floor, no shadow.",
+      "text": []
+    },
+    {
+      "out": "nexmax_ESFJ_f",
+      "title": "ネクマックス ESFJ_f",
+      "refs": [
+        "public/img/characters/nexmax/reference.png",
+        "public/img/characters/nexmax/types/ESFJ_f.webp",
+        "public/img/quest/nexmax/ENFP.png"
+      ],
+      "scene": "Character: \"NexMax\", the official robot mascot of NEXT MAKE.\nAnatomy (must match the reference images exactly):\n- Rounded helmet-like head, wider than tall, with two small rounded ear pods on the sides of the head and a small antenna ball on top.\n- Large white rounded face-screen covering most of the face.\n- Two black oval eyes and a small gentle smile on the white screen.\n- Small trapezoid torso with the NEXT MAKE chest mark: a navy (#004F8D) double-peak \"M\" logo (two triangular mountain shapes).\n- Segmented ball-joint arms with round elbows and mitten hands.\n- Short segmented legs with rounded boots.\nMood: friendly, curious, encouraging. Kid-safe.\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: this is the player's own NexMax as a small pixel-art RPG party member, in its OWN body colour and outfit. Draw it as a chibi pixel-art sprite: sky-BLUE body (#64B5F6), a pink rosette badge on the chest, both arms spread wide in a warm welcome. This is the FEMALE version: long eyelashes on the eyes, a small flower on the side of the head, and a short pleated skirt in the body colour (keep everything else the same). The SECOND reference image shows exactly this colour and outfit — follow it. The FIRST reference shows the basic NexMax body shape. Use the THIRD reference image only for the pixel-art style and outline (do NOT copy its pink colour or balloons unless the description above says so). Keep the navy double-peak chest mark visible. Never draw a white or plain robot.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 64x64 art pixels and enlarge it exactly 16x, so each art pixel is a 16x16 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). One character only, full body, centred, filling about 85% of the height, no floor, no shadow.",
+      "text": []
+    },
+    {
+      "out": "nexmax_ESTP_f",
+      "title": "ネクマックス ESTP_f",
+      "refs": [
+        "public/img/characters/nexmax/reference.png",
+        "public/img/characters/nexmax/types/ESTP_f.webp",
+        "public/img/quest/nexmax/ENFP.png"
+      ],
+      "scene": "Character: \"NexMax\", the official robot mascot of NEXT MAKE.\nAnatomy (must match the reference images exactly):\n- Rounded helmet-like head, wider than tall, with two small rounded ear pods on the sides of the head and a small antenna ball on top.\n- Large white rounded face-screen covering most of the face.\n- Two black oval eyes and a small gentle smile on the white screen.\n- Small trapezoid torso with the NEXT MAKE chest mark: a navy (#004F8D) double-peak \"M\" logo (two triangular mountain shapes).\n- Segmented ball-joint arms with round elbows and mitten hands.\n- Short segmented legs with rounded boots.\nMood: friendly, curious, encouraging. Kid-safe.\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: this is the player's own NexMax as a small pixel-art RPG party member, in its OWN body colour and outfit. Draw it as a chibi pixel-art sprite: YELLOW body (#FDD835) with black segment rings on the arms and legs, dark goggles pushed up on the helmet, running pose with one fist forward, a yellow lightning spark by the feet. This is the FEMALE version: long eyelashes on the eyes, a small flower on the side of the head, and a short pleated skirt in the body colour (keep everything else the same). The SECOND reference image shows exactly this colour and outfit — follow it. The FIRST reference shows the basic NexMax body shape. Use the THIRD reference image only for the pixel-art style and outline (do NOT copy its pink colour or balloons unless the description above says so). Keep the navy double-peak chest mark visible. Never draw a white or plain robot.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 64x64 art pixels and enlarge it exactly 16x, so each art pixel is a 16x16 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). One character only, full body, centred, filling about 85% of the height, no floor, no shadow.",
+      "text": []
+    },
+    {
+      "out": "nexmax_ESTJ",
+      "title": "ネクマックス ESTJ",
+      "refs": [
+        "public/img/characters/nexmax/reference.png",
+        "public/img/characters/nexmax/types/ESTJ.webp",
+        "public/img/quest/nexmax/ENFP.png"
+      ],
+      "scene": "Character: \"NexMax\", the official robot mascot of NEXT MAKE.\nAnatomy (must match the reference images exactly):\n- Rounded helmet-like head, wider than tall, with two small rounded ear pods on the sides of the head and a small antenna ball on top.\n- Large white rounded face-screen covering most of the face.\n- Two black oval eyes and a small gentle smile on the white screen.\n- Small trapezoid torso with the NEXT MAKE chest mark: a navy (#004F8D) double-peak \"M\" logo (two triangular mountain shapes).\n- Segmented ball-joint arms with round elbows and mitten hands.\n- Short segmented legs with rounded boots.\nMood: friendly, curious, encouraging. Kid-safe.\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: this is the player's own NexMax as a small pixel-art RPG party member, in its OWN body colour and outfit. Draw it as a chibi pixel-art sprite: sky-BLUE body (#64B5F6), a blue cape, a whistle around the neck, holding a megaphone. The SECOND reference image shows exactly this colour and outfit — follow it. The FIRST reference shows the basic NexMax body shape. Use the THIRD reference image only for the pixel-art style and outline (do NOT copy its pink colour or balloons unless the description above says so). Keep the navy double-peak chest mark visible. Never draw a white or plain robot.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 64x64 art pixels and enlarge it exactly 16x, so each art pixel is a 16x16 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). One character only, full body, centred, filling about 85% of the height, no floor, no shadow.",
+      "text": []
+    },
+    {
+      "out": "nexmax_ESTJ_f",
+      "title": "ネクマックス ESTJ_f",
+      "refs": [
+        "public/img/characters/nexmax/reference.png",
+        "public/img/characters/nexmax/types/ESTJ_f.webp",
+        "public/img/quest/nexmax/ENFP.png"
+      ],
+      "scene": "Character: \"NexMax\", the official robot mascot of NEXT MAKE.\nAnatomy (must match the reference images exactly):\n- Rounded helmet-like head, wider than tall, with two small rounded ear pods on the sides of the head and a small antenna ball on top.\n- Large white rounded face-screen covering most of the face.\n- Two black oval eyes and a small gentle smile on the white screen.\n- Small trapezoid torso with the NEXT MAKE chest mark: a navy (#004F8D) double-peak \"M\" logo (two triangular mountain shapes).\n- Segmented ball-joint arms with round elbows and mitten hands.\n- Short segmented legs with rounded boots.\nMood: friendly, curious, encouraging. Kid-safe.\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: this is the player's own NexMax as a small pixel-art RPG party member, in its OWN body colour and outfit. Draw it as a chibi pixel-art sprite: sky-BLUE body (#64B5F6), a blue cape, a whistle around the neck, holding a megaphone. This is the FEMALE version: long eyelashes on the eyes, a small flower on the side of the head, and a short pleated skirt in the body colour (keep everything else the same). The SECOND reference image shows exactly this colour and outfit — follow it. The FIRST reference shows the basic NexMax body shape. Use the THIRD reference image only for the pixel-art style and outline (do NOT copy its pink colour or balloons unless the description above says so). Keep the navy double-peak chest mark visible. Never draw a white or plain robot.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 64x64 art pixels and enlarge it exactly 16x, so each art pixel is a 16x16 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). One character only, full body, centred, filling about 85% of the height, no floor, no shadow.",
+      "text": []
+    },
+    {
+      "out": "nexmax_ISFP",
+      "title": "ネクマックス ISFP",
+      "refs": [
+        "public/img/characters/nexmax/reference.png",
+        "public/img/characters/nexmax/types/ISFP.webp",
+        "public/img/quest/nexmax/ENFP.png"
+      ],
+      "scene": "Character: \"NexMax\", the official robot mascot of NEXT MAKE.\nAnatomy (must match the reference images exactly):\n- Rounded helmet-like head, wider than tall, with two small rounded ear pods on the sides of the head and a small antenna ball on top.\n- Large white rounded face-screen covering most of the face.\n- Two black oval eyes and a small gentle smile on the white screen.\n- Small trapezoid torso with the NEXT MAKE chest mark: a navy (#004F8D) double-peak \"M\" logo (two triangular mountain shapes).\n- Segmented ball-joint arms with round elbows and mitten hands.\n- Short segmented legs with rounded boots.\nMood: friendly, curious, encouraging. Kid-safe.\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: this is the player's own NexMax as a small pixel-art RPG party member, in its OWN body colour and outfit. Draw it as a chibi pixel-art sprite: YELLOW body (#FDD835) with black segment rings on the arms and legs, a dark beret with colourful paint dots, holding a paintbrush and a paint palette. The SECOND reference image shows exactly this colour and outfit — follow it. The FIRST reference shows the basic NexMax body shape. Use the THIRD reference image only for the pixel-art style and outline (do NOT copy its pink colour or balloons unless the description above says so). Keep the navy double-peak chest mark visible. Never draw a white or plain robot.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 64x64 art pixels and enlarge it exactly 16x, so each art pixel is a 16x16 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). One character only, full body, centred, filling about 85% of the height, no floor, no shadow.",
+      "text": []
+    },
+    {
+      "out": "nexmax_ISFP_f",
+      "title": "ネクマックス ISFP_f",
+      "refs": [
+        "public/img/characters/nexmax/reference.png",
+        "public/img/characters/nexmax/types/ISFP_f.webp",
+        "public/img/quest/nexmax/ENFP.png"
+      ],
+      "scene": "Character: \"NexMax\", the official robot mascot of NEXT MAKE.\nAnatomy (must match the reference images exactly):\n- Rounded helmet-like head, wider than tall, with two small rounded ear pods on the sides of the head and a small antenna ball on top.\n- Large white rounded face-screen covering most of the face.\n- Two black oval eyes and a small gentle smile on the white screen.\n- Small trapezoid torso with the NEXT MAKE chest mark: a navy (#004F8D) double-peak \"M\" logo (two triangular mountain shapes).\n- Segmented ball-joint arms with round elbows and mitten hands.\n- Short segmented legs with rounded boots.\nMood: friendly, curious, encouraging. Kid-safe.\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: this is the player's own NexMax as a small pixel-art RPG party member, in its OWN body colour and outfit. Draw it as a chibi pixel-art sprite: YELLOW body (#FDD835) with black segment rings on the arms and legs, a dark beret with colourful paint dots, holding a paintbrush and a paint palette. This is the FEMALE version: long eyelashes on the eyes, a small flower on the side of the head, and a short pleated skirt in the body colour (keep everything else the same). The SECOND reference image shows exactly this colour and outfit — follow it. The FIRST reference shows the basic NexMax body shape. Use the THIRD reference image only for the pixel-art style and outline (do NOT copy its pink colour or balloons unless the description above says so). Keep the navy double-peak chest mark visible. Never draw a white or plain robot.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 64x64 art pixels and enlarge it exactly 16x, so each art pixel is a 16x16 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). One character only, full body, centred, filling about 85% of the height, no floor, no shadow.",
+      "text": []
+    },
+    {
+      "out": "nexmax_ISFJ",
+      "title": "ネクマックス ISFJ",
+      "refs": [
+        "public/img/characters/nexmax/reference.png",
+        "public/img/characters/nexmax/types/ISFJ.webp",
+        "public/img/quest/nexmax/ENFP.png"
+      ],
+      "scene": "Character: \"NexMax\", the official robot mascot of NEXT MAKE.\nAnatomy (must match the reference images exactly):\n- Rounded helmet-like head, wider than tall, with two small rounded ear pods on the sides of the head and a small antenna ball on top.\n- Large white rounded face-screen covering most of the face.\n- Two black oval eyes and a small gentle smile on the white screen.\n- Small trapezoid torso with the NEXT MAKE chest mark: a navy (#004F8D) double-peak \"M\" logo (two triangular mountain shapes).\n- Segmented ball-joint arms with round elbows and mitten hands.\n- Short segmented legs with rounded boots.\nMood: friendly, curious, encouraging. Kid-safe.\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: this is the player's own NexMax as a small pixel-art RPG party member, in its OWN body colour and outfit. Draw it as a chibi pixel-art sprite: sky-BLUE body (#64B5F6), a white apron, carrying a small tray with a cup of tea. The SECOND reference image shows exactly this colour and outfit — follow it. The FIRST reference shows the basic NexMax body shape. Use the THIRD reference image only for the pixel-art style and outline (do NOT copy its pink colour or balloons unless the description above says so). Keep the navy double-peak chest mark visible. Never draw a white or plain robot.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 64x64 art pixels and enlarge it exactly 16x, so each art pixel is a 16x16 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). One character only, full body, centred, filling about 85% of the height, no floor, no shadow.",
+      "text": []
+    },
+    {
+      "out": "nexmax_ISFJ_f",
+      "title": "ネクマックス ISFJ_f",
+      "refs": [
+        "public/img/characters/nexmax/reference.png",
+        "public/img/characters/nexmax/types/ISFJ_f.webp",
+        "public/img/quest/nexmax/ENFP.png"
+      ],
+      "scene": "Character: \"NexMax\", the official robot mascot of NEXT MAKE.\nAnatomy (must match the reference images exactly):\n- Rounded helmet-like head, wider than tall, with two small rounded ear pods on the sides of the head and a small antenna ball on top.\n- Large white rounded face-screen covering most of the face.\n- Two black oval eyes and a small gentle smile on the white screen.\n- Small trapezoid torso with the NEXT MAKE chest mark: a navy (#004F8D) double-peak \"M\" logo (two triangular mountain shapes).\n- Segmented ball-joint arms with round elbows and mitten hands.\n- Short segmented legs with rounded boots.\nMood: friendly, curious, encouraging. Kid-safe.\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: this is the player's own NexMax as a small pixel-art RPG party member, in its OWN body colour and outfit. Draw it as a chibi pixel-art sprite: sky-BLUE body (#64B5F6), a white apron, carrying a small tray with a cup of tea. This is the FEMALE version: long eyelashes on the eyes, a small flower on the side of the head, and a short pleated skirt in the body colour (keep everything else the same). The SECOND reference image shows exactly this colour and outfit — follow it. The FIRST reference shows the basic NexMax body shape. Use the THIRD reference image only for the pixel-art style and outline (do NOT copy its pink colour or balloons unless the description above says so). Keep the navy double-peak chest mark visible. Never draw a white or plain robot.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 64x64 art pixels and enlarge it exactly 16x, so each art pixel is a 16x16 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). One character only, full body, centred, filling about 85% of the height, no floor, no shadow.",
+      "text": []
+    },
+    {
+      "out": "nexmax_ISTP",
+      "title": "ネクマックス ISTP",
+      "refs": [
+        "public/img/characters/nexmax/reference.png",
+        "public/img/characters/nexmax/types/ISTP.webp",
+        "public/img/quest/nexmax/ENFP.png"
+      ],
+      "scene": "Character: \"NexMax\", the official robot mascot of NEXT MAKE.\nAnatomy (must match the reference images exactly):\n- Rounded helmet-like head, wider than tall, with two small rounded ear pods on the sides of the head and a small antenna ball on top.\n- Large white rounded face-screen covering most of the face.\n- Two black oval eyes and a small gentle smile on the white screen.\n- Small trapezoid torso with the NEXT MAKE chest mark: a navy (#004F8D) double-peak \"M\" logo (two triangular mountain shapes).\n- Segmented ball-joint arms with round elbows and mitten hands.\n- Short segmented legs with rounded boots.\nMood: friendly, curious, encouraging. Kid-safe.\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: this is the player's own NexMax as a small pixel-art RPG party member, in its OWN body colour and outfit. Draw it as a chibi pixel-art sprite: YELLOW body (#FDD835) with black segment rings on the arms and legs, yellow safety goggles on the helmet, holding a big wrench, a brown tool belt. The SECOND reference image shows exactly this colour and outfit — follow it. The FIRST reference shows the basic NexMax body shape. Use the THIRD reference image only for the pixel-art style and outline (do NOT copy its pink colour or balloons unless the description above says so). Keep the navy double-peak chest mark visible. Never draw a white or plain robot.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 64x64 art pixels and enlarge it exactly 16x, so each art pixel is a 16x16 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). One character only, full body, centred, filling about 85% of the height, no floor, no shadow.",
+      "text": []
+    },
+    {
+      "out": "nexmax_ISTP_f",
+      "title": "ネクマックス ISTP_f",
+      "refs": [
+        "public/img/characters/nexmax/reference.png",
+        "public/img/characters/nexmax/types/ISTP_f.webp",
+        "public/img/quest/nexmax/ENFP.png"
+      ],
+      "scene": "Character: \"NexMax\", the official robot mascot of NEXT MAKE.\nAnatomy (must match the reference images exactly):\n- Rounded helmet-like head, wider than tall, with two small rounded ear pods on the sides of the head and a small antenna ball on top.\n- Large white rounded face-screen covering most of the face.\n- Two black oval eyes and a small gentle smile on the white screen.\n- Small trapezoid torso with the NEXT MAKE chest mark: a navy (#004F8D) double-peak \"M\" logo (two triangular mountain shapes).\n- Segmented ball-joint arms with round elbows and mitten hands.\n- Short segmented legs with rounded boots.\nMood: friendly, curious, encouraging. Kid-safe.\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: this is the player's own NexMax as a small pixel-art RPG party member, in its OWN body colour and outfit. Draw it as a chibi pixel-art sprite: YELLOW body (#FDD835) with black segment rings on the arms and legs, yellow safety goggles on the helmet, holding a big wrench, a brown tool belt. This is the FEMALE version: long eyelashes on the eyes, a small flower on the side of the head, and a short pleated skirt in the body colour (keep everything else the same). The SECOND reference image shows exactly this colour and outfit — follow it. The FIRST reference shows the basic NexMax body shape. Use the THIRD reference image only for the pixel-art style and outline (do NOT copy its pink colour or balloons unless the description above says so). Keep the navy double-peak chest mark visible. Never draw a white or plain robot.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 64x64 art pixels and enlarge it exactly 16x, so each art pixel is a 16x16 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). One character only, full body, centred, filling about 85% of the height, no floor, no shadow.",
+      "text": []
+    },
+    {
+      "out": "nexmax_ISTJ_f",
+      "title": "ネクマックス ISTJ_f",
+      "refs": [
+        "public/img/characters/nexmax/reference.png",
+        "public/img/characters/nexmax/types/ISTJ_f.webp",
+        "public/img/quest/nexmax/ENFP.png"
+      ],
+      "scene": "Character: \"NexMax\", the official robot mascot of NEXT MAKE.\nAnatomy (must match the reference images exactly):\n- Rounded helmet-like head, wider than tall, with two small rounded ear pods on the sides of the head and a small antenna ball on top.\n- Large white rounded face-screen covering most of the face.\n- Two black oval eyes and a small gentle smile on the white screen.\n- Small trapezoid torso with the NEXT MAKE chest mark: a navy (#004F8D) double-peak \"M\" logo (two triangular mountain shapes).\n- Segmented ball-joint arms with round elbows and mitten hands.\n- Short segmented legs with rounded boots.\nMood: friendly, curious, encouraging. Kid-safe.\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: this is the player's own NexMax as a small pixel-art RPG party member, in its OWN body colour and outfit. Draw it as a chibi pixel-art sprite: sky-BLUE body (#64B5F6), round glasses on the face-screen, a navy tie, holding a clipboard and a pen. This is the FEMALE version: long eyelashes on the eyes, a small flower on the side of the head, and a short pleated skirt in the body colour (keep everything else the same). The SECOND reference image shows exactly this colour and outfit — follow it. The FIRST reference shows the basic NexMax body shape. Use the THIRD reference image only for the pixel-art style and outline (do NOT copy its pink colour or balloons unless the description above says so). Keep the navy double-peak chest mark visible. Never draw a white or plain robot.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 64x64 art pixels and enlarge it exactly 16x, so each art pixel is a 16x16 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). One character only, full body, centred, filling about 85% of the height, no floor, no shadow.",
+      "text": []
+    },
+    {
+      "out": "nexmax_base",
+      "title": "ネクマックス（タイプ なし）",
+      "refs": ["public/img/characters/nexmax/reference.png", "public/img/quest/nexmax/ENFP.png"],
+      "scene": "Character: \"NexMax\", the official robot mascot of NEXT MAKE.\nAnatomy (must match the reference images exactly):\n- Rounded helmet-like head, wider than tall, with two small rounded ear pods on the sides of the head and a small antenna ball on top.\n- Large white rounded face-screen covering most of the face.\n- Two black oval eyes and a small gentle smile on the white screen.\n- Small trapezoid torso with the NEXT MAKE chest mark: a navy (#004F8D) double-peak \"M\" logo (two triangular mountain shapes).\n- Segmented ball-joint arms with round elbows and mitten hands.\n- Short segmented legs with rounded boots.\nMood: friendly, curious, encouraging. Kid-safe.\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: this is the original light sky-blue NexMax as a small pixel-art RPG party member. Redraw the robot in the FIRST reference image exactly (light sky-blue body, white face screen, navy double-peak chest mark) as a chibi pixel-art sprite, one hand raised cheerfully. Use the SECOND reference image only for the pixel-art style and outline.",
+      "output": "Output: one SQUARE pixel-art sprite, 1024x1024. Draw it at 64x64 art pixels and enlarge it exactly 16x, so each art pixel is a 16x16 block. The whole background is ONE flat solid pure magenta colour (#FF00FF) with nothing else on it (it will be keyed out to transparent). One character only, full body, centred, filling about 85% of the height, no floor, no shadow.",
+      "text": []
+    }
+  ]
+}
