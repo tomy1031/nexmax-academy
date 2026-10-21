@@ -64,6 +64,11 @@ const KAIHATSU_ORDER = [
     "文字入りの 図（3枚）",
     "zukai の 1枚目を public/img/kaihatsu/ に 置いて から 流す（refs の 3枚目が それを アンカーに する）",
   ],
+  [
+    "kaihatsu_waterfall_agile",
+    "ウォーターフォールと アジャイル（左右 2枚に 分けて 作る）",
+    "1枚で 作ると 字・読み・矢印が 崩れる。できた 2枚は `node scripts/images/join_halves.mjs <左> <右> <出力>` で つないで waterfall_agile.webp に する",
+  ],
 ];
 
 const load = (name) => JSON.parse(readFileSync(join(LEDGER_DIR, `${name}.json`), "utf8"));
@@ -101,7 +106,9 @@ function renderLedgers(out, order, stripPrefix) {
       n += 1;
       out(`### ${n}. ${scene.title}`);
       out();
-      out(`- **出力する 先** … \`${scene.dest}\``);
+      out(
+        `- **出力する 先** … ${scene.dest ? `\`${scene.dest}\`` : "（ほかの 1枚と つないで 置く。台帳の _comment を 見る）"}`,
+      );
       out(`- **書き込む 先** … ${scene.where ?? "（台帳に 未記入）"}`);
       if (scene.text?.length) {
         out(`- **絵の 中の 文字** … ${scene.text.map((t) => `「${t}」`).join("・")}`);
@@ -241,9 +248,15 @@ writeDoc("kaihatsu_絵の作り直し台帳", (out) => {
   out("**テスト／デプロイ／保守運用の 名前が 上下 2回 くり返されて いる**。");
   out("同じ 絵の 開発の コマには **Git の ロゴ**（実在の ブランドマーク）も 写り込んで いる。");
   out();
-  out("作り直しの 方針: **説明の 骨は 旧アプリの 絵の まま 保ち**（2026-09-03 の 決まり");
-  out("「前と同じ内容の画像に」）、英語の 副題と 説明文だけを 外す。絵に 書く ことばは 本文の");
-  out("カードと 同じ 語だけに する。2026-10-21 に 9枚 作り直した。");
+  out("作り直しの 方針: **旧アプリの 絵に ある 日本語は 1つも 落とさない**（下の 段の 項目・");
+  out(
+    "受け取る もの と 渡す もの・内訳・1行の 説明まで）。外すのは 英語の 副題と 英語の 説明だけ。",
+  );
+  out("作る 前に 旧の 絵を 拡大して 日本語を 全部 書き出し、作った あとに 1つずつ 突き合わせる。");
+  out(
+    "2026-10-21 の 1回目は「名前だけ 大きく」の まま 作って 要件定義の 中の 要求定義などを 落とし、",
+  );
+  out("tomy さんに「致命的」と 言われて 作り直した。");
   out();
   out("## 作業する 場所");
   out();
@@ -262,7 +275,9 @@ writeDoc("kaihatsu_絵の作り直し台帳", (out) => {
   out();
   out("## 置き場所の 決まり");
   out();
-  out("9枚 ぜんぶ `public/img/kaihatsu/<名前>.webp` に **同じ 名前で 上書き**する。");
+  out(
+    "9枚 ぜんぶ `public/img/kaihatsu/<名前>.webp` に **同じ 名前で 上書き**する（ウォーターフォールと アジャイルは 左右 2枚を つないでから）。",
+  );
   out("PNG で 出る ので 変換してから 置く: `cwebp -q 82 -blend_alpha 0xffffff in.png -o out.webp`");
   out();
   out("**`scripts/gen_kaihatsu_content.mjs` は 走らせない。** 教材データより 古く、走らせると");
