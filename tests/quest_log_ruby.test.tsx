@@ -45,8 +45,8 @@ describe("ログの 箱の ルビ", () => {
   });
 
   it("教材の 字（解説の 文）も 同じ 箱で 読める", () => {
-    const html = render("【いちばん いい 手】お客様の希望を正しく理解できた！");
-    expect(html).toContain("<ruby>手<rt>て</rt></ruby>");
+    const html = render("【大正解！】お客様の希望を正しく理解できた！");
+    expect(html).toContain("<ruby>大正解<rt>だいせいかい</rt></ruby>");
     expect(html).toContain("<ruby>客様<rt>きゃくさま</rt></ruby>");
     expect(html).toContain("<ruby>希望<rt>きぼう</rt></ruby>");
   });
