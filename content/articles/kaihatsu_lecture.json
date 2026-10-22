@@ -45,38 +45,38 @@
       "columns": 3,
       "items": [
         {
-          "badge": "1",
-          "title": "要件定義",
+          "label": "1",
+          "title": "要件定義（Requirements Definition）",
           "text": "何を 作りたいかを 決めます。"
         },
         {
-          "badge": "2",
-          "title": "見積もり",
+          "label": "2",
+          "title": "見積もり（Estimation）",
           "text": "費用と スケジュールを 出します。"
         },
         {
-          "badge": "3",
-          "title": "設計",
+          "label": "3",
+          "title": "設計（Design）",
           "text": "画面ごとに どんな 処理が 要るかを 書きます。"
         },
         {
-          "badge": "4",
-          "title": "開発",
+          "label": "4",
+          "title": "開発（Development）",
           "text": "実際に プログラムを 書きます。"
         },
         {
-          "badge": "5",
-          "title": "テスト",
+          "label": "5",
+          "title": "テスト（Testing）",
           "text": "正しく 動くか 確認します。"
         },
         {
-          "badge": "6",
-          "title": "デプロイ",
+          "label": "6",
+          "title": "デプロイ（Deployment）",
           "text": "サーバーに 上げて、みんなが 使えるように します。"
         },
         {
-          "badge": "7",
-          "title": "保守運用",
+          "label": "7",
+          "title": "保守運用（Maintenance & Operation）",
           "text": "バグや サーバーを 見て、動き続けるように 守ります。"
         }
       ]
@@ -84,7 +84,7 @@
     {
       "kind": "heading",
       "level": 2,
-      "text": "1. 要件定義"
+      "text": "1. 要件定義（Requirements Definition）"
     },
     {
       "kind": "paragraph",
@@ -100,20 +100,21 @@
         "/img/kaihatsu/dev_process.webp"
       ],
       "status": "done",
-      "caption": "要件定義の ようす"
+      "caption": "要件定義の ようす",
+      "size": "wide"
     },
     {
       "kind": "cards",
       "columns": 2,
       "items": [
         {
-          "badge": "📋",
-          "title": "要求定義",
+          "icon": "📋",
+          "title": "要求定義（Business Requirements）",
           "text": "まず お客様と 話します。「システムで 何を したいのか」「どんな 課題を 解決したいのか」という ゴールを 明確に します。"
         },
         {
-          "badge": "⚙️",
-          "title": "システム要件定義",
+          "icon": "⚙️",
+          "title": "システム要件定義（System Requirements）",
           "text": "要望を もとに、要る 機能を 決めます。ログインや 決済などの「機能要件」と、セキュリティや 処理速度などの「非機能要件」が あります。"
         }
       ]
@@ -121,7 +122,7 @@
     {
       "kind": "heading",
       "level": 2,
-      "text": "2. 見積もり"
+      "text": "2. 見積もり（Estimation）"
     },
     {
       "kind": "paragraph",
@@ -137,20 +138,21 @@
         "/img/kaihatsu/dev_process.webp"
       ],
       "status": "done",
-      "caption": "見積もりの ようす"
+      "caption": "見積もりの ようす",
+      "size": "wide"
     },
     {
       "kind": "cards",
       "columns": 2,
       "items": [
         {
-          "badge": "🧩",
-          "title": "作業を 洗い出す",
-          "text": "必要な 作業を 細かく 出します（WBS）。"
+          "icon": "🧩",
+          "title": "作業を 洗い出す（Work Breakdown）",
+          "text": "必要な 作業を 細かく 出します（WBS: Work Breakdown Structure）。"
         },
         {
-          "badge": "🧮",
-          "title": "工数を 計算する",
+          "icon": "🧮",
+          "title": "工数を 計算する（Effort Estimation）",
           "text": "「DB設計」や「環境構築」などに 何時間 かかるかを 計算し、要る 人と 費用を 出します。"
         }
       ]
@@ -158,7 +160,7 @@
     {
       "kind": "heading",
       "level": 2,
-      "text": "3. 設計"
+      "text": "3. 設計（Design）"
     },
     {
       "kind": "paragraph",
@@ -181,13 +183,13 @@
       "columns": 2,
       "items": [
         {
-          "badge": "📐",
-          "title": "基本設計",
+          "icon": "📐",
+          "title": "基本設計（High-level Design）",
           "text": "システム全体の 大きな 仕組みを 決めます。サーバーの 構成や、画面の レイアウト（ワイヤーフレーム）などです。"
         },
         {
-          "badge": "🔍",
-          "title": "詳細設計",
+          "icon": "🔍",
+          "title": "詳細設計（Low-level Design）",
           "text": "基本設計を もとに、コードを 書ける ところまで 細かく 決めます。フローチャートなどを 作ります。"
         }
       ]
@@ -195,7 +197,7 @@
     {
       "kind": "heading",
       "level": 2,
-      "text": "4. 開発"
+      "text": "4. 開発（Development / Coding）"
     },
     {
       "kind": "paragraph",
@@ -211,25 +213,26 @@
         "/img/kaihatsu/dev_process.webp"
       ],
       "status": "done",
-      "caption": "開発の ようす"
+      "caption": "開発の ようす",
+      "size": "wide"
     },
     {
       "kind": "cards",
       "columns": 3,
       "items": [
         {
-          "badge": "💻",
-          "title": "コーディング",
+          "icon": "💻",
+          "title": "コーディング（Coding）",
           "text": "エンジニアが 手分けして コードを 書き、機能を 作ります。"
         },
         {
-          "badge": "🔀",
-          "title": "バージョン管理",
+          "icon": "🔀",
+          "title": "バージョン管理（Version Control）",
           "text": "GitHubなどで、誰が どこを 変えたかの 履歴を 残しながら 進めます。"
         },
         {
-          "badge": "📊",
-          "title": "進捗管理",
+          "icon": "📊",
+          "title": "進捗管理（Progress Management）",
           "text": "どこまで できたかを チームで 共有し、予定どおりかを 確認します。"
         }
       ]
@@ -237,7 +240,7 @@
     {
       "kind": "heading",
       "level": 2,
-      "text": "5. テスト"
+      "text": "5. テスト（Testing）"
     },
     {
       "kind": "paragraph",
@@ -260,18 +263,18 @@
       "columns": 3,
       "items": [
         {
-          "badge": "🧩",
-          "title": "単体テスト",
+          "icon": "🧩",
+          "title": "単体テスト（Unit Test）",
           "text": "ボタンや フォームなど、1つ1つの 機能を 個別に たしかめます。"
         },
         {
-          "badge": "🔗",
-          "title": "結合テスト",
+          "icon": "🔗",
+          "title": "結合テスト（Integration Test）",
           "text": "複数の 機能を 組みあわせて、データが 正しく 流れるかを たしかめます。"
         },
         {
-          "badge": "🖥️",
-          "title": "受け入れテスト",
+          "icon": "🖥️",
+          "title": "受け入れテスト（Acceptance Test）",
           "text": "お客様が 見て、要望どおりかを 最後に たしかめます。"
         }
       ]
@@ -284,7 +287,7 @@
     {
       "kind": "heading",
       "level": 2,
-      "text": "6. デプロイ"
+      "text": "6. デプロイ（Deployment）"
     },
     {
       "kind": "paragraph",
@@ -299,25 +302,26 @@
         "/img/articles/yuurei_nexttalent/flow.webp"
       ],
       "status": "done",
-      "caption": "デプロイの 4つの 場面"
+      "caption": "デプロイの 4つの 場面",
+      "size": "wide"
     },
     {
       "kind": "cards",
       "columns": 3,
       "items": [
         {
-          "badge": "📦",
-          "title": "デプロイ準備",
+          "icon": "📦",
+          "title": "デプロイ準備（Preparation）",
           "text": "本番環境に 持っていく ために、サーバーなどを 用意します。"
         },
         {
-          "badge": "🚀",
-          "title": "デプロイ実行",
+          "icon": "🚀",
+          "title": "デプロイ実行（Execution）",
           "text": "用意した ものを 本番の サーバーへ 送り、動かします。"
         },
         {
-          "badge": "✅",
-          "title": "稼働確認",
+          "icon": "✅",
+          "title": "稼働確認（Operation Check）",
           "text": "本番で 画面が 正しく 出るか、動いているかを 最後に たしかめます。"
         }
       ]
@@ -325,7 +329,7 @@
     {
       "kind": "heading",
       "level": 2,
-      "text": "7. 保守運用"
+      "text": "7. 保守運用（Maintenance & Operation）"
     },
     {
       "kind": "paragraph",
@@ -348,23 +352,23 @@
       "columns": 2,
       "items": [
         {
-          "badge": "📡",
-          "title": "システム監視",
+          "icon": "📡",
+          "title": "システム監視（System Monitoring）",
           "text": "サーバーの 負荷や アクセスを 見て、異常が ないか 見ます。"
         },
         {
-          "badge": "🔧",
-          "title": "障害対応",
+          "icon": "🔧",
+          "title": "障害対応（Incident Response）",
           "text": "エラーが 起きたら、原因を 見つけて すぐに 復旧します。"
         },
         {
-          "badge": "🔄",
-          "title": "システム更新",
+          "icon": "🔄",
+          "title": "システム更新（System Update）",
           "text": "OSの アップデートや セキュリティパッチを 定期的に 当てます。"
         },
         {
-          "badge": "📈",
-          "title": "改善提案",
+          "icon": "📈",
+          "title": "改善提案（Improvement Proposal）",
           "text": "データから 良く できる ところを 見つけて、もっと 使いやすく します。"
         }
       ]
@@ -391,37 +395,74 @@
       "caption": "ウォーターフォールと アジャイルの ちがい"
     },
     {
+      "kind": "heading",
+      "level": 3,
+      "text": "💧 ウォーターフォール（Waterfall）"
+    },
+    {
+      "kind": "paragraph",
+      "text": "左の 絵は「ウォーターフォール」です。英語で「滝（上から 下に 水が 落ちる）」という 意味です。"
+    },
+    {
       "kind": "cards",
       "columns": 2,
       "items": [
         {
-          "badge": "💧",
-          "title": "ウォーターフォール",
-          "text": "英語で「滝」です。1の 要件定義から 6の デプロイまで、階段を 降りるように 上から 順番に 終わらせます。前が 終わらないと 次に 進みません。"
+          "icon": "❓",
+          "title": "どんな 進め方？",
+          "text": "前に 勉強した「1. 要件定義」から「6. デプロイ」までを、階段を 降りるように、上から 順番に 1つずつ 終わらせます。"
         },
         {
-          "badge": "🔄",
-          "title": "アジャイル",
-          "text": "英語で「素早い」です。全部を 一度に 作らないで、小さな 機能を 何度も くり返して 作ります。短い 期間（スプリント）で 一回りします。"
+          "icon": "📋",
+          "title": "特徴",
+          "text": "最初に 全部の 設計を しっかり 決めてから、プログラムを 書きます。前の 工程（たとえば「設計」）が 全部 終わらないと、次の 工程（「開発」）に 進みません。"
+        },
+        {
+          "icon": "✅",
+          "title": "いいところ",
+          "text": "「いつ、何が 終わるか」という スケジュールや お金の 計算が 分かりやすいです。"
+        },
+        {
+          "icon": "⚠️",
+          "title": "大変な ところ",
+          "text": "最後に システムが 完成してから ユーザーが 見るので、途中で「やっぱり 少し 変えたい！」と 思っても、元に 戻って 直すのが とても 大変です。"
         }
       ]
     },
     {
-      "kind": "compare",
-      "before": {
-        "title": "💧 ウォーターフォールの ところ",
-        "lines": [
-          "✅ いつ 何が 終わるかが 分かりやすいです。スケジュールと 費用の 見とおしが 立ちます。",
-          "⚠️ 最後に できあがるので、途中で 変えたく なると 戻るのが 大変です。"
-        ]
-      },
-      "after": {
-        "title": "🔄 アジャイルの ところ",
-        "lines": [
-          "✅ ユーザーの 意見を 聞いてから 改善するので、途中の 変更に 強いです。",
-          "⚠️ 予定が よく 変わるので、全体が いつ 完成するかを 見るのが 少し 難しいです。"
-        ]
-      }
+      "kind": "heading",
+      "level": 3,
+      "text": "🔄 アジャイル（Agile）"
+    },
+    {
+      "kind": "paragraph",
+      "text": "右の 絵は「アジャイル」です。英語で「素早い」という 意味です。"
+    },
+    {
+      "kind": "cards",
+      "columns": 2,
+      "items": [
+        {
+          "icon": "❓",
+          "title": "どんな 進め方？",
+          "text": "右の 絵の 矢印が ぐるぐる 回って いるように、システムを 全部 一度に 作るのでは なく、「小さな 機能」を 少しずつ 何度も くり返して 作ります。"
+        },
+        {
+          "icon": "📋",
+          "title": "特徴",
+          "text": "1つの 小さな 機能に ついて、「要件定義 → 設計 → 開発 → テスト」を 短い 期間（スプリントと 言います）で 終わらせます。そして、すぐに ユーザーに 見て もらいます。"
+        },
+        {
+          "icon": "✅",
+          "title": "いいところ",
+          "text": "ユーザーの 意見（フィードバック）を 聞いてから「振り返り（改善）」を するので、途中で「ここを 変えたい！」と 言われても、すぐに 直せます。"
+        },
+        {
+          "icon": "⚠️",
+          "title": "大変な ところ",
+          "text": "どんどん 予定が 変わって いく ことが あるので、システム全体が いつ 完成するのか、スケジュールを 管理するのが 少し 難しく なります。"
+        }
+      ]
     },
     {
       "kind": "callout",
@@ -1133,6 +1174,58 @@
     [
       "本",
       "ほん"
+    ],
+    [
+      "意味",
+      "いみ"
+    ],
+    [
+      "勉強",
+      "べんきょう"
+    ],
+    [
+      "特徴",
+      "とくちょう"
+    ],
+    [
+      "最初",
+      "さいしょ"
+    ],
+    [
+      "矢印",
+      "やじるし"
+    ],
+    [
+      "下",
+      "した"
+    ],
+    [
+      "水",
+      "みず"
+    ],
+    [
+      "落",
+      "お"
+    ],
+    [
+      "金",
+      "かね"
+    ],
+    [
+      "思",
+      "おも"
+    ],
+    [
+      "元",
+      "もと"
+    ],
+    [
+      "言",
+      "い"
+    ],
+    [
+      "振",
+      "ふ"
     ]
   ]
 }
