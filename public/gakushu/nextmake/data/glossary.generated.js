@@ -123,6 +123,12 @@ export const GLOSSARY = [
     en: "Web",
   },
   {
+    term: "受付",
+    reading: "うけつけ",
+    meaning: "会社の 入口で、来た 人の 用事を 聞く 場所です。",
+    en: "Reception desk",
+  },
+  {
     term: "売上",
     reading: "うりあげ",
     meaning: "売って 入って きた お金です。",
@@ -2042,6 +2048,12 @@ export const GLOSSARY = [
     reading: "めにゅー",
     meaning: "お店の 料理と 値段を ならべた ものです。",
     en: "Menu",
+  },
+  {
+    term: "メモ",
+    reading: "めも",
+    meaning: "わすれない ように、短く 書いて おく ものです。",
+    en: "Note",
   },
   {
     term: "目的",

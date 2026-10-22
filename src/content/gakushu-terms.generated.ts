@@ -441,5 +441,7 @@ export const GAKUSHU_TERMS: Readonly<Record<string, readonly string[]>> = {
     "shashin",
     "ichibu",
     "yousu",
+    "uketsuke",
+    "memo",
   ],
 };

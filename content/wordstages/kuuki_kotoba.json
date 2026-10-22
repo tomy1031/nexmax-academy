@@ -1,0 +1,114 @@
+{
+  "kind": "wordstage",
+  "id": "kuuki_kotoba",
+  "title": "空気を 読む ことば",
+  "description": "空気読みの ゲームに 出て くる、会社の ことばです。名刺・上座・受付 など、お客さまの 会社に 行く ときにも 使います。",
+  "fieldSequence": [
+    "forest",
+    "sky",
+    "space"
+  ],
+  "questionCount": 53,
+  "passRate": 80,
+  "furigana": [
+    [
+      "空気読み",
+      "くうきよみ"
+    ],
+    [
+      "空気",
+      "くうき"
+    ],
+    [
+      "読む",
+      "よむ"
+    ],
+    [
+      "出て",
+      "でて"
+    ],
+    [
+      "会社",
+      "かいしゃ"
+    ],
+    [
+      "名刺",
+      "めいし"
+    ],
+    [
+      "上座",
+      "かみざ"
+    ],
+    [
+      "受付",
+      "うけつけ"
+    ],
+    [
+      "客",
+      "きゃく"
+    ],
+    [
+      "行く",
+      "いく"
+    ],
+    [
+      "使います",
+      "つかいます"
+    ]
+  ],
+  "wordIds": [
+    "meishi",
+    "kamiza",
+    "kaigi",
+    "uketsuke",
+    "taishutsu",
+    "okure",
+    "ojigi",
+    "manaa",
+    "kakunin",
+    "kyouyuu",
+    "shinsei",
+    "senpou",
+    "kentou",
+    "hikitsugi",
+    "hanko",
+    "douryou",
+    "shucchou",
+    "ken",
+    "yuukyuu",
+    "tantou",
+    "junchou",
+    "uchiawase",
+    "chourei",
+    "shiryou",
+    "kooru",
+    "ringisho",
+    "chikoku",
+    "shinjin",
+    "kyakusaki",
+    "houmon",
+    "maemuki",
+    "keiyaku",
+    "hinshitsu",
+    "shiyou",
+    "heisha",
+    "kabushikigaisha",
+    "shazai",
+    "okakekudasai",
+    "shikyuu",
+    "shounin",
+    "tasuku",
+    "memo",
+    "kotoba",
+    "zangyou",
+    "mudankekkin",
+    "chienshoumeisho",
+    "kenshuu",
+    "sekkeisho",
+    "shain",
+    "nyuusha",
+    "temiyage",
+    "tatakidai",
+    "konki"
+  ]
+}
