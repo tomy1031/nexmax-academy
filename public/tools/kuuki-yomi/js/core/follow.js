@@ -11,11 +11,11 @@
   KY.FOLLOW = [
     /* ---------- people & the company ---------- */
     ['役職', 'Job title'],
-    ['社長', 'President'],
-    ['部長', 'General manager'],
-    ['課長', 'Manager'],
-    ['係長', 'Assistant manager'],
-    ['主任', 'Chief'],
+    ['社長', 'President', /^さん/],
+    ['部長', 'General manager', /^さん/],
+    ['課長', 'Manager', /^さん/],
+    ['係長', 'Assistant manager', /^さん/],
+    ['主任', 'Supervisor', /^さん/],
     ['上司', 'Boss'],
     ['先輩', 'Senior'],
     ['先方', 'The other company'],
@@ -26,8 +26,8 @@
     ['同僚', 'Colleague'],
     ['株式会社', 'Co., Ltd.'],
     ['営業部', 'Sales department'],
-    ['担当', 'Person in charge'],
-    ['係', 'Person in charge'],
+    ['担当', 'In charge'],
+    ['係', 'In charge'],
 
     /* ---------- visitors & manners ---------- */
     ['応接室', 'Reception room'],
@@ -46,9 +46,9 @@
     ['案内', 'Showing the way'],
     ['客先', "Client's office"],
     ['客先訪問', 'Client visit'],
-    ['客様', 'Customer'],
+    ['客様', 'Client'],
     ['訪問', 'Visit'],
-    ['用件', 'Purpose'],
+    ['用件', 'Purpose of visit'],
     ['手土産', 'Gift for a visit'],
     ['心ばかりですが', 'Just a small token'],
     ['おかけください', 'Please have a seat'],
@@ -57,7 +57,7 @@
     ['出張', 'Business trip'],
 
     /* ---------- reporting & daily work ---------- */
-    ['報連相', 'Report, inform, consult'],
+    ['報連相', 'Report, contact, consult'],
     ['報告', 'Report'],
     ['連絡', 'Contact'],
     ['連絡先', 'Contact info'],
@@ -84,13 +84,13 @@
     ['引き継ぎ', 'Handover', /^ま[すしせ]/],
     ['引き継ぎます', 'Hand over'],
     ['契約', 'Contract'],
-    ['退出', 'Leave'],
+    ['退出', 'Leaving'],
     ['件', 'Matter'],
 
     /* ---------- company rules & paperwork ---------- */
     ['稟議', 'Approval process'],
     ['稟議書', 'Approval form'],
-    ['申請', 'Application'],
+    ['申請', 'Request'],
     ['有給', 'Paid leave'],
     ['有給申請', 'Paid leave request'],
     ['就業規則', 'Work rules'],
@@ -113,6 +113,7 @@
 
     /* ---------- set phrases ---------- */
     ['失礼いたします', 'Excuse me'],
+    [['お先に失礼します', 'お先に 失礼します'], "Excuse me, I'm leaving first"],
     ['失礼します', 'Excuse me'],
     ['申します', 'My name is'],
     ['頂戴いたします', 'I humbly receive it'],
@@ -121,7 +122,7 @@
     ['承知', 'Understood'],
     ['了解', 'Got it'],
     ['お疲れ様です', 'Thanks for your work'],
-    ['ご苦労様', 'Thanks for your work (to a junior)'],
+    [['ご苦労様でした', 'ご苦労様'], 'Good work – to juniors'],
     [['お忙しいところ すみません', 'お忙しいところ、すみません', 'お忙しいところすみません'], 'Sorry to bother you'],
     ['本日', 'Today'],
     [['検討します', '検討いたします'], 'We will consider it'],
@@ -131,7 +132,7 @@
     /* ---------- IT ---------- */
     ['仕様', 'Specification'],
     ['仕様変更', 'Spec change'],
-    ['設計書', 'Design document'],
+    ['設計書', 'Design document', /^\.[a-z]/],
     ['方眼紙', 'Graph paper'],
     ['設定', 'Settings'],
     ['本番', 'Production'],
