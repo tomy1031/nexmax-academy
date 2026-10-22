@@ -40,7 +40,7 @@
         const y = trayY + row * 50;
         const node = root.document.createElement('div');
         node.className = 'ocard';
-        node.innerHTML = KY.text.html(cards[ci].text, { gloss: false });
+        node.innerHTML = KY.text.html(cards[ci].text, { gloss: false, follow: 'below' });
         const it = scene._track(node, x, y, 'center');
         return { card: cards[ci], node, it, home: { x, y }, slot: null };
       });

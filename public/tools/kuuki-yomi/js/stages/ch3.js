@@ -76,7 +76,7 @@
   function pill(scene, x, y, T, player) {
     const node = root.document.createElement('div');
     node.className = 'tag' + (player ? ' player' : '');
-    node.innerHTML = KY.text.html(T, { gloss: false });
+    node.innerHTML = KY.text.html(T, { gloss: false, follow: 'below' });
     scene._track(node, x, y, 'center');
     return node;
   }

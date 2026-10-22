@@ -318,8 +318,8 @@
     /* speech bubble. x,y = point the tail touches (scene coords) */
     bubble({ x, y, text, who = null, kind = 'say', tail = 'down', dur = 0, cls = '' }) {
       const node = div(`bubble ${kind} tail-${tail} ${cls}`.trim());
-      node.innerHTML = (who ? `<div class="who">${KY.text.html(who, { gloss: false })}</div>` : '') +
-        `<div class="body">${KY.text.html(text, { gloss: false })}</div><i class="tail"></i>`;
+      node.innerHTML = (who ? `<div class="who">${KY.text.html(who, { gloss: false, follow: true })}</div>` : '') +
+        `<div class="body">${KY.text.html(text, { gloss: false, follow: true })}</div><i class="tail"></i>`;
       const mode = tail === 'up' ? 'up' : tail === 'left' ? 'left' : tail === 'right' ? 'right' : tail === 'none' ? 'center' : 'down';
       this._track(node, x, y, mode);
       node.classList.add('in');
@@ -336,7 +336,7 @@
     /* role tag that follows a person, e.g. {jp:'{部長|ぶちょう}', en:'Director'} */
     tag(person, text, opts = {}) {
       const node = div('tag' + (opts.player ? ' player' : ''));
-      node.innerHTML = KY.text.html(text, { gloss: false });
+      node.innerHTML = KY.text.html(text, { gloss: false, follow: 'below' });
       const a = person.anchor();
       const it = this._track(node, a.x, a.y - 2, 'down', () => { const b = person.anchor(); return { x: b.x, y: b.y - 2 }; });
       return it.node;
@@ -345,7 +345,7 @@
     /* small static label (e.g. "入口 / Door") */
     label(x, y, text, cls = '') {
       const node = div('label ' + cls);
-      node.innerHTML = KY.text.html(text, { gloss: false });
+      node.innerHTML = KY.text.html(text, { gloss: false, follow: 'below' });
       this._track(node, x, y, 'center');
       return node;
     }
@@ -353,7 +353,7 @@
     /* narration strip at the bottom */
     caption(text) {
       const node = div('caption');
-      node.innerHTML = KY.text.html(text, { gloss: false });
+      node.innerHTML = KY.text.html(text, { gloss: false, follow: true });
       this.overlay.append(node);
       return node;
     }
@@ -361,7 +361,7 @@
     /* show a big stamp-like popup in the scene (e.g. "乾杯！") */
     pop(x, y, text, cls = '') {
       const node = div('pop ' + cls);
-      node.innerHTML = KY.text.html(text, { gloss: false });
+      node.innerHTML = KY.text.html(text, { gloss: false, follow: 'below' });
       this._track(node, x, y, 'center');
       this.after(1400, () => this.removeOverlay(node));
       return node;

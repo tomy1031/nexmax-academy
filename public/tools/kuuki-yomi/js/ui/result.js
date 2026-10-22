@@ -52,7 +52,7 @@
         <div class="rs-body">
           <div class="rs-ch">
             <div class="rs-ch-no inl">${UI.L(S.chapter)} ${chapter} · ${ch.time}</div>
-            <h2 class="rs-ch-title">${UI.T(ch.title)}</h2>
+            <h2 class="rs-ch-title">${UI.TE(ch.title)}</h2>
           </div>
           <ol class="rs-stamps" style="--per:${per}">${cells}</ol>
           <div class="rs-score">
