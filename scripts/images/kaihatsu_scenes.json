@@ -1,37 +1,88 @@
 {
-  "refs": [],
-  "_comment": "開発の 工程の **場面の 絵**（文字なし）。本文と カードが ことばを 持って いるので、絵は 場面だけを 見せる。**kaihatsu_zukai を 先に 流して から**（1枚目が 絵柄の アンカーに なる。gen_images.mjs が 自動で 足す）。",
-  "style": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Every picture is a REAL PLACE seen from a natural camera angle, and the subject FILLS THE WHOLE FRAME.",
-  "noText": "No text, no letters, no kanji, no kana, no numbers anywhere in the image. Screens, papers, whiteboards, books and signs are blank or show only soft abstract shapes and simple pictures. No watermark, no signature, no logo, no speech balloons, no floating symbols such as question marks, exclamation marks, arrows, light bulbs, stars or hearts.",
-  "negative": "Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+  "refs": [
+    "public/img/hourensou/houkoku/hourenso.webp",
+    "public/img/articles/yuurei_nexttalent/flow.webp",
+    "public/img/kaihatsu/dev_process.webp"
+  ],
+  "_comment": "開発の 工程の 残り 3枚（要件定義・見積もり・開発）。2026-10-21 に 2回 作った（いきさつは kaihatsu_zukai.json の _comment）。\n旧アプリの 3枚の 日本語を 全部 入れた。英語だけの 部品の 名前は 日本語に 直した（User management → ユーザー管理、Inventory → 在庫管理、Availability → 可用性、Scalability → 拡張性 など）。\n見積もりの 作業の 時間は 旧の 絵の 数（DB設計 10h・API開発 30h・テスト 15h）を そのまま 使う。旧の 読めない 役割名（構築調整リード？）は 落とし、開発リード・テストリードだけ 残した。\n\n**kaihatsu_zukai の 1枚目（dev_process）を `public/img/kaihatsu/dev_process.webp` に 置いて から 流す**——`refs` の 3枚目が それを 絵柄の アンカーに する。",
+  "style": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. This is a TEACHING picture, not a mood picture: every part of the explanation must be readable from the picture alone. This one is an information-rich teaching diagram, like a well-designed textbook page: a clear title band, rounded cream panels with sky-blue borders, thick sky-blue arrows that show the order, small lively scenes of people doing each job, and short Japanese labels and one-line explanations placed right next to the thing they explain. Keep a tidy grid with even spacing so that a lot of information still reads cleanly. Roles are told apart by clothes, the same in every picture: ENGINEERS wear light sky-blue shirts or soft green cardigans; the CUSTOMER always wears a dark navy business suit and is the only person in a suit. Screens show only simple shapes — grey bars, coloured blocks, simple buttons, simple graphs — never readable writing except the words listed below. The attached pictures show the drawing style of this app: match their linework, colours, rounded cream label panels and lettering style exactly.",
+  "noText": "Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words and sentences listed above, each exactly once and in the place the scene describes, and no other writing at all. Titles and labels are printed large and bold; one-line explanations are printed smaller in a plain dark rounded gothic font, wrapped onto two or three short lines when needed, but still sharp and easy to read. Everything is horizontal. Each item is given with its reading in brackets: the bracket is NOT printed — the reading is printed as small hiragana furigana directly above the kanji it belongs to, centred over that kanji, clearly separated from it, at about 45% of the kanji height. EVERY kanji gets furigana, including easy ones such as 人, 何, 出, 時間. Furigana sit ONLY above kanji: never above hiragana, katakana, Latin letters or digits. Spell every character exactly as given, keep the spaces between words as given, and keep Japanese punctuation such as 、。「」（） exactly. No English words or subtitles anywhere except the Latin letters inside the given items (such as WBS, DB, API, Git, Web). No other letters, numbers, logos or watermarks anywhere in the picture.",
+  "negative": "Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind (no Git logo, no GitHub cat), national flags, country outlines, maps with borders, English captions or subtitles, garbled or invented Japanese characters, 3D render, flat vector icon art with no people, robots, mascots. THE ATTACHED PICTURES ARE ONLY DRAWING-STYLE GUIDES — never copy their layout, their objects, their people or ANY of their words (never write 報告, 連絡, 相談, 学生検索, 学生詳細 or スキルグラフ, and never copy the seven stage cards of the third picture).",
   "output": "1536x1024",
   "scenes": [
     {
       "out": "youken_teigi",
       "dest": "public/img/kaihatsu/youken_teigi.webp",
-      "title": "要件定義の ようす（お客様に 聞く）",
-      "where": "scripts/gen_kaihatsu_content.mjs kaihatsu_lecture 「1. 要件定義」の image",
-      "priority": "B",
-      "scene": "A bright meeting room with a wide window. A customer in a jacket sits on one side of the table talking with open hands, clearly explaining what she wants, while two engineers sit facing her — one leaning in and listening closely, the other writing on a notepad. A large blank whiteboard stands behind them and a mug sits on the table. Warm daylight, an easy friendly mood.",
-      "text": []
+      "title": "要件定義の 2つの 段階（要求定義 → システム要件定義）",
+      "where": "content/articles/kaihatsu_lecture.json 「1. 要件定義」の image",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: 要件定義 is made of two steps INSIDE it — first 要求定義, where the customer says what they want to do with the system, then システム要件定義, where that wish is turned into the list of things the system must have, split into 機能要件 and 非機能要件. A wide title band across the top: 要件定義, with a soft bracket hanging from it that spans BOTH halves below, so it is obvious that both halves belong to 要件定義. Below it, one wide picture split into two halves by a soft cream gutter, with one thick sky-blue arrow crossing the gutter from left to right. LEFT HALF, on a pale sky-blue ground, sub-title panel: 要求定義. The customer in a navy suit sits at a meeting table explaining with one open hand; an engineer sits facing the customer, listening and writing on a notepad. Behind them a board shows the customer's wish as simple pictures: a small shop, an arrow, a smartphone with a shopping basket, and a rising graph. RIGHT HALF, on a pale cream ground, sub-title panel: システム要件定義. An engineer works on a tablet at a desk, and above the desk float two large rounded white panels side by side. The first panel is titled 機能要件: a small flow of boxes at the top, and under it four small pictures each with its label — a login screen (ログイン), a person icon (ユーザー管理), stacked boxes (在庫管理) and a bank card (決済). The second panel is titled 非機能要件: four small pictures each with its label — a padlock (セキュリティ), a speedometer with its needle far to the right (処理速度), a clock showing it never stops (可用性) and a server stack with arrows growing outward (拡張性).",
+      "text": [
+        "要件定義（ようけんていぎ）",
+        "要求定義（ようきゅうていぎ）",
+        "システム要件定義（システムようけんていぎ）",
+        "機能要件（きのうようけん）",
+        "ログイン",
+        "ユーザー管理（ユーザーかんり）",
+        "在庫管理（ざいこかんり）",
+        "決済（けっさい）",
+        "非機能要件（ひきのうようけん）",
+        "セキュリティ",
+        "処理速度（しょりそくど）",
+        "可用性（かようせい）",
+        "拡張性（かくちょうせい）"
+      ]
     },
     {
       "out": "estimation",
       "dest": "public/img/kaihatsu/estimation.webp",
-      "title": "見積もりの ようす（時間と お金を 出す）",
-      "where": "scripts/gen_kaihatsu_content.mjs kaihatsu_lecture 「2. 見積もり」の image",
-      "priority": "B",
-      "scene": "An engineer sits at a tidy desk working out how long the work will take. One hand rests on a calculator, the other points at a large blank wall calendar beside the desk, and a colleague standing next to him counts something off on his fingers as they talk it through. Sticky notes in soft coral and sky blue are grouped in neat columns on the wall. Warm daylight from the window, a calm and careful mood.",
-      "text": []
+      "title": "見積もりの 流れ（要件定義データ → WBS → 工数 → 費用・スケジュール → 見積もり提案書）",
+      "where": "content/articles/kaihatsu_lecture.json 「2. 見積もり」の image",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: an estimate starts from the finished requirements, lists every piece of work, counts the hours for each piece and who does it, turns that into costs and a schedule, and ends as one proposal document for the customer. A title band across the top: 見積もり プロセス, with its explanation line just under it. Below, six rounded cream panels in two rows of three, joined in reading order by thick sky-blue arrows: 1 → 2 → 3 along the top row, then one long arrow from panel 3 down and back to panel 4 like the next line of a book, then 4 → 5 → 6. TOP ROW. PANEL 1: a stack of documents labelled 要件定義 データ, flowing in. PANEL 2, titled 作業を 洗い出す: engineers stick cards onto a big sheet labelled WBS, one box at the top branching into smaller boxes. PANEL 3, titled 工数を 計算する: three small people cards, each with a clock and a task tag — 開発リード with DB設計 10時間, 開発リード with API開発 30時間, テストリード with テスト 15時間 — and a calculator and a calendar. BOTTOM ROW. PANEL 4, titled 費用: a stacked bar chart with gold coins and a legend of four colours labelled 人件費, ツール, インフラ, 予備費. PANEL 5, titled スケジュール: a timeline chart of coloured bars with milestone flags. PANEL 6: an engineer hands the customer in a navy suit a document titled 見積もり提案書 with three items 予算, 期間 and リスク評価 (a small shield with a check mark).",
+      "text": [
+        "見積もり プロセス（みつもり プロセス）",
+        "要件定義を インプットに、工数、コストを 算出します。（ようけんていぎを インプットに、こうすう、コストを さんしゅつします。）",
+        "要件定義 データ（ようけんていぎ データ）",
+        "作業を 洗い出す（さぎょうを あらいだす）",
+        "WBS",
+        "工数を 計算する（こうすうを けいさんする）",
+        "開発リード（かいはつリード）",
+        "DB設計 10時間（DBせっけい 10じかん）",
+        "API開発 30時間（APIかいはつ 30じかん）",
+        "テストリード",
+        "テスト 15時間（テスト 15じかん）",
+        "費用（ひよう）",
+        "人件費（じんけんひ）",
+        "ツール",
+        "インフラ",
+        "予備費（よびひ）",
+        "スケジュール",
+        "見積もり提案書（みつもりていあんしょ）",
+        "予算（よさん）",
+        "期間（きかん）",
+        "リスク評価（リスクひょうか）"
+      ]
     },
     {
       "out": "development",
       "dest": "public/img/kaihatsu/development.webp",
-      "title": "開発の ようす（手分けして 作る）",
-      "where": "scripts/gen_kaihatsu_content.mjs kaihatsu_lecture 「4. 開発」の image",
-      "priority": "B",
-      "scene": "Three engineers work side by side at a long shared desk of two-monitor workstations, each on their own part of the same job. The one in the middle turns to the one on her right to check something on his screen and he points at it, while the third keeps typing. A blank board on the wall behind them carries a neat row of small cards moved into three columns. Mugs and a small plant on the desk, warm daylight, a busy but relaxed mood.",
-      "text": []
+      "title": "開発の 流れ（詳細設計データ → コーディング・バージョン管理・進捗管理 → 開発完了データ）",
+      "where": "content/articles/kaihatsu_lecture.json 「4. 開発」の image",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: development takes the detailed design as its input, the engineers write the code for each function while keeping a history of every change and checking how far they have got, and the output is the finished program handed on to testing. A title band across the top: 開発 プロセス, with its explanation line just under it. A thick sky-blue arrow comes in from the left edge with the label 詳細設計 データ beside its tail, and another thick arrow leaves at the right edge with the label 開発完了 データ beside it. Between them, three rounded cream panels in a row, each with its Japanese name printed large across the top. PANEL 1 コーディング: engineers at desks with two monitors each type code, each screen a different colour of code bars — they split the work by function. PANEL 2 バージョン管理: a big screen titled Git shows one long timeline of dots with a short branch that splits off and joins back, and a tiny round face picture next to some dots showing who made each change. PANEL 3 進捗管理: two engineers stand at a board titled 機能マップ with boxes for each function, and a big screen beside it titled 機能の 実装状況 with several progress bars at different lengths.",
+      "text": [
+        "開発 プロセス（かいはつ プロセス）",
+        "設計を もとに、プログラムコードを 記述し、各機能を 実装します。（せっけいを もとに、プログラムコードを きじゅつし、かくきのうを じっそうします。）",
+        "詳細設計 データ（しょうさいせっけい データ）",
+        "コーディング",
+        "バージョン管理（バージョンかんり）",
+        "Git",
+        "進捗管理（しんちょくかんり）",
+        "機能マップ（きのうマップ）",
+        "機能の 実装状況（きのうの じっそうじょうきょう）",
+        "開発完了 データ（かいはつかんりょう データ）"
+      ]
     }
   ]
 }

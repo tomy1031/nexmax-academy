@@ -1,0 +1,79 @@
+{
+  "refs": [
+    "public/img/hourensou/houkoku/hourenso.webp",
+    "public/img/articles/yuurei_nexttalent/flow.webp",
+    "public/img/kaihatsu/dev_process.webp"
+  ],
+  "_comment": "「ウォーターフォールと アジャイル」の 絵（public/img/kaihatsu/waterfall_agile.webp）を **左右 2枚に 分けて** 作る 台帳（2026-10-21）。\n1枚で 35語ちかくを 描かせると、毎回 どこかで 字・読み・矢印が 崩れた（作成が ひらがなに なる・改善を かんびな と 読む・アジャイルの 矢印が 両向きに なる・4 テストが 輪から 外れる）。\n1枚あたりの 語を 半分に して、縦長 1024×1536 で 1枚ずつ 作り、縮めて 横に 並べる:\n\n    node scripts/images/join_halves.mjs <waterfall_half.png> <agile_half.png> <出力.png>\n    cwebp -q 82 -blend_alpha 0xffffff <出力.png> -o public/img/kaihatsu/waterfall_agile.webp\n\n`dest` を 書かない のは、教材の `prompt`（管理画面の「作り直す」）を 1枚分の 説明（kaihatsu_zukai.json の waterfall_agile）の まま に して おく ため。\n**kaihatsu_zukai の dev_process を 置いて から 流す**（refs の 3枚目が 絵柄の アンカー）。",
+  "style": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. This is a TEACHING picture, not a mood picture: every part of the explanation must be readable from the picture alone. This one is an information-rich teaching diagram, like a well-designed textbook page: a clear title band, rounded cream panels with sky-blue borders, thick sky-blue arrows that show the order, small lively scenes of people doing each job, and short Japanese labels and one-line explanations placed right next to the thing they explain. Keep a tidy grid with even spacing so that a lot of information still reads cleanly. Roles are told apart by clothes, the same in every picture: ENGINEERS wear light sky-blue shirts or soft green cardigans; the CUSTOMER always wears a dark navy business suit and is the only person in a suit. Screens show only simple shapes — grey bars, coloured blocks, simple buttons, simple graphs — never readable writing except the words listed below. The attached pictures show the drawing style of this app: match their linework, colours, rounded cream label panels and lettering style exactly.",
+  "noText": "Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words and sentences listed above, each exactly once and in the place the scene describes, and no other writing at all. Titles and labels are printed large and bold; one-line explanations are printed smaller in a plain dark rounded gothic font, wrapped onto two or three short lines when needed, but still sharp and easy to read. Everything is horizontal. Each item is given with its reading in brackets: the bracket is NOT printed — the reading is printed as small hiragana furigana directly above the kanji it belongs to, centred over that kanji, clearly separated from it, at about 45% of the kanji height. EVERY kanji gets furigana, including easy ones such as 人, 何, 出, 時間. Furigana sit ONLY above kanji: never above hiragana, katakana, Latin letters or digits. Spell every character exactly as given, keep the spaces between words as given, and keep Japanese punctuation such as 、。「」（） exactly. No English words or subtitles anywhere except the Latin letters inside the given items (such as WBS, DB, API, Git, Web). No other letters, numbers, logos or watermarks anywhere in the picture.",
+  "negative": "Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind (no Git logo, no GitHub cat), national flags, country outlines, maps with borders, English captions or subtitles, garbled or invented Japanese characters, 3D render, flat vector icon art with no people, robots, mascots. THE ATTACHED PICTURES ARE ONLY DRAWING-STYLE GUIDES — never copy their layout, their objects, their people or ANY of their words (never write 報告, 連絡, 相談, 学生検索, 学生詳細 or スキルグラフ).",
+  "output": "1024x1536",
+  "scenes": [
+    {
+      "out": "waterfall_half",
+      "title": "左半分: ウォーターフォール",
+      "priority": "A",
+      "output": "Output: one PORTRAIT illustration, 1024x1536 (taller than wide). It will be shown as the LEFT or RIGHT half of a wide picture, so keep a soft margin on every side and put nothing important within 30px of the edges.",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: waterfall finishes each stage once, from top to bottom like water falling down stairs, and releases everything at the end. Pale sky-blue ground. Title panel at the top: ウォーターフォール. Below it, a staircase of six wide steps goes down from the top left to the bottom right, with clear water flowing down over the steps and small white arrows pointing down beside them. On each step sits one small engineer doing that stage. To the right of each step sits one cream tag with a coral number badge, the stage name in bold and a short note in smaller letters under it, in this order from the top step to the bottom step: 1 要件定義 / 全範囲の 定義; 2 見積もり / 計算機、タイムライン、予算; 3 設計 / 詳細設計; 4 開発 / コード作成と 構築; 5 テスト / 包括的な テスト; 6 デプロイ / ユーザーへの ソフトウェア提供. At the very bottom, an engineer hands the finished app to the customer in a navy suit, beside a cream banner 最終リリース and a big green round OK badge, both fully inside the picture. Furigana for this picture, exactly: ようけんていぎ above 要件定義; ぜんはんい above 全範囲 and ていぎ above 定義; みつ above 見積; けいさんき above 計算機 and よさん above 予算; せっけい above 設計; しょうさいせっけい above 詳細設計; かいはつ above 開発; さくせい above 作成 and こうちく above 構築; ほうかつてき above 包括的; ていきょう above 提供; さいしゅう above 最終. Every kanji word keeps its KANJI — never write a kanji word in hiragana instead (for example 作成 must stay the two kanji 作成 with さくせい above it).",
+      "text": [
+        "ウォーターフォール",
+        "1",
+        "要件定義（ようけんていぎ）",
+        "全範囲の 定義（ぜんはんいの ていぎ）",
+        "2",
+        "見積もり（みつもり）",
+        "計算機、タイムライン、予算（けいさんき、タイムライン、よさん）",
+        "3",
+        "設計（せっけい）",
+        "詳細設計（しょうさいせっけい）",
+        "4",
+        "開発（かいはつ）",
+        "コード作成と 構築（コードさくせいと こうちく）",
+        "5",
+        "テスト",
+        "包括的な テスト（ほうかつてきな テスト）",
+        "6",
+        "デプロイ",
+        "ユーザーへの ソフトウェア提供（ユーザーへの ソフトウェアていきょう）",
+        "最終リリース（さいしゅうリリース）",
+        "OK"
+      ]
+    },
+    {
+      "out": "agile_half",
+      "title": "右半分: アジャイル",
+      "priority": "A",
+      "output": "Output: one PORTRAIT illustration, 1024x1536 (taller than wide). It will be shown as the LEFT or RIGHT half of a wide picture, so keep a soft margin on every side and put nothing important within 30px of the edges.",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: agile goes round the same circle again and again — each round (a sprint) gives the customer one small working piece, and the customer's feedback starts the next round. Pale cream ground. Title panel at the top: アジャイル. Below it, ONE big ring with seven cream tags placed evenly ON the ring like the numbers on a clock, in clockwise order starting at the top: 1 at the top, 2 upper right, 3 right, 4 lower right, 5 bottom, 6 lower left, 7 upper left. Each tag has a coral number badge, the name in bold and a short note in smaller letters, next to one tiny scene: 1 要件定義 (an engineer at a board of sticky notes); 2 設計 / 簡易な 描画 (quick sketches on paper); 3 開発 / ペアプログラミング、構築 (two engineers coding together at one laptop); 4 テスト / 迅速な テスト (a quick check on a laptop with a green tick); 5 小さな 機能 / 価値の 提供 (an engineer hands a small finished screen to the customer in a navy suit); 6 振り返り / チームが 成果と プロセスを 振り返る (three engineers talking); 7 改善 / 改善を 実施し、次の スプリントを 計画 (an engineer writing a plan). Between every pair of neighbouring tags there is exactly ONE short thick sky-blue arrow with ONE arrowhead, pointing clockwise: 1→2, 2→3, 3→4, 4→5, 5→6, 6→7, 7→1. No other arrows on the ring, no double-headed arrows. Outside the ring on the left, one coral curved arrow with ONE arrowhead runs from the customer at 5 up to tag 1, labelled ユーザー フィードバック. In the empty centre of the ring: スプリント ループ（イテレーション）, and under it three small pill tags in a row: スプリント1, スプリント2, スプリント3. Furigana for this picture, exactly: ようけんていぎ above 要件定義; せっけい above 設計; かんい above 簡易 and びょうが above 描画, with no comma between 簡易な and 描画; かいはつ above 開発; こうちく above 構築; じんそく above 迅速; ちい above 小 and きのう above 機能; かち above 価値 and ていきょう above 提供; ふ above 振 and かえ above 返 in both 振り返り and 振り返る; せいか above 成果; かいぜん above 改善 (both places); じっし above 実施; つぎ above 次; けいかく above 計画. Every kanji word keeps its KANJI — never write a kanji word in hiragana instead (for example 作成 must stay the two kanji 作成 with さくせい above it).",
+      "text": [
+        "アジャイル",
+        "1",
+        "要件定義（ようけんていぎ）",
+        "2",
+        "設計（せっけい）",
+        "簡易な 描画（かんいな びょうが）",
+        "3",
+        "開発（かいはつ）",
+        "ペアプログラミング、構築（ペアプログラミング、こうちく）",
+        "4",
+        "テスト",
+        "迅速な テスト（じんそくな テスト）",
+        "5",
+        "小さな 機能（ちいさな きのう）",
+        "価値の 提供（かちの ていきょう）",
+        "6",
+        "振り返り（ふりかえり）",
+        "チームが 成果と プロセスを 振り返る（チームが せいかと プロセスを ふりかえる）",
+        "7",
+        "改善（かいぜん）",
+        "改善を 実施し、次の スプリントを 計画（かいぜんを じっしし、つぎの スプリントを けいかく）",
+        "ユーザー フィードバック",
+        "スプリント ループ（イテレーション）",
+        "スプリント1",
+        "スプリント2",
+        "スプリント3"
+      ]
+    }
+  ]
+}
