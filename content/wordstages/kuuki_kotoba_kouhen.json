@@ -1,0 +1,97 @@
+{
+  "kind": "wordstage",
+  "id": "kuuki_kotoba_kouhen",
+  "title": "空気を 読む ことば",
+  "description": "空気読みの ゲームの 3章「会議」から 6章「出張と 特別な 場面」までに 出る ことばです。",
+  "label": "後編",
+  "fieldSequence": [
+    "forest",
+    "sky",
+    "space"
+  ],
+  "questionCount": 27,
+  "passRate": 80,
+  "furigana": [
+    [
+      "空気",
+      "くうき"
+    ],
+    [
+      "読む",
+      "よむ"
+    ],
+    [
+      "空気読み",
+      "くうきよみ"
+    ],
+    [
+      "前編",
+      "ぜんぺん"
+    ],
+    [
+      "後編",
+      "こうへん"
+    ],
+    [
+      "章",
+      "しょう"
+    ],
+    [
+      "朝",
+      "あさ"
+    ],
+    [
+      "客先訪問",
+      "きゃくさきほうもん"
+    ],
+    [
+      "会議",
+      "かいぎ"
+    ],
+    [
+      "出張",
+      "しゅっちょう"
+    ],
+    [
+      "特別",
+      "とくべつ"
+    ],
+    [
+      "場面",
+      "ばめん"
+    ],
+    [
+      "出る",
+      "でる"
+    ]
+  ],
+  "wordIds": [
+    "tantou",
+    "memo",
+    "kentou",
+    "maemuki",
+    "keiyaku",
+    "kakunin",
+    "hinshitsu",
+    "shiyou",
+    "zangyou",
+    "taishutsu",
+    "tatakidai",
+    "shikyuu",
+    "hanko",
+    "ringisho",
+    "sekkeisho",
+    "shinsei",
+    "hikitsugi",
+    "yuukyuu",
+    "shounin",
+    "konki",
+    "shucchou",
+    "okakekudasai",
+    "temiyage",
+    "ojigi",
+    "shazai",
+    "kotoba",
+    "kenshuu"
+  ]
+}
