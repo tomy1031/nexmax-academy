@@ -88,9 +88,13 @@ test("クエストから ステージへ もどれる", async ({ page }) => {
 /**
  * 倒れても やり直せる（2026-10-21 に 原典の 流れを 戻した）。
  *
- * 選択肢は シャッフルされる ので、先頭の 札を 押し続ける——外しが たまって
- * 体力か、場面5の 入口の バグで 倒れる。倒れたら「やり直す」→ 反省クイズを
- * 押しきって「プロジェクト再開」→ 復活の しらせ → その 場面に 戻る。
+ * 外れの 札（`data-option-type="miss"`）から 先に 押す——場面1〜4で バグが
+ * たまり、場面5の 入口の バグで **必ず** 倒れる。倒れたら「やり直す」→ 反省クイズを
+ * いい手だけ 押して 終え「プロジェクト再開」→ 復活の しらせ → その 場面に 戻る。
+ *
+ * 前は 先頭の 札を 押し続けて いた。選択肢は シャッフルされる ので、倒れるまでの
+ * 長さも、反省クイズで 外れを 押して 問題が 後ろに 回る 回数も 運で 決まり、
+ * 2026-10-22 に コードを 変えて いない PR で 2回とも 時間切れに なった。
  */
 test("倒れたら 反省クイズを 解いて その 場面から やり直せる", async ({ page }) => {
   test.setTimeout(120_000);
@@ -101,22 +105,29 @@ test("倒れたら 反省クイズを 解いて その 場面から やり直せ
   const cont = page.locator('[data-quest="continue"]');
   for (let i = 0; i < 120; i += 1) {
     if (await cont.isVisible()) break;
+    const miss = page.locator('[data-quest="option"][data-option-type="miss"]').first();
     const option = page.locator('[data-quest="option"]').first();
-    if (await option.isVisible()) await option.click();
+    if (await miss.isVisible()) await miss.click();
+    else if (await option.isVisible()) await option.click();
     else await page.locator('[data-quest="next"]').first().click();
   }
   await expect(cont).toBeVisible();
   await shot(page, "kaihatsu-quest-over");
   await cont.click();
 
-  // 反省クイズ: 押せる 札を 押し続ければ いずれ「反省完了」
+  // 反省クイズ: いい手だけ 押せば 1問 2回で 次へ 進み、いずれ「反省完了」
   await expect(page.locator('[data-quest="reflection"]')).toBeVisible();
   await shot(page, "kaihatsu-quest-reflection");
   const resume = page.locator('[data-quest="resume"]');
   for (let i = 0; i < 80; i += 1) {
     if (await resume.isVisible()) break;
-    await page.locator('[data-quest="reflect"]:enabled').first().click();
+    await page
+      .locator('[data-quest="reflect"]:enabled:not([data-option-type="miss"])')
+      .first()
+      .click();
   }
+  // 終わらなかった ときに テストの 時間切れまで 待たず、ここで 落とす
+  await expect(resume).toBeVisible();
   await resume.click();
 
   // 復活の しらせ → 閉じると また 遊べる

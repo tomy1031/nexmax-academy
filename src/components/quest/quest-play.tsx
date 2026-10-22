@@ -772,6 +772,9 @@ function Dialogue({
 /**
  * 4択。**場面ごとに シャッフル**して 出す（原典どおり。`optionOrder`）。
  * 押した 札は 消えるが、**位置は ずらさない**——ずれると 残った 札を 読み直す ことに なる。
+ *
+ * `data-option-type` は e2e が 札の 質で 押し分ける ための 印（見た目も 動きも 変えない）。
+ * 並びが シャッフルされる ので、先頭を 押し続けると 倒れるまでの 長さが 運で 決まって いた。
  */
 function ChooseBody({
   state,
@@ -819,6 +822,7 @@ function ChooseBody({
               <button
                 type="button"
                 data-quest="option"
+                data-option-type={option.type}
                 className="qx-opt"
                 onClick={() => dispatch({ type: "choose", optionIndex: index })}
               >
@@ -1098,6 +1102,9 @@ const REFLECT_SAY: Record<"one" | "all" | "requeue" | "wrong", { text: string; t
  * 反省クイズ。**その回に 外した 問題**を 1問ずつ 出し、いい手を 全部 選べたら 次へ。
  * 札には 解説も 添える（原典どおり——ここは 試験では なく、外した 理由を 読み直す 場）。
  * 全部 終えたら「プロジェクト再開」で 倒れた 人が 全回復し、その 場面の 最初から。
+ *
+ * `data-option-type` は 4択と 同じ e2e の 印。外れを 押すと その 問題が 後ろに 回る ので、
+ * 先頭を 押し続けると 終わるまでの 長さが 運で 決まって いた（2026-10-22 に CI で 時間切れ）。
  */
 function ReflectionModal({
   quest,
@@ -1150,6 +1157,7 @@ function ReflectionModal({
                       <button
                         type="button"
                         data-quest="reflect"
+                        data-option-type={option.type}
                         disabled={picked}
                         onClick={() => dispatch({ type: "reflect", optionIndex: index })}
                         className={`qx-t w-full cursor-pointer border-2 bg-transparent p-2 text-left disabled:cursor-default ${tone}`}
