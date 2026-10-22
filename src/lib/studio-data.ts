@@ -12,16 +12,31 @@ import {
   gitContentIds,
   listArticles,
   listCharacters,
+  listLinks,
   listListenings,
   listMangas,
   listMeetings,
+  listQuests,
   listQuizSets,
   listScenarios,
+  listSkits,
   listSlides,
   listStages,
+  listTypings,
   listVocabBooks,
   listWordStages,
 } from "@/lib/content";
+
+/**
+ * スタジオに まだ エディタの 無い 種別は、**名札（id と 題名）だけ**を 渡す。
+ *
+ * ステージ編集で 要るのは「もう ある ものから えらぶ」と「ほぞんずみか」の 2つで、
+ * どちらも id と 題名で 足りる。本文ごと 渡すと、クエスト・タイピング（ことばカード入り）
+ * の ぶん 先生の 画面が 重く なる。エディタを 足す ときに 中身ごとへ 切りかえる。
+ */
+function nameTags(items: readonly { id: string; title: string }[]) {
+  return items.map(({ id, title }) => ({ id, title }));
+}
 
 export async function loadStudioData() {
   const [
@@ -36,6 +51,10 @@ export async function loadStudioData() {
     wordStages,
     characters,
     vocabBooks,
+    links,
+    skits,
+    quests,
+    typings,
   ] = await Promise.all([
     listStages(),
     listMangas(),
@@ -48,6 +67,10 @@ export async function loadStudioData() {
     listWordStages(),
     listCharacters(),
     listVocabBooks(),
+    listLinks(),
+    listSkits(),
+    listQuests(),
+    listTypings(),
   ]);
   return {
     stages,
@@ -60,6 +83,14 @@ export async function loadStudioData() {
     meetings,
     wordStages,
     characters,
+    /*
+     * ステージに 置ける のに スタジオで まだ 直せない 種別（名札だけ）。無いと ステージの
+     * ながれで「まだ ほぞんして いません」と 誤って 出る（2026-09-30）。
+     */
+    links: nameTags(links),
+    skits: nameTags(skits),
+    quests: nameTags(quests),
+    typings: nameTags(typings),
     /**
      * ことばの 正。抜き出した 語だけでなく **辞書ぜんたいから 選べる**ように するため
      *（2026-08-20 の指定）。語の 置き場は ここ 1つ しか 無い。

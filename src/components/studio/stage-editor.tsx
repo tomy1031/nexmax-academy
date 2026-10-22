@@ -197,9 +197,16 @@ const FLOW_TYPES: readonly ContentRefType[] = [
   "listening",
   "quizset",
   "scenario",
+  "link",
+  "skit",
+  "quest",
+  "typing",
 ];
 
-/** その場で作れる種別。たいわ（scenario）はまだエディタが無いので選ぶだけにする。 */
+/**
+ * その場で作れる種別。たいわ・リンク・スキット・クエスト・タイピングは まだ
+ * エディタが無いので、content/ の JSON で 作った ものを 選ぶだけにする。
+ */
 const CREATABLE: ReadonlySet<ContentRefType> = new Set([
   "manga",
   "article",

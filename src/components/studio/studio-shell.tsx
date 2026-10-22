@@ -45,6 +45,7 @@ import { MangaEditor } from "./manga-editor";
 import { MeetingEditor } from "./meeting-editor";
 import { noEditorMessage } from "./no-editor";
 import { QuizEditor } from "./quiz-editor";
+import { buildRefLibrary, type RefSource } from "./ref-library";
 import { SlidesEditor } from "./slides-editor";
 import { StageEditor, type RefOption } from "./stage-editor";
 import { StageList } from "./stage-list";
@@ -93,6 +94,14 @@ export interface StudioShellProps {
   meetings: Meeting[];
   wordStages: WordStage[];
   characters: Character[];
+  /**
+   * スタジオで まだ 直せない 種別（名札だけ）。ステージの ながれで 選べるように、
+   * また「まだ ほぞんして いません」を 誤って 出さないように 受け取る。
+   */
+  links: RefSource[];
+  skits: RefSource[];
+  quests: RefSource[];
+  typings: RefSource[];
   /** ことばの 正（語の 置き場は これ 1つ）。 */
   vocabBooks: VocabBook[];
   /**
@@ -163,6 +172,10 @@ export function StudioShell({
   meetings,
   wordStages,
   characters,
+  links,
+  skits,
+  quests,
+  typings,
   vocabBooks,
   gitIds,
 }: StudioShellProps) {
@@ -259,6 +272,10 @@ export function StudioShell({
         fromDb("wordstage").map((stage) => ({ ...stage, words: stage.words ?? [] })),
       ),
       character: mergeById(characters, fromDb("character")),
+      link: mergeById<RefSource>(links, fromDb("link")),
+      skit: mergeById<RefSource>(skits, fromDb("skit")),
+      quest: mergeById<RefSource>(quests, fromDb("quest")),
+      typing: mergeById<RefSource>(typings, fromDb("typing")),
     };
   }, [
     stages,
@@ -271,28 +288,18 @@ export function StudioShell({
     meetings,
     wordStages,
     characters,
+    links,
+    skits,
+    quests,
+    typings,
     dbEntries,
   ]);
 
-  /** 「もう ある ものから えらぶ」の候補（全種別）。 */
-  const library = useMemo<RefOption[]>(
-    () =>
-      (
-        [
-          ["manga", merged.manga],
-          ["article", merged.article],
-          ["slides", merged.slides],
-          ["quizset", merged.quizset],
-          ["listening", merged.listening],
-          ["scenario", merged.scenario],
-          ["meeting", merged.meeting],
-          ["wordstage", merged.wordstage],
-        ] as const
-      ).flatMap(([type, items]) =>
-        items.map((item) => ({ id: item.id, type: type as ContentRefType, title: item.title })),
-      ),
-    [merged],
-  );
+  /**
+   * 「もう ある ものから えらぶ」の候補（全種別）。merged は ステージに 置ける 種別を
+   * ぜんぶ 持つ（足りないと 型検査で 止まる — ref-library.ts の RefSources）。
+   */
+  const library = useMemo<RefOption[]>(() => buildRefLibrary(merged), [merged]);
 
   /** 保存ずみのID。ステージの ながれ で「まだ ほぞんして いません」を出すのに使う。 */
   const knownIds = useMemo(() => new Set(library.map((item) => item.id)), [library]);
