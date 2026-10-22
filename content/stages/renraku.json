@@ -21,16 +21,16 @@
       "type": "article"
     },
     {
+      "ref": "renraku_slack",
+      "type": "link"
+    },
+    {
       "ref": "renraku_listening",
       "type": "listening"
     },
     {
       "ref": "renraku_quiz",
       "type": "quizset"
-    },
-    {
-      "ref": "renraku_slack",
-      "type": "link"
     },
     {
       "ref": "renraku_contact_quiz",

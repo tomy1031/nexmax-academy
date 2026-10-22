@@ -3,7 +3,7 @@
   "id": "hourensou_renraku_kihon",
   "title": "報連相：連絡の ことば",
   "description": "連絡で まいにち 使う ことばです。チャットや 会話で よく 出ます。",
-  "label": "きほん",
+  "label": "初級",
   "fieldSequence": [
     "forest",
     "sky",
@@ -51,6 +51,10 @@
     [
       "相",
       "そう"
+    ],
+    [
+      "初級",
+      "しょきゅう"
     ]
   ],
   "wordIds": [

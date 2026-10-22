@@ -3,7 +3,7 @@
   "id": "hourensou_renraku_ouyou",
   "title": "報連相：連絡の ことば",
   "description": "メールの 型と、障害の ときに 使う ことばです。",
-  "label": "おうよう",
+  "label": "上級",
   "fieldSequence": [
     "forest",
     "sky",
@@ -43,6 +43,10 @@
     [
       "型",
       "かた"
+    ],
+    [
+      "上級",
+      "じょうきゅう"
     ]
   ],
   "wordIds": [
