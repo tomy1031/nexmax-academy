@@ -23,7 +23,7 @@
         b.className = 'choice';
         b.type = 'button';
         b.dataset.id = opt.id;
-        b.innerHTML = KY.text.html(opt.text);   /* dictionary words open the popup instead of choosing */
+        b.innerHTML = KY.text.html(opt.text, { follow: true });   /* dictionary words open the popup instead of choosing */
         b.addEventListener('click', () => { if (!scene.locked) pick(opt, b); });
         panel.append(b);
       }

@@ -14,8 +14,8 @@
     const n = it => `<span class="fig-n${it.you ? ' you' : it.top ? ' top' : ''}">${KY.text.esc(String(it.n))}</span>`;
     return `<section class="sec fig"><h3>${UI.L(S.figure)}</h3>
       <div class="fig-svg" id="c-figure"></div>
-      ${f.rule ? `<p class="fig-rule">${UI.T(f.rule)}</p>` : ''}
-      <ol class="fig-legend">${(f.legend || []).map(it => `<li>${n(it)}<div>${UI.T(it)}</div></li>`).join('')}</ol>
+      ${f.rule ? `<p class="fig-rule">${UI.TE(f.rule)}</p>` : ''}
+      <ol class="fig-legend">${(f.legend || []).map(it => `<li>${n(it)}<div>${UI.TE(it)}</div></li>`).join('')}</ol>
     </section>`;
   }
 
@@ -73,7 +73,7 @@
           <article class="meishi" aria-label="${KY.text.esc(S.mannerCard.en)}">
             <div class="m-left">
               <div class="m-co">${UI.L(S.chapter)} ${def.chapter} ${UI.L(ch.title)}<br>No. ${def.id}</div>
-              <div class="m-name">${UI.T(c.name)}</div>
+              <div class="m-name">${UI.TE(c.name)}</div>
               <div class="m-foot">${UI.L(S.mannerCard)}</div>
             </div>
             <div class="m-right">
@@ -85,14 +85,14 @@
         </div>
         <div class="card-body">
           ${def.test ? `<button class="btn demo-btn" type="button" id="c-demo"><span class="demo-play" aria-hidden="true">▶</span>${UI.L(S.demo)}</button>` : ''}
-          <section class="sec"><h3>${UI.L(S.points)}</h3><ul>${c.points.map(p => `<li>${UI.T(p)}</li>`).join('')}</ul></section>
+          <section class="sec"><h3>${UI.L(S.points)}</h3><ul>${c.points.map(p => `<li>${UI.TE(p)}</li>`).join('')}</ul></section>
           ${c.figure ? figureHTML(c.figure) : ''}
           <section class="sec"><h3>${UI.L(S.phrase)}</h3>
-            <div class="phrase">${UI.T(c.phrase)}<button class="icon-btn speak" type="button" id="c-speak" aria-label="${KY.text.esc(S.listen.en)}"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 8h3l4-3v10l-4-3H4z" fill="currentColor"/><path d="M14 7.5a3.5 3.5 0 0 1 0 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button></div>
+            <div class="phrase">${UI.TE(c.phrase)}<button class="icon-btn speak" type="button" id="c-speak" aria-label="${KY.text.esc(S.listen.en)}"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 8h3l4-3v10l-4-3H4z" fill="currentColor"/><path d="M14 7.5a3.5 3.5 0 0 1 0 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button></div>
           </section>
-          <section class="sec"><h3>${UI.L(S.why)}</h3><p>${UI.T(c.why)}</p></section>
-          <section class="sec dont"><h3>${UI.L(S.dont)}</h3><p>${UI.T(c.dont)}</p></section>
-          ${c.tip ? `<section class="sec tip"><h3>${UI.L(S.tip)}</h3><p>${UI.T(c.tip)}</p></section>` : ''}
+          <section class="sec"><h3>${UI.L(S.why)}</h3><p>${UI.TE(c.why)}</p></section>
+          <section class="sec dont"><h3>${UI.L(S.dont)}</h3><p>${UI.TE(c.dont)}</p></section>
+          ${c.tip ? `<section class="sec tip"><h3>${UI.L(S.tip)}</h3><p>${UI.TE(c.tip)}</p></section>` : ''}
         </div>
         <div class="card-actions">
           ${opts.fromBinder

@@ -48,8 +48,8 @@
           <div class="intro-card">
             <div class="intro-no">${UI.L(S.stage)}<b>${def.id}</b></div>
             <div class="intro-ch">${UI.L(S.chapter)} ${def.chapter} · ${UI.L(ch.title)}</div>
-            <h2 class="intro-title">${UI.T(def.title)}</h2>
-            <p class="intro-sit">${UI.T(def.intro)}</p>
+            <h2 class="intro-title">${UI.TE(def.title)}</h2>
+            <p class="intro-sit">${UI.TE(def.intro)}</p>
             <div class="intro-hint"><i></i>${UI.L(S.redRule)}</div>
             <div class="intro-go">${UI.L(S.tapToStart)}</div>
           </div>
@@ -76,7 +76,7 @@
         <div class="verdict ${grade}" role="dialog" aria-label="${G.head.en}">
           ${UI.stampSVG(grade)}
           <div class="v-head">${UI.T(G.head)}</div>
-          ${o && o.line ? `<div class="v-line">${o.who ? `<div class="who">${UI.T(o.who)}</div>` : ''}<div class="body">${UI.T(o.line)}</div></div>` : ''}
+          ${o && o.line ? `<div class="v-line">${o.who ? `<div class="who">${UI.TE(o.who)}</div>` : ''}<div class="body">${UI.TE(o.line)}</div></div>` : ''}
           <button class="btn primary" type="button" id="v-next">${UI.L(S.seeWhy)} <span aria-hidden="true">→</span></button>
         </div>`;
       KY.sfx.play('stamp');

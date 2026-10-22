@@ -20,6 +20,16 @@ button { font: inherit; color: inherit; }
 .t .en { color: var(--ink-3); font-size: .72em; margin-top: .15em; }
 .no-romaji .t .ro { display: none !important; }   /* settings win over any layout rule */
 .no-english .t .en { display: none !important; }
+/* English after business / IT words (js/core/follow.js): only while the EN switch is off */
+.enf { font-size: .62em; font-weight: 500; opacity: .66; letter-spacing: 0; }
+html:not(.no-english) .enf { display: none; }
+.enb { display: block; font-size: .62em; }
+.ocard .enb { font-size: 2.6cqw; }
+.tag .enb { font-size: 2.2cqw; color: #d0d0d0; opacity: 1; }
+/* a tag sits right under the speech bubble: grow down (over the head), not up into the bubble */
+html.no-english .tag:has(.enb) { transform: translateY(2.64cqw); }
+.label .enb { font-size: 2.4cqw; }
+.pop .enb { font-size: 3.4cqw; }
 ruby { ruby-position: over; }
 rt { font-size: .5em; color: var(--ink-3); font-weight: 400; letter-spacing: 0; }
 .no-furigana rt { display: none; }

@@ -45,8 +45,78 @@
     return out + plainText(s.slice(last), glossary, gloss, seen);
   }
 
-  /* opts: { glossary = KY.GLOSSARY, gloss = true } */
+  /* English after business / IT words (table: KY.FOLLOW, js/core/follow.js).
+     Returns the markup with a mark n right after each word that gets English, and the
+     English for each mark. Rules:
+       - longer words first (名刺交換 before 名刺), and a word inside a longer one is not found again
+       - only the first time a word appears in one text
+       - a word starts and ends on furigana-group edges (係 inside {関係|かんけい} is not the word 係)
+       - a word ending in kanji right before another kanji is part of a longer word (画面共有) and gets
+         none (礼儀正しい人 is fine: the word ends in kana)
+       - entry.not: the text right after shows the word is part of a verb there (遅れて)
+       - a word that ends inside << >> gets its English after the >> */
+  const KANJI1 = /^[㐀-䶿一-鿿豈-﫿々〆]/;
+  function followEntries(table) {
+    return table
+      .map(([w, en, not]) => ({ words: [].concat(w), en, not }))
+      .sort((a, b) => Math.max(...b.words.map(x => x.length)) - Math.max(...a.words.map(x => x.length)));
+  }
+  let followCache = null;
+  function followMarks(jp, table = KY.FOLLOW) {
+    const s = String(jp);
+    if (!table || !table.length) return { s, en: [] };
+    if (!followCache || followCache.table !== table) followCache = { table, entries: followEntries(table) };
+    /* one cell per UTF-16 unit of the plain text: can a word start here? where does a mark go after it? */
+    const cells = [];
+    let close = -1;
+    for (let i = 0; i < s.length;) {
+      if (s.startsWith('<<', i)) { const j = s.indexOf('>>', i + 2); close = j < 0 ? -1 : j + 2; i += 2; continue; }
+      if (s.startsWith('>>', i)) { close = -1; i += 2; continue; }
+      const m = s[i] === '{' && /^\{([^{}|]+)\|([^{}|]+)\}/.exec(s.slice(i));
+      if (m) {
+        const after = i + m[0].length;
+        for (let k = 0; k < m[1].length; k++) {
+          cells.push({ ch: m[1][k], start: k === 0, mark: k === m[1].length - 1 ? (close >= 0 ? close : after) : -1 });
+        }
+        i = after;
+        continue;
+      }
+      cells.push({ ch: s[i], start: true, mark: close >= 0 ? close : i + 1 });
+      i += 1;
+    }
+    const plainText = cells.map(c => c.ch).join('');
+    const taken = new Array(cells.length).fill(false);
+    const marks = [];
+    for (const e of followCache.entries) {
+      let first = true;
+      for (const w of e.words) {
+        for (let at = plainText.indexOf(w); at >= 0; at = plainText.indexOf(w, at + 1)) {
+          const last = at + w.length - 1;
+          if (!cells[at].start || cells[last].mark < 0) continue;
+          if (taken.slice(at, last + 1).some(Boolean)) continue;
+          const rest = plainText.slice(last + 1);
+          if ((KANJI1.test(w.slice(-1)) && KANJI1.test(rest)) || (e.not && e.not.test(rest))) continue;
+          for (let k = at; k <= last; k++) taken[k] = true;
+          if (first) { marks.push({ pos: cells[last].mark, en: e.en }); first = false; }
+        }
+      }
+    }
+    if (!marks.length) return { s, en: [] };
+    marks.sort((a, b) => b.pos - a.pos);
+    let out = s;
+    const en = [];
+    marks.forEach((mk, n) => { en[n] = mk.en; out = out.slice(0, mk.pos) + '' + n + '' + out.slice(mk.pos); });
+    return { s: out, en };
+  }
+  const followHtml = en => `<span class="enf">（${esc(en)}）</span>`;
+
+  /* opts: { glossary = KY.GLOSSARY, gloss = true, follow = false } */
   function ruby(jp, opts = {}) {
+    if (opts.follow) {
+      const f = followMarks(jp);
+      const h = ruby(f.s, Object.assign({}, opts, { follow: false }));
+      return f.en.length ? h.replace(/(\d+)/g, (m, n) => followHtml(f.en[n])) : h;
+    }
     const glossary = opts.glossary !== undefined ? opts.glossary : KY.GLOSSARY;
     const gloss = opts.gloss !== false;
     const s = String(jp);
@@ -121,15 +191,22 @@
     return parts.map(p => (needs(p) ? '{' + p + '|' + m[i++] + '}' : p)).join('');
   }
 
-  /* opts: { cls, gloss } */
+  /* opts: { cls, gloss, follow }
+     follow: true = English right after each word; 'below' = all of it on one small line under the
+     text (small things in the scene — cards, name tags, labels — where a wider text would overlap) */
   function html(t, opts = {}) {
     if (!t) return '';
     const cls = opts.cls ? 't ' + opts.cls : 't';
-    let h = '<span class="' + cls + '"><span class="jp">' + ruby(t.jp || '', { gloss: opts.gloss }) + '</span>';
+    const below = opts.follow === 'below';
+    let h = '<span class="' + cls + '"><span class="jp">' + ruby(t.jp || '', { gloss: opts.gloss, follow: !below && opts.follow }) + '</span>';
+    if (below) {
+      const en = followMarks(t.jp || '').en.slice().reverse();   /* marks are numbered from the end */
+      if (en.length) h += '<span class="enf enb">' + esc(en.join(' · ')) + '</span>';
+    }
     if (t.ro) h += '<span class="ro">' + esc(t.ro) + '</span>';
     if (t.en) h += '<span class="en">' + esc(t.en) + '</span>';
     return h + '</span>';
   }
 
-  KY.text = { ruby, plain, kana, check, bareKanji, glossKeys, html, esc, autoRuby };
+  KY.text = { ruby, plain, kana, check, bareKanji, glossKeys, html, esc, autoRuby, followMarks };
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -9,6 +9,8 @@
   UI.h = (tag, cls, html) => { const e = doc.createElement(tag); if (cls) e.className = cls; if (html !== undefined) e.innerHTML = html; return e; };
   /* text with dictionary links (reading areas) */
   UI.T = (t, cls) => KY.text.html(t, cls ? { cls } : undefined);
+  /* stage text: dictionary links + English after business / IT words (js/core/follow.js) */
+  UI.TE = (t, cls) => KY.text.html(t, { cls, follow: true });
   /* text without dictionary links (buttons, chips: the whole thing is the tap target) */
   UI.L = (t, cls) => KY.text.html(t, { cls: cls || 'lbl', gloss: false });
 
