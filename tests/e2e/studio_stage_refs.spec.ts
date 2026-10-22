@@ -79,7 +79,9 @@ for (const { stageId, kind } of CASES) {
     for (const ref of refs) {
       const title = known.get(ref);
       expect(title, `${ref} の 題名`).toBeTruthy();
-      await expect(page.getByText(title!, { exact: true }).first()).toBeVisible();
+      // 題名の 行には 種別の 名前（span）も 入るので、行の 中に 題名が あるかで 見る。
+      const row = flowItems(page).filter({ hasText: ref });
+      await expect(row.first()).toContainText(title!);
     }
     await expect(page.getByText(WARNING)).toHaveCount(0);
     if (kind === "typing") await shot(page, `studio-${stageId}-flow`);
