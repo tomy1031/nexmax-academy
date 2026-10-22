@@ -22,7 +22,9 @@
       "gates": true
     }
   ],
-  "wordStageIds": [],
+  "wordStageIds": [
+    "kuuki_kotoba"
+  ],
   "furigana": [
     [
       "空気",

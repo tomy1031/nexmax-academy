@@ -1970,6 +1970,10 @@
     [
       "感じ",
       "かんじ"
+    ],
+    [
+      "用事",
+      "ようじ"
     ]
   ],
   "words": [
@@ -2696,7 +2700,7 @@
       "romaji": "kaigi",
       "meaningJa": "会議は、みんなで集まって話し合うことです。",
       "englishTerm": "Meeting",
-      "example": "③話す（会議、相談）。",
+      "example": "きょうは、チームで 会議を します。",
       "wrongMeanings": [
         "Party",
         "Travel",
@@ -5145,7 +5149,12 @@
       "term": "打合せ",
       "reading": "うちあわせ",
       "meaningJa": "仕事の やりかたを 先に 話し合う ことです。",
-      "englishTerm": "Meeting / briefing"
+      "englishTerm": "Meeting / briefing",
+      "wrongMeanings": [
+        "Lunch break",
+        "Contract",
+        "Day off"
+      ]
     },
     {
       "id": "keikaku",
@@ -5304,7 +5313,12 @@
       "term": "研修",
       "reading": "けんしゅう",
       "meaningJa": "仕事の やりかたを ならう 時間です。",
-      "englishTerm": "Training"
+      "englishTerm": "Training",
+      "wrongMeanings": [
+        "Vacation",
+        "Interview",
+        "Business trip"
+      ]
     },
     {
       "id": "nouryoku",
@@ -19698,6 +19712,1134 @@
         [
           "茶色",
           "ちゃいろ"
+        ]
+      ]
+    },
+    {
+      "id": "meishi",
+      "term": "名刺",
+      "reading": "めいし",
+      "romaji": "meishi",
+      "meaningJa": "名前・会社・連絡先が 書いて ある、小さな カードです。",
+      "englishTerm": "Business card",
+      "wrongMeanings": [
+        "Name tag",
+        "Postcard",
+        "Membership card"
+      ],
+      "example": "はじめて 会う お客さまと、名刺を 交換します。",
+      "furigana": [
+        [
+          "名刺",
+          "めいし"
+        ],
+        [
+          "名前",
+          "なまえ"
+        ],
+        [
+          "会社",
+          "かいしゃ"
+        ],
+        [
+          "連絡先",
+          "れんらくさき"
+        ],
+        [
+          "書いて",
+          "かいて"
+        ],
+        [
+          "小さな",
+          "ちいさな"
+        ],
+        [
+          "会う",
+          "あう"
+        ],
+        [
+          "客",
+          "きゃく"
+        ],
+        [
+          "交換",
+          "こうかん"
+        ]
+      ]
+    },
+    {
+      "id": "kamiza",
+      "term": "上座",
+      "reading": "かみざ",
+      "romaji": "kamiza",
+      "meaningJa": "入口から いちばん 遠い、いちばん 上の 立場の 人が 座る 席です。",
+      "englishTerm": "Seat of honor",
+      "wrongMeanings": [
+        "Seat near the door",
+        "Front row seat",
+        "Driver's seat"
+      ],
+      "example": "お客さまには、上座に 座って もらいます。",
+      "furigana": [
+        [
+          "上座",
+          "かみざ"
+        ],
+        [
+          "入口",
+          "いりぐち"
+        ],
+        [
+          "遠い",
+          "とおい"
+        ],
+        [
+          "上",
+          "うえ"
+        ],
+        [
+          "立場",
+          "たちば"
+        ],
+        [
+          "人",
+          "ひと"
+        ],
+        [
+          "座る",
+          "すわる"
+        ],
+        [
+          "座って",
+          "すわって"
+        ],
+        [
+          "席",
+          "せき"
+        ],
+        [
+          "客",
+          "きゃく"
+        ]
+      ]
+    },
+    {
+      "id": "uketsuke",
+      "term": "受付",
+      "reading": "うけつけ",
+      "romaji": "uketsuke",
+      "meaningJa": "会社の 入口で、来た 人の 用事を 聞く 場所です。",
+      "englishTerm": "Reception desk",
+      "wrongMeanings": [
+        "Waiting room",
+        "Emergency exit",
+        "Elevator hall"
+      ],
+      "example": "お客さまの 会社に 着いたら、まず 受付に 行きます。",
+      "furigana": [
+        [
+          "受付",
+          "うけつけ"
+        ],
+        [
+          "会社",
+          "かいしゃ"
+        ],
+        [
+          "入口",
+          "いりぐち"
+        ],
+        [
+          "来た",
+          "きた"
+        ],
+        [
+          "人",
+          "ひと"
+        ],
+        [
+          "用事",
+          "ようじ"
+        ],
+        [
+          "聞く",
+          "きく"
+        ],
+        [
+          "場所",
+          "ばしょ"
+        ],
+        [
+          "客",
+          "きゃく"
+        ],
+        [
+          "着いたら",
+          "ついたら"
+        ],
+        [
+          "行きます",
+          "いきます"
+        ]
+      ]
+    },
+    {
+      "id": "taishutsu",
+      "term": "退出",
+      "reading": "たいしゅつ",
+      "romaji": "taishutsu",
+      "meaningJa": "会議や 部屋から 出る ことです。",
+      "englishTerm": "Leaving",
+      "wrongMeanings": [
+        "Joining",
+        "Waiting",
+        "Recording"
+      ],
+      "example": "オンライン会議では、お客さまが 出てから 退出します。",
+      "furigana": [
+        [
+          "退出",
+          "たいしゅつ"
+        ],
+        [
+          "会議",
+          "かいぎ"
+        ],
+        [
+          "部屋",
+          "へや"
+        ],
+        [
+          "出る",
+          "でる"
+        ],
+        [
+          "客",
+          "きゃく"
+        ],
+        [
+          "出て",
+          "でて"
+        ]
+      ]
+    },
+    {
+      "id": "ojigi",
+      "term": "お辞儀",
+      "reading": "おじぎ",
+      "romaji": "ojigi",
+      "meaningJa": "頭を 下げて、あいさつや お礼を する ことです。",
+      "englishTerm": "Bow",
+      "wrongMeanings": [
+        "Handshake",
+        "Wave",
+        "Hug"
+      ],
+      "example": "あやまる ときは、深く お辞儀を します。",
+      "furigana": [
+        [
+          "辞儀",
+          "じぎ"
+        ],
+        [
+          "頭",
+          "あたま"
+        ],
+        [
+          "下げて",
+          "さげて"
+        ],
+        [
+          "礼",
+          "れい"
+        ],
+        [
+          "深く",
+          "ふかく"
+        ]
+      ]
+    },
+    {
+      "id": "manaa",
+      "term": "マナー",
+      "reading": "まなー",
+      "romaji": "manaa",
+      "meaningJa": "まわりの 人と 気もちよく すごす ための、ていねいな ふるまいです。",
+      "englishTerm": "Manners",
+      "wrongMeanings": [
+        "Menu",
+        "Uniform",
+        "Salary"
+      ],
+      "example": "名刺の 渡し方にも、ビジネスの マナーが あります。",
+      "furigana": [
+        [
+          "人",
+          "ひと"
+        ],
+        [
+          "気もち",
+          "きもち"
+        ],
+        [
+          "名刺",
+          "めいし"
+        ],
+        [
+          "渡し方",
+          "わたしかた"
+        ]
+      ]
+    },
+    {
+      "id": "senpou",
+      "term": "先方",
+      "reading": "せんぽう",
+      "romaji": "senpou",
+      "meaningJa": "仕事の 相手の 会社や、その 会社の 人の ことです。",
+      "englishTerm": "The other party",
+      "wrongMeanings": [
+        "Our own company",
+        "Our boss",
+        "A new employee"
+      ],
+      "example": "先方から、資料を 直して ほしいと 連絡が ありました。",
+      "furigana": [
+        [
+          "先方",
+          "せんぽう"
+        ],
+        [
+          "仕事",
+          "しごと"
+        ],
+        [
+          "相手",
+          "あいて"
+        ],
+        [
+          "会社",
+          "かいしゃ"
+        ],
+        [
+          "人",
+          "ひと"
+        ],
+        [
+          "資料",
+          "しりょう"
+        ],
+        [
+          "直して",
+          "なおして"
+        ],
+        [
+          "連絡",
+          "れんらく"
+        ]
+      ]
+    },
+    {
+      "id": "heisha",
+      "term": "弊社",
+      "reading": "へいしゃ",
+      "romaji": "heisha",
+      "meaningJa": "自分の 会社を、へりくだって ていねいに 言う ことばです。",
+      "englishTerm": "Our company (humble)",
+      "wrongMeanings": [
+        "Your company (polite)",
+        "A rival company",
+        "A shop"
+      ],
+      "example": "弊社の 担当者から、あとで ご連絡します。",
+      "furigana": [
+        [
+          "弊社",
+          "へいしゃ"
+        ],
+        [
+          "自分",
+          "じぶん"
+        ],
+        [
+          "会社",
+          "かいしゃ"
+        ],
+        [
+          "言う",
+          "いう"
+        ],
+        [
+          "担当者",
+          "たんとうしゃ"
+        ],
+        [
+          "連絡",
+          "れんらく"
+        ]
+      ]
+    },
+    {
+      "id": "shinjin",
+      "term": "新人",
+      "reading": "しんじん",
+      "romaji": "shinjin",
+      "meaningJa": "会社に 入った ばかりの 人です。",
+      "englishTerm": "New employee",
+      "wrongMeanings": [
+        "Senior employee",
+        "Part-time worker",
+        "Retired person"
+      ],
+      "example": "新人の うちは、分からない ことを すぐ 聞きましょう。",
+      "furigana": [
+        [
+          "新人",
+          "しんじん"
+        ],
+        [
+          "会社",
+          "かいしゃ"
+        ],
+        [
+          "入った",
+          "はいった"
+        ],
+        [
+          "人",
+          "ひと"
+        ],
+        [
+          "分からない",
+          "わからない"
+        ],
+        [
+          "聞きましょう",
+          "ききましょう"
+        ]
+      ]
+    },
+    {
+      "id": "nyuusha",
+      "term": "入社",
+      "reading": "にゅうしゃ",
+      "romaji": "nyuusha",
+      "meaningJa": "会社に 入って、はたらき はじめる ことです。",
+      "englishTerm": "Joining a company",
+      "wrongMeanings": [
+        "Leaving a company",
+        "Visiting a company",
+        "Starting a company"
+      ],
+      "example": "入社した あとは、はじめに 研修を 受けます。",
+      "furigana": [
+        [
+          "入社",
+          "にゅうしゃ"
+        ],
+        [
+          "会社",
+          "かいしゃ"
+        ],
+        [
+          "入って",
+          "はいって"
+        ],
+        [
+          "研修",
+          "けんしゅう"
+        ],
+        [
+          "受けます",
+          "うけます"
+        ]
+      ]
+    },
+    {
+      "id": "shucchou",
+      "term": "出張",
+      "reading": "しゅっちょう",
+      "romaji": "shucchou",
+      "meaningJa": "仕事で、ほかの 町や 国へ 行く ことです。",
+      "englishTerm": "Business trip",
+      "wrongMeanings": [
+        "Vacation",
+        "Commuting",
+        "Moving house"
+      ],
+      "example": "来週、大阪へ 出張します。",
+      "furigana": [
+        [
+          "出張",
+          "しゅっちょう"
+        ],
+        [
+          "仕事",
+          "しごと"
+        ],
+        [
+          "町",
+          "まち"
+        ],
+        [
+          "国",
+          "くに"
+        ],
+        [
+          "行く",
+          "いく"
+        ],
+        [
+          "来週",
+          "らいしゅう"
+        ],
+        [
+          "大阪",
+          "おおさか"
+        ]
+      ]
+    },
+    {
+      "id": "yuukyuu",
+      "term": "有給",
+      "reading": "ゆうきゅう",
+      "romaji": "yuukyuu",
+      "meaningJa": "休んでも お給料が 出る 休みです。",
+      "englishTerm": "Paid leave",
+      "wrongMeanings": [
+        "Unpaid leave",
+        "Overtime pay",
+        "Public holiday"
+      ],
+      "example": "有給を とる ときは、早めに 申請します。",
+      "furigana": [
+        [
+          "有給",
+          "ゆうきゅう"
+        ],
+        [
+          "休んで",
+          "やすんで"
+        ],
+        [
+          "給料",
+          "きゅうりょう"
+        ],
+        [
+          "出る",
+          "でる"
+        ],
+        [
+          "休み",
+          "やすみ"
+        ],
+        [
+          "早め",
+          "はやめ"
+        ],
+        [
+          "申請",
+          "しんせい"
+        ]
+      ]
+    },
+    {
+      "id": "hanko",
+      "term": "ハンコ",
+      "reading": "はんこ",
+      "romaji": "hanko",
+      "meaningJa": "名前が ほって あって、サインの かわりに 紙に おす ものです。",
+      "englishTerm": "Name seal",
+      "wrongMeanings": [
+        "Postage stamp",
+        "Eraser",
+        "Paper clip"
+      ],
+      "example": "稟議書に、課長が ハンコを おします。",
+      "furigana": [
+        [
+          "名前",
+          "なまえ"
+        ],
+        [
+          "紙",
+          "かみ"
+        ],
+        [
+          "稟議書",
+          "りんぎしょ"
+        ],
+        [
+          "課長",
+          "かちょう"
+        ]
+      ]
+    },
+    {
+      "id": "chikoku",
+      "term": "遅刻",
+      "reading": "ちこく",
+      "romaji": "chikoku",
+      "meaningJa": "決まった 時間に 間に合わないで、おくれて 来る ことです。",
+      "englishTerm": "Being late",
+      "wrongMeanings": [
+        "Leaving early",
+        "Day off",
+        "Arriving early"
+      ],
+      "example": "電車が 止まって 遅刻しそうな ときは、すぐ 連絡します。",
+      "furigana": [
+        [
+          "遅刻",
+          "ちこく"
+        ],
+        [
+          "決まった",
+          "きまった"
+        ],
+        [
+          "時間",
+          "じかん"
+        ],
+        [
+          "間に合わない",
+          "まにあわない"
+        ],
+        [
+          "来る",
+          "くる"
+        ],
+        [
+          "電車",
+          "でんしゃ"
+        ],
+        [
+          "止まって",
+          "とまって"
+        ],
+        [
+          "連絡",
+          "れんらく"
+        ]
+      ]
+    },
+    {
+      "id": "kyakusaki",
+      "term": "客先",
+      "reading": "きゃくさき",
+      "romaji": "kyakusaki",
+      "meaningJa": "お客さまの 会社や、お客さまの いる 場所です。",
+      "englishTerm": "Client's office",
+      "wrongMeanings": [
+        "Our own office",
+        "Head office",
+        "Train station"
+      ],
+      "example": "今日は 客先で 会議が あります。",
+      "furigana": [
+        [
+          "客先",
+          "きゃくさき"
+        ],
+        [
+          "客",
+          "きゃく"
+        ],
+        [
+          "会社",
+          "かいしゃ"
+        ],
+        [
+          "場所",
+          "ばしょ"
+        ],
+        [
+          "今日",
+          "きょう"
+        ],
+        [
+          "会議",
+          "かいぎ"
+        ]
+      ]
+    },
+    {
+      "id": "maemuki",
+      "term": "前向き",
+      "reading": "まえむき",
+      "romaji": "maemuki",
+      "meaningJa": "よい ほうへ 考える ようすです。",
+      "englishTerm": "Positive",
+      "wrongMeanings": [
+        "Negative",
+        "Final",
+        "Secret"
+      ],
+      "example": "「前向きに 検討します」は、まだ 決まって いない ことも あります。",
+      "furigana": [
+        [
+          "前向き",
+          "まえむき"
+        ],
+        [
+          "考える",
+          "かんがえる"
+        ],
+        [
+          "検討",
+          "けんとう"
+        ],
+        [
+          "決まって",
+          "きまって"
+        ]
+      ]
+    },
+    {
+      "id": "ringisho",
+      "term": "稟議書",
+      "reading": "りんぎしょ",
+      "romaji": "ringisho",
+      "meaningJa": "会社の お金を 使う 前に、上の 人たちに OKを もらう ための 書類です。",
+      "englishTerm": "Approval request form",
+      "wrongMeanings": [
+        "Invoice",
+        "Meeting minutes",
+        "Resignation letter"
+      ],
+      "example": "新しい ツールを 買う ために、稟議書を 出します。",
+      "furigana": [
+        [
+          "稟議書",
+          "りんぎしょ"
+        ],
+        [
+          "会社",
+          "かいしゃ"
+        ],
+        [
+          "金",
+          "かね"
+        ],
+        [
+          "使う",
+          "つかう"
+        ],
+        [
+          "前",
+          "まえ"
+        ],
+        [
+          "上",
+          "うえ"
+        ],
+        [
+          "人たち",
+          "ひとたち"
+        ],
+        [
+          "書類",
+          "しょるい"
+        ],
+        [
+          "新しい",
+          "あたらしい"
+        ],
+        [
+          "買う",
+          "かう"
+        ],
+        [
+          "出します",
+          "だします"
+        ]
+      ]
+    },
+    {
+      "id": "zangyou",
+      "term": "残業",
+      "reading": "ざんぎょう",
+      "romaji": "zangyou",
+      "meaningJa": "決まった 時間の あとも、のこって 仕事を する ことです。",
+      "englishTerm": "Overtime work",
+      "wrongMeanings": [
+        "Day off",
+        "Lunch break",
+        "Remote work"
+      ],
+      "example": "急な 仕様変更で、チームが 残業する ことに なりました。",
+      "furigana": [
+        [
+          "残業",
+          "ざんぎょう"
+        ],
+        [
+          "決まった",
+          "きまった"
+        ],
+        [
+          "時間",
+          "じかん"
+        ],
+        [
+          "仕事",
+          "しごと"
+        ],
+        [
+          "急な",
+          "きゅうな"
+        ],
+        [
+          "仕様変更",
+          "しようへんこう"
+        ]
+      ]
+    },
+    {
+      "id": "mudankekkin",
+      "term": "無断欠勤",
+      "reading": "むだんけっきん",
+      "romaji": "mudan kekkin",
+      "meaningJa": "連絡を しないで、会社を 休む ことです。",
+      "englishTerm": "Absence without notice",
+      "wrongMeanings": [
+        "Paid leave",
+        "Working from home",
+        "Business trip"
+      ],
+      "example": "無断欠勤を すると、まわりの 人が とても 心配します。",
+      "furigana": [
+        [
+          "無断欠勤",
+          "むだんけっきん"
+        ],
+        [
+          "連絡",
+          "れんらく"
+        ],
+        [
+          "会社",
+          "かいしゃ"
+        ],
+        [
+          "休む",
+          "やすむ"
+        ],
+        [
+          "人",
+          "ひと"
+        ],
+        [
+          "心配",
+          "しんぱい"
+        ]
+      ]
+    },
+    {
+      "id": "chienshoumeisho",
+      "term": "遅延証明書",
+      "reading": "ちえんしょうめいしょ",
+      "romaji": "chien shoumeisho",
+      "meaningJa": "電車が おくれた ことを、駅や 鉄道の 会社が しめす 紙です。",
+      "englishTerm": "Train delay certificate",
+      "wrongMeanings": [
+        "Train ticket",
+        "Commuter pass",
+        "Receipt"
+      ],
+      "example": "電車が おくれたので、駅で 遅延証明書を もらいました。",
+      "furigana": [
+        [
+          "遅延証明書",
+          "ちえんしょうめいしょ"
+        ],
+        [
+          "電車",
+          "でんしゃ"
+        ],
+        [
+          "駅",
+          "えき"
+        ],
+        [
+          "鉄道",
+          "てつどう"
+        ],
+        [
+          "会社",
+          "かいしゃ"
+        ],
+        [
+          "紙",
+          "かみ"
+        ]
+      ]
+    },
+    {
+      "id": "okakekudasai",
+      "term": "おかけください",
+      "reading": "おかけください",
+      "romaji": "okake kudasai",
+      "meaningJa": "「どうぞ 座って ください」の ていねいな 言い方です。",
+      "englishTerm": "Please have a seat",
+      "wrongMeanings": [
+        "Please wait",
+        "Please come in",
+        "Please stand up"
+      ],
+      "example": "お客さまに「どうぞ、こちらに おかけください」と 言います。",
+      "furigana": [
+        [
+          "座って",
+          "すわって"
+        ],
+        [
+          "言い方",
+          "いいかた"
+        ],
+        [
+          "客",
+          "きゃく"
+        ],
+        [
+          "言います",
+          "いいます"
+        ]
+      ]
+    },
+    {
+      "id": "shazai",
+      "term": "謝罪",
+      "reading": "しゃざい",
+      "romaji": "shazai",
+      "meaningJa": "まちがいや めいわくを、ていねいに あやまる ことです。",
+      "englishTerm": "Apology",
+      "wrongMeanings": [
+        "Thanks",
+        "Complaint",
+        "Greeting"
+      ],
+      "example": "システムの 障害で、お客さまに 謝罪しました。",
+      "furigana": [
+        [
+          "謝罪",
+          "しゃざい"
+        ],
+        [
+          "障害",
+          "しょうがい"
+        ],
+        [
+          "客",
+          "きゃく"
+        ]
+      ]
+    },
+    {
+      "id": "temiyage",
+      "term": "手土産",
+      "reading": "てみやげ",
+      "romaji": "temiyage",
+      "meaningJa": "人の 会社や 家を たずねる ときに 持って いく、小さな おくりものです。",
+      "englishTerm": "Small gift for a visit",
+      "wrongMeanings": [
+        "Prize",
+        "Lunch box",
+        "Business card"
+      ],
+      "example": "お客さまの 会社へ、手土産を 持って いきます。",
+      "furigana": [
+        [
+          "手土産",
+          "てみやげ"
+        ],
+        [
+          "人",
+          "ひと"
+        ],
+        [
+          "会社",
+          "かいしゃ"
+        ],
+        [
+          "家",
+          "いえ"
+        ],
+        [
+          "持って",
+          "もって"
+        ],
+        [
+          "小さな",
+          "ちいさな"
+        ],
+        [
+          "客",
+          "きゃく"
+        ]
+      ]
+    },
+    {
+      "id": "tatakidai",
+      "term": "たたき台",
+      "reading": "たたきだい",
+      "romaji": "tatakidai",
+      "meaningJa": "話し合いを 始める ための、さいしょの 案です。",
+      "englishTerm": "Rough draft",
+      "wrongMeanings": [
+        "Final version",
+        "Contract",
+        "Price list"
+      ],
+      "example": "まず たたき台を 作って、チームで 話し合います。",
+      "furigana": [
+        [
+          "台",
+          "だい"
+        ],
+        [
+          "話し合い",
+          "はなしあい"
+        ],
+        [
+          "始める",
+          "はじめる"
+        ],
+        [
+          "案",
+          "あん"
+        ],
+        [
+          "作って",
+          "つくって"
+        ],
+        [
+          "話し合います",
+          "はなしあいます"
+        ]
+      ]
+    },
+    {
+      "id": "memo",
+      "term": "メモ",
+      "reading": "めも",
+      "romaji": "memo",
+      "meaningJa": "わすれない ように、短く 書いて おく ものです。",
+      "englishTerm": "Note",
+      "wrongMeanings": [
+        "Map",
+        "Schedule",
+        "Invoice"
+      ],
+      "example": "上司の 話を 聞きながら、メモを とります。",
+      "furigana": [
+        [
+          "短く",
+          "みじかく"
+        ],
+        [
+          "書いて",
+          "かいて"
+        ],
+        [
+          "上司",
+          "じょうし"
+        ],
+        [
+          "話",
+          "はなし"
+        ],
+        [
+          "聞きながら",
+          "ききながら"
+        ]
+      ]
+    },
+    {
+      "id": "kooru",
+      "term": "コール",
+      "reading": "こーる",
+      "romaji": "kooru",
+      "meaningJa": "電話が 鳴る 音の、1回分の ことです。",
+      "englishTerm": "Phone ring",
+      "wrongMeanings": [
+        "Phone number",
+        "Voicemail",
+        "Text message"
+      ],
+      "example": "会社の 電話は、3コールまでに 出ましょう。",
+      "furigana": [
+        [
+          "電話",
+          "でんわ"
+        ],
+        [
+          "鳴る",
+          "なる"
+        ],
+        [
+          "音",
+          "おと"
+        ],
+        [
+          "回分",
+          "かいぶん"
+        ],
+        [
+          "会社",
+          "かいしゃ"
+        ],
+        [
+          "出ましょう",
+          "でましょう"
+        ]
+      ]
+    },
+    {
+      "id": "konki",
+      "term": "今期",
+      "reading": "こんき",
+      "romaji": "konki",
+      "meaningJa": "会社で、いま すすんで いる 1年や 半年の 区切りです。",
+      "englishTerm": "This fiscal term",
+      "wrongMeanings": [
+        "Last fiscal term",
+        "Next fiscal term",
+        "This weekend"
+      ],
+      "example": "今期の 売上の 目標を 確認します。",
+      "furigana": [
+        [
+          "今期",
+          "こんき"
+        ],
+        [
+          "会社",
+          "かいしゃ"
+        ],
+        [
+          "年",
+          "ねん"
+        ],
+        [
+          "半年",
+          "はんとし"
+        ],
+        [
+          "区切り",
+          "くぎり"
+        ],
+        [
+          "売上",
+          "うりあげ"
+        ],
+        [
+          "目標",
+          "もくひょう"
+        ],
+        [
+          "確認",
+          "かくにん"
         ]
       ]
     }
