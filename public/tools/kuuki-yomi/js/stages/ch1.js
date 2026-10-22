@@ -713,7 +713,7 @@
           n.setAttribute('role', 'button');
           n.setAttribute('aria-label', 'Private notification (tap to dismiss)');
           n.style.cssText = `right:7%;bottom:${(32.5 + st.slot * 11).toFixed(1)}%;width:66%;background:#fff;border:.7cqw solid var(--red);border-radius:2.6cqw;padding:1.4cqw 2.6cqw 1.6cqw;box-shadow:0 1cqw 0 var(--red-soft);pointer-events:auto;cursor:pointer;touch-action:none;font-size:3.6cqw;font-weight:700;line-height:1.35;opacity:0;`;
-          n.innerHTML = `<div style="font-size:2.6cqw;color:var(--ink-3);font-weight:700">${KY.text.html(tt.app, { gloss: false })}</div>${KY.text.html(tt.msg, { gloss: false })}`;
+          n.innerHTML = `<div style="font-size:2.6cqw;color:var(--ink-3);font-weight:700">${KY.text.html(tt.app, { gloss: false, follow: true })}</div>${KY.text.html(tt.msg, { gloss: false, follow: true })}`;
           scene.overlay.append(n);
           st.node = n;
           KY.sfx.play('pop');
