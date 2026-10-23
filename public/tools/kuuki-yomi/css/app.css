@@ -181,7 +181,7 @@ rt { font-size: .5em; color: var(--ink-3); font-weight: 400; letter-spacing: 0; 
 .scene-svg text { font-family: var(--font); }
 .scene-overlay { position: absolute; inset: 0; pointer-events: none; container-type: inline-size; font-size: 4.4cqw; }
 .scene-overlay > * { position: absolute; }
-.scene-overlay .choices, .scene-overlay .ocard { pointer-events: auto; }
+.scene-overlay .choices, .scene-overlay .ocard, .scene-overlay .mini-btn { pointer-events: auto; }
 
 .hit { cursor: pointer; outline: none; animation: hitglow 1.8s ease-in-out infinite; }
 .hit.dragging { cursor: grabbing; animation: none; filter: drop-shadow(0 6px 6px rgba(230, 0, 18, .35)); }
@@ -380,6 +380,25 @@ rt { font-size: .5em; color: var(--ink-3); font-weight: 400; letter-spacing: 0; 
 .fig-n { flex: none; width: 24px; height: 24px; margin-top: 6px; border-radius: 50%; background: #a9a9a9; color: #fff; font-weight: 900; font-size: 13px; display: grid; place-items: center; }
 .fig-n.top { background: var(--ink); }
 .fig-n.you { background: var(--red); }
+/* Concise, playful stage debrief (N4): punchline → one action → useful phrase. */
+.card-joke { margin-top: 12px; padding: 13px 16px; border-left: 5px solid var(--red);
+  border-radius: 8px; background: #fff; font-weight: 900; font-size: clamp(18px, 5.3vw, 23px); line-height: 1.5; }
+.card-joke .t .en { display: block; margin-top: 5px; font-weight: 500; font-size: 13px; line-height: 1.4; }
+.card-rule { border: 1px solid rgba(0,0,0,.06); }
+.card-rule h3::before { content: '★ '; color: var(--red); }
+.card-rule p { font-size: 17px; font-weight: 700; line-height: 1.65; }
+.card-phrase .phrase .t { font-size: clamp(17px, 4.8vw, 20px); }
+.card-note { display: flex; gap: 10px; align-items: flex-start; padding: 10px 14px; margin-top: 10px;
+  border-radius: 8px; background: #fffaf1; font-size: 14px; line-height: 1.6; }
+.card-note > span:first-child { flex: none; font-weight: 900; color: #93632b; }
+.card-note .t { flex: 1; }
+.card-note .t .en { font-size: 12px; }
+/* Long seating diagrams remain available without crowding the result. */
+.card-figure-details { margin-top: 12px; }
+.card-figure-details > summary { cursor: pointer; font-size: 14px; font-weight: 800;
+  padding: 12px 16px; background: #fff; border: 1px solid rgba(0,0,0,.08); border-radius: var(--r-m); }
+.card-figure-details[open] > summary { border-radius: var(--r-m) var(--r-m) 0 0; }
+.card-figure-details .sec.fig { margin-top: 0; border: 1px solid rgba(0,0,0,.08); border-top: 0; }
 /* model answer replay */
 .demo-btn { width: 100%; margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 10px; background: #fff; }
 .demo-play { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--ink); color: #fff; font-size: 11px; padding-left: 2px; }
@@ -705,3 +724,62 @@ button.bd-card:active { transform: scale(.97); }
   .fn-lead, .fn-seal, .fn-line, .fn-score, .fn-prov, .fn-counts, .fn-chapters, .fn-bar i,
   .rs-cell, .rs-score, .rs-comment { animation-delay: 0s !important; }
 }
+
+/* Outcome-aware one-line reaction; never accuse a correct player of failing. */
+.card-reaction { margin-top: 12px; padding: 12px 15px; border-left: 4px solid #c5cdd3; background: #f6f8fa; border-radius: 2px 9px 9px 2px; font-size: 17px; font-weight: 800; line-height: 1.5; }
+.card-reaction.success { border-left-color: #489e76; background: #f2faf6; }
+.card-reaction.try-again { border-left-color: #e18e4b; background: #fff8ef; }
+.card-reaction .t .en { display: block; margin-top: 4px; font-weight: 500; font-size: 13px; line-height: 1.45; }
+
+/* Interactive scenes */
+.mini-btn{position:absolute;bottom:8%;left:50%;transform:translateX(-50%);z-index:20;padding:1.6cqw 4cqw;min-width:36%;max-width:88%;background:#e60012;border:.65cqw solid #a60b16;border-radius:3cqw;color:white;box-shadow:0 .7cqw 0 #990e1d;font-weight:900;font-size:4cqw;cursor:pointer;touch-action:manipulation;}
+.mini-btn .en{display:block;font-size:60%;}
+.mini-btn:active{transform:translate(-50%,4px)}
+.mini-btn.up{left:31%;bottom:7%;width:35%;min-width:0;}
+.mini-btn.down{left:69%;bottom:7%;width:35%;min-width:0;}
+.mini-btn.report{bottom:19%;}
+.mini-choices{z-index:24;}
+
+.bow-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;margin-top:1rem;}
+.bow-grid>div{border:1px solid #e5e5e5;padding:.7rem;border-radius:12px;background:#fff;}
+.bow-grid b{display:block;color:#292929;font-size:.92rem;text-align:center}.bow-grid p{font-size:.85rem;margin:.4rem 0 0;line-height:1.55}
+.bow-figure{height:65px;position:relative;margin:0 auto 8px;width:80px;border-bottom:2px solid #ddd}.bow-figure:before{content:'';position:absolute;bottom:1px;left:35px;width:12px;height:29px;background:#555;border-radius:7px}
+.bow-figure i{position:absolute;bottom:28px;left:31px;width:20px;height:33px;background:#ec1626;border-radius:15px 15px 8px 8px;transform-origin:center bottom;transform:rotate(var(--a))}.bow-figure i:before{content:'';position:absolute;top:-18px;left:2px;width:17px;height:17px;border:2px solid #ec1626;border-radius:50%;background:#fff}
+.bow-ground{text-align:center;font-size:45px;line-height:65px;}
+
+.ocard .role-avatar{width:28px;height:28px;object-fit:contain;vertical-align:middle;margin-right:.35em} .ocard{display:inline-flex;align-items:center;justify-content:center;}
+
+
+/* 3-6: the four illustrated actions supplied by the user. */
+.choices.choices-illustrated {
+  left: 2%; right: 2%; bottom: 0.5%;
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.6cqw;
+}
+.choice.choice-illustrated {
+  width: 100%; min-width: 0; padding: 0; overflow: hidden;
+  border: none; border-radius: 3cqw;
+  text-align: center; box-shadow: 0 .5cqw 0 var(--red-soft);
+  display: flex; flex-direction: column; justify-content: flex-start;
+}
+.choice.choice-illustrated::before { content: none; }
+.choice.choice-illustrated img { width: 100%; height: 33cqw; object-fit: contain; display: block; flex: none; }
+.choice.choice-illustrated .choice-caption {
+  width: 100%; display: flex; align-items: center; justify-content: center;
+  flex: 1; min-height: 8cqw; padding: .3cqw 1cqw 1cqw;
+  line-height: 1.32; font-size: 3.15cqw; font-weight: 800; color: var(--ink);
+}
+.choice.choice-illustrated .choice-caption .t .en { font-size: 2.7cqw; line-height: 1.25; }
+.choices.in .choice:nth-child(4) { transition-delay: .21s; }
+.choice.choice-illustrated:focus-visible { outline: .8cqw solid var(--ink); outline-offset: -.8cqw; }
+
+/* The stage number next to NEXT makes the 1-3 → 1-4 route explicit. */
+.next-stage-no { font-size: .75em; letter-spacing: .04em; opacity: .65; }
+.stage-total { display: inline-block; margin-left: 6px; font-weight: 800; white-space: nowrap; }
+
+/* 3-5: keep the nod control clickable above the scene overlay. */
+.scene-overlay .nod-button { pointer-events:auto; touch-action:manipulation; z-index:30; }
+.scene-overlay .nod-button:focus-visible { outline:3px solid #222;outline-offset:3px; }
+
+/* Chapter 1-8: indicate the only two click targets. */
+.scene-svg .action-target{cursor:pointer;transition:fill-opacity .2s,stroke-width .2s;}
+.scene-svg .action-target:hover,.scene-svg .action-target:focus-visible{fill-opacity:.18;stroke-width:5;outline:none;}

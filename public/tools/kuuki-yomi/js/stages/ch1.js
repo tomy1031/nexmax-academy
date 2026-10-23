@@ -4,6 +4,8 @@
 
   /* dictionary words used in this chapter (popup 辞書) */
   KY.addGlossary({
+    '敬礼':{yomi:'けいれい',jp:'30{度|ど}ぐらい {頭|あたま}を {下|さ}げる あいさつ。',en:'30-degree bow'},'最敬礼':{yomi:'さいけいれい',jp:'45{度|ど}ぐらい {頭|あたま}を {下|さ}げる あいさつ。',en:'deep 45-degree bow'},'土下座':{yomi:'どげざ',jp:'{床|ゆか}に {手|て}や {頭|あたま}を {下|さ}げる こと。{会社|かいしゃ}では ふつう しません。',en:'kneeling apology; not normal workplace behavior'},
+    '書類':{yomi:'しょるい',jp:'{仕事|しごと}の {紙|かみ}や データ。',en:'document'},
     '報連相': { yomi: 'ほうれんそう', jp: '{報告|ほうこく}・{連絡|れんらく}・{相談|そうだん}の こと。{仕事|しごと}を {進|すす}める ための、{知|し}らせ{方|かた}の {基本|きほん}です。', en: 'hō-ren-sō: report, inform, consult (the basics of keeping others in the loop)' },
     '進捗': { yomi: 'しんちょく', jp: '{仕事|しごと}が どれくらい {進|すす}んで いるか、という こと。', en: 'progress (how far the work has come)' },
     '朝礼': { yomi: 'ちょうれい', jp: '{朝|あさ}、{仕事|しごと}を はじめる {前|まえ}に みんなで {集|あつ}まって、あいさつや {今日|きょう}の {予定|よてい}を {話|はな}す こと。', en: 'morning assembly (chōrei): the team gathers before work to greet and share the day\'s plan' },
@@ -139,14 +141,14 @@
         return flags.seated !== undefined && tapAt >= flags.seated ? 'late' : 'great';
       },
       onTap(scene, r, key) {
-        const b = scene.say(r.player, { jp: 'おはようございます！', en: 'Good morning!' }, { dur: 2300, cls: 'mine' });
+        const b = scene.say(r.player, { jp: 'おはようございます！！', en: 'Good morning!!' }, { dur: 2300, cls: 'mine' });
         follow(scene, b, r.player);
-        if (key === 'great') scene.after(700, () => scene.say(r.c1, { jp: 'おはようございます！', en: 'Good morning!' }, { dur: 1500, lift: 30 }));
+        if (key === 'great') scene.after(700, () => scene.say(r.c1, { jp: 'おはようございます！！', en: 'Good morning!!' }, { dur: 1500, lift: 30 }));
         return key === 'great' ? 1800 : 1300;
       },
     },
     outcomes: {
-      great: { grade: 'great', who: WHO.senior, line: { jp: 'おはようございます！{朝|あさ}の{空気|くうき}が、ちょっと{明|あか}るくなったね。', en: 'Good morning! The morning air just got a little brighter.' } },
+      great: { grade: 'great', who: WHO.senior, line: { jp: '{朝|あさ}から {元気|げんき}で いいね！', en: 'Great energy this morning!' } },
       late: { grade: 'ok', who: WHO.senior, line: { jp: 'あ、いたんだ。…おはようございます。', en: "Oh, you're here. ...Good morning." },
         react(scene, r) { r.c1.mark('q'); } },
       never: { grade: 'ky', who: WHO.senior, line: { jp: '…（{誰|だれ}か{来|き}た？）', en: '...(Did someone come in?)' },
@@ -157,7 +159,7 @@
       name: { jp: '{朝|あさ}の あいさつ', en: 'The morning greeting' },
       points: [
         { jp: '{会社|かいしゃ}に {着|つ}いたら、{自分|じぶん}から {先|さき}に「<<おはようございます>>」と {言|い}います。', en: 'When you arrive, greet first: "ohayō gozaimasu".' },
-        { jp: '{席|せき}に {座|すわ}って から では なく、{歩|ある}きながら、{会|あ}った {人|ひと}に {言|い}います。', en: 'Say it as you walk in and meet people, not after you sit down.' },
+        { jp: '{会社|かいしゃ}に {入|はい}った すぐ あとに、あいさつ しよう。', en: 'Greet colleagues right after you enter the office.' },
         { jp: '{明|あか}るい {声|こえ}で、{相手|あいて}の {方|ほう}を {見|み}て {言|い}います。', en: 'Use a bright voice and look at the person.' },
       ],
       phrase: { jp: '<<おはようございます>>', ro: 'ohayō gozaimasu', en: 'Good morning.' },
@@ -174,115 +176,111 @@
         D.arrow(svg, 90, 84, 108, 84, { color: C.red });
       },
     },
-    test: { great: { at: 2500 }, ok: { at: 7000 }, ky: null },
+    test: { great: { at: 700 }, ok: { at: 7000 }, ky: null },
   });
 
   /* ------------------------------------------------------------------ 1-2 */
-  /* both of you walk down the hallway toward each other; tap yourself to greet at the right distance */
-  const NEAR = 130, PASSING = 30;   // gap in scene units: about 2–3 m before passing = the right moment
-
+  /* During work, a visitor enters the office. Tap your seated red character to stand and greet. */
   KY.defineStage({
     id: '1-2',
     chapter: 1,
-    title: { jp: '{廊下|ろうか}で {社長|しゃちょう}', en: 'The CEO in the Hallway' },
-    intro: { jp: '{廊下|ろうか}を {歩|ある}いて います。むこうから {社長|しゃちょう}が {歩|ある}いて きます。', en: 'You are walking down the hallway. The company president is walking toward you.' },
+    title: { jp: '{仕事中|しごとちゅう}に お{客様|きゃくさま}が {来|き}た！', en: 'A Visitor Arrives While You Work!' },
+    intro: { jp: 'パソコンで {仕事中|しごとちゅう}です。お{客様|きゃくさま}が オフィスに {来|き}ます。{赤|あか}い {人|ひと}を タップすると {立|た}ちます。いつ {立|た}つ？', en: 'You are working at your computer. A visitor is about to enter the office. Tap the red person to stand up. When should you stand?' },
     time: 9500,
     mechanic: 'timing',
     setup(scene) {
       const P = KY.props;
-      scene.camera({ zoom: 1.3, x: 180, y: 470 });
-      scene.add('bg', P.backdrop({ floor: 470 }));
-      scene.add('bg', P.door({ x: 56, floor: 470, w: 48, h: 142 }));
-      scene.add('bg', P.door({ x: 256, floor: 470, w: 48, h: 142 }));
-      scene.add('bg', P.clock({ x: 180, y: 300, r: 19, h: 3, m: 40 }));
-      const ceo = scene.person({ x: 350, y: 536, facing: -1, tag: WHO.ceo });
-      const player = scene.person({ x: 44, y: 552, facing: 1, color: 'player', player: true });
-      bigHit(player, 72, 132);
-      return { player, ceo };
+      scene.camera({ zoom: 1.10, x: 180, y: 445 });
+      scene.add('bg', P.backdrop({ floor: 480 }));
+      scene.add('bg', P.window({ x: 60, y: 247, w: 70, h: 60 }));
+      scene.add('bg', P.door({ x: 320, floor: 480, w: 48, h: 143, open: 0.8 }));
+      scene.add('bg', P.clock({ x: 176, y: 283, r: 17, h: 9, m: 20 }));
+      scene.add('mid', P.officeChair({ x: 137, floor: 480, facing: 1 }));
+      scene.add('mid', P.table({ x: 205, y: 435, w: 96 }));
+      scene.add('mid', P.monitor({ x: 212, y: 422, w: 29, h: 30 }));
+      const player = scene.person({ x: 137, y: 480, pose: 'sit', facing: 1, color: 'player', player: true });
+      bigHit(player, 80, 140);
+      const colleague = scene.person({ x: 70, y: 480, pose: 'stand', facing: 1, tag: WHO.senior });
+      const visitor = scene.person({ x: 378, y: 480, pose: 'stand', facing: -1, tag: { jp: 'お{客様|きゃくさま}', en: 'Visitor' } });
+      const stopTyping = scene.every((dt, t) => {
+        player.set({ arms: { f: [24, 46 + 7 * Math.sin(t / 120)], b: [18, 46 + 7 * Math.sin(t / 140 + 1.7)] } });
+      });
+      return { player, visitor, colleague, stopTyping };
     },
     params: {
       target: 'player',
-      label: 'You (tap to greet)',
+      label: 'You (tap to stand and greet)',
       script: [
-        [0, (s, r) => {
-          r.cancelWalk = s.walk(r.player, 300, 11000);
-          r.cancelCeo = s.walk(r.ceo, -60, 8600);
-          s.every(() => {
-            const gap = r.ceo.o.x - r.player.o.x;
-            if (gap <= NEAR && s.flags.near === undefined) s.flag('near');
-            if (gap <= PASSING && s.flags.passing === undefined) s.flag('passing');
-          });
+        [1100, (s, r) => { r.stopVisitor = s.walk(r.visitor, 294, 4800); }],
+        [3800, (s, r) => {
+          s.flag('entered');
+          s.say(r.visitor, { jp: 'こんにちは。', en: 'Hello.' }, { dur: 2100 });
         }],
+        [6700, s => s.flag('tooLate')],
       ],
       judge(tapAt, flags) {
-        if (tapAt === null) return 'pass';
-        if (flags.near === undefined) return 'early';
-        return flags.passing === undefined ? 'great' : 'late';
+        if (tapAt === null) return 'miss';
+        if (flags.entered === undefined) return 'early';
+        return flags.tooLate === undefined ? 'great' : 'late';
       },
       onTap(scene, r, key) {
-        /* a light greeting while passing: a short stop, "otsukaresama desu" and a 15° nod — no stepping aside */
-        if (r.cancelWalk) r.cancelWalk();
-        r.player.set({ pose: 'stand', walk: 0 });
-        const b = scene.say(r.player, { jp: 'お{疲|つか}れ{様|さま}です', en: 'Thank you for your hard work.' }, { dur: 1800, cls: 'mine' });
+        r.stopTyping();
+        r.player.set({ pose: 'stand', facing: 1, arms: null });
+        const b = scene.say(r.player, { jp: 'こんにちは。いらっしゃいませ！', en: 'Hello, welcome!' }, { dur: 1800, cls: 'mine' });
         follow(scene, b, r.player);
-        scene.tween({ from: 0, to: 15, dur: 260, ease: 'out', step: v => r.player.set({ bow: v }) });
-        scene.after(700, () => scene.tween({ from: 15, to: 0, dur: 300, ease: 'inout', step: v => r.player.set({ bow: v }) }));
-        if (key === 'great') {
-          /* the president nods back (his words come in the result) */
-          scene.after(120, () => { if (r.cancelCeo) r.cancelCeo(); r.ceo.set({ pose: 'stand', walk: 0 }); });
-          scene.after(420, () => scene.tween({ from: 0, to: 10, dur: 260, ease: 'out', step: v => r.ceo.set({ bow: v }) }));
-        }
-        return 1500;
+        scene.tween({ from: 0, to: 18, dur: 270, ease: 'out', step: v => r.player.set({ bow: v }) });
+        scene.after(680, () => scene.tween({ from: 18, to: 0, dur: 310, ease: 'inout', step: v => r.player.set({ bow: v }) }));
+        if (key === 'great') scene.after(340, () => r.visitor.mark('sparkle'));
+        return 1700;
+      },
+      onTimeout(scene, r) {
+        r.visitor.mark('q');
+        r.player.mark('dots');
+        return 700;
       },
     },
     outcomes: {
-      great: { grade: 'great', who: WHO.ceo, line: { jp: 'お{疲|つか}れ{様|さま}。（さわやかな あいさつだな）', en: 'Good work. (What a fresh, pleasant greeting.)' },
-        react(scene, r) { r.ceo.set({ bow: 0 }); r.ceo.mark('sparkle'); } },
-      early: { grade: 'ok', who: WHO.ceo, line: { jp: '（…{遠|とお}くで {何|なに}か {言|い}った？）', en: '(...Did someone say something, far away?)' },
-        react(scene, r) { r.ceo.mark('q'); } },
-      late: { grade: 'ok', who: WHO.ceo, line: { jp: '（…{今|いま}、{後|うし}ろで {何|なに}か {言|い}った？）', en: '(...Did someone just say something behind me?)' },
-        react(scene, r) { r.ceo.mark('q'); } },
-      pass: { grade: 'ky', who: WHO.ceo, line: { jp: '…（{今|いま}、{目|め}が{合|あ}った{気|き}が…）', en: '...(I think our eyes just met...)' },
-        react(scene, r) { if (r.cancelCeo) r.cancelCeo(); r.ceo.set({ pose: 'stand', walk: 0, facing: 1 }); r.ceo.mark('q'); r.player.mark('dots'); } },
+      great: { grade: 'great', who: { jp: 'お{客様|きゃくさま}', en: 'Visitor' }, line: { jp: 'こんにちは。{迎|むか}えてくれて、ありがとうございます！', en: 'Hello! Thank you for welcoming me!' } },
+      early: { grade: 'ok', who: { jp: 'お{客様|きゃくさま}', en: 'Visitor' }, line: { jp: 'あ、もう {立|た}っている。{準備|じゅんび}が {早|はや}いですね！', en: 'Oh, you are already standing. You are well prepared!' } },
+      late: { grade: 'ok', who: { jp: 'お{客様|きゃくさま}', en: 'Visitor' }, line: { jp: 'あ、こんにちは。{仕事中|しごとちゅう}でしたか？', en: 'Oh, hello. Were you busy working?' } },
+      miss: { grade: 'ky', who: { jp: 'お{客様|きゃくさま}', en: 'Visitor' }, line: { jp: '（あれ？ だれに あいさつしたら いいんだろう…）', en: '(Hmm, who should I greet…?)' }, react(scene, r) { r.visitor.mark('q'); } },
     },
     card: {
-      badge: 'depends',
-      name: { jp: '{廊下|ろうか}で {会釈|えしゃく}', en: 'Greeting the president in the hallway' },
+      badge: 'must',
+      name: { jp: '{立|た}って あいさつ', en: 'Stand Up to Greet a Visitor' },
       points: [
-        { jp: 'すれちがう {少|すこ}し {前|まえ}に、{自分|じぶん}から「<<お{疲|つか}れ{様|さま}です>>」と {言|い}います。', en: 'Just before you pass each other, greet first: "otsukaresama desu".' },
-        { jp: '{頭|あたま}は 15°ぐらい {下|さ}げます（<<{会釈|えしゃく}>>）。{深|ふか}い おじぎは いりません。', en: 'Bow about 15° (eshaku). A deep bow is not needed.' },
-        { jp: '{社内|しゃない}の {廊下|ろうか}なら、{道|みち}を あけたり、ずっと {止|と}まったり しなくて {大丈夫|だいじょうぶ}です。', en: 'In your own office hallway, you do not need to step aside or stand still for long.' },
+        { jp: '{仕事中|しごとちゅう}でも、お{客様|きゃくさま}が {来|き}たら {席|せき}から {立|た}って あいさつします。', en: 'Even when working, stand and greet visitors who enter the office.' },
+        { jp: '{相手|あいて}を {見|み}て、「こんにちは。いらっしゃいませ」と {言|い}いましょう。', en: 'Look at the visitor and say, “Hello, welcome.”' },
       ],
-      phrase: { jp: '<<お{疲|つか}れ{様|さま}です>>', ro: 'otsukaresama desu', en: 'Thank you for your hard work. (a common greeting between colleagues)' },
-      why: { jp: '{廊下|ろうか}で {会|あ}う たびに {大|おお}きな あいさつを すると、おたがいに {大変|たいへん}です。かるい {会釈|えしゃく}と ひとことで、{気持|きも}ちは {伝|つた}わります。', en: 'Big greetings every time you meet in the hallway are tiring for both sides. A light nod and a word are enough.' },
-      dont: { jp: '{何|なに}も {言|い}わずに {通|とお}りすぎない。{深|ふか}すぎる おじぎも しない。', en: "Don't walk past without a word, and don't bow too deeply." },
-      tip: { jp: '{会社|かいしゃ}に よっては、{社長|しゃちょう}や お{客様|きゃくさま}には {立|た}ち{止|と}まって あいさつする ところも あります。まわりの {人|ひと}を {見|み}て まねしましょう。', en: 'Some companies expect you to stop and greet the president or guests. Watch your colleagues and follow them.' },
+      phrase: { jp: 'こんにちは。いらっしゃいませ。', ro: 'konnichiwa. irasshaimase.', en: 'Hello, welcome.' },
+      why: { jp: '{席|せき}から {立|た}つと、お{客様|きゃくさま}に「あなたが {来|き}たことに {気|き}づいています」と {伝|つた}わります。', en: 'Standing up shows the visitor that you noticed their arrival.' },
+      dont: { jp: '{仕事|しごと}を {続|つづ}けながら、{下|した}を {向|む}いたままに しない。', en: 'Do not keep working without looking up.' },
       diagram(svg) {
-        const D = KY.diag, C = KY.svg.C;
-        D.floor(svg, 132);
-        D.person(svg, { x: 64, y: 132, s: 0.72, bow: 15, color: 'player' });
-        D.person(svg, { x: 150, y: 132, s: 0.72, facing: -1, pose: 'walk', walk: 0.8 });
-        D.label(svg, 76, 50, '15°', { color: C.red, size: 14 });
-        D.label(svg, 150, 34, 'しゃちょう', { color: '#666', size: 10 });
-        dBubble(svg, 12, 8, 112, 24, 'おつかれさまです', C.red, 10);
-        D.arrow(svg, 128, 112, 110, 112, { color: '#9a9a9a' });
+        const D = KY.diag, C = KY.svg.C, { el } = KY.svg;
+        D.floor(svg, 133);
+        D.person(svg, { x: 75, y: 133, s: 0.73, color: 'player', bow: 15 });
+        D.person(svg, { x: 157, y: 133, s: 0.70, facing: -1 });
+        svg.append(el('rect', { x: 4, y: 87, width: 35, height: 6, rx: 3, fill: '#bababa' }));
+        svg.append(el('rect', { x: 12, y: 66, width: 21, height: 21, rx: 3, fill: '#ebebeb', stroke: '#888' }));
+        dBubble(svg, 35, 12, 128, 27, 'いらっしゃいませ！', C.red, 10);
       },
     },
-    test: { great: { at: 3300 }, ok: { at: 800 }, ky: null },
+    test: { great: { at: 4500 }, ok: { at: 1700 }, ky: null },
   });
 
   /* ------------------------------------------------------------------ 1-3 */
   KY.defineStage({
     id: '1-3',
     chapter: 1,
-    title: { jp: '{役職|やくしょく}ピラミッド', en: "Who's the Boss?" },
-    intro: { jp: '{会社|かいしゃ}に {入|はい}って {初|はじ}めての {日|ひ}。{先輩|せんぱい}が、よくある {日本|にほん}の {会社|かいしゃ}の {役職|やくしょく}を {教|おし}えてくれます。', en: 'Your first day. A senior colleague explains the job titles at a typical Japanese company.' },
+    title: { jp: '{役職|やくしょく}の {人|ひと}に {書類|しょるい}を とどけよう', en: "Who's the Boss?" },
+    intro: { jp: '{書類|しょるい}を、{役職|やくしょく}が {上|うえ}の {人|ひと}から {順番|じゅんばん}に とどけて！ {名札|なふだ}を ドラッグしよう。', en: 'Your first day. A senior colleague explains the job titles at a typical Japanese company.' },
     time: 25000,
     mechanic: 'order',
     setup(scene) {
       const { el, C } = KY.svg;
       scene.add('bg', el('rect', { x: 34, y: 104, width: 292, height: 330, rx: 10, fill: '#fbfbfa', stroke: '#cfcfcf', 'stroke-width': 3 }));
-      scene.add('bg', el('path', { d: 'M180 120 L304 420 L56 420 Z', fill: '#f2f2f0', stroke: '#e2e2e2', 'stroke-width': 2 }));
+      for(let i=0;i<5;i++){ const y=135+i*60;scene.add('bg',el('rect',{x:106,y:y-13,width:150,height:40,rx:7,fill:'#e6e5e1',stroke:'#b1b1ae','stroke-width':2}));scene.add('bg',el('rect',{x:205,y:y-9,width:28,height:20,rx:2,fill:'white',stroke:'#b4b4b4'}));}
+      scene.label(180,100,{jp:'{書類|しょるい}を {順番|じゅんばん}に とどける',en:'Deliver documents in rank order'});
       scene.add('bg', el('line', { x1: 34, y1: 470, x2: 326, y2: 470, stroke: C.faint, 'stroke-width': 2 }));
       scene.label(62, 150, { jp: '{上|うえ}', en: 'top' });
       scene.label(62, 390, { jp: '{下|した}', en: 'bottom' });
@@ -290,14 +288,14 @@
     },
     params: {
       script: [
-        [200, s => s.bubble({ x: 180, y: 70, tail: 'none', who: WHO.senior, text: { jp: '{役職|やくしょく}を {上|うえ}から {並|なら}べてみて。', en: 'Try putting the job titles in order, from the top.' } })],
+        [200, s => s.bubble({ x: 180, y: 70, tail: 'none', who: WHO.senior, text: { jp: '{上|うえ}の {役職|やくしょく}の {人|ひと}から {書類|しょるい}を わたそう！', en: 'Try putting the job titles in order, from the top.' } })],
       ],
       cards: [
-        { id: 'shacho', text: { jp: '{社長|しゃちょう}', en: 'President' } },
-        { id: 'bucho', text: { jp: '{部長|ぶちょう}', en: 'Dept. Manager' } },
-        { id: 'kacho', text: { jp: '{課長|かちょう}', en: 'Section Manager' } },
-        { id: 'kakaricho', text: { jp: '{係長|かかりちょう}', en: 'Assistant Manager' } },
-        { id: 'shunin', text: { jp: '{主任|しゅにん}', en: 'Chief' } },
+        { id: 'shacho', image: KY.roleHeads.shacho, text: { jp: '{社長|しゃちょう}', en: 'President' } },
+        { id: 'bucho', image: KY.roleHeads.bucho, text: { jp: '{部長|ぶちょう}', en: 'Dept. Manager' } },
+        { id: 'kacho', image: KY.roleHeads.kacho, text: { jp: '{課長|かちょう}', en: 'Section Manager' } },
+        { id: 'kakaricho', image: KY.roleHeads.kakaricho, text: { jp: '{係長|かかりちょう}', en: 'Assistant Manager' } },
+        { id: 'shunin', image: KY.roleHeads.shunin, text: { jp: '{主任|しゅにん}', en: 'Chief' } },
       ],
       slots: [
         { x: 180, y: 150, w: 120, h: 42 },
@@ -337,199 +335,38 @@
 
   /* ------------------------------------------------------------------ 1-4 */
   KY.defineStage({
-    id: '1-4',
-    chapter: 1,
-    title: { jp: '{朝礼|ちょうれい}の「{順調|じゅんちょう}です」', en: '"All Good" at the Morning Meeting' },
-    intro: { jp: '{朝礼|ちょうれい}の {時間|じかん}です。あなたの タスクは {予定|よてい}より <<{遅|おく}れ>>て います。', en: 'The morning meeting is starting. Your task is behind schedule.' },
-    time: 15000,
-    mechanic: 'choice',
-    setup(scene) {
-      const P = KY.props, { el, g, C } = KY.svg;
-      scene.camera({ zoom: 1.15, x: 180, y: 400 });
-      scene.add('bg', P.backdrop({ floor: 470 }));
-      /* your monitor: the task bar is shorter than where "today" is, and there is a warning sign */
-      const mon = P.monitor({ x: 180, y: 292, w: 204, h: 126 });
-      mon.screen.append(
-        el('rect', { x: 0, y: 0, width: mon.sw, height: 14, fill: '#dfe5ec' }),
-        el('rect', { x: 10, y: 28, width: 30, height: 6, rx: 3, fill: '#c9c9c9' }),
-        el('rect', { x: 50, y: 25, width: 110, height: 12, rx: 6, fill: '#e6e6e6' }),
-        el('rect', { x: 50, y: 25, width: 44, height: 12, rx: 6, fill: '#8f8f8f' }),
-        el('rect', { x: 10, y: 52, width: 24, height: 6, rx: 3, fill: '#d6d6d6' }),
-        el('rect', { x: 50, y: 49, width: 90, height: 12, rx: 6, fill: '#e6e6e6' }),
-        el('rect', { x: 50, y: 49, width: 74, height: 12, rx: 6, fill: '#b9c5d8' }),
-        el('line', { x1: 118, y1: 18, x2: 118, y2: 76, stroke: C.ink, 'stroke-width': 2, 'stroke-dasharray': '4 3' }),
-        g({ transform: 'translate(150 82)' }, [
-          el('path', { d: 'M0 -22 L22 16 L-22 16 Z', fill: '#fff', stroke: C.ink, 'stroke-width': 4, 'stroke-linejoin': 'round' }),
-          el('line', { x1: 0, y1: -8, x2: 0, y2: 4, stroke: C.ink, 'stroke-width': 4, 'stroke-linecap': 'round' }),
-          el('circle', { cx: 0, cy: 10, r: 2.4, fill: C.ink }),
-        ]),
-      );
-      scene.add('bg', mon);
-      scene.label(180, 142, { jp: 'あなたの タスク', en: 'Your task' }, 'deadline');
-      const player = scene.person({ x: 80, y: 470, facing: 1, color: 'player', player: true });
-      const t1 = scene.person({ x: 142, y: 470, facing: 1, color: 'npc2' });
-      const t2 = scene.person({ x: 222, y: 470, facing: -1, color: 'npc2' });
-      const leader = scene.person({ x: 288, y: 470, facing: -1, tag: WHO.leader });
-      return { player, t1, t2, leader, mon };
-    },
-    params: {
-      script: [
-        [300, (s, r) => s.say(r.leader, { jp: '{進捗|しんちょく}は どう？', en: "How's your progress?" }, { dur: 3200, lift: 24 })],
-        [1500, (s, r) => r.player.mark('sweat')],
-      ],
-      showAt: 2000,
-      options: [
-        { id: 'honest', text: { jp: '{実|じつ}は{遅|おく}れています。{理由|りゆう}と{対策|たいさく}をご{相談|そうだん}させてください', en: "Actually, I'm behind. May I discuss the reason and a plan with you?" }, outcome: 'great' },
-        { id: 'fine', text: { jp: '{順調|じゅんちょう}です！', en: "It's going well!" }, outcome: 'fire' },
-        { id: 'maybe', text: { jp: 'たぶん{大丈夫|だいじょうぶ}だと{思|おも}います…', en: "I think it'll probably be fine..." }, outcome: 'vague' },
-      ],
-      onChoose(scene, r, opt) {
-        r.player.mark(null);
-        scene.say(r.player, opt.text, { dur: 3000, cls: 'mine' });
-        return opt.id === 'honest' ? 3100 : 2100;
-      },
-      timeout: 'silent',
-    },
-    outcomes: {
-      great: { grade: 'great', who: WHO.leader, line: { jp: 'ありがとう！それが、いちばん{助|たす}かる{報告|ほうこく}だよ。', en: "Thanks! That's the most helpful kind of report." } },
-      fire: { grade: 'ky', who: null, line: { jp: '（{翌週|よくしゅう}、すべてが{燃|も}えていた…）', en: '(The next week, everything was on fire...)' },
-        react(scene, r) {
-          [[104, 182, 0.95], [180, 176, 0.5], [256, 182, 1.0]].forEach(([x, y, s], i) => {
-            const f = flame(x, y, 0.01);
-            scene.add('fg', f);
-            scene.after(i * 140, () => scene.tween({ from: 0.01, to: s, dur: 520, ease: 'back', step: k => KY.svg.set(f, { transform: `translate(${x} ${y}) scale(${k})` }) }));
-          });
-          r.player.mark('sweat2'); r.t1.mark('shock'); r.t2.mark('shock'); r.leader.mark('anger');
-        } },
-      vague: { grade: 'ok', who: WHO.leader, line: { jp: 'たぶん…？{具体的|ぐたいてき}には、いつ{終|お}わりそう？', en: 'Probably...? When exactly do you think it will be done?' },
-        react(scene, r) { r.leader.mark('q'); r.player.mark('sweat2'); } },
-      silent: { grade: 'ky', who: WHO.leader, line: { jp: '…あの、{進捗|しんちょく}は？', en: "...Um, how's your progress?" },
-        react(scene, r) { r.leader.mark('q'); r.t1.mark('dots'); } },
-    },
-    card: {
-      badge: 'must',
-      name: { jp: '{悪|わる}い {知|し}らせは {早|はや}く {伝|つた}える', en: 'Share bad news early' },
-      points: [
-        { jp: '{報連相|ほうれんそう}は {仕事|しごと}の {基本|きほん}です。{報告|ほうこく}・{連絡|れんらく}・{相談|そうだん}を {早|はや}めに します。', en: 'Hō-ren-sō (report, inform, consult) is the basis of work. Do it early.' },
-        { jp: '<<{遅|おく}れ>>や {問題|もんだい}は、{早|はや}く {言|い}います。{後|あと}で {言|い}うほど、{直|なお}すのが たいへんです。', en: 'Say so early when you are behind or have a problem. The later you say it, the harder it is to fix.' },
-        { jp: '{理由|りゆう}、これからの {見通|みとお}し、{対策|たいさく}を いっしょに {話|はな}します。', en: 'Give the reason, the outlook and a plan together.' },
-      ],
-      phrase: { jp: '{実|じつ}は{遅|おく}れています。ご{相談|そうだん}させてください', ro: 'Jitsu wa okurete imasu. Go-sōdan sasete kudasai.', en: "Actually, I'm behind. May I ask your advice?" },
-      why: { jp: '{仕事|しごと}は チームで します。あなたの <<{遅|おく}れ>>は、ほかの {人|ひと}の {予定|よてい}にも {関係|かんけい}します。{早|はや}く {知|し}れば、みんなで {手伝|てつだ}えます。', en: "Work is a team effort. Your delay affects other people's plans too. If they know early, everyone can help." },
-      dont: { jp: '{本当|ほんとう}は <<{遅|おく}れ>>て いるのに、「{順調|じゅんちょう}です」と {言|い}わない。', en: "Don't say \"it's going well\" when you are really behind." },
-      diagram(svg) {
-        const D = KY.diag, C = KY.svg.C, { el } = KY.svg;
-        D.label(svg, 100, 18, 'もんだいの おおきさ', { color: C.ink, size: 10 });
-        svg.append(el('circle', { cx: 56, cy: 86, r: 13, fill: '#d7d7d7', stroke: C.ink, 'stroke-width': 2.5 }));
-        svg.append(el('circle', { cx: 146, cy: 76, r: 34, fill: '#3a3a3a' }));
-        D.arrow(svg, 80, 86, 106, 86, { color: '#9a9a9a' });
-        D.label(svg, 56, 124, 'はやく いう', { color: C.red, size: 10 });
-        D.label(svg, 146, 124, 'あとで いう', { color: '#666', size: 10 });
-        D.label(svg, 56, 144, 'ちいさい', { color: C.red, size: 9 });
-        D.label(svg, 146, 144, 'おおきい', { color: '#666', size: 9 });
-      },
-    },
-    test: { great: 'honest', ok: 'maybe', ky: 'fine' },
-  });
+    id:'1-4',chapter:1,title:{jp:'{進捗|しんちょく}は 60％！',en:'Report your real progress'},
+    intro:{jp:'{仕事|しごと}は 60％ おわりました。バーを 55〜65％に して、{上司|じょうし}に {報告|ほうこく}しよう。ボタンで {数字|すうじ}を {変|か}えられます。',en:'The work is 60% complete. Keep the bar between 55 and 65%, then report. Use the buttons.'},
+    time:15000,mechanic:'action',
+    setup(scene){const P=KY.props,{el,C}=KY.svg;scene.add('bg',P.backdrop({floor:470})); scene.add('mid',P.table({x:180,y:423,w:220}));
+      const player=scene.person({x:74,y:470,color:'player',player:true});const boss=scene.person({x:292,y:470,facing:-1,tag:{jp:'{上司|じょうし}',en:'Boss'}});
+      scene.add('mid',el('rect',{x:30,y:190,width:300,height:156,rx:14,fill:'#fff',stroke:'#999','stroke-width':3}));
+      scene.add('mid',el('rect',{x:55,y:270,width:250,height:30,rx:8,fill:'#ebebeb'}));
+      scene.add('mid',el('rect',{x:55+250*.55,y:263,width:250*.10,height:44,rx:5,fill:'#d2ecd7',stroke:'#0a8b38','stroke-width':1.5}));
+      const bar=el('rect',{x:55,y:270,width:0,height:30,rx:7,fill:C.red});scene.add('mid',bar);const pct=KY.mini.label(scene,180,244,'48％',C.ink,25);
+      scene.label(180,150,{jp:'{本当|ほんとう}の {進捗|しんちょく} 60％',en:'Actual progress: 60%'});
+      scene.label(180,329,{jp:'OK：55〜65％',en:'OK: 55–65%'});return {player,boss,bar,pct};},
+    params:{start(s,r){let v=48,done=false;const update=()=>{KY.svg.set(r.bar,{width:250*Math.min(100,v)/100});r.pct.textContent=Math.round(v)+'％';};
+      const up=KY.mini.button(s,'▲ あげる','Up',()=>{v=Math.min(100,v+5);update();},'up');
+      const down=KY.mini.button(s,'▼ さげる','Down',()=>{v=Math.max(0,v-6);update();},'down');
+      const send=KY.mini.button(s,'{報告|ほうこく}する','Report',()=>{if(done)return;done=true;up.remove();down.remove();send.remove();const key=v>65?'high':v<55?'low':'great';s.say(r.player,{jp:'{進捗|しんちょく}は '+Math.round(v)+'％ です。',en:'Progress is '+Math.round(v)+'%.'},{dur:1400,cls:'mine'});s.after(800,()=>{if(key==='high'){KY.mini.folderFlood(s);r.boss.mark('sparkle');}if(key==='low')r.boss.mark('q');s.end(key);});},'report');
+      let holdingUp=false,holdingDown=false;
+      const stop=()=>{holdingUp=false;holdingDown=false;};
+      up.addEventListener('pointerdown',()=>holdingUp=true);down.addEventListener('pointerdown',()=>holdingDown=true);
+      ['pointerup','pointercancel','pointerleave'].forEach(ev=>{up.addEventListener(ev,stop);down.addEventListener(ev,stop);});
+      s.every((dt)=>{if(done)return;v=Math.max(0,Math.min(100,v+dt*(0.004+(holdingUp?0.012:0)-(holdingDown?0.016:0))));update();});s.timer(s.def.time,()=>{if(!done){done=true;up.remove();down.remove();send.remove();s.end(v>65?'high':v<55?'low':'great');}});
+      s._progress={set(x){v=x;update();},report(){send.dispatchEvent(new PointerEvent('pointerdown',{bubbles:true}));}};},simulate(s,r,input){s.at(1500,()=>{s._progress.set(input==='high'?90:input==='low'?30:60);s._progress.report();});}},
+    outcomes:{great:{grade:'great',line:{jp:'60％！ {本当|ほんとう}の {数字|すうじ}で {報告|ほうこく}できた！',en:'60%! You reported the real progress!'}},high:{grade:'ky',line:{jp:'「もう そんなに {終|お}わったの？ つぎも お{願|ねが}い！」{仕事|しごと}が いっぱい！',en:'“Already that far? Here is more work!” So many tasks!'}},low:{grade:'ky',line:{jp:'「えっ、まだ それだけ？ {何|なに}が あったの？」',en:'“Only that much? What happened?”'}}},
+    card:{badge: "must", name: {jp:"進捗は正しく伝える",en:"進捗は正しく伝える"}, points:[{jp:"{仕事|しごと}が 60％ おわったら、60％と {報告|ほうこく}しよう。{多|おお}くも {少|すく}なくも {言|い}わない。",en:"{仕事|しごと}が 60％ おわったら、60％と {報告|ほうこく}しよう。{多|おお}くも {少|すく}なくも {言|い}わない。"}], phrase:{jp:"{進捗|しんちょく}は 60％ です。",en:"{進捗|しんちょく}は 60％ です。"}, },test:{great:'great',ky:'high'}});
+
 
   /* ------------------------------------------------------------------ 1-5 */
-  KY.defineStage({
-    id: '1-5',
-    chapter: 1,
-    title: { jp: 'チャットの {書|か}き{出|だ}し', en: 'Chat Openers' },
-    intro: { jp: '{会社|かいしゃ}の チャットで、{上司|じょうし}に {相談|そうだん}したい ことが あります。', en: 'You want to consult your boss on the company chat.' },
-    time: 15000,
-    mechanic: 'choice',
-    setup(scene) {
-      const P = KY.props, { el, C } = KY.svg;
-      scene.camera({ zoom: 1.3, x: 180, y: 400 });
-      scene.add('bg', P.backdrop({ floor: 470 }));
-      scene.add('mid', P.officeChair({ x: 72, facing: 1 }));
-      const player = scene.person({ x: 72, y: 470, pose: 'sit', facing: 1, color: 'player', player: true });
-      scene.add('mid', P.table({ x: 206, y: 420, w: 200 }));
-      /* the chat window on the monitor (drawn at 156x114, scaled up to fill the screen) */
-      const mon = P.monitor({ x: 212, y: 410, w: 184, h: 140 });
-      const chat = KY.svg.g({ transform: `scale(${(mon.sw / 156).toFixed(3)})` });
-      mon.screen.append(chat);
-      chat.append(
-        el('rect', { x: 0, y: 0, width: 156, height: 16, fill: '#dfe5ec' }),
-        el('circle', { cx: 11, cy: 8, r: 5, fill: '#8f8f8f' }),
-        el('rect', { x: 20, y: 5, width: 38, height: 6, rx: 3, fill: '#b9c2cc' }),
-        el('circle', { cx: 66, cy: 8, r: 2.6, fill: C.tea }),
-        el('circle', { cx: 12, cy: 34, r: 6, fill: '#8f8f8f' }),
-        el('rect', { x: 22, y: 26, width: 66, height: 17, rx: 8, fill: '#eef0f3' }),
-        el('rect', { x: 29, y: 31, width: 40, height: 4, rx: 2, fill: '#cfd4da' }),
-        el('rect', { x: 29, y: 37, width: 28, height: 4, rx: 2, fill: '#cfd4da' }),
-        el('rect', { x: 6, y: 92, width: 116, height: 16, rx: 8, fill: '#fff', stroke: '#c9c9c9', 'stroke-width': 1.5 }),
-        el('circle', { cx: 136, cy: 100, r: 8, fill: '#3b6fd8' }),
-        el('path', { d: 'M132 100 L140 100 M137 96 L141 100 L137 104', fill: 'none', stroke: '#fff', 'stroke-width': 1.8, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }),
-      );
-      scene.add('mid', mon);
-      return { player, mon, chat };
-    },
-    params: {
-      showAt: 1400,
-      options: [
-        { id: 'full', text: { jp: 'お{疲|つか}れ{様|さま}です。〇〇の{件|けん}で ご{相談|そうだん}が あります。{明日|あした}、{少|すこ}し お{時間|じかん} いただけますか？', en: 'Good work. I would like to consult you about ○○. Could I have a little of your time tomorrow?' }, outcome: 'great' },
-        { id: 'greet', text: { jp: 'お{疲|つか}れ{様|さま}です。', en: 'Good work.' }, outcome: 'greetOnly' },
-        { id: 'chotto', text: { jp: 'ちょっといいですか？', en: 'Do you have a moment?' }, outcome: 'chotto' },
-      ],
-      onChoose(scene, r, opt) {
-        const { el } = KY.svg;
-        const long = opt.id === 'full';
-        scene.bubble({ x: 212, y: 262, text: opt.text, tail: 'down', cls: 'mine', dur: long ? 4400 : 2800 });
-        /* the message appears in the chat window */
-        r.chat.append(
-          el('rect', { x: long ? 44 : 84, y: 50, width: long ? 106 : 66, height: long ? 34 : 15, rx: 8, fill: '#d6e2fb' }),
-          el('rect', { x: long ? 52 : 92, y: 56, width: long ? 90 : 46, height: 4, rx: 2, fill: '#9db4d8' }),
-          long ? el('rect', { x: 52, y: 64, width: 78, height: 4, rx: 2, fill: '#9db4d8' }) : null,
-          long ? el('rect', { x: 52, y: 72, width: 60, height: 4, rx: 2, fill: '#9db4d8' }) : null,
-        );
-        if (opt.id === 'greet') scene.after(1300, () => scene.bubble({ x: 212, y: 346, tail: 'none', who: WHO.boss, text: { jp: '…で？', en: '...And?' }, dur: 1600 }));
-        else if (opt.id === 'chotto') scene.after(1300, () => scene.bubble({ x: 212, y: 346, tail: 'none', who: WHO.boss, text: { jp: 'うん、{何|なん}の{件|けん}？', en: 'Sure. About what?' }, dur: 1600 }));
-        else scene.after(1500, () => scene.bubble({ x: 212, y: 346, tail: 'none', who: WHO.boss, text: { jp: 'いいよ。{明日|あした}の 10{時|じ}は どう？', en: 'Sure. How about 10 tomorrow?' }, dur: 1500 }));
-        return opt.id === 'full' ? 3300 : 2900;
-      },
-      timeout: 'typing',
-    },
-    outcomes: {
-      great: { grade: 'great', who: WHO.boss, line: { jp: '（{1通|いっつう}で{全部|ぜんぶ}{分|わ}かる…ありがたい！）', en: '(One message and I know everything... bless you!)' },
-        react(scene, r) { r.player.mark('sparkle'); } },
-      greetOnly: { grade: 'ky', who: WHO.boss, line: { jp: '…で？', en: '...And?' },
-        react(scene, r) { r.player.mark('dots'); } },
-      chotto: { grade: 'ok', who: WHO.boss, line: { jp: 'うん、{何|なん}の{件|けん}？…{先|さき}に{書|か}いてくれると{助|たす}かるな。', en: "Sure, about what? ...It'd help if you wrote it up front." },
-        react(scene, r) { r.player.mark('sweat'); } },
-      typing: { grade: 'ky', who: null, line: { jp: '（{入力中|にゅうりょくちゅう}の まま、{時間|じかん}だけが{過|す}ぎた…）', en: '(Still "typing..." while the time just went by.)' },
-        react(scene, r) { r.player.mark('zzz'); } },
-    },
-    card: {
-      badge: 'depends',
-      name: { jp: 'チャットの {書|か}き{出|だ}し', en: 'How to open a work chat' },
-      points: [
-        { jp: '「<<お{疲|つか}れ{様|さま}です>>」だけを {送|おく}らないで、{何|なに}の ことかも いっしょに {書|か}きます。', en: 'Don\'t send only "otsukaresama desu". Say what it is about in the same message.' },
-        { jp: '「ちょっと いいですか？」だけだと、{相手|あいて}は {何|なに}の {話|はなし}か わかりません。', en: 'With only "Do you have a moment?", the other person cannot tell what it is about.' },
-        { jp: 'いつ {話|はな}したいかも {書|か}くと、{相手|あいて}が {予定|よてい}を {決|き}めやすいです。', en: 'Also say when you would like to talk; it makes it easy for them to plan.' },
-      ],
-      phrase: { jp: '〇〇の{件|けん}で ご{相談|そうだん}が あります。{明日|あした}、お{時間|じかん} いただけますか？', ro: '○○ no ken de go-sōdan ga arimasu. Ashita, o-jikan itadakemasu ka?', en: 'I would like to consult you about ○○. Could I have some of your time tomorrow?' },
-      why: { jp: 'チャットでは、{相手|あいて}の {顔|かお}が {見|み}えません。ひとつの メッセージに {用事|ようじ}を {入|い}れると、{相手|あいて}は すぐ {答|こた}えられます。', en: "In chat you can't see the other person's face. If one message holds the whole request, they can answer right away." },
-      dont: { jp: 'あいさつだけ {送|おく}って、{相手|あいて}が {聞|き}いて くれるのを {待|ま}たない。', en: "Don't send just a greeting and wait for the other person to ask." },
-      tip: { jp: '{会社|かいしゃ}や チームに よって ちがいます。チャットでは「<<お{疲|つか}れ{様|さま}です>>」を {書|か}かない チームも あります。まわりの {人|ひと}の {書|か}き{方|かた}を {見|み}て、おなじように しましょう。', en: 'Teams differ. Some teams skip "otsukaresama desu" in chat. Watch how others write and do the same — but never send only a greeting.' },
-      diagram(svg) {
-        const D = KY.diag, C = KY.svg.C, { el } = KY.svg;
-        D.rect(svg, 8, 12, 88, 118, { r: 6 });
-        D.rect(svg, 104, 12, 88, 118, { r: 6 });
-        svg.append(el('rect', { x: 8, y: 12, width: 88, height: 14, rx: 6, fill: '#dfe5ec' }), el('rect', { x: 104, y: 12, width: 88, height: 14, rx: 6, fill: '#dfe5ec' }));
-        svg.append(el('rect', { x: 18, y: 40, width: 68, height: 18, rx: 8, fill: '#d6e2fb' }));
-        D.label(svg, 52, 53, 'おつかれさまです', { size: 7.5, color: C.ink });
-        D.label(svg, 30, 82, '…で？', { size: 10, color: '#8a8a8a' });
-        svg.append(el('rect', { x: 112, y: 36, width: 72, height: 44, rx: 8, fill: '#d6e2fb' }));
-        [46, 56, 66].forEach((y, i) => svg.append(el('rect', { x: 120, y, width: 56 - i * 10, height: 4, rx: 2, fill: '#9db4d8' })));
-        svg.append(el('path', { d: 'M46 106 l14 14 M60 106 l-14 14', stroke: '#8a8a8a', 'stroke-width': 4, 'stroke-linecap': 'round', fill: 'none' }));
-        svg.append(el('circle', { cx: 148, cy: 112, r: 11, fill: 'none', stroke: C.red, 'stroke-width': 4 }));
-      },
-    },
-    test: { great: 'full', ok: 'chotto', ky: 'greet' },
-  });
+  KY.defineStage({id:'1-5',chapter:1,title:{jp:'いま、{報告|ほうこく}しても いい？',en:'Is now a good time to report?'},intro:{jp:'{仕事|しごと}が おわりました。{上司|じょうし}に {報告|ほうこく}したい。でも {上司|じょうし}は {電話|でんわ}を して います。いつ {話|はな}しかける？',en:'You have finished your work. Your boss is on the phone. When should you speak?'},time:14500,mechanic:'action',
+    setup(s){const P=KY.props,{el}=KY.svg;s.add('bg',P.backdrop({floor:470}));s.add('mid',P.table({x:245,y:420,w:150}));s.add('mid',P.monitor({x:250,y:410,w:70,h:55}));const me=s.person({x:65,y:470,color:'player',player:true});const boss=s.person({x:254,y:470,pose:'sit',facing:-1,tag:{jp:'{上司|じょうし}',en:'Boss'}});const phone=el('text',{x:245,y:281,'font-size':37});phone.textContent='☎';s.add('top',phone);const status=KY.mini.label(s,180,180,'電話中', '#b62525',19);KY.mini.hit(s,195,310,120,170,()=>{if(s._report)s._report();});return {me,boss,phone,status};},
+    params:{start(s,r){let done=false;const btn=KY.mini.button(s,'{上司|じょうし}に {話|はな}しかける','Speak to boss',()=>s._report());s.at(5500,()=>{r.status.textContent='仕事中';r.phone.textContent='💻';});s.at(9000,()=>{r.status.textContent='いまは OK！';r.phone.textContent='✓';r.boss.mark('sparkle');});
+      s._report=()=>{if(done)return;done=true;btn.remove();const k=s.t<5500?'call':s.t<9000?'busy':'great';s.walk(r.me,196,660,()=>{s.say(r.me,{jp:'{仕事|しごと}が おわりました。{報告|ほうこく}しても よろしいですか？',en:'I finished my work. May I report?'},{dur:1300,cls:'mine'});if(k==='call'){r.boss.mark('shock');s.say(r.boss,{jp:'えっ、{電話|でんわ}と {同時|どうじ}は むり！',en:'I cannot listen to two people at once!'},{dur:1100});}if(k==='busy')r.boss.mark('sweat');s.after(1250,()=>s.end(k));});};s.timer(s.def.time,()=>{if(!done){done=true;btn.remove();s.end('never');}});},simulate(s,r,v){s.at(v==='great'?10500:2200,()=>s._report());}},
+    outcomes:{great:{grade:'great',line:{jp:'「うん、{報告|ほうこく}を {聞|き}くよ！」',en:'“Yes, tell me!”'}},call:{grade:'ky',line:{jp:'{電話|でんわ}の {声|こえ}と あなたの {声|こえ}が いっしょに！ {上司|じょうし}は {大混乱|だいこんらん}！',en:'Two voices at once! The boss is confused!'}},busy:{grade:'ok',line:{jp:'「あと すこし {待|ま}って！」',en:'“Please wait a little!”'}},never:{grade:'ky',line:{jp:'{報告|ほうこく}が できないまま {時間|じかん}が すぎた。',en:'You ran out of time without reporting.'}}},card:{badge: "must", name: {jp:"話しかけるタイミング",en:"話しかけるタイミング"}, points:[{jp:"{上司|じょうし}が {電話|でんわ}や {仕事|しごと}を おわってから {話|はな}しかけよう。",en:"{上司|じょうし}が {電話|でんわ}や {仕事|しごと}を おわってから {話|はな}しかけよう。"}], phrase:{jp:"いま、お{時間|じかん} よろしいですか？",en:"いま、お{時間|じかん} よろしいですか？"}, },test:{great:'great',ky:'call'}});
+
 
   /* ------------------------------------------------------------------ 1-6 */
   KY.defineStage({
@@ -788,205 +625,163 @@
   });
 
   /* ------------------------------------------------------------------ 1-8 */
+  /* Only the boss and the exit are clickable. Both targets show red outlines. */
   KY.defineStage({
-    id: '1-8',
-    chapter: 1,
-    title: { jp: '{帰|かえ}る {時間|じかん}', en: 'Time to Go Home' },
-    intro: { jp: '{午後|ごご}6{時|じ}です。あなたの {仕事|しごと}は できました。まだ {働|はたら}いて いる {人|ひと}も います。', en: "It's 6:00 p.m. Your work is done. Some people are still working." },
-    time: 14000,
-    mechanic: 'choice',
-    setup(scene) {
-      const P = KY.props;
-      scene.camera({ zoom: 1.15, x: 180, y: 400 });
-      scene.add('bg', P.backdrop({ floor: 470 }));
-      scene.add('bg', P.door({ x: 28, floor: 470, w: 46, h: 140 }));
-      scene.add('bg', P.clock({ x: 166, y: 240, r: 20, h: 6, m: 0 }));
-      scene.label(166, 202, { jp: '{午後|ごご}6{時|じ}', en: '6:00 p.m.' }, 'deadline');
-      scene.add('mid', P.officeChair({ x: 170, facing: 1 }));
-      scene.add('mid', P.officeChair({ x: 304, facing: -1 }));
-      const c1 = scene.person({ x: 170, y: 470, pose: 'sit', facing: 1, tag: WHO.senior });
-      const boss = scene.person({ x: 304, y: 470, pose: 'sit', facing: -1, color: 'npc2', tag: WHO.kacho });
-      scene.add('mid', P.table({ x: 237, y: 420, w: 66 }));
-      scene.add('mid', P.monitor({ x: 224, y: 410, w: 24, h: 28 }));
-      scene.add('mid', P.monitor({ x: 252, y: 410, w: 24, h: 28 }));
-      const player = scene.person({ x: 110, y: 470, facing: 1, color: 'player', player: true });
-      typing(scene, c1, 0);
-      typing(scene, boss, 2.1);
-      return { player, c1, boss };
+    id: '1-8', chapter: 1,
+    title: {jp:'18:00！ {帰|かえ}ろう',en:'6:00 p.m. Time to go home'},
+    intro: {jp:'18:00。パソコンに「{作業完了|さぎょうかんりょう}！」と {出|で}ました。{赤|あか}い {人|ひと}は {新人|しんじん}です。「{上司|じょうし}」か「{出口|でぐち}」を クリックすると、そこへ {歩|ある}きます。{報告|ほうこく}してから {帰|かえ}ろう！',en:'6:00 p.m. Work is done! Click only the boss or the exit to walk there. Report your work before you leave.'},
+    time: 20000, mechanic: 'action',
+    setup(s) {
+      const P=KY.props,{el}=KY.svg;
+      s.add('bg',P.backdrop({floor:470}));
+      s.add('bg',P.door({x:30,floor:470,w:55,h:145,open:.8}));
+      s.add('mid',P.table({x:190,y:420,w:95}));
+      const m=P.monitor({x:185,y:410,w:94,h:62});
+      m.screen.append(el('rect',{x:0,y:0,width:m.sw,height:m.sh,fill:'#e0ffe9'}));
+      s.add('mid',m);
+      s.label(185,328,{jp:'{作業完了|さぎょうかんりょう}！',en:'WORK DONE!'});
+      s.add('bg',P.clock({x:275,y:222,r:24,h:6,m:0}));
+      s.label(275,183,{jp:'18:00',en:'18:00'});
+      const boss=s.person({x:280,y:470,pose:'sit',facing:-1,tag:{jp:'{上司|じょうし}',en:'Boss'}});
+      const me=s.person({x:130,y:470,color:'player',player:true});
+      s.label(130,350,{jp:'{新人|しんじん}',en:'New hire'});
+      // Short prompts above the two interactive areas.
+      s.label(46,300,{jp:'② {出口|でぐち}へ',en:'② Exit'});
+      s.label(290,300,{jp:'① {上司|じょうし}に {報告|ほうこく}',en:'① Talk to boss'});
+      return {boss,me};
     },
     params: {
-      script: [
-        [600, (s, r) => r.player.mark('sparkle')],
-      ],
-      showAt: 1600,
-      options: [
-        { id: 'osaki', text: { jp: 'お{先|さき}に<<{失礼|しつれい}します>>', en: 'Excuse me for leaving first.' }, outcome: 'great' },
-        { id: 'quiet', text: { jp: '（{何|なに}も{言|い}わずに{帰|かえ}る）', en: '(Leave without saying anything.)' }, outcome: 'sneak' },
-        { id: 'gokuro', text: { jp: 'ご{苦労|くろう}{様|さま}でした！', en: 'Thank you for your hard work! (said to your boss)' }, outcome: 'gokuro' },
-      ],
-      onChoose(scene, r, opt) {
-        r.player.mark(null);
-        if (opt.id === 'quiet') {
-          scene.walk(r.player, 44, 1100, () => r.player.set({ hidden: true }));
-          return 1500;
-        }
-        scene.say(r.player, opt.text, { dur: opt.id === 'osaki' ? 1500 : 2200, cls: 'mine' });
-        if (opt.id === 'osaki') {
-          scene.after(1500, () => scene.say(r.c1, { jp: 'お{疲|つか}れ{様|さま}です！', en: 'Good work!' }, { dur: 1100, lift: 30 }));
-          scene.after(2600, () => scene.say(r.boss, { jp: 'お{疲|つか}れ{様|さま}。', en: 'Good work.' }, { dur: 1100, lift: 30 }));
-          return 3700;
-        }
-        scene.after(900, () => scene.say(r.boss, { jp: '…ご{苦労|くろう}{様|さま}？', en: '...Gokurō-sama?' }, { dur: 1500, lift: 30 }));
-        return 2500;
+      start(s,r) {
+        let reported=false,done=false,busy=false;
+        const travel=(x,cb)=>s.walk(r.me,x,Math.max(300,Math.abs(r.me.o.x-x)*10),cb);
+        const speak=()=>{
+          if(done||busy||reported)return;
+          busy=true;
+          travel(224,()=>{
+            busy=false;reported=true;
+            bossTarget.setAttribute('stroke','#9b9b9b');bossTarget.setAttribute('stroke-dasharray','3 8');
+            s.say(r.me,{jp:'{今日|きょう}の {仕事|しごと}は {全部|ぜんぶ} おわりました。お{先|さき}に {失礼|しつれい}します。',en:'All my work is done. Excuse me for leaving first.'},{dur:1700,cls:'mine'});
+            s.after(900,()=>s.say(r.boss,{jp:'お{疲|つか}れさま！',en:'Good work!'},{dur:900}));
+          });
+        };
+        const exit=()=>{
+          if(done||busy)return;
+          done=true;
+          travel(36,()=>{
+            r.me.set({hidden:true});
+            if(!reported)s.say(r.boss,{jp:'あれ？ {新人|しんじん}くん、どこに いった？',en:'Huh? Where did our new hire go?'},{dur:1350});
+            s.after(1500,()=>s.end(reported?'great':'sneak'));
+          });
+        };
+        s._exit={speak,exit};
+        const addTarget=(x,y,w,h,fn,name)=>{
+          const box=KY.mini.hit(s,x,y,w,h,fn);
+          box.setAttribute('rx','11');
+          box.setAttribute('fill','#e60012');
+          box.setAttribute('fill-opacity','0.06');
+          box.setAttribute('stroke','#e60012');
+          box.setAttribute('stroke-width','3.5');
+          box.setAttribute('stroke-dasharray','8 5');
+          box.classList.add('action-target');
+          box.setAttribute('aria-label',name);
+          return box;
+        };
+        const bossTarget=addTarget(244,332,100,151,speak,'上司に報告する');
+        addTarget(5,329,65,155,exit,'出口へ行く');
+        // No background click handler: only the two marked areas can move the character.
+        s.timer(s.def.time,()=>{
+          if(done)return;
+          done=true;
+          s.say(r.me,{jp:'あれ、みんな {帰|かえ}っちゃった！',en:'Oh no, everybody has gone!'},{dur:1300});
+          s.end('alone');
+        });
       },
-      onSilence(scene, r) {
-        r.player.mark(null);
-        scene.walk(r.player, 44, 1100, () => r.player.set({ hidden: true }));
-        return 1500;
-      },
-      timeout: 'sneak',
+      simulate(s,r,v) {
+        s.at(450,()=>{if(v==='great')s._exit.speak();});
+        s.at(v==='great'?3400:1400,()=>s._exit.exit());
+      }
     },
     outcomes: {
-      great: { grade: 'great', who: WHO.colleague, line: { jp: 'お{疲|つか}れ{様|さま}です！（スマートな{帰|かえ}り{方|かた}だ…）', en: '(What a smooth exit...) Good work!' } },
-      sneak: { grade: 'ky', who: WHO.colleague, line: { jp: '…あれ？もう{帰|かえ}ったの？（いつの{間|ま}に…{忍者|にんじゃ}みたい）', en: "...Huh? Already gone? (When did... like a ninja.)" },
-        react(scene, r) { r.c1.mark('q'); r.boss.mark('dots'); } },
-      gokuro: { grade: 'ky', who: WHO.kacho, line: { jp: '…ご{苦労|くろう}{様|さま}？', en: '...Gokurō-sama?' },
-        react(scene, r) { r.boss.mark('dots'); r.c1.mark('shock'); } },
+      great:{grade:'great',line:{jp:'{報告|ほうこく}も あいさつも OK！',en:'You reported and said goodbye!'}},
+      sneak:{grade:'ky',line:{jp:'「あれ、{新人|しんじん}くん どこに いった？」',en:'“Where did the new hire go?”'}},
+      alone:{grade:'ky',line:{jp:'まわりを {気|き}にしていたら、{一人|ひとり}だけ のこっちゃった！',en:'Everyone left while you were waiting!'}}
     },
-    card: {
-      badge: 'must',
-      name: { jp: 'お{先|さき}に <<{失礼|しつれい}します>>', en: 'Saying goodbye when you leave first' },
-      points: [
-        { jp: '{先|さき}に {帰|かえ}る ときは、「お{先|さき}に <<{失礼|しつれい}します>>」と {言|い}います。', en: 'When you leave before others, say "osaki ni shitsurei shimasu".' },
-        { jp: '「<<お{疲|つか}れ{様|さま}です>>」と {言|い}われたら、「<<お{疲|つか}れ{様|さま}です>>」と {答|こた}えます。', en: 'If they answer "otsukaresama desu", say it back.' },
-        { jp: '<<ご{苦労|くろう}{様|さま}>>は、{上|うえ}の {人|ひと}が {使|つか}う ことばだと {思|おも}う {人|ひと}が {多|おお}いです。{上司|じょうし}には {使|つか}いません。', en: 'Many people feel "gokurō-sama" is for seniors to say to juniors. Don\'t use it to your boss.' },
-      ],
-      phrase: { jp: 'お{先|さき}に<<{失礼|しつれい}します>>', ro: 'Osaki ni shitsurei shimasu', en: 'Excuse me for leaving first.' },
-      why: { jp: '{時間|じかん}どおりに {帰|かえ}るのは、わるい ことでは ありません。ひとこと あいさつを すると、のこる {人|ひと}も いい {気持|きも}ちです。', en: 'Leaving on time is perfectly fine. A quick word of goodbye also makes the people who stay feel respected.' },
-      dont: { jp: '{何|なに}も {言|い}わずに {帰|かえ}らない。{上司|じょうし}に「<<ご{苦労|くろう}{様|さま}>>」と {言|い}わない。', en: "Don't leave without a word, and don't say \"gokurō-sama\" to your boss." },
-      diagram(svg) {
-        const D = KY.diag, C = KY.svg.C;
-        D.floor(svg, 130);
-        D.person(svg, { x: 44, y: 130, s: 0.8, color: 'player' });
-        D.person(svg, { x: 158, y: 130, s: 0.62, pose: 'sit', facing: -1 });
-        D.rect(svg, 112, 102, 52, 6, { r: 3 });
-        dBubble(svg, 10, 8, 76, 24, 'おさきに', C.red, 10);
-        dBubble(svg, 96, 44, 98, 24, 'おつかれさまです', '#8a8a8a', 8.5);
-      },
-    },
-    test: { great: 'osaki', ky: 'gokuro' },
+    card:{badge:'must',name:{jp:'仕事が終わったら報告',en:'Report before going home'},points:[{jp:'{仕事|しごと}が おわったら、{必要|ひつよう}な {報告|ほうこく}を してから {帰|かえ}りましょう。',en:'When the work is done, report what you finished before going home.'}],phrase:{jp:'{今日|きょう}の {仕事|しごと}は {全部|ぜんぶ} おわりました。お{先|さき}に {失礼|しつれい}します。',en:'All my work is done. Excuse me for leaving first.'}},
+    test:{great:'great',ky:'sneak'}
   });
+
   /* ------------------------------------------------------------------ 1-9 */
   KY.defineStage({
-    id: '1-9',
-    chapter: 1,
-    title: { jp: '{遅刻|ちこく}の {連絡|れんらく}', en: 'Running Late' },
-    intro: { jp: '{朝|あさ}8{時|じ}40{分|ぷん}。{電車|でんしゃ}が {止|と}まりました。{会社|かいしゃ}は 9{時|じ}からです。', en: "It's 8:40 a.m. Your train has stopped. Work starts at 9:00." },
-    time: 12000,
-    mechanic: 'choice',
-    setup(scene) {
-      const P = KY.props, { el, g, C } = KY.svg;
-      scene.camera({ zoom: 1.15, x: 180, y: 400 });
-      scene.add('bg', P.backdrop({ floor: 470 }));
-      /* inside the train: windows, a rail with straps, a speaker in the ceiling */
-      scene.add('bg', P.window({ x: 40, y: 284, w: 96, h: 64 }));
-      scene.add('bg', P.window({ x: 224, y: 284, w: 96, h: 64 }));
-      scene.add('bg', P.door({ x: 22, floor: 470, w: 40, h: 128 }));
-      scene.add('bg', el('line', { x1: -400, y1: 252, x2: 760, y2: 252, stroke: '#d4d4d0', 'stroke-width': 4 }));
-      [110, 258].forEach(x => scene.add('bg', g({ transform: `translate(${x} 252)` }, [
-        el('line', { x1: 0, y1: 0, x2: 0, y2: 14, stroke: C.soft, 'stroke-width': 2 }),
-        el('circle', { cx: 0, cy: 24, r: 10, fill: 'none', stroke: C.line, 'stroke-width': 2.5 }),
-      ])));
-      scene.add('bg', g({ transform: 'translate(180 226)' }, [
-        el('rect', { x: -12, y: -8, width: 24, height: 16, rx: 4, fill: '#ececec', stroke: C.line, 'stroke-width': 2.2 }),
-        el('path', { d: 'M-6 -3 h12 M-6 1 h12 M-6 5 h12', stroke: C.soft, 'stroke-width': 1.6, fill: 'none' }),
-      ]));
-      /* the clock keeps ticking toward 9:00 (one minute every 0.6 s) */
-      const clock = P.clock({ x: 180, y: 316, r: 17, h: 8, m: 40 });
-      scene.add('bg', clock);
-      const tl = scene.label(180, 280, { jp: '8:40' }, 'deadline');
-      let last = -1;
-      scene.every((dt, t) => {
-        const m = Math.min(60, 40 + t / 600), mm = Math.floor(m);
-        clock.setTime(m >= 60 ? 9 : 8, m >= 60 ? 0 : m);
-        if (mm !== last) { last = mm; tl.innerHTML = KY.text.html({ jp: mm >= 60 ? '9:00' : `8:${String(mm).padStart(2, '0')}` }, { gloss: false }); }
+    id:'1-9',chapter:1,
+    title:{jp:'{電車|でんしゃ}が {止|と}まった！',en:'The train has stopped!'},
+    intro:{jp:'いま 8:40。{会社|かいしゃ}は 9:00からです。でも、{駅|えき}で {電車|でんしゃ}が {止|と}まって います。{時間|じかん}が どんどん {進|すす}みます。どうする？',en:'It is 8:40. Work starts at 9:00, but the train is stopped at the station. Time keeps passing. What will you do?'},
+    time:18000,mechanic:'action',
+    setup(s) {
+      const P=KY.props,{el}=KY.svg;
+      s.add('bg',P.backdrop({floor:470,tint:'#eaf2f9'}));
+      s.add('bg',el('rect',{x:15,y:205,width:320,height:216,rx:12,fill:'#f7f9fa',stroke:'#8da4b7','stroke-width':3}));
+      s.add('bg',el('rect',{x:25,y:230,width:300,height:60,rx:4,fill:'#b5d8e9'}));
+      s.add('bg',el('rect',{x:25,y:299,width:300,height:18,fill:'#517cb1'}));
+      for(let x=35;x<290;x+=58)s.add('bg',el('rect',{x,y:333,width:38,height:47,rx:3,fill:'#d3e7fa',stroke:'#879eaa','stroke-width':2}));
+      s.label(180,195,{jp:'{電車|でんしゃ}が {止|と}まっています',en:'Train stopped'});
+      s.at(300,()=>s.bubble({x:185,y:136,tail:'down',who:{jp:'{駅|えき}の {放送|ほうそう}',en:'Station announcement'},text:{jp:'{電車|でんしゃ}は {止|と}まって います。しばらく お{待|ま}ち ください。',en:'The train has stopped. Please wait.'},dur:3200}));
+      // Digital clock: 08:40 at the start, then one minute every 850 ms.
+      const clockPlate=el('rect',{x:16,y:88,width:119,height:74,rx:10,fill:'#202c3e',stroke:'#607d96','stroke-width':3});
+      s.add('top',clockPlate);
+      const digital=el('text',{x:75,y:136,'text-anchor':'middle','font-size':32,'font-family':'monospace','font-weight':900,fill:'#f8fffd'});
+      digital.textContent='08:40';s.add('top',digital);
+      const clockCaption=el('text',{x:75,y:103,'text-anchor':'middle','font-size':10,'font-weight':800,fill:'#d6ecff'});
+      clockCaption.textContent='いまの時間';s.add('top',clockCaption);
+      let shown='08:40';
+      s.every((dt,t)=>{
+        const m=8*60+40+Math.min(23,Math.floor(t/850));
+        const next=String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');
+        if(shown!==next){shown=next;digital.textContent=next;digital.setAttribute('fill',m>=8*60+55?'#ff8585':'#f8fffd');}
       });
-      /* people */
-      scene.add('mid', P.seat({ x: 300, back: 'right' }));
-      const rider = scene.person({ x: 300, y: 470, pose: 'sit', facing: -1, color: 'npc2' });
-      const rider2 = scene.person({ x: 244, y: 470, facing: -1, color: 'npc2' });
-      const player = scene.person({ x: 170, y: 470, facing: 1, color: 'player', player: true, arms: { f: [40, 70], b: [-6, 0] } });
-      /* your phone (red) */
-      const phone = g({}, [
-        el('rect', { x: -7, y: -13, width: 14, height: 26, rx: 3.5, fill: C.redSoft, stroke: C.red, 'stroke-width': 2.4 }),
-        el('line', { x1: -3, y1: 8, x2: 3, y2: 8, stroke: C.red, 'stroke-width': 1.8, 'stroke-linecap': 'round' }),
-      ]);
-      scene.add('fg', phone);
-      const placePhone = () => { const h = player.hand(); KY.svg.set(phone, { transform: `translate(${(h.x + 3).toFixed(1)} ${(h.y - 9).toFixed(1)}) rotate(10)` }); };
-      placePhone();
-      return { player, rider, rider2, placePhone };
+      const me=s.person({x:95,y:470,color:'player',player:true});
+      const other=s.person({x:280,y:470,color:'npc2'});
+      const phone=el('rect',{x:153,y:390,width:40,height:68,rx:6,fill:'#fff',stroke:'#e60012','stroke-width':5});
+      phone.style.opacity='0';s.add('top',phone);
+      return {me,other,phone,digital};
     },
-    params: {
-      script: [
-        [300, s => s.bubble({ x: 180, y: 214, tail: 'down', who: { jp: '{車内放送|しゃないほうそう}', en: 'Announcement' }, text: { jp: 'ただいま{車両点検|しゃりょうてんけん}のため、{停車|ていしゃ}しております', en: 'We are currently stopped for a vehicle inspection.' }, dur: 5200 })],
-        [1200, (s, r) => r.player.mark('sweat')],
-      ],
-      showAt: 1800,
-      options: [
-        { id: 'call', text: { jp: 'おはようございます、{山田|やまだ}です。{電車|でんしゃ}が{止|と}まっていて、9{時|じ}20{分|ぷん}ごろ{着|つ}きそうです。{申|もう}し{訳|わけ}ありません', en: "Good morning, this is Yamada. My train has stopped; I expect to arrive around 9:20. I'm sorry." }, outcome: 'great' },
-        { id: 'late', text: { jp: '{電車|でんしゃ}が おくれています。', en: 'The train is delayed.' }, outcome: 'vague' },
-        { id: 'later', text: { jp: '（{着|つ}いてから あやまれば いいや）', en: "(I'll just apologize once I get there.)" }, outcome: 'after' },
-      ],
-      onChoose(scene, r, opt) {
-        r.player.mark(null);
-        if (opt.id === 'later') {
-          scene.say(r.player, opt.text, { kind: 'think', cls: 'mine', dur: 2400 });
-          return 2500;
-        }
-        /* step away from the crowd, phone to the ear */
-        scene.walk(r.player, 100, 600, () => {
-          r.player.set({ arms: { f: [112, 78], b: [-6, 0] } });
-          r.placePhone();
-          scene.say(r.player, opt.text, { dur: 3600, cls: 'mine' });
+    params:{
+      start(s,r){
+        let done=false,opened=false;
+        const call=KY.mini.button(s,'{会社|かいしゃ}に {連絡|れんらく}','Contact the office',()=>{
+          if(done||opened)return;
+          opened=true;call.remove();r.phone.style.opacity='1';
+          s.say(r.me,{jp:'どんな {連絡|れんらく}を する？',en:'What should you say?'},{dur:1300,cls:'mine'});
+          const options=[
+            {id:'short',jp:'{電車|でんしゃ}が {遅|おく}れています。',en:'The train is delayed.'},
+            {id:'vague',jp:'{会社|かいしゃ}に {行|い}くのが {遅|おく}れます。',en:'I will arrive late to work.'},
+            {id:'great',jp:'{電車|でんしゃ}が {止|と}まっています。9{時|じ}20{分|ぷん}ごろ {会社|かいしゃ}に {着|つ}きそうです。すみません。',en:'The train has stopped. I may arrive around 9:20. I am sorry.'}
+          ];
+          // Immediately show the message choices after the phone opens.
+          KY.mini.choices(s,options,id=>{
+            done=true;
+            s.say(r.me,{jp:id==='great'?'{電車|でんしゃ}が {止|と}まっています。9{時|じ}20{分|ぷん}ごろ {着|つ}きそうです。':'{会社|かいしゃ}に {連絡|れんらく}しました。',en:'Message sent.'},{dur:1600,cls:'mine'});
+            s.after(1500,()=>s.end(id));
+          },0);
         });
-        return opt.id === 'call' ? 4700 : 3500;
+        s.timer(s.def.time,()=>{if(!done&&!opened){done=true;call.remove();s.end('never');}});
+        s._train={start:()=>call.dispatchEvent(new PointerEvent('pointerdown',{bubbles:true}))};
       },
-      timeout: 'silent',
+      simulate(s,r,v){
+        s.at(250,()=>s._train.start());
+        s.at(900,()=>{
+          const btn=[...s.overlay.querySelectorAll('.choice')].find(x=>x.innerHTML.includes(v==='great'?'20':'遅'));
+          if(btn)btn.click();
+        });
+      }
     },
-    outcomes: {
-      great: { grade: 'great', who: WHO.boss, line: { jp: '{連絡|れんらく}ありがとう。{慌|あわ}てずに、{気|き}をつけて{来|き}てね。', en: "Thanks for letting me know. Don't rush; take care getting here." } },
-      vague: { grade: 'ok', who: WHO.boss, line: { jp: '…{何時|なんじ}ごろ{着|つ}くの？', en: '...What time will you get here?' },
-        react(scene, r) { r.player.mark('sweat'); r.rider.mark('q'); } },
-      after: { grade: 'ky', who: WHO.boss, line: { jp: '（{来|き}てから{言|い}われても…{先|さき}に{連絡|れんらく}が{欲|ほ}しかった）', en: '(Telling me after you arrive... I wanted to hear before.)' },
-        react(scene, r) { r.player.mark('sweat2'); r.rider.mark('dots'); } },
-      silent: { grade: 'ky', who: WHO.boss, line: { jp: '（9{時|じ}を{過|す}ぎた…{連絡|れんらく}もない…{無断欠勤|むだんけっきん}？）', en: '(Past nine... no word... is this an unexcused absence?)' },
-        react(scene, r) { r.player.mark('sweat2'); r.rider.mark('dots'); r.rider2.mark('dots'); } },
+    outcomes:{
+      great:{grade:'great',line:{jp:'{理由|りゆう}と {着|つ}く {時間|じかん}が わかって、{会社|かいしゃ}も {安心|あんしん}！',en:'They know the reason and your arrival time!'}},
+      short:{grade:'ok',line:{jp:'「それで、{何時|なんじ}に {来|こ}られる？」',en:'“What time will you arrive?”'}},
+      vague:{grade:'ok',line:{jp:'「どうして？ {何時|なんじ}に {来|く}る？」',en:'“Why? And when will you arrive?”'}},
+      never:{grade:'ky',line:{jp:'{会社|かいしゃ}は あなたを {待|ま}っています。',en:'Your office is waiting for you.'}}
     },
-    card: {
-      badge: 'must',
-      name: { jp: '{遅刻|ちこく}の {連絡|れんらく}', en: 'Contacting work when you will be late' },
-      points: [
-        { jp: '{仕事|しごと}が はじまる {前|まえ}に、わかった ときすぐ、{上司|じょうし}に {連絡|れんらく}します。', en: 'Contact your boss before work starts, as soon as you know.' },
-        { jp: '{理由|りゆう}と、{何時|なんじ}ごろ {着|つ}くかを {伝|つた}えて、あやまります。', en: 'Give the reason and your expected arrival time, and apologize.' },
-        { jp: '{連絡|れんらく}は、{会社|かいしゃ}の ルールどおりに します（{電話|でんわ}、チャット、メール）。', en: "Follow your company's rule for how to contact them (phone, chat or email)." },
-      ],
-      phrase: { jp: '{電車|でんしゃ}が{止|と}まっていて、9{時|じ}20{分|ぷん}ごろ{着|つ}きそうです。{申|もう}し{訳|わけ}ありません', ro: 'Densha ga tomatte ite, ku-ji nijuppun goro tsukisō desu. Mōshiwake arimasen.', en: 'My train has stopped, and I expect to arrive around 9:20. I am sorry.' },
-      why: { jp: '{連絡|れんらく}が ないと、まわりの {人|ひと}は「どうしたのかな？」と {気|き}に なります。{先|さき}に {知|し}らせると、{上司|じょうし}は {予定|よてい}を {変|か}えられます。{駅|えき}で もらえる {遅延証明書|ちえんしょうめいしょ}を {出|だ}す {会社|かいしゃ}も あります。', en: 'Without word, people wonder what happened. If you tell them first, your boss can change the plans. Some companies also ask for a delay certificate from the station.' },
-      dont: { jp: '{着|つ}いてから あやまれば いい、と {思|おも}わない。{先|さき}に {連絡|れんらく}します。', en: "Don't plan to just apologize after you arrive. Contact them first." },
-      diagram(svg) {
-        const D = KY.diag, C = KY.svg.C, { el } = KY.svg;
-        svg.append(el('circle', { cx: 46, cy: 62, r: 26, fill: '#fff', stroke: C.ink, 'stroke-width': 3 }));
-        svg.append(el('path', { d: 'M46 62 L30 62 M46 62 L46 42', stroke: C.ink, 'stroke-width': 3, 'stroke-linecap': 'round', fill: 'none' }));
-        svg.append(el('circle', { cx: 46, cy: 62, r: 2.5, fill: C.ink }));
-        D.label(svg, 46, 108, '9じ まえに', { color: C.red, size: 10 });
-        D.arrow(svg, 80, 62, 108, 62, { color: C.red });
-        svg.append(el('rect', { x: 118, y: 34, width: 32, height: 56, rx: 7, fill: C.redSoft, stroke: C.red, 'stroke-width': 3 }));
-        svg.append(el('rect', { x: 124, y: 42, width: 20, height: 4, rx: 2, fill: C.red }), el('rect', { x: 124, y: 52, width: 14, height: 4, rx: 2, fill: C.red }));
-        D.label(svg, 134, 108, 'れんらく', { color: C.red, size: 10 });
-        D.label(svg, 100, 136, 'りゆう と ついた じかん', { color: '#666', size: 9 });
-      },
-    },
-    test: { great: 'call', ok: 'late', ky: 'later' },
+    card:{badge:'must',name:{jp:'遅れるときは早く連絡',en:'Tell the office as soon as possible if late'},points:[{jp:'{電車|でんしゃ}が {止|と}まったら、{会社|かいしゃ}に {早|はや}く {連絡|れんらく}。{理由|りゆう}と {着|つ}く {時間|じかん}を {伝|つた}えよう。',en:'If the train stops, tell the office why you are late and when you will arrive.'}],phrase:{jp:'{電車|でんしゃ}が {止|と}まっています。9{時|じ}20{分|ぷん}ごろ {着|つ}きそうです。',en:'The train has stopped. I should arrive around 9:20.'}},
+    test:{great:'great',ky:'vague'}
   });
 
   /* ------------------------------------------------------------------ 1-10 */
@@ -1109,7 +904,7 @@
       },
     },
     outcomes: {
-      great: { grade: 'great', who: WHO.colleague, line: { jp: '{早|はや}いですね！…あ、もう{資料|しりょう}を{開|ひら}いてる', en: "You're early! ...Oh, you already have the document open." } },
+      great: { grade: 'great', who: WHO.colleague, line: { jp: '{会議|かいぎ}も 5{分前|ふんまえ}{行動|こうどう}！', en: 'Be ready five minutes before the meeting!' } },
       early: { grade: 'ok', who: { jp: '{前|まえ}の{会議|かいぎ}の{人|ひと}', en: 'Previous meeting' }, line: { jp: 'あ、まだ{使|つか}ってます…', en: "Oh, we're still using it..." },
         react(scene) { scene.people.forEach(p => p.mark(p.player ? 'sweat' : 'q')); } },
       tight: { grade: 'ok', who: WHO.colleague, line: { jp: '…ぎりぎりだね。{資料|しりょう}は{開|ひら}いてある？', en: '...Cutting it close. Is the document open?' },

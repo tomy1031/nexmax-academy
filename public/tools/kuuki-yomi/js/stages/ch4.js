@@ -5,6 +5,7 @@
 
   /* ---- dictionary words used in this chapter (easy-Japanese explanations, furigana on every kanji) ---- */
   KY.addGlossary({
+    '有給休暇':{yomi:'ゆうきゅうきゅうか',jp:'お{金|かね}を もらいながら {休|やす}む ことが できる {日|ひ}。',en:'paid leave'},'お土産':{yomi:'おみやげ',jp:'{旅行|りょこう}の {場所|ばしょ}で {買|か}って {人|ひと}に わたす プレゼント。',en:'souvenir'},
     '承知しました': { yomi: 'しょうちしました', jp: '「わかりました」の とても {丁寧|ていねい}な {言|い}い{方|かた}。{上司|じょうし}や お{客様|きゃくさま}に {使|つか}う。', en: 'Understood (polite)' },
     '了解': { yomi: 'りょうかい', jp: '「わかりました」と いう {意味|いみ}の ことば。おなじ チームの {人|ひと}には よく {使|つか}います。{上|うえ}の {人|ひと}や お{客様|きゃくさま}には「<<{承知|しょうち}しました>>」の ほうが {丁寧|ていねい}です。', en: 'ryōkai: "got it" (fine among teammates; some find it rude to seniors)' },
     'いい感じに': { yomi: 'いいかんじに', jp: 'どう したら いいか、はっきり {言|い}わない {言|い}い{方|かた}。{意味|いみ}は {人|ひと}に よって ちがいます。', en: 'vague "make it nice"; the meaning depends on the speaker' },
@@ -96,112 +97,11 @@
   }
 
   /* ------------------------------------------------------------------ 4-1 */
-  KY.defineStage({
-    id: '4-1',
-    chapter: 4,
-    title: { jp: '<<リリース>>は いつに する？', en: 'When Do We Release?' },
-    intro: { jp: '{火曜日|かようび}の {朝礼|ちょうれい}です。つぎの <<リリース>>の {日|ひ}を、チームで {決|き}めます。', en: "Tuesday's morning stand-up. The team is choosing the date of the next release." },
-    time: 14000,
-    mechanic: 'choice',
-    setup(scene) {
-      const { el } = KY.svg;
-      scene.camera({ zoom: 1.2, x: 180, y: 400 });
-      scene.add('bg', P.backdrop({ floor: 470 }));
-      /* planning ahead on a Tuesday morning, not deciding on the release day itself */
-      scene.add('bg', P.window({ x: 42, y: 186, w: 84, h: 66 }));
-      scene.add('bg', calendar(147, 180));
-      const clock = P.clock({ x: 268, y: 214, r: 24 });
-      clock.setTime(10, 0);
-      scene.add('bg', clock);
-      const dl = scene.label(268, 168, { jp: '{火曜日|かようび} 10:00', en: 'Tuesday 10:00' }, 'deadline');
+  KY.defineStage({id:'4-1',chapter:4,title:{jp:'リリース 5{分前|ふんまえ}！ バグ！',en:'A bug five minutes before release!'},intro:{jp:'ECサイトは 17:00に リリースの {予定|よてい}。いま 16:55。{最後|さいご}の テストで {決済|けっさい}エラーを {見|み}つけました。',en:'An EC site is due to go live at 17:00. At 16:55, you find a payment error in the final test.'},time:16000,mechanic:'choice',
+    setup(s){const P=KY.props,{el}=KY.svg;s.add('bg',P.backdrop({floor:470}));const mon=P.monitor({x:177,y:328,w:155,h:120});s.add('mid',mon);mon.screen.append(el('rect',{x:0,y:0,width:mon.sw,height:mon.sh,fill:'#fff5f5'}));s.label(177,315,{jp:'{決済|けっさい}エラー！',en:'Payment ERROR!'});s.add('bg',P.clock({x:284,y:217,r:20,h:4,m:55}));s.label(284,184,{jp:'16:55',en:'16:55'});const me=s.person({x:80,y:470,color:'player',player:true});const boss=s.person({x:279,y:470,facing:-1,tag:{jp:'{上司|じょうし}',en:'Boss'}});s.say(boss,{jp:'もうすぐ リリースだね！',en:'We are almost ready to release!'},{dur:3400,lift:24});me.mark('sweat');return {me,boss};},
+    params:{showAt:1300,shuffle:false,options:[{id:'release',text:{jp:'🚀 A：そのまま リリースする',en:'A: Release anyway'},outcome:'wrong'},{id:'hide',text:{jp:'🙈 B：エラーを {隠|かく}す',en:'B: Hide the error'},outcome:'wrong'},{id:'report',text:{jp:'📣 C：{上司|じょうし}に {報告|ほうこく}する',en:'C: Report to boss'},outcome:'great'}],onChoose(s,r,opt){s.say(r.me,opt.text,{dur:1300,cls:'mine'});if(opt.outcome==='wrong'){s.after(500,()=>{s.label(180,155,'🎆 リリース！ 🎆','#c11',19);for(let i=0;i<10;i++)s.after(90*i,()=>s.label(40+(i%3)*125,200+Math.floor(i/3)*57,'⚠ 注文エラー','#c11',15));r.me.mark('sweat2');});return 1900;}r.boss.mark('q');return 1400;},timeout:'wrong'},
+    outcomes:{great:{grade:'great',line:{jp:'「{教|おし}えてくれて ありがとう。リリースを {止|と}めるか {決|き}めよう。」',en:'“Thanks for reporting. Let us decide whether to stop the release.”'}},wrong:{grade:'ky',line:{jp:'リリース{直後|ちょくご}に {注文|ちゅうもん}エラーが いっぱい！',en:'Order errors everywhere right after release!'}}},card:{badge: "must", name: {jp:"重大なエラーはすぐに報告",en:"重大なエラーはすぐに報告"}, points:[{jp:"{決済|けっさい}で エラーを {見|み}つけたら、すぐに {上司|じょうし}に {報告|ほうこく}しよう。リリースを {止|と}める {必要|ひつよう}が あるか {相談|そうだん}しよう。",en:"{決済|けっさい}で エラーを {見|み}つけたら、すぐに {上司|じょうし}に {報告|ほうこく}しよう。リリースを {止|と}める {必要|ひつよう}が あるか {相談|そうだん}しよう。"}], phrase:{jp:"{決済|けっさい}で エラーが {出|で}ています。{確認|かくにん}を お{願|ねが}いします。",en:"{決済|けっさい}で エラーが {出|で}ています。{確認|かくにん}を お{願|ねが}いします。"}, },test:{great:'report',ky:'hide'}});
 
-      scene.add('mid', P.table({ x: 180, y: 422, w: 120 }));
-      const mon = P.monitor({ x: 180, y: 412, w: 104, h: 68 });
-      mon.screen.append(
-        el('rect', { x: 0, y: 0, width: mon.sw, height: 9, fill: '#dfe5ec' }),
-        ...[0, 1].map(i => el('circle', { cx: 8, cy: 17 + i * 9, r: 2.6, fill: '#9aa7b5' })),
-        ...[0, 1].map(i => el('line', { x1: 15, y1: 17 + i * 9, x2: 15 + 44 + i * 14, y2: 17 + i * 9, stroke: '#d2d6db', 'stroke-width': 3.4, 'stroke-linecap': 'round' })),
-        /* progress bar: almost done */
-        el('rect', { x: 10, y: 40, width: mon.sw - 20, height: 9, rx: 4.5, fill: '#e3e7ec' }),
-        el('rect', { x: 10, y: 40, width: (mon.sw - 20) * 0.8, height: 9, rx: 4.5, fill: BLUE }),
-      );
-      scene.add('mid', mon);
-      const phone = P.phone({ x: 140, y: 422 });
-      phone.el.style.opacity = '0';
-      scene.add('mid', phone);
-
-      const player = scene.person({ x: 84, y: 470, facing: 1, color: 'player', player: true });
-      const mate = scene.person({ x: 274, y: 470, facing: -1, arms: { f: [104, 8], b: [-6, 0] }, tag: WHO.mate });
-      return { player, mate, phone, clock, dl };
-    },
-    params: {
-      script: [
-        [300, (s, r) => r.ask = s.say(r.mate, { jp: '{金曜|きんよう}の {夕方|ゆうがた}には できそう。{金曜|きんよう}に リリースしちゃう？', en: "It should be ready by Friday evening. Shall we just release on Friday?" }, { dur: 4200 })],
-        [1500, (s, r) => r.player.mark('sweat')],
-      ],
-      showAt: 2300,
-      options: [
-        { id: 'now', text: { jp: 'はい、{金曜|きんよう}の{夕方|ゆうがた}に{出|だ}しましょう！', en: "Yes, let's ship it Friday evening!" }, outcome: 'now' },
-        { id: 'monday', text: { jp: '{来週|らいしゅう}の{月曜|げつよう}の{朝|あさ}にしませんか？{週末|しゅうまつ}に{何|なに}かあっても、{対応|たいおう}できる{人|ひと}が{少|すく}ないので', en: 'Shall we do it next Monday morning? Few people could respond if something goes wrong over the weekend.' }, outcome: 'great' },
-        { id: 'silent', text: { jp: '（{何|なに}も{言|い}わない）', en: '(Say nothing)' }, outcome: 'silent' },
-      ],
-      onChoose(scene, r, opt) {
-        if (r.ask) scene.removeOverlay(r.ask);
-        r.player.mark(null);
-        r.mate.set({ arms: null });
-        if (opt.id === 'silent') {
-          scene.say(r.player, opt.text, { kind: 'think', dur: 1600, cls: 'mine' });
-          return 1700;
-        }
-        scene.say(r.player, opt.text, { dur: 2800, cls: 'mine' });
-        return 2900;
-      },
-      onSilence(scene, r) { r.mate.set({ arms: null }); return 300; },
-      timeout: 'silent',
-    },
-    outcomes: {
-      great: { grade: 'great', who: WHO.mate, line: { jp: 'たしかに！ {来週|らいしゅう}の {月曜|げつよう}の {朝|あさ}に しよう。{週末|しゅうまつ}は {安心|あんしん}して {休|やす}めるね', en: "Good point! Next Monday morning, then. We can relax over the weekend." } },
-      now: { grade: 'ky', who: null, line: { jp: '（{土曜|どよう}の{朝|あさ}6{時|じ}。{電話|でんわ}が{鳴|な}った…）', en: '(Saturday, 6 a.m. The phone rang...)' },
-        react(scene, r) {
-          r.clock.setTime(6, 0);
-          r.dl.innerHTML = KY.text.html({ jp: '{土曜日|どようび} 6:00', en: 'Saturday 6:00' }, { gloss: false });
-          r.phone.el.style.opacity = '1';
-          r.phone.ring(true);
-          KY.sfx.play('ring');
-          scene.bubble({ x: 150, y: 392, text: { jp: 'ブルルル…', en: 'Brrring...' }, kind: 'shout', tail: 'down', dur: 2400 });
-          r.player.mark('sweat2');
-          r.mate.mark('sweat');
-        } },
-      silent: { grade: 'ok', who: WHO.mate, line: { jp: '…{意見|いけん}、ない？ じゃあ、{金曜|きんよう}で いいかな…', en: '...No opinions? Then I guess Friday is fine...' },
-        react(scene, r) { r.mate.mark('sweat'); } },
-    },
-    card: {
-      badge: 'depends',
-      name: { jp: '{金曜|きんよう}リリース', en: 'Releasing on a Friday' },
-      points: [
-        { jp: '{金曜日|きんようび}の {夕方|ゆうがた}に リリースすると、{週末|しゅうまつ}に {問題|もんだい}が {出|で}ても、{直|なお}せる {人|ひと}が {少|すく}ないです。', en: 'If you release on a Friday evening, few people are around to fix a problem over the weekend.' },
-        { jp: 'だから、{月曜日|げつようび}の {朝|あさ}に リリースする チームが {多|おお}いです。', en: 'So many teams release on Monday morning instead.' },
-        { jp: '<<リリース>>の {日|ひ}は、{前|まえ}もって チームで {決|き}めます。ルールは チームで ちがいます。', en: 'Decide the release date with your team in advance. Rules differ by team.' },
-      ],
-      phrase: { jp: '{月曜|げつよう}の{朝|あさ}にしませんか？', ro: 'Getsuyō no asa ni shimasen ka?', en: 'How about doing it Monday morning?' },
-      why: { jp: '{週末|しゅうまつ}は {休|やす}みの {人|ひと}が {多|おお}いです。{問題|もんだい}が {起|お}きても、すぐに {直|なお}せません。{月曜日|げつようび}の {朝|あさ}なら、みんなが {会社|かいしゃ}に います。', en: 'Many people are off on weekends, so a problem cannot be fixed quickly. On Monday morning everyone is at work.' },
-      dont: { jp: 'チームに {聞|き}かないで、{一人|ひとり}で リリースしない。', en: 'Never release alone without asking the team.' },
-      tip: { jp: '<<ロールバック>>が かんたんで、<<オンコール>>の {人|ひと}も いる チームは、{金曜日|きんようび}に リリースしても いいです。これは チームの ルールです。{国|くに}の {決|き}まりでは ありません。', en: 'Teams with easy rollback and on-call staff may release on Fridays. It is a team rule, not a law.' },
-      diagram(svg) {
-        const D = KY.diag, C = KY.svg.C, { el } = KY.svg;
-        const box = (x, fill, stroke) => svg.append(el('rect', { x, y: 50, width: 46, height: 38, rx: 7, fill, stroke, 'stroke-width': 2.5 }));
-        box(18, C.ink, C.ink); box(78, '#f1f1f1', '#bdbdbd'); box(138, '#fff', C.ink);
-        D.label(svg, 41, 74, 'きん', { color: '#fff', size: 14 });
-        D.label(svg, 101, 74, 'どにち', { color: '#8a8a8a', size: 12 });
-        D.label(svg, 161, 74, 'げつ', { color: C.ink, size: 14 });
-        svg.append(el('path', { d: 'M46 42 Q101 6 154 42 M154 42 L145 38 M154 42 L152 33', fill: 'none', stroke: C.ink, 'stroke-width': 2.2, 'stroke-linecap': 'round' }));
-        D.label(svg, 41, 108, 'ひとが すくない', { size: 9 });
-        D.label(svg, 101, 108, 'おやすみ', { size: 9 });
-        D.label(svg, 161, 108, 'みんな いる', { color: C.ink, size: 9 });
-      },
-    },
-    test: { great: 'monday', ky: 'now', ok: 'silent' },
-  });
 
   /* ------------------------------------------------------------------ 4-2 */
   KY.defineStage({
@@ -381,7 +281,7 @@
       },
     },
     outcomes: {
-      great: { grade: 'great', who: WHO.boss, line: { jp: 'わかった、すぐ{状況|じょうきょう}を{見|み}よう。{知|し}らせてくれて{助|たす}かる', en: "Got it, let's look at it right away. Thanks for telling me." } },
+      great: { grade: 'great', who: WHO.boss, line: { jp: 'わかった、すぐ{状況|じょうきょう}を{見|み}よう。{知|し}らせてくれて ありがとう', en: "Got it, let's look at it right away. Thanks for telling me." } },
       late: { grade: 'ky', who: WHO.boss, line: { jp: 'えっ、いつから！？なんでもっと{早|はや}く{言|い}わなかったの！', en: "What, since when?! Why didn't you say so sooner!" },
         react(scene, r) { r.boss.mark('anger'); r.player.mark('sweat2'); } },
       hide: { grade: 'ky', who: WHO.boss, line: { jp: '…{本番|ほんばん}が{止|と}まってる！？いつから！？', en: '...Production is down?! Since when?!' },
@@ -423,86 +323,13 @@
   ];
   const STEPS = [[90, 360], [150, 297], [210, 234], [270, 171]];
 
-  KY.defineStage({
-    id: '4-4',
-    chapter: 4,
-    title: { jp: '<<ハンコ>>リレー', en: 'The Stamp Relay' },
-    intro: { jp: '{新|あたら}しい ツールを {買|か}うための {稟議書|りんぎしょ}が できました。', en: 'Your approval request for buying a new tool is ready.' },
-    time: 22000,
-    mechanic: 'order',
-    setup(scene) {
-      scene.add('bg', P.backdrop({ floor: 486, tint: '#f6f6f3' }));
-      const bg = scene.layer.bg;
-      for (let i = 0; i < 3; i++) {
-        const [x1, y1] = STEPS[i], [x2, y2] = STEPS[i + 1];
-        arrow(bg, x1 + 14, y1 - 24, x2 - 14, y2 + 24);
-      }
-      scene.add('bg', P.table({ x: 90, y: 466, w: 70, floor: 486 }));
-      scene.add('bg', P.paper({ x: 72, y: 424, w: 36, h: 42, lines: 3 }));
-      arrow(bg, 90, 420, 90, 392);
-      scene.label(90, 498, { jp: '{稟議書|りんぎしょ}', en: 'approval request' });
-      const senior = scene.person({ x: 312, y: 486, facing: -1, tag: WHO.senior });
-      return { senior };
-    },
-    params: {
-      script: [
-        [200, s => s.bubble({ x: 180, y: 70, tail: 'none', who: WHO.senior, text: { jp: 'ハンコを もらう {順番|じゅんばん}、{分|わ}かる？', en: 'Do you know the order for getting the stamps?' } })],
-      ],
-      cards: RELAY,
-      slots: STEPS.map(([x, y]) => ({ x, y, w: 100, h: 40 })),
-      tray: { y: 540 },
-      judge(placed) {
-        if (placed.every((id, i) => id === RELAY[i].id)) return 'great';
-        if (placed.every(id => !id)) return 'idle';
-        const s = placed.indexOf('shacho'), b = placed.indexOf('bucho');
-        if (s !== -1 && (b === -1 || s < b)) return 'skip';
-        return 'swap';
-      },
-    },
-    outcomes: {
-      great: { grade: 'great', who: WHO.senior, line: { jp: '{完璧|かんぺき}！{全員|ぜんいん}の<<ハンコ>>が{揃|そろ}ったよ', en: 'Perfect! All the stamps are in.' } },
-      swap: { grade: 'ok', who: WHO.kacho, line: { jp: 'あれ？{私|わたし}の{前|まえ}に{係長|かかりちょう}は{見|み}たのかな？', en: 'Hm? Did the assistant manager see this before me?' },
-        react(scene, r) {
-          const k = scene.person({ x: 238, y: 486, facing: -1, tag: WHO.kacho });
-          k.mark('q'); r.senior.mark('sweat');
-        } },
-      skip: { grade: 'ky', who: WHO.bucho, line: { jp: '…{私|わたし}、{聞|き}いてないけど？', en: "...I haven't heard about this?" },
-        react(scene, r) {
-          const b = scene.person({ x: 238, y: 486, facing: -1, tag: WHO.bucho });
-          b.mark('anger'); r.senior.mark('sweat2');
-        } },
-      idle: { grade: 'ky', who: WHO.senior, line: { jp: '…{稟議書|りんぎしょ}、{机|つくえ}の{上|うえ}に{置|お}きっぱなしだよ？', en: '...The request is still just sitting on your desk, you know.' } },
-    },
-    card: {
-      badge: 'depends',
-      name: { jp: '{稟議|りんぎ}の <<ハンコ>>の {順番|じゅんばん}', en: 'The order of stamps on a ringi' },
-      points: [
-        { jp: '{係長|かかりちょう}、{課長|かちょう}、{部長|ぶちょう}、{社長|しゃちょう}の {順番|じゅんばん}で {回|まわ}します。{下|した}の {人|ひと}から です。', en: 'It goes in this order: assistant manager, section manager, department manager, president — lowest rank first.' },
-        { jp: 'だれの <<ハンコ>>が ひつようかは、いくら {使|つか}うかや {会社|かいしゃ}の ルールで ちがいます。', en: 'Whose stamp you need depends on the amount and the company rules.' },
-        { jp: '{今|いま}は、パソコンの システムで {回|まわ}して、<<ハンコ>>を おさない {会社|かいしゃ}も {多|おお}いです。', en: 'Many companies now route it in an online system with no stamp at all.' },
-      ],
-      phrase: { jp: '{稟議書|りんぎしょ}の{確認|かくにん}を、お{願|ねが}いいたします', ro: 'Ringisho no kakunin o, onegai itashimasu.', en: 'Please check this approval request.' },
-      why: { jp: '{会社|かいしゃ}では、{大|おお}きな ことを {一人|ひとり}で {決|き}めません。{上|うえ}の {人|ひと}が {順番|じゅんばん}に {見|み}て、みんなで {決|き}めた ことに なります。', en: 'Big decisions are not made by one person. Each person up the chain reviews it, so the decision is shared.' },
-      dont: { jp: '{下|した}の {人|ひと}を とばして、いきなり {社長|しゃちょう}に {持|も}って いかない。', en: "Don't skip the lower managers and go straight to the president." },
-      tip: { jp: '{会社|かいしゃ}や いくら {使|つか}うかで、{回|まわ}す {人|ひと}は ちがいます。{先輩|せんぱい}や {担当|たんとう}の {人|ひと}に、{先|さき}に {聞|き}きましょう。パソコンの システムで {回|まわ}す {会社|かいしゃ}も あります。', en: 'Who it goes through differs by company and amount. Ask a senior or the person in charge first. Many companies now use electronic approval.' },
-      diagram(svg) {
-        const D = KY.diag, C = KY.svg.C, { el } = KY.svg;
-        const rows = [[18, 108, 'かかりちょう'], [52, 82, 'かちょう'], [86, 56, 'ぶちょう'], [120, 30, 'しゃちょう']];
-        rows.forEach(([x, y, lab], i) => {
-          svg.append(el('rect', { x, y, width: 64, height: 22, rx: 5, fill: i === 3 ? C.ink : '#fff', stroke: i === 3 ? C.ink : '#9a9a9a', 'stroke-width': 2.2 }));
-          D.label(svg, x + 32, y + 15, lab, { color: i === 3 ? '#fff' : '#555', size: 9 });
-          if (i < 3) D.arrow(svg, x + 54, y - 2, x + 80, y - 8, { color: '#9a9a9a' });
-        });
-        D.arrow(svg, 8, 142, 24, 134, { color: C.red });
-        D.label(svg, 100, 142, 'した から うえ へ', { size: 9 });
-      },
-    },
-    test: {
-      great: ['kakaricho', 'kacho', 'bucho', 'shacho'],
-      ok: ['kacho', 'kakaricho', 'bucho', 'shacho'],
-      ky: ['shacho', 'kakaricho', 'kacho', 'bucho'],
-    },
-  });
+  KY.defineStage({id:'4-4',chapter:4,title:{jp:'ハンコを {順番|じゅんばん}に！',en:'The stamp relay'},intro:{jp:'{稟議書|りんぎしょ}を {持|も}って、4{人|にん}から ハンコを もらおう。{係長|かかりちょう}・{課長|かちょう}・{部長|ぶちょう}・{社長|しゃちょう}の つくえを {順番|じゅんばん}に クリック！',en:'Get four stamps on your approval form. Click each desk in the correct order, starting with the lower rank.'},time:23000,mechanic:'action',
+    setup(s){const P=KY.props,{el}=KY.svg;s.add('bg',P.backdrop({floor:470}));const desks=[{id:'shacho',name:'社長',x:180,y:195},{id:'bucho',name:'部長',x:65,y:337},{id:'kacho',name:'課長',x:180,y:337},{id:'kakaricho',name:'係長',x:295,y:337}];
+      desks.forEach(d=>{s.add('mid',el('rect',{x:d.x-49,y:d.y-25,width:98,height:54,rx:8,fill:'#e1ded6',stroke:'#96918b','stroke-width':2}));if(KY.roleHeads && KY.roleHeads[d.id]){s.add('top',el('image',{x:d.x-27,y:d.y-95,width:54,height:55,href:KY.roleHeads[d.id],preserveAspectRatio:'xMidYMid meet'}));}else{s.add('top',el('circle',{cx:d.x,cy:d.y-69,r:23,fill:'#fff',stroke:'#777','stroke-width':3}));}s.label(d.x,d.y-1,{jp:'{'+d.name+'|'+({社長:'しゃちょう',部長:'ぶちょう',課長:'かちょう',係長:'かかりちょう'}[d.name])+'}',en:d.name});});
+      const me=s.person({x:65,y:470,color:'player',player:true});s.add('mid',el('rect',{x:94,y:490,width:172,height:98,rx:5,fill:'#fff',stroke:'#666','stroke-width':2}));s.label(180,514,{jp:'{稟議書|りんぎしょ}',en:'Approval document'});const stamps=[];for(let i=0;i<4;i++){const n=el('rect',{x:106+i*39,y:534,width:32,height:32,fill:'white',stroke:'#b9b9b9','stroke-width':1.5});s.add('top',n);stamps.push(n);}return {desks,me,stamps};},
+    params:{start(s,r){let seq=[],done=false;const expected=['kakaricho','kacho','bucho','shacho'];const click=id=>{if(done||seq.includes(id))return;seq.push(id);const n=r.stamps[seq.length-1];n.setAttribute('fill','#ffe3e3');const x=Number(n.getAttribute('x'))+16;const y=Number(n.getAttribute('y'))+21;KY.mini.label(s,x,y,'印','#c3162d',14);r.me.mark('sparkle');if(seq.length===4){done=true;s.after(350,()=>s.end(seq.every((x,i)=>x===expected[i])?'great':'wrong'));}};r.desks.forEach(d=>KY.mini.hit(s,d.x-55,d.y-35,110,75,()=>click(d.id)));s.timer(s.def.time,()=>{if(!done)s.end('wrong');});s._stamps={click};},simulate(s,r,v){const a=v==='great'?['kakaricho','kacho','bucho','shacho']:['shacho','bucho','kacho','kakaricho'];a.forEach((x,i)=>s.at(350+i*380,()=>s._stamps.click(x)));}},
+    outcomes:{great:{grade:'great',line:{jp:'4{人|にん}の ハンコが {集|あつ}まった！',en:'All four stamps collected!'}},wrong:{grade:'ky',line:{jp:'「あれ？ ハンコの {順番|じゅんばん}が ちがうよ！」',en:'“Wait! These stamps are in the wrong order!”'}}},card:{badge: "depends", name: {jp:"ハンコをもらう順番",en:"ハンコをもらう順番"}, points:[{jp:"この ゲームは {係長|かかりちょう} → {課長|かちょう} → {部長|ぶちょう} → {社長|しゃちょう}の {順番|じゅんばん}です。{会社|かいしゃ}で ルールは ちがいます。",en:"この ゲームは {係長|かかりちょう} → {課長|かちょう} → {部長|ぶちょう} → {社長|しゃちょう}の {順番|じゅんばん}です。{会社|かいしゃ}で ルールは ちがいます。"}], phrase:{jp:"{稟議書|りんぎしょ}の {確認|かくにん}を お{願|ねが}いします。",en:"{稟議書|りんぎしょ}の {確認|かくにん}を お{願|ねが}いします。"}, },test:{great:'great',ky:'wrong'}});
+
 
   /* ------------------------------------------------------------------ 4-5 */
   const MSG = { jp: '{明日|あした}の {会議|かいぎ}、10{時|じ}からに {変|か}わりました。', en: "Tomorrow's meeting has moved to 10:00." };
@@ -839,104 +666,9 @@
     handover(196, ROWS[2]); text(224, ROWS[2], 'ひきつぎを', 'する', true);
   }
 
-  KY.defineStage({
-    id: '4-8',
-    chapter: 4,
-    title: { jp: '{有給|ゆうきゅう}を とりたい', en: 'Taking a Day Off' },
-    intro: { jp: '{来週|らいしゅう}、{休|やす}みを とりたい {日|ひ}が あります。{申請|しんせい}の {画面|がめん}を {開|ひら}きました。', en: 'You want a day off next week. You have opened the leave request screen.' },
-    time: 14000,
-    mechanic: 'choice',
-    setup(scene) {
-      const { el } = KY.svg;
-      scene.camera({ zoom: 1.2, x: 180, y: 400 });
-      scene.add('bg', P.backdrop({ floor: 470 }));
-      scene.add('bg', calendar(48, 198));
-      scene.add('mid', P.officeChair({ x: 64, facing: 1 }));
-      scene.add('mid', P.table({ x: 170, y: 422, w: 150 }));
-      const mon = P.monitor({ x: 170, y: 412, w: 140, h: 100 });
-      const W = mon.sw;
-      const bar = (x, y, w) => el('rect', { x, y, width: w, height: 5, rx: 2.5, fill: '#cfcfcf' });
-      const field = (x, y, w, h, stroke = '#c4c4c4', sw = 1.4) => el('rect', { x, y, width: w, height: h, rx: 2, fill: '#fff', stroke, 'stroke-width': sw });
-      const cursor = el('rect', { x: 50, y: 56, width: 1.8, height: 16, fill: INK });
-      mon.screen.append(
-        el('rect', { x: 0, y: 0, width: W, height: 11, fill: '#dfe5ec' }),
-        bar(8, 21, 28), field(44, 17, 80, 12),
-        bar(8, 38, 28), field(44, 34, 80, 12),
-        KY.svg.text(8, 66, 'りゆう', { 'font-size': 9, 'font-weight': 700, fill: '#8a8a8a' }),
-        field(44, 51, 80, 28, INK, 1.8), cursor,
-        el('rect', { x: 92, y: 84, width: 32, height: 8, rx: 4, fill: BLUE }),
-      );
-      scene.add('mid', mon);
-      scene.every((dt, t) => cursor.setAttribute('opacity', Math.floor(t / 500) % 2 ? 0 : 1));
-      scene.label(170, 292, { jp: '{有給|ゆうきゅう}{申請|しんせい}', en: 'Paid leave request' }, 'deadline');
-      const player = scene.person({ x: 64, y: 470, pose: 'sit', facing: 1, color: 'player', player: true, arms: TYPE[0] });
-      const boss = scene.person({ x: 296, y: 470, facing: -1, tag: WHO.boss });
-      return { player, boss };
-    },
-    params: {
-      script: [
-        [600, (s, r) => r.player.mark('dots')],
-      ],
-      showAt: 1800,
-      options: [
-        { id: 'skip', text: { jp: '（{申請|しんせい}しないで{休|やす}む）', en: '(Take the day off without applying)' }, outcome: 'skip' },
-        { id: 'long', text: { jp: '{家族|かぞく}で{北海道|ほっかいどう}に{旅行|りょこう}します。{飛行機|ひこうき}は{朝|あさ}9{時|じ}で、{温泉|おんせん}にも{入|はい}る{予定|よてい}で…（{以下|いか}、{長|なが}い）', en: "We're taking a family trip to Hokkaido. The flight is at 9 a.m., and we plan to visit a hot spring too... (it goes on)" }, outcome: 'long' },
-        { id: 'private', text: { jp: '{私用|しよう}のため', en: 'For personal reasons' }, outcome: 'great' },
-      ],
-      onChoose(scene, r, opt) {
-        r.player.mark(null);
-        const typed = scene.say(r.player, opt.text, { kind: 'think', dur: opt.id === 'long' ? 3600 : 2600, cls: 'mine' });
-        if (opt.id === 'private') {
-          /* the reason is short; what matters is telling the team and handing over the work */
-          scene.after(1800, () => {
-            scene.removeOverlay(typed);
-            scene.say(r.player, { jp: '{来週|らいしゅう}の {金曜日|きんようび}、お{休|やす}みを いただきます。{資料|しりょう}は {木曜日|もくようび}までに {終|お}わらせて、{田中|たなか}さんに {引|ひ}き{継|つ}ぎます。', en: "I'll take next Friday off. I'll finish the documents by Thursday and hand the rest over to Tanaka." }, { dur: 3800, cls: 'mine' });
-          });
-          return 5700;
-        }
-        return opt.id === 'long' ? 3700 : 2700;
-      },
-      timeout: 'silent',
-    },
-    outcomes: {
-      great: { grade: 'great', who: WHO.boss, line: { jp: '{引|ひ}き{継|つ}ぎまで ありがとう。{承認|しょうにん}したよ。ゆっくり {休|やす}んでね', en: 'Thanks for arranging the handover too. Approved — have a good rest.' } },
-      long: { grade: 'ok', who: WHO.boss, line: { jp: '…{長|なが}いね。{理由|りゆう}は{聞|き}いてないよ（{笑|わら}）', en: "...That's long. I didn't ask for a reason (haha)." },
-        react(scene, r) { r.boss.mark('sweat'); } },
-      skip: { grade: 'ky', who: WHO.boss, line: { jp: 'あれ、{山田|やまだ}さんは？…{連絡|れんらく}もない…！', en: "Huh, where's Yamada? ...No message either...!" },
-        react(scene, r) { r.player.set({ hidden: true }); r.boss.mark('shock'); } },
-      silent: { grade: 'ky', who: WHO.boss, line: { jp: '{有給|ゆうきゅう}、まだ{申請|しんせい}してないよね？', en: "You haven't submitted your leave yet, have you?" },
-        react(scene, r) { r.boss.mark('q'); r.player.mark('sweat'); } },
-    },
-    card: {
-      badge: 'must',
-      name: { jp: '{有給|ゆうきゅう}の とり{方|かた}', en: 'How to take paid leave' },
-      points: [
-        { jp: '{理由|りゆう}は「{私用|しよう}のため」で {大丈夫|だいじょうぶ}です。{長|なが}く {説明|せつめい}しなくて いいです。', en: '"For personal reasons" is enough. You do not need a long explanation.' },
-        { jp: '{早|はや}めに {申請|しんせい}して、チームにも {伝|つた}えます。まわりに <<{迷惑|めいわく}>>が かからない ように します。', en: 'Apply early and tell your team, so you do not cause trouble for others.' },
-        { jp: '{休|やす}む {前|まえ}に、{自分|じぶん}の {仕事|しごと}を おわらせます。のこる {仕事|しごと}は <<{引|ひ}き{継|つ}ぎ>>を します。', en: 'Finish your own work before your day off, and hand over whatever is left.' },
-      ],
-      phrase: { jp: '{休|やす}みの {前|まえ}に、{引|ひ}き{継|つ}ぎを して おきます', ro: 'Yasumi no mae ni, hikitsugi o shite okimasu', en: "I'll hand over my work before my day off." },
-      why: { jp: '{有給|ゆうきゅう}は {働|はたら}く {人|ひと}の {大切|たいせつ}な {休|やす}みで、{理由|りゆう}を くわしく {話|はな}さなくても いいです。でも、{休|やす}みの {日|ひ}も チームの {仕事|しごと}は つづきます。{早|はや}めに {伝|つた}えて <<{引|ひ}き{継|つ}ぎ>>を して おくと、みんなが {安心|あんしん}します。', en: 'Paid leave is your right, and you do not need to explain it in detail. But the team keeps working while you are away. Telling them early and handing over your work puts everyone at ease.' },
-      dont: { jp: '{申請|しんせい}しないで {休|やす}まない。{病気|びょうき}の とき いがいは、{前|まえ}の {日|ひ}に {急|きゅう}に {休|やす}まない。{仕事|しごと}を のこした まま {休|やす}まない。', en: "Don't take a day off without applying. Except when you are sick, don't suddenly take the next day off. Don't leave your work unfinished." },
-      tip: { jp: '{会社|かいしゃ}の ルール（<<{就業規則|しゅうぎょうきそく}>>）に「2{週間|しゅうかん} {前|まえ}までに {申請|しんせい}」などと {書|か}いて ある ことが {多|おお}いです。{休|やす}みの あとは、{手伝|てつだ}って くれた {人|ひと}に「ありがとうございました」と {言|い}いましょう。', en: 'Company rules often say "apply two weeks ahead". After your day off, thank the people who helped.' },
-      figure: {
-        draw: figLeave,
-        rule: { jp: '{休|やす}みの {日|ひ}も、チームの {仕事|しごと}は つづきます。まわりに <<{迷惑|めいわく}>>を かけない {準備|じゅんび}を してから {休|やす}みます。', en: 'The team keeps working on your day off. Get ready so that nobody is troubled, then take your leave.' },
-        legend: [
-          { n: '×', jp: 'だめな やり{方|かた}：{前|まえ}の {日|ひ}に {急|きゅう}に {休|やす}む。{仕事|しごと}が のこって、まわりが こまります。', en: 'Bad: suddenly taking the next day off. Work is left undone and others are in trouble.' },
-          { n: '○', you: true, jp: 'いい やり{方|かた}：{早|はや}めに {伝|つた}えて、{仕事|しごと}を おわらせて、のこりは <<{引|ひ}き{継|つ}ぎ>>を します。', en: 'Good: tell the team early, finish your work, and hand over the rest.' },
-        ],
-      },
-      diagram(svg) {
-        const D = KY.diag, C = KY.svg.C, { el } = KY.svg;
-        svg.append(el('rect', { x: 34, y: 12, width: 132, height: 126, rx: 4, fill: '#fff', stroke: '#9a9a9a', 'stroke-width': 2.5 }));
-        svg.append(el('path', { d: 'M48 30 H100 M48 44 H120', stroke: '#e0e0e0', 'stroke-width': 5, 'stroke-linecap': 'round' }));
-        D.label(svg, 48, 66, 'りゆう', { size: 9, anchor: 'start' });
-        svg.append(el('rect', { x: 48, y: 72, width: 104, height: 28, rx: 3, fill: '#fff', stroke: C.ink, 'stroke-width': 2 }));
-        D.label(svg, 100, 91, 'しよう のため', { color: C.ink, size: 12, weight: 900 });
-        D.label(svg, 100, 122, 'ながく かかない', { size: 9, color: '#555' });
-      },
-    },
-    test: { great: 'private', ky: 'skip', ok: 'long' },
-  });
+  KY.defineStage({id:'4-8',chapter:4,title:{jp:'{旅行|りょこう}の {次|つぎ}の {日|ひ}',en:'Back from vacation'},intro:{jp:'{昨日|きのう}は {有給休暇|ゆうきゅうきゅうか}で {旅行|りょこう}に {行|い}きました。{今日|きょう}は {出勤|しゅっきん}。{同僚|どうりょう}は {昨日|きのう}、あなたの {仕事|しごと}も {手伝|てつだ}って くれました。',en:'You took paid leave yesterday for a trip. Your colleague helped with some work. You are back today.'},time:15000,mechanic:'choice',
+    setup(s){const P=KY.props,{el}=KY.svg;s.add('bg',P.backdrop({floor:470}));s.add('bg',P.window({x:138,y:205,w:90,h:80}));s.add('mid',P.table({x:235,y:424,w:165}));const me=s.person({x:85,y:470,color:'player',player:true});const colleague=s.person({x:270,y:470,pose:'sit',facing:-1,tag:{jp:'{同僚|どうりょう}',en:'Colleague'}});s.say(me,{jp:'（{昨日|きのう}は {楽|たの}しかったな〜！）',en:'(Yesterday was so fun!)'},{kind:'think',dur:3300});return {me,colleague};},
+    params:{showAt:1400,shuffle:false,options:[{id:'thanks',text:{jp:'🎁 A：お{土産|みやげ}を わたして、お{礼|れい}を {言|い}う',en:'A: Gift and thanks'},outcome:'great'},{id:'bow',text:{jp:'🙇 B：お{土産|みやげ}を {頭|あたま}に のせて {土下座|どげざ}',en:'B: Dramatic bow with gift on head'},outcome:'shock'},{id:'none',text:{jp:'🕶️ C：{何|なに}も {言|い}わず、{席|せき}に すわる',en:'C: Say nothing; sit down'},outcome:'cold'}],onChoose(s,r,opt){if(opt.id==='thanks'){s.say(r.me,{jp:'{昨日|きのう}は ありがとうございました！ {旅行|りょこう}の お{土産|みやげ}です。よかったら どうぞ！',en:'Thanks for yesterday! A little gift from my trip!'},{dur:2600,cls:'mine'});s.after(1100,()=>s.say(r.colleague,{jp:'ありがとう！ {旅行|りょこう}、{楽|たの}しかった？',en:'Thank you! How was your trip?'},{dur:1300}));return 3200;}r.colleague.mark(opt.id==='bow'?'shock':'q');return 2100;},timeout:'cold'},
+    outcomes:{great:{grade:'great',line:{jp:'「ありがとう！ {旅行|りょこう}、{楽|たの}しかった？」ふたりとも {笑顔|えがお}！',en:'“Thank you! Did you enjoy your trip?” Both smile!'}},shock:{grade:'ky',line:{jp:'「えっ！？ どうしたの！？」 {同僚|どうりょう}も びっくり。',en:'“What!? What happened?” The colleague is shocked!'}},cold:{grade:'ky',line:{jp:'「あれ？ {昨日|きのう}の {仕事|しごと}、{手伝|てつだ}ったのに…」',en:'“I helped with the work yesterday, though...”'}}},card:{badge: "depends", name: {jp:"手伝ってくれた人にお礼",en:"手伝ってくれた人にお礼"}, points:[{jp:"{有給休暇|ゆうきゅうきゅうか}は、お{金|かね}を もらいながら {休|やす}める {日|ひ}です。{手伝|てつだ}って くれた {人|ひと}に お{礼|れい}を {言|い}おう。<<お{土産|みやげ}>>は、{旅行|りょこう}で {買|か}った プレゼントです。",en:"{有給休暇|ゆうきゅうきゅうか}は、お{金|かね}を もらいながら {休|やす}める {日|ひ}です。{手伝|てつだ}って くれた {人|ひと}に お{礼|れい}を {言|い}おう。<<お{土産|みやげ}>>は、{旅行|りょこう}で {買|か}った プレゼントです。"}], phrase:{jp:"{昨日|きのう}は ありがとうございました！ よかったら どうぞ。",en:"{昨日|きのう}は ありがとうございました！ よかったら どうぞ。"}, },test:{great:'thanks',ky:'bow'}});
+
 })(typeof window !== 'undefined' ? window : globalThis);

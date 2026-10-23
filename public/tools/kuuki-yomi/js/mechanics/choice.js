@@ -23,7 +23,20 @@
         b.className = 'choice';
         b.type = 'button';
         b.dataset.id = opt.id;
-        b.innerHTML = KY.text.html(opt.text, { follow: true });   /* dictionary words open the popup instead of choosing */
+        if (opt.image) {
+          panel.classList.add('choices-illustrated');
+          b.classList.add('choice-illustrated');
+          const photo = root.document.createElement('img');
+          photo.src = opt.image;
+          photo.alt = '';
+          photo.draggable = false;
+          const caption = root.document.createElement('span');
+          caption.className = 'choice-caption';
+          caption.innerHTML = KY.text.html(opt.text, { follow: true });
+          b.append(photo, caption);
+        } else {
+          b.innerHTML = KY.text.html(opt.text, { follow: true });   /* dictionary words open the popup instead of choosing */
+        }
         b.addEventListener('click', () => { if (!scene.locked) pick(opt, b); });
         panel.append(b);
       }

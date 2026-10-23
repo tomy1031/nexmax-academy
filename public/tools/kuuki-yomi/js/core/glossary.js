@@ -41,6 +41,7 @@
     '土下座': { yomi: 'どげざ', jp: 'ひざを ついて、{頭|あたま}を ゆかに つけて あやまること。とても {強|つよ}い あやまり{方|かた}。', en: 'kneeling with your head on the floor (dogeza)' },
     'お辞儀': { yomi: 'おじぎ', jp: '{頭|あたま}を {下|さ}げて あいさつ すること。', en: 'bow' },
     '謎': { yomi: 'なぞ', jp: 'よく わからない こと。ふしぎな こと。', en: 'mystery' },
+    '解説': { yomi: 'かいせつ', jp: '{答|こた}えの {意味|いみ}や、どうして そうするかを わかりやすく {説明|せつめい}する こと。', en: 'explanation; why an answer is right' },
 
     /* ---------- certificate ---------- */
     '修了証': { yomi: 'しゅうりょうしょう', jp: '{勉強|べんきょう}の クラスを おわらせた ことを しめす {紙|かみ}。', en: 'certificate of completion' },
