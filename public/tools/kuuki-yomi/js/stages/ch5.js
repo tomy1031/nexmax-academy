@@ -10,6 +10,7 @@
   const C = new Proxy({}, { get: (_, k) => KY.svg.C[k] });
 
   KY.addGlossary({
+    'おつぎ':{yomi:'おつぎ',jp:'グラスに {飲|の}み{物|もの}を {入|い}れて あげる こと。',en:'pouring a drink'},'とりあえず':{yomi:'とりあえず',jp:'まず これを する、と いう こと。',en:'for now / to start with'},
     '座敷': { yomi: 'ざしき', jp: 'たたみの {部屋|へや}。くつを ぬいで {上|あ}がって、クッションに {座|すわ}ります。', en: 'tatami-floor room (zashiki)' },
     '床の間': { yomi: 'とこのま', jp: '{座敷|ざしき}に ある、かざりの {場所|ばしょ}。いちばん {大切|たいせつ}な {人|ひと}が その まえに {座|すわ}ります。', en: 'tokonoma: the decorative alcove in a tatami room' },
     '居酒屋': { yomi: 'いざかや', jp: 'お{酒|さけ}と {料理|りょうり}を {楽|たの}しむ {店|みせ}。', en: 'izakaya (Japanese-style pub)' },
@@ -557,7 +558,7 @@
         putAt(r.glass, BEER_X, TABLE_TOP);
         const target = key === 'full' ? 1 : 0.88;
         const start = key === 'great' ? 900 : 0;
-        if (key === 'great') scene.say(r.player, { jp: 'お{注|つ}ぎしましょうか？', en: 'Shall I pour for you?' }, { dur: 1600, cls: 'mine' });
+        if (key === 'great') scene.say(r.player, { jp: '<<おつぎ>>しましょうか？', en: 'Shall I pour for you?' }, { dur: 1600, cls: 'mine' });
         scene.after(start, () => {
           r.player.set({ arms: { f: [135, 0], b: [18, 46] }, bow: 6 });
           scene.tween({
@@ -595,13 +596,15 @@
     },
     card: {
       badge: 'depends',
+      tip: {jp:'{日本|にほん}の {飲|の}み{会|かい}では、「<<とりあえず>>ビール」と {言|い}う {人|ひと}も います。ビールを {飲|の}まなくても OK！',en:'Some people in Japan start with beer, but nobody has to drink it.'},
       name: { jp: 'お{酌|しゃく}を する とき', en: 'When to pour for someone' },
       points: [
-        { jp: '{相手|あいて}の グラスが {半分|はんぶん}より {少|すく}なく なったら、「お{注|つ}ぎしましょうか？」と {聞|き}きます。', en: 'When their glass is under half full, ask "Shall I pour for you?"' },
+        {jp:'グラスの {中|なか}が {少|すく}なく なってから、<<おつぎ>>するか {聞|き}こう。',en:'Wait until the glass is low, then ask before pouring.'},
+        { jp: '{相手|あいて}の グラスが {半分|はんぶん}より {少|すく}なく なったら、「<<おつぎ>>しましょうか？」と {聞|き}きます。', en: 'When their glass is under half full, ask "Shall I pour for you?"' },
         { jp: '{先|さき}に {聞|き}いてから、ボトルを {持|も}って、{少|すこ}しだけ {入|い}れます。', en: 'Ask first, then pour just a little.' },
         { jp: '{相手|あいて}が「いりません」と {言|い}ったら、{無理|むり}に {入|い}れません。', en: 'If they say "no, thank you", do not pour.' },
       ],
-      phrase: { jp: 'お{注|つ}ぎしましょうか？', ro: 'otsugi shimashō ka?', en: 'Shall I pour for you?' },
+      phrase: { jp: '<<おつぎ>>しましょうか？', ro: 'otsugi shimashō ka?', en: 'Shall I pour for you?' },
       why: { jp: '{日本|にほん}では、{相手|あいて}の グラスを {見|み}て {気|き}づく ことが やさしさだと {考|かんが}える {人|ひと}が います。{先|さき}に {聞|き}くと、{相手|あいて}も「もう いいです」と {言|い}い やすく なります。', en: "Some people in Japan see noticing the other person's glass as kindness. Asking first lets them easily say \"no more, thanks\"." },
       dont: { jp: '{聞|き}かないで いきなり {入|い}れない。いらない {人|ひと}に {入|い}れない。', en: "Don't pour without asking, and don't pour for someone who does not want more." },
       tip: { jp: 'いつも {先|さき}に {聞|き}きましょう。いまは お{酌|しゃく}を しない {会社|かいしゃ}も {多|おお}いです。あなたの {飲|の}み{物|もの}は ジュースや ウーロン{茶|ちゃ}で {大丈夫|だいじょうぶ}です。', en: 'Always ask first. Many workplaces no longer care about this custom. Your own drink can be juice or oolong tea.' },
@@ -637,7 +640,7 @@
     },
     params: {
       script: [
-        [300, (s, r) => { r.ask = s.say(r.senior, { jp: 'とりあえず ビールで いい？', en: 'Beer for now, okay?' }); }],
+        [300, (s, r) => { r.ask = s.say(r.senior, { jp: '<<とりあえず>> ビールで いい？', en: 'Beer for now, okay?' }); }],
         [1500, (s, r) => r.player.mark('sweat')],
       ],
       showAt: 2200,
@@ -685,6 +688,7 @@
         { jp: 'ウーロン{茶|ちゃ}や ジュースでも {乾杯|かんぱい}できます。みんなと {同|おな}じ ものを {飲|の}まなくて {大丈夫|だいじょうぶ}です。', en: 'You can toast with oolong tea or juice. You do not have to drink the same thing as everyone.' },
         { jp: '{無理|むり}に {飲|の}ませる ことは <<アルハラ>>です。あなたも {人|ひと}に すすめては いけません。', en: 'Forcing someone to drink is "aruhara" (alcohol harassment). Do not push others to drink either.' },
       ],
+      tip: { jp: '{一言|ひとこと}メモ：{日本|にほん}では「<<とりあえず>>ビール」と {言|い}う {男性|だんせい}も {多|おお}いです。でも、{飲|の}みたい ものを {選|えら}んで {大丈夫|だいじょうぶ}です。', en: 'Note: Many men in Japan may start by ordering beer. It is always fine to choose a drink you prefer.' },
       phrase: { jp: 'すみません、お{酒|さけ}は {飲|の}めないので、ウーロン{茶|ちゃ}で お{願|ねが}いします', ro: 'sumimasen, osake wa nomenai node, ūroncha de onegai shimasu', en: "Sorry, I don't drink alcohol, so I'll have oolong tea, please." },
       why: { jp: 'お{酒|さけ}が {飲|の}めない {理由|りゆう}は いろいろです。お{酒|さけ}に よわい {人|ひと}も、きらいな {人|ひと}も います。いまは ソフトドリンクを {選|えら}ぶ {人|ひと}が {増|ふ}えています。', en: 'There are many reasons for not drinking: some people react badly to alcohol, some just dislike it. More and more people now choose soft drinks.' },
       dont: { jp: '{無理|むり}に {一気|いっき}に {飲|の}まない。{人|ひと}にも {無理|むり}に すすめない。', en: "Don't force yourself to chug, and don't push drinks on others." },
@@ -871,13 +875,13 @@
   });
 
   /* ------------------------------------------------------------------ 5-8 */
-  const BOSS_START = 370, BOSS_END = 112, BOSS_MS = 4300, PLAYER_X = 190, STOP_X = 118;   // the manager walks in from the right at 60 units/s
+  const BOSS_START = 340, BOSS_END = 72, BOSS_MS = 5200, PLAYER_X = 202, STOP_X = 268;   // the manager walks in from the right at 60 units/s
 
   KY.defineStage({
     id: '5-8',
     chapter: 5,
     title: { jp: '{次|つぎ}の {朝|あさ}の お{礼|れい}', en: 'Thanks the Next Morning' },
-    intro: { jp: '{部長|ぶちょう}が ごちそうして くれた {次|つぎ}の {朝|あさ}、{会社|かいしゃ}で あなたは {席|せき}に {座|すわ}っています。', en: 'The morning after your manager treated you, you are at your desk.' },
+    intro: { jp: '{昨日|きのう}、{部長|ぶちょう}が ごちそうして くれました。{今朝|けさ}、{部長|ぶちょう}が あなたの {前|まえ}を {歩|ある}いて きます。{通|とお}りすぎる {前|まえ}に お{礼|れい}を {言|い}おう。', en: 'Your manager bought dinner yesterday. This morning, thank them before they walk past your desk.' },
     time: 9000,
     mechanic: 'timing',
     setup(scene) {
@@ -885,12 +889,12 @@
       scene.add('bg', P.backdrop({ floor: FLOOR }));
       scene.add('bg', P.window({ x: 96, y: 236, w: 92, h: 70 }));
       scene.add('bg', P.clock({ x: 252, y: 232, h: 9, m: 0 }));
-      const bucho = scene.person({ x: BOSS_START, y: FLOOR, facing: -1, layer: 'bg' });
-      scene.add('mid', P.officeChair({ x: PLAYER_X - 6, facing: 1 }));
+      const bucho = scene.person({ x: BOSS_START, y: FLOOR + 22, facing: -1, layer: 'fg' });
+      scene.add('mid', P.officeChair({ x: 180, facing: 1 }));
       const player = scene.person({ x: PLAYER_X, y: FLOOR, pose: 'sit', facing: 1, color: 'player', player: true });
       player.el.insertBefore(el('rect', { x: -34, y: -108, width: 68, height: 116, fill: 'transparent' }), player.el.firstChild);
-      scene.add('mid', P.table({ x: 258, y: 420, w: 92, floor: FLOOR }));
-      scene.add('mid', P.monitor({ x: 262, y: 410, w: 62, h: 42 }));
+      scene.add('mid', P.table({ x: 105, y: 420, w: 92, floor: FLOOR }));
+      scene.add('mid', P.monitor({ x: 104, y: 410, w: 62, h: 42 }));
       return { player, bucho };
     },
     params: {
@@ -900,12 +904,12 @@
         [0, (s, r) => { r.cancelWalk = s.walk(r.bucho, BOSS_END, BOSS_MS); }],
         [1000, (s, r) => { r.bucho.tagEl = s.tag(r.bucho, WHO.bucho); }],
         [1500, (s) => s.flag('near')],
-        [4500, (s) => s.flag('gone')],
+        [2900, (s) => s.flag('gone')],
       ],
       judge(tapAt, flags) {
         if (tapAt === null) return 'never';
         if (flags.gone !== undefined) return 'late';
-        return flags.near !== undefined ? 'great' : 'early';
+        return 'great';
       },
       onTap(scene, r, key) {
         r.player.mark(null);
@@ -913,9 +917,9 @@
           /* the manager stops, comes back to you and turns around; you turn to him and bow */
           if (r.cancelWalk) r.cancelWalk();
           const bx = r.bucho.o.x;
-          if (bx > STOP_X + 4) scene.walk(r.bucho, STOP_X, ((bx - STOP_X) / 0.11), () => r.bucho.set({ facing: 1 }));
-          else r.bucho.set({ pose: 'stand', walk: 0, facing: 1 });
-          r.player.set({ pose: 'stand', bow: 28, facing: -1 });
+          if (Math.abs(bx - STOP_X) > 4) scene.walk(r.bucho, STOP_X, Math.abs(bx - STOP_X) * 9, () => r.bucho.set({ facing: -1 }));
+          else r.bucho.set({ pose: 'stand', walk: 0, facing: -1 });
+          r.player.set({ pose: 'stand', bow: 28, facing: 1 });
         } else {
           r.player.set({ pose: 'stand', bow: 28, facing: 1 });
         }

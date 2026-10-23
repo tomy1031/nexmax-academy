@@ -5,6 +5,7 @@
 
   /* dictionary words used in this chapter (first definition wins, see glossary.js) */
   KY.addGlossary({
+    '敬礼':{yomi:'けいれい',jp:'30{度|ど}ぐらい {頭|あたま}を {下|さ}げる あいさつ。',en:'30-degree bow'},'最敬礼':{yomi:'さいけいれい',jp:'45{度|ど}ぐらい {頭|あたま}を {下|さ}げる あいさつ。',en:'deep 45-degree bow'},'土下座':{yomi:'どげざ',jp:'{床|ゆか}に {手|て}や {頭|あたま}を {下|さ}げる こと。{会社|かいしゃ}では ふつう しません。',en:'kneeling apology; not normal workplace behavior'},
     '助手席': { yomi: 'じょしゅせき', jp: '{運転手|うんてんしゅ}の となりの {席|せき}。', en: 'front passenger seat' },
     '円卓': { yomi: 'えんたく', jp: 'まるい テーブル。{中国|ちゅうごく}{料理|りょうり}の おみせで よく {見|み}る。', en: 'round table' },
     'おかけください': { yomi: 'おかけください', jp: '「{座|すわ}って ください」の とても {丁寧|ていねい}な {言|い}い{方|かた}。', en: 'please have a seat (polite)' },
@@ -139,7 +140,7 @@
     id: '6-1',
     chapter: 6,
     title: { jp: 'タクシーでは どこに {座|すわ}る？', en: 'Where to Sit in a Taxi' },
-    intro: { jp: 'お{客様|きゃくさま}と {上司|じょうし}と あなたの 3{人|にん}で、タクシーに のります。', en: 'You, your boss and a client are about to ride in a taxi together.' },
+    intro: { jp: 'お{客様|きゃくさま}と {上司|じょうし}と 3{人|にん}で タクシーに のります。{行|い}く {場所|ばしょ}は、あなただけが {知|し}って います。{運転手|うんてんしゅ}に {道|みち}を {教|おし}えます。', en: 'You, your boss and a client are about to ride in a taxi together.' },
     time: 12000,
     mechanic: 'place',
     setup(scene) {
@@ -495,13 +496,14 @@
       ],
       onPlace(scene, r, zone) {
         r.names.forEach(n => scene.removeOverlay(n));
-        r.client.set({ dir: zone.y < 250 ? 180 : 0 });
-        scene.say(r.host, { jp: 'こちらへ どうぞ。', en: 'This way, please.' }, { dur: 1700, cls: 'mine' });
-        /* the host takes an armchair near the door */
-        const seat = zone.id === 'chair-left' ? { x: 240, y: 362 } : { x: 160, y: 362 };
-        const route = zone.id === 'chair-left' ? [{ x: 130, y: 428 }, { x: 240, y: 428 }, seat] : [seat];
-        scene.after(800, () => follow(scene, r.host, route, 0.3, () => r.host.set({ dir: 0 })));
-        return 1900;
+        const guestSeat={x:zone.x,y:zone.y};
+        /* 1. After dropping, invite the guest. 2. Guest moves. 3. Host sits. */
+        scene.say(r.host,{jp:'こちら どうぞ。',en:'Please sit here.'},{dur:1300,cls:'mine'});
+        r.client.moveTo(120,430);
+        scene.after(1200,()=>scene.glide(r.client,guestSeat,800,'inout',()=>r.client.set({dir:zone.y<250?180:0})));
+        const seat=zone.id==='chair-left'?{x:240,y:362}:{x:160,y:362};
+        scene.after(2200,()=>follow(scene,r.host,[seat],0.45,()=>r.host.set({dir:0})));
+        return 2900;
       },
       timeout: 'stand',
     },

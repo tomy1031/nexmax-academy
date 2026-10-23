@@ -7,6 +7,9 @@
       const scr = UI.$('#scr-map');
       const pr = UI.progress();
       const best = pr.s.best;
+      // Automatically show the chapter containing the earliest unfinished stage.
+      // The caller may pass a chapter explicitly when returning from play/results.
+      const activeChapter = openChapter || (KY.stages.find(stage => !best[stage.id]) || KY.stages[0])?.chapter || 1;
       const items = KY.CHAPTERS.map(ch => {
         const list = KY.stagesOf(ch.n);
         const ids = list.map(s => s.id);
@@ -16,7 +19,7 @@
         const chips = list.map(s => `<button type="button" class="st-chip ${best[s.id] || ''}" data-id="${s.id}">${s.id}<small>${KY.text.ruby(s.title.jp, { gloss: false })}</small></button>`).join('');
         const done = list.length && played === list.length;
         const right = list.length ? (played ? pct + '%' : `${list.length} ${KY.text.ruby(S.stages.jp, { gloss: false })}`) : UI.L(S.soon);
-        return `<li class="chapter ${done ? 'done' : ''} ${openChapter === ch.n ? 'open' : ''}" data-ch="${ch.n}">
+        return `<li class="chapter ${done ? 'done' : ''} ${activeChapter === ch.n ? 'open' : ''}" data-ch="${ch.n}">
           <button type="button" class="ch-card" data-ch="${ch.n}">
             <span class="ch-time">${UI.L(S.chapter)} ${ch.n} · ${ch.time}</span>
             <span class="ch-pct">${right}</span>
@@ -35,7 +38,7 @@
           ${UI.enBtn()}
         </div>
         <div class="map-body">
-          <p class="map-intro">${UI.T(S.mapIntro)}</p>
+          <p class="map-intro">${UI.T(S.mapIntro)} <strong class="stage-total">${KY.stages.length} <ruby>問<rt>もん</rt></ruby></strong></p>
           <ol class="chapters">${items}</ol>
         </div>
         <div class="map-foot">

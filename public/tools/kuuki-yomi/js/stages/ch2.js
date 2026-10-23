@@ -13,6 +13,7 @@
 
   /* dictionary words used by this chapter's explanation texts */
   KY.addGlossary({
+    '打ち合わせ':{yomi:'うちあわせ',jp:'{仕事|しごと}について {人|ひと}と {話|はな}すこと。',en:'work meeting'},
     '受付': { yomi: 'うけつけ', jp: '{会社|かいしゃ}の {入口|いりぐち}に ある、{来|き}た {人|ひと}が まず {行|い}く ところ。ここで {名前|なまえ}を {言|い}う。', en: 'reception desk' },
     '営業部': { yomi: 'えいぎょうぶ', jp: '{会社|かいしゃ}の {商品|しょうひん}を {売|う}る {仕事|しごと}の グループ。', en: 'sales department' },
     '案内': { yomi: 'あんない', jp: '{場所|ばしょ}や {行|い}き{方|かた}を {教|おし}えて、いっしょに {行|い}くこと。', en: 'guiding someone / showing the way' },
@@ -302,7 +303,7 @@
         { jp: 'ほこりが ついた ほうを {中|なか}に して、たたみます。', en: 'Fold it with the dusty outer side on the inside.' },
         { jp: 'たたんだ コートは、うでに かけて {持|も}ちます。', en: 'Carry the folded coat over your arm.' },
       ],
-      phrase: { jp: 'コートを お{預|あず}けしても よろしいですか', ro: 'kōto o oazukeshite mo yoroshii desu ka', en: 'May I leave my coat with you?' },
+      phrase: { jp: 'コートを {脱|ぬ}いでから {入|はい}ります。', en: 'Take your coat off before entering.' },
       why: { jp: 'コートには、{外|そと}の ほこりや {花粉|かふん}が ついています。それを {会社|かいしゃ}の {中|なか}に {持|も}って {入|はい}らない ための マナーです。', en: "A coat carries dust and pollen from outside. This manner keeps them out of the client's office." },
       dont: { jp: 'コートを {着|き}たまま {受付|うけつけ}まで {行|い}かない。', en: "Don't walk up to reception still wearing your coat." },
       diagram(svg) {
@@ -627,7 +628,7 @@
       },
     },
     outcomes: {
-      great: { grade: 'great', who: WHO.customer, line: { jp: 'ありがとうございます。（ドアが {閉|し}まる{気配|けはい}が ゼロだ…{安心|あんしん}…）', en: 'Thank you. (Not the slightest sign of the doors closing... what a relief.)' },
+      great: { grade: 'great', who: WHO.customer, line: { jp: 'ありがとうございます。（{案内|あんない}の {人|ひと}が ボタンを {押|お}して くれています。{安心|あんしん}！）', en: 'Thank you. (Not the slightest sign of the doors closing... what a relief.)' },
         react(scene, r) { r.client.mark('sparkle'); r.boss.mark('heart'); } },
       pinched: { grade: 'ky', who: WHO.manager, line: { jp: '（ドアが…！）…{私|わたし}、まだ {降|お}りてないんだけど。', en: "(The door...!) ...I haven't gotten off yet, you know." },
         react(scene, r) { r.client.mark('shock'); r.boss.mark('sweat2'); } },
@@ -861,7 +862,7 @@
     id: '2-8',
     chapter: 2,
     title: { jp: '{名刺交換|めいしこうかん}', en: 'Exchanging Business Cards' },
-    intro: { jp: 'お{客様|きゃくさま}と はじめて {会|あ}いました。{名刺|めいし}を わたしあいます。', en: 'You meet the client for the first time. Time to exchange business cards.' },
+    intro: { jp: 'お{客様|きゃくさま}と {名刺|めいし}を わたします。{赤|あか}い {名刺|めいし}を {上下|じょうげ}に ドラッグして、{相手|あいて}より すこし {低|ひく}く わたそう。', en: 'You meet the client for the first time. Time to exchange business cards.' },
     time: 18000,
     mechanic: 'action',
     setup(scene) {
@@ -887,20 +888,19 @@
 
         /* phase 1: offer your card (drag the red card to the client) */
         const card = r.myCard;
-        let pos = { x: r.my.x, y: r.my.y };
+        let pos = { x: 198, y: r.their.y };card.moveTo(pos.x,pos.y);scene.label(180,290,{jp:'{上下|じょうげ}に ドラッグ！',en:'Drag up or down!'});
         let off = null;
         scene.onDrag(card.el, {
           start(p) { if (phase !== 1) return; off = { x: p.x - pos.x, y: p.y - pos.y }; KY.sfx.play('pick'); },
           move(p) {
             if (phase !== 1 || !off) return;
-            pos = { x: Math.max(100, Math.min(236, p.x - off.x)), y: Math.max(r.their.y - 60, Math.min(r.their.y + 60, p.y - off.y)) };
+            pos = { x: 198, y: Math.max(r.their.y - 60, Math.min(r.their.y + 60, p.y - off.y)) };
             card.moveTo(pos.x, pos.y);
           },
           end() {
             if (phase !== 1 || !off) return;
             off = null;
-            if (pos.x >= 192) offer(pos.y - r.their.y);
-            else scene.glide({ moveTo: (x, y) => { pos = { x, y }; card.moveTo(x, y); }, x: pos.x, y: pos.y }, r.my, 220);
+            offer(pos.y-r.their.y);
           },
         }, 'Your business card (drag to the client)');
 
@@ -991,7 +991,7 @@
     outcomes: {
       great: { grade: 'great', who: WHO.client, line: { jp: '（{丁寧|ていねい}な{方|かた}だな…）', en: '(What a polite person...)' } },
       high: { grade: 'ok', who: WHO.client, line: { jp: '（{上|うえ}から{来|き}たね…。まあ、いいけど）', en: '(Coming in from above, huh... Well, fine.)' } },
-      stash: { grade: 'ok', who: WHO.client, line: { jp: '（もうしまうの？{打|う}ち{合|あ}わせはこれからだよ）', en: "(Putting it away already? The meeting hasn't started.)" } },
+      stash: { grade: 'ok', who: WHO.client, line: { jp: '（もうしまうの？<<{打|う}ち{合|あ}わせ>>はこれからだよ）', en: "(Putting it away already? The meeting hasn't started.)" } },
       coaster: { grade: 'ky', who: WHO.client, line: { jp: '（{私|わたし}の{名刺|めいし}…コースターじゃないんだけど…）', en: "(My business card... isn't a coaster...)" },
         react(scene) { scene.people.filter(p => !p.player).forEach(p => p.mark('shock')); } },
       hold: { grade: 'ok', who: WHO.client, line: { jp: '{名刺|めいし}、テーブルに{置|お}いてくださいね。', en: 'Please feel free to put the card on the table.' } },
