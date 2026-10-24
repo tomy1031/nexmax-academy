@@ -68,19 +68,9 @@ describe("ゲームの 文言（規律1・規律9）", () => {
       .map((name) => join("js", name)),
   ];
 
-  /**
-   * 通して よい 文。3-6 で 落ちこむ 選択肢の ひとりごと（学習者に 向けた 言葉では ない）。
-   * tomy さんの 修正版（10/23）の 文。tomy さんの 指定（2026-10-23）:
-   * 「そもそもダメは禁止語ではありません」「無視してすすめて」。
-   * 本番へ 急いで 出すための 仮の 例外。禁止語の 一覧（schema.ts）を 見直す ときに 外す。
-   */
-  const ALLOWED: Record<string, string[]> = {
-    [join("js", "stages", "ch3.js")]: ["ああ… ダメだった…。"],
-  };
-
   it("学習者を 見下す 言葉が 無い", () => {
     for (const file of files) {
-      const text = (ALLOWED[file] ?? []).reduce((t, ok) => t.replaceAll(ok, ""), read(file));
+      const text = read(file);
       for (const word of FORBIDDEN_LEARNER_WORDS)
         expect(text.includes(word), `${file}: ${word}`).toBe(false);
     }

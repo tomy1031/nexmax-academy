@@ -387,8 +387,10 @@ export function buildJudgePrompt(context: JudgeContext, kanaRetry = false): stri
      * その文字列自体が禁止語の検査に当たって、このファイルが保存できなくなる）。
      * 正典が増えたときに、指示文も黙って追いつく。
      */
-    `- つぎの ことばは つかわない: ${FORBIDDEN_LEARNER_WORDS.join("・")}`,
-    "  できた ことを 先に 言い、つぎに やる ことを 見せる",
+    ...(FORBIDDEN_LEARNER_WORDS.length
+      ? [`- つぎの ことばは つかわない: ${FORBIDDEN_LEARNER_WORDS.join("・")}`]
+      : []),
+    "- できた ことを 先に 言い、つぎに やる ことを 見せる",
     "- 母語（英語・クメール語）で 答えた ときは、日本語での 言い方を exampleAnswer で 見せる。",
     "  質問が わかった ことを ほめるのは、**その 答えが 質問に かみ合って いる とき だけ**です",
     "  （かみ合って いない のに ほめると、通じた と かんちがい したまま つぎへ 行きます）",
