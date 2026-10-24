@@ -361,11 +361,59 @@
 
 
   /* ------------------------------------------------------------------ 1-5 */
+  /* The boss's state is shown by what they do, not by symbols:
+     0–5.5 s on the phone (handset at the ear, nodding, talking) → 5.5–9 s typing at the PC
+     (leaning in, lines filling the screen) → from 9 s done (stretches, says "phew", sits back). */
+  const BOSS5_X = 286, PHONE5_X = 158, TABLE5_Y = 428;
   KY.defineStage({id:'1-5',chapter:1,title:{jp:'いま、{報告|ほうこく}しても いい？',en:'Is now a good time to report?'},intro:{jp:'{仕事|しごと}が おわりました。{上司|じょうし}に {報告|ほうこく}したい。でも {上司|じょうし}は {電話|でんわ}を して います。いつ {話|はな}しかける？',en:'You have finished your work. Your boss is on the phone. When should you speak?'},time:14500,mechanic:'action',
-    setup(s){const P=KY.props,{el}=KY.svg;s.add('bg',P.backdrop({floor:470}));s.add('mid',P.table({x:245,y:420,w:150}));s.add('mid',P.monitor({x:250,y:410,w:70,h:55}));const me=s.person({x:65,y:470,color:'player',player:true});const boss=s.person({x:254,y:470,pose:'sit',facing:-1,tag:{jp:'{上司|じょうし}',en:'Boss'}});const phone=el('text',{x:245,y:281,'font-size':37});phone.textContent='☎';s.add('top',phone);const status=KY.mini.label(s,180,180,'電話中', '#b62525',19);KY.mini.hit(s,195,310,120,170,()=>{if(s._report)s._report();});return {me,boss,phone,status};},
-    params:{start(s,r){let done=false;const btn=KY.mini.button(s,'{上司|じょうし}に {話|はな}しかける','Speak to boss',()=>s._report());s.at(5500,()=>{r.status.textContent='仕事中';r.phone.textContent='💻';});s.at(9000,()=>{r.status.textContent='いまは OK！';r.phone.textContent='✓';r.boss.mark('sparkle');});
-      s._report=()=>{if(done)return;done=true;btn.remove();const k=s.t<5500?'call':s.t<9000?'busy':'great';s.walk(r.me,196,660,()=>{s.say(r.me,{jp:'{仕事|しごと}が おわりました。{報告|ほうこく}しても よろしいですか？',en:'I finished my work. May I report?'},{dur:1300,cls:'mine'});if(k==='call'){r.boss.mark('shock');s.say(r.boss,{jp:'えっ、{電話|でんわ}と {同時|どうじ}は むり！',en:'I cannot listen to two people at once!'},{dur:1100});}if(k==='busy')r.boss.mark('sweat');s.after(1250,()=>s.end(k));});};s.timer(s.def.time,()=>{if(!done){done=true;btn.remove();s.end('never');}});},simulate(s,r,v){s.at(v==='great'?10500:2200,()=>s._report());}},
-    outcomes:{great:{grade:'great',line:{jp:'「うん、{報告|ほうこく}を {聞|き}くよ！」',en:'“Yes, tell me!”'}},call:{grade:'ky',line:{jp:'{電話|でんわ}の {声|こえ}と あなたの {声|こえ}が いっしょに！ {上司|じょうし}は {大混乱|だいこんらん}！',en:'Two voices at once! The boss is confused!'}},busy:{grade:'ok',line:{jp:'「あと すこし {待|ま}って！」',en:'“Please wait a little!”'}},never:{grade:'ky',line:{jp:'{報告|ほうこく}が できないまま {時間|じかん}が すぎた。',en:'You ran out of time without reporting.'}}},card:{badge: "must", name: {jp:"話しかけるタイミング",en:"話しかけるタイミング"}, points:[{jp:"{上司|じょうし}が {電話|でんわ}や {仕事|しごと}を おわってから {話|はな}しかけよう。",en:"{上司|じょうし}が {電話|でんわ}や {仕事|しごと}を おわってから {話|はな}しかけよう。"}], phrase:{jp:"いま、お{時間|じかん} よろしいですか？",en:"いま、お{時間|じかん} よろしいですか？"}, },test:{great:'great',ky:'call'}});
+    setup(s){
+      const P=KY.props,{el}=KY.svg;
+      s.add('bg',P.backdrop({floor:470}));
+      s.add('mid',P.officeChair({x:BOSS5_X,facing:-1}));
+      s.add('mid',P.table({x:206,y:TABLE5_Y,w:136}));
+      const monitor=P.monitor({x:212,y:TABLE5_Y-12,w:58,h:42});
+      s.add('mid',monitor);
+      s.add('mid',el('rect',{x:238,y:TABLE5_Y-5,width:30,height:5,rx:2,fill:'#e4e7ea',stroke:'#9a9a9a','stroke-width':1.5}));   /* keyboard */
+      const phone=P.phone({x:PHONE5_X,y:TABLE5_Y});
+      const cord=el('path',{fill:'none',stroke:'#6b6b6b','stroke-width':2,'stroke-linecap':'round'});
+      s.add('fg',cord);s.add('fg',phone);
+      const me=s.person({x:55,y:470,color:'player',player:true});
+      const boss=s.person({x:BOSS5_X,y:470,pose:'sit',facing:-1,tag:{jp:'{上司|じょうし}',en:'Boss'}});
+      KY.mini.hit(s,228,300,112,175,()=>{if(s._report)s._report();});
+      return {me,boss,phone,monitor,cord};
+    },
+    params:{start(s,r){
+      let done=false,typing=false,lines=0,lastTick=0;
+      const btn=KY.mini.button(s,'{上司|じょうし}に {話|はな}しかける','Speak to boss',()=>s._report());
+      /* on the phone: the handset is in the boss's hand at the ear */
+      const holdPhone=()=>{
+        const h=r.boss.hand();
+        KY.svg.set(r.phone.handset,{transform:`translate(${(h.x-PHONE5_X-15).toFixed(1)} ${(h.y-TABLE5_Y+5.5).toFixed(1)}) rotate(70)`});
+        const x0=PHONE5_X+16,y0=TABLE5_Y-6,x1=h.x,y1=h.y+14;
+        KY.svg.set(r.cord,{d:`M${x0} ${y0} C${x0+30} ${y0+18} ${x1-26} ${y1+30} ${x1} ${y1}`});
+      };
+      r.boss.set({arms:{f:[112,78],b:[18,46]}});holdPhone();
+      const talk=(at,jp,en,dur)=>s.at(at,()=>{if(!done)s.say(r.boss,{jp,en},{dur,lift:26});});
+      talk(300,'はい、はい。','Yes, yes.',1400);
+      talk(2000,'{明日|あした}の {会議|かいぎ}ですね。',"About tomorrow's meeting, right?",1600);
+      talk(3900,'わかりました。では、しつれいします。','Understood. Goodbye.',1300);
+      s.at(5300,()=>{if(done)return;r.boss.set({arms:null,nod:0});KY.svg.set(r.phone.handset,{transform:null});KY.svg.set(r.cord,{d:null});});
+      /* at the PC: leans in and types; lines fill the screen */
+      s.at(5500,()=>{if(!done){typing=true;r.boss.set({bow:9,nod:8});}});
+      for(let i=0;i<5;i++)s.at(5700+i*650,()=>{if(done||lines>=5)return;const w=r.monitor.sw-6-((i*13)%20);const line=KY.svg.el('rect',{x:3,y:4+lines*6.5,width:0,height:3.2,rx:1.6,fill:'#8fa0b0'});r.monitor.screen.append(line);lines++;s.tween({dur:520,step:k=>KY.svg.set(line,{width:(w*k).toFixed(1)})});});
+      /* done: stops typing, stretches, sits back */
+      s.at(9000,()=>{typing=false;if(done)return;r.boss.set({bow:-8,nod:-4,arms:{f:[168,8],b:[160,8]}});s.say(r.boss,{jp:'ふう、おわった。',en:'Phew, done.'},{dur:1500,lift:26});});
+      s.at(9900,()=>{if(!done)r.boss.set({bow:0,nod:0,arms:null});});
+      s.every((dt,t)=>{
+        if(done)return;
+        if(t<5300)r.boss.set({nod:4+4*Math.sin(t/260)});   /* nods while listening */
+        else if(typing){
+          r.boss.set({arms:{f:[30,52+8*Math.sin(t/70)],b:[24,52+8*Math.sin(t/85+1.7)]}});
+          if(t-lastTick>170){lastTick=t;KY.sfx.play('tick');}
+        }
+      });
+      s._report=()=>{if(done)return;done=true;btn.remove();const k=s.t<5500?'call':s.t<9000?'busy':'great';s.walk(r.me,132,560,()=>{s.say(r.me,{jp:'{仕事|しごと}が おわりました。{報告|ほうこく}しても よろしいですか？',en:'I finished my work. May I report?'},{dur:1300,cls:'mine'});if(k==='call'){r.boss.mark('shock');s.say(r.boss,{jp:'えっ、{電話|でんわ}と {同時|どうじ}は むり！',en:'I cannot listen to two people at once!'},{dur:1100});}if(k==='busy')r.boss.mark('sweat');s.after(1250,()=>s.end(k));});};s.timer(s.def.time,()=>{if(!done){done=true;btn.remove();s.end('never');}});},simulate(s,r,v){s.at(v==='great'?10500:v==='busy'?7000:2200,()=>s._report());}},
+    outcomes:{great:{grade:'great',line:{jp:'「うん、{報告|ほうこく}を {聞|き}くよ！」',en:'“Yes, tell me!”'}},call:{grade:'ky',line:{jp:'{電話|でんわ}の {声|こえ}と あなたの {声|こえ}が いっしょに！ {上司|じょうし}は {大混乱|だいこんらん}！',en:'Two voices at once! The boss is confused!'}},busy:{grade:'ok',line:{jp:'「あと すこし {待|ま}って！」',en:'“Please wait a little!”'}},never:{grade:'ky',line:{jp:'{報告|ほうこく}が できないまま {時間|じかん}が すぎた。',en:'You ran out of time without reporting.'}}},card:{badge: "must", name: {jp:"{話|はな}しかける タイミング",en:"When to speak to your boss"}, points:[{jp:"{上司|じょうし}が {電話|でんわ}や {仕事|しごと}を おわってから {話|はな}しかけよう。",en:"Wait until your boss has finished the call or the task, then speak."}], phrase:{jp:"いま、お{時間|じかん} よろしいですか？",ro:"ima, o-jikan yoroshii desu ka?",en:"Do you have a moment now?"}, },test:{great:'great',ok:'busy',ky:'call'}});
 
 
   /* ------------------------------------------------------------------ 1-6 */
@@ -767,6 +815,7 @@
         s._train={start:()=>call.dispatchEvent(new PointerEvent('pointerdown',{bubbles:true}))};
       },
       simulate(s,r,v){
+        if(!v)return;   /* ky: never contact the office */
         s.at(250,()=>s._train.start());
         s.at(900,()=>{
           const btn=[...s.overlay.querySelectorAll('.choice')].find(x=>x.innerHTML.includes(v==='great'?'20':'遅'));
@@ -781,7 +830,7 @@
       never:{grade:'ky',line:{jp:'{会社|かいしゃ}は あなたを {待|ま}っています。',en:'Your office is waiting for you.'}}
     },
     card:{badge:'must',name:{jp:'遅れるときは早く連絡',en:'Tell the office as soon as possible if late'},points:[{jp:'{電車|でんしゃ}が {止|と}まったら、{会社|かいしゃ}に {早|はや}く {連絡|れんらく}。{理由|りゆう}と {着|つ}く {時間|じかん}を {伝|つた}えよう。',en:'If the train stops, tell the office why you are late and when you will arrive.'}],phrase:{jp:'{電車|でんしゃ}が {止|と}まっています。9{時|じ}20{分|ぷん}ごろ {着|つ}きそうです。',en:'The train has stopped. I should arrive around 9:20.'}},
-    test:{great:'great',ky:'vague'}
+    test:{great:'great',ok:'short',ky:null}
   });
 
   /* ------------------------------------------------------------------ 1-10 */
