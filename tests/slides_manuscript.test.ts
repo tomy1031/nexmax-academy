@@ -1,5 +1,16 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { checkManuscript, extractManuscriptTexts } from "../scripts/slides/manuscript_checks";
+import type * as Schema from "@/content/schema";
+
+/*
+ * 禁止語の 一覧は 2026-10-23 から 空（「そもそもダメは禁止語ではありません」）。
+ * 空の ままだと 下の「禁止語を 見つける 仕組み」の テストが 何も 試さなく なるので、
+ * この ファイルの 中だけ 見本の 語を 1つ 入れて、仕組みを 試し続ける。
+ */
+vi.mock("@/content/schema", async (importOriginal) => ({
+  ...(await importOriginal<typeof Schema>()),
+  FORBIDDEN_LEARNER_WORDS: ["ダメです"],
+}));
 
 /**
  * スライド組版原稿（scripts/slides/<教材ID>/index.html）の機械検査。

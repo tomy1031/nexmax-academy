@@ -72,8 +72,7 @@ const GUARDRAILS = `## 書き方のきまり（必ず守る）
 - 1問だけを根拠に断定しない。同じ軸の2問以上を挙げる。
 - 提案には「このやり方が合っていないサイン」を添える。サインは、その行動を実行している最中に観測できるものにする。
 - 次の内容は書かない: 能力・成績・将来の予測 / 「弱い」「苦手」「できない」等の欠損表現 / 「〜な性格です」という人格の断定 / 生徒間の比較や順位 / 相性の否定（合わない・離す） / ストレス・メンタル・家庭・発達への言及 / 「要注意」等の警戒表現 / 係や役割の割り当ての推薦 / 性別・国籍・年齢による一般化
-- 次の語を使わない: ${FORBIDDEN_LEARNER_WORDS.join("・")}
-- 全部の軸が3対2なら、無理に提案を作らず「この回答からは根拠を出せません」と書く。`;
+${FORBIDDEN_LEARNER_WORDS.length ? `- 次の語を使わない: ${FORBIDDEN_LEARNER_WORDS.join("・")}\n` : ""}- 全部の軸が3対2なら、無理に提案を作らず「この回答からは根拠を出せません」と書く。`;
 
 function studentBlock(student: AnonymousStudent): string {
   const scores = `ei=${student.scores.ei} sn=${student.scores.sn} tf=${student.scores.tf} jp=${student.scores.jp}（各軸0〜5。左の極E/S/T/Jを数える。2か3は僅差）`;

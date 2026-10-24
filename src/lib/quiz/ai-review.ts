@@ -214,7 +214,9 @@ export function buildQuizReviewPrompt(context: QuizReviewContext, kanjiRetry = f
     `  ${AI_KANJI_WORDS.join("・")}`,
     "  この どちらにも 無い ことばは **ひらがな**で 書いて ください。",
     "- 国の 名前・外来語は **カタカナ**で 書きます。",
-    `- つぎの ことばは つかわない: ${FORBIDDEN_LEARNER_WORDS.join("・")}`,
+    ...(FORBIDDEN_LEARNER_WORDS.length
+      ? [`- つぎの ことばは つかわない: ${FORBIDDEN_LEARNER_WORDS.join("・")}`]
+      : []),
     "- 人を 評しません。**書いた 文**に ついてだけ 書きます。",
   );
   if (kanjiRetry) {
