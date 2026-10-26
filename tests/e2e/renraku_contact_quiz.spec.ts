@@ -323,15 +323,19 @@ test("連絡文（上級）: 別の 教材として 開き、書いて 進み、
 async function expectPasteBlocked(page: Page, scope: string, field: string) {
   const box = page.locator(`#q-${scope}`);
   const input = box.getByLabel(field);
-  const allowed = await input.evaluate((el) => {
-    const data = new DataTransfer();
-    data.setData("text/plain", "メモから 写した 文");
-    return el.dispatchEvent(
-      new ClipboardEvent("paste", { clipboardData: data, bubbles: true, cancelable: true }),
-    );
-  });
-  expect(allowed, "貼り付けが 止まって いない").toBe(false);
-  await expect(box.getByText("はりつけは できません。じぶんで うって ください。")).toBeVisible();
+  const paste = (text: string) =>
+    input.evaluate((el, value) => {
+      const data = new DataTransfer();
+      data.setData("text/plain", value);
+      return el.dispatchEvent(
+        new ClipboardEvent("paste", { clipboardData: data, bubbles: true, cancelable: true }),
+      );
+    }, text);
+  // URL など 作文に 要らない ものは 貼れる（同日 あと「URLとか…コピーOKにしたい」）
+  expect(await paste("http://test-server1"), "URLの 貼り付けまで 止まって いる").toBe(true);
+  await expect(box.getByText(/はりつけ できません/)).toHaveCount(0);
+  expect(await paste("メモから 写した 文"), "日本語の 貼り付けが 止まって いない").toBe(false);
+  await expect(box.getByText(/にほんごの ぶんは はりつけ できません/)).toBeVisible();
   // もとにする 情報（場面の メモ）は 選べない
   const select = await box
     .locator(".select-none")

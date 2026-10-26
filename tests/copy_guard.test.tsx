@@ -5,7 +5,12 @@ import { describe, expect, it, vi } from "vitest";
 import { quizQuestionSchema, type QuizQuestion } from "@/content/schema";
 import { AnswerCheckProvider, type AnswerCheck } from "@/components/quiz/answer-check";
 import { CheckBand } from "@/components/quiz/check-parts";
-import { guardsCopy, noPasteProps } from "@/components/quiz/copy-guard";
+import {
+  copyableTokens,
+  copyAllowed,
+  guardsCopy,
+  noPasteProps,
+} from "@/components/quiz/copy-guard";
 import { SceneCard } from "@/components/quiz/scene-card";
 import { SlackQuestion } from "@/components/quiz/slack-question";
 import { buildFuriganaIndex } from "@/lib/text/furigana";
@@ -25,7 +30,11 @@ const SLACK = quizQuestionSchema.parse({
   q: "Slackの メッセージを 書いて ください。",
   minLength: 5,
   explain: "せつめい",
-  scene: { style: "slack", from: "あなた", text: "テスト用の URLが 変わった。" },
+  scene: {
+    style: "slack",
+    from: "あなた",
+    text: "テスト用の URLが 変わった。（変更前：http://test-server1）",
+  },
   ai: {
     checks: [{ id: "ryouhou", label: "変更前と 変更後が 両方 書いて ある" }],
     model: "おてほん",
@@ -67,6 +76,55 @@ describe("コピペを 止める 問い", () => {
       expect(one.preventDefault, name).toHaveBeenCalled();
     }
     expect(blocked).toHaveBeenCalledTimes(2);
+  });
+
+  it("作文に 要る もの（日本語）は コピペ不可。URL・@宛先 など 英数字だけは よい", () => {
+    // 2026-10-26「URLとか、学習に関係のないものはコピーOKにしたい」「作文に必要なものはコピペできない」
+    for (const ok of [
+      "http://test-server1",
+      "@frontend_team",
+      "https://example.com/a?b=1",
+      "v1.0",
+    ]) {
+      expect(copyAllowed(ok), ok).toBe(true);
+    }
+    for (const ng of [
+      "テスト用の URLが 変わりました",
+      "変更前：http://test-server1",
+      "ＵＲＬ",
+      "",
+      "  ",
+    ]) {
+      expect(copyAllowed(ng), ng).toBe(false);
+    }
+  });
+
+  it("入力欄: 日本語の 貼り付けは 止めて 知らせ、URLの 貼り付けは 通す", () => {
+    const blocked = vi.fn();
+    const props = noPasteProps(blocked);
+    const paste = (text: string) => {
+      const event = { preventDefault: vi.fn(), clipboardData: { getData: () => text } };
+      props.onPaste(event as never);
+      return event.preventDefault.mock.calls.length > 0;
+    };
+    expect(paste("http://test-server1")).toBe(false);
+    expect(blocked).not.toHaveBeenCalled();
+    expect(paste("変更前：http://test-server1")).toBe(true);
+    expect(blocked).toHaveBeenCalledTimes(1);
+  });
+
+  it("もとにする 情報の 中で 選べるのは 英字を 含む 英数字の かたまりだけ", () => {
+    expect(
+      copyableTokens("（変更前：http://test-server1 → 22:00）")
+        .filter((part) => part.copyable)
+        .map((part) => part.text),
+    ).toEqual(["http://test-server1"]);
+    const html = renderToStaticMarkup(
+      <SceneCard scene={SLACK.scene!} furigana={furigana} noCopy />,
+    );
+    expect(html).toMatch(
+      /<span data-copyable="true" class="select-text">http:\/\/test-server1<\/span>/,
+    );
   });
 
   it("もとにする 情報（場面の メモ）は 選べない", () => {
