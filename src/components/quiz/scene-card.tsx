@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { RubyText } from "@/components/ruby-text";
 import { buildFuriganaIndex, type FuriganaIndex } from "@/lib/text/furigana";
 import type { QuizQuestion } from "@/content/schema";
+import { copyableTokens, NO_COPY_PROPS } from "./copy-guard";
 
 /**
  * 場面の カード — **設問とは 別の 箱**で メモを 見せる
@@ -49,13 +50,23 @@ export function splitMarks(
   return out;
 }
 
-export function SceneCard({ scene, furigana }: { scene: Scene; furigana: FuriganaIndex }) {
+export function SceneCard({
+  scene,
+  furigana,
+  noCopy = false,
+}: {
+  scene: Scene;
+  furigana: FuriganaIndex;
+  /** もとにする 情報を コピーできなく する（連絡文の 練習・`guardsCopy`）。 */
+  noCopy?: boolean;
+}) {
   const parts = useMemo(() => splitMarks(scene.text, scene.marks), [scene.text, scene.marks]);
   const chat = scene.style === "chat";
 
   return (
     <div
-      className="mt-3 rounded-[var(--radius-card)] border-2 px-4 py-3"
+      className={`mt-3 rounded-[var(--radius-card)] border-2 px-4 py-3 ${noCopy ? "select-none" : ""}`}
+      {...(noCopy ? NO_COPY_PROPS : {})}
       style={
         chat
           ? { borderColor: "#c8e6c9", background: "#eef8ef" }
@@ -71,7 +82,7 @@ export function SceneCard({ scene, furigana }: { scene: Scene; furigana: Furigan
       {scene.to && (
         <p className="text-ink-soft mt-0.5 text-xs font-extrabold">
           <RubyText text="宛先：" index={UI_FURIGANA} />
-          <RubyText text={scene.to} index={furigana} />
+          <SceneText text={scene.to} furigana={furigana} noCopy={noCopy} />
         </p>
       )}
       <p className="text-ink mt-1.5 leading-relaxed font-bold whitespace-pre-line">
@@ -86,13 +97,42 @@ export function SceneCard({ scene, furigana }: { scene: Scene; furigana: Furigan
               className="rounded px-1 font-black underline decoration-2 underline-offset-2"
               style={{ background: "#fff3cd", color: "var(--color-ink)" }}
             >
-              <RubyText text={part.text} index={furigana} />
+              <SceneText text={part.text} furigana={furigana} noCopy={noCopy} />
             </mark>
           ) : (
-            <RubyText key={i} text={part.text} index={furigana} />
+            <SceneText key={i} text={part.text} furigana={furigana} noCopy={noCopy} />
           ),
         )}
       </p>
     </div>
+  );
+}
+
+/**
+ * メモの 文。コピーを 止める ときは、**URL・@宛先 など 英数字の かたまりだけ**を 選べる
+ * ように する（2026-10-26「URLとか、学習に関係のないものはコピーOKにしたい」）。
+ */
+function SceneText({
+  text,
+  furigana,
+  noCopy,
+}: {
+  text: string;
+  furigana: FuriganaIndex;
+  noCopy: boolean;
+}) {
+  if (!noCopy) return <RubyText text={text} index={furigana} />;
+  return (
+    <>
+      {copyableTokens(text).map((part, i) =>
+        part.copyable ? (
+          <span key={i} data-copyable className="select-text">
+            {part.text}
+          </span>
+        ) : (
+          <RubyText key={i} text={part.text} index={furigana} />
+        ),
+      )}
+    </>
   );
 }

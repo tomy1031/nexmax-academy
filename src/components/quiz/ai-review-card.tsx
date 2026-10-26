@@ -46,6 +46,7 @@ export function AiReviewCard({
   furigana,
   aiFurigana,
   gated,
+  stale = false,
   fallback = "",
 }: {
   check: AnswerCheck;
@@ -58,6 +59,8 @@ export function AiReviewCard({
   /** AIの 文と 学生の 文に 使う 読み辞書（教材＋`AI_KANJI_FURIGANA`）。 */
   aiFurigana: FuriganaIndex;
   gated: boolean;
+  /** チェックの あとに 書きかえたか（けっかは 出した まま、帯だけ 変える）。 */
+  stale?: boolean;
   /** ✗なのに ひとことが 無い（AIに つながらなかった）ときの 1行。 */
   fallback?: string;
 }) {
@@ -92,6 +95,7 @@ export function AiReviewCard({
         aiNote={check.aiNote}
         furigana={aiFurigana}
         gated={gated}
+        stale={stale}
       />
 
       {ng.length > 0 && (
