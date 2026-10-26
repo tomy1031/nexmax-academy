@@ -14,6 +14,8 @@ import { KANJI } from "@/lib/text/furigana";
  *  - 2つめの 連絡と 奥田さんの 返事が tomy さんの 文の まま
  *  - 「元号」だけは 吹き出しでは なく 説明の ページへ
  *  - 入力欄の カーソルが 0文字目から 出る（欄の 中に 空白を 置かない）
+ *  - ボタン・案内・選択肢・フィードバックの 漢字に ぜんぶ ふりがなが ある（規律2。
+ *    前は「了解です。対応します。」の ボタンや「箇条書き」などが 裸の まま だった）
  */
 
 const HTML_PATH = join("public", "tools", "hourensou", "renraku_slack.html");
@@ -181,5 +183,67 @@ describe("Renraku Master の 画面", () => {
     expect(checkCountryNamesInTexts(HTML_PATH, texts).map((finding) => finding.message)).toEqual(
       [],
     );
+  });
+});
+
+/**
+ * ページの ソースで、ふりがなの 外に ある 漢字（行ごと）。
+ * 画面に 出ない ところ（コメント・alt・title・aria-label）と、辞書の 見出し
+ *（吹き出しでは 読みと 並べて 出す。アプリの 辞書と 同じ）は 数えない。
+ */
+function sourceBareKanji(): string[] {
+  const blank = (text: string) => text.replace(/[^\n]/g, " ");
+  const source = HTML.replace(/<!--[\s\S]*?-->/g, blank)
+    .replace(/\/\*[\s\S]*?\*\//g, blank)
+    .replace(
+      /(^|[^:"'`])\/\/[^\n]*/g,
+      (hit, before: string) => before + blank(hit.slice(before.length)),
+    );
+  const found: string[] = [];
+  source.split("\n").forEach((line, at) => {
+    const rest = line
+      .replace(/r\("[^"]*",\s*"[^"]*"\)/g, "")
+      .replace(/<ruby>.*?<\/ruby>/g, "")
+      .replace(/\s(alt|title|aria-label)="[^"]*"/g, "")
+      // 辞書の 見出し（WORDS の 鍵）と、v() で 渡す 見出し（活用した 語の 言い切りの 形）
+      .replace(/^\s*"[^"]+": \{ reading:/, "")
+      .replace(/,\s*"[A-Za-z][^"]*",\s*"[^"]+"\)/g, ")");
+    const kanji = [...rest].filter((char) => KANJI.test(char)).join("");
+    if (kanji) found.push(`${at + 1}行目: ${kanji}`);
+  });
+  return found;
+}
+
+/** ミッションの データの 文を ぜんぶ 集める（問い・選択肢・フィードバック・返事・単語）。 */
+function scenarioTexts(): string[] {
+  const texts: string[] = [];
+  const walk = (value: unknown) => {
+    if (typeof value === "string") texts.push(value);
+    else if (Array.isArray(value)) value.forEach(walk);
+    else if (value && typeof value === "object") Object.values(value).forEach(walk);
+  };
+  walk(GAME.SCENARIOS);
+  return texts;
+}
+
+describe("Renraku Master の ふりがな（ボタン・案内・選択肢も）", () => {
+  it("ミッションの 文（問い・選択肢・フィードバック・返事）に 裸の 漢字が 無い", () => {
+    const bare = scenarioTexts()
+      .map((text) => [bareKanji(text).join(""), plain(text)] as const)
+      .filter(([missing]) => missing)
+      .map(([missing, text]) => `${missing} ← 「${text.slice(0, 40)}」`);
+    expect(bare).toEqual([]);
+  });
+
+  it("ボタン・案内・修了証の 文にも 裸の 漢字が 無い（ページの ソースを 行ごとに 見る）", () => {
+    expect(sourceBareKanji()).toEqual([]);
+  });
+
+  it("「了解です。対応します。」は ボタンと 送った メッセージで 同じ ふりがな付きの 文", () => {
+    expect(HTML).toContain(
+      'const ACK_REPLY = `${r("了解", "りょうかい")}です。${r("対応", "たいおう")}します。`;',
+    );
+    expect(HTML).toContain("<span>${ACK_REPLY}</span>");
+    expect(HTML).toContain("text: ACK_REPLY");
   });
 });
