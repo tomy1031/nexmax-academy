@@ -14,6 +14,7 @@ import { KANJI } from "@/lib/text/furigana";
  *  - 2つめの 連絡と 奥田さんの 返事が tomy さんの 文の まま
  *  - 「元号」だけは 吹き出しでは なく 説明の ページへ
  *  - 入力欄の カーソルが 0文字目から 出る（欄の 中に 空白を 置かない）
+ *  - 進み具合を localStorage に 保存し、こわれた 保存は 使わない・「最初から」で 消す
  *  - ボタン・案内・選択肢・フィードバックの 漢字に ぜんぶ ふりがなが ある（規律2。
  *    前は「了解です。対応します。」の ボタンや「箇条書き」などが 裸の まま だった）
  */
@@ -32,11 +33,25 @@ interface Word {
   en: string;
 }
 
+interface Saved {
+  scenarioIndex: number;
+  phase: string;
+  currentViewId: string;
+  stepsDone: number;
+  score: number;
+  wrongPicks: number[];
+  times: Record<string, string>;
+}
+
 /** ページの スクリプトを、画面を 描かずに 読む（いちばん 最後の init() を 外す）。 */
-function loadGame(): {
+function loadGame(storage = new Map<string, string>()): {
   SCENARIOS: Scenario[];
   WORDS: Record<string, Word>;
   USED_TERMS: Set<string>;
+  STORE_KEY: string;
+  loadSaved: () => Saved | null;
+  restartFromScratch: () => void;
+  reloads: () => number;
 } {
   const scripts = [...HTML.matchAll(/<script>([\s\S]*?)<\/script>/g)].map((hit) => hit[1] ?? "");
   const source = scripts.at(-1) ?? "";
@@ -56,13 +71,26 @@ function loadGame(): {
     querySelectorAll: () => [],
     body: { contains: () => false },
   };
-  const windowStub = { addEventListener() {}, matchMedia: () => ({ matches: false }) };
-  return new Function(
+  const localStorage = {
+    getItem: (key: string) => storage.get(key) ?? null,
+    setItem: (key: string, value: string) => storage.set(key, value),
+    removeItem: (key: string) => storage.delete(key),
+  };
+  const windowStub = {
+    addEventListener() {},
+    matchMedia: () => ({ matches: false }),
+    localStorage,
+  };
+  let reloads = 0;
+  const locationStub = { reload: () => (reloads += 1) };
+  const game = new Function(
     "document",
     "window",
     "lucide",
-    `${body}\nreturn { SCENARIOS, WORDS, USED_TERMS };`,
-  )(documentStub, windowStub, { createIcons() {} });
+    "location",
+    `${body}\nreturn { SCENARIOS, WORDS, USED_TERMS, STORE_KEY, loadSaved, restartFromScratch };`,
+  )(documentStub, windowStub, { createIcons() {} }, locationStub);
+  return { ...game, reloads: () => reloads };
 }
 
 const GAME = loadGame();
@@ -245,5 +273,67 @@ describe("Renraku Master の ふりがな（ボタン・案内・選択肢も）
     );
     expect(HTML).toContain("<span>${ACK_REPLY}</span>");
     expect(HTML).toContain("text: ACK_REPLY");
+  });
+});
+
+describe("Renraku Master の 保存（2026-10-26）", () => {
+  const KEY = "nexmax:renraku_slack:v1";
+  const good: Saved = {
+    scenarioIndex: 1,
+    phase: "drafting",
+    currentViewId: "project-a",
+    stepsDone: 1,
+    score: 95,
+    wrongPicks: [0],
+    times: { "dm-0-in": "10:24" },
+  };
+  const read = (value: unknown) => {
+    const storage = new Map([[KEY, typeof value === "string" ? value : JSON.stringify(value)]]);
+    return loadGame(storage).loadSaved();
+  };
+
+  it("保存の 名前は ほかの 練習ページと 同じ 形", () => {
+    expect(GAME.STORE_KEY).toBe(KEY);
+  });
+
+  it("正しい 保存は その まま 読む", () => {
+    expect(read(good)).toEqual(good);
+  });
+
+  it("保存が 無い・こわれて いる ときは 使わない（最初から 始める）", () => {
+    expect(loadGame().loadSaved()).toBeNull();
+    expect(read("{こわれた")).toBeNull();
+    expect(read({ ...good, scenarioIndex: 99 })).toBeNull();
+    expect(read({ ...good, phase: "unknown" })).toBeNull();
+    expect(read({ ...good, stepsDone: 9 })).toBeNull();
+    expect(read({ ...good, score: 120 })).toBeNull();
+  });
+
+  it("おかしな 値は 落として 読む（画面に そのまま 出さない）", () => {
+    const saved = read({
+      ...good,
+      currentViewId: "nowhere",
+      wrongPicks: [0, 7, -1, "x"],
+      times: { ok: "10:24", bad: "<img src=x onerror=alert(1)>" },
+    });
+    expect(saved?.currentViewId).toBe("dm-tanaka");
+    expect(saved?.wrongPicks).toEqual([0]);
+    expect(saved?.times).toEqual({ ok: "10:24" });
+  });
+
+  it("「最初から」は 保存を 消して 開き直す", () => {
+    const storage = new Map([[KEY, JSON.stringify(good)]]);
+    const game = loadGame(storage);
+    game.restartFromScratch();
+    expect(storage.has(KEY)).toBe(false);
+    expect(game.reloads()).toBe(1);
+  });
+
+  it("クリアの 画面の ボタンが「最初から」", () => {
+    expect(HTML).toMatch(/<button onclick="restartFromScratch\(\)" aria-label="最初から"/);
+    expect(HTML).toContain(
+      '<span id="restart-label"><ruby>最初<rt>さいしょ</rt></ruby>から</span>',
+    );
+    expect(HTML).not.toContain('onclick="location.reload()"');
   });
 });
