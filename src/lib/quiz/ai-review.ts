@@ -273,6 +273,19 @@ export function buildQuizReviewPrompt(context: QuizReviewContext, kanjiRetry = f
     for (const item of context.items) {
       lines.push(`- ${item.id}: ${item.label}`);
     }
+    /*
+     * Slack の 宛先（メンション）の 行（2026-10-26 の 指定「最初の行は宛先だけでいい。2行目に
+     * 書いてあればいい。むしろ他の内容があってはいけない」）。「1行目で 何の 連絡か 分かる」を
+     * 宛先の 行で 見ると、正しく 書いた 学生が ✗に なる。
+     */
+    lines.push(
+      "",
+      "# 宛先（メンション）の 行",
+      "- 学生の 文の 1行目が「@」で 始まる ときは、宛先の 行です。宛先の 行は **宛先だけ**で 正しい 形です。",
+      "  「1行目」を 見る 観点は、宛先の 行の **つぎの 行**で 見ます（宛先だけの 行を ✗に しない）。",
+      "- 宛先の 行に 宛先 以外の ことばも 書いて いたら、「1行目」を 見る 観点は ✗に して、",
+      "  宛先の 行には 宛先だけを 書き、つぎの 行に 何の 連絡かを 書く よう 伝えます。",
+    );
   }
 
   lines.push(
@@ -562,7 +575,8 @@ function grammarOf(value: unknown): GrammarTip[] {
   for (const one of value) {
     if (!one || typeof one !== "object") continue;
     const bag = one as { point?: unknown; explain?: unknown; example?: unknown };
-    const point = text(bag.point);
+    // 画面が「」で 囲む ので、AIが 付けて きた「」は 外す（「「〜が 変わりました」」に しない）
+    const point = text(bag.point).replace(/^「([\s\S]*)」$/, "$1");
     if (point === "") continue;
     tips.push({ point, explain: text(bag.explain), example: text(bag.example) });
     if (tips.length === GRAMMAR_MAX) break;

@@ -50,6 +50,17 @@ const MEMO_AGAIN = "メモの ことばと ちがうようです。もう いち
 
 type Mail = Extract<QuizQuestion, { type: "fillin" }>;
 
+/**
+ * 欄の 色（チェックの あと）。⭕は みどりの 枠、**✗（やり直し）は うす赤の 欄**
+ *（2026-10-26 の 指定「やり直しの場合は入力されたテキストボックスがうす赤色になるように」）。
+ */
+function fieldStyle(hit: { ok: boolean } | undefined): React.CSSProperties | undefined {
+  if (!hit) return undefined;
+  return hit.ok
+    ? { borderColor: "#58c273", borderWidth: 2 }
+    : { borderColor: "#f26fa7", borderWidth: 2, background: "#fff0f3" };
+}
+
 export function MailQuestion({
   question,
   furigana,
@@ -174,11 +185,7 @@ export function MailQuestion({
                     aria-label={`${row.label}を 入力する`}
                     placeholder={row.placeholder}
                     className={box}
-                    style={
-                      hit
-                        ? { borderColor: hit.ok ? "#58c273" : "#f26fa7", borderWidth: 2 }
-                        : undefined
-                    }
+                    style={fieldStyle(hit)}
                   />
                 )}
                 {hit && <CheckMark ok={hit.ok} />}
@@ -211,11 +218,7 @@ export function MailQuestion({
                     aria-label={`${blank.label}を 入力する`}
                     placeholder={blank.placeholder}
                     className={box}
-                    style={
-                      hit
-                        ? { borderColor: hit.ok ? "#58c273" : "#f26fa7", borderWidth: 2 }
-                        : undefined
-                    }
+                    style={fieldStyle(hit)}
                   />
                   {hit && <CheckMark ok={hit.ok} />}
                 </div>
@@ -266,8 +269,6 @@ export function MailQuestion({
             <AiReviewCard
               check={check}
               labels={new Map(slots.map((one, i) => [`f${i + 1}`, one.label]))}
-              written={check.of}
-              writtenTitle="あなたの メール"
               position={position}
               furigana={furigana}
               aiFurigana={aiFurigana}
