@@ -391,10 +391,15 @@
                 </div>
             </div>
 
+            <!--
+              「最初から」（2026-10-26 の 指定「クリア後に 最初から やり直しできる ボタン（Storage も 消去）」）。
+              進み具合は 保存して いるので、ページを 開き直すだけでは この 画面に もどる。
+              ここで 保存を 消して、ミッション1から はじめる。
+            -->
             <div class="px-10 pb-10 pt-6">
-                <button onclick="location.reload()"
+                <button onclick="restartFromScratch()" aria-label="最初から"
                     class="w-full py-4 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition shadow-lg hover:shadow-indigo-500/30 flex items-center justify-center gap-2">
-                    <i data-lucide="refresh-cw" class="w-5 h-5"></i> <span id="restart-label">やりなおす</span>
+                    <i data-lucide="refresh-cw" class="w-5 h-5"></i> <span id="restart-label"><ruby>最初<rt>さいしょ</rt></ruby>から</span>
                 </button>
             </div>
         </div>
@@ -871,12 +876,156 @@
 
         let state = {
             scenarioIndex: 0,
-            phase: 'dm_briefing', // 'dm_briefing' | 'channel_nav' | 'drafting'
+            phase: 'dm_briefing', // 'dm_briefing' | 'channel_nav' | 'drafting' | 'sent' | 'mission_complete' | 'completed'
             currentViewId: 'dm-tanaka',
             draftLines: [],
             score: MAX_SCORE,
-            dmHistory: []
+            dmHistory: [],
+            /** チャンネルに 送った メッセージと 返事（チャンネルを 行き来しても 消えない） */
+            channelPosts: {},
+            /** いまの 問いで まちがえた 選択肢（同じ 選択肢で 2度 減らさない・開き直しても 赤く 出す） */
+            wrongPicks: [],
+            /** メッセージの 時刻（開き直しても 変えない） */
+            times: {}
         };
+
+        // --- 進み具合の 保存（2026-10-26 の 指定「現在の 状況を localStorage で 保存」） ---
+        /*
+         * 開き直しても 続きから できる ように、**番号だけ** 保存する
+         *（どの ミッションの どこまで 進んだか・点数・まちがえた 選択肢・時刻）。
+         * メッセージの 文そのものは 保存しない——教材の 文を 直したら、開き直した 人にも 新しい 文が 出る。
+         * ブラウザが 保存を 断る（シークレットの 窓など）ときは、保存せずに そのまま 練習できる。
+         */
+        const STORE_KEY = 'nexmax:renraku_slack:v1';
+        const PHASES = ['dm_briefing', 'channel_nav', 'drafting', 'sent', 'mission_complete', 'completed'];
+
+        function save() {
+            try {
+                window.localStorage.setItem(STORE_KEY, JSON.stringify({
+                    scenarioIndex: state.scenarioIndex,
+                    phase: state.phase,
+                    currentViewId: state.currentViewId,
+                    stepsDone: state.draftLines.length,
+                    score: state.score,
+                    wrongPicks: state.wrongPicks,
+                    times: state.times
+                }));
+            } catch (error) {
+                /* 保存できなくても 練習は 止めない */
+            }
+        }
+
+        /** 保存を 読む。こわれて いる・教材と 合わない ときは 使わない（最初から 始める）。 */
+        function loadSaved() {
+            let saved;
+            try {
+                saved = JSON.parse(window.localStorage.getItem(STORE_KEY) || 'null');
+            } catch (error) {
+                return null;
+            }
+            if (!saved || typeof saved !== 'object') return null;
+            const sc = SCENARIOS[saved.scenarioIndex];
+            if (!Number.isInteger(saved.scenarioIndex) || !sc) return null;
+            if (!PHASES.includes(saved.phase)) return null;
+            if (!Number.isInteger(saved.stepsDone) || saved.stepsDone < 0 || saved.stepsDone > sc.steps.length) return null;
+            if (typeof saved.score !== 'number' || saved.score < 0 || saved.score > MAX_SCORE) return null;
+            const views = ['dm-tanaka', ...CHANNELS.map(ch => ch.id)];
+            const options = sc.steps[saved.stepsDone] ? sc.steps[saved.stepsDone].options.length : 0;
+            return {
+                scenarioIndex: saved.scenarioIndex,
+                phase: saved.phase,
+                currentViewId: views.includes(saved.currentViewId) ? saved.currentViewId : 'dm-tanaka',
+                stepsDone: saved.stepsDone,
+                score: saved.score,
+                wrongPicks: Array.isArray(saved.wrongPicks)
+                    ? saved.wrongPicks.filter(at => Number.isInteger(at) && at >= 0 && at < options)
+                    : [],
+                // 時刻は 画面に そのまま 出すので、字だけの 短い もの しか 受け取らない
+                times: Object.fromEntries(Object.entries(saved.times && typeof saved.times === 'object' ? saved.times : {})
+                    .filter(([, value]) => typeof value === 'string' && value.length <= 24 && !/[<>&"']/.test(value)))
+            };
+        }
+
+        function clearSaved() {
+            try {
+                window.localStorage.removeItem(STORE_KEY);
+            } catch (error) {
+                /* 消せなくても 最初から 始める */
+            }
+        }
+
+        /** 「最初から」（クリアの あと）。保存も 消して、ミッション1から。 */
+        function restartFromScratch() {
+            clearSaved();
+            location.reload();
+        }
+
+        /** その 時刻を 1回だけ 決める（描き直しても・開き直しても 同じ 時刻）。 */
+        function stamp(key) {
+            if (!state.times[key]) state.times[key] = clock();
+            return state.times[key];
+        }
+
+        /** そのミッションで 送る 文（正しい 選択肢を、はじめから `count` 個 つなげる）。 */
+        function correctLines(sc, count = sc.steps.length) {
+            return sc.steps.slice(0, count).map(step => step.options.find(opt => opt.isCorrect).text);
+        }
+
+        function hendyMessage(index) {
+            return { sender: 'Hendy Senpai', text: SCENARIOS[index].instruction.text, type: 'tanaka', time: stamp(`dm-${index}-in`) };
+        }
+
+        function ackMessage(index) {
+            return { sender: 'You', text: ACK_REPLY, type: 'me', time: stamp(`dm-${index}-ack`) };
+        }
+
+        /** 送った メッセージを チャンネルに 残す。 */
+        function postSent(index) {
+            const sc = SCENARIOS[index];
+            const post = { sender: 'You', text: correctLines(sc).join('\n\n'), type: 'me', time: stamp(`ch-${index}-me`), reactions: sc.reactions || [] };
+            (state.channelPosts[sc.targetChannel] = state.channelPosts[sc.targetChannel] || []).push(post);
+            return post;
+        }
+
+        /** 返事を チャンネルに 残す（返事の ない ミッションは 何も しない）。 */
+        function postReply(index) {
+            const sc = SCENARIOS[index];
+            if (!sc.reply) return null;
+            const post = { sender: sc.reply.name, text: sc.reply.text, type: 'member', face: sc.reply.face, time: stamp(`ch-${index}-reply`) };
+            (state.channelPosts[sc.targetChannel] = state.channelPosts[sc.targetChannel] || []).push(post);
+            return post;
+        }
+
+        /** 保存から 画面を 組み直す。メッセージは 教材の データから 作り直す。 */
+        function restore(saved) {
+            // 送った あとの 演出の 途中で 閉じた ときは、送り終えた ことに する
+            state.phase = saved.phase === 'sent' ? 'mission_complete' : saved.phase;
+            state.scenarioIndex = saved.scenarioIndex;
+            state.currentViewId = saved.currentViewId;
+            state.score = saved.score;
+            state.times = saved.times;
+            const sc = SCENARIOS[state.scenarioIndex];
+            state.draftLines = state.phase === 'drafting' ? correctLines(sc, saved.stepsDone) : [];
+            state.wrongPicks = state.phase === 'drafting' ? saved.wrongPicks : [];
+            state.dmHistory = [];
+            state.channelPosts = {};
+            for (let index = 0; index <= state.scenarioIndex; index++) {
+                const done = index < state.scenarioIndex;
+                state.dmHistory.push(hendyMessage(index));
+                if (done || state.phase !== 'dm_briefing') state.dmHistory.push(ackMessage(index));
+                if (done || state.phase === 'mission_complete' || state.phase === 'completed') {
+                    postSent(index);
+                    postReply(index);
+                }
+            }
+            els.score.innerText = state.score;
+            updateHeader();
+            renderNav();
+            renderMessagesForView();
+            renderActionArea();
+            renderRightSidebar();
+            if (state.phase === 'completed') showCompletion();
+        }
 
         // --- DOM Elements ---
         const els = {
@@ -899,13 +1048,17 @@
             diplomaScore: document.getElementById('diploma-score'),
             diplomaDate: document.getElementById('diploma-date'),
             retryCard: document.getElementById('retry-card'),
-            restartLabel: document.getElementById('restart-label'),
             taskSidebar: document.getElementById('task-sidebar-content'),
             vocabList: document.getElementById('vocab-list')
         };
 
         // --- Init ---
         function init() {
+            const saved = loadSaved();
+            if (saved) {
+                restore(saved);
+                return;
+            }
             renderNav();
             loadScenario();
         }
@@ -940,19 +1093,20 @@
             lucide.createIcons();
         }
         function loadScenario() {
-            const sc = SCENARIOS[state.scenarioIndex];
             state.phase = 'dm_briefing';
             state.currentViewId = 'dm-tanaka';
             state.draftLines = [];
+            state.wrongPicks = [];
 
             // Add new instruction to history（時刻は 来た ときの もの。描き直しても 変えない）
-            state.dmHistory.push({ sender: 'Hendy Senpai', text: sc.instruction.text, type: 'tanaka', time: clock() });
+            state.dmHistory.push(hendyMessage(state.scenarioIndex));
 
             updateHeader();
             renderNav();
             renderMessagesForView();
             renderActionArea();
             renderRightSidebar(); // Ensure sidebar updates immediately
+            save();
         }
 
         function renderRightSidebar() {
@@ -1046,6 +1200,7 @@
             renderNav();
             renderMessagesForView();
             renderActionArea();
+            save();
         }
 
         /** さきに 指示を 読んで ほしい ときの お知らせ（2026-09-22 の 指定で alert から モーダルへ）。 */
@@ -1089,6 +1244,7 @@
                     renderActionArea();
                 }
             }
+            save();
         }
 
         // --- Message Rendering ---
@@ -1103,6 +1259,12 @@
             } else {
                 // Channel View
                 addSystemMessage(`Welcome to #${state.currentViewId}`);
+
+                // このチャンネルに 送った メッセージと 返事（前の ミッションの ぶんも 残る）
+                (state.channelPosts[state.currentViewId] || []).forEach(post => {
+                    const posted = addMessageUI(post.sender, post.text, post.type, post.face, post.time);
+                    if (post.reactions && post.reactions.length > 0) addReactions(posted, post.reactions, true);
+                });
 
                 if (state.phase === 'drafting' && state.currentViewId === SCENARIOS[state.scenarioIndex].targetChannel) {
                     addSystemMessage(`<span class="text-indigo-500 font-bold">Drafting Mode Active</span>: ${r("選択肢", "せんたくし")}を${r("選", "えら")}んでメッセージを${r("作成", "さくせい")}してください。`);
@@ -1154,20 +1316,23 @@
          * 送った 連絡に スタンプを 1つずつ 付ける（`reactions` を 持つ ミッションだけ）。
          * **お願いが 届いた ことが 目に 見える**——これが 依頼の ミッションの ごほうび。
          */
-        function addReactions(messageEl, emojis) {
+        function addReactions(messageEl, emojis, instant) {
             const body = messageEl.querySelector('.flex-1');
             if (!body) return;
             const bar = document.createElement('div');
             bar.className = "flex flex-wrap gap-1.5 mt-2";
             body.appendChild(bar);
             emojis.forEach((emoji, at) => {
-                setTimeout(() => {
+                const put = () => {
                     const chip = document.createElement('span');
                     chip.className = "inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-indigo-50 border border-indigo-100 text-sm fade-in";
                     chip.innerHTML = `${emoji}<b class="text-xs text-indigo-700">1</b>`;
                     bar.appendChild(chip);
                     scrollToBottom();
-                }, 500 + at * 220);
+                };
+                // 描き直す（チャンネルを 開き直す・ページを 開き直す）ときは 待たずに 出す
+                if (instant) put();
+                else setTimeout(put, 500 + at * 220);
             });
         }
 
@@ -1255,6 +1420,8 @@
                         </div>
                     </div>
                 `;
+                // まちがえた 選択肢は 赤い まま（チャンネルを 行き来・開き直しても）
+                state.wrongPicks.forEach(markWrong);
             }
 
             // --- 追加: 3. Mission Complete (Notification) Phase ---
@@ -1288,11 +1455,12 @@
         // --- Logic Handlers ---
 
         function acknowledgeTask() {
-            state.dmHistory.push({ sender: 'You', text: ACK_REPLY, type: 'me', time: clock() });
+            state.dmHistory.push(ackMessage(state.scenarioIndex));
             state.phase = 'channel_nav';
             renderMessagesForView();
             renderActionArea();
             renderNav();
+            save();
         }
 
         function handleOptionSelect(optIdx) {
@@ -1303,42 +1471,54 @@
             if (option.isCorrect) {
                 // 正解の選択肢（HTMLタグ付き）を保存
                 state.draftLines.push(option.text);
+                state.wrongPicks = [];
                 updateComposer();
                 renderActionArea();
                 els.score.innerText = state.score;
             } else {
-                const btn = document.querySelectorAll('#action-area button')[optIdx];
-                btn.classList.add('bg-red-50', 'border-red-300');
-
-                const existingFeedback = btn.querySelector('.feedback-msg');
-                if (!existingFeedback) {
-                    // 同じ 選択肢を 何度 押しても 減るのは 1回だけ
+                // 同じ 選択肢を 何度 押しても 減るのは 1回だけ（開き直しても 同じ）
+                if (!state.wrongPicks.includes(optIdx)) {
+                    state.wrongPicks.push(optIdx);
                     state.score = Math.max(0, state.score - PENALTY);
                     els.score.innerText = state.score;
-                    const feedback = document.createElement('div');
-                    feedback.className = "feedback-msg text-sm text-red-600 mt-2 font-bold pl-2 animate-pulse";
-
-                    // 【重要】フィードバックはタグ（ふりがな）ありで表示したいので innerHTML を使う
-                    feedback.innerHTML = `💡 ${option.feedback}`;
-
-                    btn.appendChild(feedback);
                 }
+                markWrong(optIdx);
             }
+            save();
+        }
+
+        /** まちがえた 選択肢を 赤く して、わけを 出す（描き直した ときも 同じ 形に もどす）。 */
+        function markWrong(optIdx) {
+            const sc = SCENARIOS[state.scenarioIndex];
+            const option = sc.steps[state.draftLines.length].options[optIdx];
+            const btn = document.querySelectorAll('#action-area button')[optIdx];
+            if (!btn || !option) return;
+            btn.classList.add('bg-red-50', 'border-red-300');
+            if (btn.querySelector('.feedback-msg')) return;
+            const feedback = document.createElement('div');
+            feedback.className = "feedback-msg text-sm text-red-600 mt-2 font-bold pl-2 animate-pulse";
+
+            // 【重要】フィードバックはタグ（ふりがな）ありで表示したいので innerHTML を使う
+            feedback.innerHTML = `💡 ${option.feedback}`;
+
+            btn.appendChild(feedback);
         }
 
         function sendMessage() {
             // 入力欄の ボタンと 下の ボタンの 2つから 呼ばれる。2回 送らない
             if (state.phase !== 'drafting') return;
             state.phase = 'sent';
-            const fullText = state.draftLines.join('\n\n');
+            const index = state.scenarioIndex;
             els.actionArea.innerHTML = "";
             updateComposer();
 
-            // 自分のメッセージを表示
-            const sent = addMessageUI('You', fullText, 'me');
-            const sc = SCENARIOS[state.scenarioIndex];
+            // 自分のメッセージを表示（チャンネルにも 残す）
+            const post = postSent(index);
+            const sent = addMessageUI(post.sender, post.text, post.type, undefined, post.time);
+            const sc = SCENARIOS[index];
             const reactions = sc.reactions || [];
             if (reactions.length > 0) addReactions(sent, reactions);
+            save();
 
             /*
              * スタンプ → 返事 → 完了、の 順。**届いた ことが 目に 見える**ように する
@@ -1348,7 +1528,12 @@
 
             if (sc.reply) {
                 setTimeout(() => {
-                    addMessageUI(sc.reply.name, sc.reply.text, 'member', sc.reply.face);
+                    const reply = postReply(index);
+                    save();
+                    // ほかの チャンネルへ 移って いたら、戻った ときに 出る（ここでは 足さない）
+                    if (state.currentViewId === sc.targetChannel) {
+                        addMessageUI(reply.sender, reply.text, reply.type, reply.face, reply.time);
+                    }
                 }, afterStamps);
             }
 
@@ -1371,15 +1556,23 @@
 
             // サイドバーのヘンディ先輩に赤丸（通知バッジ）をつけるために再描画
             renderNav();
+            save();
         }
 
         function nextScenario() {
-            state.scenarioIndex++;
-            if (state.scenarioIndex >= SCENARIOS.length) {
+            if (state.scenarioIndex + 1 >= SCENARIOS.length) {
+                // おわり。開き直しても 修了証（または 点数）を 出す
+                state.phase = 'completed';
+                const d = new Date();
+                state.times.finishedOn = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+                renderActionArea();
+                renderNav();
+                save();
                 showCompletion();
-            } else {
-                loadScenario();
+                return;
             }
+            state.scenarioIndex++;
+            loadScenario();
         }
 
         /** おわり。**100点の ときだけ 修了証**、それ以外は 点数と「もう一度」。 */
@@ -1387,11 +1580,12 @@
             const perfect = state.score >= MAX_SCORE;
             els.finalScore.innerText = state.score;
             els.diplomaScore.innerText = state.score;
-            const d = new Date();
-            els.diplomaDate.innerHTML = `${d.getFullYear()}${r("年", "ねん")}${d.getMonth() + 1}${r("月", "がつ")}${d.getDate()}${r("日", "にち")}`;
+            // 日付は 終えた 日（開き直した 日では ない）
+            const [year, month, day] = String(state.times.finishedOn || '').split('-').map(Number);
+            const d = year ? { year, month, day } : { year: new Date().getFullYear(), month: new Date().getMonth() + 1, day: new Date().getDate() };
+            els.diplomaDate.innerHTML = `${d.year}${r("年", "ねん")}${d.month}${r("月", "がつ")}${d.day}${r("日", "にち")}`;
             els.diplomaCard.classList.toggle('hidden', !perfect);
             els.retryCard.classList.toggle('hidden', perfect);
-            els.restartLabel.innerHTML = perfect ? `もう${r("一度", "いちど")} やる` : 'やりなおす';
             els.completion.classList.remove('hidden');
             lucide.createIcons();
         }
