@@ -46,6 +46,7 @@ import { PreviousCertificate } from "@/components/certificate/previous-certifica
 import { useQuizCertificate } from "./use-quiz-certificate";
 import { ModelAnswer } from "./check-parts";
 import { FillinReview } from "./fillin-review";
+import { guardsCopy } from "./copy-guard";
 import { SceneCard } from "./scene-card";
 import { WordbankReview } from "./wordbank-review";
 import {
@@ -786,7 +787,13 @@ export function QuizRunner({
                 </p>
                 <QuestionSource question={question} furigana={furigana} />
                 {/* 場面の メモは 設問の すぐ 下（読んでから 書く 順に 並べる） */}
-                {question.scene && <SceneCard scene={question.scene} furigana={furigana} />}
+                {question.scene && (
+                  <SceneCard
+                    scene={question.scene}
+                    furigana={furigana}
+                    noCopy={guardsCopy(question)}
+                  />
+                )}
                 {state.phase.kind !== "explain" && (
                   <div className="mt-3">
                     <QuestionHints question={question} furigana={furigana} />
@@ -1824,7 +1831,9 @@ const QuestionRow = memo(function QuestionRow({
         </span>
       </div>
 
-      {question.scene && <SceneCard scene={question.scene} furigana={furigana} />}
+      {question.scene && (
+        <SceneCard scene={question.scene} furigana={furigana} noCopy={guardsCopy(question)} />
+      )}
 
       <QuestionHints question={question} furigana={furigana} />
 

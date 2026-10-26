@@ -138,6 +138,14 @@ export function useAnswerCheck(question: Reviewable, written: string) {
   const text = written.trim();
   const saved = store?.checks[question.id];
   const check = saved && saved.of === text ? saved : undefined;
+  /*
+   * **見せるのは 前の けっかの まま**（2026-10-26 の 指定「修正点が入力した瞬間に消えるのは
+   * やめて」）。直して いる あいだも なおすところを 見られる ように する。
+   * 関門（つぎを 開く・出せる）は これまで どおり **いまの 文の ⭕**（`check`）だけで 決める——
+   * 見せかたを 変えても、見て もらって いない 文で 関門は 開かない。
+   */
+  const shown = saved;
+  const stale = saved !== undefined && saved.of !== text;
 
   const run = useCallback(
     async (input: {
@@ -267,7 +275,7 @@ export function useAnswerCheck(question: Reviewable, written: string) {
     });
   }, [store, nextKey]);
 
-  return { check, phase, run, warm, waiting, ready: store !== null };
+  return { check, shown, stale, phase, run, warm, waiting, ready: store !== null };
 }
 
 /**

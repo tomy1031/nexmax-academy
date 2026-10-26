@@ -9,6 +9,7 @@ import { buildFuriganaIndex, type FuriganaIndex } from "@/lib/text/furigana";
 import { useAnswerCheck, useWarmOnReady } from "./answer-check";
 import { AiReviewCard } from "./ai-review-card";
 import { CheckButton } from "./check-parts";
+import { guardsCopy, noPasteProps, PASTE_BLOCKED_NOTE } from "./copy-guard";
 
 /**
  * 上級：Slackの 連絡を 自分で 書く（`free` ＋ AIの 観点）— **観点ごとに ⭕✗を 返す**
@@ -61,7 +62,10 @@ export function SlackQuestion({
 }) {
   // 画面の 文字は この部品が 持つ（親から 送り返すと 変換の 途中で 入れ替わる）
   const [value, setValue] = useState(draft?.input ?? "");
-  const { check, phase, run, warm, waiting, ready } = useAnswerCheck(question, value);
+  const { shown, stale, phase, run, warm, waiting, ready } = useAnswerCheck(question, value);
+  /** 貼り付けを 止めた ところか（理由を 1行 出す）。 */
+  const [pasteBlocked, setPasteBlocked] = useState(false);
+  const noPaste = guardsCopy(question) ? noPasteProps(() => setPasteBlocked(true)) : {};
   /*
    * **AIが 書いた 文だけ**は、教材の 辞書に `AI_KANJI_FURIGANA` を 重ねた 索引で 描く
    *（理由は `mail-question.tsx` と 同じ——検査と 画面で 索引が ちがうと 裸の 漢字が 出る）。
@@ -103,7 +107,11 @@ export function SlackQuestion({
       <textarea
         value={value}
         disabled={disabled}
-        onChange={(e) => change(e.target.value)}
+        onChange={(e) => {
+          setPasteBlocked(false);
+          change(e.target.value);
+        }}
+        {...noPaste}
         rows={6}
         autoComplete="off"
         autoCorrect="off"
@@ -112,14 +120,19 @@ export function SlackQuestion({
         aria-label="じゆうに 書く"
         className="border-hairline bg-panel text-ink w-full rounded-[var(--radius-button)] border-2 px-4 py-3 text-base font-bold"
         style={
-          check
-            ? // やり直しの ときは 欄を うす赤に する（2026-10-26 の 指定）
-              check.ok
+          shown
+            ? // やり直しの ときは 欄を うす赤に する（2026-10-26 の 指定）。書きかえても もう いちど チェックするまで そのまま
+              shown.ok
               ? { borderColor: "#58c273" }
               : { borderColor: "#f26fa7", background: "#fff0f3" }
             : undefined
         }
       />
+      {pasteBlocked && (
+        <p className="mt-1 text-xs font-bold text-[#c2185b]" role="status">
+          {PASTE_BLOCKED_NOTE}
+        </p>
+      )}
       {question.starter && (
         <p className="text-ink-soft mt-1 text-xs leading-relaxed font-bold">
           <RubyText text={question.starter} index={furigana} />
@@ -161,9 +174,11 @@ export function SlackQuestion({
             「AIが 見る ところ」を 先に 並べると、書く 前から 答えの 形が 見えて しまう
             （2026-09-21 の 指定で 外した）。
           */}
-          {check && (
+          {/* 書きかえても けっかは 消さない（2026-10-26 の 指定）。帯だけ「もう いちど」に する */}
+          {shown && (
             <AiReviewCard
-              check={check}
+              check={shown}
+              stale={stale}
               labels={new Map((question.ai.checks ?? []).map((one) => [one.id, one.label]))}
               position={position}
               furigana={furigana}

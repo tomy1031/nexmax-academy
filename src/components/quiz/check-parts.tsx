@@ -23,6 +23,7 @@ const UI_FURIGANA = buildFuriganaIndex([
   ["手本", "てほん"],
   ["模範解答", "もはんかいとう"],
   ["言い方", "いいかた"],
+  ["書", "か"],
 ]);
 
 export const OK_COLOR = "#58c273";
@@ -105,6 +106,7 @@ export function CheckBand({
   aiNote,
   furigana,
   gated = true,
+  stale = false,
 }: {
   ok: boolean;
   /** 直す ところの 数（OKの ときは 0）。 */
@@ -114,7 +116,24 @@ export function CheckBand({
   furigana: FuriganaIndex;
   /** 関門か（既定 true）。false は 見せるだけの チェック。 */
   gated?: boolean;
+  /**
+   * チェックの あとに 書きかえたか。けっか（なおすところ）は 出した まま、帯だけ
+   *「もう いちど チェック」に する——前の ⭕を「次へ 進めます」と 言い続けない（規律1）。
+   */
+  stale?: boolean;
 }) {
+  if (stale) {
+    return (
+      <div role="status" className="border-hairline mt-3 rounded-2xl border-2 bg-white px-3 py-2.5">
+        <p className="text-ink text-sm font-black">
+          <RubyText
+            text="✏️ 書きかえました。もう いちど「こたえの チェック」を おして ください"
+            index={UI_FURIGANA}
+          />
+        </p>
+      </div>
+    );
+  }
   return (
     <div
       role="status"

@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { RubyText } from "@/components/ruby-text";
 import { buildFuriganaIndex, type FuriganaIndex } from "@/lib/text/furigana";
 import type { QuizQuestion } from "@/content/schema";
+import { NO_COPY_PROPS } from "./copy-guard";
 
 /**
  * 場面の カード — **設問とは 別の 箱**で メモを 見せる
@@ -49,13 +50,23 @@ export function splitMarks(
   return out;
 }
 
-export function SceneCard({ scene, furigana }: { scene: Scene; furigana: FuriganaIndex }) {
+export function SceneCard({
+  scene,
+  furigana,
+  noCopy = false,
+}: {
+  scene: Scene;
+  furigana: FuriganaIndex;
+  /** もとにする 情報を コピーできなく する（連絡文の 練習・`guardsCopy`）。 */
+  noCopy?: boolean;
+}) {
   const parts = useMemo(() => splitMarks(scene.text, scene.marks), [scene.text, scene.marks]);
   const chat = scene.style === "chat";
 
   return (
     <div
-      className="mt-3 rounded-[var(--radius-card)] border-2 px-4 py-3"
+      className={`mt-3 rounded-[var(--radius-card)] border-2 px-4 py-3 ${noCopy ? "select-none" : ""}`}
+      {...(noCopy ? NO_COPY_PROPS : {})}
       style={
         chat
           ? { borderColor: "#c8e6c9", background: "#eef8ef" }

@@ -314,3 +314,44 @@ test("連絡文（上級）: 別の 教材として 開き、書いて 進み、
   await expect(page.getByText(/模範解答/).first()).toBeVisible();
   await shot(page, "renraku-slack-quiz-02-result");
 });
+
+/**
+ * コピペ止め（2026-10-26 の 指定「そのフィールドはコピペ不可にして。あともとにする情報も
+ * コピペ不可。初級も上級も」）。クリップボードの 権限を 使わず、貼り付けの できごとを 起こして
+ * **止まった（defaultPrevented）・理由が 出た**を 見る。
+ */
+async function expectPasteBlocked(page: Page, scope: string, field: string) {
+  const box = page.locator(`#q-${scope}`);
+  const input = box.getByLabel(field);
+  const allowed = await input.evaluate((el) => {
+    const data = new DataTransfer();
+    data.setData("text/plain", "メモから 写した 文");
+    return el.dispatchEvent(
+      new ClipboardEvent("paste", { clipboardData: data, bubbles: true, cancelable: true }),
+    );
+  });
+  expect(allowed, "貼り付けが 止まって いない").toBe(false);
+  await expect(box.getByText("はりつけは できません。じぶんで うって ください。")).toBeVisible();
+  // もとにする 情報（場面の メモ）は 選べない
+  const select = await box
+    .locator(".select-none")
+    .first()
+    .evaluate((el) => getComputedStyle(el).userSelect);
+  expect(select).toBe("none");
+}
+
+test("連絡文: 入力欄に 貼り付けできず、もとにする 情報も 選べない（初級・上級）", async ({
+  page,
+  context,
+}) => {
+  await seedUpToQuiz(context, SLACK_QUIZ);
+  await page.goto(PATH);
+  await closeClearDialog(page);
+  await page.getByRole("button", { name: "はじめる" }).click();
+  await expectPasteBlocked(page, QUESTIONS[0]!.id, "宛先を 入力する");
+
+  await page.goto(SLACK_PATH);
+  await closeClearDialog(page, { first: false });
+  await page.getByRole("button", { name: "はじめる" }).click();
+  await expectPasteBlocked(page, SLACK_QUESTIONS[0]!.id, "じゆうに 書く");
+});

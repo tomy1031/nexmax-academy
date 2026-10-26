@@ -12,6 +12,7 @@ import { buildFuriganaIndex } from "@/lib/text/furigana";
 import { useAnswerCheck, useWarmOnReady } from "./answer-check";
 import { AiReviewCard } from "./ai-review-card";
 import { CheckButton, CheckMark } from "./check-parts";
+import { guardsCopy, noPasteProps, PASTE_BLOCKED_NOTE } from "./copy-guard";
 
 /**
  * 初級：メールの 型を うめる（`fillin`）— **欄の となりで ⭕✗を 返す**
@@ -87,7 +88,13 @@ export function MailQuestion({
   // 画面の 文字は この部品が 持つ（親から 送り返すと 変換の 途中で 入れ替わる）
   const [inputs, setInputs] = useState<string[]>(() => slots.map((_, i) => draft?.inputs[i] ?? ""));
   const written = fillinText(question, inputs);
-  const { check, phase, run, warm, waiting, ready } = useAnswerCheck(question, written);
+  const { check, shown, stale, phase, run, warm, waiting, ready } = useAnswerCheck(
+    question,
+    written,
+  );
+  /** 貼り付けを 止めた ところか（理由を 1行 出す）。 */
+  const [pasteBlocked, setPasteBlocked] = useState(false);
+  const noPaste = guardsCopy(question) ? noPasteProps(() => setPasteBlocked(true)) : {};
   /*
    * **AIが 書いた 文だけ**は、教材の 辞書に `AI_KANJI_FURIGANA` を 重ねた 索引で 描く。
    * 通す／通さないの 検査（`answer-check.tsx`）は もう その 索引で 見て いるので、
@@ -109,6 +116,7 @@ export function MailQuestion({
   useWarmOnReady(warm, filled && !disabled);
 
   const change = (index: number, next: string) => {
+    setPasteBlocked(false);
     const updated = inputs.map((value, i) => (i === index ? next : value));
     setInputs(updated);
     if (submitMode) onSubmit(updated);
@@ -146,7 +154,11 @@ export function MailQuestion({
     "border-hairline bg-panel text-ink min-w-0 flex-1 rounded-[var(--radius-button)] border-2 px-3 py-2 text-base font-bold";
   /** 本文の 上の 行（宛先）の 欄は 先頭から、本文の 欄は その あと（`fillinSlots` の 並び）。 */
   let slot = 0;
-  const noteOf = (index: number) => check?.items.find((one) => one.id === `f${index + 1}`);
+  /*
+   * 欄の ⭕✗は **前の チェックの まま**出す（書きかえても 消さない・2026-10-26 の 指定）。
+   * もう いちど チェックするまで 変わらない——関門は `check`（いまの 文）で 見る。
+   */
+  const noteOf = (index: number) => shown?.items.find((one) => one.id === `f${index + 1}`);
 
   return (
     <form
@@ -181,6 +193,7 @@ export function MailQuestion({
                     value={inputs[index] ?? ""}
                     disabled={disabled}
                     onChange={(e) => change(index, e.target.value)}
+                    {...noPaste}
                     autoComplete="off"
                     aria-label={`${row.label}を 入力する`}
                     placeholder={row.placeholder}
@@ -214,6 +227,7 @@ export function MailQuestion({
                     value={inputs[index] ?? ""}
                     disabled={disabled}
                     onChange={(e) => change(index, e.target.value)}
+                    {...noPaste}
                     autoComplete="off"
                     aria-label={`${blank.label}を 入力する`}
                     placeholder={blank.placeholder}
@@ -232,6 +246,12 @@ export function MailQuestion({
           )}
         </div>
       </div>
+
+      {pasteBlocked && (
+        <p className="mt-1.5 text-xs font-bold text-[#c2185b]" role="status">
+          {PASTE_BLOCKED_NOTE}
+        </p>
+      )}
 
       {!submitMode && (
         <button
@@ -265,9 +285,10 @@ export function MailQuestion({
             欄の となりは ⭕✗の しるしだけ。ひとこと・直した 形・読む 人の しつもんは
             「AIの ひょうか」1枚に まとめる（2026-10-26 の 指定「すごくわかりにくい」）。
           */}
-          {check && (
+          {shown && (
             <AiReviewCard
-              check={check}
+              check={shown}
+              stale={stale}
               labels={new Map(slots.map((one, i) => [`f${i + 1}`, one.label]))}
               position={position}
               furigana={furigana}
