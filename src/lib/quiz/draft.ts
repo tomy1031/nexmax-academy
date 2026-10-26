@@ -32,7 +32,11 @@ import {
   type BugReportEntry,
 } from "@/lib/quiz/bugreport";
 import { fillinSlots, type FillinSlot } from "@/lib/quiz/fillin";
-import { fillinAiMayAccept, fillinContentMatches } from "@/lib/quiz/fillin-match";
+import {
+  fillinAiMayAccept,
+  fillinContentMatches,
+  fillinNegationAgrees,
+} from "@/lib/quiz/fillin-match";
 import { answerMatches, normalizeReading } from "@/lib/text/normalize";
 
 /**
@@ -591,10 +595,16 @@ export function fillinSlotOk(slot: FillinSlot, input: string): boolean {
    * それだけで 決めると、正解が そのまま 入って いる **メモを 丸ごと 4つの 欄に 貼る**
    * だけで 満点に なる——さがす 練習が 消える（2026-09-20 の コード検収）。
    */
+  /*
+   * 打ち消しの 数は どちらの 見かたでも 合わせる。包含だけだと「サーバーの エラーでは ない」が
+   * 「サーバーの エラー」を 含むので ⭕に なって いた（2026-10-26 の コード検収）。
+   */
   return fillinSlotFits(
     slot,
     written,
-    (answer) => answerMatches(written, [answer]) || fillinContentMatches(answer, written),
+    (answer) =>
+      fillinNegationAgrees(answer, written) &&
+      (answerMatches(written, [answer]) || fillinContentMatches(answer, written)),
   );
 }
 

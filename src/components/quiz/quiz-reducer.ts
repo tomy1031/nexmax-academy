@@ -137,7 +137,12 @@ export type QuizAction =
       readonly en?: string;
     } & Targeted)
   | ({ readonly type: "answerList"; readonly inputs: readonly string[] } & Targeted)
-  | ({ readonly type: "answerFillin"; readonly inputs: readonly string[] } & Targeted)
+  | ({
+      readonly type: "answerFillin";
+      readonly inputs: readonly string[];
+      /** こたえの チェックで いまの 文の まま ⭕か（1問ずつ の 採点を ⭕に そろえる）。 */
+      readonly checked?: boolean;
+    } & Targeted)
   | ({ readonly type: "answerRanklist"; readonly rows: readonly string[] } & Targeted)
   | ({
       readonly type: "answerBugreport";
@@ -268,16 +273,11 @@ export function quizReducer(state: QuizState, action: QuizAction): QuizState {
       // **出して いない ものも 1行 残す**（「書けずに 出した」ことも 先生には 記録）
       const checked = new Set(action.checked ?? []);
       const results = state.questions.map((question) => {
-        const graded = gradeDraft(question, state.drafts[question.id]);
-        /*
-         * メールは **こたえの チェックの ⭕に そろえる**。アプリが ✗に した 欄を AIが
-         * 中身で ⭕に した とき（「ネットワーク障害」の ような 言いかえ）、ここで
-         * 字だけで 採点し直すと、⭕で 出したのに 答え合わせで ✗が 出る。
-         */
-        const grade =
-          question.type === "fillin" && checked.has(question.id) && !graded.correct
-            ? { ...graded, correct: true, earned: question.points }
-            : graded;
+        const grade = withCheck(
+          question,
+          gradeDraft(question, state.drafts[question.id]),
+          checked.has(question.id),
+        );
         return {
           questionId: question.id,
           correct: grade.correct,
@@ -395,7 +395,12 @@ export function quizReducer(state: QuizState, action: QuizAction): QuizState {
      */
     case "answerFillin": {
       if (question.type !== "fillin") return state;
-      return put(state, question, { kind: "fillin", inputs: [...action.inputs] });
+      return put(
+        state,
+        question,
+        { kind: "fillin", inputs: [...action.inputs] },
+        action.checked === true,
+      );
     }
 
     /* バグ報告。欄・話した ことば・AIの 点を まとめて 置く（`@/lib/quiz/bugreport`）。 */
@@ -503,7 +508,13 @@ export function quizReducer(state: QuizState, action: QuizAction): QuizState {
  * **1問ずつ**は ここで 採点して 解説へ。**まとめて 出す**は 下書きに 置くだけで、
  * 合って いるかは 何も 見せない。
  */
-function put(state: QuizState, question: QuizQuestion, draft: QuizDraft): QuizState {
+function put(
+  state: QuizState,
+  question: QuizQuestion,
+  draft: QuizDraft,
+  /** こたえの チェックで いまの 文の まま ⭕か（メールだけ。`withCheck`）。 */
+  checked = false,
+): QuizState {
   if (state.mode !== "one") {
     /*
      * `index` を **さいごに さわった もんだい**に 合わせる。しおり（quiz/resume の
@@ -521,7 +532,22 @@ function put(state: QuizState, question: QuizQuestion, draft: QuizDraft): QuizSt
   if (state.phase.kind !== "ask" && state.phase.kind !== "emotionReply") return state;
   // 空の こたえは 受け取らない（1問ずつでは「こたえる」ボタンが 押せない 状態にあたる）
   if (!draftAnswered(question, draft)) return state;
-  return closeOne(state, question, gradeDraft(question, draft));
+  return closeOne(state, question, withCheck(question, gradeDraft(question, draft), checked));
+}
+
+/**
+ * メールは **こたえの チェックの ⭕に そろえる**（2026-10-26）。
+ *
+ * アプリが ✗に した 欄を AIが 中身で ⭕に した とき（「ネットワーク障害」の ような
+ * 言いかえ）、ここで 字だけで 採点し直すと、⭕で 出したのに 答え合わせで ✗が 出る。
+ */
+function withCheck(
+  question: QuizQuestion,
+  grade: ReturnType<typeof gradeDraft>,
+  checked: boolean,
+): ReturnType<typeof gradeDraft> {
+  if (question.type !== "fillin" || !checked || grade.correct) return grade;
+  return { ...grade, correct: true, earned: question.points, partial: false };
 }
 
 /** 1問ずつの 採点を 閉じる（記録を 1行 積み、解説の 画面に する）。 */

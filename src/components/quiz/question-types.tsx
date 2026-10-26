@@ -155,7 +155,7 @@ export function QuestionBody({
           disabled={disabled}
           submitMode={submitMode}
           draft={draft?.kind === "fillin" ? draft : undefined}
-          onSubmit={(inputs) => dispatch({ type: "answerFillin", inputs })}
+          onSubmit={(inputs, checked) => dispatch({ type: "answerFillin", inputs, checked })}
         />
       );
 

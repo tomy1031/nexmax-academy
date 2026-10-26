@@ -59,7 +59,11 @@ export function MailQuestion({
 }: {
   question: Mail;
   furigana: FuriganaIndex;
-  onSubmit: (inputs: readonly string[]) => void;
+  /**
+   * `checked` … こたえの チェックで いまの 文の まま ⭕か（1問ずつ の 採点を ⭕に そろえる。
+   * AIが 中身で ⭕に した 欄は、字だけの 採点では ✗に なる ため）。
+   */
+  onSubmit: (inputs: readonly string[], checked?: boolean) => void;
   disabled?: boolean;
   submitMode?: boolean;
   draft?: Extract<QuizDraft, { kind: "fillin" }>;
@@ -133,7 +137,7 @@ export function MailQuestion({
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        if (!submitMode && !disabled && !empty) onSubmit(inputs);
+        if (!submitMode && !disabled && !empty) onSubmit(inputs, check?.ok === true);
       }}
     >
       <div className="border-hairline overflow-hidden rounded-[var(--radius-card)] border-2 bg-white">
