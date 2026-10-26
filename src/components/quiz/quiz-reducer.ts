@@ -162,7 +162,14 @@ export type QuizAction =
   /** かくにん画面から その もんだいへ 飛ぶ（まとめて 出す のみ）。 */
   | { readonly type: "goto"; readonly index: number }
   /** ぜんぶ 出す（まとめて 出す のみ）。ここで はじめて 採点する。 */
-  | { readonly type: "submit" };
+  | {
+      readonly type: "submit";
+      /**
+       * こたえの チェックで **いまの 文の まま ⭕に なった** 問い（問題ID）。
+       * メールの 欄は AIが 中身で ⭕に できる（2026-10-26）ので、点も その ⭕に そろえる。
+       */
+      readonly checked?: readonly string[];
+    };
 
 /**
  * まっさらな 回を 作る。
@@ -259,8 +266,18 @@ export function quizReducer(state: QuizState, action: QuizAction): QuizState {
     case "submit": {
       if (state.mode === "one") return state;
       // **出して いない ものも 1行 残す**（「書けずに 出した」ことも 先生には 記録）
+      const checked = new Set(action.checked ?? []);
       const results = state.questions.map((question) => {
-        const grade = gradeDraft(question, state.drafts[question.id]);
+        const graded = gradeDraft(question, state.drafts[question.id]);
+        /*
+         * メールは **こたえの チェックの ⭕に そろえる**。アプリが ✗に した 欄を AIが
+         * 中身で ⭕に した とき（「ネットワーク障害」の ような 言いかえ）、ここで
+         * 字だけで 採点し直すと、⭕で 出したのに 答え合わせで ✗が 出る。
+         */
+        const grade =
+          question.type === "fillin" && checked.has(question.id) && !graded.correct
+            ? { ...graded, correct: true, earned: question.points }
+            : graded;
         return {
           questionId: question.id,
           correct: grade.correct,
