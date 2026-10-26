@@ -15,12 +15,21 @@ import { loadUnitIndex } from "@/lib/records/units";
  * `?kind=` は 畳んだ 古い URL（`/admin/meetings`・`/admin/quizzes`）の 行き先。
  * 先生の ブックマークが「ミーティングの きろく」を 指して いても、開いた ときに
  * **会話の タブ**に 座る（一覧の いちばん 上から 探し直させない）。
+ *
+ * `?profile=` は 授業ごとの分析（`/admin/class-reports`）で 名前を 押した ときの 行き先。
+ * その 生徒を えらんだ 形で 開き、「工程ごとの 行った こと」を 出す。
  */
 export const metadata: Metadata = { title: "学習の きろく" };
 export const dynamic = "force-dynamic";
 
-export default async function Page({ searchParams }: { searchParams: Promise<{ kind?: string }> }) {
-  const { kind } = await searchParams;
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<{ kind?: string; profile?: string }>;
+}) {
+  const { kind, profile } = await searchParams;
   const initial = RECORD_KINDS.find((one) => one.id === kind)?.id;
-  return <RecordsShell index={await loadUnitIndex()} initialKind={initial} />;
+  return (
+    <RecordsShell index={await loadUnitIndex()} initialKind={initial} initialProfileId={profile} />
+  );
 }
