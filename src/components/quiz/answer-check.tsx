@@ -13,7 +13,13 @@ import type { QuizQuestion } from "@/content/schema";
 import { judgeFailNote, requestQuizReview, warmQuizReview } from "@/components/meeting/judge-api";
 import { aiReplyFurigana } from "@/lib/ai-kanji";
 import { reviewWithoutAi } from "@/lib/quiz/ai-review";
-import type { QuizReviewContext, QuizReviewResult, ReviewItem } from "@/lib/quiz/ai-review";
+import type {
+  GrammarTip,
+  QuizReviewContext,
+  QuizReviewResult,
+  ReviewItem,
+  ReviewItemResult,
+} from "@/lib/quiz/ai-review";
 import { buildFuriganaIndex, uncoveredKanji, type FuriganaIndex } from "@/lib/text/furigana";
 
 /**
@@ -39,9 +45,12 @@ export interface AnswerCheck {
   readonly ok: boolean;
   /** どの 文に ついての けっかか（打ち直しで 無効に する）。 */
   readonly of: string;
-  readonly items: readonly { id: string; ok: boolean; note: string }[];
+  /** 欄／観点ごとの ⭕✗と ひとこと（✗には「なおすところ」の before・after・ask も 入る）。 */
+  readonly items: readonly ReviewItemResult[];
   /** 中身は 合って いるのに 言い方が よくない ときだけ 入る。 */
   readonly polished: string;
+  /** 文法アドバイス（AIに 見て もらえた 回だけ）。 */
+  readonly grammar?: readonly GrammarTip[];
   /** AIに つながらなかった ときの 一言（空なら つながった）。 */
   readonly aiNote: string;
 }
@@ -155,7 +164,18 @@ export function useAnswerCheck(question: Reviewable, written: string) {
 
       // 画面が AIの 文を 描く ときと **同じ 索引**（`aiReplyFurigana`）で 見る
       const index = buildFuriganaIndex(aiReplyFurigana(input.furigana.entries));
+      /*
+       * **学生が 自分で 打った 漢字は 通す**——直した 文（after）は 学生の ことばを 残して
+       * 直す ので、学生が 打った 漢字が そのまま 入る。それは 本人が 読める（打った のだから）。
+       */
+      const own = new Set(text);
       const readable = (value: string) => value === "" || uncoveredKanji(value, index).length === 0;
+      const ownReadable = (value: string) =>
+        value === "" || uncoveredKanji(value, index).every((kanji) => own.has(kanji));
+      const fixReadable = (one: ReviewItemResult) =>
+        readable(one.note) && ownReadable(one.after ?? "") && readable(one.ask ?? "");
+      const tipReadable = (tip: GrammarTip) =>
+        readable(tip.point) && readable(tip.explain) && readable(tip.example);
 
       try {
         const result = await requestQuizReview(
@@ -172,7 +192,11 @@ export function useAnswerCheck(question: Reviewable, written: string) {
           },
           // 読めない 漢字が 1つでも あれば、1回だけ 言い直して もらう
           (review: QuizReviewResult) =>
-            !(readable(review.polished) && review.items.every((one) => readable(one.note))),
+            !(
+              readable(review.polished) &&
+              review.items.every(fixReadable) &&
+              (review.grammar ?? []).every(tipReadable)
+            ),
         );
 
         if (!result.ok) {
@@ -212,8 +236,11 @@ export function useAnswerCheck(question: Reviewable, written: string) {
           items: result.review.items.map((one) => ({
             ...one,
             note: readable(one.note) ? one.note : "",
+            after: ownReadable(one.after ?? "") ? one.after : "",
+            ask: readable(one.ask ?? "") ? one.ask : "",
           })),
           polished: readable(result.review.polished) ? result.review.polished : "",
+          grammar: (result.review.grammar ?? []).filter(tipReadable),
           aiNote: "",
         });
       } finally {

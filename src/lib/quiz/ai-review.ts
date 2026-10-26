@@ -79,6 +79,26 @@ export interface ReviewItemResult {
   readonly ok: boolean;
   /** ひとこと（⭕なら よかった ところ・✗なら 足りない ところ）。空の ことも ある。 */
   readonly note: string;
+  /*
+   * ここから 3つは **✗の ときだけ**入る（「AIの ひょうか」の「なおすところ」・2026-10-26 の 指定）。
+   * ⭕・AIに 見て もらえなかった 回は 空か 無い。
+   */
+  /** 学生の 文の その ところ（そのまま 写した もの）。 */
+  readonly before?: string;
+  /** before を 直した 形。**まだ 書いて いない 中身は ？？？**（`hideUnwritten`）。 */
+  readonly after?: string;
+  /** 読む 人が 思う しつもん（「何の URL？ いつ 変わった？」）。 */
+  readonly ask?: string;
+}
+
+/** 文法アドバイス 1つ（学生の 文に ある 日本語の 文法の ところだけ）。 */
+export interface GrammarTip {
+  /** 文の 形（「〜が 変わりました」）。 */
+  readonly point: string;
+  /** なぜ そう 書くか（1文）。 */
+  readonly explain: string;
+  /** 例文 1つ（メモから さがす 中身は ？？？）。 */
+  readonly example: string;
 }
 
 export interface QuizReviewResult {
@@ -90,7 +110,12 @@ export interface QuizReviewResult {
    * **中身は 合って いるのに 言い方が よくない ときだけ**入る。
    */
   readonly polished: string;
+  /** 文法アドバイス（0〜2こ）。AIに 見て もらえなかった 回は 空。 */
+  readonly grammar?: readonly GrammarTip[];
 }
+
+/** 文法アドバイスの 数の 上限（画面が 長く ならない ように）。 */
+const GRAMMAR_MAX = 2;
 
 /** 見かた係への 言い渡し（つなぎの あいだ ずっと 変わらない 決まりだけ）。 */
 export const QUIZ_REVIEW_SYSTEM = [
@@ -139,8 +164,48 @@ export const QUIZ_REVIEW_TOOL = {
                     "✗の ときは **何が 足りないか・どこが ちがうか**。" +
                     "**答えその ものは 書かない**（学生が もう一度 考えられる ように）。",
                 },
+                before: {
+                  type: "STRING",
+                  description:
+                    "✗の ときだけ。学生の 文から、その 項目に かかわる ところを **そのまま** 写す" +
+                    "（変えない・みじかく）。⭕の ときは 空の 文字列。",
+                },
+                after: {
+                  type: "STRING",
+                  description:
+                    "✗の ときだけ。before を 職場で 通じる 形に 直した もの。" +
+                    "言い方・助詞・ていねいな 形は 直して 見せて よい。" +
+                    "**学生が まだ 書いて いない 中身（メモに ある 数・日時・URL・名前・場所）は 書かずに ？？？ に する**。" +
+                    "⭕の ときは 空の 文字列。",
+                },
+                ask: {
+                  type: "STRING",
+                  description:
+                    "✗の ときだけ。この 文を 読んだ 相手が 思う しつもん（みじかく・「？」で 終わる・1〜2こ）。" +
+                    "⭕の ときは 空の 文字列。",
+                },
               },
               required: ["id", "ok", "note"],
+            },
+          },
+          grammar: {
+            type: "ARRAY",
+            description:
+              "文法アドバイス（0〜2こ）。学生の 文に ある **日本語の 文法**の まちがい・足りない ところだけ" +
+              "（助詞・ていねいな 形・文の おわり など）。何を 書くか（中身・順番）は items に 書く。" +
+              "文法の まちがいが なければ 空の 配列。",
+            items: {
+              type: "OBJECT",
+              properties: {
+                point: { type: "STRING", description: "文の 形（例「〜が 変わりました」）。" },
+                explain: { type: "STRING", description: "なぜ そう 書くか（1文）。" },
+                example: {
+                  type: "STRING",
+                  description:
+                    "学生の 文の ことばで 作った 例文 1つ。メモから さがす 中身（数・日時・URL・名前）は 入れない。",
+                },
+              },
+              required: ["point", "explain", "example"],
             },
           },
           polished: {
@@ -152,7 +217,7 @@ export const QUIZ_REVIEW_TOOL = {
               "言い方も よい ときや、中身が 足りない ときは **空の 文字列**に する。",
           },
         },
-        required: ["ok", "items", "polished"],
+        required: ["ok", "items", "polished", "grammar"],
       },
     },
   ],
@@ -237,7 +302,24 @@ export function buildQuizReviewPrompt(context: QuizReviewContext, kanjiRetry = f
   );
   lines.push(
     "",
-    "# 学生が 読む ことばの 書きかた（items[].note・polished）",
+    "# ✗の 項目に 書く もの（before・after・ask）",
+    "- before … 学生の 文から、その 項目に かかわる ところを **そのまま** 写します（変えない・みじかく）。",
+    "- after … before を 直した 形。言い方・助詞・ていねいな 形・文の 形は 直して 見せて よい。",
+    "  **学生が まだ 書いて いない 中身（メモに ある 数・日時・URL・名前・場所）は 書かずに ？？？ に します**",
+    "  ——学生が メモから 自分で さがす ため。例: 変更前：http://？？？",
+    "- ask … この 文を 読んだ 相手が 思う しつもん（例「何の URL？ いつ 変わった？」）。",
+    "- ⭕の 項目は before・after・ask を 空に します。",
+    "",
+    "# 文法アドバイス（grammar）",
+    "- 学生の 文に ある **日本語の 文法**の まちがい・足りない ところだけ書きます（0〜2こ）。",
+    "  たとえば 助詞（が・を・に・の）の ぬけ、ていねいな 形（〜ました・〜です）、文の おわり。",
+    "- 何を 書くか（中身・順番・変更前と 変更後）は items に 書きます。grammar には 書きません。",
+    "- point は 文の 形（例「〜が 変わりました」）、explain は 1文、example は 学生の 文の ことばで 作った 例文 1つ。",
+    "- 文法の まちがいが なければ 空の 配列に します。",
+  );
+  lines.push(
+    "",
+    "# 学生が 読む ことばの 書きかた（note・after・ask・grammar・polished）",
     "- つかえる 漢字は **お手本と 場面の メモに 出て くる ことば**と、つぎの ことばだけです。",
     `  ${AI_KANJI_WORDS.join("・")}`,
     "  この どちらにも 無い ことばは **ひらがな**で 書いて ください。",
@@ -280,10 +362,11 @@ function text(value: unknown): string {
  */
 export function parseQuizReview(
   args: unknown,
-  context: Pick<QuizReviewContext, "items" | "itemKind">,
+  context: Pick<QuizReviewContext, "items" | "itemKind"> & { readonly written?: string },
 ): QuizReviewResult | null {
   if (!args || typeof args !== "object") return null;
-  const bag = args as { ok?: unknown; items?: unknown; polished?: unknown };
+  const bag = args as { ok?: unknown; items?: unknown; polished?: unknown; grammar?: unknown };
+  const written = context.written ?? "";
   const known = new Map(context.items.map((item) => [item.id, item]));
   const seen = new Set<string>();
   const results: ReviewItemResult[] = [];
@@ -293,12 +376,21 @@ export function parseQuizReview(
     const item = known.get(id);
     if (!item || seen.has(id)) continue;
     seen.add(id);
-    const aiOk = (one as { ok?: unknown }).ok === true;
+    const fields = one as {
+      ok?: unknown;
+      note?: unknown;
+      before?: unknown;
+      after?: unknown;
+      ask?: unknown;
+    };
+    const aiOk = fields.ok === true;
+    const ok =
+      context.itemKind === "field" ? item.ok === true || (item.aiJudges === true && aiOk) : aiOk;
     results.push({
       id,
-      ok:
-        context.itemKind === "field" ? item.ok === true || (item.aiJudges === true && aiOk) : aiOk,
-      note: text((one as { note?: unknown }).note),
+      ok,
+      note: text(fields.note),
+      ...(ok ? {} : fixOf(item, fields, written)),
     });
   }
   if (results.length === 0) return null;
@@ -307,7 +399,92 @@ export function parseQuizReview(
    * 欄の ⭕✗は 教材が 決めて いる ので、まとめも そこから 出す ほうが 食いちがわない。
    */
   const ok = results.length === context.items.length && results.every((one) => one.ok);
-  return { ok, items: results, polished: text(bag.polished) };
+  return {
+    ok,
+    items: results,
+    polished: text(bag.polished),
+    grammar: grammarOf(bag.grammar, written),
+  };
+}
+
+/** 空白を 落とした 形（写したかを 見る ため。AIは 分かち書きを 足したり 落としたり する）。 */
+function squash(value: string): string {
+  return value.replace(/[\s　]+/g, "");
+}
+
+/**
+ * **まだ 書いて いない 中身を ？？？ に する**（2026-10-26 の 指定「中身は『？』で 隠す」）。
+ *
+ * 直した 文に 答えの 中身（メモに ある URL・日時・名前）が 出ると、写すだけで ⭕に なり、
+ * メモから さがす 練習が 消える。AIにも 言って あるが、機械でも 2つ 守る:
+ * - 英字・数字の かたまり（URL・時刻・日付）で、学生の 文に 無い もの
+ * - 欄の 正解の ことば（助詞を 落とした かたまり）で、学生が その 欄に 書いて いない もの
+ */
+export function hideUnwritten(value: string, written: string, answer = ""): string {
+  const have = squash(written).toLowerCase();
+  let hidden = value.replace(/[A-Za-z0-9][A-Za-z0-9:/._\-]*/g, (token) =>
+    have.includes(token.toLowerCase()) ? token : "？？？",
+  );
+  for (const chunk of answer.split(/\s+/)) {
+    const word = chunk.replace(/(?:の|が|を|に|は|へ|と|で|も)$/, "");
+    if (word.length >= 2 && !have.includes(squash(word)) && hidden.includes(word)) {
+      hidden = hidden.split(word).join("？？？");
+    }
+  }
+  return hidden;
+}
+
+/** ✗の 項目の「なおすところ」（写した ところ・直した 形・読む 人の しつもん）。 */
+function fixOf(
+  item: ReviewItem,
+  fields: { before?: unknown; after?: unknown; ask?: unknown },
+  written: string,
+): Pick<ReviewItemResult, "before" | "after" | "ask"> {
+  /*
+   * 欄は 学生の 書いた ものが 分かって いる ので、AIの 写しでは なく それを 使う。
+   * 観点は AIの 写しが **本当に 学生の 文に ある ときだけ** 出す——「あなたの 文」として
+   * 出す ので、学生が 書いて いない 文を 置くと うそに なる。
+   */
+  const quoted = text(fields.before);
+  const before =
+    item.value !== undefined
+      ? item.value
+      : quoted !== "" && squash(written).includes(squash(quoted))
+        ? quoted
+        : "";
+  const own = item.value !== undefined ? item.value : written;
+  // 欄の 直しに AIが 欄の 名前（「宛先：」「【原因】」）を 付けて くる——欄ごとに 出すので 落とす
+  const after = text(fields.after).replace(
+    new RegExp(`^(?:【${escapeRegExp(item.label)}】|${escapeRegExp(item.label)}[：:])\\s*`),
+    "",
+  );
+  return {
+    before,
+    after: hideUnwritten(after, own, item.answer ?? ""),
+    ask: text(fields.ask),
+  };
+}
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^\${}()|[\]\\]/g, "\\$&");
+}
+
+function grammarOf(value: unknown, written: string): GrammarTip[] {
+  if (!Array.isArray(value)) return [];
+  const tips: GrammarTip[] = [];
+  for (const one of value) {
+    if (!one || typeof one !== "object") continue;
+    const bag = one as { point?: unknown; explain?: unknown; example?: unknown };
+    const point = text(bag.point);
+    if (point === "") continue;
+    tips.push({
+      point,
+      explain: text(bag.explain),
+      example: hideUnwritten(text(bag.example), written),
+    });
+    if (tips.length === GRAMMAR_MAX) break;
+  }
+  return tips;
 }
 
 /**

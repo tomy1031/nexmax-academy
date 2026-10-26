@@ -7,7 +7,8 @@ import type { QuizDraft } from "@/lib/quiz/draft";
 import { aiReplyFurigana } from "@/lib/ai-kanji";
 import { buildFuriganaIndex, type FuriganaIndex } from "@/lib/text/furigana";
 import { useAnswerCheck, useWarmOnReady } from "./answer-check";
-import { BrushUp, CheckBand, CheckButton, CheckMark, CheckNote } from "./check-parts";
+import { AiReviewCard } from "./ai-review-card";
+import { CheckButton } from "./check-parts";
 
 /**
  * 上級：Slackの 連絡を 自分で 書く（`free` ＋ AIの 観点）— **観点ごとに ⭕✗を 返す**
@@ -47,6 +48,7 @@ export function SlackQuestion({
   disabled,
   submitMode,
   draft,
+  position,
 }: {
   question: Slack;
   furigana: FuriganaIndex;
@@ -54,6 +56,8 @@ export function SlackQuestion({
   disabled?: boolean;
   submitMode?: boolean;
   draft?: Extract<QuizDraft, { kind: "free" }>;
+  /** 何問目か（「AIの ひょうか」の 右上に 出す）。 */
+  position?: { readonly at: number; readonly of: number };
 }) {
   // 画面の 文字は この部品が 持つ（親から 送り返すと 変換の 途中で 入れ替わる）
   const [value, setValue] = useState(draft?.input ?? "");
@@ -146,38 +150,21 @@ export function SlackQuestion({
           )}
 
           {/*
-            観点ごとの ⭕✗と ひとこと。**押す 前には 出さない**——
+            けっかは「AIの ひょうか」1枚に まとめる（2026-10-26 の 指定）。**押す 前には 出さない**——
             「AIが 見る ところ」を 先に 並べると、書く 前から 答えの 形が 見えて しまう
             （2026-09-21 の 指定で 外した）。
           */}
           {check && (
-            <>
-              <ul className="mt-3 grid gap-2">
-                {(question.ai.checks ?? []).map((one) => {
-                  const hit = check.items.find((item) => item.id === one.id);
-                  if (!hit) return null;
-                  return (
-                    <li key={one.id} className="border-hairline rounded-xl border-2 bg-white p-2">
-                      <div className="flex items-start gap-2">
-                        <CheckMark ok={hit.ok} />
-                        <span className="text-ink min-w-0 flex-1 text-sm font-bold">
-                          <RubyText text={one.label} index={furigana} />
-                        </span>
-                      </div>
-                      <CheckNote ok={hit.ok} note={hit.note} furigana={aiFurigana} />
-                    </li>
-                  );
-                })}
-              </ul>
-              <CheckBand
-                ok={check.ok}
-                left={check.items.filter((one) => !one.ok).length}
-                aiNote={check.aiNote}
-                furigana={aiFurigana}
-                gated={question.ai.gate !== false}
-              />
-              <BrushUp text={check.polished} furigana={aiFurigana} />
-            </>
+            <AiReviewCard
+              check={check}
+              labels={new Map((question.ai.checks ?? []).map((one) => [one.id, one.label]))}
+              written={check.of}
+              writtenTitle="あなたの メッセージ"
+              position={position}
+              furigana={furigana}
+              aiFurigana={aiFurigana}
+              gated={question.ai.gate !== false}
+            />
           )}
         </>
       )}

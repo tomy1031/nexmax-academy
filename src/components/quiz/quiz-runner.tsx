@@ -827,6 +827,7 @@ export function QuizRunner({
                         emotionStep2={state.phase.kind === "emotionReply"}
                         mode={state.mode}
                         draft={currentDraft(state)}
+                        position={{ at: state.index + 1, of: state.questions.length }}
                       />
                       {/*
                       まとめて 出す ときは 押した 瞬間に 進まないので、進む ボタンを 置く。
@@ -1834,6 +1835,7 @@ const QuestionRow = memo(function QuestionRow({
         mode="all"
         draft={draft}
         emotionStep2={draft?.kind === "emotion" && draft.feeling !== null}
+        position={{ at: index + 1, of: total }}
       />
 
       {/* 注意は **その もんだいの 下**に 出す（上に 1つだと どの 欄の 話か 分からない） */}

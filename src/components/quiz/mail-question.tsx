@@ -10,7 +10,8 @@ import { aiReplyFurigana } from "@/lib/ai-kanji";
 import type { FuriganaIndex } from "@/lib/text/furigana";
 import { buildFuriganaIndex } from "@/lib/text/furigana";
 import { useAnswerCheck, useWarmOnReady } from "./answer-check";
-import { BrushUp, CheckBand, CheckButton, CheckMark, CheckNote } from "./check-parts";
+import { AiReviewCard } from "./ai-review-card";
+import { CheckButton, CheckMark } from "./check-parts";
 
 /**
  * 初級：メールの 型を うめる（`fillin`）— **欄の となりで ⭕✗を 返す**
@@ -56,6 +57,7 @@ export function MailQuestion({
   disabled,
   submitMode,
   draft,
+  position,
 }: {
   question: Mail;
   furigana: FuriganaIndex;
@@ -67,6 +69,8 @@ export function MailQuestion({
   disabled?: boolean;
   submitMode?: boolean;
   draft?: Extract<QuizDraft, { kind: "fillin" }>;
+  /** 何問目か（「AIの ひょうか」の 右上に 出す）。 */
+  position?: { readonly at: number; readonly of: number };
 }) {
   const slots = useMemo(() => fillinSlots(question), [question]);
   // 画面の 文字は この部品が 持つ（親から 送り返すと 変換の 途中で 入れ替わる）
@@ -179,14 +183,6 @@ export function MailQuestion({
                 )}
                 {hit && <CheckMark ok={hit.ok} />}
               </div>
-              {hit && (
-                <CheckNote
-                  ok={hit.ok}
-                  note={hit.note}
-                  fallback={MEMO_AGAIN}
-                  furigana={aiFurigana}
-                />
-              )}
             </div>
           );
         })}
@@ -223,14 +219,6 @@ export function MailQuestion({
                   />
                   {hit && <CheckMark ok={hit.ok} />}
                 </div>
-                {hit && (
-                  <CheckNote
-                    ok={hit.ok}
-                    note={hit.note}
-                    fallback={MEMO_AGAIN}
-                    furigana={aiFurigana}
-                  />
-                )}
               </div>
             );
           })}
@@ -270,16 +258,22 @@ export function MailQuestion({
               <RubyText text={waiting} index={aiFurigana} />
             </p>
           )}
+          {/*
+            欄の となりは ⭕✗の しるしだけ。ひとこと・直した 形・読む 人の しつもんは
+            「AIの ひょうか」1枚に まとめる（2026-10-26 の 指定「すごくわかりにくい」）。
+          */}
           {check && (
-            <>
-              <CheckBand
-                ok={check.ok}
-                left={check.items.filter((one) => !one.ok).length}
-                aiNote={check.aiNote}
-                furigana={aiFurigana}
-              />
-              <BrushUp text={check.polished} furigana={aiFurigana} />
-            </>
+            <AiReviewCard
+              check={check}
+              labels={new Map(slots.map((one, i) => [`f${i + 1}`, one.label]))}
+              written={check.of}
+              writtenTitle="あなたの メール"
+              position={position}
+              furigana={furigana}
+              aiFurigana={aiFurigana}
+              gated
+              fallback={MEMO_AGAIN}
+            />
           )}
         </>
       )}
