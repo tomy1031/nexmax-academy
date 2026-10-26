@@ -75,6 +75,14 @@ describe("AIへの 頼み", () => {
     expect(prompt).toContain("grammar には 書きません");
   });
 
+  it("Slack の 宛先（@）の 行は 宛先だけで よく、「1行目」は つぎの 行で 見ると 伝える", () => {
+    // 2026-10-26「最初の行は宛先だけでいい。2行目に書いてあればいい。むしろ他の内容があってはいけない」
+    const prompt = buildQuizReviewPrompt(SLACK);
+    expect(prompt).toContain("宛先の 行は **宛先だけ**で 正しい 形です。");
+    expect(prompt).toContain("宛先の 行の **つぎの 行**で 見ます");
+    expect(prompt).toContain("宛先の 行に 宛先 以外の ことばも 書いて いたら");
+  });
+
   it("道具に before・after・ask・grammar が ある", () => {
     const params = QUIZ_REVIEW_TOOL.functionDeclarations[0]!.parameters;
     expect(Object.keys(params.properties.items.items.properties)).toEqual(
@@ -257,6 +265,14 @@ describe("AIの 返事の 読み取り（なおすところ・文法アドバイ
     expect(hideUnwritten("URL: http://test-server2.", written)).toBe("URL: http://test-server2.");
   });
 
+  it("文法アドバイスの 文の 形に AIが 付けた「」は 外す（画面が 囲む）", () => {
+    const made = {
+      ...args,
+      grammar: [{ point: "「〜が 変わりました」", explain: "", example: "" }],
+    };
+    expect(parseQuizReview(made, SLACK)?.grammar?.[0]?.point).toBe("〜が 変わりました");
+  });
+
   it("文法アドバイスが 来なくても 読める（空の 配列）", () => {
     expect(parseQuizReview({ ...args, grammar: undefined }, SLACK)?.grammar).toEqual([]);
   });
@@ -300,8 +316,6 @@ describe("カードの 見た目", () => {
       <AiReviewCard
         check={value}
         labels={new Map(SLACK.items.map((one) => [one.id, one.label]))}
-        written={SLACK.written}
-        writtenTitle="あなたの メッセージ"
         position={{ at: 1, of: 10 }}
         furigana={furigana}
         aiFurigana={furigana}
@@ -317,15 +331,21 @@ describe("カードの 見た目", () => {
     expect(plain(html)).toContain("1/10");
   });
 
-  it("あなたの メッセージ → なおすところ → よかったところ → 文法アドバイス の 順", () => {
+  it("なおすところ → 文法アドバイス の 順", () => {
     const text = plain(render(check()));
-    const order = ["あなたの メッセージ", "なおすところ", "よかったところ", "文法アドバイス"].map(
-      (word) => text.indexOf(word),
-    );
+    const order = ["なおすところ", "文法アドバイス"].map((word) => text.indexOf(word));
     expect(order.every((at) => at >= 0)).toBe(true);
     expect([...order].sort((a, b) => a - b)).toEqual(order);
     expect(text).toContain("何の URL？");
     expect(text).toContain("テスト用の URLが 変わりました。");
+  });
+
+  it("あなたの メッセージ・よかったところ は 出さない（いったん 削除の 指定）", () => {
+    const text = plain(render(check()));
+    expect(text).not.toContain("あなたの メッセージ");
+    expect(text).not.toContain("よかったところ");
+    // ⭕の 項目の ひとことも 出さない
+    expect(text).not.toContain("事実だけで 書けて います。");
   });
 
   it("ぜんぶ ⭕なら なおすところを 出さない", () => {

@@ -17,14 +17,15 @@ import { BrushUp, CheckBand } from "./check-parts";
  *
  * 上から 順に:
  * 1. 見出し（ネクマックス・「AIの ひょうか」・何問目か）と、OKか／いくつ 直すか（`CheckBand`）
- * 2. **あなたの メッセージ**（学生が 書いた もの）
- * 3. **なおすところ**（✗の 項目ごと）… 足りない こと → 書いた ところ → 直した 形、と
+ * 2. **なおすところ**（✗の 項目ごと）… 足りない こと → 書いた ところ → 直した 形、と
  *    **読む 人の しつもん**（「何の URL？」）。直した 形の 中の **まだ 書いて いない 中身は
  *    ？？？**（同日の A/B で「中身は『？』で 隠す」。メモから さがす 練習を 残す）
- * 4. **よかったところ**（⭕の 項目の ひとこと）
- * 5. **文法アドバイス**（助詞・ていねいな 形 など、学生の 文に ある 文法だけ。写真の 2つめ
- *   「変更前／変更後を 書く」は 何を 書くかの 話なので、ここでは なく 3 に 入る）
- * 6. ブラッシュアップ（中身は 合って いて 言い方だけ よく できる とき）
+ * 3. **文法アドバイス**（助詞・ていねいな 形 など、学生の 文に ある 文法だけ。写真の 2つめ
+ *   「変更前／変更後を 書く」は 何を 書くかの 話なので、ここでは なく 2 に 入る）
+ * 4. ブラッシュアップ（中身は 合って いて 言い方だけ よく できる とき）
+ *
+ * 「あなたの メッセージ」と「よかったところ」は 置かない（同日 あとの 指定「いったん削除で
+ * お願いします」）。書いた ものは 入力欄に ある——やり直しの ときは 欄を うす赤に する（呼ぶ 側）。
  *
  * 初級（メール）と 上級（Slack）で **同じ 顔**に する（同じ 意味の ものに 2つの 顔を 持たせない）。
  */
@@ -34,18 +35,13 @@ const UI_FURIGANA = buildFuriganaIndex([
   ["文法", "ぶんぽう"],
   ["例", "れい"],
   ["書", "か"],
-  ["読", "よ"],
-  ["人", "ひと"],
 ]);
 
 const NG_INK = "#e0475f";
-const OK_INK = "#2f9e57";
 
 export function AiReviewCard({
   check,
   labels,
-  written,
-  writtenTitle,
   position,
   furigana,
   aiFurigana,
@@ -55,10 +51,6 @@ export function AiReviewCard({
   check: AnswerCheck;
   /** 項目の id → 画面の 名前（観点・欄）。ひとことが 空の ときの 見出しに 使う。 */
   labels: ReadonlyMap<string, string>;
-  /** 学生が 書いた もの（メールは 組み立てた 全文）。 */
-  written: string;
-  /** 「あなたの メッセージ」「あなたの メール」。 */
-  writtenTitle: string;
   /** 何問目か（1から）と 全部で 何問か。 */
   position?: { readonly at: number; readonly of: number };
   /** 教材の 読み辞書（欄・観点の 名前）。 */
@@ -70,7 +62,6 @@ export function AiReviewCard({
   fallback?: string;
 }) {
   const ng = check.items.filter((one) => !one.ok);
-  const good = check.items.filter((one) => one.ok && one.note !== "");
   const grammar = check.grammar ?? [];
 
   return (
@@ -103,15 +94,6 @@ export function AiReviewCard({
         gated={gated}
       />
 
-      <div className="rounded-2xl border-2 border-[#cfe5fa] bg-[#eaf4fe] p-3">
-        <p className="text-navy text-sm font-black">
-          <RubyText text={writtenTitle} index={UI_FURIGANA} />
-        </p>
-        <p className="text-ink mt-1.5 rounded-xl bg-white px-3 py-2 text-sm leading-relaxed font-bold break-words whitespace-pre-line">
-          <RubyText text={written} index={aiFurigana} />
-        </p>
-      </div>
-
       {ng.length > 0 && (
         <div className="rounded-2xl border-2 border-[#f5a3b1] bg-[#fff6f8] p-3">
           <SectionTitle mark="!" color={NG_INK} text="なおすところ" />
@@ -127,22 +109,6 @@ export function AiReviewCard({
               />
             ))}
           </ol>
-        </div>
-      )}
-
-      {good.length > 0 && (
-        <div className="rounded-2xl border-2 border-[#a8dfba] bg-[#f2fbf5] p-3">
-          <SectionTitle mark="✓" color={OK_INK} text="よかったところ" />
-          <ul className="mt-2 grid gap-1.5">
-            {good.map((one) => (
-              <li
-                key={one.id}
-                className="text-ink rounded-xl bg-white px-3 py-2 text-sm leading-relaxed font-bold"
-              >
-                <RubyText text={one.note} index={aiFurigana} />
-              </li>
-            ))}
-          </ul>
         </div>
       )}
 
@@ -192,6 +158,8 @@ function NumberBadge({ number, color }: { number: number; color: string }) {
  * 書いた ところ（ピンク）→ 直した 形（みどり）を 並べ、右に **読む 人の しつもん**を 置く。
  * 何が 足りないかを「規則」では なく「相手が こまる こと」で 見せる——連絡文の ねらいは
  * 相手が すぐ 動ける ことに ある。スマホの 幅では 縦に 積む（矢印も 下向き）。
+ *
+ * 吹き出しと 書いた ところ・直した 形は **上ぞろえ**（同日 あとの 指定）。
  */
 function FixRow({
   number,
@@ -223,10 +191,10 @@ function FixRow({
         </p>
       </div>
 
-      <div className="mt-2 grid gap-2 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
+      <div className="mt-2 grid items-start gap-2 md:grid-cols-[minmax(0,1fr)_auto]">
         {after !== "" && (
           <div
-            className={`grid items-center gap-1.5 ${before === undefined ? "" : "sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]"}`}
+            className={`grid items-start gap-1.5 ${before === undefined ? "" : "sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]"}`}
           >
             {before !== undefined && (
               <>
@@ -237,7 +205,10 @@ function FixRow({
                     <RubyText text="（書いて いません）" index={UI_FURIGANA} />
                   )}
                 </p>
-                <span aria-hidden className="text-center text-xl font-black text-[#9aa8b8]">
+                <span
+                  aria-hidden
+                  className="self-center text-center text-xl font-black text-[#9aa8b8]"
+                >
                   <span className="hidden sm:inline">→</span>
                   <span className="sm:hidden">↓</span>
                 </span>
@@ -249,7 +220,7 @@ function FixRow({
           </div>
         )}
         {ask !== "" && (
-          <div className="flex items-end justify-end gap-1.5" aria-label="読む 人の しつもん">
+          <div className="flex items-start justify-end gap-1.5" aria-label="読む 人の しつもん">
             <p className="text-ink relative max-w-[14rem] rounded-2xl bg-[#fdecef] px-3 py-2 text-sm leading-relaxed font-bold whitespace-pre-line">
               <RubyText text={ask} index={aiFurigana} />
             </p>

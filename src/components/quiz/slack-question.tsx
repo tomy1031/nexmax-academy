@@ -111,7 +111,14 @@ export function SlackQuestion({
         placeholder={question.placeholder ?? "ここに 書いて ください…"}
         aria-label="じゆうに 書く"
         className="border-hairline bg-panel text-ink w-full rounded-[var(--radius-button)] border-2 px-4 py-3 text-base font-bold"
-        style={check ? { borderColor: check.ok ? "#58c273" : "#f26fa7" } : undefined}
+        style={
+          check
+            ? // やり直しの ときは 欄を うす赤に する（2026-10-26 の 指定）
+              check.ok
+              ? { borderColor: "#58c273" }
+              : { borderColor: "#f26fa7", background: "#fff0f3" }
+            : undefined
+        }
       />
       {question.starter && (
         <p className="text-ink-soft mt-1 text-xs leading-relaxed font-bold">
@@ -158,8 +165,6 @@ export function SlackQuestion({
             <AiReviewCard
               check={check}
               labels={new Map((question.ai.checks ?? []).map((one) => [one.id, one.label]))}
-              written={check.of}
-              writtenTitle="あなたの メッセージ"
               position={position}
               furigana={furigana}
               aiFurigana={aiFurigana}
