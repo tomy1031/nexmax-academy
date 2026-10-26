@@ -6,6 +6,7 @@ import { AiReviewCard } from "@/components/quiz/ai-review-card";
 import type { AnswerCheck } from "@/components/quiz/answer-check";
 import {
   buildQuizReviewPrompt,
+  fieldAfter,
   hideUnwritten,
   parseQuizReview,
   QUIZ_REVIEW_TOOL,
@@ -144,9 +145,33 @@ describe("AIの 返事の 読み取り（なおすところ・文法アドバイ
     expect(review.items[1]?.after).toBe("変更前：？？？\n変更後：http://test-server2");
   });
 
-  it("学生の 文に 無い 写しは「あなたの 文」として 出さない", () => {
+  it("学生の 文に 無い 写しは「あなたの 文」として 出さない（「書いて いません」とも 言わない）", () => {
     const made = { ...args, items: [{ ...args.items[0], before: "テスト環境が 変わった" }] };
-    expect(parseQuizReview(made, SLACK)?.items[0]?.before).toBe("");
+    expect(parseQuizReview(made, SLACK)?.items[0]?.before).toBeUndefined();
+  });
+
+  it.each(["テストURL変わった。", "変更: http://test-server2", "テスト URL 変わった"])(
+    "句読点・空白の ちがう 写し「%s」も 学生の 文と して 出す",
+    (quoted) => {
+      const made = { ...args, items: [{ ...args.items[0], before: quoted }] };
+      expect(parseQuizReview(made, SLACK)?.items[0]?.before).toBe(quoted);
+    },
+  );
+
+  it("読む 人の しつもん・ひとことの 中の まだ 書いて いない URLも 隠す", () => {
+    const made = {
+      ...args,
+      items: [
+        {
+          ...args.items[1],
+          note: "http://test-server1 が ありません。",
+          ask: "前は http://test-server1 でしたか？",
+        },
+      ],
+    };
+    const item = parseQuizReview(made, SLACK)?.items[0];
+    expect(item?.ask).toBe("前は ？？？ でしたか？");
+    expect(item?.note).toBe("？？？ が ありません。");
   });
 
   it("文法アドバイスは 2つまで。例文の 中の まだ 書いて いない 数字も 隠す", () => {
@@ -155,7 +180,7 @@ describe("AIの 返事の 読み取り（なおすところ・文法アドバイ
     expect(grammar[1]?.example).toBe("？？？です。");
   });
 
-  it("欄は 学生が その 欄に 書いた ものを 写しに 使い、欄の 名前と 正解の ことばを 落とす", () => {
+  it("欄は 写しも 直した 形も アプリが 作る（AIの 直しに 正解が あっても 使わない）", () => {
     const review = parseQuizReview(
       {
         ok: false,
@@ -167,7 +192,12 @@ describe("AIの 返事の 読み取り（なおすところ・文法アドバイ
             before: "宛先：佐藤さん",
             after: "宛先：システム管理部の 佐藤さん",
           },
-          { id: "f2", ok: false, note: "時間が ちがいます。", after: "【直る予定】今日の 15:00" },
+          {
+            id: "f2",
+            ok: false,
+            note: "時間が ちがいます。",
+            after: "【直る 予定】今日 の 15 : 00",
+          },
         ],
         polished: "",
         grammar: [],
@@ -176,6 +206,55 @@ describe("AIの 返事の 読み取り（なおすところ・文法アドバイ
     )!;
     expect(review.items[0]).toMatchObject({ before: "佐藤さん", after: "？？？の 佐藤さん" });
     expect(review.items[1]).toMatchObject({ before: "今日の16:00", after: "今日の ？？？" });
+  });
+
+  it("欄の 正解は、空白の 位置を 変えても ひとこと・しつもん・文法の 例文から 隠す", () => {
+    const review = parseQuizReview(
+      {
+        ok: false,
+        items: [
+          {
+            id: "f1",
+            ok: false,
+            note: "「システム 管理部の 佐藤さん」と 書きます。",
+            ask: "管理部の だれですか？",
+          },
+          { id: "f2", ok: false, note: "１５：００ です。" },
+        ],
+        polished: "",
+        grammar: [
+          {
+            point: "〜に 送ります",
+            explain: "",
+            example: "システム管理部の 佐藤さんに 送ります。",
+          },
+        ],
+      },
+      MAIL,
+    )!;
+    expect(review.items[0]?.note).toBe("「？？？の 佐藤さん」と 書きます。");
+    // 「管理部」は 正解の かたまり「システム管理部」の 一部——漢字の かたまりで 見る
+    expect(review.items[0]?.ask).not.toContain("システム");
+    expect(review.items[1]?.note).toBe("？？？ です。");
+    expect(review.grammar?.[0]?.example).toBe("？？？の 佐藤さんに 送ります。");
+  });
+
+  it.each([
+    ["システム管理部の 佐藤さん", "佐藤さん", "？？？の 佐藤さん"],
+    ["株式会社さくらデザインの 鈴木様", "鈴木様", "？？？の 鈴木様"],
+    ["品質管理（QA）チームの 皆様", "チームの 皆様", "？？？の 皆様"],
+    ["開発2課の 山田さん", "山田さん", "？？？の 山田さん"],
+    ["明日の 朝 9:00", "明日の8:00", "明日の ？？？ ？？？"],
+    ["スマホ版も 確認する こと", "スマホ版", "スマホ版も ？？？ こと"],
+  ])("欄の 直した 形: 正解「%s」・書いた「%s」→「%s」", (answer, value, expected) => {
+    expect(fieldAfter(answer, value)).toBe(expected);
+  });
+
+  it("全角の 数字・英字も 隠す。学生が 書いた URLは 記号が 付いても 残す", () => {
+    const written = "テストURL変わった http://test-server2";
+    expect(hideUnwritten("今日の １５：００まで", written)).toBe("今日の ？？？まで");
+    expect(hideUnwritten("ｈｔｔｐ：／／ｔｅｓｔ－ｓｅｒｖｅｒ１", written)).toBe("？？？");
+    expect(hideUnwritten("URL: http://test-server2.", written)).toBe("URL: http://test-server2.");
   });
 
   it("文法アドバイスが 来なくても 読める（空の 配列）", () => {
@@ -256,6 +335,30 @@ describe("カードの 見た目", () => {
     expect(text).not.toContain("なおすところ");
     expect(text).not.toContain("文法アドバイス");
     expect(text).toContain("OKです");
+  });
+
+  it("写しが 見つからない ときは「書いて いません」と 言わず、直した 形だけ 出す", () => {
+    const text = plain(
+      render(
+        check({
+          items: [{ id: "ketsuron", ok: false, note: "x", after: "直した 形" }],
+          grammar: [],
+        }),
+      ),
+    );
+    expect(text).not.toContain("書いて いません");
+    expect(text).toContain("直した 形");
+  });
+
+  it("直した 形が 無い ときは 写しも 矢印も 出さない（矢印の 先が 空に ならない）", () => {
+    const html = render(
+      check({
+        items: [{ id: "ketsuron", ok: false, note: "x", before: "テストURL変わった", after: "" }],
+        grammar: [],
+      }),
+    );
+    expect(html).not.toContain("→");
+    expect(plain(html)).toContain("x");
   });
 
   it("ひとことが 無い ✗（AIに つながらなかった）は 項目の 名前で 見出しを 出す", () => {

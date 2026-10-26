@@ -206,7 +206,12 @@ function FixRow({
   titleIndex: FuriganaIndex;
   aiFurigana: FuriganaIndex;
 }) {
-  const before = fix.before ?? "";
+  /*
+   * 写し（before）は 3つの 場合が ある: 無い（AIの 写しが 学生の 文に 見つからなかった
+   * ——出さない）、空（AIが「書いて いない」と 言った）、文。直した 形が 無ければ 並びごと 出さない
+   *（矢印の 先が 空に なる）。
+   */
+  const before = fix.before;
   const after = fix.after ?? "";
   const ask = fix.ask ?? "";
   return (
@@ -219,24 +224,28 @@ function FixRow({
       </div>
 
       <div className="mt-2 grid gap-2 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
-        {(before !== "" || after !== "") && (
-          <div className="grid items-center gap-1.5 sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]">
-            <p className="text-ink rounded-xl bg-[#fde8ec] px-3 py-2 text-sm leading-relaxed font-bold break-words whitespace-pre-line">
-              {before !== "" ? (
-                <RubyText text={before} index={aiFurigana} />
-              ) : (
-                <RubyText text="（書いて いません）" index={UI_FURIGANA} />
-              )}
-            </p>
-            <span aria-hidden className="text-center text-xl font-black text-[#9aa8b8]">
-              <span className="hidden sm:inline">→</span>
-              <span className="sm:hidden">↓</span>
-            </span>
-            {after !== "" && (
-              <p className="text-ink rounded-xl bg-[#e6f6ea] px-3 py-2 text-sm leading-relaxed font-bold break-words whitespace-pre-line">
-                <RubyText text={after} index={aiFurigana} />
-              </p>
+        {after !== "" && (
+          <div
+            className={`grid items-center gap-1.5 ${before === undefined ? "" : "sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]"}`}
+          >
+            {before !== undefined && (
+              <>
+                <p className="text-ink rounded-xl bg-[#fde8ec] px-3 py-2 text-sm leading-relaxed font-bold break-words whitespace-pre-line">
+                  {before !== "" ? (
+                    <RubyText text={before} index={aiFurigana} />
+                  ) : (
+                    <RubyText text="（書いて いません）" index={UI_FURIGANA} />
+                  )}
+                </p>
+                <span aria-hidden className="text-center text-xl font-black text-[#9aa8b8]">
+                  <span className="hidden sm:inline">→</span>
+                  <span className="sm:hidden">↓</span>
+                </span>
+              </>
             )}
+            <p className="text-ink rounded-xl bg-[#e6f6ea] px-3 py-2 text-sm leading-relaxed font-bold break-words whitespace-pre-line">
+              <RubyText text={after} index={aiFurigana} />
+            </p>
           </div>
         )}
         {ask !== "" && (

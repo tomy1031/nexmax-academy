@@ -164,16 +164,9 @@ export function useAnswerCheck(question: Reviewable, written: string) {
 
       // 画面が AIの 文を 描く ときと **同じ 索引**（`aiReplyFurigana`）で 見る
       const index = buildFuriganaIndex(aiReplyFurigana(input.furigana.entries));
-      /*
-       * **学生が 自分で 打った 漢字は 通す**——直した 文（after）は 学生の ことばを 残して
-       * 直す ので、学生が 打った 漢字が そのまま 入る。それは 本人が 読める（打った のだから）。
-       */
-      const own = new Set(text);
       const readable = (value: string) => value === "" || uncoveredKanji(value, index).length === 0;
-      const ownReadable = (value: string) =>
-        value === "" || uncoveredKanji(value, index).every((kanji) => own.has(kanji));
       const fixReadable = (one: ReviewItemResult) =>
-        readable(one.note) && ownReadable(one.after ?? "") && readable(one.ask ?? "");
+        readable(one.note) && readable(one.after ?? "") && readable(one.ask ?? "");
       const tipReadable = (tip: GrammarTip) =>
         readable(tip.point) && readable(tip.explain) && readable(tip.example);
 
@@ -236,7 +229,7 @@ export function useAnswerCheck(question: Reviewable, written: string) {
           items: result.review.items.map((one) => ({
             ...one,
             note: readable(one.note) ? one.note : "",
-            after: ownReadable(one.after ?? "") ? one.after : "",
+            after: readable(one.after ?? "") ? one.after : "",
             ask: readable(one.ask ?? "") ? one.ask : "",
           })),
           polished: readable(result.review.polished) ? result.review.polished : "",
