@@ -172,6 +172,18 @@ export function QuizRunner({
     setState((prev) => quizReducer(prev, action));
   }, []);
 
+  /**
+   * こたえの チェックで **いまの 文の まま ⭕** の 問い（出す ときに 採点へ 渡す）。
+   * 関門の ⭕（`AllQuestionsCard` の `passed`）と 同じ ものさしで 数える。
+   */
+  const checkedIds = () =>
+    state.questions
+      .filter((q) => {
+        const check = checks[q.id];
+        return check?.ok === true && check.of === checkedText(q, state.drafts[q.id]);
+      })
+      .map((q) => q.id);
+
   /*
    * しおりは 教材まるごとの 出題順を 前提に する。問題を 絞った セッションの
    * 途中経過は 保存しない——中途半端な 内訳を 次回 誤って 読み込ませない ための 線引き
@@ -700,7 +712,7 @@ export function QuizRunner({
               state.phase.kind === "ask" ? state.phase.inputIssueQuestionId : undefined
             }
             dispatch={dispatch}
-            onSubmit={() => dispatch({ type: "submit" })}
+            onSubmit={() => dispatch({ type: "submit", checked: checkedIds() })}
           />
         ) : state.phase.kind === "confirm" ? (
           <ConfirmCard
@@ -710,7 +722,7 @@ export function QuizRunner({
             requireAll={set.requireAll}
             onGoto={(index) => dispatch({ type: "goto", index })}
             onBack={() => dispatch({ type: "back" })}
-            onSubmit={() => dispatch({ type: "submit" })}
+            onSubmit={() => dispatch({ type: "submit", checked: checkedIds() })}
           />
         ) : (
           question && (
@@ -815,6 +827,7 @@ export function QuizRunner({
                         emotionStep2={state.phase.kind === "emotionReply"}
                         mode={state.mode}
                         draft={currentDraft(state)}
+                        position={{ at: state.index + 1, of: state.questions.length }}
                       />
                       {/*
                       まとめて 出す ときは 押した 瞬間に 進まないので、進む ボタンを 置く。
@@ -1822,6 +1835,7 @@ const QuestionRow = memo(function QuestionRow({
         mode="all"
         draft={draft}
         emotionStep2={draft?.kind === "emotion" && draft.feeling !== null}
+        position={{ at: index + 1, of: total }}
       />
 
       {/* 注意は **その もんだいの 下**に 出す（上に 1つだと どの 欄の 話か 分からない） */}

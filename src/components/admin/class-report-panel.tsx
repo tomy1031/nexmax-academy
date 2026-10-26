@@ -1,69 +1,37 @@
-"use client";
-
-import { useState } from "react";
+import Link from "next/link";
 import { classDateLabel, groupLabel, type ClassReportView } from "@/lib/records/class-report";
 
 /**
- * 授業ごとの分析（学習の記録のいちばん上・要望 #599）
+ * 授業ごとの分析の中身（要望 #599。ページは `/admin/class-reports`）
  *
  * 火・水・金の授業のあと、Claude の定期タスクが生徒の回答を読んで DB に登録した分析を出す。
- * 選んでいる組の最新を開き、過去の分析は日付で選べる。生徒の名前を押すと、その生徒の
- * 「工程ごとの行ったこと」が下に出る（生徒の一覧の名前と同じ動き）。
+ * 2026-10-26 に学習の記録のいちばん上から別のページへ移した（「授業ごとの分析は別ページに
+ * まとめてください」）。どの組・どの日かを選ぶのはページの側（class-reports-shell.tsx）。
+ * 生徒の名前を押すと、学習の記録でその生徒の「工程ごとの行ったこと」を開く。
  *
  * 色は明るい地に濃い文字だけ（濃い地を使わない）。
  */
 export function ClassReportPanel({
-  reports,
+  report,
   busy,
   note,
-  onPick,
 }: {
-  reports: readonly ClassReportView[];
+  report: ClassReportView | null;
   busy: boolean;
   note: string | null;
-  onPick: (profileId: string) => void;
 }) {
-  const [chosenId, setChosenId] = useState<string | null>(null);
-  const report = reports.find((one) => one.id === chosenId) ?? reports[0] ?? null;
-
   return (
-    <section className="card-island mb-3 p-4 sm:p-5" aria-labelledby="class-report-heading">
-      <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <h2 id="class-report-heading" className="text-navy text-lg font-black">
-          授業ごとの分析
-        </h2>
-        {reports.length > 1 ? (
-          <label className="text-ink-soft flex items-center gap-2 text-xs font-black">
-            ほかの日を見る
-            <select
-              value={report?.id ?? ""}
-              onChange={(e) => setChosenId(e.target.value)}
-              className="border-hairline bg-panel text-ink rounded-[var(--radius-button)] border-2 px-2 py-1 text-sm font-bold"
-            >
-              {reports.map((one) => (
-                <option key={one.id} value={one.id}>
-                  {classDateLabel(one.classDate)} {groupLabel(one)}
-                </option>
-              ))}
-            </select>
-          </label>
-        ) : null}
-      </div>
-      <p className="text-ink-soft mt-1 text-xs font-bold">
-        火・水・金の授業のあと（21:30ごろ）に、Claude が生徒の回答を読んで書きます。
-        AIの疑いは決めつけではなく、先生が本人に口頭で確かめる候補です。
-      </p>
-
+    <section className="card-island mb-3 p-4 sm:p-5" aria-label="授業ごとの分析">
       {busy ? (
-        <p className="text-ink-soft mt-3 font-bold">読み込み中です。</p>
+        <p className="text-ink-soft font-bold">読み込み中です。</p>
       ) : note ? (
         <Notice>{note}</Notice>
       ) : report === null ? (
-        <p className="text-ink-soft mt-3 font-bold">
+        <p className="text-ink-soft font-bold">
           まだ分析はありません。次の授業のあと、21:30ごろにここへ入ります。
         </p>
       ) : (
-        <ReportBody report={report} onPick={onPick} />
+        <ReportBody report={report} />
       )}
     </section>
   );
@@ -73,7 +41,7 @@ function Notice({ children }: { children: React.ReactNode }) {
   return (
     <p
       role="status"
-      className="mt-3 rounded-2xl border-2 bg-white p-3 text-sm font-black"
+      className="rounded-2xl border-2 bg-white p-3 text-sm font-black"
       style={{ borderColor: "var(--color-sun)", color: "var(--color-ink)" }}
     >
       {children}
@@ -81,18 +49,17 @@ function Notice({ children }: { children: React.ReactNode }) {
   );
 }
 
-function ReportBody({
-  report,
-  onPick,
-}: {
-  report: ClassReportView;
-  onPick: (profileId: string) => void;
-}) {
+function ReportBody({ report }: { report: ClassReportView }) {
   return (
-    <div className="mt-3 flex flex-col gap-4">
-      <p className="text-ink-soft text-xs font-black tabular-nums">
-        {classDateLabel(report.classDate)} ・ {groupLabel(report)} ・ 動いた生徒 {report.students}人
-      </p>
+    <div className="flex flex-col gap-4">
+      <div>
+        <h2 className="text-navy text-lg font-black tabular-nums">
+          {classDateLabel(report.classDate)} ・ {groupLabel(report)}
+        </h2>
+        <p className="text-ink-soft text-xs font-black tabular-nums">
+          動いた生徒 {report.students}人。名前を押すと、学習の記録でその生徒の回答を開きます。
+        </p>
+      </div>
       {report.summary ? <p className="text-ink font-bold">{report.summary}</p> : null}
 
       <Part title={`フォローが要る人（${report.followUp.length}人）`}>
@@ -106,7 +73,7 @@ function ReportBody({
                 className="rounded-2xl border-2 p-3"
                 style={{ borderColor: "#f2b8a8", background: "#fff4f0" }}
               >
-                <Name name={person.name} profileId={person.profileId} onPick={onPick} />
+                <Name name={person.name} profileId={person.profileId} />
                 {person.reasons.map((reason) => (
                   <span
                     key={reason}
@@ -140,7 +107,7 @@ function ReportBody({
                 className="rounded-2xl border-2 p-3"
                 style={{ borderColor: "#f0d48a", background: "#fff8e6" }}
               >
-                <Name name={one.name} profileId={one.profileId} onPick={onPick} />
+                <Name name={one.name} profileId={one.profileId} />
                 <Quote>{one.quote}</Quote>
                 {one.reason ? <p className="text-ink text-sm font-bold">{one.reason}</p> : null}
               </li>
@@ -203,23 +170,14 @@ function Quote({ children }: { children: React.ReactNode }) {
   );
 }
 
-function Name({
-  name,
-  profileId,
-  onPick,
-}: {
-  name: string;
-  profileId: string;
-  onPick: (profileId: string) => void;
-}) {
+function Name({ name, profileId }: { name: string; profileId: string }) {
   if (profileId === "") return <span className="text-ink font-black">{name}</span>;
   return (
-    <button
-      type="button"
-      onClick={() => onPick(profileId)}
+    <Link
+      href={`/admin/records?profile=${encodeURIComponent(profileId)}`}
       className="text-sky font-black underline underline-offset-2"
     >
       {name}
-    </button>
+    </Link>
   );
 }

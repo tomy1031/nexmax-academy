@@ -480,7 +480,9 @@ export function buildBugReviewPrompt(context: BugReviewContext, kanjiRetry = fal
     "- つかえる 漢字は **画面の 説明と お手本に 出て くる ことば**と、つぎの ことばだけです。",
     `  ${AI_KANJI_WORDS.join("・")}`,
     "  どちらにも 無い ことばは **ひらがな**で 書く。外来語は カタカナ。",
-    `- つぎの ことばは つかわない: ${FORBIDDEN_LEARNER_WORDS.join("・")}`,
+    ...(FORBIDDEN_LEARNER_WORDS.length
+      ? [`- つぎの ことばは つかわない: ${FORBIDDEN_LEARNER_WORDS.join("・")}`]
+      : []),
     "- 人を 評さない。報告の 文に ついてだけ 書く。",
   );
   if (kanjiRetry) {

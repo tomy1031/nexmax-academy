@@ -59,6 +59,16 @@ export const GROUPS: readonly { title: string; items: readonly Item[] }[] = [
         match: "/admin/records",
       },
       /*
+       * 授業ごとの分析（2026-10-26）。前は 学習の きろくの いちばん 上に あった。
+       * 道を `/admin/records/…` の 下に しないのは、学習の きろくと 2つ 同時に 光るため。
+       */
+      {
+        href: "/admin/class-reports",
+        icon: "📝",
+        label: "授業ごとの分析",
+        match: "/admin/class-reports",
+      },
+      /*
        * エラーログ（2026-10-11）。本番サイトの自動チェックの結果と、学習者のブラウザで
        * 起きたエラー。連絡を受ける前に気づくため。
        */

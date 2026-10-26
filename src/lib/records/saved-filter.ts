@@ -91,6 +91,26 @@ export function writeSavedFilter(storage: FilterStorage | null, filter: RecordFi
 }
 
 /**
+ * 所属・期生だけを 書きかえる（授業ごとの分析の ページ・2026-10-26）。
+ * 2つの ページで 組を 共有する——分析で 組を 変えて 学習の きろくへ 移っても、
+ * 同じ 組で 開く。メンバーの 選びは 外す（学習の きろくで 所属を 変えた ときと 同じ）。
+ * ステージ・単元は 残す。
+ */
+export function writeSavedGroup(
+  storage: FilterStorage | null,
+  group: { university: string; cohort: number },
+): void {
+  const saved = readSavedFilter(storage);
+  writeSavedFilter(storage, {
+    ...EMPTY_FILTER,
+    stageId: saved?.stageId ?? "",
+    unitId: saved?.unitId ?? "",
+    university: group.university,
+    cohort: group.cohort,
+  });
+}
+
+/**
  * 覚えた 条件を、**いまも ある もの**だけ 戻す。
  *
  * 消えた 学生・教材の id を そのまま 戻すと、選びが 画面に 出ない まま 効いて、

@@ -58,6 +58,8 @@ interface Props {
   mode?: QuizMode;
   /** いまの 下書き（まとめて 出す のとき、書いた ものを 画面に 出し直す ため）。 */
   draft?: QuizDraft;
+  /** 何問目か（こたえの チェックの「AIの ひょうか」に 出す）。 */
+  position?: { readonly at: number; readonly of: number };
 }
 
 export function QuestionBody({
@@ -68,6 +70,7 @@ export function QuestionBody({
   disabled,
   mode = "one",
   draft,
+  position,
 }: Props) {
   const submitMode = mode !== "one";
 
@@ -134,6 +137,7 @@ export function QuestionBody({
           submitMode={submitMode}
           draft={draft?.kind === "free" ? draft : undefined}
           onSubmit={(input) => dispatch({ type: "answerFree", input })}
+          position={position}
         />
       ) : (
         <FreeInput
@@ -155,7 +159,8 @@ export function QuestionBody({
           disabled={disabled}
           submitMode={submitMode}
           draft={draft?.kind === "fillin" ? draft : undefined}
-          onSubmit={(inputs) => dispatch({ type: "answerFillin", inputs })}
+          onSubmit={(inputs, checked) => dispatch({ type: "answerFillin", inputs, checked })}
+          position={position}
         />
       );
 

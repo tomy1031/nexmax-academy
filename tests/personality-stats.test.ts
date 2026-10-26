@@ -27,10 +27,13 @@ import {
   getSampleMode,
   hasCompletedPersonality,
   latestResultsByProfile,
+  pickSchoolGroup,
   selectCompletedProfiles,
   type CompletedProfile,
   type StatsProfile,
 } from "../src/lib/personality-stats";
+import type { ProfileRow } from "../src/lib/profile-db";
+import { EMPTY_FILTER, matchesProfile } from "../src/lib/records/table";
 
 /* ---------------- fixture ---------------- */
 
@@ -803,6 +806,54 @@ describe("calculateDashboardKpis", () => {
       { created_at: daysAgo(7) },
     ];
     expect(calculateDashboardKpis([], results, now).recentAnswers).toBe(2);
+  });
+});
+
+describe("pickSchoolGroup（所属・期生で分ける 2026-10-26）", () => {
+  const now = new Date("2026-07-27T00:00:00Z");
+  const school = (id: string, university: string, cohort: number) =>
+    ({ ...profileOfCode(id, "ISTJ"), university, cohort }) as unknown as ProfileRow;
+  const aupp2 = school("aupp2", "AUPP", 2);
+  const aupp1 = school("aupp1", "AUPP", 1);
+  const cadt2 = school("cadt2", "CADT", 2);
+  const staff = school("staff", "講師・スタッフ", 0);
+  const unset = school("unset", "", 0);
+  const everyone = [aupp2, aupp1, cadt2, staff, unset];
+  const results = everyone.map((profile) => ({
+    profile_id: profile.id,
+    created_at: now.toISOString(),
+  }));
+  const pick = (university: string, cohort: number) =>
+    pickSchoolGroup(everyone, results, (profile) =>
+      matchesProfile(profile, { ...EMPTY_FILTER, university, cohort }),
+    );
+
+  it("所属と期生の両方を選ぶと、その期生だけになる（ほかの学校・先生は入らない）", () => {
+    expect(pick("AUPP", 2).profiles.map((profile) => profile.id)).toEqual(["aupp2"]);
+    expect(pick("CADT", 2).profiles.map((profile) => profile.id)).toEqual(["cadt2"]);
+  });
+
+  it("所属だけを選ぶと、その学校の全部の期生になる", () => {
+    expect(pick("AUPP", 0).profiles.map((profile) => profile.id)).toEqual(["aupp2", "aupp1"]);
+  });
+
+  it("期生だけを選ぶと、学校をまたいだその期生になる", () => {
+    expect(pick("", 2).profiles.map((profile) => profile.id)).toEqual(["aupp2", "cadt2"]);
+  });
+
+  it("ぜんぶなら全員（分ける前と同じ）", () => {
+    expect(pick("", 0).profiles).toHaveLength(everyone.length);
+    expect(pick("", 0).results).toHaveLength(results.length);
+  });
+
+  it("受験の記録も同じ人だけになり、直近7日の回答がほかの組みを数えない", () => {
+    const group = pick("AUPP", 2);
+    expect(group.results.map((result) => result.profile_id)).toEqual(["aupp2"]);
+    expect(calculateDashboardKpis(group.profiles, group.results, now)).toMatchObject({
+      answered: 1,
+      registered: 1,
+      recentAnswers: 1,
+    });
   });
 });
 

@@ -1028,6 +1028,22 @@ export function matchesProfile(profile: ProfileRow | undefined, filter: RecordFi
   return true;
 }
 
+/**
+ * 1人を 名指しして 開く ときの 絞り込み（授業ごとの分析の 名前から 来た とき）。
+ * 所属・期生が その人に 合わなければ 外す——残すと メンバーの 一覧に その人が 出ず、
+ * 選びが 画面に 見えない まま 効く。ステージ・単元は そのまま 残す。
+ */
+export function pickProfileFilter(
+  filter: RecordFilter,
+  profile: ProfileRow | undefined,
+): RecordFilter {
+  if (!profile) return filter;
+  const group = matchesProfile(profile, { ...filter, profileId: "" })
+    ? {}
+    : { university: "", cohort: 0 };
+  return { ...filter, ...group, profileId: profile.id };
+}
+
 /* ------------------------------------------------------------------ *
  * 見取り図 —— **どこに 記録が あるか**
  *

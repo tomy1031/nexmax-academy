@@ -32,6 +32,11 @@ import {
   type BugReportEntry,
 } from "@/lib/quiz/bugreport";
 import { fillinSlots, type FillinSlot } from "@/lib/quiz/fillin";
+import {
+  fillinAiMayAccept,
+  fillinContentMatches,
+  fillinNegationAgrees,
+} from "@/lib/quiz/fillin-match";
 import { answerMatches, normalizeReading } from "@/lib/text/normalize";
 
 /**
@@ -578,23 +583,57 @@ export function correctAnswerText(question: QuizQuestion): string {
  * 「ユーザーが ログインできない」と 前を 足した 学習者は **見つけられて いる**。
  *
  * 逆に 短すぎる もの（「ログイン」だけ）は 落ちる——正解を 丸ごと 含んで いないため。
+ *
+ * **1字1句 同じで なくて よい**（2026-10-26 の 指定「システム管理部佐藤さん」は 誤りでは ない）。
+ * 助詞・呼び方・ていねいな 形・時刻の 書き方の ちがいは `fillinContentMatches` が 通す。
  */
 export function fillinSlotOk(slot: FillinSlot, input: string): boolean {
   const written = input.trim();
   if (written === "") return false;
-  const answers = [slot.answer, ...slot.accept];
   /*
    * `answerMatches` は **包含も 通す**（「ホームページを つくります」←「ホームページ」）。
    * それだけで 決めると、正解が そのまま 入って いる **メモを 丸ごと 4つの 欄に 貼る**
    * だけで 満点に なる——さがす 練習が 消える（2026-09-20 の コード検収）。
    */
-  const matched = answers.filter((answer) => answerMatches(written, [answer]));
-  if (matched.length === 0) return false;
   /*
-   * **長さの 見張り**。前に ことばが 付く ぶん（「ユーザーが ログインできない こと」）は
-   * 通し、文を 丸ごと 貼った ものは 通さない 幅に する。当たった 正解の うち
-   * **いちばん 長い もの**で 測る（別の 言い方を 足した 教材で きつく ならない ように）。
+   * 打ち消しの 数は どちらの 見かたでも 合わせる。包含だけだと「サーバーの エラーでは ない」が
+   * 「サーバーの エラー」を 含むので ⭕に なって いた（2026-10-26 の コード検収）。
    */
+  return fillinSlotFits(
+    slot,
+    written,
+    (answer) =>
+      fillinNegationAgrees(answer, written) &&
+      (answerMatches(written, [answer]) || fillinContentMatches(answer, written)),
+  );
+}
+
+/**
+ * **アプリが ✗に した 欄を、AIが 中身を 見て ⭕に して よいか**（2026-10-26）。
+ *
+ * 言いかえ（「会議」／「ミーティング」）は 機械では 見分けられない ので AIに まかせる。
+ * ただし 数字と 日にちが ちがう もの・メモを 丸ごと 貼った ものは、AIが 何と 言っても ✗。
+ */
+export function fillinSlotAiMayAccept(slot: FillinSlot, input: string): boolean {
+  const written = input.trim();
+  if (written === "") return false;
+  return fillinSlotFits(slot, written, (answer) => fillinAiMayAccept(answer, written));
+}
+
+/**
+ * 当たった 正解が あり、**長さの 見張り**も 通るか。
+ *
+ * 前に ことばが 付く ぶん（「ユーザーが ログインできない こと」）は 通し、文を 丸ごと
+ * 貼った ものは 通さない 幅に する。当たった 正解の うち **いちばん 長い もの**で 測る
+ *（別の 言い方を 足した 教材で きつく ならない ように）。
+ */
+function fillinSlotFits(
+  slot: FillinSlot,
+  written: string,
+  hits: (answer: string) => boolean,
+): boolean {
+  const matched = [slot.answer, ...slot.accept].filter(hits);
+  if (matched.length === 0) return false;
   const limit = Math.max(...matched.map((answer) => normalizeReading(answer).length)) * 2 + 8;
   return normalizeReading(written).length <= limit;
 }

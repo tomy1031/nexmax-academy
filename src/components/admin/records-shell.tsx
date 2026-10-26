@@ -32,7 +32,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AdminError, AdminHeader, AdminLoading, AdminPageFrame } from "@/components/admin/admin-ui";
-import { ClassReportPanel } from "@/components/admin/class-report-panel";
 import { LearnerRoster } from "@/components/admin/learner-roster";
 import { LearnerWorkPanel } from "@/components/admin/learner-work-panel";
 import { fetchAllProfiles, fetchOwnProfile, type ProfileRow } from "@/lib/profile-db";
@@ -41,7 +40,6 @@ import { createClient } from "@/lib/supabase/client";
 import {
   fetchCertificateByCode,
   fetchCertificateRecords,
-  fetchClassReports,
   fetchContentProgress,
   fetchProfileRows,
   fetchLearnerRoster,
@@ -70,6 +68,7 @@ import {
   listedKinds,
   listeningTable,
   matchesProfile,
+  pickProfileFilter,
   progressTable,
   quizTable,
   RECORD_KINDS,
@@ -81,11 +80,9 @@ import {
   type RecordKind,
   type RecordTable,
 } from "@/lib/records/table";
-import { toClassReportView } from "@/lib/records/class-report";
 import { buildLearnerWork, type LearnerRecords } from "@/lib/records/learner-work";
 import { buildRoster, rosterStudents } from "@/lib/records/roster";
 import type {
-  ClassReportRow,
   ContentProgressRecord,
   LearnerQuizFirstRow,
   LearnerSummaryRow,
@@ -111,10 +108,13 @@ const PAGE_SIZE = 200;
 export function RecordsShell({
   index,
   initialKind,
+  initialProfileId,
 }: {
   index: UnitIndex;
   /** 畳んだ 古い URL（`/admin/meetings`・`/admin/quizzes`）から 来た ときの 種類。 */
   initialKind?: RecordKind;
+  /** 授業ごとの分析で 名前を 押して 来た ときの 生徒（`?profile=`）。 */
+  initialProfileId?: string;
 }) {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
@@ -255,12 +255,19 @@ export function RecordsShell({
          * そろってから 戻すのは、**いまも ある 学生・教材だけ**を 戻す ため。
          * 読み込み中の 表示と 同じ 回で 戻すので、空の 条件の 表を 1回 読みに 行かない。
          */
+        const restored = restoreFilter(readSavedFilter(browserStorage()), {
+          profileIds: new Set(all.map((profile) => profile.id)),
+          stageIds: new Set(index.stages.map((stage) => stage.id)),
+          unitIds: new Set(index.units.map((unit) => unit.id)),
+        });
+        // 授業ごとの分析の 名前から 来たら、その 生徒を えらんだ 形で 開く
         setFilter(
-          restoreFilter(readSavedFilter(browserStorage()), {
-            profileIds: new Set(all.map((profile) => profile.id)),
-            stageIds: new Set(index.stages.map((stage) => stage.id)),
-            unitIds: new Set(index.units.map((unit) => unit.id)),
-          }),
+          initialProfileId
+            ? pickProfileFilter(
+                restored,
+                all.find((profile) => profile.id === initialProfileId),
+              )
+            : restored,
         );
         setLoading(false);
       } catch (error) {
@@ -272,7 +279,7 @@ export function RecordsShell({
     return () => {
       active = false;
     };
-  }, [router, index]);
+  }, [router, index, initialProfileId]);
 
   /*
    * 条件を 変えたら 覚える。**読み込みが 終わる 前は 書かない**——最初の 描画の
@@ -331,39 +338,6 @@ export function RecordsShell({
     () =>
       rosterFresh ? buildRoster(students, rosterData.summaries, rosterData.quizFirst, index) : [],
     [rosterFresh, rosterData, students, index],
-  );
-
-  /*
-   * 授業ごとの分析（要望 #599）。所属・期生で選んだ組の分析を読む（選んでいなければ全部の組）。
-   * Claude の定期タスクが授業のあとに DB へ登録したもの。
-   */
-  const reportKey = `${filter.university}|${filter.cohort}`;
-  const [reportData, setReportData] = useState<{
-    key: string;
-    rows: ClassReportRow[];
-    note: string | null;
-  } | null>(null);
-  useEffect(() => {
-    if (loading) return;
-    let active = true;
-    const [university = "", cohort = "0"] = reportKey.split("|");
-    void (async () => {
-      const got = await fetchClassReports({ university, cohort: Number(cohort) });
-      if (!active) return;
-      setReportData(
-        got.ok
-          ? { key: reportKey, rows: got.rows, note: null }
-          : { key: reportKey, rows: [], note: got.message },
-      );
-    })();
-    return () => {
-      active = false;
-    };
-  }, [loading, reportKey]);
-  const reportFresh = reportData !== null && reportData.key === reportKey;
-  const reports = useMemo(
-    () => (reportFresh ? reportData.rows.map(toClassReportView) : []),
-    [reportFresh, reportData],
   );
 
   /*
@@ -617,13 +591,6 @@ export function RecordsShell({
           </Field>
         </div>
       </section>
-
-      <ClassReportPanel
-        reports={reports}
-        busy={!reportFresh}
-        note={reportFresh ? reportData.note : null}
-        onPick={(profileId) => changeFilter({ profileId })}
-      />
 
       <LearnerRoster
         rows={rosterRows}

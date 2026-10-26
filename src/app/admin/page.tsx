@@ -33,6 +33,7 @@ import {
   calculateQuestionStats,
   calculateTypeDistribution,
   createBalancedTeams,
+  pickSchoolGroup,
   selectCompletedProfiles,
 } from "@/lib/personality-stats";
 import {
@@ -43,12 +44,37 @@ import {
   type PersonalityResultRow,
   type ProfileRow,
 } from "@/lib/profile-db";
+import { EMPTY_FILTER, matchesProfile } from "@/lib/records/table";
+import { AFFILIATIONS, COHORTS, isStaff } from "@/lib/school";
 import { createClient } from "@/lib/supabase/client";
+
+/** 所属と期生の選び。値の意味は学習の記録の絞り込みと同じ（"" と 0 は「ぜんぶ」、-1 は期生が未設定）。 */
+interface SchoolPick {
+  university: string;
+  cohort: number;
+}
+
+const ALL_SCHOOLS: SchoolPick = { university: "", cohort: 0 };
+
+const SELECT =
+  "border-hairline bg-panel text-ink w-full rounded-[var(--radius-button)] border-2 px-3 py-2 text-sm font-bold";
+
+/** 画面とCSVの名前に出す呼び方（例: `AUPP 2期生`・`AUPP（全部の期生）`）。 */
+function schoolPickLabel({ university, cohort }: SchoolPick): string {
+  const cohortLabel = cohort > 0 ? `${cohort}期生` : cohort === -1 ? "期生が未設定" : "";
+  if (university === "" && cohortLabel === "") return "全員";
+  if (university === "") return `${cohortLabel}（全部の所属）`;
+  // 講師・スタッフには期生が無いので「全部の期生」と添えない。
+  if (cohortLabel === "") return isStaff(university) ? university : `${university}（全部の期生）`;
+  return `${university} ${cohortLabel}`;
+}
 
 export default function AdminDashboardPage() {
   const router = useRouter();
   const [profiles, setProfiles] = useState<ProfileRow[]>([]);
   const [results, setResults] = useState<PersonalityResultRow[]>([]);
+  /** 集計する所属と期生。AUPP と CADT、期生ごとに分けて見る（2026-10-26）。 */
+  const [schoolPick, setSchoolPick] = useState<SchoolPick>(ALL_SCHOOLS);
   const [teamSize, setTeamSize] = useState(4);
   /**
    * 教師の手入れ替え結果（07 §6.4）。どの編成に対する編集かを key で持つ。
@@ -107,11 +133,19 @@ export default function AdminDashboardPage() {
     };
   }, [router]);
 
-  const respondents = useMemo(
-    () => selectCompletedProfiles(profiles, PERSONALITY_VERSION),
-    [profiles],
+  // ここから下の集計・チーム編成・CSV は、選んだ所属と期生の人だけを見る。
+  const group = useMemo(
+    () =>
+      pickSchoolGroup(profiles, results, (profile) =>
+        matchesProfile(profile, { ...EMPTY_FILTER, ...schoolPick }),
+      ),
+    [profiles, results, schoolPick],
   );
-  const kpis = useMemo(() => calculateDashboardKpis(profiles, results), [profiles, results]);
+  const respondents = useMemo(
+    () => selectCompletedProfiles(group.profiles, PERSONALITY_VERSION),
+    [group],
+  );
+  const kpis = useMemo(() => calculateDashboardKpis(group.profiles, group.results), [group]);
   const typeDistribution = useMemo(() => calculateTypeDistribution(respondents), [respondents]);
   const axisAverages = useMemo(() => calculateAxisAverages(respondents), [respondents]);
   const questionStats = useMemo(() => calculateQuestionStats(respondents), [respondents]);
@@ -174,19 +208,27 @@ export default function AdminDashboardPage() {
     [swapPick, manualGroups, teams, teamKey],
   );
 
+  const changeSchoolPick = useCallback((patch: Partial<SchoolPick>) => {
+    setSchoolPick((current) => ({ ...current, ...patch }));
+    // 入れ替えの1人目が、選び直したあとの名簿にいないまま残らないようにする。
+    setSwapPick(null);
+  }, []);
+
   const downloadCsv = useCallback(() => {
-    const blob = new Blob([buildPersonalityCsv(profiles, results)], {
+    const blob = new Blob([buildPersonalityCsv(group.profiles, group.results)], {
       type: "text/csv;charset=utf-8",
     });
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement("a");
     anchor.href = url;
-    anchor.download = `nexmax-personality-${new Date().toISOString().slice(0, 10)}.csv`;
+    const isAll = schoolPick.university === "" && schoolPick.cohort === 0;
+    const pickSuffix = isAll ? "" : `-${schoolPickLabel(schoolPick).replaceAll(" ", "")}`;
+    anchor.download = `nexmax-personality${pickSuffix}-${new Date().toISOString().slice(0, 10)}.csv`;
     document.body.append(anchor);
     anchor.click();
     anchor.remove();
     URL.revokeObjectURL(url);
-  }, [profiles, results]);
+  }, [group, schoolPick]);
 
   if (errorMessage) return <AdminError message={errorMessage} />;
   if (loading) return <AdminLoading />;
@@ -203,6 +245,50 @@ export default function AdminDashboardPage() {
           <h1 className="text-navy text-3xl font-black sm:text-4xl">性格診断の集計</h1>
           <p className="text-ink-soft mt-2 font-medium">
             学生一人ひとりの傾向と、クラス全体のバランスを確認できます。
+          </p>
+        </section>
+
+        <section aria-label="所属と期生" className="card-pop p-5 sm:p-7">
+          <h2 className="text-navy text-xl font-black sm:text-2xl">所属と期生で分ける</h2>
+          <p className="text-ink-soft mt-1 text-sm font-medium">
+            えらぶと、下の集計・チーム編成・CSV が、その所属と期生の人だけになります。
+          </p>
+          <div className="mt-4 grid max-w-xl gap-3 sm:grid-cols-2">
+            <label className="block">
+              <span className="text-ink-soft text-xs font-black">所属</span>
+              <select
+                value={schoolPick.university}
+                onChange={(event) => changeSchoolPick({ university: event.target.value })}
+                className={`${SELECT} mt-1`}
+              >
+                <option value="">ぜんぶ</option>
+                {AFFILIATIONS.map((one) => (
+                  <option key={one} value={one}>
+                    {one}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="block">
+              <span className="text-ink-soft text-xs font-black">期生</span>
+              <select
+                value={String(schoolPick.cohort)}
+                onChange={(event) => changeSchoolPick({ cohort: Number(event.target.value) })}
+                className={`${SELECT} mt-1`}
+              >
+                <option value="0">ぜんぶ</option>
+                {COHORTS.map((one) => (
+                  <option key={one} value={String(one)}>
+                    {one}期生
+                  </option>
+                ))}
+                <option value="-1">未設定</option>
+              </select>
+            </label>
+          </div>
+          <p className="text-ink mt-4 text-sm font-bold" aria-live="polite">
+            いま見ているのは {schoolPickLabel(schoolPick)}（{kpis.registered}人・回答ずみ{" "}
+            {kpis.answered}人）です。
           </p>
         </section>
 

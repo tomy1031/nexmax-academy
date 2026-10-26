@@ -881,7 +881,7 @@
     id: '5-8',
     chapter: 5,
     title: { jp: '{次|つぎ}の {朝|あさ}の お{礼|れい}', en: 'Thanks the Next Morning' },
-    intro: { jp: '{昨日|きのう}、{部長|ぶちょう}が ごちそうして くれました。{今朝|けさ}、{部長|ぶちょう}が あなたの {前|まえ}を {歩|ある}いて きます。{通|とお}りすぎる {前|まえ}に お{礼|れい}を {言|い}おう。', en: 'Your manager bought dinner yesterday. This morning, thank them before they walk past your desk.' },
+    intro: { jp: '{昨日|きのう}、{部長|ぶちょう}が ごちそうして くれました。{今朝|けさ}、{部長|ぶちょう}が あなたの {前|まえ}を {歩|ある}いて きます。お{礼|れい}を {言|い}おう。', en: 'Your manager bought dinner yesterday. This morning they walk past your desk. Thank them.' },
     time: 9000,
     mechanic: 'timing',
     setup(scene) {
@@ -906,14 +906,14 @@
         [1500, (s) => s.flag('near')],
         [2900, (s) => s.flag('gone')],
       ],
-      judge(tapAt, flags) {
+      /* what matters is saying thanks, not when (even after he has passed, he comes back) */
+      judge(tapAt) {
         if (tapAt === null) return 'never';
-        if (flags.gone !== undefined) return 'late';
         return 'great';
       },
       onTap(scene, r, key) {
         r.player.mark(null);
-        if (key === 'late' || key === 'great') {
+        if (key === 'great') {
           /* the manager stops, comes back to you and turns around; you turn to him and bow */
           if (r.cancelWalk) r.cancelWalk();
           const bx = r.bucho.o.x;
@@ -930,8 +930,6 @@
     outcomes: {
       great: { grade: 'great', who: WHO.bucho, line: { jp: 'おっ、{律儀|りちぎ}だなあ。また {食|た}べに {行|い}こう！', en: "Oh, how thoughtful of you. Let's go eat again!" },
         react(scene, r) { r.player.set({ bow: 0 }); r.bucho.mark('heart'); } },
-      late: { grade: 'ok', who: WHO.bucho, line: { jp: 'ん？ ああ、{昨日|きのう}の！ いいよ、いいよ。', en: "Hm? Oh, last night! It's nothing, it's nothing." },
-        react(scene, r) { r.player.set({ bow: 0 }); r.bucho.mark('q'); } },
       early: { grade: 'ok', who: null, line: { jp: '（{部長|ぶちょう}は まだ {来|き}ていない。ひとりごとに なった…）', en: '(Your manager has not arrived yet. You just talked to yourself...)' },
         react(scene, r) { r.player.set({ bow: 0 }); r.player.mark('sweat'); } },
       never: { grade: 'ky', who: WHO.bucho, line: { jp: '（…{昨日|きのう}の {会計|かいけい}、{私|わたし}だったんだけどな…）', en: "(I paid the bill last night, you know...)" },
@@ -963,6 +961,6 @@
         D.label(svg, 100, 24, '2かい いう', { size: 12, color: C.ink, weight: 900 });
       },
     },
-    test: { great: { at: 3000 }, ok: { at: 6500 }, ky: null },
+    test: { great: { at: 2000 }, ky: null },
   });
 })(typeof window !== 'undefined' ? window : globalThis);

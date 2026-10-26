@@ -1,5 +1,5 @@
 {
   "note": "scripts/sync_kuuki_yomi.mjs が 写した ゲームの 版。中身は 手で 直さず、ゲームの リポジトリで 直して 写し直す。",
   "branch": "claude/japanese-business-etiquette-polish-62f29d",
-  "commit": "5a4721c3d6b761dce1a4c14336964c0d6a3702e0"
+  "commit": "30d519f1db4be9b2ff735883909a4924cdf452a4"
 }

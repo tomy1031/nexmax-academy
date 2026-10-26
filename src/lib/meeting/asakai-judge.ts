@@ -531,8 +531,10 @@ export function buildAsakaiJudgePrompt(context: AsakaiJudgeContext): string {
     "- **国の 名前・外来語は カタカナ**で 書きます（「べとなむ」では なく「ベトナム」）。",
     "- 日の 数は **漢数字**で 書きます（「一日」「二日」。「1日」とは 書かない）。時刻・分は ひらがなか 数字だけで 書きます",
     "- ことばの あいだに 空白を 入れて 分かち書きに する（例:「わたしは がくせい です」）",
-    `- つぎの ことばは つかわない: ${FORBIDDEN_LEARNER_WORDS.join("・")}`,
-    "  できた ことを 先に 言い、つぎに やる ことを 見せる",
+    ...(FORBIDDEN_LEARNER_WORDS.length
+      ? [`- つぎの ことばは つかわない: ${FORBIDDEN_LEARNER_WORDS.join("・")}`]
+      : []),
+    "- できた ことを 先に 言い、つぎに やる ことを 見せる",
     "- 人を 評しません。**報告の 中身**に ついてだけ 書きます",
   );
 

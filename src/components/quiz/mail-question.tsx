@@ -3,14 +3,15 @@
 import { useMemo, useState } from "react";
 import type { QuizQuestion } from "@/content/schema";
 import { RubyText } from "@/components/ruby-text";
-import { fillinSlotOk } from "@/lib/quiz/draft";
+import { fillinSlotAiMayAccept, fillinSlotOk } from "@/lib/quiz/draft";
 import { fillinModelText, fillinSlots, fillinText } from "@/lib/quiz/fillin";
 import type { QuizDraft } from "@/lib/quiz/draft";
 import { aiReplyFurigana } from "@/lib/ai-kanji";
 import type { FuriganaIndex } from "@/lib/text/furigana";
 import { buildFuriganaIndex } from "@/lib/text/furigana";
 import { useAnswerCheck, useWarmOnReady } from "./answer-check";
-import { BrushUp, CheckBand, CheckButton, CheckMark, CheckNote } from "./check-parts";
+import { AiReviewCard } from "./ai-review-card";
+import { CheckButton, CheckMark } from "./check-parts";
 
 /**
  * 初級：メールの 型を うめる（`fillin`）— **欄の となりで ⭕✗を 返す**
@@ -20,11 +21,14 @@ import { BrushUp, CheckBand, CheckButton, CheckMark, CheckNote } from "./check-p
  *  何が良かったか（正解時）何がだめなのか（不正解時）書いて」
  * 「初級と上級はコンポーネントを分けてください」。
  *
- * ## ⭕✗は **アプリが** 決める
- * この もんだいは 欄ごとに 正解が ある（教材データ）。だから ⭕✗は `fillinSlotOk` が 決め、
- * AIは **欄ごとの ひとこと**と、必要な ときの **ブラッシュアップ**だけを 書く。
- * こうしないと、ここの ⭕✗と 答え合わせの ⭕✗が 食いちがう。
+ * ## ⭕✗は まず **アプリが** 決める
+ * この もんだいは 欄ごとに 正解が ある（教材データ）。だから ⭕✗は まず `fillinSlotOk` が 決め、
+ * AIは **欄ごとの ひとこと**と、必要な ときの **ブラッシュアップ**を 書く。
  * 鍵（Gemini）が 無い 端末でも ⭕✗は 出る——学習は 止まらない。
+ *
+ * アプリが ✗に した 欄は、AIが **中身で** ⭕に できる（2026-10-26 の 指定
+ *「１言１句ではなく、内容を捉えられているか」）。数字・日にちが ちがう 欄は 渡さない
+ *（`fillinSlotAiMayAccept`）。
  *
  * ## 答え（お手本）は ここでは 出さない
  * 「模範解答は答え合わせの時だけでいいです」（同日の 指定）。だから ✗の 欄にも
@@ -46,6 +50,17 @@ const MEMO_AGAIN = "メモの ことばと ちがうようです。もう いち
 
 type Mail = Extract<QuizQuestion, { type: "fillin" }>;
 
+/**
+ * 欄の 色（チェックの あと）。⭕は みどりの 枠、**✗（やり直し）は うす赤の 欄**
+ *（2026-10-26 の 指定「やり直しの場合は入力されたテキストボックスがうす赤色になるように」）。
+ */
+function fieldStyle(hit: { ok: boolean } | undefined): React.CSSProperties | undefined {
+  if (!hit) return undefined;
+  return hit.ok
+    ? { borderColor: "#58c273", borderWidth: 2 }
+    : { borderColor: "#f26fa7", borderWidth: 2, background: "#fff0f3" };
+}
+
 export function MailQuestion({
   question,
   furigana,
@@ -53,13 +68,20 @@ export function MailQuestion({
   disabled,
   submitMode,
   draft,
+  position,
 }: {
   question: Mail;
   furigana: FuriganaIndex;
-  onSubmit: (inputs: readonly string[]) => void;
+  /**
+   * `checked` … こたえの チェックで いまの 文の まま ⭕か（1問ずつ の 採点を ⭕に そろえる。
+   * AIが 中身で ⭕に した 欄は、字だけの 採点では ✗に なる ため）。
+   */
+  onSubmit: (inputs: readonly string[], checked?: boolean) => void;
   disabled?: boolean;
   submitMode?: boolean;
   draft?: Extract<QuizDraft, { kind: "fillin" }>;
+  /** 何問目か（「AIの ひょうか」の 右上に 出す）。 */
+  position?: { readonly at: number; readonly of: number };
 }) {
   const slots = useMemo(() => fillinSlots(question), [question]);
   // 画面の 文字は この部品が 持つ（親から 送り返すと 変換の 途中で 入れ替わる）
@@ -94,16 +116,21 @@ export function MailQuestion({
 
   const ask = () => {
     /*
-     * 欄ごとの ⭕✗を 先に 決めて から 渡す（AIは これを 動かせない）。
+     * 欄ごとの ⭕✗を 先に 決めて から 渡す（AIは ⭕を ✗に できない。✗を ⭕に できるのは
+     * `aiJudges` の 欄だけ）。
      * id は 欄の 並び（`fillinSlots`）で 付ける——名前が 同じ 欄が あっても ずれない。
      */
-    const items = slots.map((slot, i) => ({
-      id: `f${i + 1}`,
-      label: slot.label,
-      value: (inputs[i] ?? "").trim(),
-      answer: slot.answer,
-      ok: fillinSlotOk(slot, inputs[i] ?? ""),
-    }));
+    const items = slots.map((slot, i) => {
+      const ok = fillinSlotOk(slot, inputs[i] ?? "");
+      return {
+        id: `f${i + 1}`,
+        label: slot.label,
+        value: (inputs[i] ?? "").trim(),
+        answer: slot.answer,
+        ok,
+        aiJudges: !ok && fillinSlotAiMayAccept(slot, inputs[i] ?? ""),
+      };
+    });
     void run({
       items,
       itemKind: "field",
@@ -125,7 +152,7 @@ export function MailQuestion({
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        if (!submitMode && !disabled && !empty) onSubmit(inputs);
+        if (!submitMode && !disabled && !empty) onSubmit(inputs, check?.ok === true);
       }}
     >
       <div className="border-hairline overflow-hidden rounded-[var(--radius-card)] border-2 bg-white">
@@ -158,23 +185,11 @@ export function MailQuestion({
                     aria-label={`${row.label}を 入力する`}
                     placeholder={row.placeholder}
                     className={box}
-                    style={
-                      hit
-                        ? { borderColor: hit.ok ? "#58c273" : "#f26fa7", borderWidth: 2 }
-                        : undefined
-                    }
+                    style={fieldStyle(hit)}
                   />
                 )}
                 {hit && <CheckMark ok={hit.ok} />}
               </div>
-              {hit && (
-                <CheckNote
-                  ok={hit.ok}
-                  note={hit.note}
-                  fallback={MEMO_AGAIN}
-                  furigana={aiFurigana}
-                />
-              )}
             </div>
           );
         })}
@@ -203,22 +218,10 @@ export function MailQuestion({
                     aria-label={`${blank.label}を 入力する`}
                     placeholder={blank.placeholder}
                     className={box}
-                    style={
-                      hit
-                        ? { borderColor: hit.ok ? "#58c273" : "#f26fa7", borderWidth: 2 }
-                        : undefined
-                    }
+                    style={fieldStyle(hit)}
                   />
                   {hit && <CheckMark ok={hit.ok} />}
                 </div>
-                {hit && (
-                  <CheckNote
-                    ok={hit.ok}
-                    note={hit.note}
-                    fallback={MEMO_AGAIN}
-                    furigana={aiFurigana}
-                  />
-                )}
               </div>
             );
           })}
@@ -258,16 +261,20 @@ export function MailQuestion({
               <RubyText text={waiting} index={aiFurigana} />
             </p>
           )}
+          {/*
+            欄の となりは ⭕✗の しるしだけ。ひとこと・直した 形・読む 人の しつもんは
+            「AIの ひょうか」1枚に まとめる（2026-10-26 の 指定「すごくわかりにくい」）。
+          */}
           {check && (
-            <>
-              <CheckBand
-                ok={check.ok}
-                left={check.items.filter((one) => !one.ok).length}
-                aiNote={check.aiNote}
-                furigana={aiFurigana}
-              />
-              <BrushUp text={check.polished} furigana={aiFurigana} />
-            </>
+            <AiReviewCard
+              check={check}
+              labels={new Map(slots.map((one, i) => [`f${i + 1}`, one.label]))}
+              position={position}
+              furigana={furigana}
+              aiFurigana={aiFurigana}
+              gated
+              fallback={MEMO_AGAIN}
+            />
           )}
         </>
       )}

@@ -15,11 +15,11 @@ import { bareKanjiTexts, seedCompleted, shot } from "./helpers";
  */
 
 const GAME_JS = join(__dirname, "..", "..", "public", "tools", "kuuki-yomi", "js", "stages");
-/** ゲームの 50ステージの id（`KY.defineStage({ id: '1-1', … })`）。 */
+/** ゲームの 50ステージの id（`KY.defineStage({ id: '1-1', … })`。10/23 の 修正版で 足した 問題は `id:'1-4'` と 空白なし）。 */
 const STAGE_IDS = readdirSync(GAME_JS)
   .filter((name) => name.endsWith(".js"))
   .flatMap((name) =>
-    [...readFileSync(join(GAME_JS, name), "utf8").matchAll(/\bid: '(\d-\d+)'/g)].map((m) => m[1]!),
+    [...readFileSync(join(GAME_JS, name), "utf8").matchAll(/\bid: ?'(\d-\d+)'/g)].map((m) => m[1]!),
   );
 
 /** ゲームの 端末の 記録（`kuukiyomi-it.v2`）を、指定の ステージだけ 遊んだ 形で 置く。 */

@@ -649,6 +649,33 @@ export function createBalancedTeams(
   };
 }
 
+/* ---------------- 所属・期生で分ける ---------------- */
+
+/**
+ * 所属（AUPP／CADT など）と期生で分けた、1つの授業の組みぶんの名簿と受験の記録
+ * （2026-10-26「性格診断の集計はAUPP/CADT/○期生ごとに分けてください」）。
+ *
+ * 受験の記録は、名簿に残った人のぶんだけ残す。名簿だけを分けると、「直近7日の回答」が
+ * ほかの組みの受験まで数えてしまう。
+ * だれを入れるかは呼ぶ側が渡す。先生の画面では学習の記録と同じ `matchesProfile` を渡し、
+ * 2つの画面で「AUPP 2期生」の意味がずれないようにする。
+ */
+export function pickSchoolGroup<
+  P extends Pick<StatsProfile, "id">,
+  R extends Pick<PersonalityResultRow, "profile_id">,
+>(
+  profiles: readonly P[],
+  results: readonly R[],
+  inGroup: (profile: P) => boolean,
+): { profiles: P[]; results: R[] } {
+  const members = profiles.filter(inGroup);
+  const ids = new Set(members.map((profile) => profile.id));
+  return {
+    profiles: members,
+    results: results.filter((result) => ids.has(result.profile_id)),
+  };
+}
+
 /* ---------------- KPI・性別クロス・履歴 ---------------- */
 
 export interface DashboardKpis {

@@ -42,43 +42,6 @@ export function CheckMark({ ok }: { ok: boolean }) {
 }
 
 /**
- * 欄の 下に 出す ひとこと（⭕なら よかった ところ・✗なら 足りない ところ）。
- *
- * **✗の ときは 何か 言う**（2026-09-21 の 指定「何がだめなのか 書いて」）。
- * AIに つながらなかった 回は ひとことが 空に なる——その まま 黙ると、
- * 学習者は ✗だけ 見せられて **直す 手がかりが 1つも 無い まま 関門の 前に 立つ**。
- * だから 呼ぶ 側が 逃げ道の 1行（`fallback`）を 渡す。
- */
-export function CheckNote({
-  ok,
-  note,
-  fallback = "",
-  furigana,
-}: {
-  ok: boolean;
-  note: string;
-  /** ひとことが 空の ときに ✗の 欄だけ 出す 1行。 */
-  fallback?: string;
-  furigana: FuriganaIndex;
-}) {
-  const text = note !== "" ? note : ok ? "" : fallback;
-  if (text === "") return null;
-  return (
-    <p
-      className="mt-1 rounded-xl px-3 py-1.5 text-sm leading-relaxed font-bold"
-      style={
-        ok
-          ? { background: "#e9f8ee", color: "#1f3a56" }
-          : { background: "#fdeaf2", color: "#1f3a56" }
-      }
-    >
-      {ok ? "⭕ " : "✗ "}
-      <RubyText text={text} index={furigana} />
-    </p>
-  );
-}
-
-/**
  * ブラッシュアップ回答。
  *
  * **中身は 合って いるのに 言い方が よくない ときだけ** 出る（2026-09-21 の 指定）。
