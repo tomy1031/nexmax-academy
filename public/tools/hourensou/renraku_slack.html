@@ -72,6 +72,12 @@
             color: #64748b;
         }
 
+        /* 色の 付いた ボタン（白い 字）では ふりがなも 白く する（灰色だと 背景に 沈む） */
+        .text-white rt {
+            color: inherit;
+            opacity: 0.85;
+        }
+
         /*
          * ポップアップ辞書（2026-10-26 の 指定「辞書の 表示を 今までの コンテンツと 合わせる」）。
          * アプリの 本文の 辞書（src/components/dictionary-text.tsx・word-popover.tsx）と
@@ -456,21 +462,12 @@
             return `<span class="gengou-link" tabindex="0" role="button" onclick="openGengou()" onkeydown="if(event.key==='Enter'){openGengou()}">${text}<span aria-hidden="true" class="text-[0.8em] ml-0.5">📖</span></span>`;
         }
 
-        function stripTags(html) {
-            const div = document.createElement("div");
-            div.innerHTML = html;
-
-            // <rt>タグ（ふりがな部分）をすべて取得して削除する
-            const rts = div.querySelectorAll('rt');
-            rts.forEach(rt => rt.remove());
-
-            // 残ったテキスト（漢字のみ）を返す
-            return div.innerText;
-        }
-
         // --- Data Definitions ---
         const MY_ID = 'me';
         const TANAKA_ID = 'tanaka';
+
+        /** 指示を 受けた ときの 返事（ボタンと 送った メッセージで 同じ 文を 使う）。 */
+        const ACK_REPLY = `${r("了解", "りょうかい")}です。${r("対応", "たいおう")}します。`;
 
         const CHANNELS = [
             { id: 'general', name: 'general' },
@@ -624,12 +621,12 @@
                             {
                                 text: `14:00から15:00になって、${r("場所", "ばしょ")}も${r("会議室", "かいぎしつ")}Bになりました。\nよろしくお${r("願", "ねが")}いします。`,
                                 isCorrect: false,
-                                feedback: `${r("惜", "お")}しい！ ${r("文章", "ぶんしょう")}で${r("書", "か")}くよりも、箇条書き（リスト）にしたほうがパッと${r("見", "み")}て${r("分", "わ")}かります。`
+                                feedback: `${r("惜", "お")}しい！ ${r("文章", "ぶんしょう")}で${r("書", "か")}くよりも、${r("箇条書", "かじょうが")}き（リスト）にしたほうがパッと${r("見", "み")}て${r("分", "わ")}かります。`
                             },
                             {
                                 text: `【${r("変更点", "へんこうてん")}】\n・${r("時間", "じかん")}：14:00 → 15:00\n・${r("場所", "ばしょ")}：${r("会議室", "かいぎしつ")}A → ${r("会議室", "かいぎしつ")}B\n\n${r("各自", "かくじ")}、カレンダーの${r("更新", "こうしん")}をお${r("願", "ねが")}いします。`,
                                 isCorrect: true,
-                                feedback: `${r("正解", "せいかい")}！ 矢印(→)を${r("使", "つか")}ったリストが${r("見", "み")}やすく、カレンダー${r("更新", "こうしん")}の${r("依頼", "いらい")}も完璧です。`
+                                feedback: `${r("正解", "せいかい")}！ ${r("矢印", "やじるし")}(→)を${r("使", "つか")}ったリストが${r("見", "み")}やすく、カレンダー${r("更新", "こうしん")}の${r("依頼", "いらい")}も${r("完璧", "かんぺき")}です。`
                             },
                             {
                                 text: `【${r("変更点", "へんこうてん")}】\n・${r("時間", "じかん")}：14:00 → 15:00\n\n${r("場所", "ばしょ")}は${r("変", "か")}わっていません。`,
@@ -671,7 +668,7 @@
                             {
                                 text: `【${r("報告", "ほうこく")}】${r("元号", "げんごう")}の${r("機能", "きのう")}ができました。`,
                                 isCorrect: false,
-                                feedback: `${r("惜", "お")}しい。 「${r("報告", "ほうこく")}」だと、「ふーん、そうなんだ（${r("読", "よ")}むだけ）」と${r("思", "おも")}われて、作業してもらえません。`
+                                feedback: `${r("惜", "お")}しい。 「${r("報告", "ほうこく")}」だと、「ふーん、そうなんだ（${r("読", "よ")}むだけ）」と${r("思", "おも")}われて、${r("作業", "さぎょう")}してもらえません。`
                             },
                             {
                                 text: `@here ${r("日本", "にほん")}の${r("年", "とし")}について`,
@@ -681,7 +678,7 @@
                             {
                                 text: `@here 【${r("依頼", "いらい")}】${r("元号", "げんごう")}${r("計算", "けいさん")}ロジックの${r("追加", "ついか")}について`,
                                 isCorrect: true,
-                                feedback: `${r("正解", "せいかい")}！ 「${r("依頼", "いらい")}」と${r("書", "か")}くことで、メンバーは「${r("何", "なに")}か作業が${r("必要", "ひつよう")}だ」と${r("分", "わ")}かります。`
+                                feedback: `${r("正解", "せいかい")}！ 「${r("依頼", "いらい")}」と${r("書", "か")}くことで、メンバーは「${r("何", "なに")}か${r("作業", "さぎょう")}が${r("必要", "ひつよう")}だ」と${r("分", "わ")}かります。`
                             }
                         ]
                     },
@@ -701,7 +698,7 @@
                             {
                                 text: `${r("便利", "べんり")}な${r("機能", "きのう")}なので、もしよかったら${r("使", "つか")}ってみてください。`,
                                 isCorrect: false,
-                                feedback: `${r("不正解", "ふせいかい")}。 「もしよかったら」では${r("遅", "おそ")}いです。全員が${r("必", "かなら")}ず${r("使", "つか")}う${r("機能", "きのう")}です。`
+                                feedback: `${r("不正解", "ふせいかい")}。 「もしよかったら」では${r("遅", "おそ")}いです。${r("全員", "ぜんいん")}が${r("必", "かなら")}ず${r("使", "つか")}う${r("機能", "きのう")}です。`
                             }
                         ]
                     }
@@ -1018,20 +1015,20 @@
         /**
          * 入力欄。下書きは **送る チャンネルに いる ときだけ** 見せる（Slack と 同じく 下書きは その 場所の もの）。
          * 書いて いる ときは カーソルを 出す。まだ 何も 無ければ **0文字目**に 出て、その あとに 薄い 案内が 続く。
+         * 下書きにも ふりがなを 付ける（2026-10-26 の 指定。前は ふりがなを 外して 出して いた）。
          */
         function updateComposer() {
             const sc = SCENARIOS[state.scenarioIndex];
             const drafting = state.phase === 'drafting' && state.currentViewId === sc.targetChannel;
-            const text = drafting ? stripTags(state.draftLines.join('\n\n')) : '';
+            const html = drafting ? state.draftLines.join('\n\n') : '';
             const box = els.draftText;
-            box.textContent = '';
-            if (text) box.append(text);
+            box.innerHTML = html;
             if (drafting) {
                 const caret = document.createElement('span');
                 caret.className = 'caret';
                 box.append(caret);
             }
-            if (!text) {
+            if (!html) {
                 const hint = document.createElement('span');
                 hint.className = 'text-slate-400';
                 hint.textContent = state.currentViewId === 'dm-tanaka'
@@ -1082,11 +1079,11 @@
                     renderMessagesForView(); // Show "Drafting started" system msg
                     renderActionArea();
                 } else {
-                    addSystemMessage(`⚠️ ここは #${channelId} です。指示されたチャンネルは #${sc.targetChannel} です。`);
+                    addSystemMessage(`⚠️ ここは #${channelId} です。${r("指示", "しじ")}されたチャンネルは #${sc.targetChannel} です。`);
                 }
             } else if (state.phase === 'drafting') {
                 if (channelId !== sc.targetChannel) {
-                    els.actionArea.innerHTML = `<div class="text-slate-500 text-sm text-center flex items-center justify-center gap-2 py-4"><i data-lucide="alert-circle" class="w-4 h-4"></i> #${sc.targetChannel} に戻って入力を続けてください。</div>`;
+                    els.actionArea.innerHTML = `<div class="text-slate-500 text-sm text-center flex items-center justify-center gap-2 py-4"><i data-lucide="alert-circle" class="w-4 h-4"></i> #${sc.targetChannel} に${r("戻", "もど")}って${r("入力", "にゅうりょく")}を${r("続", "つづ")}けてください。</div>`;
                     lucide.createIcons();
                 } else {
                     renderActionArea();
@@ -1108,7 +1105,7 @@
                 addSystemMessage(`Welcome to #${state.currentViewId}`);
 
                 if (state.phase === 'drafting' && state.currentViewId === SCENARIOS[state.scenarioIndex].targetChannel) {
-                    addSystemMessage(`<span class="text-indigo-500 font-bold">Drafting Mode Active</span>: 選択肢を選んでメッセージを作成してください。`);
+                    addSystemMessage(`<span class="text-indigo-500 font-bold">Drafting Mode Active</span>: ${r("選択肢", "せんたくし")}を${r("選", "えら")}んでメッセージを${r("作成", "さくせい")}してください。`);
                 }
             }
         }
@@ -1202,9 +1199,9 @@
                 if (lastMsg.type === 'tanaka') {
                     els.actionArea.innerHTML = `
                         <div class="max-w-xl mx-auto text-center fade-in">
-                            <button onclick="acknowledgeTask()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-lg px-8 py-3 rounded-xl font-bold shadow-lg shadow-indigo-200 transition flex items-center justify-center mx-auto gap-2 w-full md:w-auto">
+                            <button onclick="acknowledgeTask()" aria-label="了解です。対応します。" class="bg-indigo-600 hover:bg-indigo-700 text-white text-lg px-8 py-3 rounded-xl font-bold shadow-lg shadow-indigo-200 transition flex items-center justify-center mx-auto gap-2 w-full md:w-auto">
                                 <i data-lucide="check" class="w-5 h-5"></i>
-                                了解です。対応します。
+                                <span>${ACK_REPLY}</span>
                             </button>
                         </div>
                     `;
@@ -1212,7 +1209,7 @@
                     els.actionArea.innerHTML = `
                         <div class="text-center text-base text-slate-500 flex flex-col items-center gap-2">
                             <span class="bg-slate-100 px-3 py-1 rounded text-sm text-slate-600">Next Step</span>
-                            <span>左のメニューから <b>#${sc.targetChannel}</b> に移動してください。</span>
+                            <span>${r("左", "ひだり")}のメニューから <b>#${sc.targetChannel}</b> に${r("移動", "いどう")}してください。</span>
                         </div>
                     `;
                 }
@@ -1228,10 +1225,10 @@
                 if (currentStepIdx >= sc.steps.length) {
                     els.actionArea.innerHTML = `
                         <div class="max-w-xl mx-auto text-center fade-in">
-                            <p class="text-base text-slate-500 mb-3">メッセージが完成しました。</p>
-                            <button onclick="sendMessage()" class="bg-green-600 hover:bg-green-700 text-white text-lg px-10 py-3 rounded-xl font-bold shadow-lg shadow-green-200 transition flex items-center justify-center mx-auto gap-2 w-full md:w-auto">
+                            <p class="text-base text-slate-500 mb-3">メッセージが${r("完成", "かんせい")}しました。</p>
+                            <button onclick="sendMessage()" aria-label="送信する (Send)" class="bg-green-600 hover:bg-green-700 text-white text-lg px-10 py-3 rounded-xl font-bold shadow-lg shadow-green-200 transition flex items-center justify-center mx-auto gap-2 w-full md:w-auto">
                                 <i data-lucide="send" class="w-5 h-5"></i>
-                                送信する (Send)
+                                <span>${r("送信", "そうしん")}する (Send)</span>
                             </button>
                         </div>
                     `;
@@ -1275,8 +1272,8 @@
                                 </div>
                                 <div>
                                     <div class="text-xs font-bold text-slate-500 uppercase mb-0.5">New Notification</div>
-                                    <div class="font-bold text-slate-800 text-lg group-hover:text-indigo-700 transition">ヘンディ先輩から新しいメッセージ</div>
-                                    <div class="text-sm text-slate-500">「お疲れ様。次のタスクがありますよ」</div>
+                                    <div class="font-bold text-slate-800 text-lg group-hover:text-indigo-700 transition">ヘンディ${r("先輩", "せんぱい")}から${r("新", "あたら")}しいメッセージ</div>
+                                    <div class="text-sm text-slate-500">「お${r("疲", "つか")}れ${r("様", "さま")}。${r("次", "つぎ")}のタスクがありますよ」</div>
                                 </div>
                             </div>
                             <div class="bg-indigo-100 text-indigo-600 p-2 rounded-full group-hover:bg-indigo-600 group-hover:text-white transition">
@@ -1291,8 +1288,7 @@
         // --- Logic Handlers ---
 
         function acknowledgeTask() {
-            const reply = "了解です。対応します。";
-            state.dmHistory.push({ sender: 'You', text: reply, type: 'me', time: clock() });
+            state.dmHistory.push({ sender: 'You', text: ACK_REPLY, type: 'me', time: clock() });
             state.phase = 'channel_nav';
             renderMessagesForView();
             renderActionArea();
@@ -1322,7 +1318,7 @@
                     const feedback = document.createElement('div');
                     feedback.className = "feedback-msg text-sm text-red-600 mt-2 font-bold pl-2 animate-pulse";
 
-                    // 【重要】フィードバックはタグありで表示したいので innerHTML を使い、stripTags は使わない
+                    // 【重要】フィードバックはタグ（ふりがな）ありで表示したいので innerHTML を使う
                     feedback.innerHTML = `💡 ${option.feedback}`;
 
                     btn.appendChild(feedback);
@@ -1392,10 +1388,10 @@
             els.finalScore.innerText = state.score;
             els.diplomaScore.innerText = state.score;
             const d = new Date();
-            els.diplomaDate.innerText = `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日`;
+            els.diplomaDate.innerHTML = `${d.getFullYear()}${r("年", "ねん")}${d.getMonth() + 1}${r("月", "がつ")}${d.getDate()}${r("日", "にち")}`;
             els.diplomaCard.classList.toggle('hidden', !perfect);
             els.retryCard.classList.toggle('hidden', perfect);
-            els.restartLabel.innerText = perfect ? 'もう一度 やる' : 'やりなおす';
+            els.restartLabel.innerHTML = perfect ? `もう${r("一度", "いちど")} やる` : 'やりなおす';
             els.completion.classList.remove('hidden');
             lucide.createIcons();
         }
