@@ -72,60 +72,83 @@
             color: #64748b;
         }
 
-        /* Vocabulary Tooltip */
+        /*
+         * ポップアップ辞書（2026-10-26 の 指定「辞書の 表示を 今までの コンテンツと 合わせる」）。
+         * アプリの 本文の 辞書（src/components/dictionary-text.tsx・word-popover.tsx）と
+         * 同じ 見た目に する: 空色の 点線の 下線 → 白い 吹き出しに
+         *「ことば・読み／やさしい 説明／英語」。
+         * 吹き出しは body の 直下に 1つだけ 置き、position: fixed で 出す
+         *（右の 欄や メッセージ欄の overflow に 切られない ように）。
+         */
         .vocab-term {
-            border-bottom: 2px dotted #818cf8;
-            cursor: help;
-            position: relative;
-            transition: background 0.2s;
+            cursor: pointer;
+            text-decoration: underline dotted #0288d1 2px;
+            text-underline-offset: 4px;
         }
 
-        .vocab-term:hover {
-            background-color: #e0e7ff;
-        }
-
-        .vocab-term::after {
-            content: attr(data-meaning);
-            position: absolute;
-            bottom: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #1e293b;
-            color: #fff;
-            padding: 6px 10px;
-            border-radius: 6px;
-            font-size: 12px;
-            white-space: nowrap;
-            opacity: 0;
+        #word-popover {
+            position: fixed;
+            width: 240px;
+            z-index: 90;
             pointer-events: none;
-            transition: opacity 0.2s;
-            margin-bottom: 8px;
-            z-index: 50;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            background: #fff;
+            border: 2px solid #0288d1;
+            border-radius: 1rem;
+            padding: 0.75rem 1rem;
+            font-size: 12px;
+            line-height: 1.625;
+            font-weight: 700;
+            color: #1f3a56;
+            text-align: left;
+            box-shadow: 0 6px 18px rgba(0, 79, 141, 0.22);
         }
 
-        .vocab-term::before {
-            content: '';
-            position: absolute;
-            bottom: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            border: 5px solid transparent;
-            border-top-color: #1e293b;
-            opacity: 0;
-            margin-bottom: -2px;
-            z-index: 50;
-            transition: opacity 0.2s;
+        #word-popover .wp-term {
+            display: block;
+            color: #004f8d;
         }
 
-        .vocab-term:hover::after,
-        .vocab-term:hover::before {
-            opacity: 1;
+        #word-popover .wp-reading {
+            margin-left: 0.25rem;
+            color: #5a7089;
         }
 
-        /* Typing Cursor */
-        .typing-cursor::after {
-            content: '|';
+        #word-popover .wp-ja {
+            display: block;
+            margin-top: 0.25rem;
+        }
+
+        #word-popover .wp-en {
+            display: block;
+            margin-top: 0.375rem;
+            padding-top: 0.375rem;
+            border-top: 1px solid #dcebf5;
+            color: #5a7089;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        /* 「元号」だけは 吹き出しでは なく 説明の ページを 開く（同じ 日の 指定） */
+        .gengou-link {
+            color: #0288d1;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: underline solid #0288d1 2px;
+            text-underline-offset: 4px;
+        }
+
+        .gengou-link:hover {
+            color: #0272ae;
+        }
+
+        /* 入力欄の カーソル。**0文字目から** 出す（同じ 日の 指定） */
+        .caret {
+            display: inline-block;
+            width: 2px;
+            height: 1.15em;
+            margin: 0 1px;
+            vertical-align: text-bottom;
+            background: #4f46e5;
             animation: blink 1s step-end infinite;
         }
 
@@ -142,18 +165,22 @@
     <div
         class="flex flex-1 overflow-hidden max-w-[1600px] mx-auto w-full shadow-2xl bg-white my-4 md:rounded-xl md:border border-slate-200">
 
-        <div class="w-60 bg-slate-900 text-slate-400 flex flex-col flex-shrink-0 z-20">
-            <div class="h-14 flex items-center px-4 font-bold text-white border-b border-slate-700 gap-2">
-                <div
-                    class="w-6 h-6 bg-indigo-500 rounded flex items-center justify-center text-[10px] shadow-lg shadow-indigo-500/50">
-                    IT</div>
-                <span>Renraku Corp</span>
+        <!--
+          字の 大きさ・余白は 2026-10-26 の 見本（「添付のように読みやすく」）に 合わせる。
+          それまでは 本文が 14px で、画面が 広くても 小さく 見えた。
+        -->
+        <div class="w-60 xl:w-64 bg-slate-900 text-slate-400 flex flex-col flex-shrink-0 z-20">
+            <div class="h-16 flex items-center px-4 font-bold text-white text-lg border-b border-slate-700 gap-3">
+                <div class="w-9 h-9 bg-white rounded-lg flex items-center justify-center p-1 flex-shrink-0 shadow-lg shadow-black/30">
+                    <img src="/img/hourensou/renraku/nextmake_icon.png" alt="" class="w-full h-full object-contain" />
+                </div>
+                <span>Nextmake</span>
             </div>
 
-            <div class="flex-1 overflow-y-auto py-4 space-y-6">
+            <div class="flex-1 overflow-y-auto py-5 space-y-7">
                 <div>
                     <div
-                        class="px-4 mb-2 text-xs font-bold uppercase tracking-wider text-slate-500 flex justify-between group">
+                        class="px-4 mb-2 text-sm font-bold uppercase tracking-wider text-slate-500 flex justify-between group">
                         Channels
                     </div>
                     <div id="channel-list" class="space-y-[2px]">
@@ -162,7 +189,7 @@
 
                 <div>
                     <div
-                        class="px-4 mb-2 text-xs font-bold uppercase tracking-wider text-slate-500 flex justify-between group">
+                        class="px-4 mb-2 text-sm font-bold uppercase tracking-wider text-slate-500 flex justify-between group">
                         Direct Messages
                     </div>
                     <div id="dm-list" class="space-y-[2px]">
@@ -171,76 +198,109 @@
             </div>
         </div>
 
-        <div class="flex-1 flex flex-col min-w-0 bg-white relative border-r border-slate-200">
+        <!--
+          まん中の 列が ウィンドウより 高く なったら、**列ごと スクロール**させる（切らない）。
+          中の 3段（メッセージ・選択肢・入力欄）は、それぞれ 上限と スクロールを 持つ。
+        -->
+        <div class="flex-1 flex flex-col min-w-0 bg-white relative border-r border-slate-200 overflow-y-auto">
 
-            <header class="h-14 border-b flex items-center justify-between px-6 bg-white flex-shrink-0">
-                <div class="font-bold text-slate-800 flex items-center gap-2 text-lg">
+            <header class="h-16 border-b flex items-center justify-between px-6 bg-white flex-shrink-0">
+                <div class="font-bold text-slate-800 flex items-center gap-2.5 text-xl xl:text-2xl">
                     <span id="header-icon" class="text-slate-400"></span>
                     <span id="header-title">Loading...</span>
                 </div>
                 <div class="flex items-center gap-3">
                     <div
-                        class="bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full text-xs font-bold border border-indigo-100 flex items-center gap-1">
-                        <i data-lucide="trophy" class="w-3 h-3"></i>
-                        Score: <span id="score-display">100</span><span class="opacity-60">/100</span>
+                        class="bg-indigo-50 text-indigo-700 px-4 py-1.5 rounded-full text-sm font-bold border border-indigo-100 flex items-center gap-1.5">
+                        <i data-lucide="trophy" class="w-4 h-4"></i>
+                        Score: <span id="score-display">100</span> / 100
                     </div>
                 </div>
             </header>
 
             <!--
-              下の 2段（下書き・選択肢）が ふくらんでも、**メッセージ欄を 押しつぶさない**。
+              下の 2段（選択肢・入力欄）が ふくらんでも、**メッセージ欄を 押しつぶさない**。
               2026-09-22 の 指定「メッセージ増えたのが原因なら、スクロール入れるなどして
               前と同じ拡大倍率に」。3段が 高さを 取り合う 作りなので、
               **取り合いを やめて それぞれ スクロールさせる**。
             -->
             <div id="messages-container"
-                class="flex-1 min-h-[240px] overflow-y-auto p-6 space-y-6 bg-slate-50 scroll-smooth">
+                class="flex-1 min-h-[240px] overflow-y-auto p-6 xl:p-8 space-y-8 bg-slate-50 scroll-smooth">
             </div>
 
-            <div id="draft-area"
-                class="hidden max-h-[26vh] flex-shrink-0 overflow-y-auto border-t border-indigo-100 bg-indigo-50/60 p-4 fade-in backdrop-blur-sm">
-                <div class="max-w-3xl mx-auto flex gap-4">
-                    <div class="pt-1">
-                        <div
-                            class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
-                            <i data-lucide="pen-line" class="w-4 h-4"></i>
-                        </div>
+            <!-- 中が 空の ときは 出さない（`empty:hidden`。だから 開き・閉じタグの あいだに 空白を 置かない） -->
+            <div id="action-area"
+                class="empty:hidden px-6 py-5 bg-white border-t max-h-[44vh] overflow-y-auto flex-shrink-0 z-10 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]"></div>
+
+            <!--
+              Slack と 同じ 入力欄（見本の いちばん 下）。下書きは ここに 入る。
+              学生は 選択肢で 文を 組むので、ここには 打てない（読むだけ）。
+              カーソルは **0文字目から**（2026-10-26 の 指定。前は 改行と 空白の うしろに 出て いた）。
+            -->
+            <div id="composer" class="flex-shrink-0 border-t border-slate-200 bg-white px-4 py-4 xl:px-6">
+                <div class="flex items-end gap-3">
+                    <div class="w-12 h-12 rounded-full bg-indigo-50 text-indigo-400 flex items-center justify-center flex-shrink-0"
+                        aria-hidden="true">
+                        <i data-lucide="paperclip" class="w-5 h-5"></i>
                     </div>
-                    <div class="flex-1">
-                        <div class="text-xs font-bold text-indigo-500 uppercase mb-1 tracking-wide">Drafting Message...
-                        </div>
-                        <div id="draft-text"
-                            class="text-sm text-slate-700 font-medium whitespace-pre-wrap typing-cursor bg-white p-3 rounded border border-indigo-100 shadow-sm">
-                        </div>
+                    <div
+                        class="flex-1 min-w-0 flex items-end gap-2 rounded-xl border border-slate-200 bg-white p-1.5 pl-4 shadow-sm">
+                        <div id="draft-text" aria-live="polite"
+                            class="flex-1 min-w-0 max-h-[24vh] overflow-y-auto py-2 text-base xl:text-lg leading-relaxed xl:leading-relaxed text-slate-700 whitespace-pre-wrap break-words"></div>
+                        <button id="composer-send" type="button" disabled onclick="sendMessage()" aria-label="送信"
+                            class="w-16 h-11 rounded-lg bg-indigo-600 text-white flex items-center justify-center flex-shrink-0 shadow-md transition disabled:opacity-50 disabled:cursor-not-allowed enabled:hover:bg-indigo-700">
+                            <i data-lucide="send" class="w-5 h-5"></i>
+                        </button>
                     </div>
                 </div>
             </div>
-
-            <div id="action-area"
-                class="p-6 bg-white border-t min-h-[180px] max-h-[44vh] overflow-y-auto flex-shrink-0 z-10 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
-            </div>
         </div>
 
-        <div class="w-80 bg-white flex-col hidden lg:flex flex-shrink-0 border-l border-slate-200">
+        <div class="lg:w-80 xl:w-96 bg-white flex-col hidden lg:flex flex-shrink-0 border-l border-slate-200">
             <div
-                class="h-14 flex items-center px-4 font-bold text-slate-700 border-b border-slate-200 gap-2 bg-slate-50">
-                <i data-lucide="clipboard-list" class="w-5 h-5 text-indigo-500"></i>
+                class="h-16 flex items-center px-4 font-bold text-slate-700 text-base border-b border-slate-200 gap-2.5 bg-slate-50">
+                <img src="/img/characters/hendy/portrait.webp" alt="ヘンディ先輩"
+                    class="w-9 h-9 rounded-full object-cover flex-shrink-0 shadow-sm" />
                 <span>Current Task (Hendy's Order)</span>
             </div>
-            <div class="p-5 flex-1 overflow-y-auto bg-slate-50/50">
-                <div id="task-sidebar-content" class="space-y-4 transition-colors duration-500 rounded-lg">
+            <div class="p-4 xl:p-5 flex-1 overflow-y-auto bg-slate-50/50 space-y-4">
+                <div id="task-sidebar-content" class="transition-colors duration-500 rounded-xl">
                     <div class="text-sm text-slate-400 text-center mt-10">
                         Loading...
                     </div>
                 </div>
-            </div>
-            <div class="p-4 border-t border-slate-200 bg-white">
-                <div class="text-xs font-bold text-indigo-800 uppercase mb-2 flex items-center gap-1">
-                    <i data-lucide="book-open" class="w-3 h-3"></i> Vocab Hint
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
+                    <div class="text-sm font-bold text-indigo-700 uppercase mb-2 flex items-center gap-1.5">
+                        <i data-lucide="book-open" class="w-4 h-4"></i> Vocab Hint
+                    </div>
+                    <div class="text-sm text-slate-600" id="vocab-list">
+                    </div>
                 </div>
-                <div class="text-xs text-slate-600 space-y-2" id="vocab-list">
-                </div>
             </div>
+        </div>
+    </div>
+
+    <!-- ポップアップ辞書の 吹き出し（1つだけ。中身と 場所は 出す たびに 入れかえる） -->
+    <div id="word-popover" role="note" class="hidden"></div>
+
+    <!--
+      元号の 説明（2026-10-26 の 指定「元号だけ 元号についての 説明ページに 飛ばして」）。
+      この ページは アプリの 中で iframe に 入って 開く うえ、新しい タブ（popup）は
+      使えない ので、**同じ 画面の 上に 重ねて 開く**。閉じれば 続きから できる。
+    -->
+    <div id="gengou-screen"
+        class="hidden fixed inset-0 z-[60] bg-slate-900/70 backdrop-blur-sm p-2 md:p-6 flex items-center justify-center">
+        <div class="bg-white rounded-2xl w-full max-w-4xl h-full flex flex-col overflow-hidden shadow-2xl">
+            <div class="h-14 flex items-center justify-between gap-3 px-4 border-b border-slate-200 flex-shrink-0">
+                <div class="font-bold text-slate-800 text-lg">
+                    📖 <ruby>元号<rt>げんごう</rt></ruby>の <ruby>説明<rt>せつめい</rt></ruby>
+                </div>
+                <button type="button" onclick="closeGengou()"
+                    class="px-4 py-2 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-bold transition">
+                    ✕ とじる
+                </button>
+            </div>
+            <iframe id="gengou-frame" title="元号の 説明" class="flex-1 w-full border-0"></iframe>
         </div>
     </div>
 
@@ -339,8 +399,61 @@
         function r(text, reading) {
             return `<ruby>${text}<rt>${reading}</rt></ruby>`;
         }
-        function v(text, meaning) {
-            return `<span class="vocab-term" data-meaning="${meaning}">${text}</span>`;
+
+        /** ルビと タグを はずした 字だけ（辞書を 引く 見出しに 使う）。 */
+        function plainText(html) {
+            return html.replace(/<rt>.*?<\/rt>/g, "").replace(/<[^>]+>/g, "");
+        }
+
+        /**
+         * ポップアップ辞書に 出す 中身。見出しは **言い切りの 形**（本文が「空いていなかった」でも「空く」）。
+         * 説明と 英語は アプリの 辞書（public/dictionary/learner.json）に ある 語は そこから 写し、
+         * 無い 語だけ 同じ 書き方で 足した（2026-10-26）。
+         */
+        const WORDS = {
+            "仕様書": { reading: "しようしょ", ja: `${r("何", "なに")}を どう ${r("作", "つく")}るかを ${r("書", "か")}いた ${r("書類", "しょるい")}です。`, en: "Specifications document" },
+            "更新": { reading: "こうしん", ja: `${r("新", "あたら")}しい ${r("中身", "なかみ")}に ${r("書", "か")}きかえる ことです。`, en: "Update" },
+            "共有": { reading: "きょうゆう", ja: `${r("同", "おな")}じ ものを、みんなで つかえるように する ことです。`, en: "Sharing" },
+            "登録": { reading: "とうろく", ja: `${r("新", "あたら")}しい データを、はじめて システムに ${r("入", "い")}れる ことです。`, en: "Register" },
+            "空く": { reading: "あく", ja: `だれも ${r("使", "つか")}って いなくて、${r("使", "つか")}える ことです。「${r("空", "あ")}いて いなかった」は、ほかの ${r("人", "ひと")}が ${r("使", "つか")}って いた という ${r("意味", "いみ")}です。`, en: "To be free / available (not in use)" },
+            "計算": { reading: "けいさん", ja: `${r("数", "かず")}を ${r("出", "だ")}す ことです。`, en: "Calculation" },
+            "共通": { reading: "きょうつう", ja: `いくつかの ものが、${r("同", "おな")}じ ものを いっしょに ${r("使", "つか")}う ことです。`, en: "Common / Shared" },
+            "機能": { reading: "きのう", ja: `システムで できる ことです。`, en: "Function / Feature" },
+            "作る": { reading: "つくる", ja: `${r("無", "な")}かった ものを、${r("新", "あたら")}しく できるように する ことです。`, en: "Make / Create" },
+            "最新": { reading: "さいしん", ja: `いちばん ${r("新", "あたら")}しい ことです。`, en: "Latest" },
+            "反映": { reading: "はんえい", ja: `${r("直", "なお")}した ${r("内容", "ないよう")}を、${r("実際", "じっさい")}の システムや ${r("画面", "がめん")}に ${r("入", "い")}れて ${r("見", "み")}える ように する ことです。`, en: "Applying the change" },
+            "依頼": { reading: "いらい", ja: `${r("人", "ひと")}に「して ください」と たのむ ことです。`, en: "Request" },
+            "例": { reading: "れい", ja: `「たとえば こういう こと」と ${r("見", "み")}せる ものです。`, en: "Example" },
+            "状況": { reading: "じょうきょう", ja: `いま どう なって いるか、と いう ことです。`, en: "Situation" },
+            "開発用": { reading: "かいはつよう", ja: `${r("開発", "かいはつ")}（${r("新", "あたら")}しい ものを ${r("作", "つく")}る ${r("仕事", "しごと")}）の ために ${r("使", "つか")}う ものです。`, en: "For development" },
+            "全削除": { reading: "ぜんさくじょ", ja: `${r("中", "なか")}の データを ぜんぶ けす ことです。`, en: "Delete all" },
+            "再投入": { reading: "さいとうにゅう", ja: `けした データを、もう ${r("一度", "いちど")} ${r("入", "い")}れる ことです。`, en: "Re-insert (put the data in again)" },
+            "作業": { reading: "さぎょう", ja: `${r("実際", "じっさい")}に ${r("手", "て")}を ${r("動", "うご")}かして する ${r("仕事", "しごと")}です。`, en: "Task" },
+            "時間": { reading: "じかん", ja: `「${r("何時", "なんじ")}から ${r("何時", "なんじ")}まで」の ように、いつかを あらわす ことばです。`, en: "Time" },
+            "本日": { reading: "ほんじつ", ja: `「きょう」の ていねいな ${r("言", "い")}い${r("方", "かた")}です。`, en: "Today (formal)" },
+            "予定": { reading: "よてい", ja: `「いつ ${r("何", "なに")}を するか」を ${r("先", "さき")}に きめた ものです。`, en: "Plan / Schedule" },
+            "影響": { reading: "えいきょう", ja: `ほかの ものが うける、よい ことや こまる ことです。`, en: "Impact" },
+            "連絡": { reading: "れんらく", ja: `${r("予定", "よてい")}や ${r("情報", "じょうほう")}を ${r("相手", "あいて")}に ${r("伝", "つた")}える ことです。`, en: "Contact" },
+            "修正": { reading: "しゅうせい", ja: `まちがって いる ところを なおす ことです。`, en: "Fix" },
+            "確認": { reading: "かくにん", ja: `まちがいが ないかを、しっかり ${r("見", "み")}て ${r("確", "たし")}かめる ことです。`, en: "Confirmation" }
+        };
+
+        /** v() で 引いた 見出し（テストが「辞書に 無い 語が 無いか」を 見る）。 */
+        const USED_TERMS = new Set();
+
+        /**
+         * ポップアップ辞書の ことば。`term` は 見出し（本文が 活用した 形の ときだけ 渡す）。
+         * `meaning` は 辞書に 無かった ときの 英語（WORDS が あれば そちらを 出す）。
+         */
+        function v(text, meaning, term) {
+            const key = term || plainText(text);
+            USED_TERMS.add(key);
+            return `<span class="vocab-term" tabindex="0" role="button" data-term="${key}" data-meaning="${meaning}">${text}</span>`;
+        }
+
+        /** 「元号」だけは 説明の ページへ（吹き出しの 代わり）。 */
+        function gengouLink(text) {
+            return `<span class="gengou-link" tabindex="0" role="button" onclick="openGengou()" onkeydown="if(event.key==='Enter'){openGengou()}">${text}<span aria-hidden="true" class="text-[0.8em] ml-0.5">📖</span></span>`;
         }
 
         function stripTags(html) {
@@ -468,7 +581,7 @@
                 reply: {
                     name: `${r("奥田", "おくだ")}さん`,
                     face: OKUDA,
-                    text: `${r("了解", "りょうかい")}です。カレンダーを${r("直", "なお")}しておきます。`
+                    text: `${r("了解", "りょうかい")}です。project-aグループのカレンダーを${r("直", "なお")}しておきます。`
                 },
                 targetChannel: 'project-a',
                 vocab: [
@@ -481,7 +594,8 @@
                     { w: r("以下", "いか"), m: "Below / The following" }
                 ],
                 instruction: {
-                    text: `A${r("社", "しゃ")}(Company A)とのミーティングの${r("時間", "じかん")}と${r("場所", "ばしょ")}が${r("変", "か")}わりました。\n\n【${r("変更", "へんこう")}の内容】\n・${r("時間", "じかん")}: 14:00 → 15:00\n・${r("場所", "ばしょ")}: ${r("会議室", "かいぎしつ")}A → ${r("会議室", "かいぎしつ")}B\n\n<b>#project-a</b> で、チームのみんなに${r("連絡", "れんらく")}してください。\n「【${r("変更点", "へんこうてん")}】」としてリストにまとめ、カレンダーの${r("更新", "こうしん")}もお${r("願", "ねが")}いしましょう。`
+                    /* 2026-10-26 に tomy さんの 文へ 差し替えた（前は【変更の内容】の リストが 先に 付いて いた） */
+                    text: `A${r("社", "しゃ")}(Company A)とのミーティングの${r("時間", "じかん")}と${r("場所", "ばしょ")}が${r("変", "か")}わりました。\n\n${r("時間", "じかん")}は14:00から15:00に${r("変更", "へんこう")}しました。\n${r("場所", "ばしょ")}は${r("会議室", "かいぎしつ")}Aが${v(`${r("空", "あ")}いていなかった`, "Was not free", "空く")}ので${r("会議室", "かいぎしつ")}Bに${r("変更", "へんこう")}しました。\n\n<b>#project-a</b> で、チームのみんなに${r("連絡", "れんらく")}してください。\n「【${r("変更点", "へんこうてん")}】」としてリストにまとめ、カレンダーの${r("更新", "こうしん")}もお${r("願", "ねが")}いしましょう。`
                 },
                 steps: [
                     {
@@ -548,7 +662,7 @@
                     { w: r("反映", "はんえい"), m: "Reflect / Apply" }
                 ],
                 instruction: {
-                    text: `「${v(r("元号", "げんごう"), "Japanese Era Name")}(Gengō)」を${v(r("計算", "けいさん"), "Calculation")}する${v(r("共通", "きょうつう"), "Common")}${v(r("機能", "きのう"), "Function")}を${v(r("作", "つく"), "Create")}りました。\n#dev-teamに、GitHubから${v(r("最新", "さいしん"), "Latest")}のコードを \`pull\` して、${r("自分", "じぶん")}のPCに${v(r("反映", "はんえい"), "Reflect")}するように${v(r("依頼", "いらい"), "Request")}してください。\n\n------------ <b>📝 メモ (Note)</b>-----------\n「${v(r("元号", "げんごう"), "Japanese Era Name")}」は、${r("日本", "にほん")}の${r("特別", "とくべつ")}な${r("年", "とし")}の${r("数", "かぞ")}え${r("方", "かた")}です。\n${r("天皇", "てんのう")}(Emperor)が${r("変", "か")}わると、${r("名前", "なまえ")}が${r("変", "か")}わります。\n（${v(r("例", "れい"), "Example")}：1989-2019=${r("平成", "へいせい")}, 2019-=${r("令和", "れいわ")}）\n---------------------------------------`
+                    text: `「${gengouLink(r("元号", "げんごう"))}(Gengō)」を${v(r("計算", "けいさん"), "Calculation")}する${v(r("共通", "きょうつう"), "Common")}${v(r("機能", "きのう"), "Function")}を${v(r("作", "つく"), "Create", "作る")}りました。\n#dev-teamに、GitHubから${v(r("最新", "さいしん"), "Latest")}のコードを \`pull\` して、${r("自分", "じぶん")}のPCに${v(r("反映", "はんえい"), "Reflect")}するように${v(r("依頼", "いらい"), "Request")}してください。\n\n------------ <b>📝 メモ (Note)</b>-----------\n「${gengouLink(r("元号", "げんごう"))}」は、${r("日本", "にほん")}の${r("特別", "とくべつ")}な${r("年", "とし")}の${r("数", "かぞ")}え${r("方", "かた")}です。\n${r("天皇", "てんのう")}(Emperor)が${r("変", "か")}わると、${r("名前", "なまえ")}が${r("変", "か")}わります。\n（${v(r("例", "れい"), "Example")}：1989-2019=${r("平成", "へいせい")}, 2019-=${r("令和", "れいわ")}）\n---------------------------------------`
                 },
                 steps: [
                     {
@@ -775,8 +889,11 @@
             headerIcon: document.getElementById('header-icon'),
             messages: document.getElementById('messages-container'),
             actionArea: document.getElementById('action-area'),
-            draftArea: document.getElementById('draft-area'),
             draftText: document.getElementById('draft-text'),
+            composerSend: document.getElementById('composer-send'),
+            popover: document.getElementById('word-popover'),
+            gengou: document.getElementById('gengou-screen'),
+            gengouFrame: document.getElementById('gengou-frame'),
             score: document.getElementById('score-display'),
             completion: document.getElementById('completion-screen'),
             notice: document.getElementById('notice-screen'),
@@ -798,10 +915,10 @@
 
         function renderNav() {
             els.channelList.innerHTML = CHANNELS.map(ch => `
-                <button onclick="handleChannelClick('${ch.id}')" 
-                    class="w-full text-left px-4 py-2 flex items-center gap-3 hover:bg-slate-800/50 transition border-l-4 ${state.currentViewId === ch.id ? 'bg-slate-800 border-indigo-500 text-white' : 'border-transparent text-slate-400'}">
-                    <i data-lucide="hash" class="w-4 h-4 opacity-70"></i>
-                    <span class="truncate text-sm font-medium">${ch.name}</span>
+                <button onclick="handleChannelClick('${ch.id}')"
+                    class="w-full text-left px-4 py-2.5 flex items-center gap-3 hover:bg-slate-800/50 transition border-l-4 ${state.currentViewId === ch.id ? 'bg-slate-800 border-indigo-500 text-white' : 'border-transparent text-slate-400'}">
+                    <i data-lucide="hash" class="w-5 h-5 opacity-70"></i>
+                    <span class="truncate text-base font-medium">${ch.name}</span>
                 </button>
             `).join('');
 
@@ -809,18 +926,18 @@
             const showNotification = (state.phase === 'dm_briefing' || state.phase === 'mission_complete') && state.currentViewId !== 'dm-tanaka';
 
             els.dmList.innerHTML = `
-                <button onclick="handleDMClick()" 
-                    class="w-full text-left px-4 py-2 flex items-center gap-3 hover:bg-slate-800/50 transition border-l-4 ${state.currentViewId === 'dm-tanaka' ? 'bg-slate-800 border-indigo-500 text-white' : 'border-transparent text-slate-400'}">
-                    <div class="relative">
-                        <div class="w-2.5 h-2.5 rounded-full bg-green-500 absolute -right-0.5 -bottom-0.5 ring-2 ring-slate-900"></div>
-                        <img src="/img/characters/hendy/portrait.webp" alt="ヘンディ先輩" class="w-6 h-6 rounded object-cover flex-shrink-0 shadow-md" />
+                <button onclick="handleDMClick()"
+                    class="w-full text-left px-4 py-2.5 flex items-center gap-3 hover:bg-slate-800/50 transition border-l-4 ${state.currentViewId === 'dm-tanaka' ? 'bg-slate-800 border-indigo-500 text-white' : 'border-transparent text-slate-400'}">
+                    <div class="relative flex-shrink-0">
+                        <img src="/img/characters/hendy/portrait.webp" alt="ヘンディ先輩" class="w-8 h-8 rounded-md object-cover shadow-md" />
+                        <div class="w-3 h-3 rounded-full bg-green-500 absolute -right-0.5 -bottom-0.5 ring-2 ring-slate-900"></div>
                     </div>
-                    <span class="truncate text-sm font-medium">Hendy Senpai</span>
+                    <span class="truncate text-base font-bold">Hendy Senpai</span>
                     ${showNotification ? '<span class="w-2.5 h-2.5 rounded-full bg-red-500 ml-auto animate-pulse shadow-sm shadow-red-500/50"></span>' : ''}
                 </button>
-                <div class="w-full text-left px-4 py-2 flex items-center gap-3 opacity-40 cursor-not-allowed">
-                    <div class="w-6 h-6 rounded bg-slate-600 flex items-center justify-center text-[10px] text-white font-bold">Y</div>
-                    <span class="truncate text-sm font-medium">You</span>
+                <div class="w-full text-left px-4 py-2.5 flex items-center gap-3 opacity-40 cursor-not-allowed">
+                    <div class="w-8 h-8 rounded-md bg-slate-600 flex items-center justify-center text-sm text-white font-bold flex-shrink-0">Y</div>
+                    <span class="truncate text-base font-medium">You</span>
                 </div>
             `;
             lucide.createIcons();
@@ -831,8 +948,8 @@
             state.currentViewId = 'dm-tanaka';
             state.draftLines = [];
 
-            // Add new instruction to history
-            state.dmHistory.push({ sender: 'Hendy Senpai', text: sc.instruction.text, type: 'tanaka' });
+            // Add new instruction to history（時刻は 来た ときの もの。描き直しても 変えない）
+            state.dmHistory.push({ sender: 'Hendy Senpai', text: sc.instruction.text, type: 'tanaka', time: clock() });
 
             updateHeader();
             renderNav();
@@ -851,18 +968,20 @@
             contentDiv.classList.add('highlight-update');
 
             // 2. Update Content
+            /*
+             * 指示の 文は **改行を 残す**（2026-10-26 の 指定「Doc Update は 文章に 改行を」）。
+             * pre-wrap なので、`${sc.instruction.text}` の 前後に 空白や 改行を 入れない。
+             */
             contentDiv.innerHTML = `
-                <div class="bg-white rounded-lg border border-slate-200 shadow-sm p-4">
-                    <div class="flex justify-between items-center mb-2">
-                        <div class="text-xs font-bold text-slate-400 uppercase">Mission ${state.scenarioIndex + 1}/${SCENARIOS.length}</div>
-                        <span class="bg-indigo-100 text-indigo-700 text-[10px] px-2 py-0.5 rounded-full font-bold">Active</span>
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
+                    <div class="flex justify-between items-center mb-1.5">
+                        <div class="text-sm font-bold text-slate-500 uppercase">Mission ${state.scenarioIndex + 1}/${SCENARIOS.length}</div>
+                        <span class="bg-indigo-100 text-indigo-700 text-xs px-2.5 py-0.5 rounded-full font-bold">Active</span>
                     </div>
-                    <div class="font-bold text-slate-800 mb-3 text-lg leading-tight">${sc.title}</div>
-                    <div class="bg-slate-50 text-slate-700 text-sm p-3 rounded leading-relaxed border border-slate-200">
-                        ${sc.instruction.text}
-                    </div>
-                    <div class="mt-4 flex items-center gap-2 text-xs font-bold text-slate-500 bg-slate-100 p-2 rounded">
-                        <i data-lucide="map-pin" class="w-3 h-3 text-red-500"></i>
+                    <div class="font-bold text-slate-800 mb-3 text-xl leading-tight">${sc.title}</div>
+                    <div class="bg-slate-50 text-slate-700 text-[15px] xl:text-base p-3 rounded-lg leading-[2.4] xl:leading-[2.4] border border-slate-200 whitespace-pre-wrap break-words">${sc.instruction.text}</div>
+                    <div class="mt-4 flex items-center gap-2 text-sm font-bold text-slate-500 bg-slate-100 px-3 py-2 rounded-lg">
+                        <i data-lucide="map-pin" class="w-4 h-4 text-red-500"></i>
                         Post in: <span class="text-slate-800">#${sc.targetChannel}</span>
                     </div>
                 </div>
@@ -871,9 +990,9 @@
             // 3. Update Vocab List
             if (sc.vocab) {
                 els.vocabList.innerHTML = sc.vocab.map(v => `
-                    <div class="flex justify-between border-b border-slate-100 pb-1 last:border-0">
-                        <span class="font-medium text-slate-700">${v.w}</span>
-                        <span class="text-slate-400">${v.m}</span>
+                    <div class="flex justify-between items-end gap-3 border-b border-slate-100 py-1.5 last:border-0">
+                        <span class="font-medium text-slate-800 text-base">${v.w}</span>
+                        <span class="text-slate-500 text-right">${v.m}</span>
                     </div>
                 `).join('');
             } else {
@@ -886,13 +1005,42 @@
         // --- View Logic ---
         function updateHeader() {
             if (state.currentViewId === 'dm-tanaka') {
-                els.headerIcon.innerHTML = '<i data-lucide="message-square" class="w-5 h-5 text-indigo-500"></i>';
+                els.headerIcon.innerHTML = '<i data-lucide="message-square" class="w-6 h-6 text-indigo-500"></i>';
                 els.headerTitle.innerText = "Hendy Senpai";
             } else {
-                els.headerIcon.innerHTML = '<i data-lucide="hash" class="w-5 h-5 text-slate-400"></i>';
+                els.headerIcon.innerHTML = '<i data-lucide="hash" class="w-6 h-6 text-slate-400"></i>';
                 els.headerTitle.innerText = state.currentViewId;
             }
+            updateComposer();
             lucide.createIcons();
+        }
+
+        /**
+         * 入力欄。下書きは **送る チャンネルに いる ときだけ** 見せる（Slack と 同じく 下書きは その 場所の もの）。
+         * 書いて いる ときは カーソルを 出す。まだ 何も 無ければ **0文字目**に 出て、その あとに 薄い 案内が 続く。
+         */
+        function updateComposer() {
+            const sc = SCENARIOS[state.scenarioIndex];
+            const drafting = state.phase === 'drafting' && state.currentViewId === sc.targetChannel;
+            const text = drafting ? stripTags(state.draftLines.join('\n\n')) : '';
+            const box = els.draftText;
+            box.textContent = '';
+            if (text) box.append(text);
+            if (drafting) {
+                const caret = document.createElement('span');
+                caret.className = 'caret';
+                box.append(caret);
+            }
+            if (!text) {
+                const hint = document.createElement('span');
+                hint.className = 'text-slate-400';
+                hint.textContent = state.currentViewId === 'dm-tanaka'
+                    ? 'Message to Hendy Senpai...'
+                    : `Message #${state.currentViewId}...`;
+                box.append(hint);
+            }
+            box.scrollTop = box.scrollHeight;
+            els.composerSend.disabled = !(drafting && state.draftLines.length >= sc.steps.length);
         }
 
         function handleDMClick() {
@@ -953,7 +1101,7 @@
             if (state.currentViewId === 'dm-tanaka') {
                 // Render full history
                 state.dmHistory.forEach(msg => {
-                    addMessageUI(msg.sender, msg.text, msg.type);
+                    addMessageUI(msg.sender, msg.text, msg.type, undefined, msg.time);
                 });
             } else {
                 // Channel View
@@ -965,7 +1113,12 @@
             }
         }
 
-        function addMessageUI(sender, html, type, face) {
+        /** 「10:24」の 形の 今の 時刻。 */
+        function clock() {
+            return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function addMessageUI(sender, html, type, face, time) {
             const div = document.createElement('div');
             div.className = "flex gap-4 fade-in group";
 
@@ -973,25 +1126,26 @@
             let bgClass = "bg-white";
 
             if (type === 'tanaka') {
-                avatarHtml = `<img src="/img/characters/hendy/portrait.webp" alt="ヘンディ先輩" class="w-10 h-10 rounded object-cover flex-shrink-0 shadow-md" />`;
-                bgClass = "bg-white border-slate-100 shadow-sm";
+                avatarHtml = `<img src="/img/characters/hendy/portrait.webp" alt="ヘンディ先輩" class="w-12 h-12 xl:w-14 xl:h-14 rounded-lg object-cover flex-shrink-0 shadow-md" />`;
+                bgClass = "bg-white border-slate-200 shadow-sm";
             } else if (type === 'member') {
                 // チームの だれか（本人の 顔を 使う）
-                avatarHtml = `<img src="${face}" alt="" class="w-10 h-10 rounded object-cover flex-shrink-0 shadow-md" />`;
-                bgClass = "bg-white border-slate-100 shadow-sm";
+                avatarHtml = `<img src="${face}" alt="" class="w-12 h-12 xl:w-14 xl:h-14 rounded-lg object-cover flex-shrink-0 shadow-md" />`;
+                bgClass = "bg-white border-slate-200 shadow-sm";
             } else if (type === 'me') {
-                avatarHtml = `<div class="w-10 h-10 rounded bg-slate-700 flex items-center justify-center text-white font-bold flex-shrink-0 shadow-md">Y</div>`;
-                bgClass = "bg-indigo-50/50 border-indigo-100 shadow-sm";
+                avatarHtml = `<div class="w-12 h-12 xl:w-14 xl:h-14 rounded-lg bg-slate-700 flex items-center justify-center text-white text-xl font-bold flex-shrink-0 shadow-md">Y</div>`;
+                bgClass = "bg-indigo-50 border-indigo-200 shadow-sm";
             }
 
+            /* 時刻は いつも 出す（見本どおり。前は マウスを のせた ときだけ） */
             div.innerHTML = `
                 ${avatarHtml}
                 <div class="flex-1 min-w-0">
-                    <div class="flex items-baseline gap-2 mb-1">
-                        <span class="font-bold text-slate-900">${sender}</span>
-                        <span class="text-xs text-slate-400 opacity-0 group-hover:opacity-100 transition">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                    <div class="flex items-baseline gap-3 mb-1.5">
+                        <span class="font-bold text-slate-900 text-lg xl:text-xl">${sender}</span>
+                        <span class="text-sm text-slate-400">${time || clock()}</span>
                     </div>
-                    <div class="text-sm text-slate-800 leading-relaxed whitespace-pre-wrap break-words p-3 rounded-r-lg rounded-bl-lg border ${bgClass}">${html}</div>
+                    <div class="text-lg xl:text-xl text-slate-800 leading-[2.2] xl:leading-[2.2] whitespace-pre-wrap break-words px-5 py-4 rounded-xl border ${bgClass}">${html}</div>
                 </div>
             `;
             els.messages.appendChild(div);
@@ -1025,7 +1179,7 @@
             div.className = "flex items-center gap-4 py-4 opacity-70 px-4";
             div.innerHTML = `
                 <div class="h-px bg-slate-300 flex-1"></div>
-                <div class="text-xs font-bold text-slate-400 uppercase">${html}</div>
+                <div class="text-sm font-bold text-slate-400 uppercase">${html}</div>
                 <div class="h-px bg-slate-300 flex-1"></div>
             `;
             els.messages.appendChild(div);
@@ -1040,7 +1194,7 @@
             // 1. DM Phase
             if (state.phase === 'dm_briefing') {
                 if (state.currentViewId !== 'dm-tanaka') {
-                    els.actionArea.innerHTML = `<div class="text-center text-sm text-slate-500">Check Direct Messages for instructions.</div>`;
+                    els.actionArea.innerHTML = `<div class="text-center text-base text-slate-500">Check Direct Messages for instructions.</div>`;
                     return;
                 }
 
@@ -1048,7 +1202,7 @@
                 if (lastMsg.type === 'tanaka') {
                     els.actionArea.innerHTML = `
                         <div class="max-w-xl mx-auto text-center fade-in">
-                            <button onclick="acknowledgeTask()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded-xl font-bold shadow-lg shadow-indigo-200 transition flex items-center justify-center mx-auto gap-2 w-full md:w-auto">
+                            <button onclick="acknowledgeTask()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-lg px-8 py-3 rounded-xl font-bold shadow-lg shadow-indigo-200 transition flex items-center justify-center mx-auto gap-2 w-full md:w-auto">
                                 <i data-lucide="check" class="w-5 h-5"></i>
                                 了解です。対応します。
                             </button>
@@ -1056,8 +1210,8 @@
                     `;
                 } else {
                     els.actionArea.innerHTML = `
-                        <div class="text-center text-sm text-slate-500 flex flex-col items-center gap-2">
-                            <span class="bg-slate-100 px-3 py-1 rounded text-slate-600">Next Step</span>
+                        <div class="text-center text-base text-slate-500 flex flex-col items-center gap-2">
+                            <span class="bg-slate-100 px-3 py-1 rounded text-sm text-slate-600">Next Step</span>
                             <span>左のメニューから <b>#${sc.targetChannel}</b> に移動してください。</span>
                         </div>
                     `;
@@ -1068,19 +1222,20 @@
             else if (state.phase === 'drafting') {
                 if (state.currentViewId !== sc.targetChannel) return;
 
-                els.draftArea.classList.remove('hidden');
+                updateComposer();
 
                 const currentStepIdx = state.draftLines.length;
                 if (currentStepIdx >= sc.steps.length) {
                     els.actionArea.innerHTML = `
                         <div class="max-w-xl mx-auto text-center fade-in">
-                            <p class="text-sm text-slate-500 mb-3">メッセージが完成しました。</p>
-                            <button onclick="sendMessage()" class="bg-green-600 hover:bg-green-700 text-white px-10 py-3 rounded-xl font-bold shadow-lg shadow-green-200 transition flex items-center justify-center mx-auto gap-2 w-full md:w-auto">
+                            <p class="text-base text-slate-500 mb-3">メッセージが完成しました。</p>
+                            <button onclick="sendMessage()" class="bg-green-600 hover:bg-green-700 text-white text-lg px-10 py-3 rounded-xl font-bold shadow-lg shadow-green-200 transition flex items-center justify-center mx-auto gap-2 w-full md:w-auto">
                                 <i data-lucide="send" class="w-5 h-5"></i>
                                 送信する (Send)
                             </button>
                         </div>
                     `;
+                    lucide.createIcons();
                     return;
                 }
 
@@ -1088,15 +1243,15 @@
                 els.actionArea.innerHTML = `
                     <div class="max-w-4xl mx-auto fade-in">
                         <div class="flex items-center gap-2 mb-4">
-                            <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-2 py-1 rounded">Step ${currentStepIdx + 1}/${sc.steps.length}</span>
-                            <span class="text-sm font-bold text-slate-700">${step.question}</span>
+                            <span class="bg-indigo-100 text-indigo-700 text-sm font-bold px-2.5 py-1 rounded flex-shrink-0">Step ${currentStepIdx + 1}/${sc.steps.length}</span>
+                            <span class="text-base xl:text-lg font-bold text-slate-700">${step.question}</span>
                         </div>
                         <div class="grid md:grid-cols-3 gap-3">
                             ${step.options.map((opt, i) => `
                                 <button onclick="handleOptionSelect(${i})" class="text-left p-4 rounded-xl border border-slate-200 bg-white hover:border-indigo-400 hover:shadow-md transition flex flex-col gap-2 group h-full relative overflow-hidden">
                                     <div class="absolute top-0 left-0 w-1 h-full bg-slate-200 group-hover:bg-indigo-500 transition-colors"></div>
                                     <div class="pl-2">
-                                        <span class="text-sm text-slate-700 font-medium leading-relaxed">${opt.text}</span>
+                                        <span class="text-base text-slate-700 font-medium leading-loose">${opt.text}</span>
                                     </div>
                                 </button>
                             `).join('')}
@@ -1137,7 +1292,7 @@
 
         function acknowledgeTask() {
             const reply = "了解です。対応します。";
-            state.dmHistory.push({ sender: 'You', text: reply, type: 'me' });
+            state.dmHistory.push({ sender: 'You', text: reply, type: 'me', time: clock() });
             state.phase = 'channel_nav';
             renderMessagesForView();
             renderActionArea();
@@ -1152,7 +1307,7 @@
             if (option.isCorrect) {
                 // 正解の選択肢（HTMLタグ付き）を保存
                 state.draftLines.push(option.text);
-                updateDraftPreview();
+                updateComposer();
                 renderActionArea();
                 els.score.innerText = state.score;
             } else {
@@ -1165,7 +1320,7 @@
                     state.score = Math.max(0, state.score - PENALTY);
                     els.score.innerText = state.score;
                     const feedback = document.createElement('div');
-                    feedback.className = "feedback-msg text-xs text-red-600 mt-2 font-bold pl-2 animate-pulse";
+                    feedback.className = "feedback-msg text-sm text-red-600 mt-2 font-bold pl-2 animate-pulse";
 
                     // 【重要】フィードバックはタグありで表示したいので innerHTML を使い、stripTags は使わない
                     feedback.innerHTML = `💡 ${option.feedback}`;
@@ -1175,16 +1330,13 @@
             }
         }
 
-        function updateDraftPreview() {
-            const rawHtml = state.draftLines.join('\n\n');
-            els.draftText.innerText = stripTags(rawHtml);
-        }
-
         function sendMessage() {
+            // 入力欄の ボタンと 下の ボタンの 2つから 呼ばれる。2回 送らない
+            if (state.phase !== 'drafting') return;
+            state.phase = 'sent';
             const fullText = state.draftLines.join('\n\n');
-            els.draftArea.classList.add('hidden');
-            els.draftText.innerText = "";
             els.actionArea.innerHTML = "";
+            updateComposer();
 
             // 自分のメッセージを表示
             const sent = addMessageUI('You', fullText, 'me');
@@ -1247,6 +1399,103 @@
             els.completion.classList.remove('hidden');
             lucide.createIcons();
         }
+
+        // --- ポップアップ辞書（アプリの WordPopover と 同じ 出し方） ---
+        /** 画面の ふちに 触れさせない 余白・ことばとの あいだ（word-popover.tsx と そろえる）。 */
+        const EDGE_MARGIN = 12;
+        const POPOVER_GAP = 8;
+        let popoverAnchor = null;
+
+        /** マウスの ある きかいだけ、のせただけで 開く（指の きかいは タップ）。src/lib/pointer.ts と 同じ。 */
+        function canHover() {
+            return typeof window.matchMedia === 'function'
+                && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+        }
+
+        function openPopover(anchor) {
+            const term = anchor.dataset.term;
+            const word = WORDS[term];
+            const reading = word ? word.reading : '';
+            const en = word ? word.en : anchor.dataset.meaning;
+            els.popover.innerHTML = `
+                <span class="wp-term">${term}<span class="wp-reading">${reading}</span></span>
+                ${word ? `<span class="wp-ja">${word.ja}</span>` : ''}
+                <span class="wp-en">${en}</span>
+            `;
+            popoverAnchor = anchor;
+            els.popover.classList.remove('hidden');
+            placePopover();
+        }
+
+        function closePopover() {
+            popoverAnchor = null;
+            els.popover.classList.add('hidden');
+        }
+
+        /** ことばの 上に 出す。上に 入らない ときだけ 下へ。左右は 画面から はみ出さない。 */
+        function placePopover() {
+            if (!popoverAnchor) return;
+            // メッセージを 描き直すと ことばごと 消える
+            if (!document.body.contains(popoverAnchor)) return closePopover();
+            const rect = popoverAnchor.getBoundingClientRect();
+            const box = els.popover;
+            const height = box.offsetHeight;
+            const width = box.offsetWidth;
+            const below = rect.top < height + EDGE_MARGIN;
+            const centerX = rect.left + rect.width / 2;
+            const rightmost = Math.max(EDGE_MARGIN, window.innerWidth - width - EDGE_MARGIN);
+            box.style.left = `${Math.min(Math.max(centerX - width / 2, EDGE_MARGIN), rightmost)}px`;
+            box.style.top = `${below ? rect.bottom + POPOVER_GAP : rect.top - POPOVER_GAP - height}px`;
+        }
+
+        document.addEventListener('mouseover', (event) => {
+            if (!canHover()) return;
+            const term = event.target.closest('.vocab-term');
+            if (term && term !== popoverAnchor) openPopover(term);
+            else if (!term && popoverAnchor) closePopover();
+        });
+        document.addEventListener('click', (event) => {
+            const term = event.target.closest('.vocab-term');
+            if (canHover()) {
+                // のせた 時点で 開いて いる。押しても 閉じない（dictionary-text.tsx と 同じ）
+                if (term) openPopover(term);
+                return;
+            }
+            if (term) {
+                if (term === popoverAnchor) closePopover();
+                else openPopover(term);
+            } else if (popoverAnchor) {
+                closePopover();
+            }
+        });
+        document.addEventListener('focusin', (event) => {
+            const term = event.target.closest && event.target.closest('.vocab-term');
+            if (term) openPopover(term);
+        });
+        document.addEventListener('focusout', (event) => {
+            if (event.target === popoverAnchor) closePopover();
+        });
+        // 捕捉で 聞く——中の スクロールする 欄（メッセージ・右の 欄）も 拾う
+        window.addEventListener('scroll', placePopover, true);
+        window.addEventListener('resize', placePopover);
+
+        // --- 元号の 説明 ---
+        function openGengou() {
+            closePopover();
+            // はじめて 開く ときに 読みこむ（ゲームを 開くたびに 取りに 行かない）
+            if (!els.gengouFrame.getAttribute('src')) {
+                els.gengouFrame.setAttribute('src', '/tools/hourensou/gengou.html');
+            }
+            els.gengou.classList.remove('hidden');
+        }
+
+        function closeGengou() {
+            els.gengou.classList.add('hidden');
+        }
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && !els.gengou.classList.contains('hidden')) closeGengou();
+        });
 
         function scrollToBottom() {
             setTimeout(() => {

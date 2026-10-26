@@ -912,6 +912,7 @@ export const ASSET_VERSIONS: Readonly<Record<string, string>> = {
   "/img/hourensou/renraku/kotsu2.webp": "81344434",
   "/img/hourensou/renraku/kotsu3.webp": "c20066ae",
   "/img/hourensou/renraku/kotsu4.webp": "d6b485e0",
+  "/img/hourensou/renraku/nextmake_icon.png": "7b6e6b6d",
   "/img/hourensou/renraku/reaction.webp": "4d30ae5b",
   "/img/hourensou/renraku/renraku.webp": "fa59c839",
   "/img/hourensou/renraku/s1.webp": "744f07cf",
