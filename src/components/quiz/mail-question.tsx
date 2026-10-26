@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import type { QuizQuestion } from "@/content/schema";
 import { RubyText } from "@/components/ruby-text";
-import { fillinSlotOk } from "@/lib/quiz/draft";
+import { fillinSlotAiMayAccept, fillinSlotOk } from "@/lib/quiz/draft";
 import { fillinModelText, fillinSlots, fillinText } from "@/lib/quiz/fillin";
 import type { QuizDraft } from "@/lib/quiz/draft";
 import { aiReplyFurigana } from "@/lib/ai-kanji";
@@ -20,11 +20,14 @@ import { BrushUp, CheckBand, CheckButton, CheckMark, CheckNote } from "./check-p
  *  何が良かったか（正解時）何がだめなのか（不正解時）書いて」
  * 「初級と上級はコンポーネントを分けてください」。
  *
- * ## ⭕✗は **アプリが** 決める
- * この もんだいは 欄ごとに 正解が ある（教材データ）。だから ⭕✗は `fillinSlotOk` が 決め、
- * AIは **欄ごとの ひとこと**と、必要な ときの **ブラッシュアップ**だけを 書く。
- * こうしないと、ここの ⭕✗と 答え合わせの ⭕✗が 食いちがう。
+ * ## ⭕✗は まず **アプリが** 決める
+ * この もんだいは 欄ごとに 正解が ある（教材データ）。だから ⭕✗は まず `fillinSlotOk` が 決め、
+ * AIは **欄ごとの ひとこと**と、必要な ときの **ブラッシュアップ**を 書く。
  * 鍵（Gemini）が 無い 端末でも ⭕✗は 出る——学習は 止まらない。
+ *
+ * アプリが ✗に した 欄は、AIが **中身で** ⭕に できる（2026-10-26 の 指定
+ *「１言１句ではなく、内容を捉えられているか」）。数字・日にちが ちがう 欄は 渡さない
+ *（`fillinSlotAiMayAccept`）。
  *
  * ## 答え（お手本）は ここでは 出さない
  * 「模範解答は答え合わせの時だけでいいです」（同日の 指定）。だから ✗の 欄にも
@@ -56,7 +59,11 @@ export function MailQuestion({
 }: {
   question: Mail;
   furigana: FuriganaIndex;
-  onSubmit: (inputs: readonly string[]) => void;
+  /**
+   * `checked` … こたえの チェックで いまの 文の まま ⭕か（1問ずつ の 採点を ⭕に そろえる。
+   * AIが 中身で ⭕に した 欄は、字だけの 採点では ✗に なる ため）。
+   */
+  onSubmit: (inputs: readonly string[], checked?: boolean) => void;
   disabled?: boolean;
   submitMode?: boolean;
   draft?: Extract<QuizDraft, { kind: "fillin" }>;
@@ -94,16 +101,21 @@ export function MailQuestion({
 
   const ask = () => {
     /*
-     * 欄ごとの ⭕✗を 先に 決めて から 渡す（AIは これを 動かせない）。
+     * 欄ごとの ⭕✗を 先に 決めて から 渡す（AIは ⭕を ✗に できない。✗を ⭕に できるのは
+     * `aiJudges` の 欄だけ）。
      * id は 欄の 並び（`fillinSlots`）で 付ける——名前が 同じ 欄が あっても ずれない。
      */
-    const items = slots.map((slot, i) => ({
-      id: `f${i + 1}`,
-      label: slot.label,
-      value: (inputs[i] ?? "").trim(),
-      answer: slot.answer,
-      ok: fillinSlotOk(slot, inputs[i] ?? ""),
-    }));
+    const items = slots.map((slot, i) => {
+      const ok = fillinSlotOk(slot, inputs[i] ?? "");
+      return {
+        id: `f${i + 1}`,
+        label: slot.label,
+        value: (inputs[i] ?? "").trim(),
+        answer: slot.answer,
+        ok,
+        aiJudges: !ok && fillinSlotAiMayAccept(slot, inputs[i] ?? ""),
+      };
+    });
     void run({
       items,
       itemKind: "field",
@@ -125,7 +137,7 @@ export function MailQuestion({
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        if (!submitMode && !disabled && !empty) onSubmit(inputs);
+        if (!submitMode && !disabled && !empty) onSubmit(inputs, check?.ok === true);
       }}
     >
       <div className="border-hairline overflow-hidden rounded-[var(--radius-card)] border-2 bg-white">
