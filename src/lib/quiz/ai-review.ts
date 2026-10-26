@@ -35,6 +35,8 @@
 
 import { FORBIDDEN_LEARNER_WORDS, type QuizQuestion } from "@/content/schema";
 import { AI_KANJI_WORDS } from "@/lib/ai-kanji";
+import { contentForm } from "@/lib/quiz/fillin-match";
+import { normalizeReading } from "@/lib/text/normalize";
 
 /** 見て もらう 単位（メールの 欄、または Slackの 観点）。 */
 export interface ReviewItem {
@@ -79,6 +81,26 @@ export interface ReviewItemResult {
   readonly ok: boolean;
   /** ひとこと（⭕なら よかった ところ・✗なら 足りない ところ）。空の ことも ある。 */
   readonly note: string;
+  /*
+   * ここから 3つは **✗の ときだけ**入る（「AIの ひょうか」の「なおすところ」・2026-10-26 の 指定）。
+   * ⭕・AIに 見て もらえなかった 回は 空か 無い。
+   */
+  /** 学生の 文の その ところ（そのまま 写した もの）。 */
+  readonly before?: string;
+  /** before を 直した 形。**まだ 書いて いない 中身は ？？？**（`hideUnwritten`）。 */
+  readonly after?: string;
+  /** 読む 人が 思う しつもん（「何の URL？ いつ 変わった？」）。 */
+  readonly ask?: string;
+}
+
+/** 文法アドバイス 1つ（学生の 文に ある 日本語の 文法の ところだけ）。 */
+export interface GrammarTip {
+  /** 文の 形（「〜が 変わりました」）。 */
+  readonly point: string;
+  /** なぜ そう 書くか（1文）。 */
+  readonly explain: string;
+  /** 例文 1つ（メモから さがす 中身は ？？？）。 */
+  readonly example: string;
 }
 
 export interface QuizReviewResult {
@@ -90,7 +112,12 @@ export interface QuizReviewResult {
    * **中身は 合って いるのに 言い方が よくない ときだけ**入る。
    */
   readonly polished: string;
+  /** 文法アドバイス（0〜2こ）。AIに 見て もらえなかった 回は 空。 */
+  readonly grammar?: readonly GrammarTip[];
 }
+
+/** 文法アドバイスの 数の 上限（画面が 長く ならない ように）。 */
+const GRAMMAR_MAX = 2;
 
 /** 見かた係への 言い渡し（つなぎの あいだ ずっと 変わらない 決まりだけ）。 */
 export const QUIZ_REVIEW_SYSTEM = [
@@ -139,8 +166,48 @@ export const QUIZ_REVIEW_TOOL = {
                     "✗の ときは **何が 足りないか・どこが ちがうか**。" +
                     "**答えその ものは 書かない**（学生が もう一度 考えられる ように）。",
                 },
+                before: {
+                  type: "STRING",
+                  description:
+                    "✗の ときだけ。学生の 文から、その 項目に かかわる ところを **そのまま** 写す" +
+                    "（変えない・みじかく）。⭕の ときは 空の 文字列。",
+                },
+                after: {
+                  type: "STRING",
+                  description:
+                    "✗の ときだけ。before を 職場で 通じる 形に 直した もの。" +
+                    "言い方・助詞・ていねいな 形は 直して 見せて よい。" +
+                    "**学生が まだ 書いて いない 中身（メモに ある 数・日時・URL・名前・場所）は 書かずに ？？？ に する**。" +
+                    "⭕の ときは 空の 文字列。",
+                },
+                ask: {
+                  type: "STRING",
+                  description:
+                    "✗の ときだけ。この 文を 読んだ 相手が 思う しつもん（みじかく・「？」で 終わる・1〜2こ）。" +
+                    "⭕の ときは 空の 文字列。",
+                },
               },
               required: ["id", "ok", "note"],
+            },
+          },
+          grammar: {
+            type: "ARRAY",
+            description:
+              "文法アドバイス（0〜2こ）。学生の 文に ある **日本語の 文法**の まちがい・足りない ところだけ" +
+              "（助詞・ていねいな 形・文の おわり など）。何を 書くか（中身・順番）は items に 書く。" +
+              "文法の まちがいが なければ 空の 配列。",
+            items: {
+              type: "OBJECT",
+              properties: {
+                point: { type: "STRING", description: "文の 形（例「〜が 変わりました」）。" },
+                explain: { type: "STRING", description: "なぜ そう 書くか（1文）。" },
+                example: {
+                  type: "STRING",
+                  description:
+                    "学生の 文の ことばで 作った 例文 1つ。メモから さがす 中身（数・日時・URL・名前）は 入れない。",
+                },
+              },
+              required: ["point", "explain", "example"],
             },
           },
           polished: {
@@ -152,7 +219,7 @@ export const QUIZ_REVIEW_TOOL = {
               "言い方も よい ときや、中身が 足りない ときは **空の 文字列**に する。",
           },
         },
-        required: ["ok", "items", "polished"],
+        required: ["ok", "items", "polished", "grammar"],
       },
     },
   ],
@@ -237,7 +304,28 @@ export function buildQuizReviewPrompt(context: QuizReviewContext, kanjiRetry = f
   );
   lines.push(
     "",
-    "# 学生が 読む ことばの 書きかた（items[].note・polished）",
+    "# ✗の 項目に 書く もの（before・after・ask）",
+    "- before … 学生の 文から、その 項目に かかわる ところを **そのまま** 写します（変えない・みじかく）。",
+    "- after … before を 直した 形。言い方・助詞・ていねいな 形・文の 形は 直して 見せて よい。",
+    "  **学生が まだ 書いて いない 中身（メモに ある 数・日時・URL・名前・場所）は 書かずに ？？？ に します**",
+    "  ——学生が メモから 自分で さがす ため。例: 変更前：http://？？？",
+    "- ask … この 文を 読んだ 相手が 思う しつもん（例「何の URL？ いつ 変わった？」）。",
+    "- ⭕の 項目は before・after・ask を 空に します。",
+    "- note・ask・grammar にも、学生が まだ 書いて いない 中身（答え）を 書きません。",
+    ...(context.itemKind === "field"
+      ? ["- この もんだいは 欄なので、before と after は アプリが 作ります（空で かまいません）。"]
+      : []),
+    "",
+    "# 文法アドバイス（grammar）",
+    "- 学生の 文に ある **日本語の 文法**の まちがい・足りない ところだけ書きます（0〜2こ）。",
+    "  たとえば 助詞（が・を・に・の）の ぬけ、ていねいな 形（〜ました・〜です）、文の おわり。",
+    "- 何を 書くか（中身・順番・変更前と 変更後）は items に 書きます。grammar には 書きません。",
+    "- point は 文の 形（例「〜が 変わりました」）、explain は 1文、example は 学生の 文の ことばで 作った 例文 1つ。",
+    "- 文法の まちがいが なければ 空の 配列に します。",
+  );
+  lines.push(
+    "",
+    "# 学生が 読む ことばの 書きかた（note・after・ask・grammar・polished）",
     "- つかえる 漢字は **お手本と 場面の メモに 出て くる ことば**と、つぎの ことばだけです。",
     `  ${AI_KANJI_WORDS.join("・")}`,
     "  この どちらにも 無い ことばは **ひらがな**で 書いて ください。",
@@ -280,10 +368,11 @@ function text(value: unknown): string {
  */
 export function parseQuizReview(
   args: unknown,
-  context: Pick<QuizReviewContext, "items" | "itemKind">,
+  context: Pick<QuizReviewContext, "items" | "itemKind"> & { readonly written?: string },
 ): QuizReviewResult | null {
   if (!args || typeof args !== "object") return null;
-  const bag = args as { ok?: unknown; items?: unknown; polished?: unknown };
+  const bag = args as { ok?: unknown; items?: unknown; polished?: unknown; grammar?: unknown };
+  const written = context.written ?? "";
   const known = new Map(context.items.map((item) => [item.id, item]));
   const seen = new Set<string>();
   const results: ReviewItemResult[] = [];
@@ -293,12 +382,21 @@ export function parseQuizReview(
     const item = known.get(id);
     if (!item || seen.has(id)) continue;
     seen.add(id);
-    const aiOk = (one as { ok?: unknown }).ok === true;
+    const fields = one as {
+      ok?: unknown;
+      note?: unknown;
+      before?: unknown;
+      after?: unknown;
+      ask?: unknown;
+    };
+    const aiOk = fields.ok === true;
+    const ok =
+      context.itemKind === "field" ? item.ok === true || (item.aiJudges === true && aiOk) : aiOk;
     results.push({
       id,
-      ok:
-        context.itemKind === "field" ? item.ok === true || (item.aiJudges === true && aiOk) : aiOk,
-      note: text((one as { note?: unknown }).note),
+      ok,
+      note: text(fields.note),
+      ...(ok ? {} : fixOf(item, fields, written)),
     });
   }
   if (results.length === 0) return null;
@@ -307,7 +405,169 @@ export function parseQuizReview(
    * 欄の ⭕✗は 教材が 決めて いる ので、まとめも そこから 出す ほうが 食いちがわない。
    */
   const ok = results.length === context.items.length && results.every((one) => one.ok);
-  return { ok, items: results, polished: text(bag.polished) };
+  /*
+   * **まだ 書いて いない 中身は、AIが 書いた 文 ぜんぶ から 隠す**——直した 形だけで なく
+   * ひとこと・読む 人の しつもん・文法アドバイスにも 答えは 出せる（2026-10-26 の コード検収）。
+   */
+  const missed = context.items
+    .filter((item) => results.some((one) => one.id === item.id && !one.ok))
+    .map((item) => item.answer ?? "");
+  const hide = unwrittenHider(written, missed);
+  return {
+    ok,
+    items: results.map((one) => ({
+      ...one,
+      note: hide(one.note),
+      ...(one.ok
+        ? {}
+        : {
+            // 欄の 直した 形は アプリが 作る（`fieldAfter`）——学生の ことば だけで できて いる
+            after: context.itemKind === "field" ? one.after : hide(one.after ?? ""),
+            ask: hide(one.ask ?? ""),
+          }),
+    })),
+    polished: text(bag.polished),
+    grammar: grammarOf(bag.grammar).map((tip) => ({
+      point: hide(tip.point),
+      explain: hide(tip.explain),
+      example: hide(tip.example),
+    })),
+  };
+}
+
+/** 空白を 落とした 形。 */
+function squash(value: string): string {
+  return value.replace(/[\s　]+/g, "");
+}
+
+/** 英字・数字の かたまり（URL・時刻・日付・版）。全角も 見る。はしの 記号（URL: の :）は 含めない。 */
+const ALNUM_TOKEN =
+  /[A-Za-z0-9Ａ-Ｚａ-ｚ０-９](?:[A-Za-z0-9Ａ-Ｚａ-ｚ０-９:：/／._\-－]*[A-Za-z0-9Ａ-Ｚａ-ｚ０-９])?/g;
+
+/** 漢字・カタカナの かたまり（欄の 正解の 中身の ことば）。 */
+const CONTENT_RUN = /[\p{Script=Han}々]+|[\p{Script=Katakana}ー]{2,}/gu;
+
+/** 呼び方（書いて いなくても 隠さない。「鈴木様」を「鈴木？？？」に しない）。 */
+const ADDRESS_RUNS = new Set(["様", "殿", "皆様", "各位"]);
+
+function looseForm(value: string): string {
+  return squash(value.normalize("NFKC")).toLowerCase();
+}
+
+/**
+ * **まだ 書いて いない 中身を ？？？ に する 関数**を 作る（2026-10-26 の 指定「中身は『？』で 隠す」）。
+ *
+ * 直した 文や ひとことに 答えの 中身（メモに ある URL・日時・名前）が 出ると、写すだけで
+ * ⭕に なり、メモから さがす 練習が 消える。AIにも 言って あるが、機械でも 2つ 守る:
+ * - 英字・数字の かたまり（全角も）で、学生の 文に 無い もの
+ * - ✗の 欄の 正解の 漢字・カタカナの かたまりで、学生の 文に 無い もの（空白を はさんでも 当てる）
+ */
+export function unwrittenHider(
+  written: string,
+  missedAnswers: readonly string[] = [],
+): (value: string) => string {
+  const have = looseForm(written);
+  const words = new Set<string>();
+  for (const answer of missedAnswers) {
+    for (const run of answer.normalize("NFKC").match(CONTENT_RUN) ?? []) {
+      if (!ADDRESS_RUNS.has(run) && !have.includes(run.toLowerCase())) words.add(run);
+    }
+  }
+  const patterns = [...words]
+    .sort((a, b) => b.length - a.length)
+    .map((word) => new RegExp([...word].map(escapeRegExp).join("[\\s　]*"), "g"));
+  return (value) => {
+    if (value === "") return value;
+    let hidden = value;
+    for (const pattern of patterns) hidden = hidden.replace(pattern, "？？？");
+    hidden = hidden.replace(ALNUM_TOKEN, (token) =>
+      have.includes(token.normalize("NFKC").toLowerCase()) ? token : "？？？",
+    );
+    // となり合った ？？？ は 1つに（「システム 管理部」→「？？？ ？？？」に しない）
+    return hidden.replace(/？？？(?:[\s　]*？？？)+/g, "？？？");
+  };
+}
+
+/** 1回だけ 隠す（テスト・1か所だけ 使う とき）。 */
+export function hideUnwritten(
+  value: string,
+  written: string,
+  missedAnswers: readonly string[] = [],
+) {
+  return unwrittenHider(written, missedAnswers)(value);
+}
+
+/** かたまりの うしろの 助詞（長い ものから）。`fillin-match.ts` と 同じ 並び。 */
+const TRAILING_PARTICLE = /(?:からの|までの|との|への|での|から|まで|の|が|を|に|は|で|と|へ|も)$/;
+
+/** 言い方の 部品だけの かたまり（いつも 見せる）。 */
+const FORM_ONLY_CHUNKS = new Set(["こと", "いる", "ある", "もう", "です", "ます"]);
+
+/**
+ * **欄の 直した 形は アプリが 作る**（AIの 文は 使わない・2026-10-26 の コード検収）。
+ *
+ * 欄の 正解の かたまり ごとに、学生が その 欄に 書いて いれば その まま、書いて いなければ
+ * ？？？ に する（助詞は 残す）。「システム管理部の 佐藤さん」に「佐藤さん」→「？？？の 佐藤さん」。
+ * AIの 文を 隠す やりかたでは、空白の 位置を 変えた だけで 正解が 出て しまった。
+ */
+export function fieldAfter(answer: string, value: string): string {
+  const have = contentForm(value);
+  return answer
+    .split(/\s+/)
+    .filter((chunk) => chunk !== "")
+    .map((chunk) => {
+      if (FORM_ONLY_CHUNKS.has(chunk)) return chunk;
+      const particle = chunk.match(TRAILING_PARTICLE)?.[0] ?? "";
+      const form = contentForm(chunk.slice(0, chunk.length - particle.length));
+      return form === "" || have.includes(form) ? chunk : `？？？${particle}`;
+    })
+    .join(" ");
+}
+
+/** ✗の 項目の「なおすところ」（写した ところ・直した 形・読む 人の しつもん）。 */
+function fixOf(
+  item: ReviewItem,
+  fields: { before?: unknown; after?: unknown; ask?: unknown },
+  written: string,
+): Pick<ReviewItemResult, "before" | "after" | "ask"> {
+  if (item.value !== undefined) {
+    // 欄は 学生の 書いた ものが 分かって いる。写しも 直した 形も アプリが 作る
+    return {
+      before: item.value,
+      after: fieldAfter(item.answer ?? "", item.value),
+      ask: text(fields.ask),
+    };
+  }
+  /*
+   * 観点は AIの 写しが **学生の 文に ある ときだけ** 出す（句読点・空白・かなの ちがいは 見ない）。
+   * 見つからない ときは 写しを **出さない**（`before` 無し）——空に すると 画面が
+   *「書いて いません」と 言い、書いた 学生に うそを つく。AIが 空で 返した ときだけ「書いて いません」。
+   */
+  const quoted = text(fields.before);
+  const found = quoted === "" || normalizeReading(written).includes(normalizeReading(quoted));
+  return {
+    ...(found ? { before: quoted } : {}),
+    after: text(fields.after),
+    ask: text(fields.ask),
+  };
+}
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function grammarOf(value: unknown): GrammarTip[] {
+  if (!Array.isArray(value)) return [];
+  const tips: GrammarTip[] = [];
+  for (const one of value) {
+    if (!one || typeof one !== "object") continue;
+    const bag = one as { point?: unknown; explain?: unknown; example?: unknown };
+    const point = text(bag.point);
+    if (point === "") continue;
+    tips.push({ point, explain: text(bag.explain), example: text(bag.example) });
+    if (tips.length === GRAMMAR_MAX) break;
+  }
+  return tips;
 }
 
 /**
