@@ -23,7 +23,10 @@ function stage(id: string): { contents: { ref: string; type: string }[] } {
   return JSON.parse(readFileSync(join("content", "stages", `${id}.json`), "utf8"));
 }
 
-function skit(id: string): { lines: { speaker: string; text: string; audioUrl?: string }[] } {
+function skit(id: string): {
+  lines: { speaker: string; text: string; audioUrl?: string }[];
+  coverVideo?: string;
+} {
   return JSON.parse(readFileSync(join("content", "skits", `${id}.json`), "utf8"));
 }
 
@@ -223,6 +226,15 @@ for (const { id, title, skitId } of STAGES) {
         expect(res.status(), `${line.audioUrl} が 無い`).toBe(200);
       }
 
+      // 表紙の お手本の 動画（`coverVideo`。2026-10-27 から）。押すまで 落とさない・ファイルが ある
+      if (data.coverVideo) {
+        const video = page.locator("video");
+        await expect(video).toHaveCount(1);
+        expect(await video.getAttribute("preload")).toBe("none");
+        const res = await page.request.get(data.coverVideo);
+        expect(res.status(), `${data.coverVideo} が 無い`).toBe(200);
+      }
+
       await shot(page, `hourensou-${id}-skit`);
     });
 
@@ -231,8 +243,26 @@ for (const { id, title, skitId } of STAGES) {
     if (!article) return;
     const data = JSON.parse(
       readFileSync(join("content", "articles", `${article.ref}.json`), "utf8"),
-    ) as { blocks: { kind: string; src?: string; poster?: string }[] };
-    const videos = data.blocks.filter((block) => block.kind === "video");
+    ) as {
+      blocks: {
+        kind: string;
+        src?: string;
+        poster?: string;
+        items?: { video?: { src: string; poster?: string } }[];
+      }[];
+    };
+    /*
+     * 動画は 動画ブロックと、カードの 中（`cards` の `video`。2026-10-27 から）の 2か所に
+     * 置ける。カードの 中を 数え忘れると、動画を カードへ 移した ページで この 検査が
+     * 黙って 空回りする（0本なら すぐ return する ため）。
+     */
+    const videos = data.blocks.flatMap((block): { src?: string; poster?: string }[] =>
+      block.kind === "video"
+        ? [{ src: block.src, poster: block.poster }]
+        : block.kind === "cards"
+          ? (block.items ?? []).flatMap((item) => (item.video ? [item.video] : []))
+          : [],
+    );
     if (videos.length === 0) return;
 
     await open(page, article.path);
