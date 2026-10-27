@@ -6,6 +6,7 @@ import type { GrammarTip, ReviewItemResult } from "@/lib/quiz/ai-review";
 import { buildFuriganaIndex, type FuriganaIndex } from "@/lib/text/furigana";
 import type { AnswerCheck } from "./answer-check";
 import { BrushUp, CheckBand } from "./check-parts";
+import { NO_COPY_PROPS } from "./copy-guard";
 
 /**
  * AIの ひょうか — こたえの チェックの けっかを 1枚に まとめる（2026-10-26 の 指定）
@@ -70,7 +71,9 @@ export function AiReviewCard({
   return (
     <section
       aria-label="AIの ひょうか"
-      className="mt-4 grid gap-3 rounded-[var(--radius-card)] border-2 border-[#cfe5fa] bg-[#f6fbff] p-3"
+      // AIの ひょうかは コピペ不可（2026-10-26「AIの評価はコピペできないようにしてください」）
+      className="mt-4 grid gap-3 rounded-[var(--radius-card)] border-2 border-[#cfe5fa] bg-[#f6fbff] p-3 select-none"
+      {...NO_COPY_PROPS}
     >
       <header className="flex items-center gap-2">
         <Image
