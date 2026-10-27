@@ -55,7 +55,8 @@ describe("さし絵の 大きさ", () => {
     // 図（コマ割り・文字入り）は 大きく、場面の さし絵は これまでどおり
     expect(wide.length).toBeGreaterThan(0);
     expect(plain.length).toBeGreaterThan(0);
-    expect(wide.some((b) => b.src?.includes("slide9"))).toBe(true);
-    expect(plain.some((b) => b.src?.includes("slide3"))).toBe(true);
+    // 2026-10-27 に 絵を 作り直した（slide9 → point2・slide3 → kaiketsu）
+    expect(wide.some((b) => b.src?.includes("point2"))).toBe(true);
+    expect(plain.some((b) => b.src?.includes("kaiketsu"))).toBe(true);
   });
 });
