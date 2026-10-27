@@ -9,7 +9,7 @@
     "sky",
     "space"
   ],
-  "questionCount": 47,
+  "questionCount": 50,
   "passRate": 80,
   "furigana": [
     [
@@ -96,6 +96,9 @@
     "kessai",
     "nennosi",
     "kanjou",
-    "sama"
+    "sama",
+    "jikoku",
+    "jiten_toki",
+    "apiki-"
   ]
 }
