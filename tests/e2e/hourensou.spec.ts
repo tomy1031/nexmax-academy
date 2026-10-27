@@ -256,7 +256,7 @@ for (const { id, title, skitId } of STAGES) {
      * 置ける。カードの 中を 数え忘れると、動画を カードへ 移した ページで この 検査が
      * 黙って 空回りする（0本なら すぐ return する ため）。
      */
-    const videos = data.blocks.flatMap((block) =>
+    const videos = data.blocks.flatMap((block): { src?: string; poster?: string }[] =>
       block.kind === "video"
         ? [{ src: block.src, poster: block.poster }]
         : block.kind === "cards"
