@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 import { ZoomableImage } from "@/components/media/zoomable-image";
+import { VideoPlayer } from "@/components/media/video-player";
+import { assetUrl } from "@/lib/asset-url";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Skit, SkitRole } from "@/content/schema";
 import { NexMax } from "@/components/nexmax";
@@ -182,7 +184,20 @@ export function SkitView({ skit, embedded }: { skit: Skit; embedded?: boolean })
           🎯 <RubyText text={skit.focus} index={furigana} show={furiganaOn} />
         </p>
 
-        {skit.cover?.src ? (
+        {/*
+          お手本の 動画が あれば、表紙は 動画（押す 前は 表紙の 絵が 出る）。
+          「見てから まねる」を この 1ページで 済ませる（2026-10-27 の 指定）。
+        */}
+        {skit.coverVideo ? (
+          <div className="mt-4">
+            <VideoPlayer
+              src={skit.coverVideo}
+              poster={assetUrl(skit.cover?.src)}
+              label={skit.title}
+              className="w-full"
+            />
+          </div>
+        ) : skit.cover?.src ? (
           <div className="mt-4 overflow-hidden rounded-2xl">
             <Image
               src={skit.cover.src}
