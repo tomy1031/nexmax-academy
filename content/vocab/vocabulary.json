@@ -1974,6 +1974,14 @@
     [
       "用事",
       "ようじ"
+    ],
+    [
+      "時刻",
+      "じこく"
+    ],
+    [
+      "時点",
+      "じてん"
     ]
   ],
   "words": [
@@ -2042,19 +2050,13 @@
       "term": "場所",
       "reading": "ばしょ",
       "romaji": "basho",
-      "meaningJa": "勉強を する ところです。",
+      "meaningJa": "もの・ひと・できごとが ある ところ です。",
       "englishTerm": "Place / Location",
       "example": "つぎの 場所へ 進みましょう。",
       "wrongMeanings": [
         "Time",
         "Reason",
         "Price"
-      ],
-      "furigana": [
-        [
-          "勉強",
-          "べんきょう"
-        ]
       ]
     },
     {
@@ -20840,6 +20842,174 @@
         [
           "確認",
           "かくにん"
+        ]
+      ]
+    },
+    {
+      "id": "jikoku",
+      "term": "時刻",
+      "reading": "じこく",
+      "romaji": "jikoku",
+      "meaningJa": "「10:10」の ような、その ときの じかんです。",
+      "englishTerm": "Time (of day)",
+      "example": "発生時刻を 書いて 連絡します。",
+      "wrongMeanings": [
+        "Place",
+        "Reason",
+        "Date"
+      ],
+      "furigana": [
+        [
+          "発生時刻",
+          "はっせいじこく"
+        ],
+        [
+          "発生",
+          "はっせい"
+        ],
+        [
+          "時刻",
+          "じこく"
+        ],
+        [
+          "書",
+          "か"
+        ],
+        [
+          "連絡",
+          "れんらく"
+        ]
+      ]
+    },
+    {
+      "id": "naiyou",
+      "term": "内容",
+      "reading": "ないよう",
+      "romaji": "naiyou",
+      "meaningJa": "なかみ です。なにが かいて あるか、なにが おきたか です。",
+      "englishTerm": "Content / Details",
+      "example": "エラーの 内容を 書きます。",
+      "wrongMeanings": [
+        "Title",
+        "Address",
+        "Price"
+      ],
+      "furigana": [
+        [
+          "内容",
+          "ないよう"
+        ],
+        [
+          "書",
+          "か"
+        ]
+      ]
+    },
+    {
+      "id": "jiten_toki",
+      "term": "時点",
+      "reading": "じてん",
+      "romaji": "jiten",
+      "meaningJa": "その ときの こと です。「きのう 17:00の とき」の ように つかいます。",
+      "englishTerm": "As of (that time)",
+      "example": "昨日 17:00時点では ログイン できて いました。",
+      "wrongMeanings": [
+        "Until",
+        "After",
+        "Every time"
+      ],
+      "furigana": [
+        [
+          "昨日",
+          "きのう"
+        ],
+        [
+          "時点",
+          "じてん"
+        ]
+      ]
+    },
+    {
+      "id": "issho_ni",
+      "term": "一緒に",
+      "reading": "いっしょに",
+      "romaji": "isshoni",
+      "meaningJa": "ふたり いじょうで、おなじ ことを する ようす です。",
+      "englishTerm": "Together",
+      "example": "奥田さんと 一緒に 原因を 調べます。",
+      "wrongMeanings": [
+        "Alone",
+        "Quickly",
+        "Again"
+      ],
+      "furigana": [
+        [
+          "奥田",
+          "おくだ"
+        ],
+        [
+          "一緒",
+          "いっしょ"
+        ],
+        [
+          "原因",
+          "げんいん"
+        ],
+        [
+          "調",
+          "しら"
+        ]
+      ]
+    },
+    {
+      "id": "apiki-",
+      "term": "APIキー",
+      "reading": "えーぴーあいきー",
+      "romaji": "eepiiaiki-",
+      "meaningJa": "システムが ほかの システムを つかう ときの、パスワードの ような もじです。",
+      "englishTerm": "API key",
+      "example": "昨日の 夜、ログインの APIキーが 新しく なりました。",
+      "wrongMeanings": [
+        "Keyboard",
+        "Error code",
+        "Login screen"
+      ],
+      "furigana": [
+        [
+          "昨日",
+          "きのう"
+        ],
+        [
+          "夜",
+          "よる"
+        ],
+        [
+          "新し",
+          "あたらし"
+        ]
+      ]
+    },
+    {
+      "id": "ki-",
+      "term": "キー",
+      "reading": "きー",
+      "romaji": "ki-",
+      "meaningJa": "かぎ です。システムでは、APIキーの ような ひみつの もじの ことも いいます。",
+      "englishTerm": "Key",
+      "example": "設定は、古い キーの ままでした。",
+      "wrongMeanings": [
+        "Screen",
+        "Cable",
+        "Folder"
+      ],
+      "furigana": [
+        [
+          "設定",
+          "せってい"
+        ],
+        [
+          "古",
+          "ふる"
         ]
       ]
     }

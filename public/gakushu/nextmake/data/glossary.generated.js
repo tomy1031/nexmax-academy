@@ -75,6 +75,12 @@ export const GLOSSARY = [
     en: "List",
   },
   {
+    term: "一緒に",
+    reading: "いっしょに",
+    meaning: "ふたり いじょうで、おなじ ことを する ようす です。",
+    en: "Together",
+  },
+  {
     term: "イベント",
     reading: "いべんと",
     meaning: "人を あつめて する、とくべつな 会です。",
@@ -1650,6 +1656,12 @@ export const GLOSSARY = [
     en: "Drone",
   },
   {
+    term: "内容",
+    reading: "ないよう",
+    meaning: "なかみ です。なにが かいて あるか、なにが おきたか です。",
+    en: "Content / Details",
+  },
+  {
     term: "直します",
     reading: "なおします",
     meaning: "壊れた ものを 元に もどす ことです。",
@@ -1729,7 +1741,12 @@ export const GLOSSARY = [
     meaning: "その ことの うしろに ある、わけです。",
     en: "Background",
   },
-  { term: "場所", reading: "ばしょ", meaning: "勉強を する ところです。", en: "Place / Location" },
+  {
+    term: "場所",
+    reading: "ばしょ",
+    meaning: "もの・ひと・できごとが ある ところ です。",
+    en: "Place / Location",
+  },
   {
     term: "はたらける",
     reading: "はたらける",
