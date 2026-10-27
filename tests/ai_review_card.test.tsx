@@ -83,6 +83,14 @@ describe("AIへの 頼み", () => {
     expect(prompt).toContain("宛先の 行に 宛先 以外の ことばも 書いて いたら");
   });
 
+  it("中身と 文法を 分ける（文法だけの 問題で 観点を ✗に しない・読む 人に しつもんさせない）", () => {
+    // 2026-10-26「『何の連絡か、最初ではっきり言いましょう』『なんのURLですか？』は的外れ。日本語の文法上の問題」
+    const prompt = buildQuizReviewPrompt(SLACK);
+    expect(prompt).toContain("# 中身と 文法を 分ける");
+    expect(prompt).toContain("**日本語の 文法だけ**の 問題なら");
+    expect(prompt).toContain("items の ✗にも ask にも しません");
+  });
+
   it("道具に before・after・ask・grammar が ある", () => {
     const params = QUIZ_REVIEW_TOOL.functionDeclarations[0]!.parameters;
     expect(Object.keys(params.properties.items.items.properties)).toEqual(
@@ -323,6 +331,11 @@ describe("カードの 見た目", () => {
       />,
     );
   const plain = (html: string) => html.replace(/<rt>.*?<\/rt>/g, "").replace(/<[^>]+>/g, "");
+
+  it("AIの ひょうかは 選べない（コピペ不可）", () => {
+    // 2026-10-26「AIの評価はコピペできないようにしてください」
+    expect(render(check())).toMatch(/<section[^>]*class="[^"]*select-none/);
+  });
 
   it("見出しは「AIの ひょうか」。左に ネクマックス、右に 何問目か", () => {
     const html = render(check());
