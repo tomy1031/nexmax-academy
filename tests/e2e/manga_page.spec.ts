@@ -145,15 +145,16 @@ for (const { path, name, label } of [
       .poll(() => img.evaluate((el: HTMLImageElement) => el.naturalWidth))
       .toBeGreaterThan(0);
 
-    const frame = (await figure.boundingBox())!;
+    // わくの 内がわの はば（白い 線 4px×2 を のぞく）。boundingBox は 線まで 含むので 使わない
+    const inner = await figure.evaluate((el) => el.clientWidth);
     const box = (await img.boundingBox())!;
     const [naturalWidth, naturalHeight] = await img.evaluate((el: HTMLImageElement) => [
       el.naturalWidth,
       el.naturalHeight,
     ]);
 
-    // わくの はば ＝ 絵の はば（左右に 空きが 無い）。わくの 線（border）の ぶんだけ ずれて よい
-    expect(box.width, "絵が わくより 細い（左右が 空いて いる）").toBeGreaterThan(frame.width - 8);
+    // わくの 内がわの はば ＝ 絵の はば（左右に 空きが 無い）。小数の 丸めの 1px だけ ずれて よい
+    expect(box.width, "絵が わくより 細い（左右が 空いて いる）").toBeGreaterThanOrEqual(inner - 1);
     // 縦は 絵の 縦横比の まま（引き伸ばしも 切りとりも しない）
     expect(box.height / box.width).toBeCloseTo(naturalHeight! / naturalWidth!, 2);
     // 中身の 絵も 縦横比の まま 箱を 埋める（object-contain で 余白を 作って いない）
