@@ -329,37 +329,36 @@ function PanelView({
     <figure className="card-island overflow-hidden p-0">
       {panel.size === "page" && panel.image.src ? (
         <PageArt src={panel.image.src} />
-      ) : (
+      ) : panel.image.src ? (
         /*
-          高さの上限を付ける理由: 埋め込み時の枠は横に広い（88rem）ので、4:3 のままだと
-          1コマが画面の高さを超え、絵とセリフを同時に見られない。
-          「1コマずつ見る」形の意味が無くなるので、画面の高さで頭打ちにする。
-          object-contain なので、はみ出しは切らずに左右が余るだけ。
+          ページ絵と 同じく、横は わくの はばいっぱい・縦は 絵の 縦横比の まま（2026-10-27）。
+          前は 4:3 の わくに 画面の 高さの 上限を 付けて object-contain で 入れて いたので、
+          PCでは 左右が、横長（3:2）の 絵では 上下も 空いた。
+          width/height は 読みこむ 前の 目安（いまの コマ絵は 1536×1024）。
         */
-        <div className="bg-panel-tint relative aspect-[4/3] max-h-[58vh] w-full">
-          {panel.image.src ? (
-            <Image
-              src={panel.image.src}
-              alt=""
-              fill
-              sizes="(max-width: 768px) 100vw, 768px"
-              className="object-contain"
-              unoptimized
-            />
-          ) : (
-            /*
-              しるし（`data-slot="empty"`）は 記事の 絵わく（`ImageSlotFrame`）と そろえて ある。
-              「まだ 絵が 無い」を **アプリ全体で 1つの しるし**に して おくと、
-              通しの 検証が「絵の 抜け」を 種別を またいで 数えられる。
-              見た目は ここだけ ちがう——まんがは コマの 中いっぱいに 出す ため。
-            */
-            <span
-              data-slot="empty"
-              className="text-ink-faint absolute inset-0 grid place-items-center text-sm font-bold"
-            >
-              🖼️ え は じゅんびちゅう
-            </span>
-          )}
+        <Image
+          src={panel.image.src}
+          alt=""
+          width={1536}
+          height={1024}
+          sizes="(max-width: 768px) 100vw, 768px"
+          className="bg-panel-tint block h-auto w-full"
+          unoptimized
+        />
+      ) : (
+        <div className="bg-panel-tint relative aspect-[4/3] w-full">
+          {/*
+            しるし（`data-slot="empty"`）は 記事の 絵わく（`ImageSlotFrame`）と そろえて ある。
+            「まだ 絵が 無い」を **アプリ全体で 1つの しるし**に して おくと、
+            通しの 検証が「絵の 抜け」を 種別を またいで 数えられる。
+            見た目は ここだけ ちがう——まんがは コマの 中いっぱいに 出す ため。
+          */}
+          <span
+            data-slot="empty"
+            className="text-ink-faint absolute inset-0 grid place-items-center text-sm font-bold"
+          >
+            🖼️ え は じゅんびちゅう
+          </span>
         </div>
       )}
 
@@ -482,7 +481,9 @@ function PageArt({ src }: { src: string }) {
           読みこんだ あとは 絵の 本当の 縦横比に なる。前は わくを 2:3 に 決めて いたので、
           横長の ページ絵（空気を 読む の まんが・1536×1024）を 縦長に 引き伸ばして 作った
           絵しか 置けなかった（2026-10-16「まんがが縦に引き伸ばされていました」）。
-          高すぎる ときは 画面の 高さで 頭打ちに し、object-contain で 左右を 余らせる。
+          横は わくの はばいっぱい、縦は 絵の 縦横比の まま 伸びる。前は 画面の 高さで
+          頭打ちに して いたので、PCでは 絵が 細く なり 左右が 空いた（2026-10-27
+          「画像の横幅を要素の幅に合わせる…縦幅は画像サイズにより可変したい」）。
         */}
         <Image
           src={src}
@@ -490,7 +491,7 @@ function PageArt({ src }: { src: string }) {
           width={1024}
           height={1536}
           sizes="(max-width: 768px) 100vw, 768px"
-          className="h-auto max-h-[78vh] w-full object-contain"
+          className="block h-auto w-full"
           unoptimized
         />
         <span className="bg-ink/70 absolute right-2 bottom-2 rounded-full px-3 py-1 text-xs font-black text-white">

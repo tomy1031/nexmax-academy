@@ -121,3 +121,44 @@ test("ページ絵の 拡大: 外側を 押すと とじる（広い 画面は �
   await expect(zoom).toBeHidden();
   await expect(open).toBeFocused();
 });
+
+/**
+ * **絵は わくの はばいっぱいに 出し、縦は 絵の 縦横比の まま**（2026-10-27 の 指定
+ * 「画像の横幅を要素の幅に合わせることはできますか？縦幅は画像サイズにより可変したいです」）。
+ * 前は 画面の 高さで 頭打ちに して いたので、PCでは 絵が 細く なり 左右が 空いた。
+ * 1ページ絵（連絡）と 1コマ絵（はじまり）の 両方を 見る。
+ */
+for (const { path, name, label } of [
+  { path: PATH, name: "manga-page-fill-1280", label: "1ページ絵" },
+  { path: "/hajimari/manga", name: "manga-panel-fill-1280", label: "1コマ絵" },
+]) {
+  test(`${label}は 広い 画面でも わくの はばいっぱいで、縦は 絵の 縦横比の まま`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto(path);
+
+    const figure = page.locator("figure").first();
+    const img = figure.locator("img").first();
+    await expect(img).toBeVisible();
+    await expect
+      .poll(() => img.evaluate((el: HTMLImageElement) => el.naturalWidth))
+      .toBeGreaterThan(0);
+
+    const frame = (await figure.boundingBox())!;
+    const box = (await img.boundingBox())!;
+    const [naturalWidth, naturalHeight] = await img.evaluate((el: HTMLImageElement) => [
+      el.naturalWidth,
+      el.naturalHeight,
+    ]);
+
+    // わくの はば ＝ 絵の はば（左右に 空きが 無い）。わくの 線（border）の ぶんだけ ずれて よい
+    expect(box.width, "絵が わくより 細い（左右が 空いて いる）").toBeGreaterThan(frame.width - 8);
+    // 縦は 絵の 縦横比の まま（引き伸ばしも 切りとりも しない）
+    expect(box.height / box.width).toBeCloseTo(naturalHeight! / naturalWidth!, 2);
+    // 中身の 絵も 縦横比の まま 箱を 埋める（object-contain で 余白を 作って いない）
+    expect(await img.evaluate((el) => getComputedStyle(el).objectFit)).not.toBe("contain");
+
+    await shot(page, name);
+  });
+}
