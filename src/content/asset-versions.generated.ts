@@ -1020,7 +1020,7 @@ export const ASSET_VERSIONS: Readonly<Record<string, string>> = {
   "/img/manga/renraku_manga/v2/p15.webp": "20902938",
   "/img/manga/renraku_manga/v2/p16.webp": "520059c2",
   "/img/manga/renraku_manga/v2/p17.webp": "9e266a67",
-  "/img/manga/renraku_manga/v2/p18.webp": "1eed861a",
+  "/img/manga/renraku_manga/v2/p18.webp": "253564d2",
   "/img/quest/bg/ch01.png": "a1ecf357",
   "/img/quest/bg/ch02.png": "377945a8",
   "/img/quest/bg/ch03.png": "5fe0bc52",
