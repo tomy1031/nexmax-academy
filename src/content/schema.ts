@@ -2113,6 +2113,15 @@ export const articleBlockSchema = z.discriminatedUnion("kind", [
     tone: z.enum(["plain", "dark", "step"]).default("plain"),
     /** 1行に 何枚 並べるか（画面が せまい ときは 自動で 減る）。 */
     columns: z.union([z.literal(2), z.literal(3), z.literal(4), z.literal(5)]).optional(),
+    /**
+     * **こたえを 伏せる**（2026-10-27。旧アプリの 30分ルールの A・B・C を 戻す ため）。
+     *
+     * true の とき、各カードの `icon`（❌・⭕ など）と `text`（理由）は
+     *「こたえを 見る」を 押すまで 出さない。旧アプリは「どれが いい タイミングでしょうか」と
+     * 聞いて、カードを 押すと 答えが 開く 形で、**考える 時間を 必ず 取らせて いた**。
+     * 移したときに 答えが 最初から 見える 形に なって いた（AGENTS.md 規律10）。
+     */
+    reveal: z.boolean().optional(),
     items: z
       .array(
         z.object({
@@ -2125,6 +2134,17 @@ export const articleBlockSchema = z.discriminatedUnion("kind", [
           /** カードの 中の 小さな かじょうがき。 */
           items: z.array(plainText).optional(),
           image: imageSlotSchema.optional(),
+          /**
+           * カードの 絵の かわりに 置く 動画（2026-10-27 の 指定「横並びに すべき 要素が
+           * 縦並びに なって いて 無駄な 冗長」「動画の 位置が 生きない」）。
+           *
+           * 動画ブロックを カードの 下に 3本 積むと、**どの 動画が どの カードの 話か**が
+           * 離れて しまう（しかも 縦長の 動画は 1本で 画面 1つぶんの 高さに なる）。
+           * カードの 中に 置けば、選択肢と 動画が 横に 並ぶ。`poster` は 押す 前に 出す 絵。
+           */
+          video: z
+            .object({ src: z.string().min(1), poster: z.string().min(1).optional() })
+            .optional(),
         }),
       )
       .min(1),
@@ -2520,6 +2540,14 @@ export const skitSchema = z
     focus: plainText,
     /** 表紙の 絵（省ける）。 */
     cover: imageSlotSchema.optional(),
+    /**
+     * 表紙に 置く お手本の 動画（`/video/...`。省ける）。置くと `cover` の 絵は
+     * **動画の 押す 前の 絵**に なる（2026-10-27 の 指定「スキットの 表紙の 絵に 動画を 入れたい」）。
+     *
+     * 前は お手本の 動画が **説明ページの いちばん 下**に あり、スキットを 開くと
+     * 同じ 場面の 止まった 絵だけが 出て いた——見てから まねる 順が 2つの ページに 割れていた。
+     */
+    coverVideo: z.string().min(1).optional(),
     roles: z.array(skitRoleSchema).min(1),
     lines: z.array(skitLineSchema).min(2),
     furigana: z.array(furiganaEntrySchema).optional(),

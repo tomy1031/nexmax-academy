@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { ZoomableImage } from "@/components/media/zoomable-image";
+import { VideoPlayer } from "@/components/media/video-player";
 import { assetUrl } from "@/lib/asset-url";
 import type { ArticleBlock } from "@/content/schema";
 import { DictionaryText } from "@/components/dictionary-text";
@@ -243,8 +244,12 @@ export function CardsBlock({ block, furigana, show }: { block: CardsBlockData } 
   const columns =
     CARD_COLUMNS[block.columns ?? Math.min(block.items.length, 3)] ?? "sm:grid-cols-3";
   const dark = block.tone === "dark";
+  /** こたえを 伏せる カード（`reveal`）。読み上げでも 答えを 先に 言わない。 */
+  const reveal = Boolean(block.reveal) && !dark;
   const speech = joinItemsForSpeech(
-    block.items.flatMap((item) => [item.title, item.text ?? "", ...(item.items ?? [])]),
+    block.items.flatMap((item) =>
+      reveal ? [item.title] : [item.title, item.text ?? "", ...(item.items ?? [])],
+    ),
   );
 
   const grid = (
@@ -263,8 +268,17 @@ export function CardsBlock({ block, furigana, show }: { block: CardsBlockData } 
               : { boxShadow: "0 5px 0 #e6f2f9" }
           }
         >
+          {/* 動画は 絵の かわりに カードの 上へ。選択肢と 動画を 横に 並べる（2026-10-27） */}
+          {!dark && item.video && (
+            <VideoPlayer
+              src={item.video.src}
+              poster={assetUrl(item.video.poster)}
+              label={item.title}
+              className="w-full"
+            />
+          )}
           {/* 絵は カードの 上。`dark` の 中には 絵を 置かない（帯が 割れて 読めなくなる） */}
-          {!dark && (item.image || block.tone === "step") && (
+          {!dark && !item.video && (item.image || block.tone === "step") && (
             <ImageSlotFrame
               slot={item.image}
               alt={item.title}
@@ -289,7 +303,7 @@ export function CardsBlock({ block, furigana, show }: { block: CardsBlockData } 
                 <RubyText text={item.label ?? `STEP ${i + 1}`} index={furigana} show={show} />
               </span>
             )}
-            {item.icon && (
+            {item.icon && !reveal && (
               <span aria-hidden className={dark ? "block text-3xl" : "text-3xl"}>
                 {item.icon}
               </span>
@@ -301,7 +315,22 @@ export function CardsBlock({ block, furigana, show }: { block: CardsBlockData } 
             >
               <DictionaryText text={item.title} index={furigana} show={show} />
             </h3>
-            {item.text && (
+            {/*
+              こたえは 押すまで 伏せる（`reveal`）。旧アプリと 同じく **カードごとに** 開く——
+              1つ 開けば 全部 開く 形だと、1枚目で 残り 2枚の 答えも 見えて しまう。
+            */}
+            {reveal && (item.icon || item.text) && (
+              <details className="border-hairline bg-panel-tint mt-1 rounded-[14px] border-2 px-3 py-2">
+                <summary className="text-navy cursor-pointer text-sm font-extrabold">
+                  <RubyText text="こたえを 見る" index={UI_FURIGANA} />
+                </summary>
+                <p className="text-ink mt-2 flex items-start gap-2 text-sm leading-relaxed font-bold">
+                  {item.icon && <span className="text-2xl leading-none">{item.icon}</span>}
+                  {item.text && <DictionaryText text={item.text} index={furigana} show={show} />}
+                </p>
+              </details>
+            )}
+            {item.text && !reveal && (
               <p
                 className={
                   dark
