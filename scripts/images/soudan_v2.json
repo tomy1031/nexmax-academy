@@ -139,7 +139,11 @@
       "where": "content/articles/soudan_lecture.json「相談で よく 使う 日本語」の カード 4枚目",
       "output": "Output: one square illustration, 1024x1024.",
       "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: he proposes his own idea. Medium two-shot in front of a small whiteboard that shows two boxes, one marked with the letter A and one with the letter B. The new engineer points at box A with a confident smile; a bright lightbulb shines above his head; a white speech balloon from him carries the words below. Okuda crosses his arms and nods with an impressed smile.",
-      "text": ["私は Aが いいと 思います（わたしは… おもいます）", "A", "B"]
+      "text": [
+        "私は Aが いいと 思うのですが、いかがでしょうか（わたしは… おもうのですが）",
+        "A",
+        "B"
+      ]
     }
   ]
 }
