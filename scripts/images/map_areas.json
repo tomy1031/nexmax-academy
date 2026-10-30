@@ -1,21 +1,21 @@
 {
   "refs": ["public/img/scenes/area_palace_town.webp"],
-  "_comment": "まなびマップの エリアタイル 第2弾（docs/skills/codex_image_generation.md §7.1）。2つ 変えた: ①島に しない（土地を 四辺まで 伸ばす）②正方形 1024x1024（PCは 横に、スマホは 縦に 切られる ので、まん中しか 生き残らない）。国名・国旗・文字は 書かない。",
+  "_comment": "まなびマップの エリアタイル 第2弾（docs/skills/codex_image_generation.md §7.1）。2つ 変えた: ①島に しない（土地を 四辺まで 伸ばす）②正方形 1024x1024（PCは 横に、スマホは 縦に 切られる ので、まん中しか 生き残らない）。国名・国旗・文字は 書かない。 2026-10-30 に 19枚を 足し（カンボジア4・ベトナム4・ラオス2・フィリピン3・台湾1・中国2・韓国2・日本1）、カンポット・ケップの 2枚を 実際の 写真に 合わせて 作り直した。",
   "style": "Style: a highly detailed isometric miniature diorama illustration seen from a high bird's-eye angle, like a tilt-shift toy town or a colourful city-builder game. Tiny crisp buildings, tiny trees, tiny boats and vehicles, thin clean outlines, bright saturated cheerful palette, soft even daylight, no harsh shadows, no gloom. Match the drawing style, colours and level of detail of the reference picture.\nComposition (IMPORTANT — do not copy the reference here): the land FILLS the whole square frame and runs off all four edges. Never draw a floating island: no round or oval patch of land ringed by empty water, no wide empty flat-blue margin around the subject, no drop shadow under the land. The landmark that gives this place its character stands in the CENTRE and fills about the middle third of the picture. The map crops this picture to a wide horizontal band on a computer and to a narrow vertical band on a phone, so anything in the outer quarter of the frame may be cut away: keep the outer quarter as ordinary streets, fields, forest, roofs or water.",
   "noText": "No text, no letters, no kanji, no kana, no numbers anywhere in the image. Every sign, banner, lantern, sail and screen is blank. No watermark, no signature, no logo, no frame border.",
   "negative": "Never: photo-realistic rendering, night or dark or gloomy mood, harsh shadows, readable letters, national flags, country names, brand logos, weapons or soldiers, gambling tables, large detailed human faces, a floating island, empty blue margins.",
   "scenes": [
     {
       "out": "area_pepper_riverside",
-      "title": "カンポット — こしょうの かわまち",
+      "title": "カンポット — ひろい かわと てつの はし（作り直し）",
       "output": "Output: ONE SQUARE illustration, exactly 1024x1024 pixels (square — not landscape, not portrait).",
-      "scene": "Scene: a sleepy riverside country town in the tropics. In the centre, a wide slow green river crosses the picture with a low pale-stone bridge over it, and two-storey shophouses with shutters and arcades in ochre, mint and cream line both banks. Around them: neat pepper plantations on rows of wooden posts, sugar palms, small blue and red fishing boats, drying salt pans in flat squares, and a rounded misty green mountain filling the far side. Streets, fields and water reach every edge of the frame."
+      "scene": "Scene: a quiet riverside provincial town on a very wide, calm tidal river, with a long mountain range behind it. In the centre, the river — as wide as a lake, with calm grey-green water — is crossed by a long old steel truss bridge painted pale grey-white: five or six low arched truss spans of slightly different shapes standing on square concrete piers, used only by motorbikes and people on foot. On the near bank: a broad paved riverside promenade with street lamps, benches and a few frangipani trees; behind it, rows of faded two-storey French colonial shophouses in mustard yellow, cream and pale green, with arched ground-floor arcades and wooden shutters, and a small roundabout with a giant spiky green durian fruit sculpture in the middle. On the water: colourful wooden fishing boats with red, blue and green hulls, and a two-deck wooden river-cruise boat. On the far bank: a low line of coconut palms and mangroves, and behind it a long, broad, flat-topped dark-green forested mountain ridge (not a pointed peak) stretching across the top of the picture. Near the edges: pepper vines climbing tall wooden posts in neat rows, and square white salt pans with small salt heaps and wooden sheds. Streets, fields and water reach every edge of the frame."
     },
     {
       "out": "area_crab_shore",
-      "title": "ケップ — かにの うみべ",
+      "title": "ケップ — うみに たつ カニと いちば（作り直し）",
       "output": "Output: ONE SQUARE illustration, exactly 1024x1024 pixels (square — not landscape, not portrait).",
-      "scene": "Scene: a small seaside town on a shallow turquoise bay. In the centre, an open wooden market on stilts standing in the water, roofed with red and yellow parasols, joined to the shore by a short pier where round crab baskets sit in the shallows and long-tail boats are moored. Along the shore: a low sea wall, coconut palms, simple pastel villas among mango trees, a fish-drying yard, and behind them low forested hills with winding roads. Land fills the lower and side edges; only the top edge is open sea."
+      "scene": "Scene: a relaxed little seaside town on a calm, shallow, pale jade-green bay, with steep forested hills right behind it and islands on the horizon. In the centre, standing in the shallow sea a short way off the shore, a giant statue of a blue swimmer crab — white body, pale blue legs and claws with red tips, both big claws raised high — on a square wooden platform raised on wooden posts above the water; the board on the platform is blank. Along the shore: the crab market — a long row of low open-sided stalls with corrugated tin roofs and red, yellow and green parasols, round woven baskets of dried pink shrimp, smoking charcoal grills, and a long wooden pier running out into the sea where small wooden fishing boats unload. In the shallow water beside the pier: women in wide straw hats wading knee-deep, lifting square bamboo crab traps out of the sea, and rows of bamboo traps sitting in the shallows. Further along: a short beach of pale sand with pink parasols and casuarina trees, a seaside road with a low sea wall, and a few white modernist villas half hidden in mango trees. Behind everything: steep rounded hills covered in dense green jungle with a winding road. Out at sea near the top: a small green island and the long low shape of a big island. Land fills the lower and side edges; only the top edge is open sea."
     },
     {
       "out": "area_motorbike_avenue",
@@ -172,6 +172,120 @@
       "title": "みやこの まち",
       "output": "Output: ONE SQUARE illustration, exactly 1024x1024 pixels (square — not landscape, not portrait).",
       "scene": "Scene: an old capital in autumn. In the centre, a walled palace of long timber halls with curved grey-tiled roofs and painted eaves around a wide flagstone courtyard, with a gate tower and a bronze cauldron in front. Around it: a maze of low courtyard houses with grey roofs and small trees, red and gold maples along a canal with an arched stone bridge, a lively street of market stalls under blank awnings, and a line of modern glass towers at the back edge. Roofs and streets run off all four edges."
+    },
+    {
+      "out": "area_floating_village",
+      "title": "水上の むら（トンレサップ湖）",
+      "output": "Output: ONE SQUARE illustration, exactly 1024x1024 pixels (square — not landscape, not portrait).",
+      "scene": "Scene: a vast, calm, brown-water lake in the rainy season, flat to the horizon. In the centre, a whole village floating on the water: rows of small wooden houses built on bamboo rafts and old boats, each painted a different bright colour — sky blue, mint green, pink, yellow — with corrugated tin roofs, potted plants and laundry on their verandas; among them a floating school with a blue railing and a tiny play deck, a floating Buddhist temple with a golden, multi-tiered pointed roof on a big pontoon, and a floating shop selling fruit and drinks. Between the houses: narrow water lanes full of long, slim wooden boats and small motor boats; a woman in a wide straw hat paddles a boat piled with bananas and vegetables. Around the village: rafts of green water hyacinth, fishing nets hung on crossed bamboo poles, square fish cages, and at one side a cluster of tall wooden houses standing on very high stilts at the edge of a half-flooded forest of trees standing in the water. The brown lake reaches every edge of the frame, with only a thin far green shore."
+    },
+    {
+      "out": "area_bamboo_rail_town",
+      "title": "バッタンバン — たけの トロッコと たんぼ",
+      "output": "Output: ONE SQUARE illustration, exactly 1024x1024 pixels (square — not landscape, not portrait).",
+      "scene": "Scene: a calm riverside town in the middle of a huge flat rice-growing plain. In the centre, a gentle tree-lined river winds through the town, crossed by two small bridges; along its banks run rows of two-storey French colonial shophouses with faded mustard-yellow and cream walls, tall shuttered windows and arcades, and a large pale-yellow art-deco covered market hall with a stepped central tower. From the town, a single straight railway line runs out across bright green rice paddies, and on it small flat platforms made of bamboo slats on two pairs of steel wheels — each with a tiny engine at the back and a few passengers sitting on mats — rattle along; at a passing point, one platform has been lifted off the rails beside the track to let another pass. Near one edge: a steep rocky green hill with a winding stair up to a small hilltop temple with golden pointed roofs. Elsewhere: a Buddhist temple compound with steep tiered orange roofs and golden finials, monks in orange robes, sugar palms, wooden stilt houses, a white ox pulling a cart. Fields, streets and water reach every edge of the frame."
+    },
+    {
+      "out": "area_jungle_island_beach",
+      "title": "コーロン島 — しろい すなはまの しま",
+      "output": "Output: ONE SQUARE illustration, exactly 1024x1024 pixels (square — not landscape, not portrait).",
+      "scene": "Scene: a large hilly tropical island in clear turquoise sea. In the centre, a long curving beach of powder-white sand along a bay of clear turquoise water, with a long wooden pier reaching out where small ferries and colourful wooden long-tail boats are tied up. Behind the beach: a small village of wooden houses and simple guesthouses on short stilts, thatched-roof beach bungalows and a few treehouses tucked among coconut palms and casuarina trees, hammocks and kayaks pulled up on the sand. The island's spine is a ridge of steep hills covered in thick dark-green jungle with a narrow sandy footpath. At one side: a rocky headland of huge rounded granite boulders with turquoise pools between them, and a couple of snorkelling boats over a pale coral reef. Out to sea: a few other small green islands. Beach, jungle and sea reach every edge of the frame."
+    },
+    {
+      "out": "area_cloud_plateau",
+      "title": "ボコー国立公園 — くもの うえの こうげん",
+      "output": "Output: ONE SQUARE illustration, exactly 1024x1024 pixels (square — not landscape, not portrait).",
+      "scene": "Scene: a cool, breezy mountain plateau high above a tropical coast, in bright daylight. In the centre, on a wide plateau of low green scrub, wild grass and big lichen-covered grey boulders, stands a small old stone church built of weathered rust-red and ochre stone, with a square bell tower and a steep pointed red roof. A little way off, right at the edge of the cliff, a grand old four-storey colonial hill-station hotel with a cream facade, rows of tall windows and flat roof terraces, freshly restored, looking out over the view. Around them: a small Buddhist temple among rounded boulders, a curving mountain road with hairpin bends climbing up through thick rainforest, soft white clouds drifting across the plateau and spilling over the cliff edge, and a wide waterfall tumbling over flat rock ledges. Far below the cliff at one side: the green coastal plain, a river mouth and the sea with a long island on the horizon. Plateau, forest and clouds reach every edge of the frame."
+    },
+    {
+      "out": "area_floating_market_delta",
+      "title": "メコンデルタ — かわの うえの いちば",
+      "output": "Output: ONE SQUARE illustration, exactly 1024x1024 pixels (square — not landscape, not portrait).",
+      "scene": "Scene: a broad brown river in a flat, lush delta of endless green. In the centre, a busy floating market on the river: dozens of wooden boats with painted eyes on their bows, many with a tall bamboo pole hung with samples of what they sell — pineapples, watermelons, cabbages, coconuts — and small boats paddled by women in conical hats weaving between them, selling noodle soup and drinks. Around them: narrow canals branching off into thick coconut palms and water-palm thickets, wooden stilt houses with tin roofs along the banks, orchards of mangoes and pomelos, a narrow bamboo footbridge with a handrail over a canal, rice fields and a small pagoda roof. Water, palms and fields reach every edge of the frame."
+    },
+    {
+      "out": "area_lantern_old_port",
+      "title": "ホイアン — ちょうちんの むかしの みなとまち",
+      "output": "Output: ONE SQUARE illustration, exactly 1024x1024 pixels (square — not landscape, not portrait).",
+      "scene": "Scene: a small old trading town on a calm river. In the centre, a little covered wooden bridge with a curved tiled roof and a tiny shrine in the middle, arching over a narrow canal into the river, surrounded by lanes of low mustard-yellow old merchant houses with dark brown wooden fronts, moss-dark tiled roofs and hanging silk lanterns in red, orange, pink and green. Around them: a riverside street with bougainvillea, wooden boats with painted eyes on the river, a tailor's shop with bolts of colourful cloth, bicycles; across the river, flat rice fields, coconut palms and a long sandy beach. Streets, river and fields reach every edge of the frame."
+    },
+    {
+      "out": "area_citadel_perfume_river",
+      "title": "フエ — おしろと かわの むかしの みやこ",
+      "output": "Output: ONE SQUARE illustration, exactly 1024x1024 pixels (square — not landscape, not portrait).",
+      "scene": "Scene: an old imperial city on a wide, gentle green river. In the centre, a great walled citadel: a broad square moat full of lotus leaves, a massive stone gate building topped by a pavilion with many curved golden-yellow tiled roofs, and inside the walls, palace halls with red-lacquered pillars and golden-yellow tiled roofs among lotus ponds and frangipani gardens. Around it: the river with long, colourful dragon-headed boats and a slender iron bridge; on a hill by the river, a tall slim seven-storey octagonal pagoda tower among pine trees; royal tombs with stone courtyards in the green hills; pine forests and rice fields. Water, gardens and hills reach every edge of the frame."
+    },
+    {
+      "out": "area_rice_terrace_valley",
+      "title": "サパ — たなだの たに",
+      "output": "Output: ONE SQUARE illustration, exactly 1024x1024 pixels (square — not landscape, not portrait).",
+      "scene": "Scene: a high, cool mountain valley in the far north. In the centre, a huge amphitheatre of rice terraces — hundreds of curving steps of bright green and golden paddy following the hillsides down to a rocky stream with a small suspension footbridge. Around them: villages of dark wooden houses with grey shingled roofs, water buffalo, people in indigo and embroidered clothes carrying baskets on their backs, a small mountain town with a stone church beside a little lake, a cable car line climbing toward the tallest peak, and soft white clouds drifting below the sharp green mountains. Terraces, forest and mountains reach every edge of the frame."
+    },
+    {
+      "out": "area_golden_stupa_capital",
+      "title": "ビエンチャン — きんの とう",
+      "output": "Output: ONE SQUARE illustration, exactly 1024x1024 pixels (square — not landscape, not portrait).",
+      "scene": "Scene: a low, leafy riverside capital on a very wide river. In the centre, a great golden stupa: a tall, slender gilded spire rising from a square stepped base, surrounded by a ring of smaller golden spires and a cloister wall with red roofs, in a broad open plaza. Around it: a wide boulevard leading to a tall stone victory gate with four arched sides and small tower tops, with a fountain park in front; Buddhist temples with steep layered red-and-gold roofs and orange-robed monks; quiet streets of French shophouses and frangipani trees; along the wide brown river, a long riverside park with a promenade and red-roofed market stalls, and across the river a flat green shore. Streets, gardens and river reach every edge of the frame."
+    },
+    {
+      "out": "area_monk_temple_town",
+      "title": "ルアンパバーン — おぼうさんと おてらの まち",
+      "output": "Output: ONE SQUARE illustration, exactly 1024x1024 pixels (square — not landscape, not portrait).",
+      "scene": "Scene: a small, peaceful royal town on a green peninsula where two rivers meet among forested mountains. In the centre, a gracious old temple with dramatic sweeping roofs that come down almost to the ground in many layers, dark red walls with golden patterns, in a garden of palms and frangipani, and a long line of monks in saffron-orange robes walking barefoot along the street. Around it: streets of white two-storey French houses with wooden shutters and balconies; a steep wooded hill in the middle of town with a long staircase and a small golden stupa at the top; the wide brown river with long slim wooden boats with roofs, and a bamboo footbridge over the smaller river; at one corner, a turquoise waterfall stepping down through the jungle into milky blue pools. Forest, rivers and streets reach every edge of the frame."
+    },
+    {
+      "out": "area_chocolate_hills",
+      "title": "ボホール — チョコレートの おか",
+      "output": "Output: ONE SQUARE illustration, exactly 1024x1024 pixels (square — not landscape, not portrait).",
+      "scene": "Scene: a tropical island interior of strange round hills. In the centre, hundreds of almost identical rounded, cone-shaped grassy hills, like giant gumdrops, covered in short grass that is turning chocolate brown, scattered across a flat green plain, with a viewing deck and a long staircase on top of the highest one. Around them: rice paddies and coconut palms filling the gaps between the hills, a winding green river through dense jungle with a floating bamboo raft-restaurant and canoes, a whitewashed old coral-stone church with a bell tower, small houses of woven bamboo with thatched roofs, and a tricycle taxi on the road. Hills, fields and forest reach every edge of the frame."
+    },
+    {
+      "out": "area_cone_volcano_bay",
+      "title": "マヨン山 — きれいな かたちの かざん",
+      "output": "Output: ONE SQUARE illustration, exactly 1024x1024 pixels (square — not landscape, not portrait).",
+      "scene": "Scene: a fertile green farming region at the foot of a huge volcano. In the centre, a perfectly symmetrical cone-shaped volcano with steep smooth slopes, green at the bottom and grey at the top, with a thin wisp of white cloud near the summit. Around its base: bright green rice paddies and coconut groves, a small town with the ruin of a stone church whose bell tower still stands, colourful jeepneys and tricycles on the roads, water buffalo in the fields, a dry riverbed of grey volcanic boulders, and at one side a calm blue bay with outrigger fishing boats with bamboo floats. Fields, palms and sea reach every edge of the frame."
+    },
+    {
+      "out": "area_walled_bay_city",
+      "title": "マニラ — いしの かべの まちと わん",
+      "output": "Output: ONE SQUARE illustration, exactly 1024x1024 pixels (square — not landscape, not portrait).",
+      "scene": "Scene: a big, busy harbour capital on a wide bay. In the centre, an old walled town: thick grey stone walls with angled bastions and a green lawn where the moat used to be, enclosing streets of Spanish colonial houses with wooden upper floors, shell-pane windows and wrought-iron balconies, a massive grey stone church with a bell tower and a large cathedral with a green dome. Around it: streets full of brightly painted jeepneys with chrome horse ornaments on the bonnet, tricycles and horse-drawn carriages; a palm-lined bayside boulevard along a wide calm bay with ships; a river with small ferries; leafy parks with a big lawn; and a cluster of modern glass skyscrapers in the distance. Streets, walls and bay reach every edge of the frame."
+    },
+    {
+      "out": "area_sun_moon_lake",
+      "title": "日月潭 — やまの なかの みずうみ",
+      "output": "Output: ONE SQUARE illustration, exactly 1024x1024 pixels (square — not landscape, not portrait).",
+      "scene": "Scene: a large emerald mountain lake surrounded by layers of steep green mountains. In the centre, the calm lake with a tiny round green island in the middle, small white tour boats and wooden piers; on a forested hilltop above the shore, a slender nine-storey pagoda. Around the lake: a lakeside temple with red pillars and curved yellow-tiled roofs, a cycling path along the water, a cable car swinging over the forest, terraces of tea bushes in neat rows, small lakeside hotels and a little village street. Lake and mountains reach every edge of the frame."
+    },
+    {
+      "out": "area_west_lake_pagoda",
+      "title": "杭州 — みずうみと とう",
+      "output": "Output: ONE SQUARE illustration, exactly 1024x1024 pixels (square — not landscape, not portrait).",
+      "scene": "Scene: a famous lake-garden city in springtime. In the centre, a broad calm lake crossed by long willow-lined causeways with small humped stone bridges, tiny islands with pavilions, and wooden rowing boats and painted pleasure boats on the water; on a hill on the far shore, a tall many-roofed pagoda tower. Around the lake: weeping willows and peach blossom, lotus leaves near the shore, white-walled black-tiled villas and teahouses, a yellow-walled temple in the hills, rows of terraced tea bushes on the green slopes, and the edge of a modern city of towers along one side. Water, gardens and hills reach every edge of the frame."
+    },
+    {
+      "out": "area_round_temple_capital",
+      "title": "北京 — まるい あおい やねの おてら",
+      "output": "Output: ONE SQUARE illustration, exactly 1024x1024 pixels (square — not landscape, not portrait).",
+      "scene": "Scene: an old northern capital in clear autumn weather. In the centre, a round, three-tiered temple hall with deep-blue glazed-tile roofs and a golden ball on top, standing on a three-level round white marble terrace inside a huge park of old cypress trees, with a long raised stone walkway leading to a smaller round blue-roofed hall. Around it: a maze of narrow lanes of grey-brick courtyard houses with grey tiled roofs and trees in the courtyards, bicycle rickshaws, people flying kites, the red walls and yellow-tiled gates of palaces in the distance, a park lake with a white bottle-shaped stupa on an island, and a ring of modern office towers at the edge. Parks, lanes and rooftops reach every edge of the frame."
+    },
+    {
+      "out": "area_royal_tomb_mounds",
+      "title": "慶州 — おうさまの おはかの おか",
+      "output": "Output: ONE SQUARE illustration, exactly 1024x1024 pixels (square — not landscape, not portrait).",
+      "scene": "Scene: an ancient royal city in a wide green valley in spring. In the centre, a park of huge, smooth, grass-covered round burial mounds like gentle green hills of different sizes, with paths, old pine trees and cherry trees in blossom between them. Around them: a small squat bottle-shaped stone tower of ancient design standing in a field; a Buddhist temple on a wooded hillside with wooden halls painted green and red, reached by a pair of elegant stone stairway-bridges, with two old stone pagodas in its courtyard; a lotus pond with restored wooden pavilions on its shore; streets of low traditional houses with curved grey tiled roofs; rice fields and soft green mountains. Parks, villages and hills reach every edge of the frame."
+    },
+    {
+      "out": "area_colorful_hill_port",
+      "title": "釜山 — いろとりどりの さかの まちと みなと",
+      "output": "Output: ONE SQUARE illustration, exactly 1024x1024 pixels (square — not landscape, not portrait).",
+      "scene": "Scene: a big port city where steep hills drop into the sea. In the centre, a hillside village of tiny box-shaped houses painted pastel blue, pink, yellow and mint, climbing up the slope in tight terraces connected by stairways and alleys, with flat rooftops. Around it: a deep harbour with fishing boats and a busy fish market on the waterfront, container cranes and ships, a long white suspension bridge across a bay, a crescent beach with a row of tall hotels, a temple of colourful wooden halls perched on rocks right by the sea, and green mountains behind the city. Houses, harbour and sea reach every edge of the frame."
+    },
+    {
+      "out": "area_red_castle_coral_sea",
+      "title": "沖縄 — あかい おしろと さんごの うみ",
+      "output": "Output: ONE SQUARE illustration, exactly 1024x1024 pixels (square — not landscape, not portrait).",
+      "scene": "Scene: a warm subtropical island of coral seas. In the centre, a bright vermilion-red royal castle hall with a curved red-tiled roof and a decorated gable, standing on top of curving walls of pale grey limestone blocks on a hill, reached through a red-roofed gate. Around it: a town of low white and orange houses with red-tiled roofs and small lion-dog guardian statues on the roofs, stone walls, hibiscus and banana trees; a main street of small shops; sugarcane fields; and at the coast an emerald and turquoise sea over white coral sand, with glass-bottom boats and a long bridge to a small island. Town, fields and sea reach every edge of the frame."
     }
   ]
 }

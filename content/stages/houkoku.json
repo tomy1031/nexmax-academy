@@ -8,8 +8,10 @@
   "color": "sky",
   "status": "published",
   "area": {
-    "image": "/img/scenes/area_crab_shore.webp",
-    "note": "うみの うえの いちばから、ふねが しらせを はこびます。"
+    "name": "プノンペン",
+    "reading": "ぷのんぺん",
+    "image": "/img/scenes/area_riverside_capital.webp",
+    "note": "ふるい たてものと たかい ビルが ならぶ まちです。この まちにも、たくさんの かいしゃが あります。"
   },
   "contents": [
     {

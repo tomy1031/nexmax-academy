@@ -8,10 +8,8 @@
   "color": "leaf",
   "status": "published",
   "area": {
-    "name": "プノンペン",
-    "reading": "ぷのんぺん",
-    "image": "/img/scenes/area_riverside_capital.webp",
-    "note": "ふるい たてものと たかい ビルが ならぶ まちです。この まちにも、たくさんの かいしゃが あります。"
+    "image": "/img/scenes/area_floating_village.webp",
+    "note": "みずうみの うえに、いえや がっこうが うかぶ むらです。"
   },
   "contents": [
     {
