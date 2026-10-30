@@ -236,7 +236,190 @@
     {
       "kind": "heading",
       "level": 2,
-      "text": "5. リアクション（スタンプ）は「読みました」の 合図"
+      "text": "5. 電話での 連絡"
+    },
+    {
+      "kind": "image",
+      "size": "wide",
+      "src": "/img/hourensou/renraku/denwa.webp",
+      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand, no tangled or merged fingers. Match the drawing style and the colours of the FIRST reference picture exactly. The junior engineer is the young man of the reference picture with short dark brown hair wearing a coral-orange shirt jacket over a white tee; the team leader is the man of the reference picture with short black hair in a navy blazer over a white shirt. This is a TEACHING picture, not a mood picture: a student who can hardly read Japanese must understand the message from the picture alone. EMOTIONS ARE BIG AND OBVIOUS, like a Japanese comedy manga — exaggerated faces and whole-body poses that read from across the room. Happy and relieved people beam with huge open smiles and sparkling eyes, raise a fist or give a thumbs-up, with little sparkles around them. Puzzled people tilt their heads under a big question mark. Manga symbols are welcome and carry the message: big question marks, exclamation marks, sweat drops, lightbulbs, sparkles, motion lines, check marks.\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: a phone call gets an answer right now, while a mail or chat message waits until the reader has time — and its words stay. One wide picture split into two equal halves by a soft vertical cream gutter, the same layout as the FIRST reference picture. At the top of each half sits one wide rounded cream label panel with two lines: a big bold first line and a smaller second line. LEFT HALF, on a pale sky-blue ground: the label panel shows a small drawn phone handset before its big first line (the first word below), and the second word below on its second line. The junior engineer sits at his desk in the lower left holding a smartphone to his ear, talking, with an eager face. The team leader is NOT in the same room: he appears in a large round manga-style phone-call inset panel in the upper right of this half, with a thick outline and a small jagged edge where it touches a curly phone-line drawn from the engineer's phone, so it is obvious the two are in different places. Inside the inset the team leader walks in a corridor of another floor, holding his phone to his ear; he has already turned on his heel to come, huge open grin, his free hand giving a big thumbs-up, motion lines around him showing how fast he answers. A white speech balloon from the team leader inside the inset says the third word below, all on ONE single line with clear room above 行 for its furigana. RIGHT HALF, on a pale mint-green ground: the label panel shows a small drawn envelope and a small drawn chat bubble before its big first line (the fourth word below), and the fifth word below on its second line. The junior engineer types calmly on his laptop with a relaxed smile; his laptop screen shows a chat window with five message bubbles stacked neatly from top to bottom as soft grey abstract bars with no readable writing, the newest bubble outlined in coral, so it is clear that every message stays on the screen. Behind him, through a glass wall, the team leader sits in a small meeting room with two colleagues; he glances down at his phone, which shows the same stacked chat bubbles, and nods with a calm smile and a small green check mark beside the phone, showing he reads it when he has time. The two halves are the same size and read left to right in one pass.\nThe Japanese words in this picture are exactly: 電話（でんわ） / すぐに 返事が もらえる（すぐに へんじが もらえる） / OK！ すぐ 行くね。（OK！ すぐ いくね。） / メール・チャット / 記録が 残る（きろくが のこる）.\nOutput: one landscape illustration, 1536x1024.\nLettering — read this part carefully. The picture contains ONLY the words listed above, and no other writing at all. Print each Japanese word LARGE and horizontally in a bold rounded gothic Japanese font, with generous space around it — either on a soft cream label with a rounded border, or inside a white speech balloon whose tail clearly points at the person who says it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp. Words written only in hiragana or katakana take no furigana, and Latin letters and numbers take no furigana either. The readings in round brackets are for you only — never print the brackets or the reading in the brackets as text. Spell every character exactly as given. Screens, papers and whiteboards show only soft abstract shapes apart from the listed words. No other letters, numbers, logos or watermarks anywhere in the picture.\nNever: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, horror or a scary dark mood, real grief, violence, watermarks, real company logos or brand marks of any kind (no fruit logo on laptops or phones, no chat-app logos), national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+      "refs": [
+        "/img/hourensou/renraku/s1.webp"
+      ],
+      "status": "done",
+      "caption": "電話と メール・チャットの ちがい"
+    },
+    {
+      "kind": "paragraph",
+      "text": "連絡は、メールや チャットだけでは ありません。電話でも できます。どちらにも、メリットと デメリットが あります。"
+    },
+    {
+      "kind": "cards",
+      "columns": 2,
+      "items": [
+        {
+          "icon": "👍",
+          "label": "📞 電話",
+          "title": "メリット（いい ところ）",
+          "items": [
+            "すぐに 返事が もらえます。",
+            "声で、相手の 気持ちが 分かります。",
+            "分からない ことを、話しながら 聞けます。"
+          ]
+        },
+        {
+          "icon": "⚠️",
+          "label": "📞 電話",
+          "title": "デメリット（弱い ところ）",
+          "items": [
+            "相手の 時間を 奪います。仕事が 止まります。",
+            "記録が 残りません。",
+            "「言った」「聞いて いない」に なる ことが あります。"
+          ]
+        },
+        {
+          "icon": "👍",
+          "label": "✉️ メール・チャット",
+          "title": "メリット（いい ところ）",
+          "items": [
+            "相手は、時間が ある ときに 読めます。",
+            "記録が 残ります。あとで また 見られます。",
+            "たくさんの 人に 一度に 送れます。"
+          ]
+        },
+        {
+          "icon": "⚠️",
+          "label": "✉️ メール・チャット",
+          "title": "デメリット（弱い ところ）",
+          "items": [
+            "返事が 遅く なる ことが あります。",
+            "気持ちが 伝わりにくいです。",
+            "読まれない ことも あります。"
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "heading",
+      "level": 3,
+      "text": "場面で 使い分ける（Choose by situation）"
+    },
+    {
+      "kind": "paragraph",
+      "text": "次の 4つの 場面を 見て ください。電話と メール・チャットの どちらが いいでしょうか。考えてから、こたえを 見ましょう。"
+    },
+    {
+      "kind": "cards",
+      "columns": 2,
+      "reveal": true,
+      "items": [
+        {
+          "icon": "📞",
+          "label": "場面 1",
+          "title": "本番（production）の サーバーが 止まりました。お客様が 使えません。リーダーに 今すぐ 来て ほしいです。",
+          "text": "電話です。今すぐ 返事が ほしい ときは、電話が いいです。",
+          "image": {
+            "src": "/img/hourensou/renraku/bamen_1.webp",
+            "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand, no tangled or merged fingers. Match the drawing style and the colours of the FIRST reference picture exactly. The junior engineer is the young man of the reference picture with short dark brown hair wearing a coral-orange shirt jacket over a white tee; the team leader is the man of the reference picture with short black hair in a navy blazer over a white shirt. This is a TEACHING picture, not a mood picture: a student who can hardly read Japanese must understand the message from the picture alone. EMOTIONS ARE BIG AND OBVIOUS, like a Japanese comedy manga — exaggerated faces and whole-body poses that read from across the room. Happy and relieved people beam with huge open smiles and sparkling eyes, raise a fist or give a thumbs-up, with little sparkles around them. Puzzled people tilt their heads under a big question mark. Manga symbols are welcome and carry the message: big question marks, exclamation marks, sweat drops, lightbulbs, sparkles, motion lines, check marks.\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: four different work situations, each readable at a glance. One wide picture divided into FOUR EQUAL PANELS in a 2 by 2 grid, separated by clean white gutters about 24 pixels wide, with no panel touching another. Every panel is its own small scene in the bright office with the junior engineer of the reference picture. NONE of the panels shows a telephone, a smartphone, an envelope or a mail icon anywhere — the picture shows only the situation, never the tool to use. TOP-LEFT PANEL (situation 1): the junior engineer jumps up from his desk in a panic, clutching his head with both hands, huge sweat drops and wide teary eyes; on the big monitor beside him a bright red warning screen carries the word ERROR in large letters, and the server rack behind him blinks red lights with a big red cross mark; next to him the team leader's chair is EMPTY, with the leader's navy blazer hanging on its back, and the junior looks at the empty chair desperately — the leader is not here and is needed right now. TOP-RIGHT PANEL (situation 2): the junior engineer stands at a large wall schedule board and slides one coloured meeting card from a higher row down to the next row, a thick soft coral arrow showing the move, with two large clock faces beside it, the first showing two o'clock and the second showing three o'clock; behind him six teammates work at their desks across the room, so it is clear that the whole team must know about the change. BOTTOM-LEFT PANEL (situation 3): the junior engineer sits at his desk holding up one printed estimate sheet that shows a big gold coin drawing and soft grey bars, next to a desk calendar page with one day circled in red; in a round inset in the corner, a client — a middle-aged man in a grey business suit in a different company's office with its own lobby — waits politely, showing this is a person outside the company. BOTTOM-RIGHT PANEL (situation 4): the junior engineer types on his laptop with a frustrated face, wavy worried mouth and sweat drops; his laptop screen shows three long chat messages stacked one under another as soft grey bars; in a round inset in the corner the team leader reads the same messages on his laptop with swirling confused eyes under a big question mark, showing the messages are not getting through. The four panels are the same size and read left to right, top to bottom.\nThe Japanese words in this picture are exactly: ERROR.\nOutput: one landscape illustration, 1536x1024.\nLettering — read this part carefully. The picture contains ONLY the words listed above, and no other writing at all. Print each Japanese word LARGE and horizontally in a bold rounded gothic Japanese font, with generous space around it — either on a soft cream label with a rounded border, or inside a white speech balloon whose tail clearly points at the person who says it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp. Words written only in hiragana or katakana take no furigana, and Latin letters and numbers take no furigana either. The readings in round brackets are for you only — never print the brackets or the reading in the brackets as text. Spell every character exactly as given. Screens, papers and whiteboards show only soft abstract shapes apart from the listed words. No other letters, numbers, logos or watermarks anywhere in the picture.\nNever: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, horror or a scary dark mood, real grief, violence, watermarks, real company logos or brand marks of any kind (no fruit logo on laptops or phones, no chat-app logos), national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+            "refs": [
+              "/img/hourensou/renraku/s1.webp"
+            ],
+            "status": "done"
+          }
+        },
+        {
+          "icon": "✉️",
+          "label": "場面 2",
+          "title": "明日の MTG（ミーティング）の 時間が 変わりました。チーム 全員に 伝えたいです。",
+          "text": "メール・チャットです。たくさんの 人に 一度に 送れます。記録も 残ります。",
+          "image": {
+            "src": "/img/hourensou/renraku/bamen_2.webp",
+            "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand, no tangled or merged fingers. Match the drawing style and the colours of the FIRST reference picture exactly. The junior engineer is the young man of the reference picture with short dark brown hair wearing a coral-orange shirt jacket over a white tee; the team leader is the man of the reference picture with short black hair in a navy blazer over a white shirt. This is a TEACHING picture, not a mood picture: a student who can hardly read Japanese must understand the message from the picture alone. EMOTIONS ARE BIG AND OBVIOUS, like a Japanese comedy manga — exaggerated faces and whole-body poses that read from across the room. Happy and relieved people beam with huge open smiles and sparkling eyes, raise a fist or give a thumbs-up, with little sparkles around them. Puzzled people tilt their heads under a big question mark. Manga symbols are welcome and carry the message: big question marks, exclamation marks, sweat drops, lightbulbs, sparkles, motion lines, check marks.\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: four different work situations, each readable at a glance. One wide picture divided into FOUR EQUAL PANELS in a 2 by 2 grid, separated by clean white gutters about 24 pixels wide, with no panel touching another. Every panel is its own small scene in the bright office with the junior engineer of the reference picture. NONE of the panels shows a telephone, a smartphone, an envelope or a mail icon anywhere — the picture shows only the situation, never the tool to use. TOP-LEFT PANEL (situation 1): the junior engineer jumps up from his desk in a panic, clutching his head with both hands, huge sweat drops and wide teary eyes; on the big monitor beside him a bright red warning screen carries the word ERROR in large letters, and the server rack behind him blinks red lights with a big red cross mark; next to him the team leader's chair is EMPTY, with the leader's navy blazer hanging on its back, and the junior looks at the empty chair desperately — the leader is not here and is needed right now. TOP-RIGHT PANEL (situation 2): the junior engineer stands at a large wall schedule board and slides one coloured meeting card from a higher row down to the next row, a thick soft coral arrow showing the move, with two large clock faces beside it, the first showing two o'clock and the second showing three o'clock; behind him six teammates work at their desks across the room, so it is clear that the whole team must know about the change. BOTTOM-LEFT PANEL (situation 3): the junior engineer sits at his desk holding up one printed estimate sheet that shows a big gold coin drawing and soft grey bars, next to a desk calendar page with one day circled in red; in a round inset in the corner, a client — a middle-aged man in a grey business suit in a different company's office with its own lobby — waits politely, showing this is a person outside the company. BOTTOM-RIGHT PANEL (situation 4): the junior engineer types on his laptop with a frustrated face, wavy worried mouth and sweat drops; his laptop screen shows three long chat messages stacked one under another as soft grey bars; in a round inset in the corner the team leader reads the same messages on his laptop with swirling confused eyes under a big question mark, showing the messages are not getting through. The four panels are the same size and read left to right, top to bottom.\nThe Japanese words in this picture are exactly: ERROR.\nOutput: one landscape illustration, 1536x1024.\nLettering — read this part carefully. The picture contains ONLY the words listed above, and no other writing at all. Print each Japanese word LARGE and horizontally in a bold rounded gothic Japanese font, with generous space around it — either on a soft cream label with a rounded border, or inside a white speech balloon whose tail clearly points at the person who says it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp. Words written only in hiragana or katakana take no furigana, and Latin letters and numbers take no furigana either. The readings in round brackets are for you only — never print the brackets or the reading in the brackets as text. Spell every character exactly as given. Screens, papers and whiteboards show only soft abstract shapes apart from the listed words. No other letters, numbers, logos or watermarks anywhere in the picture.\nNever: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, horror or a scary dark mood, real grief, violence, watermarks, real company logos or brand marks of any kind (no fruit logo on laptops or phones, no chat-app logos), national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+            "refs": [
+              "/img/hourensou/renraku/s1.webp"
+            ],
+            "status": "done"
+          }
+        },
+        {
+          "icon": "✉️",
+          "label": "場面 3",
+          "title": "お客様に、見積もりの 金額と 期限を 伝えたいです。",
+          "text": "メール・チャットです。金額や 期限は、文字で 残します。お客様には、【 】を 使った メールで 送りましょう。",
+          "image": {
+            "src": "/img/hourensou/renraku/bamen_3.webp",
+            "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand, no tangled or merged fingers. Match the drawing style and the colours of the FIRST reference picture exactly. The junior engineer is the young man of the reference picture with short dark brown hair wearing a coral-orange shirt jacket over a white tee; the team leader is the man of the reference picture with short black hair in a navy blazer over a white shirt. This is a TEACHING picture, not a mood picture: a student who can hardly read Japanese must understand the message from the picture alone. EMOTIONS ARE BIG AND OBVIOUS, like a Japanese comedy manga — exaggerated faces and whole-body poses that read from across the room. Happy and relieved people beam with huge open smiles and sparkling eyes, raise a fist or give a thumbs-up, with little sparkles around them. Puzzled people tilt their heads under a big question mark. Manga symbols are welcome and carry the message: big question marks, exclamation marks, sweat drops, lightbulbs, sparkles, motion lines, check marks.\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: four different work situations, each readable at a glance. One wide picture divided into FOUR EQUAL PANELS in a 2 by 2 grid, separated by clean white gutters about 24 pixels wide, with no panel touching another. Every panel is its own small scene in the bright office with the junior engineer of the reference picture. NONE of the panels shows a telephone, a smartphone, an envelope or a mail icon anywhere — the picture shows only the situation, never the tool to use. TOP-LEFT PANEL (situation 1): the junior engineer jumps up from his desk in a panic, clutching his head with both hands, huge sweat drops and wide teary eyes; on the big monitor beside him a bright red warning screen carries the word ERROR in large letters, and the server rack behind him blinks red lights with a big red cross mark; next to him the team leader's chair is EMPTY, with the leader's navy blazer hanging on its back, and the junior looks at the empty chair desperately — the leader is not here and is needed right now. TOP-RIGHT PANEL (situation 2): the junior engineer stands at a large wall schedule board and slides one coloured meeting card from a higher row down to the next row, a thick soft coral arrow showing the move, with two large clock faces beside it, the first showing two o'clock and the second showing three o'clock; behind him six teammates work at their desks across the room, so it is clear that the whole team must know about the change. BOTTOM-LEFT PANEL (situation 3): the junior engineer sits at his desk holding up one printed estimate sheet that shows a big gold coin drawing and soft grey bars, next to a desk calendar page with one day circled in red; in a round inset in the corner, a client — a middle-aged man in a grey business suit in a different company's office with its own lobby — waits politely, showing this is a person outside the company. BOTTOM-RIGHT PANEL (situation 4): the junior engineer types on his laptop with a frustrated face, wavy worried mouth and sweat drops; his laptop screen shows three long chat messages stacked one under another as soft grey bars; in a round inset in the corner the team leader reads the same messages on his laptop with swirling confused eyes under a big question mark, showing the messages are not getting through. The four panels are the same size and read left to right, top to bottom.\nThe Japanese words in this picture are exactly: ERROR.\nOutput: one landscape illustration, 1536x1024.\nLettering — read this part carefully. The picture contains ONLY the words listed above, and no other writing at all. Print each Japanese word LARGE and horizontally in a bold rounded gothic Japanese font, with generous space around it — either on a soft cream label with a rounded border, or inside a white speech balloon whose tail clearly points at the person who says it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp. Words written only in hiragana or katakana take no furigana, and Latin letters and numbers take no furigana either. The readings in round brackets are for you only — never print the brackets or the reading in the brackets as text. Spell every character exactly as given. Screens, papers and whiteboards show only soft abstract shapes apart from the listed words. No other letters, numbers, logos or watermarks anywhere in the picture.\nNever: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, horror or a scary dark mood, real grief, violence, watermarks, real company logos or brand marks of any kind (no fruit logo on laptops or phones, no chat-app logos), national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+            "refs": [
+              "/img/hourensou/renraku/s1.webp"
+            ],
+            "status": "done"
+          }
+        },
+        {
+          "icon": "📞",
+          "label": "場面 4",
+          "title": "チャットで 3回 説明しました。でも、まだ 伝わりません。",
+          "text": "電話です。相手は 分からない ことを、話しながら 聞けます。",
+          "image": {
+            "src": "/img/hourensou/renraku/bamen_4.webp",
+            "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand, no tangled or merged fingers. Match the drawing style and the colours of the FIRST reference picture exactly. The junior engineer is the young man of the reference picture with short dark brown hair wearing a coral-orange shirt jacket over a white tee; the team leader is the man of the reference picture with short black hair in a navy blazer over a white shirt. This is a TEACHING picture, not a mood picture: a student who can hardly read Japanese must understand the message from the picture alone. EMOTIONS ARE BIG AND OBVIOUS, like a Japanese comedy manga — exaggerated faces and whole-body poses that read from across the room. Happy and relieved people beam with huge open smiles and sparkling eyes, raise a fist or give a thumbs-up, with little sparkles around them. Puzzled people tilt their heads under a big question mark. Manga symbols are welcome and carry the message: big question marks, exclamation marks, sweat drops, lightbulbs, sparkles, motion lines, check marks.\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: four different work situations, each readable at a glance. One wide picture divided into FOUR EQUAL PANELS in a 2 by 2 grid, separated by clean white gutters about 24 pixels wide, with no panel touching another. Every panel is its own small scene in the bright office with the junior engineer of the reference picture. NONE of the panels shows a telephone, a smartphone, an envelope or a mail icon anywhere — the picture shows only the situation, never the tool to use. TOP-LEFT PANEL (situation 1): the junior engineer jumps up from his desk in a panic, clutching his head with both hands, huge sweat drops and wide teary eyes; on the big monitor beside him a bright red warning screen carries the word ERROR in large letters, and the server rack behind him blinks red lights with a big red cross mark; next to him the team leader's chair is EMPTY, with the leader's navy blazer hanging on its back, and the junior looks at the empty chair desperately — the leader is not here and is needed right now. TOP-RIGHT PANEL (situation 2): the junior engineer stands at a large wall schedule board and slides one coloured meeting card from a higher row down to the next row, a thick soft coral arrow showing the move, with two large clock faces beside it, the first showing two o'clock and the second showing three o'clock; behind him six teammates work at their desks across the room, so it is clear that the whole team must know about the change. BOTTOM-LEFT PANEL (situation 3): the junior engineer sits at his desk holding up one printed estimate sheet that shows a big gold coin drawing and soft grey bars, next to a desk calendar page with one day circled in red; in a round inset in the corner, a client — a middle-aged man in a grey business suit in a different company's office with its own lobby — waits politely, showing this is a person outside the company. BOTTOM-RIGHT PANEL (situation 4): the junior engineer types on his laptop with a frustrated face, wavy worried mouth and sweat drops; his laptop screen shows three long chat messages stacked one under another as soft grey bars; in a round inset in the corner the team leader reads the same messages on his laptop with swirling confused eyes under a big question mark, showing the messages are not getting through. The four panels are the same size and read left to right, top to bottom.\nThe Japanese words in this picture are exactly: ERROR.\nOutput: one landscape illustration, 1536x1024.\nLettering — read this part carefully. The picture contains ONLY the words listed above, and no other writing at all. Print each Japanese word LARGE and horizontally in a bold rounded gothic Japanese font, with generous space around it — either on a soft cream label with a rounded border, or inside a white speech balloon whose tail clearly points at the person who says it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp. Words written only in hiragana or katakana take no furigana, and Latin letters and numbers take no furigana either. The readings in round brackets are for you only — never print the brackets or the reading in the brackets as text. Spell every character exactly as given. Screens, papers and whiteboards show only soft abstract shapes apart from the listed words. No other letters, numbers, logos or watermarks anywhere in the picture.\nNever: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, horror or a scary dark mood, real grief, violence, watermarks, real company logos or brand marks of any kind (no fruit logo on laptops or phones, no chat-app logos), national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+            "refs": [
+              "/img/hourensou/renraku/s1.webp"
+            ],
+            "status": "done"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "callout",
+      "tone": "point",
+      "text": "電話の あとは、決まった ことを 文字でも 送りましょう。記録が 残ります。"
+    },
+    {
+      "kind": "heading",
+      "level": 3,
+      "text": "人に よって、好きな 方法が ちがう"
+    },
+    {
+      "kind": "image",
+      "size": "wide",
+      "src": "/img/hourensou/renraku/konomi.webp",
+      "prompt": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand, no tangled or merged fingers. Match the drawing style and the colours of the FIRST reference picture exactly. Three different people appear and they must never look alike. THE JUNIOR ENGINEER is the young man of the FIRST reference picture with short dark brown hair wearing a coral-orange shirt jacket over a white tee, no glasses. HENDY is the man in the SECOND reference picture (his character sheet): short black hair, a navy suit, white shirt and navy tie, no glasses. OKUDA is the man in the THIRD reference picture (his character sheet): wavy messy black hair, black rectangular thick-rimmed glasses, a dark green pullover hoodie. Only Okuda wears glasses and a green hoodie; only Hendy wears a suit and tie. This is a TEACHING picture, not a mood picture: a student who can hardly read Japanese must understand the message from the picture alone. EMOTIONS ARE BIG AND OBVIOUS, like a Japanese comedy manga — exaggerated faces and whole-body poses that read from across the room. Happy and relieved people beam with huge open smiles and sparkling eyes, raise a fist or give a thumbs-up, with little sparkles around them. Puzzled people tilt their heads under a big question mark. Manga symbols are welcome and carry the message: big question marks, exclamation marks, sweat drops, lightbulbs, sparkles, motion lines, check marks.\nTHE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: one colleague likes phone calls, another likes chat, so you look at the person and choose. A wide medium shot in the bright office, on a soft cream ground. At the top centre sits one wide rounded cream label panel carrying the first word below. LEFT: HENDY stands by his desk holding up his smartphone towards the viewer with a huge open grin and sparkles, and a white speech balloon from him says the second word below. RIGHT: OKUDA sits at his laptop with headphones around his neck; behind him a wall calendar is packed with coloured meeting blocks; he smiles and points with one hand at his laptop screen, which shows a chat window of soft grey abstract bubbles, and a white speech balloon from him says the third word below. CENTRE FRONT: the junior engineer stands between them, looking from one to the other with wide, attentive eyes; two thin dotted sight lines run from his eyes to each colleague, and a big glowing lightbulb shines above his head, showing that he has noticed what each person likes. Warm daylight, plants, mugs. LETTERING LAYOUT — this matters as much as the people: each speech balloon is wide and holds its words on ONE single horizontal line, never broken into two lines, so that every kanji has clear room above it for its furigana. EVERY kanji in this picture carries its furigana — 人 in the label panel, BOTH kanji of 電話 and the 話 of 話そう in Hendy's balloon, and the 願 of お願い in Okuda's balloon. No kanji is left without its reading.\nThe Japanese words in this picture are exactly: 人に よって ちがう（ひとに よって ちがう） / 電話で 話そう！（でんわで はなそう！） / チャットで お願い！（チャットで おねがい！）.\nOutput: one landscape illustration, 1536x1024.\nLettering — read this part carefully. The picture contains ONLY the words listed above, and no other writing at all. Print each Japanese word LARGE and horizontally in a bold rounded gothic Japanese font, with generous space around it — either on a soft cream label with a rounded border, or inside a white speech balloon whose tail clearly points at the person who says it. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp. Words written only in hiragana or katakana take no furigana, and Latin letters and numbers take no furigana either. The readings in round brackets are for you only — never print the brackets or the reading in the brackets as text. Spell every character exactly as given. Screens, papers and whiteboards show only soft abstract shapes apart from the listed words. No other letters, numbers, logos or watermarks anywhere in the picture.\nNever: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, horror or a scary dark mood, real grief, violence, watermarks, real company logos or brand marks of any kind (no fruit logo on laptops or phones, no chat-app logos), national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+      "refs": [
+        "/img/hourensou/renraku/s1.webp",
+        "/img/characters/hendy/sheet.webp",
+        "/img/characters/okuda/sheet.webp"
+      ],
+      "status": "done",
+      "caption": "電話が 好きな 人と、チャットが 好きな 人"
+    },
+    {
+      "kind": "paragraph",
+      "text": "電話が 好きな 人も います。メールや チャットが 好きな 人も います。会議が 多い 人は、電話に 出られない ことも あります。"
+    },
+    {
+      "kind": "paragraph",
+      "text": "「空気を 読む」を 思い出して ください。相手の ようすを 見て、方法を 選びましょう。"
+    },
+    {
+      "kind": "list",
+      "items": [
+        "相手が よく 使う 方法に 合わせます。チャットで 届いた 連絡には、チャットで 返します。",
+        "忙しそうな 人には、急ぎでは ない 電話を しません。",
+        "電話では、まず「今、お電話 よろしいですか。」と 聞きます。",
+        "分からない ときは、聞いて みましょう。「ご連絡は、お電話と メールの どちらが よろしいですか。」"
+      ]
+    },
+    {
+      "kind": "callout",
+      "tone": "point",
+      "text": "いい 方法は、場面と 相手で 変わります。場面と 相手を 見て、選びましょう。"
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "6. リアクション（スタンプ）は「読みました」の 合図"
     },
     {
       "kind": "image",
@@ -333,6 +516,10 @@
       "えいきょうはんい"
     ],
     [
+      "見積もり",
+      "みつもり"
+    ],
+    [
       "報連相",
       "ほうれんそう"
     ],
@@ -371,6 +558,14 @@
     [
       "新しく",
       "あたらしく"
+    ],
+    [
+      "分から",
+      "わから"
+    ],
+    [
+      "思い出",
+      "おもいだ"
     ],
     [
       "報告",
@@ -697,6 +892,78 @@
       "もんだい"
     ],
     [
+      "電話",
+      "でんわ"
+    ],
+    [
+      "返事",
+      "へんじ"
+    ],
+    [
+      "記録",
+      "きろく"
+    ],
+    [
+      "仕事",
+      "しごと"
+    ],
+    [
+      "一度",
+      "いちど"
+    ],
+    [
+      "本番",
+      "ほんばん"
+    ],
+    [
+      "明日",
+      "あした"
+    ],
+    [
+      "金額",
+      "きんがく"
+    ],
+    [
+      "文字",
+      "もじ"
+    ],
+    [
+      "説明",
+      "せつめい"
+    ],
+    [
+      "質問",
+      "しつもん"
+    ],
+    [
+      "方法",
+      "ほうほう"
+    ],
+    [
+      "会議",
+      "かいぎ"
+    ],
+    [
+      "空気",
+      "くうき"
+    ],
+    [
+      "場面",
+      "ばめん"
+    ],
+    [
+      "好き",
+      "すき"
+    ],
+    [
+      "遅く",
+      "おそく"
+    ],
+    [
+      "来て",
+      "きて"
+    ],
+    [
       "人",
       "ひと"
     ],
@@ -1003,6 +1270,66 @@
     [
       "起",
       "お"
+    ],
+    [
+      "残",
+      "のこ"
+    ],
+    [
+      "止",
+      "と"
+    ],
+    [
+      "聞",
+      "き"
+    ],
+    [
+      "場",
+      "ば"
+    ],
+    [
+      "直",
+      "なお"
+    ],
+    [
+      "急",
+      "いそ"
+    ],
+    [
+      "変",
+      "か"
+    ],
+    [
+      "回",
+      "かい"
+    ],
+    [
+      "答",
+      "こた"
+    ],
+    [
+      "考",
+      "かんが"
+    ],
+    [
+      "話",
+      "はな"
+    ],
+    [
+      "多",
+      "おお"
+    ],
+    [
+      "選",
+      "えら"
+    ],
+    [
+      "弱",
+      "よわ"
+    ],
+    [
+      "奪",
+      "うば"
     ]
   ]
 }
