@@ -53,6 +53,7 @@ function loadGame(storage = new Map<string, string>()): {
   loadSaved: () => Saved | null;
   restartFromScratch: () => void;
   feedbackReason: (html: string) => string;
+  markUrls: (html: string) => string;
   reloads: () => number;
 } {
   const scripts = [...HTML.matchAll(/<script>([\s\S]*?)<\/script>/g)].map((hit) => hit[1] ?? "");
@@ -90,7 +91,7 @@ function loadGame(storage = new Map<string, string>()): {
     "window",
     "lucide",
     "location",
-    `${body}\nreturn { SCENARIOS, WORDS, USED_TERMS, STORE_KEY, loadSaved, restartFromScratch, feedbackReason };`,
+    `${body}\nreturn { SCENARIOS, WORDS, USED_TERMS, STORE_KEY, loadSaved, restartFromScratch, feedbackReason, markUrls };`,
   )(documentStub, windowStub, { createIcons() {} }, locationStub);
   return { ...game, reloads: () => reloads };
 }
@@ -317,6 +318,35 @@ describe("Renraku Master の 正誤の しるしと わけ", () => {
       if (plain(option.feedback).startsWith("惜しい"))
         expect(reason, option.where).toMatch(/^惜しい/);
     }
+  });
+});
+
+describe("Renraku Master の URL は 青い 字（2026-10-30）", () => {
+  it("URL だけを 青い 字に する。リンクには しない", () => {
+    const url = "https://file-server/docs/user-reg-spec";
+    const marked = GAME.markUrls(`ファイルのURLはこちらです。\n${url}`);
+    expect(marked).toBe(`ファイルのURLはこちらです。\n<span class="url-text">${url}</span>`);
+    expect(marked).not.toContain("<a ");
+  });
+
+  it("ファイルサーバーの パスは 青く しない——「クリックできない」と 教える 選択肢だから", () => {
+    const path = "パスは \\\\192.168.1.10\\docs です。";
+    expect(GAME.markUrls(path)).toBe(path);
+  });
+
+  it("ルビや 辞書の 印の 属性は こわさない", () => {
+    const html = '<ruby>共有<rt>きょうゆう</rt></ruby><span data-meaning="https://x">x</span>';
+    expect(GAME.markUrls(html)).toBe(html);
+  });
+
+  it("教材の URL は 選択肢に 1つ ある（なくなったら この 見張りを 見直す）", () => {
+    const urls = GAME.SCENARIOS.flatMap((item) =>
+      item.steps.flatMap((step) =>
+        step.options.filter((option) => /https?:\/\//.test(option.text)),
+      ),
+    );
+    expect(urls.length).toBeGreaterThan(0);
+    for (const option of urls) expect(GAME.markUrls(option.text)).toContain('class="url-text"');
   });
 });
 
