@@ -26,6 +26,7 @@ interface Scenario {
   title: string;
   instruction: { text: string };
   reply?: { text: string };
+  steps: { options: { text: string; isCorrect: boolean; feedback: string }[] }[];
 }
 interface Word {
   reading: string;
@@ -51,6 +52,7 @@ function loadGame(storage = new Map<string, string>()): {
   STORE_KEY: string;
   loadSaved: () => Saved | null;
   restartFromScratch: () => void;
+  feedbackReason: (html: string) => string;
   reloads: () => number;
 } {
   const scripts = [...HTML.matchAll(/<script>([\s\S]*?)<\/script>/g)].map((hit) => hit[1] ?? "");
@@ -88,7 +90,7 @@ function loadGame(storage = new Map<string, string>()): {
     "window",
     "lucide",
     "location",
-    `${body}\nreturn { SCENARIOS, WORDS, USED_TERMS, STORE_KEY, loadSaved, restartFromScratch };`,
+    `${body}\nreturn { SCENARIOS, WORDS, USED_TERMS, STORE_KEY, loadSaved, restartFromScratch, feedbackReason };`,
   )(documentStub, windowStub, { createIcons() {} }, locationStub);
   return { ...game, reloads: () => reloads };
 }
@@ -273,6 +275,48 @@ describe("Renraku Master の ふりがな（ボタン・案内・選択肢も）
     );
     expect(HTML).toContain("<span>${ACK_REPLY}</span>");
     expect(HTML).toContain("text: ACK_REPLY");
+  });
+});
+
+/**
+ * 選んだ 選択肢には ⭕ 正解／❌ 不正解 の しるしを 出し、わけの 文の 頭の「正解！」「不正解。」は 外す（2026-10-30）。
+ * しるしは isCorrect で 決まるので、わけの 文が それと 食い違うと 画面で 矛盾する。
+ * 押した ときの 動き（「次へ」まで 進まない・少し 押せない）は tests/e2e/renraku_slack.spec.ts。
+ */
+describe("Renraku Master の 正誤の しるしと わけ", () => {
+  const options = GAME.SCENARIOS.flatMap((item) =>
+    item.steps.flatMap((step, at) =>
+      step.options.map((option) => ({ where: `${item.title} の 問い${at + 1}`, ...option })),
+    ),
+  );
+
+  it("どの 問いにも 正解が 1つだけ ある", () => {
+    for (const item of GAME.SCENARIOS) {
+      item.steps.forEach((step, at) => {
+        expect(
+          step.options.filter((option) => option.isCorrect).length,
+          `${item.title} の 問い${at + 1}`,
+        ).toBe(1);
+      });
+    }
+  });
+
+  it("わけの 文が しるしと 食い違わない（正解は「正解！」、不正解は「不正解」か「惜しい」で 始まる）", () => {
+    for (const option of options) {
+      const head = plain(option.feedback);
+      if (option.isCorrect) expect(head, option.where).toMatch(/^正解！/);
+      else expect(head, option.where).toMatch(/^(不正解。|惜しい[！。])/);
+    }
+  });
+
+  it("画面の わけは 頭の「正解！」「不正解。」を 外す。「惜しい」は 残す", () => {
+    for (const option of options) {
+      const reason = plain(GAME.feedbackReason(option.feedback));
+      expect(reason, option.where).not.toMatch(/^(不正解|正解)/);
+      expect(reason.length, option.where).toBeGreaterThan(5);
+      if (plain(option.feedback).startsWith("惜しい"))
+        expect(reason, option.where).toMatch(/^惜しい/);
+    }
   });
 });
 
