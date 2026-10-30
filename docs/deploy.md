@@ -232,6 +232,35 @@ Vercel の2本（`nexmax-academy.vercel.app` / `*.vercel.app`）は移行完了�
 クライアント専用にすれば消える）／焼き込みコンテンツが2コピー（~78 KiB）／
 先生向け `/admin`・`/studio` の SSR（~50〜100 KiB）。
 
+### 0.7 1日に 出せる 回数には 上限が ある（KV 書き込み・無料枠）— 2026-08-20 に これで 止まった
+
+**症状**: デプロイの「本番へ反映」で 落ちる。
+
+```
+A request to the Cloudflare API (.../storage/kv/namespaces/.../bulk) failed.
+  your account has reached the free usage limit for this operation for today [code: 10048]
+Error: Wrangler kv bulk put command failed
+```
+
+**原因**: OpenNext は ISR のキャッシュを **KV へ bulk put** する（`docs/deploy.md` §0.5 の
+「ISR には KV が要る」の裏返し）。1回の デプロイで まとまった 数の 書き込みが 走るので、
+**1日に 何度も 出すと 無料枠の 1日あたり 書き込み上限に 当たる**。
+
+2026-08-20 は デプロイが **19回**（STG の 自動更新 ＋ 本番の 手動）走り、
+最後の 本番反映が これで 落ちた。**コードは 何も 悪くない**——
+`check` も `e2e` も `size` も 通っている。
+
+**見分けかた**: `code: 10048` が 出ていたら これ。`code: 10027` は 別物（Worker が 大きすぎる。§0.5）。
+
+**どうするか**:
+
+- **待つ**。上限は **UTC 00:00（JST 09:00）** に 戻る。翌朝 もう一度 出せば そのまま 通る。
+- **出す回数を まとめる**。main への 統合ごとに 本番へ 出すのではなく、
+  いくつか たまってから 1回に する（STG は 統合のたびに 自動で 上がるので、
+  中身の 確認は STG で できる）。
+- 落ちても **本番は 前の 版の まま 生きている**（半端な 状態には ならない）。
+  あわてて 何度も 押し直さない——押すほど 枠を 使う。
+
 ### 0.4 恒久の制約
 
 - **`src/middleware.ts` を `proxy.ts` に改名しない。** `next build` の
