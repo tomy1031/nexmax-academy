@@ -163,6 +163,47 @@
                 opacity: 0;
             }
         }
+
+        /*
+         * 選択肢の 正誤（2026-10-30 の 指定「正解不正解が分かりにくいので、もう少し間違いを強調したり、
+         * 次のクリックをするのに間を置けるように」）。まちがえた 選択肢は 揺らし、点数も 赤く 光らせる。
+         */
+        .shake {
+            animation: shake 0.45s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-8px); }
+            40% { transform: translateX(8px); }
+            60% { transform: translateX(-5px); }
+            80% { transform: translateX(5px); }
+        }
+
+        .pop {
+            animation: pop 0.35s ease-out;
+        }
+
+        @keyframes pop {
+            0% { transform: scale(1); }
+            40% { transform: scale(1.03); }
+            100% { transform: scale(1); }
+        }
+
+        .score-hit {
+            animation: score-hit 0.9s ease-out;
+        }
+
+        @keyframes score-hit {
+            0%, 40% { background-color: #fee2e2; border-color: #ef4444; color: #b91c1c; }
+            100% { background-color: #eef2ff; border-color: #e0e7ff; color: #4338ca; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .shake, .pop {
+                animation: none;
+            }
+        }
     </style>
 </head>
 
@@ -885,6 +926,11 @@
             channelPosts: {},
             /** いまの 問いで まちがえた 選択肢（同じ 選択肢で 2度 減らさない・開き直しても 赤く 出す） */
             wrongPicks: [],
+            /**
+             * 正解を 押して「次へ」を 待って いる 問い（`{ optIdx, wrongPicks }`）。無ければ null。
+             * 保存は しない——開き直したら 次の 問いから（正解の 行は もう 下書きに 入って いる）。
+             */
+            answered: null,
             /** メッセージの 時刻（開き直しても 変えない） */
             times: {}
         };
@@ -1097,6 +1143,7 @@
             state.currentViewId = 'dm-tanaka';
             state.draftLines = [];
             state.wrongPicks = [];
+            state.answered = null;
 
             // Add new instruction to history（時刻は 来た ときの もの。描き直しても 変えない）
             state.dmHistory.push(hendyMessage(state.scenarioIndex));
@@ -1386,7 +1433,9 @@
 
                 updateComposer();
 
-                const currentStepIdx = state.draftLines.length;
+                // 正解の あとは、その 問いを「次へ」まで 出した まま に する（行は もう 下書きに 入って いる）
+                const answered = state.answered;
+                const currentStepIdx = answered ? state.draftLines.length - 1 : state.draftLines.length;
                 if (currentStepIdx >= sc.steps.length) {
                     els.actionArea.innerHTML = `
                         <div class="max-w-xl mx-auto text-center fade-in">
@@ -1404,15 +1453,15 @@
                 const step = sc.steps[currentStepIdx];
                 els.actionArea.innerHTML = `
                     <div class="max-w-4xl mx-auto fade-in">
-                        <div class="flex items-center gap-2 mb-4">
+                        <div class="step-head flex items-center gap-2 mb-4">
                             <span class="bg-indigo-100 text-indigo-700 text-sm font-bold px-2.5 py-1 rounded flex-shrink-0">Step ${currentStepIdx + 1}/${sc.steps.length}</span>
                             <span class="text-base xl:text-lg font-bold text-slate-700">${step.question}</span>
                         </div>
                         <div class="grid md:grid-cols-3 gap-3">
                             ${step.options.map((opt, i) => `
-                                <button onclick="handleOptionSelect(${i})" class="text-left p-4 rounded-xl border border-slate-200 bg-white hover:border-indigo-400 hover:shadow-md transition flex flex-col gap-2 group h-full relative overflow-hidden">
-                                    <div class="absolute top-0 left-0 w-1 h-full bg-slate-200 group-hover:bg-indigo-500 transition-colors"></div>
-                                    <div class="pl-2">
+                                <button onclick="handleOptionSelect(${i})" class="option-card text-left p-4 rounded-xl border-2 border-slate-200 bg-white enabled:hover:border-indigo-400 enabled:hover:shadow-md transition flex flex-col gap-2 group h-full relative overflow-hidden disabled:cursor-not-allowed">
+                                    <div class="option-stripe absolute top-0 left-0 w-1.5 h-full bg-slate-200 group-enabled:group-hover:bg-indigo-500 transition-colors"></div>
+                                    <div class="option-body pl-2 flex flex-col gap-2">
                                         <span class="text-base text-slate-700 font-medium leading-loose">${opt.text}</span>
                                     </div>
                                 </button>
@@ -1421,7 +1470,12 @@
                     </div>
                 `;
                 // まちがえた 選択肢は 赤い まま（チャンネルを 行き来・開き直しても）
-                state.wrongPicks.forEach(markWrong);
+                if (answered) {
+                    answered.wrongPicks.forEach(at => markWrong(step, at, false));
+                    markCorrect(step, answered.optIdx, false);
+                } else {
+                    state.wrongPicks.forEach(at => markWrong(step, at, false));
+                }
             }
 
             // --- 追加: 3. Mission Complete (Notification) Phase ---
@@ -1463,51 +1517,141 @@
             save();
         }
 
+        /*
+         * 選択肢を 押した とき（2026-10-30 の 指定「正解不正解が分かりにくいので、もう少し間違いを強調したり、
+         * 次のクリックをするのに間を置けるように」）。前は 正解でも 何も 出さずに すぐ 次の 問いへ 切り替わり、
+         * 次の 問いの 選択肢が 同じ 場所に 出るので、続けて 押して しまって いた。
+         *  - 正解: ⭕ 正解 と わけを 出し、**「次へ」を 押すまで 進まない**（読む 間を 学生が 決める）
+         *  - 不正解: ❌ 不正解 と わけを 出し、選択肢を 揺らす・点数を 赤く 光らせる。
+         *    **ほかの 選択肢は 少しの あいだ 押せない**（わけを 読まずに 次々 押さない）
+         */
+        const WRONG_PAUSE_MS = 1500;
+
         function handleOptionSelect(optIdx) {
+            // 正解の あとは「次へ」を 押すまで 選び直さない
+            if (state.answered) return;
             const sc = SCENARIOS[state.scenarioIndex];
             const step = sc.steps[state.draftLines.length];
-            const option = step.options[optIdx];
+            const option = step && step.options[optIdx];
+            if (!option) return;
 
             if (option.isCorrect) {
-                // 正解の選択肢（HTMLタグ付き）を保存
+                // 正解の選択肢（HTMLタグ付き）を保存。入力欄には すぐ 入る
+                state.answered = { optIdx, wrongPicks: state.wrongPicks };
                 state.draftLines.push(option.text);
                 state.wrongPicks = [];
                 updateComposer();
-                renderActionArea();
-                els.score.innerText = state.score;
+                markCorrect(step, optIdx, true);
             } else {
-                // 同じ 選択肢を 何度 押しても 減るのは 1回だけ（開き直しても 同じ）
-                if (!state.wrongPicks.includes(optIdx)) {
-                    state.wrongPicks.push(optIdx);
-                    state.score = Math.max(0, state.score - PENALTY);
-                    els.score.innerText = state.score;
-                }
-                markWrong(optIdx);
+                // 同じ 選択肢を 何度 押しても 減るのは 1回だけ（開き直しても 同じ。押した 選択肢は もう 押せない）
+                if (state.wrongPicks.includes(optIdx)) return;
+                state.wrongPicks.push(optIdx);
+                state.score = Math.max(0, state.score - PENALTY);
+                els.score.innerText = state.score;
+                flashScore();
+                markWrong(step, optIdx, true);
             }
             save();
         }
 
-        /** まちがえた 選択肢を 赤く して、わけを 出す（描き直した ときも 同じ 形に もどす）。 */
-        function markWrong(optIdx) {
-            const sc = SCENARIOS[state.scenarioIndex];
-            const option = sc.steps[state.draftLines.length].options[optIdx];
-            const btn = document.querySelectorAll('#action-area button')[optIdx];
-            if (!btn || !option) return;
-            btn.classList.add('bg-red-50', 'border-red-300');
-            if (btn.querySelector('.feedback-msg')) return;
+        /** 「次へ」。正解の わけを 読んでから、次の 問い（最後なら 送信）へ。 */
+        function nextStep() {
+            if (!state.answered) return;
+            state.answered = null;
+            renderActionArea();
+        }
+
+        /** わけの 文の 頭の「正解！」「不正解。」を はずす（しるしが 言うので 2回 言わない）。「惜しい」は 残す。 */
+        function feedbackReason(html) {
+            return html.replace(/^<ruby>[^<]+<rt>(?:ふせいかい|せいかい)<\/rt><\/ruby>[。！]\s*/, '');
+        }
+
+        /** 選んだ 選択肢を 正誤の 色に して、しるし（⭕／❌ と ことば。色だけに たよらない）と わけを 出す。 */
+        function paintOption(btn, option, ok) {
+            // 押せなく なるので、のせた ときの 色（enabled:hover）も 付かない
+            btn.disabled = true;
+            btn.classList.remove('border-slate-200', 'bg-white');
+            btn.classList.add(ok ? 'border-green-500' : 'border-red-500', ok ? 'bg-green-50' : 'bg-red-50', 'shadow-md');
+            const stripe = btn.querySelector('.option-stripe');
+            stripe.classList.remove('bg-slate-200');
+            stripe.classList.add(ok ? 'bg-green-500' : 'bg-red-500');
+            const body = btn.querySelector('.option-body');
+            const verdict = document.createElement('div');
+            verdict.className = `verdict self-start inline-flex items-center gap-1.5 bg-white border-2 text-lg font-bold px-3 py-0.5 rounded-full ${ok ? 'border-green-500 text-green-700' : 'border-red-500 text-red-700'}`;
+            verdict.innerHTML = ok ? `⭕ ${r("正解", "せいかい")}` : `❌ ${r("不正解", "ふせいかい")}`;
+            body.prepend(verdict);
             const feedback = document.createElement('div');
-            feedback.className = "feedback-msg text-sm text-red-600 mt-2 font-bold pl-2 animate-pulse";
-
+            feedback.className = `feedback-msg text-base font-bold leading-loose ${ok ? 'text-green-800' : 'text-red-700'}`;
             // 【重要】フィードバックはタグ（ふりがな）ありで表示したいので innerHTML を使う
-            feedback.innerHTML = `💡 ${option.feedback}`;
+            feedback.innerHTML = feedbackReason(option.feedback);
+            body.appendChild(feedback);
+        }
 
-            btn.appendChild(feedback);
+        /** まちがえた 選択肢を 赤く して、わけを 出す（描き直した ときも 同じ 形に もどす。揺らすのは 押した ときだけ）。 */
+        function markWrong(step, optIdx, fresh) {
+            const cards = els.actionArea.querySelectorAll('.option-card');
+            const btn = cards[optIdx];
+            const option = step.options[optIdx];
+            if (!btn || !option || btn.disabled) return;
+            paintOption(btn, option, false);
+            if (!fresh) return;
+            btn.classList.add('shake');
+            // ほかの 選択肢を 少し 押せなく する（まちがえた 選択肢は もう 押せない まま）
+            const others = [...cards].filter(card => !card.disabled);
+            others.forEach(card => {
+                card.disabled = true;
+                card.classList.add('opacity-50');
+            });
+            setTimeout(() => others.forEach(card => {
+                card.disabled = false;
+                card.classList.remove('opacity-50');
+            }), WRONG_PAUSE_MS);
+        }
+
+        /**
+         * 正解の 選択肢を 緑に して わけを 出し、ほかの 選択肢は 押せなく する。「次へ」は 問いの 行の 右に 置く
+         *（選択肢の 下に 置くと、欄が 下へ ずれて 問いの 文が 隠れる。欄の 高さは 44vh まで）。
+         */
+        function markCorrect(step, optIdx, fresh) {
+            const cards = els.actionArea.querySelectorAll('.option-card');
+            const btn = cards[optIdx];
+            const option = step.options[optIdx];
+            if (!btn || !option) return;
+            paintOption(btn, option, true);
+            cards.forEach(card => {
+                if (card === btn) return;
+                card.disabled = true;
+                card.classList.add('opacity-50');
+            });
+            if (fresh) btn.classList.add('pop');
+            els.actionArea.querySelector('.step-head').insertAdjacentHTML('beforeend', `
+                <button id="next-step" onclick="nextStep()" aria-label="次へ" class="fade-in ml-auto flex-shrink-0 bg-indigo-600 hover:bg-indigo-700 text-white text-lg px-8 py-2.5 rounded-xl font-bold shadow-lg shadow-indigo-200 transition flex items-center justify-center gap-2">
+                    <span>${r("次", "つぎ")}へ</span>
+                    <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                </button>
+            `);
+            lucide.createIcons();
+            if (fresh) {
+                const next = document.getElementById('next-step');
+                next.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+                next.focus({ preventScroll: true });
+            }
+        }
+
+        /** まちがえた ときに 点数を 赤く 光らせる。 */
+        function flashScore() {
+            const chip = els.score.parentElement;
+            if (!chip) return;
+            chip.classList.remove('score-hit');
+            void chip.offsetWidth; // Trigger reflow
+            chip.classList.add('score-hit');
         }
 
         function sendMessage() {
             // 入力欄の ボタンと 下の ボタンの 2つから 呼ばれる。2回 送らない
             if (state.phase !== 'drafting') return;
             state.phase = 'sent';
+            state.answered = null;
             const index = state.scenarioIndex;
             els.actionArea.innerHTML = "";
             updateComposer();
