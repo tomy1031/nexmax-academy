@@ -43,6 +43,19 @@ const bare = (text: string) => text.replace(/\s+/gu, "");
 /** 元の 別ページの こたえ（`data-answer`）を 出て きた 順に。 */
 const ORIGINAL_ANSWERS = [...HTML.matchAll(/data-answer="([^"]*)"/g)].map((hit) => hit[1] ?? "");
 
+/**
+ * 元の ページから **わざと 変えた** こたえ（元 → いま。空白は 見ない）。
+ * 規律10: 移植は 元の ままが 基本。変える ときは ここに 理由を 書く。
+ *
+ * - 第3問（2026-10-30）: 場面が「社内の メールが 送れない」なのに、全社員へ **メールで**
+ *   知らせる 形で 食い違って いた（連絡の しかたに「5. 電話での 連絡」＝場面で 手段を
+ *   選ぶ 節が 入って 目立った）。tomy さんの 選択で、壊れる ものを メールでも チャットでも
+ *   ない「社内の 共有フォルダ」に 変えた。知らせる 手段（メール）・原因・直る予定は 元の まま
+ */
+const CHANGED_ANSWERS: ReadonlyMap<string, string> = new Map([
+  ["社内のメールが送れない", "社内の共有フォルダが開けない"],
+]);
+
 const mails = quiz.questions.filter((q) => q.type === "fillin");
 const slacks = quiz.questions.filter((q) => q.type === "free");
 
@@ -92,11 +105,23 @@ describe("連絡文の もんだい（移植）", () => {
     }
   });
 
-  it("メールの 欄の こたえは 元の ページと 同じ（並びも 同じ）", () => {
+  it("メールの 欄の こたえは 元の ページと 同じ（並びも 同じ。わざと 変えた ものだけ 除く）", () => {
     const ported = mails.flatMap((q) =>
       q.type === "fillin" ? fillinSlots(q).map((slot) => bare(slot.answer)) : [],
     );
-    expect(ported).toEqual(ORIGINAL_ANSWERS.map(bare));
+    const original = ORIGINAL_ANSWERS.map(bare);
+    // 変えた ことに した 元の こたえが 元の ページに 本当に ある（書き間違いで 素通り させない）
+    for (const from of CHANGED_ANSWERS.keys()) expect(original).toContain(from);
+    expect(ported).toEqual(original.map((answer) => CHANGED_ANSWERS.get(answer) ?? answer));
+  });
+
+  it("場面で 使えない と 言って いる 手段で 知らせる 形に しない（第3問の 食い違い）", () => {
+    // メールで 書かせる 問いの 場面に「メールが 送れない」が あると、届かない 手段で 知らせる ことに なる
+    for (const q of mails) {
+      expect(bare(q.scene?.text ?? ""), `${q.id} の 場面で メールが 使えない`).not.toMatch(
+        /メールが(送れ|届か|使え)ない/u,
+      );
+    }
   });
 
   it("黄色い しるしは 元の ページと 同じ 3問だけ（むずかしさの 階段を ならさない）", () => {
