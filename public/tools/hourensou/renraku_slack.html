@@ -79,6 +79,15 @@
         }
 
         /*
+         * 文の 中の URL は Slack と 同じ 青い 字に する（2026-10-30 の 指定）。
+         * 教材の URL は 架空なので リンクには しない（押しても どこにも 行かない）。
+         */
+        .url-text {
+            color: #1264a3;
+            overflow-wrap: anywhere;
+        }
+
+        /*
          * ポップアップ辞書（2026-10-26 の 指定「辞書の 表示を 今までの コンテンツと 合わせる」）。
          * アプリの 本文の 辞書（src/components/dictionary-text.tsx・word-popover.tsx）と
          * 同じ 見た目に する: 空色の 点線の 下線 → 白い 吹き出しに
@@ -450,6 +459,14 @@
         // --- Utils: Ruby & Vocab ---
         function r(text, reading) {
             return `<ruby>${text}<rt>${reading}</rt></ruby>`;
+        }
+
+        /**
+         * 文の 中の URL を 青い 字に する（リンクには しない）。
+         * 表示する ときだけ かける——下書きや 保存の 文は 元の まま。タグの 属性の 中（="…）は さわらない。
+         */
+        function markUrls(html) {
+            return html.replace(/(?<![="'])https?:\/\/[^\s<>"']+/g, url => `<span class="url-text">${url}</span>`);
         }
 
         /** ルビと タグを はずした 字だけ（辞書を 引く 見出しに 使う）。 */
@@ -1221,7 +1238,7 @@
         function updateComposer() {
             const sc = SCENARIOS[state.scenarioIndex];
             const drafting = state.phase === 'drafting' && state.currentViewId === sc.targetChannel;
-            const html = drafting ? state.draftLines.join('\n\n') : '';
+            const html = drafting ? markUrls(state.draftLines.join('\n\n')) : '';
             const box = els.draftText;
             box.innerHTML = html;
             if (drafting) {
@@ -1351,7 +1368,7 @@
                         <span class="font-bold text-slate-900 text-lg xl:text-xl">${sender}</span>
                         <span class="text-sm text-slate-400">${time || clock()}</span>
                     </div>
-                    <div class="text-lg xl:text-xl text-slate-800 leading-[2.2] xl:leading-[2.2] whitespace-pre-wrap break-words px-5 py-4 rounded-xl border ${bgClass}">${html}</div>
+                    <div class="text-lg xl:text-xl text-slate-800 leading-[2.2] xl:leading-[2.2] whitespace-pre-wrap break-words px-5 py-4 rounded-xl border ${bgClass}">${markUrls(html)}</div>
                 </div>
             `;
             els.messages.appendChild(div);
@@ -1462,7 +1479,7 @@
                                 <button onclick="handleOptionSelect(${i})" class="option-card text-left p-4 rounded-xl border-2 border-slate-200 bg-white enabled:hover:border-indigo-400 enabled:hover:shadow-md transition flex flex-col gap-2 group h-full relative overflow-hidden disabled:cursor-not-allowed">
                                     <div class="option-stripe absolute top-0 left-0 w-1.5 h-full bg-slate-200 group-enabled:group-hover:bg-indigo-500 transition-colors"></div>
                                     <div class="option-body pl-2 flex flex-col gap-2">
-                                        <span class="text-base text-slate-700 font-medium leading-loose">${opt.text}</span>
+                                        <span class="text-base text-slate-700 font-medium leading-loose">${markUrls(opt.text)}</span>
                                     </div>
                                 </button>
                             `).join('')}

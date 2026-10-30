@@ -10,6 +10,7 @@ import { shot } from "./helpers";
  *  1. まちがえた 選択肢に ❌ 不正解 と わけが 出て、点が 減る。ほかの 選択肢は 少しの あいだ 押せない
  *  2. 正解の 選択肢に ⭕ 正解 と わけが 出て、**「次へ」を 押すまで 次の 問いに 進まない**
  *  3. 「次へ」を 待って いる あいだに 開き直すと、次の 問いから（正解の 行は 下書きに 残る）
+ *  4. 文の 中の URL は 青い 字（リンクには しない。パスは 青く しない）
  *
  * 静的な ページなので、アプリの 画面を 通さずに 直に 開く。
  */
@@ -108,4 +109,32 @@ test("「次へ」を 待って いる ときに 開き直すと、次の 問い
   await expect(page.locator("#action-area").getByText(/^Step \d\/3$/)).toHaveText("Step 2/3");
   await expect(page.locator("#draft-text")).toContainText("@here");
   await expect(page.locator(".verdict")).toHaveCount(0);
+});
+
+test("URL は 選択肢・入力欄・送った メッセージで 青い 字。パスは 青く しない", async ({ page }) => {
+  await openFirstQuestion(page);
+  const cards = page.locator(".option-card");
+  const next = page.getByRole("button", { name: "次へ" });
+  // ミッション1の 3つめの 問い（ファイルの 場所）まで 進む
+  for (const at of [1, 2]) {
+    await cards.nth(at).click();
+    await next.click();
+  }
+  const url = "https://file-server/docs/user-reg-spec";
+  const blue = "rgb(18, 100, 163)";
+  const inCard = cards.nth(1).locator(".url-text");
+  await expect(inCard).toHaveText(url);
+  await expect(inCard).toHaveCSS("color", blue);
+  await expect(cards.nth(1).locator("a")).toHaveCount(0);
+  // 「パスは \\192.168…」は リンクに ならない ことを 教える 選択肢なので 青く しない
+  await expect(cards.nth(2).locator(".url-text")).toHaveCount(0);
+  await shot(page, "renraku-slack-03-url");
+
+  await cards.nth(1).click();
+  await expect(page.locator("#draft-text .url-text")).toHaveText(url);
+  await next.click();
+  await page.getByRole("button", { name: "送信する (Send)" }).click();
+  const sent = page.locator("#messages-container .url-text").last();
+  await expect(sent).toHaveText(url);
+  await expect(sent).toHaveCSS("color", blue);
 });
