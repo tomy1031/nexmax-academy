@@ -480,5 +480,106 @@
   "heard": " 風も吹かんのに ゆらゆらと",
   "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
   "readings": []
+ },
+ "viki4qe": {
+  "episode": "miyoshi-oboke",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.45,
+  "text": "歌に合わせて、松吉の鳶口が、詰まった丸太を一本ずつ外していく。ひと突き、またひと突き。",
+  "heard": "歌に合わせて、松吉の鳶口が、詰まった丸太を一本ずつ外していく。ひと突き、またひと突き。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "松吉＝まつきち",
+   "鳶口＝とびぐち"
+  ]
+ },
+ "v60z9su": {
+  "episode": "miyoshi-oboke",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.62,
+  "text": "（小声）この節……！ 綾さんが琵琶で弾いていた、都の春の歌と、同じだ！",
+  "heard": "この節……！綾さんが琵琶で弾いていた、都の春の歌と、同じだ！",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "綾＝あや",
+   "琵琶＝びわ",
+   "都＝みやこ"
+  ]
+ },
+ "v22i5pw": {
+  "episode": "miyoshi-oboke",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.8,
+  "text": "（小声）不思議な節……。山の歌なのに、どこか、都の雅楽みたいだ。",
+  "heard": "不思議 な 不思議 。 山 の 歌 な の に どこ か 都 の 画学 みたい だ 。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "都＝みやこ"
+  ]
+ },
+ "v4enae4": {
+  "episode": "miyoshi-oboke",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.360166666666666,
+  "text": "最後の一本が、目の前の大岩にかかっている。",
+  "heard": "最後の一本が、目の前の大岩にかかっている。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "ve9nj1a": {
+  "episode": "miyoshi-oboke",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.07,
+  "text": "鳶口が丸太を突き放した。詰まりがほどけ、丸太の群れが、どっと瀬を下っていく——",
+  "heard": "飛び口が丸太を突き放した つまりがほどけ丸太の群れがどっと背をくだっていく",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "鳶口＝とびぐち"
+  ]
+ },
+ "v1jxrv9h": {
+  "episode": "miyoshi-oboke",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.21,
+  "text": "その最後の一本に飛び乗った松吉が、白い瀬を抜けて、こちらに手を振った。",
+  "heard": "その最後の1歩に飛び乗った松吉が白い背を抜けて こちらに手を振った。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "松吉＝まつきち"
+  ]
+ },
+ "v116nxn2": {
+  "episode": "miyoshi-oboke",
+  "speaker": "matsukichi",
+  "voice": "Sadachbia",
+  "model": "gemini-3.8-live",
+  "seconds": 3.350041666666667,
+  "text": "……抜けた。親父、抜けたぞ！",
+  "heard": " 親父、抜けたぞ！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v9tbzx1": {
+  "episode": "miyoshi-oboke",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 4.18,
+  "text": "ようやった。……もう、わしが乗らんでも、ええの。",
+  "heard": "……もう、わしが乗らんでも、ええの。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
