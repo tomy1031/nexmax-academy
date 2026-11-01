@@ -1057,5 +1057,105 @@
   "heard": "闇の底で、水音がした。淵だ。",
   "scene": "こわい夜の山道。おびえて、声が細い",
   "readings": []
+ },
+ "v1k0yxrz": {
+  "episode": "miyoshi-youkai",
+  "speaker": "konaki",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.23,
+  "text": "……ふう。危ないとこじゃったのう。",
+  "heard": "……ふう。危ないとこじゃったのう。",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": []
+ },
+ "v1bv5ono": {
+  "episode": "miyoshi-youkai",
+  "speaker": "konaki",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 7.49,
+  "text": "わしは児啼爺。この山に、ずうっと昔からおる。",
+  "heard": "わしは児啼爺。この山に、ずうっと昔からおる。",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": [
+   "児啼爺＝こなきじじい"
+  ]
+ },
+ "vhkdm9": {
+  "episode": "miyoshi-youkai",
+  "speaker": "konaki",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.43,
+  "text": "……ふう。危ないとこじゃったのう。わしは児啼爺じゃ。",
+  "heard": "ふう 。 危ない とこ じゃっ た の 。 わし は 小なき じじ じゃ 。",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": [
+   "児啼爺＝こなきじじい"
+  ]
+ },
+ "vjzepyi": {
+  "episode": "miyoshi-youkai",
+  "speaker": "konaki",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 7.23,
+  "text": "重うなるのはな、意地悪やない。先へ行かせんためじゃ。",
+  "heard": "どうもなるのは な 意地悪 や ない 先 へ 行か せん ため じゃ",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": []
+ },
+ "v12l3hxb": {
+  "episode": "miyoshi-youkai",
+  "speaker": "konaki",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 7.23,
+  "text": "泣き声で、道から引き離したんじゃ。……ついてくる素直なやつで、助かったわい。",
+  "heard": "泣き声で、道から引き離したんじゃ。……ついてくる素直なやつで、助かったわい。",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": []
+ },
+ "v10wvpgc": {
+  "episode": "miyoshi-youkai",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.32,
+  "text": "児啼爺は、ここ山城町が発祥の地とされる妖怪なんだ。民俗学者の柳田國男が、阿波の山の妖怪として書きとめているよ。",
+  "heard": "児啼爺は、ここ山城町が発祥の地とされる妖怪なんだ。民俗学者の柳田國男が、阿波の山の妖怪として書きとめているよ。",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": [
+   "児啼爺＝こなきじじい",
+   "山城＝やましろ",
+   "妖怪＝ようかい",
+   "柳田國男＝やなぎたくにお",
+   "阿波＝あわ"
+  ]
+ },
+ "v1tf8o52": {
+  "episode": "miyoshi-youkai",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.89,
+  "text": "……怖い話だと思ってたけど、もしかして。",
+  "heard": "……怖い話だと思ってたけど、もしかして。",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": []
+ },
+ "vmzs2ck": {
+  "episode": "miyoshi-youkai",
+  "speaker": "konaki",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 8.67,
+  "text": "妖怪の話はな、山や淵の危ないところを、子どもに教えるためのもんでもあったんじゃ。",
+  "heard": "妖怪の話はな、山や淵の危ないところを子供に教えるためのもんでもあったんじゃ。",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": [
+   "妖怪＝ようかい"
+  ]
  }
 }
