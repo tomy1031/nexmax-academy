@@ -877,5 +877,97 @@
   "readings": [
    "健太＝けんた"
   ]
+ },
+ "vtnxbhm": {
+  "episode": "miyoshi-youkai",
+  "speaker": "tatsu",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 6.470041666666667,
+  "text": "健太！ ……あかん、あの先の淵は、こないだの雨で、道が崩れとる！",
+  "heard": " ……あかん、あの先の淵は、こないだの雨で、道が崩れとる！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "健太＝けんた"
+  ]
+ },
+ "v6j9an5": {
+  "episode": "miyoshi-youkai",
+  "speaker": "tatsu",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 7.16,
+  "text": "旅の人、すまん。わしは足が悪うて……あの子を、連れ戻してくれんか！",
+  "heard": "旅 の 人 、 すま ん 。 わし は 足 が 悪う て 、 あの 子 を 連れ戻し て くれ ん か ?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v6ll6b1": {
+  "episode": "miyoshi-youkai",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.03,
+  "text": "山道は、すぐに真っ暗になった。祭りの音が、遠ざかっていく。",
+  "heard": "散道 は すぐに 真っ暗 に なっ た 。 祭り の 音 が 遠ざかっ て いく 。",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": []
+ },
+ "vjewat3": {
+  "episode": "miyoshi-youkai",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 2.45,
+  "text": "健太くーん！ どこー！",
+  "heard": "健太くーん！どこー！",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": [
+   "健太＝けんた"
+  ]
+ },
+ "v1gqooys": {
+  "episode": "miyoshi-youkai",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.470041666666667,
+  "text": "返事のかわりに——道の脇の草むらから、赤子の泣き声がした。",
+  "heard": "返事のかわりに——道の脇の草むらから、赤子の泣き声がした。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1wfudx": {
+  "episode": "miyoshi-youkai",
+  "speaker": "？？？",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 2.7800416666666665,
+  "text": "おぎゃあ……おぎゃあ……",
+  "heard": "おぎゃあ……",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1x95kdj": {
+  "episode": "miyoshi-youkai",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 25.763,
+  "text": "あなたは、草むらの赤子を抱き上げた。",
+  "heard": "あなた は 草村 の 赤子 を 掲げ た",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vyo79qw": {
+  "episode": "miyoshi-youkai",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 1.33,
+  "text": "……重い。",
+  "heard": "重い",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
