@@ -1574,5 +1574,109 @@
    "忠信＝ただのぶ",
    "弁慶＝べんけい"
   ]
+ },
+ "vmfz2vk": {
+  "episode": "genpei-takadachi",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 7.83,
+  "text": "……わたしは、盾ばかり失う。",
+  "heard": "……わたしは、盾ばかり失う。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "v1c35hmh": {
+  "episode": "genpei-takadachi",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 3.87,
+  "text": "旅の者。……ひとつ、聞いてもよいか。",
+  "heard": "……ひとつ、聞いてもよいか。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "旅の者＝たびのもの"
+  ]
+ },
+ "v4sg7x3": {
+  "episode": "genpei-takadachi",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 9.59,
+  "text": "屋島で、わたしを狙ったあの強弓の男。壇ノ浦で、海に飛び込んだ、能登守教経。",
+  "heard": "屋島で、わたしを狙ったあの強弓の男。壇ノ浦で、海に飛び込んだ、能登守教経。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "屋島＝やしま",
+   "壇ノ浦＝だんのうら",
+   "教経＝のりつね"
+  ]
+ },
+ "vvi3hgq": {
+  "episode": "genpei-takadachi",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 3.7,
+  "text": "あやつは……本当に、死んだのであろうか。",
+  "heard": "あやつは……本当に、死んだのであろうか。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "viro7vg": {
+  "episode": "genpei-takadachi",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.56,
+  "text": "（小声）能登守教経さんは、平家でいちばん強いと言われた武士。壇ノ浦の戦いで、海に飛び込んだと伝わっているんだ。",
+  "heard": "能登守教経さんは、平家でいちばん強いと言われた武士。壇ノ浦の戦いで、海に飛び込んだと伝わっているんだ。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "教経＝のりつね",
+   "平家＝へいけ",
+   "武士＝ぶし",
+   "壇ノ浦＝だんのうら"
+  ]
+ },
+ "v1y5japo": {
+  "episode": "genpei-takadachi",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.78,
+  "text": "あなたは話した。祖谷の山奥。切れるかずら橋。滝の琵琶。山に眠らせた剣。",
+  "heard": "祖谷の山奥。切れるかずら橋。滝の琵琶。山に眠らせた剣。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "祖谷＝いや",
+   "琵琶＝びわ"
+  ]
+ },
+ "v1iifpv": {
+  "episode": "genpei-takadachi",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.760041666666667,
+  "text": "義経は、黙って聞いていた。そして——",
+  "heard": "義経は、黙って聞いていた。そして——",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "義経＝よしつね"
+  ]
+ },
+ "vloi2rk": {
+  "episode": "genpei-takadachi",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 3.23,
+  "text": "ははっ……あははははっ！",
+  "heard": "あはははははは。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
  }
 }
