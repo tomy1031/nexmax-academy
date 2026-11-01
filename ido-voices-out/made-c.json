@@ -199,5 +199,111 @@
    "平教経＝たいらののりつね",
    "平家＝へいけ"
   ]
+ },
+ "v1cexrse": {
+  "episode": "genpei-yashima",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.01,
+  "text": "……また会うたな、旅の者。今は、話しておる暇はない！",
+  "heard": "それ また 逢う た な 、 旅 の 者 。 今 は 話し て おる 暇 は ない 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "旅の者＝たびのもの"
+  ]
+ },
+ "vcviy9o": {
+  "episode": "genpei-yashima",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.7000416666666665,
+  "text": "（小声）あの人……祖谷で会った国盛さんと、同じ顔だ……！",
+  "heard": "あの人……祖谷で会った国盛さんと、同じ顔だ……！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "祖谷＝いや",
+   "国盛＝くにもり"
+  ]
+ },
+ "v1wj98rv": {
+  "episode": "genpei-yashima",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.1,
+  "text": "（小声）壇ノ浦で会った教経さんだ。今の教経さんは、まだぼくたちを知らない。",
+  "heard": "旦野原 で あっ た 法理常津 ね さん だ 。 今 の 法理常津 ね さん は まだ 僕 たち を 知ら ない 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "壇ノ浦＝だんのうら",
+   "教経＝のりつね"
+  ]
+ },
+ "v1rx3e0d": {
+  "episode": "genpei-yashima",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.230125,
+  "text": "教経の矢が、まっすぐ義経を狙う。",
+  "heard": "教経の矢が、まっすぐ義経を狙う。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "教経＝のりつね",
+   "義経＝よしつね"
+  ]
+ },
+ "v10z0rb5": {
+  "episode": "genpei-yashima",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.66,
+  "text": "その前に——ひとりの武者が、両手を広げて立ちはだかった。",
+  "heard": "その前に——ひとりの武者が、両手を広げて立ちはだかった。",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "vtzftem": {
+  "episode": "genpei-yashima",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.36,
+  "text": "義経は、倒れた継信を抱きかかえた。",
+  "heard": "与 志 弥 は 倒 れ た 次 の 部 を 抱き か か え た 。",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": [
+   "義経＝よしつね",
+   "継信＝つぎのぶ"
+  ]
+ },
+ "v1xikky1": {
+  "episode": "genpei-yashima",
+  "speaker": "tsuginobu",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 3.83,
+  "text": "……殿。お怪我は……",
+  "heard": "……殿。お怪我は……",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": [
+   "殿＝との"
+  ]
+ },
+ "v1o2q8cd": {
+  "episode": "genpei-yashima",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 2.54,
+  "text": "しゃべるな、継信！",
+  "heard": "しゃべるな 次のぶ",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": [
+   "継信＝つぎのぶ"
+  ]
  }
 }
