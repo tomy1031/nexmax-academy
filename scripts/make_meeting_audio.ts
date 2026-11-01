@@ -48,42 +48,19 @@ import {
 } from "./lib/live_tts";
 
 /*
- * 一時（このブランチは マージしない）：IDO 時渡り（別の リポジトリ）の 物語の 声を、この 鍵で 作る。
+ * 一時（このブランチは マージしない）：IDO 時渡り（別の リポジトリ）の 物語の 声を、Live の 読み上げで 作る。
  * tomy さんの OK（2026-11-01）。教材ID の 代わりに `ido_proto_voices` を 渡した ときだけ 動く。
- * 作った 声は ido-voices-out/ に 置いて この ブランチに push する（public/audio は 変えないので PR は できない）。
+ * 声は 受け取った その場で WAV に して、8行 ごとに この ブランチに push する（scripts/ido_voices/make_live.mjs）。
+ * public/audio は 変えないので PR は できない。
  */
 if (process.argv[2] === "ido_proto_voices") {
-  const req = JSON.parse(readFileSync("scripts/ido_voices/request.json", "utf8"));
   const run = (cmd: string, args: string[]) => spawnSync(cmd, args, { stdio: "inherit" });
-  // 最後の push で 整形の 検査に 落ちると、作った 声が 消える（鍵の 1日の 枠も 減る）。先に 確かめる
+  // push の 前の 検査（整形）に 落ちると、作った 声を 送れない。声を 作る 前に 確かめる
   if (run("npm", ["run", "-s", "format:check"]).status !== 0) {
     console.error("整形の 検査が 通らないので、声を 作る 前に 止めます");
     process.exit(1);
   }
-  // 声を MP3 に する ffmpeg が ランナーに 無い ことが ある
-  if (spawnSync("ffmpeg", ["-version"]).status !== 0) {
-    run("bash", ["-c", "sudo apt-get update -q && sudo apt-get install -y -q ffmpeg"]);
-  }
-  const made = run("node", [
-    "scripts/ido_voices/make-voices.mjs",
-    "--lines",
-    "scripts/ido_voices/voice-lines.json",
-    "--cast",
-    "scripts/ido_voices/voice-cast.json",
-    "--out",
-    "ido-voices-out",
-    "--episodes",
-    (req.episodes as string[]).join(","),
-    "--max-calls",
-    String(req.max_calls ?? 10),
-  ]);
-  run("git", ["config", "user.name", "tomy1031"]);
-  run("git", ["config", "user.email", "33148568+tomy1031@users.noreply.github.com"]);
-  run("git", ["add", "ido-voices-out"]);
-  if (run("git", ["diff", "--cached", "--quiet"]).status !== 0) {
-    run("git", ["commit", "-m", "一時：IDO 時渡りの 声（マージしない）"]);
-    run("git", ["push", "origin", `HEAD:${process.env.GITHUB_REF_NAME}`]);
-  }
+  const made = run("node", ["--import", "tsx", "scripts/ido_voices/make_live.mjs"]);
   process.exit(made.status ?? 1);
 }
 
