@@ -514,5 +514,106 @@
   "readings": [
    "松明＝たいまつ"
   ]
+ },
+ "v1renrwh": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.770125,
+  "text": "……おぬしが？ 旅の者に、そこまでさせる義理は無い。",
+  "heard": "あの主が 旅の者にそこまでさせる義理はない。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "旅の者＝たびのもの"
+  ]
+ },
+ "v1li07ps": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.66,
+  "text": "大丈夫、ぼくがナビする！ 板の継ぎ目だけを踏んで！",
+  "heard": "だいじょうぶ 僕 が ナビ する いた の 次 目 だけ を 踏ん で",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "継ぎ目＝つぎめ"
+  ]
+ },
+ "v1fgtdu": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.590041666666667,
+  "text": "あなたは、編みかけの橋を駆けだした。",
+  "heard": "あなた は 編みかけ の 橋 を 掛け出し た 。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "vlik1lq": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "kotaro",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 2.19,
+  "text": "……だれ？ こわいよう……",
+  "heard": "だれ 怖 い よ",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "v1dkos99": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.45,
+  "text": "栗の実を抱えたまま震えている、小さな体。あなたは、その手を強くつかんだ。",
+  "heard": "栗の実を抱えたまま震えている、小さな体。あなたは、その手を強く",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "v1o6lcz6": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.23,
+  "text": "……案ずるな。わしは、子を見捨てはせぬ。",
+  "heard": "案ずる な 。 わし は こう 見捨て は せ ぬ 。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "案ずる＝あんずる"
+  ]
+ },
+ "v1npried": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "yaheiji",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 6.75,
+  "text": "殿はここに。帝のおそばを離れてはなりませぬ。……この爺が参ります。",
+  "heard": "殿はここに。帝のおそばを離れてはなりませぬ。……この爺が参ります。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "殿＝との",
+   "帝＝みかど",
+   "爺＝じい",
+   "参ります＝まいります"
+  ]
+ },
+ "v1rt2pas": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.07,
+  "text": "老臣は、編みかけの橋を、年に似合わぬ速さで渡っていった。",
+  "heard": "老人 は 編みかけ の 端 を 年 に 似合わ ぬ 早 さ で 渡っ て いっ た 。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "老臣＝ろうしん"
+  ]
  }
 }
