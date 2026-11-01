@@ -725,5 +725,108 @@
   "heard": "ありがとう",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "vrk2y8h": {
+  "episode": "miyoshi-biwa",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 3.74,
+  "text": "……おぬしは、わしを武士として見てくれるのじゃな。",
+  "heard": "……おぬしは、わしを武士として見てくれるのじゃな。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "武士＝ぶし"
+  ]
+ },
+ "vp9zlae": {
+  "episode": "miyoshi-biwa",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 7.1,
+  "text": "旅の方は、黙って聴いてくださるのね。……では、聴いてくださいませ。",
+  "heard": "……では、聴いてくださいませ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1y4kvly": {
+  "episode": "miyoshi-biwa",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.2000416666666665,
+  "text": "綾は、撥を握りなおした。",
+  "heard": "母 は バチ を 握り直し た 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "綾＝あや",
+   "撥＝ばち"
+  ]
+ },
+ "v1n47psj": {
+  "episode": "miyoshi-biwa",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 5.570041666666667,
+  "text": "都の春の歌を、弾きます。帝が、いちばんお好きだった歌。",
+  "heard": "都の春の歌を、弾きます。帝が、いちばんお好きだった歌。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "都＝みやこ",
+   "帝＝みかど"
+  ]
+ },
+ "vq4yaz0": {
+  "episode": "miyoshi-biwa",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 5.51,
+  "text": "国盛さま。……行くのなら、これを聴いてからにしてくださいませ。",
+  "heard": "くに 森 さま 行く の なら これ を 聞い て から に し て ください ませ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "国盛＝くにもり"
+  ]
+ },
+ "v16w6dzo": {
+  "episode": "miyoshi-biwa",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.830041666666667,
+  "text": "滝の音が、すっと遠のいた。",
+  "heard": "焚き火 の 音 が すっと 遠のい た 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1wzfjdm": {
+  "episode": "miyoshi-biwa",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.940041666666668,
+  "text": "桜の都。笑う幼い帝。もう二度と戻らない日々が、弦の上に咲いては、散っていく。",
+  "heard": "桜の都。笑う幼い帝。もう二度と戻らない日々が、弦の上に咲いては、散っていく。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "都＝みやこ",
+   "帝＝みかど"
+  ]
+ },
+ "v1ja7m0h": {
+  "episode": "miyoshi-biwa",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.06,
+  "text": "国盛は、動かなかった。",
+  "heard": "国森 は 動か なかっ た 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "国盛＝くにもり"
+  ]
  }
 }
