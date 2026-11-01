@@ -969,5 +969,93 @@
   "heard": "重い",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v8ude8g": {
+  "episode": "miyoshi-youkai",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.87,
+  "text": "一歩踏み出そうとした瞬間、腕の中の赤子が、石のように重くなった。",
+  "heard": "一歩踏み出そうとした瞬間、腕の中の赤子が、石のように重くなった。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1wyutzl": {
+  "episode": "miyoshi-youkai",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.05,
+  "text": "膝をつく。動けない。",
+  "heard": "動けない。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vjx2lew": {
+  "episode": "miyoshi-youkai",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.670041666666667,
+  "text": "待って！ 山道で泣いてる赤ちゃんは、抱き上げちゃだめなんだ！",
+  "heard": "待って！山道で泣いてる赤ちゃんは、抱き上げちゃだめなんだ！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1jywr1w": {
+  "episode": "miyoshi-youkai",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.690041666666667,
+  "text": "泣き声は、道を外れて、右の斜面のほうへ移っていく。",
+  "heard": "泣き声は、道を出れて右の斜面の方へ移って行く。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vlbwmtm": {
+  "episode": "miyoshi-youkai",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.750041666666666,
+  "text": "あなたは思わず、その声を追って、道を外れた。",
+  "heard": "あなた は 思わ ず その 声 を 追っ て 道 を 外れ た 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1u5mq7l": {
+  "episode": "miyoshi-youkai",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 1.8600416666666666,
+  "text": "その瞬間——",
+  "heard": "その 瞬 間",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1rakppj": {
+  "episode": "miyoshi-youkai",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.25,
+  "text": "さっきまで、あなたが進もうとしていた道が、音を立てて崩れ落ちた。",
+  "heard": "さっきまで、あなたが進もうとしていた道が、音を立てて崩れ落ちた。",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": []
+ },
+ "v1ha9iwh": {
+  "episode": "miyoshi-youkai",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.45,
+  "text": "闇の底で、水音がした。淵だ。",
+  "heard": "闇の底で、水音がした。淵だ。",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": []
  }
 }
