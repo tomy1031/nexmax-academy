@@ -1869,5 +1869,88 @@
   "readings": [
    "義経＝よしつね"
   ]
+ },
+ "v137ovfw": {
+  "episode": "genpei-takadachi",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 0.9400833333333334,
+  "text": "……ふ。",
+  "heard": "ふ",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "v1pzxpoi": {
+  "episode": "genpei-takadachi",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.06,
+  "text": "松尾芭蕉。旅の途中で、この景色を見て、こう詠んだ。",
+  "heard": "旅の途中で、この景色を見て、こう詠んだ。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": [
+   "芭蕉＝ばしょう"
+  ]
+ },
+ "vei22db": {
+  "episode": "genpei-takadachi",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.73,
+  "text": "……語り継がれてきたんだね。八百年以上。",
+  "heard": "……語り継がれてきたんだね。八百年以上。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v7nrfyr": {
+  "episode": "genpei-takadachi",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.920041666666667,
+  "text": "それにね。義経さんには、本当に「北へ逃れて生きのびた」という伝説が残っているんだ。",
+  "heard": "それにね。義経さんには、本当に「北へ逃れて生きのびた」という伝説が残っているんだ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "義経＝よしつね"
+  ]
+ },
+ "vjc7wmm": {
+  "episode": "genpei-takadachi",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.26,
+  "text": "海を渡って、もっと遠くまで行った——なんて話まで。",
+  "heard": "海を渡って、もっと遠くまで行った——なんて話まで。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1delsfc": {
+  "episode": "genpei-takadachi",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.58,
+  "text": "義経さんには、実は「北へ逃れて生きのびた」という伝説も残っているんだよ。",
+  "heard": "義経さんには、実は「北へ逃れて生きのびた」という伝説も残っているんだよ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "義経＝よしつね"
+  ]
+ },
+ "vfdvo9t": {
+  "episode": "genpei-takadachi",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.18,
+  "text": "勝った話じゃなくて、生きた話。……あなたが、語ってあげてね。",
+  "heard": " 勝った話じゃなくて、生きた話。……あなたが、語ってあげてね。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
