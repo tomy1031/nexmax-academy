@@ -983,5 +983,104 @@
   "heard": " ……逃げ足の、速い男よ。",
   "scene": "激しい戦いのさなか。声を張り、息は荒く",
   "readings": []
+ },
+ "vgafqvf": {
+  "episode": "genpei-dannoura",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.84,
+  "text": "教経は、太刀を捨て、兜を脱ぎ捨てた。",
+  "heard": "教経は、太刀を捨て、兜を脱ぎ捨てた。",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": [
+   "教経＝のりつね",
+   "太刀＝たち"
+  ]
+ },
+ "v17zxza7": {
+  "episode": "genpei-dannoura",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.880041666666667,
+  "text": "そこへ、源氏の大力の武者がふたり、左右から組みついてきた。",
+  "heard": "そこへ、げんじの大力の武者がふたり、左右から組みついてきた。",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": [
+   "源氏＝げんじ"
+  ]
+ },
+ "v1w9lhci": {
+  "episode": "genpei-dannoura",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.95,
+  "text": "いざ、うぬら——死出の山の供をせよ！",
+  "heard": "いざ うん、うら 志 で の 山 の 雲 を 背 よ 。",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "v34d4bv": {
+  "episode": "genpei-dannoura",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.7,
+  "text": "教経は、ふたりを両脇にかかえたまま、海へと身を躍らせた。",
+  "heard": "教経は、ふたりを両脇にかかえたまま、海へと身を躍らせた。",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": [
+   "教経＝のりつね"
+  ]
+ },
+ "v40yfrg": {
+  "episode": "genpei-dannoura",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.5200833333333335,
+  "text": "白い泡が、渦を巻いている。",
+  "heard": " 白い泡が、",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "vjmmehn": {
+  "episode": "genpei-dannoura",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.8,
+  "text": "……波間に、何かが見えた気がした。板切れにしがみつく、大きな手のようなものが。",
+  "heard": "波まに なにか が 見え た 気 が し た 。 板きり に しがみつく 大きな 手 の よう な もの が 。",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "vc2svgs": {
+  "episode": "genpei-dannoura",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.41,
+  "text": "次の瞬間には、もう、白い泡しかなかった。",
+  "heard": "次の瞬間には、もう、白い泡しかなかった。",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "v1pptlhj": {
+  "episode": "genpei-dannoura",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 16.59,
+  "text": "やがて知盛も「見るべき程の事は見つ。今は自害せん」と言い、鎧を二領重ねて、乳母子とともに海へ沈んだ——と『平家物語』は語る。",
+  "heard": "やがて知盛も「見るべき程の事は見つ。今は自害せん」と言い、鎧を二領重ねて、乳母子とともに海へ沈んだ——と『平家物語』はかたる。",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": [
+   "知盛＝とももり",
+   "鎧＝よろい",
+   "平家物語＝へいけものがたり"
+  ]
  }
 }
