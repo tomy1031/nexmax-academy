@@ -208,5 +208,108 @@
   "heard": "……何者じゃ。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "vd7fjc2": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.2000416666666665,
+  "text": "なぜ、そのように悲しい目でわしを見る。わしを、知っておるのか。",
+  "heard": "なぜ その よう に 悲しい 目 で わし を 見る わし を 知っ て おる の か",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v7dglbj": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.25,
+  "text": "（小声）国盛さんにとっては、今日があなたとの初対面。あなたは、この人の「この先」を見てきたんだね。",
+  "heard": "国森 さん にとって は 、 今日 が あなた と の 初 対面 。 あなた は この 人 の この 先 を 見 て き た ん だ ね 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "国盛＝くにもり"
+  ]
+ },
+ "v325ihz": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.17,
+  "text": "（小声）琵琶の滝で、綾さんが弔っていた人がいた。「去年の秋、山に消えた人」……。",
+  "heard": "岩の滝で彩 さん が 弔っ て い た 人 が い た 。 去年 の 秋 山 に 消え た 人 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "琵琶＝びわ",
+   "綾＝あや",
+   "弔って＝とむらって"
+  ]
+ },
+ "vmsb6xa": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 3.71,
+  "text": "……まあよい。わしは国盛じゃ。",
+  "heard": "……まあよい。わしは国盛じゃ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "国盛＝くにもり"
+  ]
+ },
+ "v1inz2vg": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.15,
+  "text": "見よ。この橋は、かずらで編む。",
+  "heard": "ミュウ この橋は 葛籠 で編む",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1he3x8q": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 3.39,
+  "text": "斧ひとつで、すぐに切り落とせるようにな。",
+  "heard": "王の1つですぐに切り落とせるようにな",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "斧＝おの"
+  ]
+ },
+ "v14s38hv": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.19,
+  "text": "源氏の追手が、この谷まで来たときのためじゃ。",
+  "heard": "源治 の おっ て が この 谷 まで 来 た 時 の ため じゃ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "源氏＝げんじ",
+   "追手＝おって"
+  ]
+ },
+ "v1dq2kso": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.89,
+  "text": "橋を落とせば、向こう岸からは誰も渡れぬ。帝をお守りできる。",
+  "heard": "橋を落とせば、向こう岸からは誰も渡れぬ。帝をお守りできる。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "帝＝みかど"
+  ]
  }
 }
