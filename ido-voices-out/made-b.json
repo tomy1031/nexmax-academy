@@ -1357,5 +1357,109 @@
    "月見酒＝つきみざけ",
    "爺さま＝じいさま"
   ]
+ },
+ "v13hzqgq": {
+  "episode": "miyoshi-youkai",
+  "speaker": "konaki",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 15.32,
+  "text": "剣を山に置いてきた大男も、知っとる。年をとってからは、里の子らに、かずらの編み方を教えとったわ。",
+  "heard": "剣を山に置いてきた大男も、知っとる。年をとってからは、里の子らに、かずらの編み方を教えとったわ。",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": []
+ },
+ "v1i05oir": {
+  "episode": "miyoshi-youkai",
+  "speaker": "konaki",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 9.84,
+  "text": "その横で、琵琶を弾く女房がおった。……ふたりとも、よう笑う年寄りになったぞ。",
+  "heard": "その横で、琵琶を弾く女房がおった。……ふたりとも、よう笑う年寄りになったぞ。",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": [
+   "琵琶＝びわ"
+  ]
+ },
+ "v7p5g23": {
+  "episode": "miyoshi-youkai",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.76,
+  "text": "（小声）国盛さんと、綾さん……。撥は、ちゃんと返せたんだね。",
+  "heard": "くに森 さん と 彩 さん バチ は ちゃんと 返せ た ん だ ね 。",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": [
+   "国盛＝くにもり",
+   "綾＝あや",
+   "撥＝ばち"
+  ]
+ },
+ "v11u3p4j": {
+  "episode": "miyoshi-youkai",
+  "speaker": "konaki",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 8.790041666666667,
+  "text": "話っちゅうもんは、語る者がおらんようになったら、消えてしまう。妖怪も、おんなじじゃ。",
+  "heard": "話す 注文 は 語る もの が おら ん よう に なっ たら 消え て しまう 。 妖怪 も 同じ じゃ 。",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": [
+   "妖怪＝ようかい"
+  ]
+ },
+ "v1f2awn": {
+  "episode": "miyoshi-youkai",
+  "speaker": "konaki",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 9.69,
+  "text": "テレビの時代じゃ。紙芝居屋もしまい。わしの出番も、もう無うなるかのう。",
+  "heard": "テレビの時代じゃ。紙芝居屋もしまい。わしの出番も、もう無うなる",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": [
+   "紙芝居＝かみしばい"
+  ]
+ },
+ "vs9as5m": {
+  "episode": "miyoshi-youkai",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.04,
+  "text": "本当だよ。四十年たつと、山城町は、妖怪の伝説を後の世に遺す「怪遺産」に認定されるんだ。",
+  "heard": "本当だよ。四十年たつと、やましろ町は、ようかいの伝説を後の世に遺す「かいいさん」に認定されるんだ。",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": [
+   "山城＝やましろ",
+   "妖怪＝ようかい",
+   "怪遺産＝かいいさん"
+  ]
+ },
+ "vgrghj2": {
+  "episode": "miyoshi-youkai",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.24,
+  "text": "妖怪屋敷もできて、あなたの話を、今も伝えてる。",
+  "heard": "妖怪屋敷もできて、あなたの話を、今も伝えて",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": [
+   "妖怪＝ようかい"
+  ]
+ },
+ "vklnnda": {
+  "episode": "miyoshi-youkai",
+  "speaker": "konaki",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 12.03,
+  "text": "……ほう。そりゃ、ええ。泣き続けた甲斐があったわい。",
+  "heard": "……ほう。そりゃ、ええ。泣き続けた甲斐があったわい。",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": []
  }
 }
