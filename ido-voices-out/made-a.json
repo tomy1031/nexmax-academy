@@ -1793,5 +1793,101 @@
   "readings": [
    "旅の者＝たびのもの"
   ]
+ },
+ "v94byt4": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 10.880041666666667,
+  "text": "剣の話ではない。剣を置いた男の話をな。",
+  "heard": "剣の話ではない。剣を置いた男の話をな。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v14yhy5f": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.38,
+  "text": "語る者がいるかぎり、わしらは消えぬ。",
+  "heard": "語るものがいる限り わしらは消えぬ",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v10j3z1n": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.04,
+  "text": "……うん。国盛さんの言葉、ちゃんと届けるよ。",
+  "heard": "……うん。国盛さんの言葉、ちゃんと届けるよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "国盛＝くにもり"
+  ]
+ },
+ "vpc6yl7": {
+  "episode": "miyoshi-finale",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.54,
+  "text": "令和八年。夕暮れの、祖谷のかずら橋。",
+  "heard": "令和八年。夕暮れの、いやのかずら橋。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "祖谷＝いや"
+  ]
+ },
+ "v9v6vws": {
+  "episode": "miyoshi-finale",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.590083333333333,
+  "text": "観光客の笑い声。揺れる橋。川面に、夕日がきらめいている。",
+  "heard": "観光客の笑い声。揺れる橋。川面に、夕日がきらめいている。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1lzx47z": {
+  "episode": "miyoshi-finale",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.17,
+  "text": "……5つの扉、全部ひらいたね。",
+  "heard": "……5つの扉、全部ひらいたね。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vojjr5w": {
+  "episode": "miyoshi-finale",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.86,
+  "text": "切れても、また編まれた橋。弦が切れた夜の、撥の約束。山に眠った剣。",
+  "heard": "切れてもまた余れた橋。 源が切れた夜の蜂の約束。 山に眠った剣。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "撥＝ばち"
+  ]
+ },
+ "v1drqamx": {
+  "episode": "miyoshi-finale",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.86,
+  "text": "七百年、川を下ってきた歌。それから、泣きながら子どもを守る妖怪。",
+  "heard": "七百年、川を下ってきた歌。それから、泣きながら子どもを守る妖怪。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "妖怪＝ようかい"
+  ]
  }
 }
