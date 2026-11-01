@@ -292,5 +292,97 @@
   "heard": "恐竜の時代！ほんなら、わしの四十年なんぞ、まばたきじゃの！",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v1mjj79k": {
+  "episode": "miyoshi-oboke",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.260041666666667,
+  "text": "空が、急に暗くなった。",
+  "heard": "空が、急に暗くなった。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v14ajwyw": {
+  "episode": "miyoshi-oboke",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 3.19,
+  "text": "……上で降ったな。水が来るぞ！",
+  "heard": "……上で降ったな。水が来るぞ！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v2pl2qt": {
+  "episode": "miyoshi-oboke",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 6.920041666666667,
+  "text": "松、岸へ上がれ！ 丸太は流してええ、小歩危の手前で上がるんじゃ！",
+  "heard": "松、岸へ上がれ！丸太は流してええ、小歩危の手前で上がるんじゃ！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "小歩危＝こぼけ"
+  ]
+ },
+ "v1rvr3mk": {
+  "episode": "miyoshi-oboke",
+  "speaker": "matsukichi",
+  "voice": "Sadachbia",
+  "model": "gemini-3.8-live",
+  "seconds": 8.23,
+  "text": "なに言うとんな！ 今上がったら、丸太が岩に詰まって、みな割れてしまう！ わしが詰まりをほどく！",
+  "heard": "なに言うとんな！ 今上がったら、丸太が岩に詰まって、みな割れてしまう！ わしが詰まりをほどく！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1q1o8up": {
+  "episode": "miyoshi-oboke",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 5.49,
+  "text": "川をなめるな！ 水が出た小歩危で、何人死んだと思うとる！",
+  "heard": "川をなめるな！ 水が出た小歩危で、何人死んだと思うとる！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "小歩危＝こぼけ"
+  ]
+ },
+ "v1v6shr1": {
+  "episode": "miyoshi-oboke",
+  "speaker": "matsukichi",
+  "voice": "Sadachbia",
+  "model": "gemini-3.8-live",
+  "seconds": 3.11,
+  "text": "親父はもう年じゃ！ わしがやる！",
+  "heard": "親父はもう年じゃ！わしがやる！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vys49ew": {
+  "episode": "miyoshi-oboke",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.32,
+  "text": "水かさが、見る間に増していく。丸太が、岩と岩のあいだに詰まりはじめた。",
+  "heard": "水かさが、見る間に増していく。丸太が、岩と岩のあいだに詰まりはじめた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v4tfcjs": {
+  "episode": "miyoshi-oboke",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.53,
+  "text": "岸の上のあなたを、ふたりが同時に見た。",
+  "heard": "岸の上のあなたを、ふたりが同時に見た。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
