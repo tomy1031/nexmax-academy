@@ -1465,5 +1465,114 @@
   "heard": "……あのとき笑ったことを、今は、少しだけ悔いておる。",
   "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
   "readings": []
+ },
+ "vj96mms": {
+  "episode": "genpei-takadachi",
+  "speaker": "benkei",
+  "voice": "Alnilam",
+  "model": "gemini-3.8-live",
+  "seconds": 0.83,
+  "text": "何者か！",
+  "heard": "何者 か",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "v1spfnni": {
+  "episode": "genpei-takadachi",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 7.46,
+  "text": "兄上に疎まれ、追われ、山を越え、ようやく秀衡殿のもとへたどりついた。",
+  "heard": "兄上に疎まれ、追われ、山を越え、ようやく秀衡殿のもとへたどりついた。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "秀衡＝ひでひら",
+   "殿＝との"
+  ]
+ },
+ "vxh4mm7": {
+  "episode": "genpei-takadachi",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 5.32,
+  "text": "その秀衡殿も亡くなり……その子に、こうして攻められておる。",
+  "heard": "その秀衡殿も亡くなり……その子に、こうして攻められておる。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "秀衡＝ひでひら",
+   "殿＝との"
+  ]
+ },
+ "vdqapzx": {
+  "episode": "genpei-takadachi",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 7.160041666666666,
+  "text": "恨んではおらぬ。泰衡殿も、鎌倉に迫られて、こうするほかなかったのだ。",
+  "heard": "泰衡殿も、鎌倉に迫られて、こうするほかなかったのだ。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "泰衡＝やすひら",
+   "殿＝との",
+   "鎌倉＝かまくら"
+  ]
+ },
+ "v1q0g353": {
+  "episode": "genpei-takadachi",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 2.7200416666666665,
+  "text": "外で、鬨の声が上がった。",
+  "heard": "鬨の声が",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "v1jos52p": {
+  "episode": "genpei-takadachi",
+  "speaker": "benkei",
+  "voice": "Alnilam",
+  "model": "gemini-3.8-live",
+  "seconds": 5.96,
+  "text": "殿！ 最後のお支度が済むまで、この弁慶、ひとりも通しませぬぞ！",
+  "heard": "殿 最後 の お 下達 が 済む まで この 便 け 1人 も 通し ませ ぬ ぞ 。",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": [
+   "殿＝との",
+   "弁慶＝べんけい"
+  ]
+ },
+ "vpxlt7q": {
+  "episode": "genpei-takadachi",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.38,
+  "text": "弁慶さんは、全身に矢を受けても、薙刀を杖に、立ったまま倒れなかった——「立ち往生」の伝説が残っているんだ。",
+  "heard": "弁慶さんは、全身に矢を受けても、薙刀を杖に、立ったまま倒れなかった――「立ち往生」の伝説が残っているんだ。",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": [
+   "弁慶＝べんけい",
+   "薙刀＝なぎなた",
+   "立ち往生＝たちおうじょう"
+  ]
+ },
+ "v12b1n7o": {
+  "episode": "genpei-takadachi",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 8.41,
+  "text": "継信も、忠信も、わたしの盾となって死んだ。今度は、弁慶か。",
+  "heard": "次 の 部 も 田代 の 部 も 私 の 盾 と なっ て 死ん だ 。 今度 は 弁慶 か 。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "継信＝つぎのぶ",
+   "忠信＝ただのぶ",
+   "弁慶＝べんけい"
+  ]
  }
 }
