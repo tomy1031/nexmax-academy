@@ -111,5 +111,115 @@
    "縁帳＝えんちょう",
    "記録＝きろく"
   ]
+ },
+ "promo_09": {
+  "episode": "promo",
+  "speaker": "promo",
+  "voice": "Aoede",
+  "model": "gemini-3.8-live",
+  "seconds": 5.18,
+  "text": "カメラでは、物語の人物と、その場所で記念写真が撮れます。",
+  "heard": "カメラでは物語の人物とその場所で記念写真が撮れます。",
+  "scene": "観光アプリの紹介動画。明るく、わくわくする空気。聞く人に語りかけるように",
+  "readings": [
+   "人物＝じんぶつ",
+   "記念写真＝きねんしゃしん",
+   "撮れます＝とれます"
+  ]
+ },
+ "promo_10": {
+  "episode": "promo",
+  "speaker": "promo",
+  "voice": "Aoede",
+  "model": "gemini-3.8-live",
+  "seconds": 5.86,
+  "text": "5つのスタンプを集めると、色が重なって、一枚の絵が完成します。",
+  "heard": "5 つ の スタンプ を 集める と 色 が 重なっ て 1 枚 の 絵 が 完成 し ます 。",
+  "scene": "観光アプリの紹介動画。明るく、わくわくする空気。聞く人に語りかけるように",
+  "readings": [
+   "5つ＝いつつ",
+   "一枚＝いちまい",
+   "絵＝え"
+  ]
+ },
+ "promo_11": {
+  "episode": "promo",
+  "speaker": "promo",
+  "voice": "Aoede",
+  "model": "gemini-3.8-live",
+  "seconds": 6.920041666666667,
+  "text": "物語の続きは、全国の町へ。スタンプや写真は、どの町でも引き継がれます。",
+  "heard": "物語の続きは全国の町へ 。スタンプや写真はどの町でも引き継がれます。",
+  "scene": "観光アプリの紹介動画。明るく、わくわくする空気。聞く人に語りかけるように",
+  "readings": [
+   "続き＝つづき",
+   "全国＝ぜんこく",
+   "町＝まち",
+   "引き継がれます＝ひきつがれます"
+  ]
+ },
+ "promo_12": {
+  "episode": "promo",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.28,
+  "text": "さあ、祖谷の扉をひらきに行こう！",
+  "heard": "さあ、祖谷の扉をひらきに行こう！",
+  "scene": "観光アプリの紹介動画。明るく、わくわくする空気。聞く人に語りかけるように",
+  "readings": [
+   "祖谷＝いや",
+   "扉＝とびら"
+  ]
+ },
+ "promo_13": {
+  "episode": "promo",
+  "speaker": "promo",
+  "voice": "Aoede",
+  "model": "gemini-3.8-live",
+  "seconds": 3.9000416666666666,
+  "text": "時渡り。祖谷、かずらの誓い。",
+  "heard": "時渡り いや かずら の 誓い",
+  "scene": "観光アプリの紹介動画。明るく、わくわくする空気。聞く人に語りかけるように",
+  "readings": [
+   "時渡り＝ときわたり",
+   "祖谷＝いや",
+   "誓い＝ちかい"
+  ]
+ },
+ "vj7al91": {
+  "episode": "miyoshi-biwa",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.440041666666667,
+  "text": "文治二年、夏。深い森の奥に、白い糸のような滝が落ちている。",
+  "heard": "夏。深い森の奥に、白い糸のような滝が落ちている。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "文治二年＝ぶんじにねん"
+  ]
+ },
+ "v1bm90dm": {
+  "episode": "miyoshi-biwa",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.350041666666667,
+  "text": "水の音にまじって、弦の音が聞こえる。……ひどく、悲しい音だ。",
+  "heard": "水の音にまじって、弦の音が聞こえる。……ひどく、悲しい音だ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1sev82n": {
+  "episode": "miyoshi-biwa",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 1.1100416666666666,
+  "text": "……どなた？",
+  "heard": "どなた",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
