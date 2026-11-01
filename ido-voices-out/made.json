@@ -865,5 +865,106 @@
   "readings": [
    "弥平次＝やへいじ"
   ]
+ },
+ "vav81vb": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.420041666666667,
+  "text": "かずらを断ち切る音が、谷じゅうに響いた。",
+  "heard": "頭を断ち切る音が谷中に響いた。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "vbe462i": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.390041666666667,
+  "text": "切れた橋は、ゆっくりと、闇の底へ垂れ落ちていった。",
+  "heard": "切れた橋 は ゆっくり と 闇 の 底 へ 垂れ 落ち て いっ た 。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "v12fwp4a": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "kotaro",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 6.680041666666667,
+  "text": "……じいちゃんは？ 弥平次じいちゃんは？",
+  "heard": " ……じいちゃんは？ 弥平次じいちゃんは？",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "弥平次＝やへいじ"
+  ]
+ },
+ "vr7jscn": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.81,
+  "text": "国盛は膝をつき、子の頭に、大きな手を置いた。",
+  "heard": "国盛は膝をつき、子の頭に、大きなてを置いた。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "国盛＝くにもり"
+  ]
+ },
+ "v3oeuh2": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 8.91,
+  "text": "弥平次は、道を間違えるのが、昔から上手でな。……きっと今ごろ、追手のほうが泣いておるわ。",
+  "heard": "マレージ は 道 を 間違える の が 昔 から うまい で な 。 きっと 今頃 折っ て の 方 が 泣い て おる わ 。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "弥平次＝やへいじ",
+   "追手＝おって"
+  ]
+ },
+ "vcvtiuk": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.8400416666666666,
+  "text": "そう言った国盛の声も、震えていた。",
+  "heard": "そう いっ た 國森 の 声 も 震え て い た 。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "国盛＝くにもり"
+  ]
+ },
+ "vy16a22": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.5,
+  "text": "（小声）……児啼爺が言ってた。「道を間違えるのがやたら上手な爺さま」と、月見酒を飲んだって。",
+  "heard": "……こなきじじいが言ってた。「道を間違えるのがやたら上手なじいさま」と、つきみざけを飲んだって。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "児啼爺＝こなきじじい",
+   "爺さま＝じいさま",
+   "月見酒＝つきみざけ"
+  ]
+ },
+ "vzor4ek": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 1.3900416666666666,
+  "text": "夜が明けた。",
+  "heard": "夜が開けた。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
  }
 }
