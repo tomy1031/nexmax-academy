@@ -1290,5 +1290,108 @@
    "衣川＝ころもがわ",
    "高館＝たかだち"
   ]
+ },
+ "v14y6znx": {
+  "episode": "genpei-takadachi",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 14.600041666666666,
+  "text": "攻め寄せるのは、鎌倉に迫られた奥州藤原氏の兵。……かつて義経をかくまった、秀衡の子・泰衡の軍勢だった。",
+  "heard": "せめぎおさる の は 鎌倉 に 迫ら れ た 奥州 藤原 市 の 平 。 かつて 吉宗 を 隠まっ た 秀平 の 子 平平 の 軍勢 だっ た 。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "鎌倉＝かまくら",
+   "奥州＝おうしゅう",
+   "義経＝よしつね",
+   "秀衡＝ひでひら",
+   "泰衡＝やすひら"
+  ]
+ },
+ "vsv3nfb": {
+  "episode": "genpei-takadachi",
+  "speaker": "benkei",
+  "voice": "Alnilam",
+  "model": "gemini-3.8-live",
+  "seconds": 5.400041666666667,
+  "text": "……敵では、ないな。この武蔵坊弁慶の目は、ごまかせぬ。",
+  "heard": "……敵では、ないな。この武蔵坊弁慶の目は、ごまかせぬ。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "武蔵坊弁慶＝むさしぼうべんけい"
+  ]
+ },
+ "v513dq9": {
+  "episode": "genpei-takadachi",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 1.8300416666666666,
+  "text": "（小声）武蔵坊弁慶さん……！",
+  "heard": "武蔵 防 弁慶 さん",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "武蔵坊弁慶＝むさしぼうべんけい"
+  ]
+ },
+ "vw1i7d2": {
+  "episode": "genpei-takadachi",
+  "speaker": "benkei",
+  "voice": "Alnilam",
+  "model": "gemini-3.8-live",
+  "seconds": 4.17,
+  "text": "何者か！ ……敵では、ないな。",
+  "heard": " ……敵では、ないな。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "vu2ixno": {
+  "episode": "genpei-takadachi",
+  "speaker": "benkei",
+  "voice": "Alnilam",
+  "model": "gemini-3.8-live",
+  "seconds": 4.6,
+  "text": "奥へ行け。殿が、お待ちかねじゃ。……そんな気がする。",
+  "heard": "奥 へ 行け 。 殿 が お 待ちかね じゃ 。 そんな 気 が する 。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "殿＝との"
+  ]
+ },
+ "v5qh9be": {
+  "episode": "genpei-takadachi",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 3.46,
+  "text": "……客か。このような夜に。",
+  "heard": "客 か この よう な 夜 に",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "v1cmv8gs": {
+  "episode": "genpei-takadachi",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 11.300125,
+  "text": "名乗らずともよい。もう、名に意味などない。……わたしは九郎。かつて、義経と呼ばれた男だ。",
+  "heard": "名乗らずともよい。 もう何意味などない。 私 は 苦労 。 かつて よし つね と 呼ば れ た 男 だ 。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "九郎＝くろう",
+   "義経＝よしつね"
+  ]
+ },
+ "vumnbev": {
+  "episode": "genpei-takadachi",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 7.98,
+  "text": "……やはり、おぬしか。",
+  "heard": "……やはり、おぬしか。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
  }
 }
