@@ -1,0 +1,105 @@
+{
+ "vt0bghd": {
+  "episode": "genpei-yashima",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.16,
+  "text": "元暦二年、二月。摂津・渡辺の港は、嵐だった。",
+  "heard": "元暦二年、二月。摂津・渡辺の港は、嵐だった。",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": [
+   "元暦＝げんりゃく"
+  ]
+ },
+ "v1px1vr": {
+  "episode": "genpei-yashima",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.560041666666667,
+  "text": "「この風では、舟は出せませぬ」——止める声を振り切って、義経は、わずか五艘で荒れる海へ漕ぎ出した。",
+  "heard": "「この風では、舟は出せませぬ」——止める声を振り切って、義経は、わずか五艘で荒れる海へ漕ぎ出した。",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": [
+   "義経＝よしつね"
+  ]
+ },
+ "v1uqirse": {
+  "episode": "genpei-yashima",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 11.52,
+  "text": "三日かかる海を、ひと晩で渡りきる。阿波の勝浦に上がり、夜を徹して駆け、屋島の背後を突いた。",
+  "heard": "3 日 かかる 海 を 1 日 で 渡り 切る 。 阿 の 勝浦 に 上がり 夜 を 通し て かけ 八島 の 背後 を つい た 。",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": [
+   "阿波＝あわ",
+   "屋島＝やしま"
+  ]
+ },
+ "v1nqungr": {
+  "episode": "genpei-yashima",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.23,
+  "text": "阿波は、今の徳島県。義経さんは、四国の徳島から、屋島へ攻めこんだんだ。",
+  "heard": "阿波は、今の徳島県。義経さんは、四国の徳島から、屋島へ攻めこんだんだ。",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": [
+   "阿波＝あわ",
+   "義経＝よしつね",
+   "屋島＝やしま"
+  ]
+ },
+ "vrv5maz": {
+  "episode": "genpei-yashima",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.87,
+  "text": "平家の仮の御所が、炎を上げている。",
+  "heard": "平家の仮の御所が、炎を上げている。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "平家＝へいけ"
+  ]
+ },
+ "v6duogp": {
+  "episode": "genpei-yashima",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 3.46,
+  "text": "そこの者、下がれ！ 流れ矢に当たるぞ！",
+  "heard": "そこの者、下がれ！流れ矢に当たるぞ！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1d6scng": {
+  "episode": "genpei-yashima",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.1,
+  "text": "（小声）源義経さん。今の勢いは、誰にも止められない。",
+  "heard": "源 の 吉次 さん 今 の 勢い は 誰 に も 求め られ ない 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "源義経＝みなもとのよしつね"
+  ]
+ },
+ "v1628riw": {
+  "episode": "genpei-yashima",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 5.840041666666667,
+  "text": "おぬしの言うたとおりであった。兄上は、わたしを義光公と呼んでくださった！",
+  "heard": "おぬしの言うたとおりであった。兄上は、わたしを義光公と呼んでくださった！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ }
+}
