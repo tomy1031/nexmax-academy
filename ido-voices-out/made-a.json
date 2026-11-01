@@ -2071,5 +2071,29 @@
   "heard": "共 に 剣 を 眠ら せ た こと 片肘 がし",
   "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
   "readings": []
+ },
+ "v1cp3bwi": {
+  "episode": "miyoshi-finale",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 1.7800416666666667,
+  "text": "「剣は山に眠る。見届けてくれたこと、かたじけなし」",
+  "heard": "の山に眠る。見届けてくれたこと、かたじけなし",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "v9fjjob": {
+  "episode": "miyoshi-finale",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 2.120041666666667,
+  "text": "「撥は返した」",
+  "heard": "罰 は 返し た 。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": [
+   "撥＝ばち"
+  ]
  }
 }
