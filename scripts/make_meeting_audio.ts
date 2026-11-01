@@ -47,6 +47,32 @@ import {
   toWav,
 } from "./lib/live_tts";
 
+/*
+ * 一時（このブランチは マージしない）：IDO 時渡り（別の リポジトリ）の 物語の 声を、この 鍵で 作る。
+ * tomy さんの OK（2026-11-01）。教材ID の 代わりに `ido_proto_voices` を 渡した ときだけ 動く。
+ * 作った 声は ido-voices-out/ に 置いて この ブランチに push する（public/audio は 変えないので PR は できない）。
+ */
+if (process.argv[2] === "ido_proto_voices") {
+  const req = JSON.parse(readFileSync("scripts/ido_voices/request.json", "utf8"));
+  const run = (cmd: string, args: string[]) => spawnSync(cmd, args, { stdio: "inherit" });
+  const made = run("node", [
+    "scripts/ido_voices/make-voices.mjs",
+    "--lines", "scripts/ido_voices/voice-lines.json",
+    "--cast", "scripts/ido_voices/voice-cast.json",
+    "--out", "ido-voices-out",
+    "--episodes", (req.episodes as string[]).join(","),
+    "--max-calls", String(req.max_calls ?? 10),
+  ]);
+  run("git", ["config", "user.name", "tomy1031"]);
+  run("git", ["config", "user.email", "33148568+tomy1031@users.noreply.github.com"]);
+  run("git", ["add", "ido-voices-out"]);
+  if (run("git", ["diff", "--cached", "--quiet"]).status !== 0) {
+    run("git", ["commit", "-m", "一時：IDO 時渡りの 声（マージしない）"]);
+    run("git", ["push", "origin", `HEAD:${process.env.GITHUB_REF_NAME}`]);
+  }
+  process.exit(made.status ?? 1);
+}
+
 const meetingId: string = process.argv[2] ?? "";
 /** すでに ある ものも 作り直すか。 */
 const force: boolean = process.argv.includes("--force");
