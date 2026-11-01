@@ -1707,5 +1707,116 @@
    "高館＝たかだち",
    "義経＝よしつね"
   ]
+ },
+ "vu967zv": {
+  "episode": "miyoshi-youkai",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.34,
+  "text": "（小声）弥平次さんだ……！ 弥平次さん、生きてたんだ！",
+  "heard": "弥平次さん、生きてたんだ!",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": [
+   "弥平次＝やへいじ"
+  ]
+ },
+ "v1ha0a5c": {
+  "episode": "genpei-kisegawa",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.34,
+  "text": "（小声）義経さんにとっては、今日が初めて。屋島や壇ノ浦で戦う、ずっと前の義経さんなんだ。",
+  "heard": "義経さんにとっては、今日が初めて。屋島や壇ノ浦で戦う、ずっと前の義経さんなんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "義経＝よしつね",
+   "屋島＝やしま",
+   "壇ノ浦＝だんのうら"
+  ]
+ },
+ "vinlhs2": {
+  "episode": "genpei-kisegawa",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 6.21,
+  "text": "わたしは九郎。奥州から、兄上のもとへ馳せ参じた者だ。",
+  "heard": "わたしは九郎。奥州から、兄上のものへ馳せ参じた者だ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "九郎＝くろう",
+   "奥州＝おうしゅう"
+  ]
+ },
+ "v1wvx89q": {
+  "episode": "genpei-kisegawa",
+  "speaker": "tsuginobu",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 3.4900416666666665,
+  "text": "殿、少しはお座りくだされ。",
+  "heard": "殿、少しはお座りくだされ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "殿＝との"
+  ]
+ },
+ "v1uq21k9": {
+  "episode": "genpei-kisegawa",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.33,
+  "text": "がっしりした武者が、義経のそばに床几を据えた。",
+  "heard": "がっしりした武者が、義経のそばに床几を",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "義経＝よしつね"
+  ]
+ },
+ "vd90q32": {
+  "episode": "genpei-kisegawa",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 5.01,
+  "text": "継信。奥州から、ずっとついてきてくれた男だ。",
+  "heard": "奥州から、ずっとついてきてくれた男だ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "継信＝つぎのぶ",
+   "奥州＝おうしゅう"
+  ]
+ },
+ "vibhj8n": {
+  "episode": "genpei-kisegawa",
+  "speaker": "tsuginobu",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 8.92,
+  "text": "佐藤継信と申します。弟の忠信とともに、殿の盾となるべく、秀衡さまより遣わされました。",
+  "heard": "佐藤継信と申します。弟の忠信とともに、殿の盾となるべく、秀衡さまより遣わされました。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "佐藤継信＝さとうつぎのぶ",
+   "忠信＝ただのぶ",
+   "殿＝との",
+   "秀衡＝ひでひら"
+  ]
+ },
+ "v1a9h28e": {
+  "episode": "genpei-kisegawa",
+  "speaker": "tsuginobu",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 8.240041666666666,
+  "text": "殿は昨夜から、一睡もしておられませぬ。兄君に会われるのが、よほど……",
+  "heard": "殿 は 昨夜 から 一睡 も し て おら れ ませ ぬ 。 兄 気味 に 会わ れる の が よほど",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "殿＝との"
+  ]
  }
 }
