@@ -1461,5 +1461,105 @@
   "heard": "……ほう。そりゃ、ええ。泣き続けた甲斐があったわい。",
   "scene": "こわい夜の山道。おびえて、声が細い",
   "readings": []
+ },
+ "v13ntv9p": {
+  "episode": "miyoshi-youkai",
+  "speaker": "konaki",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.38,
+  "text": "……ふぉっふぉっ。そうか。語り部が、ひとり増えたか。",
+  "heard": "……ふぉっふぉっ。そうか。語り部",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": []
+ },
+ "v1dyl6t5": {
+  "episode": "miyoshi-youkai",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.95,
+  "text": "それにね、四十年たつと、山城町は「怪遺産」に認定されて、妖怪屋敷で、あなたの話を伝えるようになるんだよ。",
+  "heard": "それにね、四十年たつと、山城町は「怪遺産」に認定されて、妖怪屋敷で、あなたの話を伝えるようになるんだよ。",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": [
+   "山城＝やましろ",
+   "怪遺産＝かいいさん",
+   "妖怪＝ようかい"
+  ]
+ },
+ "vd3sfvh": {
+  "episode": "miyoshi-youkai",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.7400416666666665,
+  "text": "祭りの広場に戻ると、紙芝居屋が、健太を抱きしめて泣いた。",
+  "heard": "祭 の 広場 に 戻る と 紙芝居 屋 が 健太 を 抱きしめ て 泣い た 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "紙芝居＝かみしばい",
+   "健太＝けんた"
+  ]
+ },
+ "v7685vp": {
+  "episode": "miyoshi-youkai",
+  "speaker": "kenta",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 5.68,
+  "text": "おっちゃん……おった。ほんまに、おったんじゃ！ 児啼爺！",
+  "heard": "おっちゃん……おった。ほんまに、おったんじゃ！児啼爺！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "児啼爺＝こなきじじい"
+  ]
+ },
+ "vix680j": {
+  "episode": "miyoshi-youkai",
+  "speaker": "tatsu",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 3.160041666666667,
+  "text": "……そうか。そうか。",
+  "heard": "……そうか。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v72n7p9": {
+  "episode": "miyoshi-youkai",
+  "speaker": "tatsu",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 4.62,
+  "text": "わしが語らんでも、これからは、この子らが語るんじゃな。",
+  "heard": " わしが語らんでも、これからは、この子らが語る",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v12dfmm": {
+  "episode": "miyoshi-youkai",
+  "speaker": "konaki",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 7.42,
+  "text": "ほれ、記念にわしと写真でも撮っていけ。……ちょいと、重いぞ。",
+  "heard": "おれ、記念にわしと写真でも撮って行け。ちょいと思い出",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v78vhzw": {
+  "episode": "genpei-kisegawa",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 12.09,
+  "text": "治承四年、十月。富士川で、平家の大軍は、水鳥の羽音に驚いて逃げ去った——と伝わる。",
+  "heard": "治承四年、十月。富士川で、平家の大軍は、水鳥の羽音に驚いて逃げ去った——と伝わる。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "治承四年＝じしょうよねん",
+   "平家＝へいけ"
+  ]
  }
 }
