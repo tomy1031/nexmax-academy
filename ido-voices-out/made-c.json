@@ -574,5 +574,110 @@
   "readings": [
    "義経＝よしつね"
   ]
+ },
+ "v4qhs93": {
+  "episode": "genpei-yashima",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 4.95,
+  "text": "勝つとは、こういうことだ。……そう思わねば、立っておれぬ。",
+  "heard": "勝つとは、こういうことだ。……そう思わねば、立っておれぬ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1piio0k": {
+  "episode": "genpei-yashima",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.06,
+  "text": "ひと月後。源氏と平家は、壇ノ浦で、最後の戦いをむかえることになる。",
+  "heard": "源氏と平家は、壇ノ浦で、最後の戦いをむかえることになる。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "源氏＝げんじ",
+   "平家＝へいけ",
+   "壇ノ浦＝だんのうら"
+  ]
+ },
+ "vdx8vpq": {
+  "episode": "genpei-dannoura",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.160041666666666,
+  "text": "元暦二年、三月二十四日。関門の海。",
+  "heard": "二年、三月二十四日。関門の海。",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": [
+   "元暦＝げんりゃく"
+  ]
+ },
+ "v1fbq5az": {
+  "episode": "genpei-dannoura",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.77,
+  "text": "源氏と平家の舟が、狭い海峡を埋めつくしている。",
+  "heard": "源氏と平家の舟が、狭い海峡を",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": [
+   "源氏＝げんじ",
+   "平家＝へいけ"
+  ]
+ },
+ "v15igvir": {
+  "episode": "genpei-dannoura",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.090041666666666,
+  "text": "はじめ、潮は平家に味方していた。",
+  "heard": "はじめ、潮は平家に味方していた。",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": [
+   "平家＝へいけ"
+  ]
+ },
+ "v1qpxpdt": {
+  "episode": "genpei-dannoura",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.74,
+  "text": "小舟で、こんな所まで来るとは。命知らずめ。",
+  "heard": " 小舟で、こんな所まで来るとは。命知らずめ。",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "v1phb9et": {
+  "episode": "genpei-dannoura",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 7.71,
+  "text": "わしは能登守教経。……どけ。わしが探しておるのは、義経ただひとりよ。",
+  "heard": "わしは能登守教経。……どけ。わしが探しておるのは、義経ただひとりよ。",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": [
+   "教経＝のりつね",
+   "義経＝よしつね"
+  ]
+ },
+ "vwjh9fq": {
+  "episode": "genpei-dannoura",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.56,
+  "text": "（小声）平教経さん。平家一の猛将だよ。",
+  "heard": "平野ののりつね さん 兵家 一 の 猛将 だ よ 。",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": [
+   "平教経＝たいらののりつね",
+   "平家＝へいけ"
+  ]
  }
 }
