@@ -1189,5 +1189,106 @@
   "heard": "……勝った。",
   "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
   "readings": []
+ },
+ "v7ml9jv": {
+  "episode": "genpei-dannoura",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 12.34,
+  "text": "父の仇を討った。兄上の宿願を果たした。……なのに、なぜだろう。",
+  "heard": "父の仇を討った。兄上の宿願を果たした。……なのに、なぜだろう。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "vz7psyt": {
+  "episode": "genpei-dannoura",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 12.05,
+  "text": "少しも、うれしくない。……ひどく、寒い。",
+  "heard": "少しも嬉しくない。 ひどく 寒い。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "v18gy0to": {
+  "episode": "genpei-dannoura",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 6.86,
+  "text": "旅の者。黄瀬川で、おぬしは言うたな。兄上は、きっと喜んでくださると。",
+  "heard": "旅の者。黄瀬川で、おぬしは言うたな。兄上は、きっと喜んでくださると。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": [
+   "旅の者＝たびのもの",
+   "黄瀬川＝きせがわ"
+  ]
+ },
+ "v2v8x9d": {
+  "episode": "genpei-dannoura",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 4.63,
+  "text": "……喜んでくださるであろうな？",
+  "heard": "……喜んでくださるであろうな？",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "v7lnw9y": {
+  "episode": "genpei-dannoura",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 4.390041666666667,
+  "text": "……そうか。おぬしにも、わからぬか。",
+  "heard": "そうか。 お 主 に も 分から ぬ か。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "v1wgl63y": {
+  "episode": "genpei-dannoura",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.28,
+  "text": "（小声）この年の冬。義経さんは、兄の頼朝さんから、追われる身になる。",
+  "heard": "この年の冬。義経さんは、兄の頼朝さんから、追われる身になる。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": [
+   "義経＝よしつね",
+   "頼朝＝よりとも"
+  ]
+ },
+ "v19urtby": {
+  "episode": "genpei-takadachi",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.04,
+  "text": "文治五年、閏四月。奥州、平泉。",
+  "heard": "文治 5年 類 4 奥州 平泉",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "文治五年＝ぶんじごねん",
+   "奥州＝おうしゅう",
+   "平泉＝ひらいずみ"
+  ]
+ },
+ "v11zrjl2": {
+  "episode": "genpei-takadachi",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.82,
+  "text": "衣川を見下ろす高館が、炎に包まれようとしていた。",
+  "heard": "衣川を見下ろす高館 が 炎 に 包まれ よう と し て い た 。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "衣川＝ころもがわ",
+   "高館＝たかだち"
+  ]
  }
 }
