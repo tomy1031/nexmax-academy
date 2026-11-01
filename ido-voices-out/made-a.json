@@ -221,5 +221,99 @@
   "heard": "どなた",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v1fay15s": {
+  "episode": "miyoshi-biwa",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 9.07,
+  "text": "この滝のことは、里の者しか知らぬはずなのに。",
+  "heard": "この滝のことは、里の者しか知らぬはずなのに。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vdyog8n": {
+  "episode": "miyoshi-biwa",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.13,
+  "text": "ご、ごめんなさい！ ぼくたち、旅の者です。音が、あんまりきれいで。",
+  "heard": "ご ごめん なさい 。 僕 たち 旅 の もの です 。 音 が あんまり 綺麗 で 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "旅の者＝たびのもの"
+  ]
+ },
+ "vk5gvu3": {
+  "episode": "miyoshi-biwa",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 6.24,
+  "text": "きれい……そうかしら。今のは、弔いの曲です。",
+  "heard": "きれい。 そうかしら。 今のは 棚井の曲です。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1fcgsg5": {
+  "episode": "miyoshi-biwa",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 4.83,
+  "text": "……どなた？ 今のは、弔いの曲です。",
+  "heard": "……どなた？ 今のは、弔いの曲です。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1yfpne7": {
+  "episode": "miyoshi-biwa",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 9.520041666666666,
+  "text": "去年の秋、私たちを逃がすために、ひとりで山へ消えた人がいたの。弥平次という、口うるさいおじいさん。",
+  "heard": "去年の秋、私たちを逃がすために、ひとりで山へ消えた人がいたの。弥平次という、口うるさいおじいさん。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "弥平次＝やへいじ"
+  ]
+ },
+ "v5zcdmt": {
+  "episode": "miyoshi-biwa",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 7.7,
+  "text": "一年たっても、帰ってこない。……だから今日だけは、悲しい曲を弾くと決めたの。",
+  "heard": "一年たっても、帰ってこない。……だから今日だけは、悲しい曲を弾くと決めたの。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1i06r6s": {
+  "episode": "miyoshi-biwa",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 2.62,
+  "text": "（小声）弥平次さん……あの夜の。",
+  "heard": "さん……あの夜の。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "弥平次＝やへいじ"
+  ]
+ },
+ "v1v5421f": {
+  "episode": "miyoshi-biwa",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 1.02,
+  "text": "……え？",
+  "heard": "え",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
