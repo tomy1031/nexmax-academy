@@ -305,5 +305,109 @@
   "readings": [
    "継信＝つぎのぶ"
   ]
+ },
+ "vf85gju": {
+  "episode": "genpei-yashima",
+  "speaker": "tsuginobu",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 8.33,
+  "text": "主の身代わりに討たれたと、末の世まで語られるなら……武士の、本望……",
+  "heard": "の シノ が 身代わり で 打た れ た と 。 末 の 世 まで 語ら れる なら 武士 の 本 も",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": [
+   "武士＝ぶし"
+  ]
+ },
+ "v18c1r2x": {
+  "episode": "genpei-yashima",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.550041666666667,
+  "text": "継信は、そのまま動かなくなった。",
+  "heard": "次 の 部 は その まま 動か なく なっ た 。",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": [
+   "継信＝つぎのぶ"
+  ]
+ },
+ "vvsq9i5": {
+  "episode": "genpei-yashima",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.34,
+  "text": "（小声）黄瀬川で「殿の盾となります」って言ってた、継信さんが……。",
+  "heard": "黄瀬川で「殿の盾となります」って言ってた、継信さんが……。",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": [
+   "黄瀬川＝きせがわ",
+   "殿＝との",
+   "継信＝つぎのぶ"
+  ]
+ },
+ "v15ckecl": {
+  "episode": "genpei-yashima",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.93,
+  "text": "義経は、自らの名馬・大夫黒を僧に与え、継信を弔わせたという。",
+  "heard": "義経は自らの名馬太夫黒を僧に与え継信を取りわせたという",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "義経＝よしつね",
+   "大夫黒＝たゆうぐろ",
+   "継信＝つぎのぶ"
+  ]
+ },
+ "v41n8vw": {
+  "episode": "genpei-yashima",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 4.28,
+  "text": "……勝たねばならぬ。継信のためにも。",
+  "heard": "……勝たねばならぬ。継信のためにも。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "継信＝つぎのぶ"
+  ]
+ },
+ "v3zqjs9": {
+  "episode": "genpei-yashima",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.19,
+  "text": "日が傾いた。戦は、いったん止んでいる。",
+  "heard": "戦は、いったん止んでいる。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vrntmzd": {
+  "episode": "genpei-yashima",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 11.080125,
+  "text": "沖から、平家の小舟が一艘、漕ぎ出してきた。竿の先には、紅の地に金の日輪を描いた扇。",
+  "heard": "沖から、平家の小舟が一艘、漕ぎ出してきた。竿の先には、紅の地に金の日輪を描いた扇。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "平家＝へいけ"
+  ]
+ },
+ "v1y3jvf": {
+  "episode": "genpei-yashima",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.0300416666666665,
+  "text": "舟の上で、女房が手招きしている。「射てみよ」と。",
+  "heard": "舟の上で、女房が手招きしている。「射てみよ」と。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
