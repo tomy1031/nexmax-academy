@@ -2095,5 +2095,101 @@
   "readings": [
    "撥＝ばち"
   ]
+ },
+ "vn5oftv": {
+  "episode": "miyoshi-finale",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 2.48,
+  "text": "「また来い　——国盛」",
+  "heard": "また濃い 国盛",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": [
+   "国盛＝くにもり"
+  ]
+ },
+ "v17iq9uw": {
+  "episode": "miyoshi-finale",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.94,
+  "text": "国盛さんは、気づいてたんだね。あなたが、ずっと先の時代から来たことに。",
+  "heard": "国森 さん は 気づい て た ん だ ね 。 あなた が ずっと 先 の 時代 から 来 た こと に 。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": [
+   "国盛＝くにもり"
+  ]
+ },
+ "v1cxpmuz": {
+  "episode": "miyoshi-finale",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.000041666666666,
+  "text": "八百四十年。この岩の前で、ずっと、待ってたんだ。",
+  "heard": "この岩の前で、ずっと、待ってたんだ。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "vqy5vp8": {
+  "episode": "miyoshi-finale",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.51,
+  "text": "風が吹いた。かずら橋が、ゆらりと揺れた。",
+  "heard": "かずら橋が、ゆらりと揺れた。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1u05791": {
+  "episode": "miyoshi-finale",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.08,
+  "text": "どこか遠くで、琵琶の音が鳴った気がした。それから、赤子の泣き声と、年寄りの笑い声も。",
+  "heard": "どこか遠くで、琵琶の音が鳴った気がした。それから、赤子の泣き声と、年寄りの笑い声も。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "琵琶＝びわ"
+  ]
+ },
+ "v1cb09vz": {
+  "episode": "miyoshi-finale",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 3.16,
+  "text": "旅の者。……語ってくれるか。",
+  "heard": "旅 の も の , 語 っ て く れ る か 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "旅の者＝たびのもの"
+  ]
+ },
+ "v1lq4u3f": {
+  "episode": "miyoshi-finale",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 2.79,
+  "text": "うん。今度は、あなたが語り部だ。",
+  "heard": "うん。今度は、あなたが語り部だ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1hd8g02": {
+  "episode": "miyoshi-finale",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.020041666666667,
+  "text": "ふふ。そうだね。スタンプも、写真も、全部あなたの語りだ。",
+  "heard": "ふふ 、 そう だ ね 。 スタンプ も 写真 も 全部 あなた の 語り だ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
