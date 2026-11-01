@@ -1360,5 +1360,107 @@
   "readings": [
    "国盛＝くにもり"
   ]
+ },
+ "v1s1iwyh": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 9.78,
+  "text": "源氏は割れた。海辺の者らは言うてくる。今こそ平家が立つときじゃ、教経どのが立てば皆が続く、と。",
+  "heard": " 海辺の者らは言うてくる。今こそ平家が立つときじゃ、教経どのが立てば皆が続く、と。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "源氏＝げんじ",
+   "平家＝へいけ",
+   "教経＝のりつね"
+  ]
+ },
+ "vs092ip": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.580041666666667,
+  "text": "国盛は、背の包みをほどいた。",
+  "heard": "こ に も り は 背 の 包み を ほい た 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "国盛＝くにもり"
+  ]
+ },
+ "v1u763a7": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.82,
+  "text": "現れたのは、古い太刀。鞘に、金の飾りがかすかに残っている。",
+  "heard": "現れ た の は 古い 塔 。 紗 に 金 の 飾り が 微か に 残っ て いる 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "太刀＝たち"
+  ]
+ },
+ "v9m3i6y": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 8.920041666666666,
+  "text": "これは、帝のおそばにあった剣じゃ。",
+  "heard": "これは、帝のおそばにあった剣じゃ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "帝＝みかど"
+  ]
+ },
+ "vob8s77": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.19,
+  "text": "これを掲げて山を下りれば、もう一度、戦が始まる。",
+  "heard": "これを掲げて山を下りれば、もう一度戦いが始まる。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1gtum0m": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.18,
+  "text": "ここに置いてゆけば——平家の戦は、ここで終わる。",
+  "heard": "ここに置いてゆけば——平家の戦は、ここで終わる。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "平家＝へいけ"
+  ]
+ },
+ "v1a9u0ra": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.470083333333333,
+  "text": "どちらにするか、この山に決めてもらいに来た。",
+  "heard": "どちらにするか、この山に決めてもらいに来た。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vuub1x5": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 0.67,
+  "text": "……おぬし、義経に会うたことがあるな。顔に書いてある。",
+  "heard": "……おぬし、よしつねに会うたことがあるな。顔に書いてある。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "義経＝よしつね"
+  ]
  }
 }
