@@ -1060,5 +1060,16 @@
   "heard": "2 年 5 この 人 は 剣 を 山 に 眠らせる 。 この 夜 が あっ た から 7 日 も しれ ない ね 。",
   "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
   "readings": []
+ },
+ "vrlv71i": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 1.06,
+  "text": "……泣くな。",
+  "heard": "泣く な 。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
  }
 }
