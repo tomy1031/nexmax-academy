@@ -1678,5 +1678,101 @@
   "heard": "あはははははは。",
   "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
   "readings": []
+ },
+ "v1yk2n4e": {
+  "episode": "genpei-takadachi",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 5.810041666666667,
+  "text": "そうか！ あの男が、生きておるか！ 剣を捨てて、山で……！",
+  "heard": "そうか！あの男が、生きているか！剣を捨てて、山で……！",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "v58sne2": {
+  "episode": "genpei-takadachi",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 2.660041666666667,
+  "text": "よかった。……本当に、よかった。",
+  "heard": "……本当に、よかった。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "vt60gk0": {
+  "episode": "genpei-takadachi",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.07,
+  "text": "義経の目から、涙がこぼれていた。",
+  "heard": "よ しつね の 目 から 涙 が こぼれ て い た 。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "義経＝よしつね"
+  ]
+ },
+ "vtntsug": {
+  "episode": "genpei-takadachi",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 4.11,
+  "text": "……そうか。わからぬほうが、よいのかもしれぬな。",
+  "heard": "……そうか。わからぬほうが、よいのかもしれぬな。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "vdqlxlo": {
+  "episode": "genpei-takadachi",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 3.3200416666666666,
+  "text": "……わからぬか。そうであろうな。",
+  "heard": "分からぬ か 。 そう で あろう な 。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "vg8tza7": {
+  "episode": "genpei-takadachi",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.98,
+  "text": "（小声）……祖谷には、生きのびたという言い伝えがあるんだけど。",
+  "heard": "……祖谷には、生きのびたという言い伝えがあるんだけど。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "祖谷＝いや"
+  ]
+ },
+ "v3umot5": {
+  "episode": "genpei-takadachi",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 2.5200416666666667,
+  "text": "旅の者。頼みがある。",
+  "heard": "旅 の もの 頼み が ある 。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "旅の者＝たびのもの"
+  ]
+ },
+ "vkeagjv": {
+  "episode": "genpei-takadachi",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 8.77,
+  "text": "わたしも、どこかで生きていることにしてくれぬか。……教経のように。",
+  "heard": "私 も どこ か で 生き て いる こと に し て くれ ぬ か 。 驚形 の よう に 。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "教経＝のりつね"
+  ]
  }
 }
