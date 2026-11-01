@@ -1,4 +1,20 @@
 {
-  "episodes": ["miyoshi-prologue", "miyoshi-kazurabashi"],
-  "max_calls": 10
+ "groups": {
+  "a": [
+   "promo",
+   "miyoshi-biwa",
+   "miyoshi-tsurugi",
+   "miyoshi-finale"
+  ],
+  "b": [
+   "miyoshi-oboke",
+   "miyoshi-youkai",
+   "genpei-kisegawa"
+  ],
+  "c": [
+   "genpei-yashima",
+   "genpei-dannoura",
+   "genpei-takadachi"
+  ]
+ }
 }

@@ -7,8 +7,10 @@
 //   ・MP3 に する などの 仕上げは、受け取った あとに IDO 時渡りの 側で やる
 //   ・すでに ある 行は 飛ばす（もう一度 走らせると、続きだけ 作る）
 //   ・持ち時間（22分）を 過ぎたら、新しい 行は 始めない
+//   ・話を 3つの 組（a・b・c）に 分け、組ごとに 別の 実行で 同時に 作る。記録（made-<組>.json）は 組ごとに
+//     分け、push の 前に ほかの 組の ぶんを 取りこむ（声の ファイル名は 組で 重ならない）
 //
-// 使い方（ワークフロー「教材の 音声づくり」から）: meeting=ido_proto_voices
+// 使い方（ワークフロー「教材の 音声づくり」から）: meeting=ido_proto_voices:a（b・c も 同じ）
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { OUT_RATE, synthesizeWithFallback, toWav } from "../lib/live_tts.ts";
@@ -21,9 +23,11 @@ const PUSH_EVERY = 8;
 
 const started = Date.now();
 const req = JSON.parse(readFileSync(`${DIR}/request.json`, "utf8"));
+const group = process.argv[2] ?? "a";
+const episodes = req.groups[group] ?? [];
 const cast = JSON.parse(readFileSync(`${DIR}/voice-cast.json`, "utf8")).cast;
 const lines = JSON.parse(readFileSync(`${DIR}/voice-lines.json`, "utf8")).filter((l) =>
-  req.episodes.includes(l.episode),
+  episodes.includes(l.episode),
 );
 const apiKey = process.env.GEMINI_API_KEY ?? "";
 const branch = process.env.GITHUB_REF_NAME ?? "";
@@ -32,7 +36,7 @@ if (!apiKey || !branch) {
   process.exit(1);
 }
 mkdirSync(OUT, { recursive: true });
-const logFile = `${OUT}/made.json`;
+const logFile = `${OUT}/made-${group}.json`;
 const log = existsSync(logFile) ? JSON.parse(readFileSync(logFile, "utf8")) : {};
 
 const git = (...args) => spawnSync("git", args, { stdio: "inherit" });
@@ -44,7 +48,9 @@ const save = (message) => {
   git("add", OUT);
   if (git("diff", "--cached", "--quiet").status === 0) return true;
   git("commit", "-q", "-m", message);
-  for (let i = 0; i < 3; i += 1) {
+  for (let i = 0; i < 5; i += 1) {
+    // ほかの 組が 先に 送って いたら、その ぶんを 取りこんでから 送る
+    if (git("pull", "-q", "--rebase", "origin", branch).status !== 0) git("rebase", "--abort");
     if (git("push", "-q", "origin", `HEAD:${branch}`).status === 0) return true;
     spawnSync("sleep", [String(5 * (i + 1))]);
   }
@@ -120,7 +126,7 @@ for (const l of lines) {
     pending += 1;
     console.log(`✓ ${l.speaker}（${c.voice}）${seconds.toFixed(1)}秒 ${l.text.slice(0, 24)}`);
     if (pending >= PUSH_EVERY) {
-      if (save(`一時：IDO の 声 ${Object.keys(log).length}行（マージしない）`)) pending = 0;
+      if (save(`一時：IDO の 声 ${group} ${Object.keys(log).length}行（マージしない）`)) pending = 0;
     }
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
@@ -133,5 +139,5 @@ for (const l of lines) {
   }
   await wait(4_000); // 成功した ときは すぐ 返る ので、つづけて つなぐと 断られる
 }
-save(`一時：IDO の 声 ${Object.keys(log).length}行（マージしない）`);
+save(`一時：IDO の 声 ${group} ${Object.keys(log).length}行（マージしない）`);
 console.log(`\n今回：${made}行／失敗：${failed.length}行／ブランチに ある 声：${Object.keys(log).length}行`);

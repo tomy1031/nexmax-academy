@@ -49,18 +49,20 @@ import {
 
 /*
  * 一時（このブランチは マージしない）：IDO 時渡り（別の リポジトリ）の 物語の 声を、Live の 読み上げで 作る。
- * tomy さんの OK（2026-11-01）。教材ID の 代わりに `ido_proto_voices` を 渡した ときだけ 動く。
+ * tomy さんの OK（2026-11-01）。教材ID の 代わりに `ido_proto_voices`（`:a` などの 組つき）を 渡した ときだけ 動く。
  * 声は 受け取った その場で WAV に して、8行 ごとに この ブランチに push する（scripts/ido_voices/make_live.mjs）。
  * public/audio は 変えないので PR は できない。
  */
-if (process.argv[2] === "ido_proto_voices") {
+if (process.argv[2]?.startsWith("ido_proto_voices")) {
+  // `ido_proto_voices:b` の ように、組（a・b・c）を 付けて 同時に 走らせる
+  const group = process.argv[2].split(":")[1] ?? "a";
   const run = (cmd: string, args: string[]) => spawnSync(cmd, args, { stdio: "inherit" });
   // push の 前の 検査（整形）に 落ちると、作った 声を 送れない。声を 作る 前に 確かめる
   if (run("npm", ["run", "-s", "format:check"]).status !== 0) {
     console.error("整形の 検査が 通らないので、声を 作る 前に 止めます");
     process.exit(1);
   }
-  const made = run("node", ["--import", "tsx", "scripts/ido_voices/make_live.mjs"]);
+  const made = run("node", ["--import", "tsx", "scripts/ido_voices/make_live.mjs", group]);
   process.exit(made.status ?? 1);
 }
 
