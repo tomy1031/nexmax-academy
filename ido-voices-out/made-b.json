@@ -196,5 +196,101 @@
   "readings": [
    "小歩危＝こぼけ"
   ]
+ },
+ "viof558": {
+  "episode": "miyoshi-oboke",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 8.440041666666668,
+  "text": "ははっ、素人が乗ったら、三つ数える前に川の底じゃ。岸から見とれ。",
+  "heard": "ははっ、素人が乗ったら、三つ数える前に川の底じゃ。岸から見とれ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v3xfufk": {
+  "episode": "miyoshi-oboke",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 2.67,
+  "text": "（小声）……ぼくも、そう思う。",
+  "heard": "……ぼくも、そう思う。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vdnwtez": {
+  "episode": "miyoshi-oboke",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.19,
+  "text": "丸太の群れが、流れに乗った。",
+  "heard": "丸太 の 群れ が 流れ に 乗っ た 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vvpoqbx": {
+  "episode": "miyoshi-oboke",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.94,
+  "text": "両岸に、白と灰色のしま模様の岩壁がそそり立つ。その間を、吉蔵と松吉が、跳ねる丸太から丸太へと渡っていく。",
+  "heard": "両岸に、白と灰色のしま模様の岩壁がそそり立つ。その間を、吉蔵と松吉が、跳ねる丸太から丸太へと渡っていく。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "吉蔵＝きちぞう",
+   "松吉＝まつきち"
+  ]
+ },
+ "v1n5otfe": {
+  "episode": "miyoshi-oboke",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 9.76,
+  "text": "ここが大歩危！ 大股で歩いたら危ない、ゆうてな！ この先が小歩危、小股でも危ない！",
+  "heard": " 大股で歩いたら危ない、ゆうてな！ この先が小歩危、小股でも危ない！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "大歩危＝おおぼけ",
+   "小歩危＝こぼけ"
+  ]
+ },
+ "v1jkftvs": {
+  "episode": "miyoshi-oboke",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.17,
+  "text": "「ほき」は崖を意味する古い言葉だから、そこから来たという説もあるんだよ。",
+  "heard": "「ほき」は崖を意味する古い言葉だから、そこから来たという説もあるんだよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vln2wb7": {
+  "episode": "miyoshi-oboke",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 19.080041666666666,
+  "text": "この岩はね、恐竜がいた時代に海の底にたまった砂や泥が、地下深くで押し固められてできたもの。それを吉野川が、長い長い時間をかけて削ってきたんだ。日本列島の成り立ちがわかる、国の天然記念物だよ。",
+  "heard": "この岩はね、恐竜がいた時代に海の底にたまった砂や泥が、地下深くで押し固められてできたもの。それを吉野川が、長い長い時間をかけて削ってきたんだ。日本列島の成り立ちがわかる、国の天然記念物だよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "吉野川＝よしのがわ"
+  ]
+ },
+ "v8e860h": {
+  "episode": "miyoshi-oboke",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 5.88,
+  "text": "恐竜の時代！ ほんなら、わしの四十年なんぞ、まばたきじゃの！",
+  "heard": "恐竜の時代！ほんなら、わしの四十年なんぞ、まばたきじゃの！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
