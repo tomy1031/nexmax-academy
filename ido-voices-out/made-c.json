@@ -1774,5 +1774,100 @@
   "readings": [
    "教経＝のりつね"
   ]
+ },
+ "v1rtbmpw": {
+  "episode": "genpei-takadachi",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 2.2,
+  "text": "わたしのことを語るときは——",
+  "heard": "私 の こと を 語る とき は",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "vmpvktv": {
+  "episode": "genpei-takadachi",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 3.77,
+  "text": "勝った話ではなく、生きた話をしてくれ。",
+  "heard": "買った 話 で は なく 、 生き た 話 を し て くれ 。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "v1hlksjg": {
+  "episode": "genpei-takadachi",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 11.5,
+  "text": "笑い、泣き、兄を慕い、仲間に助けられて、ここまで走ってきた——ひとりの男の話を。",
+  "heard": "笑い、泣き、愛をしたい。 仲間 に 助け られ て ここ まで 走っ て き た 。 1人 の 男 の 話 を",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "v123wk0h": {
+  "episode": "genpei-takadachi",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.140041666666667,
+  "text": "炎が、すぐそこまで迫っていた。",
+  "heard": "炎 が すぐ そこ まで 迫っ て い た 。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "vi0me8w": {
+  "episode": "genpei-takadachi",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 2.5600416666666668,
+  "text": "行け。おぬしの時代へ。",
+  "heard": "行け 。小野 氏 の 時代 へ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1mk6ddw": {
+  "episode": "genpei-takadachi",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.18,
+  "text": "令和八年、夏。高館の丘。",
+  "heard": "令和8年 夏 高田 丘",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "高館＝たかだち"
+  ]
+ },
+ "v2o05d2": {
+  "episode": "genpei-takadachi",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 16,
+  "text": "眼下を、北上川がゆったりと流れていく。一面の、夏草。",
+  "heard": "眼下を、北上川がゆったりと流れていく。一面の、夏草。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "北上川＝きたかみがわ",
+   "夏草＝なつくさ"
+  ]
+ },
+ "v1jwp1mv": {
+  "episode": "genpei-takadachi",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.47,
+  "text": "義経さんが亡くなって、ちょうど五百年後。ひとりの俳人が、ここに立ったんだ。",
+  "heard": "さんが亡くなって、ちょうど五百年後。ひとりの俳人が、ここに立ったんだ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "義経＝よしつね"
+  ]
  }
 }
