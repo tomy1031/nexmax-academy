@@ -1912,5 +1912,103 @@
   "heard": "自分を？……ははっ、おかしなことを言う。わたしの命は、兄上のためにあるのだ。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v14reurh": {
+  "episode": "genpei-kisegawa",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.210041666666667,
+  "text": "やがて——「会おう」と、陣の奥から声がかかった。陣幕の奥に、その人はいた。",
+  "heard": "やがて 青 を と 人 の 奥 から 声 が かかっ た 。 人膜 の 奥 に その 人 は い た 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v16c6d4v": {
+  "episode": "genpei-kisegawa",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.240083333333334,
+  "text": "義経は、ひざまずいたまま、顔を上げられない。",
+  "heard": "よしつね は 膝まづい た まま 顔 を 上げ られ ない 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "義経＝よしつね"
+  ]
+ },
+ "v5dqiag": {
+  "episode": "genpei-kisegawa",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 7,
+  "text": "あ、兄上……。く、九郎、義経に……",
+  "heard": "あ、兄上……。く、九郎、よしつねに……",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "九郎＝くろう",
+   "義経＝よしつね"
+  ]
+ },
+ "vaqiivp": {
+  "episode": "genpei-kisegawa",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.08,
+  "text": "言葉が、続かない。昨夜あれほど練習した言葉が、ひとつも出てこない。",
+  "heard": "言葉が、続かない。昨夜あれほど練習した言葉が、ひとつも出てこない。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vs4q70c": {
+  "episode": "genpei-kisegawa",
+  "speaker": "yoritomo",
+  "voice": "Schedar",
+  "model": "gemini-3.8-live",
+  "seconds": 1.08,
+  "text": "顔を上げよ。",
+  "heard": "顔 を 上げよ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v10cl2nd": {
+  "episode": "genpei-kisegawa",
+  "speaker": "yoritomo",
+  "voice": "Schedar",
+  "model": "gemini-3.8-live",
+  "seconds": 13.050083333333333,
+  "text": "その昔、八幡太郎義家公が奥州の戦で苦しまれたとき、弟の新羅三郎義光公が、官職を捨てて駆けつけたという。",
+  "heard": "その昔、八幡太郎義家公が奥州の戦で苦しまれたとき、弟の新羅三郎義光公が、官職を捨てて駆けつけたという。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "奥州＝おうしゅう"
+  ]
+ },
+ "v1e9xy68": {
+  "episode": "genpei-kisegawa",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 15.630041666666667,
+  "text": "頼朝の目から、涙がこぼれた。義経も、声をあげて泣いた。",
+  "heard": "頼朝の目から、涙がこぼれた。義経も、声をあげて泣いた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "頼朝＝よりとも",
+   "義経＝よしつね"
+  ]
+ },
+ "vfxbd40": {
+  "episode": "genpei-kisegawa",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.870041666666666,
+  "text": "兄と弟は、ひとつの石に並んで腰をおろし、昔のことを語り合ったという。",
+  "heard": "兄 と 弟 は 1 つ の 石 に 並ん で 腰 を 下ろし 昔 の こと を 語り合っ た と いう 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
