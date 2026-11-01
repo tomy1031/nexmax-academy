@@ -1658,5 +1658,54 @@
    "奥州＝おうしゅう",
    "頼朝＝よりとも"
   ]
+ },
+ "vqvbau0": {
+  "episode": "genpei-kisegawa",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.960041666666666,
+  "text": "（小声）源義経さん……！ このとき、数えで二十二歳だよ。",
+  "heard": "源義経 さん 。 この 時 数え で 22 歳 だ よ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "源義経＝みなもとのよしつね"
+  ]
+ },
+ "vk45cyy": {
+  "episode": "genpei-kisegawa",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 2.65,
+  "text": "……おぬし、また会うたな？",
+  "heard": "……おぬし、また会うたな？",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v14pbgo8": {
+  "episode": "genpei-kisegawa",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 5.100041666666667,
+  "text": "……ん？ なぜそのように、なつかしそうな顔で、わたしを見る。",
+  "heard": "……ん？なぜそのように、なつかしそうな顔で、わたしを見る。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1xatwuq": {
+  "episode": "genpei-kisegawa",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.35,
+  "text": "（小声）高館で最期を見届けた義経さんの、九年前の姿……。まだ、何も知らない顔をしてる。",
+  "heard": "大型倉 で 最後 を 見届け た 白鳥 さん の 9 年 前 の 姿 まだ 何 も 知ら ない 顔 を し てる",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "高館＝たかだち",
+   "義経＝よしつね"
+  ]
  }
 }
