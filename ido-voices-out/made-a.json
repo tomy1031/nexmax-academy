@@ -1590,5 +1590,108 @@
   "heard": "違う",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "vr5txh6": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 18.06,
+  "text": "あの子が、川で笑っておる。綾が、琵琶を弾いておる。里の者らが、わしらを隠してくれた。",
+  "heard": "言葉の前に短い間をとる)、あの子が、川で笑っておる。綾が、琵琶を弾いておる。里の者らが、わしらを隠してくれた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "綾＝あや",
+   "琵琶＝びわ"
+  ]
+ },
+ "v8cbayi": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.28,
+  "text": "（小声）「あの子」は、まだ小さな帝のこと。綾さんは、帝をお育てしてきた、琵琶の名人なんだ。",
+  "heard": "「あの子」は、まだ小さな帝のこと。綾さんは、帝をお育てしてきた、琵琶の名人なんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "帝＝みかど",
+   "綾＝あや",
+   "琵琶＝びわ"
+  ]
+ },
+ "vnu95nv": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.04,
+  "text": "弥平次が、命を張って、道を間違えてくれた。",
+  "heard": "弥平次が、命を張って、道を間違えて",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "弥平次＝やへいじ"
+  ]
+ },
+ "v1khqc4q": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 3.53,
+  "text": "わしは、それを守るために生かされたのじゃ。",
+  "heard": "わし は それ を 守る ため に 行かさ れ た の じゃ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vx93r4k": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 12.9,
+  "text": "剣が、静かに鞘へ戻された。",
+  "heard": "剣が、静かに鞘へ戻された。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v693931": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.990041666666666,
+  "text": "あなたは国盛と並んで、岩の裂け目に剣を横たえた。冷たく、思ったより重い。",
+  "heard": "こにもりと並んで岩の隙間に剣を横たえた。 冷た く 思っ た より 重い。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "国盛＝くにもり"
+  ]
+ },
+ "vwlok7d": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.99,
+  "text": "国盛はひとりで、岩の裂け目に剣を横たえた。",
+  "heard": "国盛はひとりで、岩の裂け目に剣を横たえた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "国盛＝くにもり"
+  ]
+ },
+ "vde5tad": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 7.32,
+  "text": "眠れ、平家の剣よ。もう誰も、斬らずともよい。",
+  "heard": "眠れ、平家の剣よ。もう誰も、斬らずともよい。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "平家＝へいけ"
+  ]
  }
 }
