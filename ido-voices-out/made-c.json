@@ -774,5 +774,114 @@
   "heard": "この人にとって は 今日 が 初めて あなた は この 人 の この 先 を 見 て き た ん だ ね 。",
   "scene": "激しい戦いのさなか。声を張り、息は荒く",
   "readings": []
+ },
+ "vueffrf": {
+  "episode": "genpei-dannoura",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.920041666666667,
+  "text": "昼を過ぎて——潮の流れが変わった、と語られている。",
+  "heard": "昼 を 過ぎ て 塩 の 流れ が 変わっ た と 語ら れ て いる 。",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "v1q1bz4a": {
+  "episode": "genpei-dannoura",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.03,
+  "text": "平家の舟が、押し戻されていく。源氏の矢が、雨のように降り注ぐ。",
+  "heard": "平家の舟が、押し戻されていく。源氏の矢が、雨のように降り注ぐ。",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": [
+   "平家＝へいけ",
+   "源氏＝げんじ"
+  ]
+ },
+ "v1inwzyk": {
+  "episode": "genpei-dannoura",
+  "speaker": "平家の武者",
+  "voice": "Rasalgethi",
+  "model": "gemini-3.8-live",
+  "seconds": 8.090041666666666,
+  "text": "新中納言さま（知盛）が御座船へ！ 「見苦しき物は、みな海へ」と、御みずから船を清めておられる……！",
+  "heard": "新中納言さまがござぶねへ！「見苦しき物は、みな海へ」と、御みずから船を清めておられる……！",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": [
+   "知盛＝とももり",
+   "御座船＝ござぶね"
+  ]
+ },
+ "vq9wa4g": {
+  "episode": "genpei-dannoura",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.86,
+  "text": "平知盛さん……平家の軍を率いた人だ。負けを覚悟して、帝の舟を、自分の手で清めているんだ。",
+  "heard": "平知盛さん……平家の軍を率いた人だ。負けを覚悟して、帝の舟を、自分の手で清めているんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "平知盛＝たいらのとももり",
+   "平家＝へいけ",
+   "帝＝みかど"
+  ]
+ },
+ "v1ofmavn": {
+  "episode": "genpei-dannoura",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.28,
+  "text": "平家の御座船から、女房たちが、次々と海へ身を投げていく。",
+  "heard": "平家 の 御座船 から 女房 たち が 次々 と 海 へ 身 を 投げ て いく 。",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": [
+   "平家＝へいけ",
+   "御座船＝ござぶね"
+  ]
+ },
+ "v1dgrp6j": {
+  "episode": "genpei-dannoura",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 13.56,
+  "text": "幼い帝を抱いた二位尼は、「波の下にも都の候ぞ」と申し上げて、深い海へ沈んでいった——と、『平家物語』は語る。",
+  "heard": "幼い帝を抱いた二位尼は、「波の下にも都の候ぞ」と申し上げて、深い海へ沈んでいった——と、『平家物語』は語る。",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": [
+   "帝＝みかど",
+   "二位尼＝にいのあま",
+   "都＝みやこ",
+   "平家物語＝へいけものがたり"
+  ]
+ },
+ "v6f4s6d": {
+  "episode": "genpei-dannoura",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 0.79,
+  "text": "……でもね。四国の祖谷には、帝は生きのびて、山奥へ落ちのびたという言い伝えがあるんだ。",
+  "heard": "……でもね。四国の祖谷には、帝は生きのびて、山奥へ落ちのびたという言い伝えがあるんだ。",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": [
+   "祖谷＝いや",
+   "帝＝みかど"
+  ]
+ },
+ "v1j0dpja": {
+  "episode": "genpei-dannoura",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 2.08,
+  "text": "……もはや、これまでか。",
+  "heard": "……もはや、これまでか。",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
  }
 }
