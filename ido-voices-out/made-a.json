@@ -1889,5 +1889,95 @@
   "readings": [
    "妖怪＝ようかい"
   ]
+ },
+ "v1j9prjj": {
+  "episode": "miyoshi-finale",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 2.88,
+  "text": "ねえ。ひとつ、打ち明けてもいい？",
+  "heard": "ね 、 一つ 打ち明け て も いい ?",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vmut45r": {
+  "episode": "miyoshi-finale",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.6,
+  "text": "ぼくは時渡りのナビゲーター。いろんな時代を、見ることはできる。",
+  "heard": "ぼく は 時渡り の ナビゲーター 、 いろんな 時代 を 見る こと は できる 。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "時渡り＝ときわたり"
+  ]
+ },
+ "v1mekc7w": {
+  "episode": "miyoshi-finale",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.5,
+  "text": "でも、見たものを「覚えておく」ことは、できないんだ。扉を閉じると、ぼくの中から消えてしまう。",
+  "heard": "でも見たものを覚えておくことはできないんだ。扉を閉じると僕の中から消えてしまう。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vbqu67v": {
+  "episode": "miyoshi-finale",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.06,
+  "text": "うん。……きっと、少しずつ、忘れていく。",
+  "heard": "うん 。 きっと 少し ずつ 忘れ て いく 。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1d2d4h2": {
+  "episode": "miyoshi-finale",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.05,
+  "text": "そんな顔しないで。だから、旅人が必要なんだ。",
+  "heard": "そんな顔しないで。だから、旅人が必要なんだ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1ikp81v": {
+  "episode": "miyoshi-finale",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.32,
+  "text": "覚えておけるのは、人だけ。語り継げるのも、人だけなんだ。",
+  "heard": "覚えておけるのは、人だけ。語り継げるのも、人だけなんだ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v627q14": {
+  "episode": "miyoshi-finale",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.28,
+  "text": "だから——あなたが来てくれて、本当によかった。",
+  "heard": "だから——あなたが来てくれて、本当によかった。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v14063b0": {
+  "episode": "miyoshi-finale",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 0.7200416666666667,
+  "text": "……あれ？",
+  "heard": "あれ",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
