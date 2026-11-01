@@ -55,6 +55,10 @@ import {
 if (process.argv[2] === "ido_proto_voices") {
   const req = JSON.parse(readFileSync("scripts/ido_voices/request.json", "utf8"));
   const run = (cmd: string, args: string[]) => spawnSync(cmd, args, { stdio: "inherit" });
+  // 声を MP3 に する ffmpeg が ランナーに 無い ことが ある
+  if (spawnSync("ffmpeg", ["-version"]).status !== 0) {
+    run("bash", ["-c", "sudo apt-get update -q && sudo apt-get install -y -q ffmpeg"]);
+  }
   const made = run("node", [
     "scripts/ido_voices/make-voices.mjs",
     "--lines", "scripts/ido_voices/voice-lines.json",

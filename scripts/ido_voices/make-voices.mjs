@@ -90,6 +90,7 @@ const toMp3 = (pcm, file) => {
   writeFileSync(wav, core.pcmToWav(core.fadeEdges(pcm)));
   const r = spawnSync('ffmpeg', ['-y', '-loglevel', 'error', '-i', wav, '-ac', '1', '-ar', '24000', '-b:a', '48k', file]);
   rmSync(wav, { force: true });
+  if (r.error) throw new Error(`ffmpeg が見つかりません（${r.error.code}）。ffmpeg を入れてから、もう一度`);
   if (r.status !== 0) throw new Error(`ffmpeg: ${r.stderr}`);
 };
 
