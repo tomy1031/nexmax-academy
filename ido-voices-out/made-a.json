@@ -1693,5 +1693,105 @@
   "readings": [
    "平家＝へいけ"
   ]
+ },
+ "vspsv5z": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.01,
+  "text": "国盛は、長いあいだ、頭を下げていた。",
+  "heard": "国 森 は 長い 間 頭 を 下げ て い た 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "国盛＝くにもり"
+  ]
+ },
+ "v1117qy7": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 1.36,
+  "text": "……ふう。",
+  "heard": "ふう",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v11wmi6i": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 3.52,
+  "text": "これで、わしはただの国盛じゃ。",
+  "heard": "これ で わし は ただ の 国 森 じゃ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "国盛＝くにもり"
+  ]
+ },
+ "v1vqtxoe": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.77,
+  "text": "さて。撥を、返しにゆかねばな。……綾に、何と言うたものか。",
+  "heard": "さて、罰を返しに行かねばな。 綾 に 何 と 言う た もの か。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "撥＝ばち",
+   "綾＝あや"
+  ]
+ },
+ "vb8jvzd": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.43,
+  "text": "里に、待っておる者がおる。……帰らねばな。",
+  "heard": "里 に 待っ て おる もの が おる 。 帰ら ね ば な 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1cymvuc": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.58,
+  "text": "「剣山」という名前は、安徳天皇の剣をこの山に納めたという伝説から来ている、といわれているんだ。",
+  "heard": "「剣山」という名前は、安徳天皇の剣をこの山に納めたという伝説から来ている、といわれているんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "剣山＝つるぎさん",
+   "安徳天皇＝あんとくてんのう"
+  ]
+ },
+ "v1waxyr5": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.09,
+  "text": "剣が本当にあるのかは、誰にもわからない。でも、山の名前が、その物語を今に伝えている。",
+  "heard": "剣が本当にあるのかは、誰にもわらない。でも、山の名前が、その物語を今に伝えている。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1p4uz9q": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.35,
+  "text": "旅の者。山を下りたら、この話を誰かにしてやってくれ。",
+  "heard": "山を下りたら、この話を誰かにしてやってくれ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "旅の者＝たびのもの"
+  ]
  }
 }
