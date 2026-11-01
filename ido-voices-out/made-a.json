@@ -2191,5 +2191,67 @@
   "heard": "ふふ 、 そう だ ね 。 スタンプ も 写真 も 全部 あなた の 語り だ 。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v4ql5fr": {
+  "episode": "miyoshi-finale",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.93,
+  "text": "……国盛さんは言ってた。屋島で、自分の矢の前に、身を隠さなかった若武者がいたって。",
+  "heard": "すれ 森 さん は 言っ て た 。 矢島 で 自分 の 矢 の 前 に 身 を 隠さ なかっ た 若者 が い たって 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "国盛＝くにもり",
+   "屋島＝やしま"
+  ]
+ },
+ "v1ps5s7f": {
+  "episode": "miyoshi-finale",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.63,
+  "text": "源義経さん。あなたは、もうあの人に会ったよね。追う者から、追われる者になった人。",
+  "heard": "源義経さん。あなたは、もうあの人に会ったよね。追う者から、追われる者になった人。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "源義経＝みなもとのよしつね"
+  ]
+ },
+ "v7pm8aw": {
+  "episode": "miyoshi-finale",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.2,
+  "text": "源義経。追う者から、追われる者になった人。",
+  "heard": "みなもとのよしつね。追う者から、追われる者になった人。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "源義経＝みなもとのよしつね"
+  ]
+ },
+ "v1eb6c73": {
+  "episode": "miyoshi-finale",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.89,
+  "text": "その人の物語も、日本中の扉の向こうで、あなたを待ってる。",
+  "heard": "その人の物語も、日本中の扉の向こうで、あなたを待ってる。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vk6l04l": {
+  "episode": "miyoshi-finale",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.74,
+  "text": "さあ、次の町へ。……また、会おうね。",
+  "heard": "さあ、次の町へ。……また、会おうね。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
