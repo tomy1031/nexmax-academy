@@ -650,5 +650,109 @@
   "readings": [
    "松明＝たいまつ"
   ]
+ },
+ "vlm2tsr": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 1.0800833333333333,
+  "text": "……おぬし。",
+  "heard": "おぬし",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v6ve8q7": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "genji",
+  "voice": "Fenrir",
+  "model": "gemini-3.8-live",
+  "seconds": 2.8800416666666666,
+  "text": "いたぞ！ 平家の残党だ！",
+  "heard": "いたぞ！平家の残党だ！",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "平家＝へいけ",
+   "残党＝ざんとう"
+  ]
+ },
+ "v14y8pii": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.46,
+  "text": "あなたは小太郎を背負い、橋の真ん中まで戻った。背後で、追手の足音が橋板を鳴らす。",
+  "heard": "あなたは小太郎を背負い、橋の真ん中まで戻った。背後で、追手の足音が橋板を鳴らす。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "小太郎＝こたろう",
+   "追手＝おって"
+  ]
+ },
+ "vxvdhyt": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "yaheiji",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 3.43,
+  "text": "行かれよ、旅のお方！ ここは爺が！",
+  "heard": "行かれよ、旅のお方！ ここは爺",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "爺＝じい"
+  ]
+ },
+ "v1lv3m6p": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.42,
+  "text": "いつの間にか後ろにいた老臣が、追手の前に立ちはだかった。",
+  "heard": "いつの間にか後ろにいた老臣が、追手の前に立ちはだかった。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "老臣＝ろうしん",
+   "追手＝おって"
+  ]
+ },
+ "v1r6zt6p": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.850041666666667,
+  "text": "老臣は小太郎を抱えて橋の中ほどまで戻ると、子をあなたの腕に押しつけた。",
+  "heard": "魯迅 は 小太郎 を 抱え て 橋 の 中 ほど まで 戻る と こう あなた の 腕 に 押し付け た 。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "老臣＝ろうしん",
+   "小太郎＝こたろう"
+  ]
+ },
+ "v44hnwv": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "yaheiji",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 2.7400416666666665,
+  "text": "旅のお方、この子を！",
+  "heard": " 「旅のお方、この子を！」",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "vy484n0": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.210041666666666,
+  "text": "そして、くるりと向きを変え——追手のいる岸へ、ひとり戻っていった。",
+  "heard": "そして、くるりと向きを変え——追手のいる岸へ、ひとり戻っていった。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "追手＝おって"
+  ]
  }
 }
