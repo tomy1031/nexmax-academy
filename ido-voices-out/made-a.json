@@ -631,5 +631,99 @@
   "heard": "焚き の 音 が 急 に 大きく なっ た 気 が し た 。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v19mw17d": {
+  "episode": "miyoshi-biwa",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 2.86,
+  "text": "また、戦をなさるのですか。",
+  "heard": "また、戦をなさるのですか。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vqw0zw0": {
+  "episode": "miyoshi-biwa",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 6.39,
+  "text": "帝に、もう一度——あの海を、お見せになるおつもりですか。",
+  "heard": "帝に、もう一度――あの海を、お見せになるおつもりですか。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "帝＝みかど"
+  ]
+ },
+ "v1ndd9f9": {
+  "episode": "miyoshi-biwa",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.56,
+  "text": "わしは武士じゃ。戦うほか、生き方を知らぬ。",
+  "heard": " わしは武士じゃ。 戦うほか、生き方",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "武士＝ぶし"
+  ]
+ },
+ "vusi02b": {
+  "episode": "miyoshi-biwa",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 2.3,
+  "text": "では、覚えてくださいませ！",
+  "heard": "では、覚えてくださいませ！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1u1e8a8": {
+  "episode": "miyoshi-biwa",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 2.0900416666666666,
+  "text": "……生きるということを。",
+  "heard": "しる と いう こと を",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1g13ew7": {
+  "episode": "miyoshi-biwa",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.23,
+  "text": "ふたりの目が、あなたに向いた。",
+  "heard": "ふたり の 目 が あなた に 向い た 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vv2ro66": {
+  "episode": "miyoshi-biwa",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 3.4400416666666667,
+  "text": "……旅の者まで、そう申すか。",
+  "heard": " ……旅の者まで、そう申すか。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "旅の者＝たびのもの"
+  ]
+ },
+ "v1y3q2bq": {
+  "episode": "miyoshi-biwa",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 1.0600416666666668,
+  "text": "ありがとう。",
+  "heard": "ありがとう",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
