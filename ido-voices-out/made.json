@@ -966,5 +966,99 @@
   "heard": "夜が開けた。",
   "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
   "readings": []
+ },
+ "v1jgfns9": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.71,
+  "text": "谷の上には、断ち切られたかずらが、風に揺れているだけだった。",
+  "heard": "谷の上には、断ち切られたかずらが、風に揺れている",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "v1v1k6bm": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.750041666666666,
+  "text": "国盛は、黙って、新しいかずらを手に取った。",
+  "heard": "国盛は、黙って、新しいかずらを手に取った。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": [
+   "国盛＝くにもり"
+  ]
+ },
+ "vu86r2a": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 2.75,
+  "text": "切れたなら、また編めばよい。",
+  "heard": "切れ た なら また 雨 ば よい 。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "v11tsqa6": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.98,
+  "text": "今度は、切るためではない。……あやつが帰ってきたとき、渡れるようにな。",
+  "heard": "今度は切るためではない。 奴が帰ってきたとき 渡れるようにな。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "v1ci18a": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.1,
+  "text": "かずら橋は、今も三年ごとに架け替えられている。切れても、何度でも、編みなおされてきたんだ。",
+  "heard": "かずら橋は、今も三年ごとに架け替えられている。切れても、何度でも、編みなおされてきたんだ。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": [
+   "架け替え＝かけかえ"
+  ]
+ },
+ "vro3vzx": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.65,
+  "text": "旅の者。おぬしの名は聞かぬ。聞けば、忘れられなくなる。",
+  "heard": "おぬしの名は聞かぬ。聞けば、忘れられなくなる。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": [
+   "旅の者＝たびのもの"
+  ]
+ },
+ "vof46l7": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.27,
+  "text": "……いつか、この橋が要らなくなる日が来るとよいな。",
+  "heard": "……いつか、この橋が要らなくなる日が来るとよい",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "v9b0mjj": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.66,
+  "text": "（小声）二年後、この人は剣を山に眠らせる。……この夜があったから、なのかもしれないね。",
+  "heard": "2 年 5 この 人 は 剣 を 山 に 眠らせる 。 この 夜 が あっ た から 7 日 も しれ ない ね 。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
  }
 }
