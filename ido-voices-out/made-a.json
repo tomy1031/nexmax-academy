@@ -315,5 +315,102 @@
   "heard": "え",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "vxe0g1x": {
+  "episode": "miyoshi-biwa",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 4.67,
+  "text": "どうして、そんなことを。……いいえ。聞きません。",
+  "heard": "どうして、そんなことを。……いいえ。聞きません。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vf95rdj": {
+  "episode": "miyoshi-biwa",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 6.320041666666667,
+  "text": "でも、ありがとう。今日の曲は、少しだけ、明るく弾けそう。",
+  "heard": "でも、ありがとう。今日の曲は、少しだけ明るく弾けそう。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1s7l1o": {
+  "episode": "miyoshi-biwa",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 5.58,
+  "text": "私は綾。帝のおそばで、お育てしてきた者です。",
+  "heard": "私は綾。帝のおそばで、お育てしてきた者",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "綾＝あや",
+   "帝＝みかど"
+  ]
+ },
+ "v1wihdda": {
+  "episode": "miyoshi-biwa",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 8.05,
+  "text": "帝は、九つになられました。今は里の子らと川で魚を追って、真っ黒に日焼けしておいでです。",
+  "heard": "巫女 は 9 つ に なり まし た 。 今 は 里 の 小 と 川 で 魚 を 追っ て 真っ黒 に 日焼け て おいで です 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "帝＝みかど"
+  ]
+ },
+ "v174p4il": {
+  "episode": "miyoshi-biwa",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 4.68025,
+  "text": "……都では、一度も見たことのない笑顔で。",
+  "heard": "……都では、一度も見たことのない笑顔で。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "都＝みやこ"
+  ]
+ },
+ "v15468bp": {
+  "episode": "miyoshi-biwa",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.5300416666666665,
+  "text": "遠くから、子どもたちの笑い声が、風に乗って聞こえてきた。",
+  "heard": "遠くから、子どもたちの笑い声が、風に乗って聞こえてきた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v14uk3we": {
+  "episode": "miyoshi-biwa",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.580041666666667,
+  "text": "草を踏む、重い足音。",
+  "heard": "草 を 踏む 重い 足音 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vlqe6hj": {
+  "episode": "miyoshi-biwa",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 2.61,
+  "text": "綾。……その者たちは。",
+  "heard": " ……その者たちは。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "綾＝あや"
+  ]
  }
 }
