@@ -679,5 +679,100 @@
    "平教経＝たいらののりつね",
    "平家＝へいけ"
   ]
+ },
+ "v1twxdu5": {
+  "episode": "genpei-dannoura",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.86,
+  "text": "あの舞の男が射られたとき、おぬしは「ひどい」と言うたな。",
+  "heard": "あの舞の男が射られたとき、おぬしは「ひどい」と言うたな。",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "v1thfbpn": {
+  "episode": "genpei-dannoura",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.54,
+  "text": "……源氏の陣で、そう言うた者は、おぬしだけであった。",
+  "heard": "……げんじの陣で、そう言うた者、おぬしだけであった。",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": [
+   "源氏＝げんじ"
+  ]
+ },
+ "vujqr3t": {
+  "episode": "genpei-dannoura",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.070041666666667,
+  "text": "あの舞の男が射られたとき、おぬしは「これが戦だ」と言うたな。",
+  "heard": "あの 前 の 男 が い られ た とき 、 お 主 は これ が 戦い だ と 言う た な ?",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "v15i2e6a": {
+  "episode": "genpei-dannoura",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.63,
+  "text": "……そのとおりよ。今日、それを見せてやる。",
+  "heard": "……そのとおりよ。 今日、それを見せてやる。",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "vx2mbrt": {
+  "episode": "genpei-dannoura",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.05,
+  "text": "扇の的は、見事であった。敵ながら、あれは忘れられん。",
+  "heard": "扇の的は、見事であった。敵ながら、",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": [
+   "扇の的＝おうぎのまと"
+  ]
+ },
+ "v1o2240u": {
+  "episode": "genpei-dannoura",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.74,
+  "text": "なんじゃ、その目は。……わしを、知っておるのか？",
+  "heard": "なんじゃ、その目は。……わしを、知っておるのか?",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "vg6pmu7": {
+  "episode": "genpei-dannoura",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.24,
+  "text": "（小声）祖谷で会った国盛さんの、半年前の姿……。まだ、ぼくたちを知らない。",
+  "heard": "そうや で あった 国 森 さん の 半年 前 の 姿 。 まだ 僕 たち を 知ら ない 。",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": [
+   "祖谷＝いや",
+   "国盛＝くにもり"
+  ]
+ },
+ "vjzxjlp": {
+  "episode": "genpei-dannoura",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.1,
+  "text": "（小声）この人にとっては、今日がはじめて。あなたは、この人の「この先」を見てきたんだね。",
+  "heard": "この人にとって は 今日 が 初めて あなた は この 人 の この 先 を 見 て き た ん だ ね 。",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
  }
 }
