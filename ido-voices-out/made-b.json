@@ -384,5 +384,101 @@
   "heard": "岸の上のあなたを、ふたりが同時に見た。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "vklfwv0": {
+  "episode": "miyoshi-oboke",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 5.18,
+  "text": "……ええじゃろ。松、行け。わしが、拍子をとる。",
+  "heard": "……ええじゃろ。松、行け。わしが、拍子をとる。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1xdxbir": {
+  "episode": "miyoshi-oboke",
+  "speaker": "matsukichi",
+  "voice": "Sadachbia",
+  "model": "gemini-3.8-live",
+  "seconds": 1.59,
+  "text": "……っ、わかったよ！",
+  "heard": "……っ、わかったよ！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1krs0tb": {
+  "episode": "miyoshi-oboke",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.25,
+  "text": "だが、松吉が岸へ跳ぼうとした足もとの丸太が、ぐらりと回った。",
+  "heard": "だが松吉が岸へ跳ぼうとした足元 の 丸太 が ぐらり と 回っ た 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "松吉＝まつきち"
+  ]
+ },
+ "v156pnie": {
+  "episode": "miyoshi-oboke",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 5.99,
+  "text": "いかん！ ……松、わしの拍子に合わせえ！",
+  "heard": " ……松、わしの拍子に合わせえ！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v10nqbw5": {
+  "episode": "miyoshi-oboke",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 15.400041666666667,
+  "text": "詰まった丸太が、白い渦の中できしみ、跳ねる。その上に、松吉が立っている。",
+  "heard": "詰まった丸太が、白い渦の中でぎしみ、跳ねる。その上に、松吉が立っている。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "松吉＝まつきち"
+  ]
+ },
+ "v16umdsq": {
+  "episode": "miyoshi-oboke",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.01,
+  "text": "そのとき——吉蔵が、腹の底から、歌いはじめた。",
+  "heard": "そのとき 吉蔵 が 腹 の 底 から 歌い 始め た 。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "吉蔵＝きちぞう"
+  ]
+ },
+ "v1e40y7d": {
+  "episode": "miyoshi-oboke",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 4.68,
+  "text": "♪ 祖谷の かずら橋ゃ　蜘蛛の巣の如く——",
+  "heard": "祖谷のかずら橋ゃ　蜘蛛の巣の如く",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "祖谷＝いや"
+  ]
+ },
+ "v1707y5j": {
+  "episode": "miyoshi-oboke",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 3.5900416666666666,
+  "text": "♪ 風も吹かんのに　ゆらゆらと——",
+  "heard": " 風も吹かんのに ゆらゆらと",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
  }
 }
