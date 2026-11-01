@@ -1051,5 +1051,107 @@
   "heard": "名前 が それ なら 十 分 です 。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "vu59vsc": {
+  "episode": "miyoshi-biwa",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 5.31,
+  "text": "ふふ。やさしい嘘ね。……でも、うれしい。",
+  "heard": "ふふ、優しい嘘ね。でも嬉しい。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1cdb1oj": {
+  "episode": "miyoshi-biwa",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.38,
+  "text": "（小声）……ううん。歌も、残ってた。大歩危で、筏師の吉蔵さんが歌ってた、あの節……！",
+  "heard": "うーん 。歌も残ってた。大ボケで、イカダシの吉蔵さんが歌ってた。あの節 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "大歩危＝おおぼけ",
+   "筏師＝いかだし",
+   "吉蔵＝きちぞう"
+  ]
+ },
+ "v1yof1xh": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.500041666666666,
+  "text": "文治三年、春。夜明け前。",
+  "heard": "文治三年、春。夜明け前。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "文治三年＝ぶんじさんねん"
+  ]
+ },
+ "vxfueop": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 12.990041666666666,
+  "text": "雲の海の上に、山の頂だけが、黒い島のように浮かんでいる。",
+  "heard": "雲の海の上に、山の頂だけが、黒い島のように浮かんでいる。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1r6l95v": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.44,
+  "text": "凍えるような風の中を、ひとりの男が登ってくる。背には、布に包んだ長いもの。",
+  "heard": "凍えるような風の中を、ひとりの男が登ってくる。背には、布に包んだ長いもの。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v179e9yy": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.97,
+  "text": "……こんな刻限に、こんな山の上で、人に会うとはな。",
+  "heard": "……こんな刻限に、こんな山の上で、人に会うとはな。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1pq9i8k": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.67,
+  "text": "わしは国盛。……今日は、ひとりで来たかった。",
+  "heard": "わしは国盛。……今日は、ひとりで来たかった。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "国盛＝くにもり"
+  ]
+ },
+ "vujhxvy": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.35,
+  "text": "（小声）国盛さん。平家の武士で、戦に負けたあと、幼い帝を守って祖谷まで逃げてきたと伝わる人なんだ。",
+  "heard": "国森 さん 平家 の 武士 で 幼い 天皇 を 守っ て 伊山 で 逃げ て き た 人 な ん だ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "国盛＝くにもり",
+   "平家＝へいけ",
+   "武士＝ぶし",
+   "帝＝みかど",
+   "祖谷＝いや"
+  ]
  }
 }
