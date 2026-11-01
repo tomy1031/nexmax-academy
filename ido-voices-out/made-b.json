@@ -2010,5 +2010,105 @@
   "heard": "兄 と 弟 は 1 つ の 石 に 並ん で 腰 を 下ろし 昔 の こと を 語り合っ た と いう 。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "vd5w9u4": {
+  "episode": "genpei-kisegawa",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.96,
+  "text": "鎌倉幕府の記録『吾妻鏡』も、このとき二人が「懐旧の涙」を流したと書いているんだ。",
+  "heard": "鎌倉幕府の記録『あずまかがみ』も、このとき二人が「懐旧の涙」を流したと書いているんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "鎌倉＝かまくら",
+   "吾妻鏡＝あずまかがみ"
+  ]
+ },
+ "v16u3h2g": {
+  "episode": "genpei-kisegawa",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.4500416666666665,
+  "text": "二人が腰かけたと伝わるのが「対面石」。今も、清水町の八幡神社に残っているよ。",
+  "heard": "ふたりが腰掛けたと伝わるのが対面石。今も清水町の下畑神社に残っているよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "対面石＝たいめんいし"
+  ]
+ },
+ "vy88mne": {
+  "episode": "genpei-kisegawa",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.87,
+  "text": "義経が下がったあと。頼朝は、ひとり石に腰かけたまま、あなたのほうを見た。",
+  "heard": "頼朝は、ひとり石に腰かけたまま、あなたのほうを見た。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "義経＝よしつね",
+   "頼朝＝よりとも"
+  ]
+ },
+ "vhbwc0x": {
+  "episode": "genpei-kisegawa",
+  "speaker": "yoritomo",
+  "voice": "Schedar",
+  "model": "gemini-3.8-live",
+  "seconds": 4.78,
+  "text": "……旅の者か。今の話、聞いておったな。",
+  "heard": "今の話、聞いておったな。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "旅の者＝たびのもの"
+  ]
+ },
+ "vuz8do3": {
+  "episode": "genpei-kisegawa",
+  "speaker": "yoritomo",
+  "voice": "Schedar",
+  "model": "gemini-3.8-live",
+  "seconds": 3.1900416666666667,
+  "text": "情の厚い弟は、頼もしい。",
+  "heard": "情 の 熱い 弟 は 頼もしい 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v12hgzqp": {
+  "episode": "genpei-kisegawa",
+  "speaker": "yoritomo",
+  "voice": "Schedar",
+  "model": "gemini-3.8-live",
+  "seconds": 2.76,
+  "text": "……そして、恐ろしい。",
+  "heard": "そして恐ろしい",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1xg19hc": {
+  "episode": "genpei-kisegawa",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.5200416666666667,
+  "text": "その目は、もう、泣いてはいなかった。",
+  "heard": "その目は、もう、",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1vn78zn": {
+  "episode": "genpei-kisegawa",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 5.400041666666667,
+  "text": "旅の者！ 兄上は、わたしを義光公と並べてくださった！",
+  "heard": "旅の者！兄上は、わたしを義光公と並べてくださった！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "旅の者＝たびのもの"
+  ]
  }
 }
