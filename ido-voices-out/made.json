@@ -754,5 +754,116 @@
   "readings": [
    "追手＝おって"
   ]
+ },
+ "v188by4m": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "yaheiji",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 5.410041666666666,
+  "text": "源氏の方々！ 帝はこちらじゃ！ こちらの尾根へ、逃げられたぞ！",
+  "heard": " 源氏の方々！帝はこちらじゃ！こちらの尾根",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "源氏＝げんじ",
+   "帝＝みかど",
+   "尾根＝おね"
+  ]
+ },
+ "vhwk4f7": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 12.140041666666667,
+  "text": "老臣は松明を高く掲げ、橋とは逆の、暗い尾根道へと走り出した。追手の火が、それを追う。",
+  "heard": "老臣は松明を高く掲げ、橋とは逆の、暗い尾根道へと走り出した。追手の火が、それを追う。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "老臣＝ろうしん",
+   "松明＝たいまつ",
+   "尾根＝おね",
+   "追手＝おって"
+  ]
+ },
+ "vf7qidq": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 2.9900416666666665,
+  "text": "弥平次……！ 戻れ、弥平次！",
+  "heard": " 戻れ、弥平次！",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "弥平次＝やへいじ"
+  ]
+ },
+ "v1xvtbd3": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "yaheiji",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 6.430041666666667,
+  "text": "殿！ この爺は昔から、道を間違えるのが上手でございましてな！",
+  "heard": "殿 。 この 字 は 昔 から 道 を 間違える の が 上手 で ござい まし て な 。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "殿＝との",
+   "爺＝じい"
+  ]
+ },
+ "v1gemb71": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "yaheiji",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 10.11,
+  "text": "三日は、山で迷わせてみせまする！ ……帝を、頼みましたぞ——",
+  "heard": "三日は、山で迷わせてみせまする！……帝を、頼みましたぞ——",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "帝＝みかど"
+  ]
+ },
+ "v6nwhiv": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.32,
+  "text": "火が、山の奥へ遠ざかっていく。だが、追手の一部が、なおも橋へ向かってくる。",
+  "heard": "日 が 山 の 奥 へ 遠ざかっ て いく 。 だ が 、 お 手 の 一部 が 直毛 端 へ 向かっ て くる 。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "追手＝おって"
+  ]
+ },
+ "v1fdys5d": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.39,
+  "text": "国盛は、斧を振り上げた。",
+  "heard": "国盛は、斧を振り上げた。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "国盛＝くにもり",
+   "斧＝おの"
+  ]
+ },
+ "v5up7ft": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 2.82,
+  "text": "許せ、弥平次——！",
+  "heard": "許せ や 平次",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "弥平次＝やへいじ"
+  ]
  }
 }
