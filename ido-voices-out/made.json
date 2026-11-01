@@ -311,5 +311,105 @@
   "readings": [
    "帝＝みかど"
   ]
+ },
+ "v46smdl": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.44,
+  "text": "そうじゃ。渡るための橋を、切るために編む。",
+  "heard": "そう じゃ 。 渡る ため の 橋 を 切る ため に 編む 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vu46cp4": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 8.030083333333334,
+  "text": "……おかしな話よな。だが、わしらにはもう、それしか無い。",
+  "heard": "おかしな話よな。 だが わし に は もう それ しか ない。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v185ojsx": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.080041666666666,
+  "text": "かずら橋の始まりには、もうひとつの話も伝わっているんだ。弘法大師が、谷を渡れずに困っていた村の人たちのために架けた、って。",
+  "heard": "葛飾 の 始まり に は もう 1 つ の 話 も 伝わっ て いる ん だ 。 弘法 大師 が 谷 を 割れ ず に 困っ て い た 村 の 人 たち の ため に かけ た て 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "弘法大師＝こうぼうだいし"
+  ]
+ },
+ "vg5levt": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 7.22,
+  "text": "坊主の話か。……そのほうが、よほど良いな。人を渡すための橋のほうが。",
+  "heard": " ……そのほうが、よほど良いな。人を渡すための橋のほうが。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "坊主＝ぼうず"
+  ]
+ },
+ "vqwdhcx": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "yaheiji",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 1.82,
+  "text": "殿！ 殿ーっ！",
+  "heard": "殿ーっ！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "殿＝との"
+  ]
+ },
+ "v19avgs3": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.000208333333333,
+  "text": "白髪の老臣が、息を切らして駆けてくる。",
+  "heard": "白髪 の 老紳 が 息 を 切らし て かけ て くる 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "白髪＝しらが",
+   "老臣＝ろうしん"
+  ]
+ },
+ "v12hltl6": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "yaheiji",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 8.99,
+  "text": "下の谷に、白い旗が！ 源氏の追手、およそ三十。日暮れには、ここへ着きまする！",
+  "heard": "下の谷に、白い旗が！源氏の追手、およそ三十。日暮れには、ここへ着きまする！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "源氏＝げんじ",
+   "追手＝おって"
+  ]
+ },
+ "v1lym7hd": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 0.8200416666666667,
+  "text": "……来たか。",
+  "heard": "来た か 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
