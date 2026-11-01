@@ -72,16 +72,31 @@ for (const l of lines) {
     l.style === "shout"
       ? "この文は叫ぶように、強く。"
       : l.style === "whisper"
-        ? "この文はささやくように、息を多めに。"
+        ? "この文はささやくように、耳元で、息を多めに。"
         : "";
   const text = l.text.replace(/^（小声）/, "");
+  // 演技の指示（人物・場面の空気・言い方・読み方）。文は漢字のまま渡し、読み方はここで伝える
+  //（台本どおりに 読めたかの 見くらべ（live_tts.ts）を 崩さない ため）
+  const instruction = [
+    "",
+    l.speaker === "narr"
+      ? "物語の語り手として、場面の空気に合わせて、気持ちを込めて読んでください。"
+      : "ここからは、次の人物になりきって、気持ちを込めて演じて読んでください。",
+    "文の言葉は、書いてあるとおりに読み、足したり省いたりしないでください。",
+    `人物と声：${c.style}`,
+    `場面の空気：${l.scene ?? ""}。`,
+    how,
+    l.readings?.length ? `読み方（必ずこの読みで）：${l.readings.join("、")}。` : "",
+  ]
+    .filter((x, i) => i === 0 || x)
+    .join("\n");
   try {
     const spoken = await synthesizeWithFallback(
       text,
       {
         apiKey,
         voice: c.voice,
-        instruction: `話し手の人物：${c.style}${how}`,
+        instruction,
         quoteOnRetry: true,
         transcribeWhenEmpty: true,
       },
@@ -90,7 +105,17 @@ for (const l of lines) {
     );
     writeFileSync(file, toWav(spoken.pcm));
     const seconds = spoken.pcm.byteLength / OUT_RATE / 2;
-    log[l.vid] = { episode: l.episode, speaker: l.speaker, voice: c.voice, model: spoken.model, seconds, text: l.text, heard: spoken.transcript };
+    log[l.vid] = {
+      episode: l.episode,
+      speaker: l.speaker,
+      voice: c.voice,
+      model: spoken.model,
+      seconds,
+      text: l.text,
+      heard: spoken.transcript,
+      scene: l.scene,
+      readings: l.readings,
+    };
     made += 1;
     pending += 1;
     console.log(`✓ ${l.speaker}（${c.voice}）${seconds.toFixed(1)}秒 ${l.text.slice(0, 24)}`);
