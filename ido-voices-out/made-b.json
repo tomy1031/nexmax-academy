@@ -683,5 +683,103 @@
    "祖谷＝いや",
    "粉ひき節＝こひきぶし"
   ]
+ },
+ "v1t7cjuz": {
+  "episode": "miyoshi-oboke",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 9.14,
+  "text": "川はな、木も、人も、歌も運ぶんじゃ。上から下へ。昔から、今へ。",
+  "heard": "川はな、木も、人も、歌も運ぶんじゃ。上から下へ。昔から、今へ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vl7fh9z": {
+  "episode": "miyoshi-oboke",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.31,
+  "text": "河原に上がった吉蔵は、使い込んだ鳶口を、松吉の手に握らせた。",
+  "heard": "川原 に 上がっ た 幾 ゾ は 使い込ん だ 飛び口 を 松 吉 の 手 に 握ら せ た 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "吉蔵＝きちぞう",
+   "鳶口＝とびぐち",
+   "松吉＝まつきち"
+  ]
+ },
+ "v4gw5ci": {
+  "episode": "miyoshi-oboke",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 4.85,
+  "text": "今日から、お前が頭じゃ。……歌も、忘れるなよ。",
+  "heard": "今日から、お前が頭じゃ。……歌も、忘れるなよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1f1d67u": {
+  "episode": "miyoshi-oboke",
+  "speaker": "matsukichi",
+  "voice": "Sadachbia",
+  "model": "gemini-3.8-live",
+  "seconds": 0.76,
+  "text": "……おう。",
+  "heard": "お",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vqkwaph": {
+  "episode": "miyoshi-oboke",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 12,
+  "text": "下流の淵では、流れてきた丸太が、筏に組まれはじめていた。岸の上で、写真屋が、大きな箱型のカメラを構えている。",
+  "heard": "下流の淵では、流れてきた丸太が、筏に組まれはじめていた。岸の上で、写真屋が、大きな箱型のカメラを構えている。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "筏＝いかだ"
+  ]
+ },
+ "v1leher6": {
+  "episode": "miyoshi-oboke",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 8.05,
+  "text": "ほれ、絵葉書にするんじゃと。最後の川下りの記念じゃ、手ぇでも振っとけ！",
+  "heard": "ほれ、絵葉書にするんじゃと。最後の川下りの記念じゃ、手ぇでも振っとけ！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v111cjic": {
+  "episode": "miyoshi-youkai",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.27,
+  "text": "昭和四十三年、夏。山城の村は、年に一度の夏祭り。",
+  "heard": " 昭和四十三年、夏。山城の村は、年に一度の夏祭り。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "山城＝やましろ"
+  ]
+ },
+ "vulu6jr": {
+  "episode": "miyoshi-youkai",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.840041666666667,
+  "text": "提灯の下で、紙芝居屋が拍子木を打っている。",
+  "heard": "ちょうちんの下 で 紙芝居 屋 が 表紙木 を 打っ て いる 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "紙芝居＝かみしばい"
+  ]
  }
 }
