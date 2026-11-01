@@ -828,5 +828,97 @@
   "readings": [
    "国盛＝くにもり"
   ]
+ },
+ "v7y39w4": {
+  "episode": "miyoshi-biwa",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.94,
+  "text": "曲が、いちばん高いところへ駆け上がった——そのとき。",
+  "heard": "局 が 一 番 高 い と こ ろ へ 駆 け 上 が っ た 。 そ の 時",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1cniizz": {
+  "episode": "miyoshi-biwa",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.33,
+  "text": "ぷつり、と。弦が一本、切れた。",
+  "heard": "ぶつり と 弦 が 1 本 切れ た 。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "vk48u39": {
+  "episode": "miyoshi-biwa",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.93,
+  "text": "綾は、うつむいたまま、肩を震わせていた。",
+  "heard": "うつむいたまま、肩を震わせていた。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": [
+   "綾＝あや"
+  ]
+ },
+ "v97b30f": {
+  "episode": "miyoshi-biwa",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 2.680041666666667,
+  "text": "……今宵は、やめておこう。",
+  "heard": "……今宵は、やめておこう。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vmnictc": {
+  "episode": "miyoshi-biwa",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 8.94,
+  "text": "弦の切れた夜に、旅立つものではない。……昔から、そう言うであろう。",
+  "heard": " 弦の 切れた夜に、 旅立つものではない。 ……昔から、そう言うであろう。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v156yvz7": {
+  "episode": "miyoshi-biwa",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 3.84,
+  "text": "そんな言い伝え、聞いたことがございませぬ。",
+  "heard": " そんな言い伝え、聞いたことがございませぬ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v11fz4n4": {
+  "episode": "miyoshi-biwa",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 2.09,
+  "text": "わしが、今つくった。",
+  "heard": "わしが、今つくった。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vhvryrw": {
+  "episode": "miyoshi-biwa",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.27,
+  "text": "綾が、泣きながら、笑った。",
+  "heard": "彩 が 泣き ながら 笑っ た 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "綾＝あや"
+  ]
  }
 }
