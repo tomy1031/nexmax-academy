@@ -957,5 +957,99 @@
   "heard": "預かってくださいませ。……いつか、また弾くときまで。",
   "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
   "readings": []
+ },
+ "v6tx5u2": {
+  "episode": "miyoshi-biwa",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 1.2500416666666667,
+  "text": "…………。",
+  "heard": "…………。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1octdck": {
+  "episode": "miyoshi-biwa",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 1.29,
+  "text": "…………。",
+  "heard": "…",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v5qs9lt": {
+  "episode": "miyoshi-biwa",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 2.32,
+  "text": "……必ず、返す。",
+  "heard": "必ず返す。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "vgg21wm": {
+  "episode": "miyoshi-biwa",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.9600416666666667,
+  "text": "滝のしぶきに、小さな虹がかかった。",
+  "heard": "滝のしぶきに、小さな虹がかかった。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "vq1xa1g": {
+  "episode": "miyoshi-biwa",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.52,
+  "text": "この滝が「琵琶の滝」と呼ばれるのは、平家の人たちがここで琵琶を弾き、都をしのんだからだと伝わっているんだ。",
+  "heard": "この滝が「琵琶の滝」と呼ばれるのは、「平家」の人たちがここで琵琶を弾き、都をしのんだからだと伝わっている",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "琵琶＝びわ",
+   "平家＝へいけ",
+   "都＝みやこ"
+  ]
+ },
+ "v1eyay9r": {
+  "episode": "miyoshi-biwa",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 6.19,
+  "text": "旅の方。あなたの時代にも、この歌は残っていますか？",
+  "heard": " あなたの時代にも、この歌は残っていますか?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vrbr8jx": {
+  "episode": "miyoshi-biwa",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.58,
+  "text": "滝の名前が残ってるよ。「琵琶の滝」って。",
+  "heard": "滝の名前が残ってるよ。「びわの滝」って。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "琵琶＝びわ"
+  ]
+ },
+ "v1xu2f3w": {
+  "episode": "miyoshi-biwa",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 4.360041666666667,
+  "text": "名前が……。それなら、十分です。",
+  "heard": "名前 が それ なら 十 分 です 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
