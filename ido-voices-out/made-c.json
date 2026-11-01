@@ -883,5 +883,105 @@
   "heard": "……もはや、これまでか。",
   "scene": "激しい戦いのさなか。声を張り、息は荒く",
   "readings": []
+ },
+ "v15zr7e1": {
+  "episode": "genpei-dannoura",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 3.24,
+  "text": "ならば、せめて——あの男だけは！",
+  "heard": " あの男だけは！",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "v9imgdu": {
+  "episode": "genpei-dannoura",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 4.040041666666666,
+  "text": "そこの者、危ない！ 舟の陰に伏せよ！",
+  "heard": "そこの者、危ない！舟の陰に伏せよ！",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "v103xrrc": {
+  "episode": "genpei-dannoura",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 3.1,
+  "text": "伏せていよ。……今日で、すべてが決まる！",
+  "heard": " ……今日で、すべてが決まる！",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "v1uvvd77": {
+  "episode": "genpei-dannoura",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.63,
+  "text": "（小声）……四年後の高館。この人も、追われる身になる。",
+  "heard": " ……四年後の高館。この人も、追われる身になる。",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": [
+   "高館＝たかだち"
+  ]
+ },
+ "v10trti9": {
+  "episode": "genpei-dannoura",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.8,
+  "text": "教経が、舟から舟へ、義経に迫る。太刀を振りかぶる。",
+  "heard": "教経が、舟から舟へ、義経に迫る。太刀",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": [
+   "教経＝のりつね",
+   "義経＝よしつね",
+   "太刀＝たち"
+  ]
+ },
+ "vglvs8z": {
+  "episode": "genpei-dannoura",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.680041666666666,
+  "text": "義経は、ひらりと身をかわし——長刀を脇にかいこんで、二丈ほど先の味方の舟へ、ゆらりと飛び移った。",
+  "heard": "義経は、ひらりと身をかわし——長刀を脇にかいこんで、二丈ほど先の味方の舟へ、ゆらりと飛び移った。",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": [
+   "義経＝よしつね",
+   "長刀＝なぎなた"
+  ]
+ },
+ "v48377": {
+  "episode": "genpei-dannoura",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.8,
+  "text": "のちに「八艘飛び」と呼ばれる場面だ……！ 『平家物語』では一艘なんだけど、語られるうちに八艘になったんだって。",
+  "heard": "のちに「八艘飛び」と呼ばれる場面だ……！ 『平家物語』では一艘なんだけど、語られるうちに八艘になったんだって。",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": [
+   "八艘飛び＝はっそうとび",
+   "平家物語＝へいけものがたり"
+  ]
+ },
+ "v12f1vuo": {
+  "episode": "genpei-dannoura",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.77,
+  "text": "……逃げ足の、速い男よ。",
+  "heard": " ……逃げ足の、速い男よ。",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
  }
 }
