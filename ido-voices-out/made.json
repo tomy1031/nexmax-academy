@@ -94,5 +94,119 @@
   "heard": "動く な",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v1kd0z1y": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.41,
+  "text": "……追手ではないな。その妙な身なり、どこの者じゃ。",
+  "heard": "……おってではないな。その妙な身なり、どこの者",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "追手＝おって"
+  ]
+ },
+ "v1j8css0": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 2.82,
+  "text": "た、旅の者です！ 怪しい者じゃありません！",
+  "heard": "た、旅の者です！ 怪しい",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "旅の者＝たびのもの"
+  ]
+ },
+ "v1at79jo": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 10.040041666666667,
+  "text": "怪しい者ほど、そう言う。……まあよい。わしは国盛。この谷に、帝をお守りして入った者じゃ。",
+  "heard": "怪しい者ほど、そう言う。……まあよい。わしは国盛。この谷に、帝をお守りして入った者じゃ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "国盛＝くにもり",
+   "帝＝みかど"
+  ]
+ },
+ "v109ie2n": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.65,
+  "text": "（小声）平国盛さん。祖谷には、屋島の戦いに敗れた国盛が、帝をお守りして落ちのびてきた——という言い伝えがあるんだ。",
+  "heard": "たいらのくにもりさん。いやには、やしまのたたかいにやぶれた国盛が、みかどをおまもりしておちのびてきた——といういいつたえがある",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "平国盛＝たいらのくにもり",
+   "祖谷＝いや",
+   "屋島＝やしま",
+   "国盛＝くにもり",
+   "帝＝みかど"
+  ]
+ },
+ "v1kr15g0": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.56,
+  "text": "（小声）国盛は、平家の猛将・平教経のもとの名前。だから「国盛は教経その人だ」という説もあるんだよ。",
+  "heard": "国森 は 平家 の 猛将 平 の のつ の 元 の 名前 。 だ から 国森 は のつ その 人 だ と いう 説 も ある ん だ よ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "国盛＝くにもり",
+   "平家＝へいけ",
+   "平教経＝たいらののりつね",
+   "教経＝のりつね"
+  ]
+ },
+ "v5w69b9": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.86,
+  "text": "ここにおるのは、国盛という、ただの男よ。他言は無用ぞ。",
+  "heard": "ここにおるのは、国盛という、ただの男よ。他言は無用ぞ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "国盛＝くにもり",
+   "他言＝たごん"
+  ]
+ },
+ "v13oomzv": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.59,
+  "text": "（小声）やっぱり……！ 言い伝えのとおり、壇ノ浦で消えた教経さんと、祖谷の国盛さんは、同じ人だったんだ。",
+  "heard": "やっぱ、言いたい通り、壇の浦で消えたノリツネさんと、嫌の国森さんは同じ人だったんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "壇ノ浦＝だんのうら",
+   "教経＝のりつね",
+   "祖谷＝いや",
+   "国盛＝くにもり"
+  ]
+ },
+ "vzeyxyf": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 3.330041666666667,
+  "text": "動くな。……何者じゃ。",
+  "heard": "……何者じゃ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
