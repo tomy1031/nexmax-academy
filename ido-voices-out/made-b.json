@@ -1818,5 +1818,99 @@
   "readings": [
    "殿＝との"
   ]
+ },
+ "v1368vlm": {
+  "episode": "genpei-kisegawa",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 3.0900416666666666,
+  "text": "わたしは、父の顔を知らぬ。",
+  "heard": "わたしは、父の顔を知らぬ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1w5fqsc": {
+  "episode": "genpei-kisegawa",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 11.790041666666667,
+  "text": "父・義朝は、わたしが赤子のときに討たれた。母に抱かれて逃げ、寺に預けられ、奥州へ落ちのびた。",
+  "heard": "父・義朝は、わたしが赤子のときに討たれた。母に抱かれて逃げ、寺に預けられ、奥州へ落ちのびた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "奥州＝おうしゅう"
+  ]
+ },
+ "v1a5mqdi": {
+  "episode": "genpei-kisegawa",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 7.62,
+  "text": "兄上とは、生まれてから一度も会うたことがない。声も、顔も、知らぬ。",
+  "heard": "兄上とは、生まれてから一度も会うたことがない。声も、顔も、",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vc7qeeb": {
+  "episode": "genpei-kisegawa",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 6.47,
+  "text": "……それでも、兄上が平家と戦うと聞いたとき、居ても立ってもいられなかった。",
+  "heard": "……それでも、兄上が平家と戦うと聞いたとき、居ても立ってもいられなかった。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "平家＝へいけ"
+  ]
+ },
+ "v9usuqe": {
+  "episode": "genpei-kisegawa",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 5.08,
+  "text": "旅の者。わたしは、兄上のお役に立てるだろうか。",
+  "heard": "旅 の もの 。 私 は 兄上 の お 役に 立てる だろう か 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "旅の者＝たびのもの"
+  ]
+ },
+ "vqf88qs": {
+  "episode": "genpei-kisegawa",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 3.9600416666666667,
+  "text": "……そうか。そうであれば、よいな。",
+  "heard": "そっ か そう で あれ ば よい な",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vqg91il": {
+  "episode": "genpei-kisegawa",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 4.2800416666666665,
+  "text": "信じる。……それならば、わたしにもできる。",
+  "heard": "信じる 。 それ なら ば 、 私 に も できる 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v6dkx5z": {
+  "episode": "genpei-kisegawa",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 9.900375,
+  "text": "自分を？ ……ははっ、おかしなことを言う。わたしの命は、兄上のためにあるのだ。",
+  "heard": "自分を？……ははっ、おかしなことを言う。わたしの命は、兄上のためにあるのだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
