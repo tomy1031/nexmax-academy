@@ -1,0 +1,98 @@
+{
+ "vcysdmc": {
+  "episode": "miyoshi-prologue",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.32,
+  "text": "案内板のQRコードに、スマホをかざした。その瞬間——",
+  "heard": "案内板のQRコードに、スマホをかざした。その",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vyouud7": {
+  "episode": "miyoshi-prologue",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 2.16,
+  "text": "世界から、音が消えた。",
+  "heard": "世界 から 音 が 消え た 。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1mydmo5": {
+  "episode": "miyoshi-prologue",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.19,
+  "text": "はじめまして！ ぼくはネクマックス。時渡りのナビゲーターだよ。",
+  "heard": "\nぼくはネクマックス。時渡りのナビゲーターだよ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "時渡り＝ときわたり"
+  ]
+ },
+ "v12y9ppr": {
+  "episode": "miyoshi-prologue",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.2800416666666665,
+  "text": "この町のQRは「時の扉」。かざすと、その場所の昔へタイムスリップするんだ。",
+  "heard": "この町のQRは「時の扉」。かざすと、その場所の昔へタイムスリップするんだ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1nxxdhg": {
+  "episode": "miyoshi-prologue",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.44,
+  "text": "向こうでは、ぼくがそばで案内するから安心してね。さあ、行こう！",
+  "heard": "向こう で は 僕 が そば で 案内 する から 安心 し て ね 。 さあ 、 行こう 。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v13pompd": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.220041666666667,
+  "text": "文治元年、秋。祖谷の谷は、燃えるような紅葉に染まっていた。",
+  "heard": "文治元年、秋。祖谷の谷は、燃えるような紅葉に染まっていた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "文治元年＝ぶんじがんねん",
+   "祖谷＝いや",
+   "紅葉＝もみじ"
+  ]
+ },
+ "v1p8j98h": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.83,
+  "text": "深い谷の上で、男たちが黙々と、シラクチカズラを編んでいる。",
+  "heard": "深い 谷 の 上 で 男 たち が 黙々 と 白口 か を 編ん で いる 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "黙々＝もくもく"
+  ]
+ },
+ "v8sdink": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 0.9800416666666667,
+  "text": "動くな。",
+  "heard": "動く な",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ }
+}
