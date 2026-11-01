@@ -1157,5 +1157,101 @@
   "readings": [
    "妖怪＝ようかい"
   ]
+ },
+ "vibjl3": {
+  "episode": "miyoshi-oboke",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 1.1,
+  "text": "…………。",
+  "heard": "……",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vmdst6s": {
+  "episode": "miyoshi-youkai",
+  "speaker": "kenta",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 1.24,
+  "text": "……たすけて……",
+  "heard": "たすけ て",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": []
+ },
+ "v1krc2lu": {
+  "episode": "miyoshi-youkai",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.56,
+  "text": "崩れた斜面の下。木の根に、健太がしがみついていた。その下は、真っ黒な淵。",
+  "heard": "崩れた斜面の下。木の根に、健太がしがみついていた。その下は、真っ黒な淵。",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": [
+   "健太＝けんた"
+  ]
+ },
+ "vbbvf96": {
+  "episode": "miyoshi-youkai",
+  "speaker": "konaki",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.3,
+  "text": "いかん！ おまえさん、手を伸ばせ！ わしが、重しになる！",
+  "heard": "いかん！おまえさん、手を伸ばせ！わしが、重しになる！",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": []
+ },
+ "v1h0tm8a": {
+  "episode": "miyoshi-youkai",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.54,
+  "text": "あなたは崖の縁に腹ばいになり、健太の手をつかんだ。体が、ずるずると引きずられる——",
+  "heard": "あなたは崖の縁に腹ばいになり、健太の手をつかんだ。体が、ずるずると引きずられる——",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "健太＝けんた"
+  ]
+ },
+ "v1cwlqos": {
+  "episode": "miyoshi-youkai",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.96,
+  "text": "その背中に、児啼爺が飛び乗った。",
+  "heard": "その背中に、こなきじじいが飛び乗った。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "児啼爺＝こなきじじい"
+  ]
+ },
+ "v1iff60j": {
+  "episode": "miyoshi-youkai",
+  "speaker": "konaki",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 53.92004166666667,
+  "text": "ふんっ……！ 石より、重うなったるわい！",
+  "heard": "ふんっ……！石より、重うなったるわい！",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "vsnlwvp": {
+  "episode": "miyoshi-youkai",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.2,
+  "text": "体が、地面に縫いとめられた。あなたは、ありったけの力で、健太を引き上げた。",
+  "heard": "体が、地面に縫いとめられた。あなたは、ありったけの力で、健太",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "健太＝けんた"
+  ]
  }
 }
