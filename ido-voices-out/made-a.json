@@ -1248,5 +1248,117 @@
   "heard": " て、天狗じゃないよ！",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v1tc9vrb": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.67,
+  "text": "……わしを、ずっと前から知っておるような目じゃな。",
+  "heard": "……わしを、ずっと前から知っておる",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v111dkig": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.58,
+  "text": "国盛の腰に、象牙の撥が結わえられている。",
+  "heard": "国森の腰 に 象牙 の バチ が いわ れ て いる 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "国盛＝くにもり",
+   "撥＝ばち"
+  ]
+ },
+ "vpvo453": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.77,
+  "text": "義経が、兄の頼朝に追われておるそうじゃ。",
+  "heard": "義経が、兄の頼朝に追われておる",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "義経＝よしつね",
+   "頼朝＝よりとも"
+  ]
+ },
+ "vypws3j": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.66,
+  "text": "（小声）源義経さんは、源氏の若い大将。平家をたおした英雄なのに、兄の頼朝さんににらまれて、追われる身になったんだ。",
+  "heard": "源義経さんは、源氏の若い大将。平家をたおした英雄なのに、兄の頼朝さんににらまれて、追われる身になったんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "源義経＝みなもとのよしつね",
+   "源氏＝げんじ",
+   "平家＝へいけ",
+   "頼朝＝よりとも"
+  ]
+ },
+ "vvge7kc": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.640041666666667,
+  "text": "行方知れず。奥州へ逃れたという噂もある。",
+  "heard": "奥州へ逃れたという噂もある。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "奥州＝おうしゅう"
+  ]
+ },
+ "v1l6c96l": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 7.81,
+  "text": "わしを壇ノ浦に沈めた男が、今は、わしと同じ、追われる身よ。",
+  "heard": "わしを檀ノ浦に沈めた男が、今は、わしと同じ、追われる身よ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "壇ノ浦＝だんのうら"
+  ]
+ },
+ "vm0l9ab": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 12.42,
+  "text": "（小声）壇ノ浦は、源氏と平家の最後の戦いがあった海。国盛さんは、もとは教経という名前の武士で、その海で戦った——と、この物語では考えているんだ。",
+  "heard": "壇の浦 は 源 と 平家 の 最後 の 戦い が あっ た 海 。 國 森 さん は 元 は 乗り常 と いう 名前 の 武士 で 、 その 海 で 戦っ た と この 物語 で は 考え て いる ん だ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "壇ノ浦＝だんのうら",
+   "源氏＝げんじ",
+   "平家＝へいけ",
+   "国盛＝くにもり",
+   "教経＝のりつね",
+   "武士＝ぶし"
+  ]
+ },
+ "v1cq6g67": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 11.46,
+  "text": "国盛は、笑った。少しも楽しそうではない笑いだった。",
+  "heard": "国盛は、笑った。少しも楽しそうではない笑いだった。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "国盛＝くにもり"
+  ]
  }
 }
