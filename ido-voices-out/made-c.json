@@ -511,5 +511,68 @@
   "readings": [
    "与一＝よいち"
   ]
+ },
+ "vt40sxx": {
+  "episode": "genpei-yashima",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.16,
+  "text": "二の矢が放たれた。舞っていた武者は、首の骨を射抜かれ、舟底へ倒れた。",
+  "heard": "二の矢が放たれた。舞っていた武者は、首の骨を射抜かれ、舟底へ倒れた。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "v13b5ndg": {
+  "episode": "genpei-yashima",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.7,
+  "text": "平家の舟は、しんと静まりかえった。源氏の陣は、また箙をたたいてどよめいた。",
+  "heard": "平家の舟は、しんと静まりかえった。源氏の陣は、また箙をたたいてどよめいた。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "平家＝へいけ",
+   "源氏＝げんじ",
+   "箙＝えびら"
+  ]
+ },
+ "vsmboda": {
+  "episode": "genpei-yashima",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.56,
+  "text": "「あ、射たり」と言う者もいれば、「情けなし」と言う者もいた——。",
+  "heard": "あ 、 いたり と いう もの も いれ ば 、 情けない と いう もの も い た 。 で は 、",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "vx8fw8p": {
+  "episode": "genpei-yashima",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 3.01,
+  "text": "舞う者まで射るか、源氏は……！",
+  "heard": "「舞う者まで射るか、源氏は……！」",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "源氏＝げんじ"
+  ]
+ },
+ "v180tf18": {
+  "episode": "genpei-yashima",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.88,
+  "text": "義経。覚えておけ。次は、海の上で会おうぞ。",
+  "heard": "吉根 覚えておけ 次は 海の上で会おうぞ",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "義経＝よしつね"
+  ]
  }
 }
