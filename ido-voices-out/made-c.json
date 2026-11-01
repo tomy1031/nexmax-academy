@@ -409,5 +409,107 @@
   "heard": "舟の上で、女房が手招きしている。「射てみよ」と。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "vs16aq5": {
+  "episode": "genpei-yashima",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 2.05,
+  "text": "与一。射よ。",
+  "heard": "「与一。射よ。」",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "与一＝よいち"
+  ]
+ },
+ "vb2e954": {
+  "episode": "genpei-yashima",
+  "speaker": "yoichi",
+  "voice": "Umbriel",
+  "model": "gemini-3.8-live",
+  "seconds": 14.2,
+  "text": "……南無八幡大菩薩。願わくは、あの扇の真ん中を、射させたまえ。",
+  "heard": "……南無八幡大菩薩。願わくは、あの扇の真ん中を、射させたまえ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1bvy9bn": {
+  "episode": "genpei-yashima",
+  "speaker": "yoichi",
+  "voice": "Umbriel",
+  "model": "gemini-3.8-live",
+  "seconds": 7.21,
+  "text": "射損じたなら、弓を切り折り、自害して、二度と人に顔を合わせませぬ——",
+  "heard": "射損じたなら、弓を切り折り、自害して、二度と人に顔を合わせませぬ——",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vymu9t0": {
+  "episode": "genpei-yashima",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.580041666666667,
+  "text": "鏑矢が、風を裂いた。",
+  "heard": "かぶら や が 風 を 裂い た 。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "鏑矢＝かぶらや"
+  ]
+ },
+ "vuk4dju": {
+  "episode": "genpei-yashima",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 12.8,
+  "text": "扇は空へ舞い上がり、しばし虚空にひらめいて——春風に一もみ二もみもまれて、海へさっと散った。",
+  "heard": "扇は空へ舞い上がり、しばし虚空にひらめいて——春風に一もみ二もみもまれて、海へさっと散った。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "v1habks8": {
+  "episode": "genpei-yashima",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.58,
+  "text": "沖の平家は舟端をたたき、陸の源氏は箙をたたいて、どよめいた。",
+  "heard": "沖の平家は 船端を叩き 陸の源次は えびら を叩いて どめき た 。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "平家＝へいけ",
+   "源氏＝げんじ",
+   "箙＝えびら"
+  ]
+ },
+ "vk4ej38": {
+  "episode": "genpei-yashima",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 14.880041666666667,
+  "text": "感に堪えかねたのか。平家の舟の上で、五十ばかりの武者がひとり、黒革の鎧に白柄の長刀を手に、扇のあった場所で舞いはじめた。",
+  "heard": "平家の舟の上で、五十ばかりの武者がひとり、黒革の鎧に白柄の長刀を手に、扇のあった場所で舞いはじめた。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "平家＝へいけ",
+   "鎧＝よろい",
+   "長刀＝なぎなた"
+  ]
+ },
+ "v1hnupor": {
+  "episode": "genpei-yashima",
+  "speaker": "伊勢三郎義盛",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 4.090041666666667,
+  "text": "……与一。御定ぞ。仕れ。",
+  "heard": "……与一。御定ぞ。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "与一＝よいち"
+  ]
  }
 }
