@@ -2154,5 +2154,31 @@
   "heard": "この 先 に 何 が 待っ て いる の か は 扉 の 向こう で 確かめ て 。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v1ngycya": {
+  "episode": "genpei-kisegawa",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 9.862791666666666,
+  "text": "言うな、継信。",
+  "heard": "言う な",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "継信＝つぎのぶ"
+  ]
+ },
+ "v1p4mh6m": {
+  "episode": "genpei-kisegawa",
+  "speaker": "yoritomo",
+  "voice": "Schedar",
+  "model": "gemini-3.8-live",
+  "seconds": 4.44,
+  "text": "……九郎。そなたは、わしの義光じゃ。",
+  "heard": "……九郎。そなたは、わしの義光じゃ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "九郎＝くろう"
+  ]
  }
 }
