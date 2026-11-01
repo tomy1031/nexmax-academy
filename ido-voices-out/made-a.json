@@ -412,5 +412,112 @@
   "readings": [
    "綾＝あや"
   ]
+ },
+ "v171tnjm": {
+  "episode": "miyoshi-biwa",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 2.9500416666666665,
+  "text": "旅の方です、国盛さま。",
+  "heard": "旅 の 方 です 。 国 森 様 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "国盛＝くにもり"
+  ]
+ },
+ "vpydq2": {
+  "episode": "miyoshi-biwa",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 3.76,
+  "text": "旅の者が、こんな山奥に……。まあよい。",
+  "heard": "旅 の もの が こんな 山奥 に まあ 良い",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "旅の者＝たびのもの"
+  ]
+ },
+ "v1jis8yi": {
+  "episode": "miyoshi-biwa",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 16.35,
+  "text": "（小声）国盛さん。平家の武士で、戦に負けたあと、幼い帝を守って祖谷まで逃げてきたと伝わる人なんだ。",
+  "heard": "国盛さん。平家の武士で、戦に負けたあと、幼い帝を守って、祖谷まで逃げてきたと伝わる人なんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "国盛＝くにもり",
+   "平家＝へいけ",
+   "武士＝ぶし",
+   "帝＝みかど",
+   "祖谷＝いや"
+  ]
+ },
+ "v1vb0xx8": {
+  "episode": "miyoshi-biwa",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 7.58,
+  "text": "あの夜、小太郎を背負って戻ってくれた。……礼を言いそびれておった。かたじけない。",
+  "heard": "あの夜、小太郎を背負って戻ってくれた。……礼を言いそびれておった。かたじけない。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "小太郎＝こたろう"
+  ]
+ },
+ "v1c9uayn": {
+  "episode": "miyoshi-biwa",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.92,
+  "text": "あの夜のことは、忘れておらぬ。……おぬしも、忘れてはおらぬ顔じゃな。",
+  "heard": "あの夜のことは、忘れておらぬ。……おぬしも、忘れてはおらぬ顔じゃな。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vombn0w": {
+  "episode": "miyoshi-biwa",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.81,
+  "text": "わしが、まだ教経と名乗っておった頃の顔見知りよ。",
+  "heard": " わしが、まだ教経と名乗っておった頃の顔見知り",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "教経＝のりつね"
+  ]
+ },
+ "v1chmps": {
+  "episode": "miyoshi-biwa",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 3.3,
+  "text": "まあ……国盛さまに、お知り合いが。",
+  "heard": "まあ 、 国森 さま に お 知り合い が ?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "国盛＝くにもり"
+  ]
+ },
+ "vwxlfkq": {
+  "episode": "miyoshi-biwa",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.23,
+  "text": "（小声）剣山で会った国盛さんの、一年前の姿だ。まだ、ぼくたちのことを知らない。",
+  "heard": "くるぎ さん で あっ た くに もり さん の 一 年 前 の 姿 だ 。 まだ 僕 たち の こと を 知ら ない 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "剣山＝つるぎさん",
+   "国盛＝くにもり"
+  ]
  }
 }
