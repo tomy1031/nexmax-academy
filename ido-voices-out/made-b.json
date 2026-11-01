@@ -781,5 +781,101 @@
   "readings": [
    "紙芝居＝かみしばい"
   ]
+ },
+ "vt1cqd": {
+  "episode": "miyoshi-youkai",
+  "speaker": "tatsu",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 7.3,
+  "text": "さあさ、寄ってらっしゃい！ 今夜は山城の妖怪ばなし、「児啼爺」じゃ！",
+  "heard": "さあさあ、よってらっしゃい。今夜は山代の妖怪話小きじじいじゃ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "山城＝やましろ",
+   "妖怪＝ようかい",
+   "児啼爺＝こなきじじい"
+  ]
+ },
+ "v1ifw1yb": {
+  "episode": "miyoshi-youkai",
+  "speaker": "tatsu",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 10.25,
+  "text": "……と言うても、テレビが来てからは、見に来る子もめっきり減った。紙芝居も、今夜でしまいじゃ。",
+  "heard": "……と言うても、テレビが来てからは、見に来る子もめっきり減った。紙芝居も、今夜でしまいじゃ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "紙芝居＝かみしばい"
+  ]
+ },
+ "v19q3e6w": {
+  "episode": "miyoshi-youkai",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.92,
+  "text": "それでも、前のほうに、数人の子どもが座っている。",
+  "heard": "それでも 前の方 に 数 人 の 子供 が 座っ て いる 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v14f3jxf": {
+  "episode": "miyoshi-youkai",
+  "speaker": "tatsu",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 7.86,
+  "text": "夜の山道で、赤子の泣き声がしても、決して抱き上げてはならん。抱き上げたら最後——",
+  "heard": "夜の山道で赤ん坊の鳴き声がしても決して抱き上げてはならん。抱き上げたら最後",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vy7s1vq": {
+  "episode": "miyoshi-youkai",
+  "speaker": "tatsu",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 5.580041666666666,
+  "text": "赤子は、みるみる重うなって……石のように、動けんようになるんじゃ！",
+  "heard": "赤子は、みるみる重うなって……石のように、動けんようになるんじゃ！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vhusdr9": {
+  "episode": "miyoshi-youkai",
+  "speaker": "kenta",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 3.6,
+  "text": "うそじゃ、そんなん！ おるわけないわ！",
+  "heard": "うそじゃ、そんなん！おるわけないわ！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vanjmj": {
+  "episode": "miyoshi-youkai",
+  "speaker": "kenta",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 3.7,
+  "text": "わし、今から淵まで行って、確かめてくる！",
+  "heard": "わし、今から淵まで行って、確かめてくる！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1t9afq5": {
+  "episode": "miyoshi-youkai",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.710041666666666,
+  "text": "健太と呼ばれた少年は、止める声も聞かずに、暗い山道へ駆けていった。",
+  "heard": "健 太 と 呼ば れ た 少 年 は 止 め る 声 も 聞 か ず に 暗 い 山 道 へ か け て い っ た 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "健太＝けんた"
+  ]
  }
 }
