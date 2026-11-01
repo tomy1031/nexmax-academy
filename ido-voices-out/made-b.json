@@ -581,5 +581,107 @@
   "heard": "……もう、わしが乗らんでも、ええの。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v6lyro7": {
+  "episode": "miyoshi-oboke",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 3.5600416666666668,
+  "text": "今じゃ、松！ 突けぇっ！",
+  "heard": " 今じゃ、松！突けぇっ！",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "vw49yeb": {
+  "episode": "miyoshi-oboke",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 0.9202916666666666,
+  "text": "……おう。",
+  "heard": "お",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1dqz1dg": {
+  "episode": "miyoshi-oboke",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 7.82,
+  "text": "わしの拍子に、よう合わせた。……それでええ。川は、ひとりで下るもんやない。",
+  "heard": "わしの拍子に、よう合わせた。……それでええ。川は、ひとりで下るもんやない。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v35kr01": {
+  "episode": "miyoshi-oboke",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.73,
+  "text": "吉蔵さん、今の歌は？",
+  "heard": "吉蔵さん、今の歌は？",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "吉蔵＝きちぞう"
+  ]
+ },
+ "v13j9n4c": {
+  "episode": "miyoshi-oboke",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 7.08,
+  "text": "祖谷の粉ひき節よ。石臼をひきながら歌う、山の仕事歌じゃ。",
+  "heard": "祖谷の粉ひき節よ。石臼をひきながら歌う、山の仕事歌じゃ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "祖谷＝いや",
+   "粉ひき節＝こひきぶし"
+  ]
+ },
+ "v8imee4": {
+  "episode": "miyoshi-oboke",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 9.19,
+  "text": "わしの婆さまは言うとった。この節は、ずっと昔に、都から逃げてきた人らが残していったもんじゃと。",
+  "heard": "わしの婆さまは言うとった。この節は、ずっと昔に、都から逃げてきた人らが残していったもんじゃと。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "都＝みやこ"
+  ]
+ },
+ "v13qohf2": {
+  "episode": "miyoshi-oboke",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.18,
+  "text": "（小声）都から逃げてきた人たち……八百年ほど前、戦に負けて祖谷の山へ逃げてきた、平家の人たちのことかな。",
+  "heard": " 都から逃げてきた人たち……八百年ほど前、戦に負けて祖谷の山へ逃げてきた、平家の人たちのことかな。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "都＝みやこ",
+   "祖谷＝いや",
+   "平家＝へいけ"
+  ]
+ },
+ "vuesioa": {
+  "episode": "miyoshi-oboke",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.560083333333333,
+  "text": "祖谷の粉ひき節は、今も祖谷で歌い継がれている民謡なんだよ。",
+  "heard": "祖谷の粉ひき節は、今も祖谷で歌い継がれている民",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "祖谷＝いや",
+   "粉ひき節＝こひきぶし"
+  ]
  }
 }
