@@ -2110,5 +2110,49 @@
   "readings": [
    "旅の者＝たびのもの"
   ]
+ },
+ "vbgnwbv": {
+  "episode": "genpei-kisegawa",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 5.31,
+  "text": "いずれ戦場で会うことがあれば、声をかけよ。……覚えておくぞ。",
+  "heard": " いずれ戦場で会うことがあれば、声をかけよ。……覚えておくぞ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1vomm6s": {
+  "episode": "genpei-kisegawa",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.71,
+  "text": "兄と弟の物語は、ここから始まる。",
+  "heard": "兄 と 弟 の 物語 は ここ から 始まる 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1cyqcl8": {
+  "episode": "genpei-kisegawa",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.71,
+  "text": "（小声）……九年後のことは、今は、言わないでおくね。",
+  "heard": "する 9年 後 の こと は 今 は 言わ ない で おく ね 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v17soi4p": {
+  "episode": "genpei-kisegawa",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.650041666666667,
+  "text": "（小声）この先に何が待っているのかは——扉の向こうで、確かめて。",
+  "heard": "この 先 に 何 が 待っ て いる の か は 扉 の 向こう で 確かめ て 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
