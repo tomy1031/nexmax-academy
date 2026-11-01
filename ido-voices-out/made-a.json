@@ -920,5 +920,42 @@
   "readings": [
    "綾＝あや"
   ]
+ },
+ "vy251qs": {
+  "episode": "miyoshi-biwa",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 2.63,
+  "text": "では、これを。",
+  "heard": "で は これ を",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vvhq31v": {
+  "episode": "miyoshi-biwa",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.7800416666666665,
+  "text": "綾は、象牙の撥を、国盛の手に押しつけた。",
+  "heard": "綾は、象牙の撥を、国盛の手に",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": [
+   "綾＝あや",
+   "撥＝ばち",
+   "国盛＝くにもり"
+  ]
+ },
+ "vuouetv": {
+  "episode": "miyoshi-biwa",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 3.96,
+  "text": "預かってくださいませ。……いつか、また弾くときまで。",
+  "heard": "預かってくださいませ。……いつか、また弾くときまで。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
  }
 }
