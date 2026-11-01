@@ -1561,5 +1561,102 @@
    "治承四年＝じしょうよねん",
    "平家＝へいけ"
   ]
+ },
+ "v1iwqcof": {
+  "episode": "genpei-kisegawa",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.110041666666667,
+  "text": "その翌日。黄瀬川の陣の前に、ひとりの若者がたどりついた。",
+  "heard": "黄瀬川の陣の前に、ひとりの若者がたどりついた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "黄瀬川＝きせがわ"
+  ]
+ },
+ "v12bcex9": {
+  "episode": "genpei-kisegawa",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.55,
+  "text": "陣の者たちは名乗りを怪しんで、なかなか取り次がない。",
+  "heard": "人 の 者 たち は 名残り を 惜しん で なかなか 立た ず が ない 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v18njjib": {
+  "episode": "genpei-kisegawa",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.81,
+  "text": "待たされるあいだ、若者は、何度も同じ言葉をつぶやいている。",
+  "heard": "待たされる 間 だ 若者 は 何 度 も 同じ 言葉 を 呟い て いる 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vad9jan": {
+  "episode": "genpei-kisegawa",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 9,
+  "text": "「兄上、お初にお目にかかります。九郎義経にございます」……いや、硬すぎるか。",
+  "heard": "兄上、お初にお目にかかります。九郎義経にございます……いや、硬すぎるか。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "九郎＝くろう",
+   "義経＝よしつね"
+  ]
+ },
+ "v1pm03rd": {
+  "episode": "genpei-kisegawa",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 4.51,
+  "text": "「兄上！ 会いとうございました！」……軽すぎる。",
+  "heard": "兄上、あいとう ござい まし た 。 軽 すぎる 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v3mjrt3": {
+  "episode": "genpei-kisegawa",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 1.74025,
+  "text": "……！ 誰だ！",
+  "heard": "……！ 誰だ！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1mwwp45": {
+  "episode": "genpei-kisegawa",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 3.04,
+  "text": "聞いておったのか。……忘れてくれ。",
+  "heard": " ……忘れてくれ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vvqowvx": {
+  "episode": "genpei-kisegawa",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 7.59,
+  "text": "わたしは九郎。奥州から、兄上——頼朝さまのもとへ、馳せ参じた者だ。",
+  "heard": "私は苦労 奥州から兄上頼友様のもとへ馳せ参じたものだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "九郎＝くろう",
+   "奥州＝おうしゅう",
+   "頼朝＝よりとも"
+  ]
  }
 }
