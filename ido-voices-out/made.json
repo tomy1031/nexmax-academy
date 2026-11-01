@@ -615,5 +615,40 @@
   "readings": [
    "老臣＝ろうしん"
   ]
+ },
+ "v1cdn1g9": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "kotaro",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 1.39,
+  "text": "じいちゃん！",
+  "heard": "ちい ちゃん",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "vmpuh2x": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.010041666666667,
+  "text": "闇の向こうで、小さな声が上がった。",
+  "heard": "闇 の 向こう で 小さな 声 が 上がっ た 。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "v16vo74a": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.050041666666667,
+  "text": "そのとき——向こう岸の木々のあいだで、松明が揺れた。",
+  "heard": "そのとき、向こう岸の木々のあいだで、松明が揺れた。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "松明＝たいまつ"
+  ]
  }
 }
