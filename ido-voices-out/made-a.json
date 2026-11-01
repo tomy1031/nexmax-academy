@@ -1462,5 +1462,98 @@
   "readings": [
    "義経＝よしつね"
   ]
+ },
+ "v183k8sf": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.85,
+  "text": "知っておる。屋島で、あやつはわしの矢の前に、身を隠さなんだ。",
+  "heard": "ステルル 八島 で 操 は わし の 家 の 前 に 身 を 隠さ な ん だ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "屋島＝やしま"
+  ]
+ },
+ "v1pgyrwd": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.27,
+  "text": "……あのような男が、兄に追われる。戦とは、そういうものよ。",
+  "heard": "……あのような男が、兄に追われる。戦とは、そういうものよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vzxd7ml": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 3.76,
+  "text": "……そうか。勝った者も、苦しむか。",
+  "heard": " ……そうか。勝った者も、苦しむか。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1ejtpuy": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.12,
+  "text": "ならば、この戦に、勝った者はおらぬのじゃな。",
+  "heard": "ならば、この戦に、勝った者はおらぬのじゃな。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1cgiz3a": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.250041666666666,
+  "text": "東の雲が、金色に燃えはじめた。",
+  "heard": "東の雲が、金色に燃えはじめた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1vhat2d": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.11,
+  "text": "日が昇る。雲の海が、一面の光に変わっていく。",
+  "heard": "雲の海が、一面の光に変わっていく。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v167ne4g": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 11.98,
+  "text": "壇ノ浦で、わしは海に飛び込んだ。源氏の武者をふたり抱えて。死ぬつもりであった。",
+  "heard": "だんのうらで、わしは海に飛び込んだ。源氏の武者をふたり抱えて。死ぬつもりであった。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "壇ノ浦＝だんのうら",
+   "源氏＝げんじ"
+  ]
+ },
+ "v4l4k0g": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 8.03,
+  "text": "だが、波がわしを吐き出した。……なぜ生かされたのか、ずっと考えておった。",
+  "heard": "だが 波 が わし を 吐き出し た 。 なぜ 生かさ れ た の か ずっと 考え て おっ た 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
