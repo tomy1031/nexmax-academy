@@ -411,5 +411,108 @@
   "heard": "来た か 。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "vqjx23f": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.97,
+  "text": "皆、帝のおそばへ！ かずらの手を止めるな、仕上げを急げ！",
+  "heard": "みな、みかどの御側。 くさるの手を止めるな。仕上げを急げ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "帝＝みかど"
+  ]
+ },
+ "vbxsc78": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "yaheiji",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 2.27,
+  "text": "殿……それが。",
+  "heard": "殿……それが。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "殿＝との"
+  ]
+ },
+ "v6iwjlq": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "yaheiji",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 8.97,
+  "text": "里の小太郎が、帝に栗を差し上げると申して……向こう岸の山へ。まだ、戻っておりませぬ。",
+  "heard": " 里のこたろうが、みかどに栗を差し上げると申して……向こう岸の山へ。まだ、戻っておりませぬ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "小太郎＝こたろう",
+   "帝＝みかど",
+   "申して＝もうして"
+  ]
+ },
+ "v8qkoef": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 1.1000833333333333,
+  "text": "……なんだと。",
+  "heard": "……なんだと。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vujg94": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.540041666666667,
+  "text": "橋を仕上げれば、追手も渡ってくる。橋を落とせば、子どもが向こう岸に取り残される。",
+  "heard": "橋を仕上げれば、おっても渡ってくる。橋を落とせば、子どもが向こう岸に取り残される。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "追手＝おって"
+  ]
+ },
+ "v17jmt92": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 10.170041666666666,
+  "text": "壇ノ浦で、わしは誰も守れなんだ。一門の者が、目の前で、次々と海に沈んでいった。",
+  "heard": "断 の 裏 で 、 わし は 誰 も 守れ ん だ 。 一問 の 者 が 目 の 前 で 次々 と 海 に 沈ん で いっ た 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "壇ノ浦＝だんのうら",
+   "一門＝いちもん"
+  ]
+ },
+ "v19t52wg": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 3.3600416666666666,
+  "text": "……もう、ひとりも、置いてはゆかぬ。",
+  "heard": "……もう、ひとりも、置いてはゆかぬ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v300xta": {
+  "episode": "miyoshi-kazurabashi",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.79,
+  "text": "日が落ちた。谷の底から、松明の火が、ひとつ、またひとつと上がってくる。",
+  "heard": "谷の底から、たいまつの火が、ひとつ、またひとつと上がってくる。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "松明＝たいまつ"
+  ]
  }
 }
