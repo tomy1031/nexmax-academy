@@ -1555,5 +1555,40 @@
   "heard": "だが 波 が わし を 吐き出し た 。 なぜ 生かさ れ た の か ずっと 考え て おっ た 。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v15gx119": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 3.82,
+  "text": "戦うためか。恨みを晴らすためか。",
+  "heard": "戦う ため か 恨み を 晴らす ため か",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vpqvs0z": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.08,
+  "text": "国盛は、剣を半ばまで抜いた。刃が、朝日を受けて白く光る。",
+  "heard": "国盛は、剣を半ばまで抜いた。刃が、朝日を受けて白く光る。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "国盛＝くにもり"
+  ]
+ },
+ "vaxla6n": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 1.42,
+  "text": "……違う。",
+  "heard": "違う",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
