@@ -1253,5 +1253,109 @@
   "readings": [
    "健太＝けんた"
   ]
+ },
+ "v9ez6x": {
+  "episode": "miyoshi-youkai",
+  "speaker": "kenta",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 1.78,
+  "text": "……う、うわああん！",
+  "heard": "うわあ",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "v1m9c2s": {
+  "episode": "miyoshi-youkai",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.92,
+  "text": "泣きじゃくる少年の頭を、児啼爺が、しわだらけの手でなでた。",
+  "heard": "泣きじゃくる少年の頭を 子なきじじい が 皺だらけ の 手 で なでた 。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "児啼爺＝こなきじじい"
+  ]
+ },
+ "v1jraw8d": {
+  "episode": "miyoshi-youkai",
+  "speaker": "konaki",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.65,
+  "text": "泣け泣け。泣き声はな、生きとる証じゃ。",
+  "heard": "泣け泣け 泣き声はな 生きとる 証し じゃ 。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "v1ca5mhn": {
+  "episode": "miyoshi-youkai",
+  "speaker": "konaki",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.250041666666666,
+  "text": "……わしはな、もっと昔の泣き声も知っとる。",
+  "heard": "……わしはな、もっと昔の泣き",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": []
+ },
+ "v1r1fgal": {
+  "episode": "miyoshi-youkai",
+  "speaker": "konaki",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 11.830041666666666,
+  "text": "八百年ほど前じゃ。都から来た鎧の男たちが、悲しい顔をして、この谷を上っていきおった。",
+  "heard": "八百年ほど前じゃ。都から来た鎧の男たちが、悲しい顔をして、この谷を上っていきおった。",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": [
+   "都＝みやこ",
+   "鎧＝よろい"
+  ]
+ },
+ "v1vwhgks": {
+  "episode": "miyoshi-youkai",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.840041666666667,
+  "text": "（小声）戦に負けて、祖谷の山へ逃げてきた平家の武士たちのことだ……！",
+  "heard": "戦に負けて、祖谷の山へ逃げてきた平家の武士たちのことだ……！",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": [
+   "祖谷＝いや",
+   "平家＝へいけ",
+   "武士＝ぶし"
+  ]
+ },
+ "vgpp502": {
+  "episode": "miyoshi-youkai",
+  "speaker": "konaki",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 10.99,
+  "text": "その中に、道を間違えるのがやたら上手な爺さまがおってのう。源氏の追手を、三日三晩、山で迷わせよった。",
+  "heard": "その中に、道を間違えるのがやたら上手な爺さまがおってのう。源氏の追手を、三日三晩、山で迷わせよった。",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": [
+   "爺さま＝じいさま",
+   "源氏＝げんじ",
+   "追手＝おって"
+  ]
+ },
+ "vac1x1k": {
+  "episode": "miyoshi-youkai",
+  "speaker": "konaki",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 7.41,
+  "text": "そのあと、わしと、一晩、月見酒を飲んだ。……ええ爺さまじゃった。",
+  "heard": "そのあと、わしと、一晩、月見酒を飲んだ。……ええ爺さまじゃった。",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": [
+   "月見酒＝つきみざけ",
+   "爺さま＝じいさま"
+  ]
  }
 }
