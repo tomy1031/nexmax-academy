@@ -95,5 +95,106 @@
   "readings": [
    "鳶口＝とびぐち"
   ]
+ },
+ "vd00xpw": {
+  "episode": "miyoshi-oboke",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.2800416666666665,
+  "text": "威勢のいい若者が、丸太の上にひょいと飛び乗った。",
+  "heard": "威勢のいい若者が、丸太の上にひょいと飛び乗った。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vg2gok7": {
+  "episode": "miyoshi-oboke",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 7.38,
+  "text": "せがれの松吉じゃ。……今日で、わしは川を降りる。これが、最後の川下りよ。",
+  "heard": "せがれの松吉じゃ。……今日で、わしは川を降りる。これが、最後の川下りよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "松吉＝まつきち"
+  ]
+ },
+ "v3bq2gt": {
+  "episode": "miyoshi-oboke",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 5.12,
+  "text": "明日からは、あいつが頭じゃ。……まだ、危なっかしいがの。",
+  "heard": "明日からは、あいつが頭じゃ。……まだ、危なっかしいがの。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1mye8oi": {
+  "episode": "miyoshi-oboke",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 2.27,
+  "text": "筏に組んで、下るの？",
+  "heard": "いか だ に 組ん で 下る の ?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "筏＝いかだ"
+  ]
+ },
+ "v1u04e1n": {
+  "episode": "miyoshi-oboke",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 7.24,
+  "text": "あほう。大歩危・小歩危の瀬を、筏のままで下れるかい。岩に当たって、ばらばらよ。",
+  "heard": "あほう。大歩危・小歩危の瀬を、筏のままで下れるかい。岩に当たって、ばらばらよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "大歩危＝おおぼけ",
+   "小歩危＝こぼけ",
+   "筏＝いかだ"
+  ]
+ },
+ "v7siikv": {
+  "episode": "miyoshi-oboke",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 10.56,
+  "text": "丸太はばらで流す。わしらは丸太に乗って、鳶口一本で追いかけるんじゃ。筏に組むのは、瀬を抜けた下の淵でな。",
+  "heard": "丸太 は バラ で 流す 。 わしら は 丸太 に 乗っ て 飛び口 1 本 で 追いかける ん じゃ 。 イカダ に 組む の は せい を 抜け た 下 の 縁 で な 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "鳶口＝とびぐち",
+   "筏＝いかだ"
+  ]
+ },
+ "v18ww4c4": {
+  "episode": "miyoshi-oboke",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.16,
+  "text": "丸太を一本ずつ流して運ぶんだね。急な谷では、こうして木を運んでいたんだって。",
+  "heard": "丸太を 1 本 ずつ 流し て 運ぶ ん だ ね 。 急 な 谷 で は こう し て 木 を 運ん で い た ん だって 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1bpesli": {
+  "episode": "miyoshi-oboke",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 5.06,
+  "text": "おう。小歩危の手前の岩の上がええ。よう見えるで。",
+  "heard": "おう。小歩危の手前の岩の上がええ。よう見えるで。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "小歩危＝こぼけ"
+  ]
  }
 }
