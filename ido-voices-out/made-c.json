@@ -1393,5 +1393,77 @@
   "heard": "……やはり、おぬしか。",
   "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
   "readings": []
+ },
+ "v13ddrao": {
+  "episode": "genpei-takadachi",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 4.92,
+  "text": "黄瀬川で、おぬしは言うた。兄上は、きっと喜んでくださると。",
+  "heard": "岸川 で 翁 は 言う た 。 「 兄上 は きっと 喜ん で くださる と 。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "黄瀬川＝きせがわ"
+  ]
+ },
+ "v1q6mm05": {
+  "episode": "genpei-takadachi",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 5.390041666666667,
+  "text": "……喜んでくださったのは、あの一夜だけであった。",
+  "heard": "……喜んでくださったのは、あの一夜だけであった。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "vowya3g": {
+  "episode": "genpei-takadachi",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 5.5,
+  "text": "黄瀬川で、おぬしは言うた。兄上を信じよと。",
+  "heard": "おぬしは言うた。兄上を信じよと。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "黄瀬川＝きせがわ"
+  ]
+ },
+ "v1bsrji8": {
+  "episode": "genpei-takadachi",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 5.61,
+  "text": "わたしは、最後まで信じたよ。……信じたまま、ここにおる。",
+  "heard": "わたしは、最後まで信じたよ。……信じたまま、",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "vc4ou19": {
+  "episode": "genpei-takadachi",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 4.37,
+  "text": "黄瀬川で、おぬしは言うた。自分を大事にせよと。",
+  "heard": "規制 側 で お前 は ゆーた 自分 を 大事 に せよ と",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "黄瀬川＝きせがわ"
+  ]
+ },
+ "vcvgvkt": {
+  "episode": "genpei-takadachi",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 9.600041666666666,
+  "text": "……あのとき笑ったことを、今は、少しだけ悔いておる。",
+  "heard": "……あのとき笑ったことを、今は、少しだけ悔いておる。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
  }
 }
