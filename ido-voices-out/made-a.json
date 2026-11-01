@@ -1153,5 +1153,100 @@
    "帝＝みかど",
    "祖谷＝いや"
   ]
+ },
+ "virbkt9": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.1,
+  "text": "琵琶の滝で、おぬしは言うたな。わしの生き方は、わしが決めよと。",
+  "heard": "で、おぬしは言うたな。わしの生き方は、わしが決めよと。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "琵琶＝びわ"
+  ]
+ },
+ "v1rx9tz9": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 3.53,
+  "text": "……決めに来たのよ。今日、ここで。",
+  "heard": "……決めに来たのよ。今日、ここで。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v9ofk9d": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.1,
+  "text": "琵琶の滝で、おぬしは「行くな」と言うた。",
+  "heard": "美和の滝でお主はいくなと言いた",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "琵琶＝びわ"
+  ]
+ },
+ "v1hofipy": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.72,
+  "text": "……あの夜は、行かなんだ。だが、迷いは消えておらぬ。",
+  "heard": "……あの夜は、行かなんだ。だが、迷いは消えておらぬ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1sa0hzz": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.19,
+  "text": "琵琶の滝で、おぬしは黙って、綾の歌を聴いておったな。",
+  "heard": "美和の滝 で お主 は 黙っ て あや の 歌 を 聞い て おっ た な 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "琵琶＝びわ",
+   "綾＝あや"
+  ]
+ },
+ "v1619w0": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 3.08,
+  "text": "……あの沈黙が、いちばん、こたえた。",
+  "heard": "……あの沈黙が、いちばん、こたえた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vr0k99l": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.870041666666666,
+  "text": "会うたびに、おぬしは少しも年をとらぬ。……天狗か何かか。",
+  "heard": "……天狗か何かか。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v9jyzm": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 2.7800416666666665,
+  "text": "て、天狗じゃないよ！",
+  "heard": " て、天狗じゃないよ！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
