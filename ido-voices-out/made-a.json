@@ -2253,5 +2253,19 @@
   "heard": "さあ、次の町へ。……また、会おうね。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "vrbt64q": {
+  "episode": "miyoshi-tsurugi",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 1.61,
+  "text": "（小声）綾さんの撥だ……。",
+  "heard": "綾 さん の バチ だ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "綾＝あや",
+   "撥＝ばち"
+  ]
  }
 }
