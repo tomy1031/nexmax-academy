@@ -1,0 +1,99 @@
+{
+ "v8w0dw2": {
+  "episode": "miyoshi-oboke",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.14,
+  "text": "大正十二年、初夏。大歩危の上手、吉野川の河原。",
+  "heard": "大正十二年、初夏。大歩危の上手、吉野川の河原。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "大歩危＝おおぼけ",
+   "吉野川＝よしのがわ"
+  ]
+ },
+ "v1bvkmyp": {
+  "episode": "miyoshi-oboke",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.29,
+  "text": "土佐や山城の山で切り出した丸太が、河原いっぱいに積まれている。これを、川の流れで下へ運ぶのだ。",
+  "heard": "土佐や山城の山で切り出した丸太が、河原いっぱいに積まれている。これを、川の流れで下へ運ぶのだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "山城＝やましろ"
+  ]
+ },
+ "vgsp5r5": {
+  "episode": "miyoshi-oboke",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 5.360083333333334,
+  "text": "おう、そこの！ ぼんやり突っ立っとったら、丸太に轢かれるで！",
+  "heard": "おう、そこの！ぼんやり突っ立っとったら、丸太に轢かれるで！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1kq02nv": {
+  "episode": "miyoshi-oboke",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 4.78,
+  "text": "……なんじゃ、からくり人形を連れた旅の人か。",
+  "heard": "そんな からくり 人形 を 連れ た 旅 の 人 か 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vv83a4z": {
+  "episode": "miyoshi-oboke",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 2.97,
+  "text": "からくり人形じゃないよ！ ネクマックス！",
+  "heard": " からくり人形じゃないよ！ネクマックス！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1dqav4f": {
+  "episode": "miyoshi-oboke",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 2.27,
+  "text": "おう、また会うたの！",
+  "heard": "おう、また会うたの！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vgfsvfc": {
+  "episode": "miyoshi-oboke",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 6.06,
+  "text": "わしは吉蔵。この川で、四十年、木を流しとる。",
+  "heard": "わしは吉蔵。この川で、四十年、木を流しとる。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "吉蔵＝きちぞう"
+  ]
+ },
+ "v1b8xcgv": {
+  "episode": "miyoshi-oboke",
+  "speaker": "matsukichi",
+  "voice": "Sadachbia",
+  "model": "gemini-3.8-live",
+  "seconds": 3.1,
+  "text": "親父！ 鳶口、こっちで持つけんな！",
+  "heard": "親父！ 鳶口、こっちで持つけんな！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "鳶口＝とびぐち"
+  ]
+ }
+}
