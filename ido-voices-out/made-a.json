@@ -519,5 +519,117 @@
    "剣山＝つるぎさん",
    "国盛＝くにもり"
   ]
+ },
+ "v1t5lpy7": {
+  "episode": "miyoshi-biwa",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.23,
+  "text": "国盛の腰には、一振りの太刀が下がっていた。布に包まれた、古い拵え。",
+  "heard": "布に包まれた、古い拵え。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "国盛＝くにもり",
+   "太刀＝たち"
+  ]
+ },
+ "vzuwocx": {
+  "episode": "miyoshi-biwa",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 3.41,
+  "text": "……国盛さま。その太刀は。",
+  "heard": "……国盛さま。その太刀は。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "国盛＝くにもり",
+   "太刀＝たち"
+  ]
+ },
+ "vxj56ox": {
+  "episode": "miyoshi-biwa",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 7.9,
+  "text": "讃岐の浦から、使いが来た。一門の生き残りが、海辺に集まっておるそうじゃ。",
+  "heard": "讃岐の浦から、使いが来た。一門の生き残りが、海辺に集まっておるそうじゃ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "讃岐＝さぬき",
+   "一門＝いちもん"
+  ]
+ },
+ "v4lv0w9": {
+  "episode": "miyoshi-biwa",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.62,
+  "text": "源氏の目は、いまや鎌倉の内輪もめに向いておる。平家が立つなら今ぞ、と。",
+  "heard": "源氏 の 目 は 今や 鎌倉 の 内 は 揉め に 向い て おる 。 平家 が 立つ なら 今 ぞ と",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "源氏＝げんじ",
+   "鎌倉＝かまくら",
+   "平家＝へいけ"
+  ]
+ },
+ "vv3hs93": {
+  "episode": "miyoshi-biwa",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.1,
+  "text": "……教経の名を、まだ覚えておる者がおったのよ。",
+  "heard": "……教経の名を、まだ覚えておる者がおったのよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "教経＝のりつね"
+  ]
+ },
+ "v366qmd": {
+  "episode": "miyoshi-biwa",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.2800416666666665,
+  "text": "（小声）教経は、国盛さんのもとの名前。平家でいちばん強いと言われた武士なんだ。",
+  "heard": "こうぬつねは国森さんの元の名前平家で一番強いと言われた武士なんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "教経＝のりつね",
+   "国盛＝くにもり",
+   "平家＝へいけ",
+   "武士＝ぶし"
+  ]
+ },
+ "v1p9v0y6": {
+  "episode": "miyoshi-biwa",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.01,
+  "text": "（小声）平家の生き残りが「もう一度、源氏と戦おう」と、国盛さんをさそいに来たんだね。",
+  "heard": "平家の生き残りがもう一度、源氏と戦おうと、国盛さんをさそいに来たんだね。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "平家＝へいけ",
+   "源氏＝げんじ",
+   "国盛＝くにもり"
+  ]
+ },
+ "v1fucl7h": {
+  "episode": "miyoshi-biwa",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.79,
+  "text": "滝の音が、急に大きくなった気がした。",
+  "heard": "焚き の 音 が 急 に 大きく なっ た 気 が し た 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
