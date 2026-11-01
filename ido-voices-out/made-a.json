@@ -1979,5 +1979,97 @@
   "heard": "あれ",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "vuzs0ty": {
+  "episode": "miyoshi-finale",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.29,
+  "text": "ネクマックスが、橋のたもとの、苔むした岩の前で止まった。",
+  "heard": "ネクマックス が 橋 の たもと の 苔虫 た 岩 の 前 で 止まっ た 。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1bz7sao": {
+  "episode": "miyoshi-finale",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.16,
+  "text": "ここ、何か彫ってある。……すごく古い字だ。",
+  "heard": "ここ、何か彫ってある。……すごく古い字だ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vjsfnii": {
+  "episode": "miyoshi-finale",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.460041666666666,
+  "text": "指でなぞると、風雨にすり減った文字が、かすかに浮かび上がった。",
+  "heard": "指でなぞると、風雨にすり減った文字が、かすかに浮かび上がった。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "v1v1c9x7": {
+  "episode": "miyoshi-finale",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 1.3200416666666666,
+  "text": "「旅の者へ」",
+  "heard": "旅 の もの へ",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": [
+   "旅の者＝たびのもの"
+  ]
+ },
+ "v18wixo8": {
+  "episode": "miyoshi-finale",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.5600416666666668,
+  "text": "「小太郎を背負うて走ったこと、忘れぬ」",
+  "heard": "小太郎を背負うて走ったこと、忘れぬ。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": [
+   "小太郎＝こたろう"
+  ]
+ },
+ "v1j4qbv6": {
+  "episode": "miyoshi-finale",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.32,
+  "text": "「あの夜の谷を、ともに見たこと、忘れぬ」",
+  "heard": "あの夜の谷を、ともに見たこと、忘れぬ。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "v10ax0xm": {
+  "episode": "miyoshi-finale",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.73,
+  "text": "「橋は切れても、また編める」",
+  "heard": "橋 は 切れ て も また あめる",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "v159jo6": {
+  "episode": "miyoshi-finale",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.52,
+  "text": "「ともに剣を眠らせたこと、かたじけなし」",
+  "heard": "共 に 剣 を 眠ら せ た こと 片肘 がし",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
  }
 }
