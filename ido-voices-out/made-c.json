@@ -101,5 +101,103 @@
   "heard": "おぬしの言うたとおりであった。兄上は、わたしを義光公と呼んでくださった！",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "vfshz5j": {
+  "episode": "genpei-yashima",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 6.7400416666666665,
+  "text": "おぬしは「兄上を信じよ」と言うたな。信じて、ここまで来た。",
+  "heard": "おぬしは「兄上を信じよ」と言うたな。信じて、ここまで来た。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v11lkgk5": {
+  "episode": "genpei-yashima",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 7.11,
+  "text": "おぬしは「自分を大事に」と言うたな。……すまぬ。嵐の海を、渡ってきたところだ。",
+  "heard": "お 主 は 自分 を 大事 に と 言う だ な 。 すま ぬ 。 嵐 の 海 を 渡っ て き た ところ だ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vnr235s": {
+  "episode": "genpei-yashima",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 7.38,
+  "text": "……なんだ、その顔は。まるで、わたしの行く末を知っておるような。",
+  "heard": "……なんだ、その顔は。まるで、わたしの行く末を知っておるような。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vp51ge3": {
+  "episode": "genpei-yashima",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.53,
+  "text": "（小声）……この人の未来を、ぼくたちは見てしまったんだね。",
+  "heard": "この 人 の 未来 を 僕たち は 見 て しまっ た ん だ ね 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1iixh0w": {
+  "episode": "genpei-yashima",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.32,
+  "text": "そのとき。平家の舟から、ひときわ鋭い矢が飛んできた。",
+  "heard": "その 時 、 平家 の 船 から 1 時 は 鋭い 矢 が 飛ん で き た 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "平家＝へいけ"
+  ]
+ },
+ "v1owm3n8": {
+  "episode": "genpei-yashima",
+  "speaker": "tsuginobu",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 1.75,
+  "text": "殿、伏せられよ！",
+  "heard": "殿、伏せられよ！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "殿＝との"
+  ]
+ },
+ "vnpfwl2": {
+  "episode": "genpei-yashima",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.91,
+  "text": "義経はどこじゃ！ この能登守教経が、相手になってくれる！",
+  "heard": "養殖 根 は どこ じゃ この 野党 の 胸 の 織り が 相手 に なっ て くれる",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "義経＝よしつね",
+   "教経＝のりつね"
+  ]
+ },
+ "vor3wjq": {
+  "episode": "genpei-yashima",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.75,
+  "text": "（小声）平教経さん……！ 平家一の、強弓の使い手だ！",
+  "heard": "パイラ の のり つね さん 。 平家 一 の 強弓 の 使い手 だ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "平教経＝たいらののりつね",
+   "平家＝へいけ"
+  ]
  }
 }
