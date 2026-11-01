@@ -1952,5 +1952,16 @@
   "heard": " 勝った話じゃなくて、生きた話。……あなたが、語ってあげてね。",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "vn2l8vo": {
+  "episode": "genpei-takadachi",
+  "speaker": "benkei",
+  "voice": "Alnilam",
+  "model": "gemini-3.8-live",
+  "seconds": 1.3600416666666666,
+  "text": "……おぬしか。",
+  "heard": "お前しか。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
  }
 }
