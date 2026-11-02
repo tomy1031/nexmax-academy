@@ -94,5 +94,101 @@
   "heard": "You heard all that? Please, forget it.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "evqowvx7bjjv": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 7.54,
+  "text": "I am Kuro. I have come all the way from Oshu (the far north) to serve my elder brother — Lord Yoritomo.",
+  "heard": " I have come all the way from Oshu to serve my elder brother — Lord Yoritomo.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eqvbau0ityu1": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.54,
+  "text": "(whispering) That's Minamoto no Yoshitsune…! He's only 22 here, counting age the old Japanese way.",
+  "heard": "That's Minamotonoyoshitsune. He's only 22 here, counting age the old Japanese way.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ek45cyypra11": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 3.12,
+  "text": "…You. We meet again, don't we?",
+  "heard": "you We meet again, don't we?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e14pbgo8j3oh4": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 4.67,
+  "text": "…Hm? Why are you looking at me like that — as if you've missed me?",
+  "heard": "Hmm? Why are you looking at me like that, as if you've missed me?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1xatwuqkhhxb": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.08,
+  "text": "(whispering) This is Yoshitsune nine years before we saw his last day at Takadachi… He has no idea what's coming.",
+  "heard": " This is Yoshitsune nine years before we saw his last day at Takadachi… He has no idea what's coming.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1ha0a5c1ybu7": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.82,
+  "text": "(whispering) For Yoshitsune, today is the very first time we've met. This is him long before he fights at Yashima and Dan-no-ura.",
+  "heard": " For Yoshitsune, today is the very first time we've met. This is him long before he fights at Yashima and Dan-no-ura.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "einlhs28jlmk": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 6,
+  "text": "I am Kuro. I have come all the way from Oshu (the far north) to serve my elder brother.",
+  "heard": " I have come all the way from Oshu to serve my elder brother.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1wvx89qtzrzl": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "tsuginobu",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.040041666666666,
+  "text": "My lord, please, sit down for a little while.",
+  "heard": "My Lord, please sit down for a little while.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
