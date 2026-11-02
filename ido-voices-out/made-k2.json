@@ -1,0 +1,98 @@
+{
+ "v7ibgwv": {
+  "episode": "kh-independence",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.61,
+  "text": "1962年。プノンペンの、大きな通りが交わる広場。",
+  "heard": "ナ皇162年 プノンペンの 大きな 通り が 交わる 広場",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v10dx1vn": {
+  "episode": "kh-independence",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.68,
+  "text": "足場に囲まれた、赤茶色の塔が、空に向かってのびている。",
+  "heard": "足場に囲まれた、赤茶色の塔が、空に向かってのびている。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vomzn5t": {
+  "episode": "kh-independence",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.93,
+  "text": "塔は、蓮のつぼみのような形をしていた。いくつもの段に、蛇の神さま——ナーガの頭が、ぐるりと並んでいる。",
+  "heard": "塔は、蓮のつぼみのような形をしていた。いくつもの段に、蛇の神さまナーガの頭が、ぐるりと並んでいる。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1l70fan": {
+  "episode": "kh-independence",
+  "lang": "ja",
+  "speaker": "dara",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 5.15,
+  "text": "ねえ、見て見て！ あのいちばん上、うちの父ちゃんが作ったんだよ！",
+  "heard": "ねえ 、 見 て 見 て 。 あの 一番 上 、 うち の 長男 が 作っ た ん だ よ 。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vmco0wg": {
+  "episode": "kh-independence",
+  "lang": "ja",
+  "speaker": "dara",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 6.34,
+  "text": "……あ、ほんとは父ちゃん「たち」。でも、父ちゃんもいたんだ。",
+  "heard": "あ、ほんとは父ちゃん「たち」。でも、父ちゃんもいたんだ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v8uff3k": {
+  "episode": "kh-independence",
+  "lang": "ja",
+  "speaker": "dara",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 4.1,
+  "text": "ぼく、ダラー。父ちゃんにお昼を届けに来たの。",
+  "heard": "ぼく、ダラー。父ちゃんにお昼を届けに来たの。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1c9cstw": {
+  "episode": "kh-independence",
+  "lang": "ja",
+  "speaker": "dara",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 5.55,
+  "text": "あっ、また来たの？ 見て、塔、もうすぐできあがるんだ！",
+  "heard": "あっ、また来たの？見て、塔、もうすぐできあがるんだ！",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v19o9llw": {
+  "episode": "kh-independence",
+  "lang": "ja",
+  "speaker": "dara",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 5.44,
+  "text": "ねえ、見て見て！ ……あれ、なんでぼくを知ってるみたいな顔してるの？",
+  "heard": "ねぇ、見て見て！\nあれ？\nなんで僕を知ってるみたいな顔してるの？",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ }
+}
