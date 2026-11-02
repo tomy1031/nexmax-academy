@@ -394,5 +394,17 @@
   "heard": " Yoshitsune knelt there. He could not raise his head.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e5dqiag9fnfb": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 4.7,
+  "text": "E-elder brother… I-I am K-Kuro… Yoshitsune…",
+  "heard": "elder brother I I am Yoshitsune",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
