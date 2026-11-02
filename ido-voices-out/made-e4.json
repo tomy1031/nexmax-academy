@@ -298,5 +298,101 @@
   "heard": " Even so, when I heard he was going to war against the Heike, I could not sit still.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1ngycya1p8ii": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 1.73,
+  "text": "Enough, Tsuginobu.",
+  "heard": "enough to sinobu",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e9usuqe13iri": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 4.33,
+  "text": "Traveler. Do you think I can be of use to my brother?",
+  "heard": "Do you think I can be of use to my brother?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eqf88qs7urdz": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 2.4600416666666667,
+  "text": "…I see. I hope you are right.",
+  "heard": " I hope you are right.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eqg91ilb9p58": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 4.69,
+  "text": "Trust him. …Yes. That much, even I can do.",
+  "heard": "Trust him? Yes. That much even I can do.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e6dkx5z1vaa9": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 6.63,
+  "text": "Myself? …Ha ha! What a strange thing to say. My life belongs to my brother.",
+  "heard": " Ha ha! What a strange thing to say. My life belongs to my brother.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e14reurh6g9h9": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 13.95,
+  "text": "At last, a voice called from deep in the camp: “I will see him.” There, behind the camp curtains, sat the man himself — Minamoto no Yoritomo.",
+  "heard": " At last, a voice called from deep in the camp: “I will see him.” There, behind the camp curtains, sat the man himself — Minamoto no",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e17qqeqm1m8b7": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "yoritomo",
+  "voice": "Schedar",
+  "model": "gemini-3.8-live",
+  "seconds": 3.2800416666666665,
+  "text": "…So. You are Kuro.",
+  "heard": "So, You are Kuro.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e16c6d4v1v623": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.69,
+  "text": "Yoshitsune knelt there. He could not raise his head.",
+  "heard": " Yoshitsune knelt there. He could not raise his head.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
