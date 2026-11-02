@@ -319,5 +319,29 @@
   "heard": "そうそう 、 腰 を 落とし て 1人 で 引く ん じゃ ない よ 。 みんな で 一緒 に 。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v1e1zjet": {
+  "episode": "kh-watphnom",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.230041666666667,
+  "text": "あなたは、水ぎわではしゃぐ子どもたちの手を引いて、高いところへ連れていった。",
+  "heard": "あなたは、水ぎわではしゃぐ子どもたちの手を引いて、高いところへ連れていっ",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vi0rpcn": {
+  "episode": "kh-watphnom",
+  "lang": "ja",
+  "speaker": "penh",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 6.02,
+  "text": "ありがとうよ。大水のあとの川は、見た目よりずっと強いからね。",
+  "heard": " ありがとうよ。大水のあとの川は、見た目よりずっと強いからね。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
