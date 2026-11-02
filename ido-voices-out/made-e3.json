@@ -766,5 +766,101 @@
   "heard": " We opened all five doors.",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "eojjr5ww11wh": {
+  "episode": "miyoshi-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.44,
+  "text": "A bridge that was cut, then woven again. A promise made with a biwa pick, on the night a string snapped. A sword asleep on a mountain.",
+  "heard": " A bridge that was cut, then woven again. A promise made with a biwa pick, on the night a string snapped. A sword asleep on a mountain.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1drqamx191h8": {
+  "episode": "miyoshi-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 17.17,
+  "text": "A song that traveled down the river for seven hundred years. And a crying yokai (a Japanese spirit) who keeps children safe.",
+  "heard": " A song that traveled down the river for seven hundred years. And a crying yokai a Japanese spirit who keeps children safe.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1j9prjjaesys": {
+  "episode": "miyoshi-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 2.33,
+  "text": "Hey. Can I tell you a secret?",
+  "heard": "Hey, can I tell you a secret?",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "emut45r1b9v5": {
+  "episode": "miyoshi-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.24,
+  "text": "I'm a time-travel navigator. I can see all kinds of different times.",
+  "heard": " I'm a time-travel navigator. I can see all kinds of different times.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1mekc7w1yjmh": {
+  "episode": "miyoshi-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.81,
+  "text": "But I can't “remember” the things I see. When a door closes, they fade away inside me.",
+  "heard": " But I can't “remember” the things I see. When a door closes, they fade",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "ebqu67v6jajf": {
+  "episode": "miyoshi-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.170041666666667,
+  "text": "Yeah. …Little by little, I'll probably forget it all.",
+  "heard": "Yeah. Little by little I'll probably forget it all.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1d2d4h213j47": {
+  "episode": "miyoshi-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.9500416666666665,
+  "text": "Don't look so sad. That's why we need travelers.",
+  "heard": " That's why we need travelers.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1ikp81voqa36": {
+  "episode": "miyoshi-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.01,
+  "text": "Only people can remember. Only people can pass stories on.",
+  "heard": " Only people can pass stories on.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
