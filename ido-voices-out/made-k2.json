@@ -94,5 +94,101 @@
   "heard": "ねぇ、見て見て！\nあれ？\nなんで僕を知ってるみたいな顔してるの？",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "v1lcjeo8": {
+  "episode": "kh-independence",
+  "lang": "ja",
+  "speaker": "dara",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 3.8000416666666665,
+  "text": "この塔はね、「独立」のしるしなんだって。",
+  "heard": "この塔はね、「独立」のしるしなんだって。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1o9v27v": {
+  "episode": "kh-independence",
+  "lang": "ja",
+  "speaker": "dara",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 9.06,
+  "text": "カンボジアは、ぼくが赤ちゃんのころに、フランスから独立したの。1953年の、11月9日。",
+  "heard": " カンボジアは、ぼくが赤ちゃんのころに、フランスから独立したの。1953年の、11月9日。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "viizgt9": {
+  "episode": "kh-independence",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.81,
+  "text": "そうなんだ。そのあと、独立を記念するこの塔が、1958年から建てられはじめたんだよ。",
+  "heard": " そうなんだ。そのあと、独立を記念するこの塔が、1958年から建てられはじめたんだよ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v40w9rc": {
+  "episode": "kh-independence",
+  "lang": "ja",
+  "speaker": "ダラーのお父さん",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 3.29,
+  "text": "ダラー！ ……おや、お客さんかい。",
+  "heard": " ……おや、お客さんかい。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vk94y9h": {
+  "episode": "kh-independence",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.24,
+  "text": "足場の上から、日に焼けた男の人が手をふった。",
+  "heard": "足場の上から、日に焼けた男の人が手をふった。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vmiwaop": {
+  "episode": "kh-independence",
+  "lang": "ja",
+  "speaker": "ダラーのお父さん",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 8.34,
+  "text": "この塔を考えたのは、ヴァン・モリヴァンという建築家さんだ。外国で建築を学んで、帰ってきた人でな。",
+  "heard": "この塔を考えていたのは、ヴァン・モリヴァンという建築家さんだ。外国で建築を学んで、帰ってきた人でな。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v10e9o8z": {
+  "episode": "kh-independence",
+  "lang": "ja",
+  "speaker": "ダラーのお父さん",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 9.89,
+  "text": "形は、アンコールの古い寺院から借りてきた。新しい国のしるしを、千年前の形で作るんだと。",
+  "heard": "形は、アンコールの古い寺院から借りてきた。新しい国のしるしを、千年前の形で作るんだと。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vd46kaa": {
+  "episode": "kh-independence",
+  "lang": "ja",
+  "speaker": "dara",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 3.75,
+  "text": "古いのに、新しいの。変なの！",
+  "heard": "古い のに 新しい の 。 変 な の 。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
