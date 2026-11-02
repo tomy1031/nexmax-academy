@@ -478,5 +478,101 @@
   "heard": "Was it to fight? To get revenge?",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "epqvs0zxe6yw": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.6,
+  "text": "Kunimori drew the sword halfway. The blade flashed white in the morning sun.",
+  "heard": " Kunimori drew the sword halfway. The blade flashed white in the morning sun.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eaxla6nmmf2i": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 0.8400416666666667,
+  "text": "…No.",
+  "heard": "No.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "er5txh6g8uho": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 10.9,
+  "text": "That child is laughing by the river. Aya is playing her biwa (a Japanese lute). The village people hid us and kept us safe.",
+  "heard": " That child is laughing by the river. Aya is playing her biwa. The village people hid us and kept us safe.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e8cbayi1adyc": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 15.17,
+  "text": "(whispering) “That child” is the young Emperor. Aya is a master of the biwa (a Japanese lute) who has looked after him since he was a baby.",
+  "heard": "That child is the young emperor. Eya is a master of the Biwa, a Japanese lute who has looked after him since he was a baby.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "enu95nv1jjrx": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.360041666666667,
+  "text": "Yaheiji risked his life to lead the hunters the wrong way.",
+  "heard": "Yeah, Heiji risked his life to lead the hunters the wrong way.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1khqc4q1q3jp": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 3.9600833333333334,
+  "text": "I was left alive to protect all of that.",
+  "heard": " I was left alive to protect all of that.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ex93r4k1lsjn": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.8,
+  "text": "Quietly, the sword slid back into its sheath.",
+  "heard": " Quietly, the sword slid back",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e6939318u6br": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.420041666666666,
+  "text": "Side by side with Kunimori, you laid the sword in a crack in the rock. It was cold, and heavier than you expected.",
+  "heard": " Side by side with Kunimori, you laid the sword in a crack in the rock. It was cold, and heavier",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
