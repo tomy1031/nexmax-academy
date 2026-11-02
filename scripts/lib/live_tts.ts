@@ -75,6 +75,12 @@ export interface Speaker {
    * 書き起こすより、きびしい 確かめに なる。
    */
   readonly transcribeWhenEmpty?: boolean;
+  /** 一時（IDO の 英語の 声）：読み上げの 言語。ふだんは ja-JP。 */
+  readonly languageCode?: string;
+  /** 一時（IDO の 英語の 声）：NARRATOR_INSTRUCTION の 代わりに 使う 指示。 */
+  readonly baseInstruction?: string;
+  /** 一時（IDO の 英語の 声）：1字 あたりの 秒（長さの 目やす）。ふだんは 0.2。 */
+  readonly secondsPerChar?: number;
 }
 
 /** 生PCM（16bit・モノラル）に WAV の 頭を つける。 */
@@ -213,10 +219,10 @@ async function synthesize(text: string, model: string, speaker: Speaker): Promis
           // モデル自身の 発話の 文字起こし。台本と 見くらべる ために もらう
           outputAudioTranscription: {},
           systemInstruction: speaker.instruction
-            ? `${NARRATOR_INSTRUCTION}${speaker.instruction}`
-            : NARRATOR_INSTRUCTION,
+            ? `${speaker.baseInstruction ?? NARRATOR_INSTRUCTION}${speaker.instruction}`
+            : (speaker.baseInstruction ?? NARRATOR_INSTRUCTION),
           speechConfig: {
-            languageCode: "ja-JP",
+            languageCode: speaker.languageCode ?? "ja-JP",
             voiceConfig: { prebuiltVoiceConfig: { voiceName: speaker.voice } },
           },
         },
@@ -332,9 +338,10 @@ function readingLooksRight(
   script: string,
   transcript: string,
   seconds: number,
+  secondsPerChar = 0.2,
 ): { ok: boolean; why: string } {
-  /** 日本語の 読み上げは おおよそ 1文字 0.2秒。 */
-  const expected = script.length * 0.2;
+  /** 日本語の 読み上げは おおよそ 1文字 0.2秒（英語は 0.065秒ほど）。 */
+  const expected = script.length * secondsPerChar;
   const lengthOk = seconds >= expected * 0.55 && seconds <= expected * 1.6;
 
   if (transcript.trim() === "") {
@@ -390,7 +397,7 @@ export async function synthesizeWithFallback(
   accept?: AcceptSpoken,
   models: readonly string[] = LIVE_TTS_MODELS,
 ): Promise<Spoken> {
-  const text = forSpeech(raw);
+  const text = speaker.languageCode?.startsWith("en") ? raw : forSpeech(raw);
   const failures: string[] = [];
   const rounds = Math.max(2, Math.ceil(4 / models.length));
   for (let round = 0; round < rounds; round += 1) {
@@ -407,7 +414,7 @@ export async function synthesizeWithFallback(
           }
         }
         const seconds = spoken.pcm.byteLength / OUT_RATE / 2;
-        const verdict = readingLooksRight(text, spoken.transcript, seconds);
+        const verdict = readingLooksRight(text, spoken.transcript, seconds, speaker.secondsPerChar);
         if (!verdict.ok) {
           failures.push(`${model}: 読み上げに なって いません — ${verdict.why}`);
         } else {

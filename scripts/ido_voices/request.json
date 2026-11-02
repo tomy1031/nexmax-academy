@@ -1,20 +1,27 @@
 {
  "groups": {
-  "a": [
-   "promo",
-   "miyoshi-biwa",
-   "miyoshi-tsurugi",
-   "miyoshi-finale"
+  "e1": [
+   "miyoshi-kazurabashi:en",
+   "miyoshi-biwa:en"
   ],
-  "b": [
-   "miyoshi-oboke",
-   "miyoshi-youkai",
-   "genpei-kisegawa"
+  "e2": [
+   "miyoshi-youkai:en",
+   "miyoshi-oboke:en",
+   "miyoshi-prologue:en",
+   "miyoshi-finale:ja",
+   "genpei-kisegawa:ja",
+   "genpei-yashima:ja",
+   "genpei-dannoura:ja"
   ],
-  "c": [
-   "genpei-yashima",
-   "genpei-dannoura",
-   "genpei-takadachi"
+  "e3": [
+   "miyoshi-tsurugi:en",
+   "genpei-takadachi:en",
+   "miyoshi-finale:en"
+  ],
+  "e4": [
+   "genpei-dannoura:en",
+   "genpei-kisegawa:en",
+   "genpei-yashima:en"
   ]
  }
 }

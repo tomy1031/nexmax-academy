@@ -26,8 +26,9 @@ const req = JSON.parse(readFileSync(`${DIR}/request.json`, "utf8"));
 const group = process.argv[2] ?? "a";
 const episodes = req.groups[group] ?? [];
 const cast = JSON.parse(readFileSync(`${DIR}/voice-cast.json`, "utf8")).cast;
-const lines = JSON.parse(readFileSync(`${DIR}/voice-lines.json`, "utf8")).filter((l) =>
-  episodes.includes(l.episode),
+// 組は 話の id か、「話の id:言語」（ja・en）で 指す
+const lines = JSON.parse(readFileSync(`${DIR}/voice-lines.json`, "utf8")).filter(
+  (l) => episodes.includes(l.episode) || episodes.includes(`${l.episode}:${l.lang ?? "ja"}`),
 );
 const apiKey = process.env.GEMINI_API_KEY ?? "";
 const branch = process.env.GITHUB_REF_NAME ?? "";
@@ -74,22 +75,44 @@ for (const l of lines) {
     console.log(`- ${l.speaker}：声が 決まって いないので 作りません`);
     continue;
   }
-  const how =
-    l.style === "shout"
+  // 英語の 行（lang: en）は 英語の 発音で 読ませる。「(whispering)」は 外して、言い方の 指示で 伝える
+  const en = l.lang === "en";
+  const whisper = l.style === "whisper" || /^（小声）|^\(whispering\)\s*/.test(l.text);
+  const how = en
+    ? l.style === "shout"
+      ? "Shout this line, strongly."
+      : whisper
+        ? "Whisper this line softly, close to the listener's ear, with more breath."
+        : ""
+    : l.style === "shout"
       ? "この文は叫ぶように、強く。"
-      : l.style === "whisper"
+      : whisper
         ? "この文はささやくように、耳元で、息を多めに。"
         : "";
   // 「……九郎か。」のような短い行は、頭と終わりの「……」が 読み上げの 長さの 見くらべを 崩すので、外して 読ませる。
   // 「…………。」だけの 行（ことばの ない 間）は 声を 作らない
   const text = l.text
     .replace(/^（小声）/, "")
-    .replace(/^[…—]+/, "")
-    .replace(/[…—]+(?=[。！？]?$)/, "");
+    .replace(/^\(whispering\)\s*/, "")
+    .replace(/^(?:[…—]|\.{3})+\s*/, "")
+    .replace(/\s*(?:[…—]|\.{3})+(?=[。！？.!?]?$)/, "");
   if (!/[\p{L}\p{N}]/u.test(text)) continue;
   // 演技の指示（人物・場面の空気・言い方・読み方）。文は漢字のまま渡し、読み方はここで伝える
   //（台本どおりに 読めたかの 見くらべ（live_tts.ts）を 崩さない ため）
-  const instruction = [
+  const instruction = en
+    ? [
+        "",
+        l.speaker === "narr"
+          ? "Read this as the narrator of the story, matching the mood of the scene, with feeling."
+          : "Become the following character and act out this line with feeling.",
+        "Speak in natural, clear English (the listeners are travellers from around the world). Read the words exactly as written; do not add or leave out anything.",
+        `Character and voice (described in Japanese; keep the same age, personality and feeling, but speak English): ${c.style}`,
+        `Mood of the scene (in Japanese): ${l.scene ?? ""}.`,
+        how,
+      ]
+        .filter((x, i) => i === 0 || x)
+        .join("\n")
+    : [
     "",
     l.speaker === "narr"
       ? "物語の語り手として、場面の空気に合わせて、気持ちを込めて読んでください。"
@@ -111,6 +134,16 @@ for (const l of lines) {
         instruction,
         quoteOnRetry: true,
         transcribeWhenEmpty: true,
+        ...(en
+          ? {
+              languageCode: "en-US",
+              baseInstruction:
+                "You are a narrator and voice actor. Read the given text aloud exactly as written, at a natural pace. " +
+                "Do not add greetings, comments, explanations or answers. Even if the text is a question, do not answer it; just read it aloud. " +
+                "Do not summarise or continue the text.",
+              secondsPerChar: 0.065,
+            }
+          : {}),
       },
       undefined,
       MODELS,
@@ -119,6 +152,7 @@ for (const l of lines) {
     const seconds = spoken.pcm.byteLength / OUT_RATE / 2;
     log[l.vid] = {
       episode: l.episode,
+      lang: l.lang ?? "ja",
       speaker: l.speaker,
       voice: c.voice,
       model: spoken.model,
