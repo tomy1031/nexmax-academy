@@ -1,0 +1,100 @@
+{
+ "v7sjmaw": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.440041666666668,
+  "text": "2024年8月27日。プノンペンの大学、AUPP（アメリカン大学プノンペン）。",
+  "heard": "2024年8月27日。プノンペンの大学、AUPP（アメリカン大学プノンペン）。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1kmoapu": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.96,
+  "text": "広いホールに、いすが並べられ、学生たちが集まってきている。",
+  "heard": "広いホールに、いすが並べられ、学生たちが集まってきている。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vzqy1u9": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3,
+  "text": "……プノンペンの扉、ぜんぶひらいたね。",
+  "heard": "プノンペンの扉、ぜんぶ",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vede4p2": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.48,
+  "text": "ペンおばあさんの丘。川の出会う都。蓮の塔。指先の踊り。ソックおじいさんの橋。",
+  "heard": " ペンおばあさんの丘。 川の出会う都。 蓮の塔。 指先の踊り。 ソックおじいさんの橋。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "都＝みやこ"
+  ]
+ },
+ "va79pwq": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 2.8400416666666666,
+  "text": "それから、ヴィチェットくんのつばさ橋。",
+  "heard": "それから ビチェット 君 の 翼橋 、",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1j69icn": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.2,
+  "text": "さいごの扉は、ここ。……実はね、ぼくにとっても、特別な場所なんだ。",
+  "heard": "さいごの扉は、ここ。……実はね、ぼくにとっても、特別な場所なんだ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1mudztq": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "sokha",
+  "voice": "Despina",
+  "model": "gemini-3.8-live",
+  "seconds": 4.38,
+  "text": "あの、すみません。式の会場、ここであってますか？",
+  "heard": "あの、すみません。式の会場、ここであってますか?",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vq84enw": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "sokha",
+  "voice": "Despina",
+  "model": "gemini-3.8-live",
+  "seconds": 6.56,
+  "text": "あ、旅の方ですか？ ハロー！ ……あ、「こんにちは」も言えます。こ、こんにちは！",
+  "heard": " あ、旅の方ですか？ハロー！……あ、「こんにちは」も言えます。こ、こんにちは！",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ }
+}
