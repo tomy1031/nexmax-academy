@@ -1,0 +1,100 @@
+{
+ "v11gqzpd": {
+  "episode": "kh-prologue",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.680041666666667,
+  "text": "夕方のプノンペン。通りをへだてて、王宮の屋根が金色に光っている。",
+  "heard": "夕方のプノンペン。通りをへだてて、王宮の屋根が金色に光っている。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1gxfyp5": {
+  "episode": "kh-prologue",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.630041666666667,
+  "text": "川べりの案内板のQRコードに、スマホをかざした。その瞬間——",
+  "heard": "川 べり の 案内 版 の QR コード に スマホ を かざし た 。 その 瞬間",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1u041hu": {
+  "episode": "kh-prologue",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.2400416666666665,
+  "text": "川風が、ぴたりと止まった。",
+  "heard": "川風 が ピタリ と 止まっ た 。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1ntode7": {
+  "episode": "kh-prologue",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.510041666666667,
+  "text": "ជម្រាបសួរ（チョムリアップ・スオ）！ カンボジアのことばで「こんにちは」だよ。",
+  "heard": "ជម្រាបសួរ（チョムリアップ・スオ）！ カンボジアのことばで「こんにちは」だよ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vi3883a": {
+  "episode": "kh-prologue",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.29,
+  "text": "また会えたね！ 今度は、プノンペンの旅だよ。",
+  "heard": "また会えたね。今度はプノンペンの旅だよ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v7oivtw": {
+  "episode": "kh-prologue",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.23,
+  "text": "はじめまして！ ぼくはネクマックス。時渡りのナビゲーターだよ。",
+  "heard": "はじめまして 、 僕 は ネク マックス 、 時 渡り の ナビゲーター だ よ 。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "時渡り＝ときわたり"
+  ]
+ },
+ "v1b49fxl": {
+  "episode": "kh-prologue",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.06,
+  "text": "QRは「時の扉」。かざすと、その場所の昔へタイムスリップするんだ。",
+  "heard": " QRは「時の扉」。かざすと、その場所の昔へタイムスリップするんだ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vn92sp6": {
+  "episode": "kh-prologue",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.68,
+  "text": "ここはチャトモック。クメール語で「四つの顔」っていう意味。",
+  "heard": "ここはチャトモック クメール 語 で 4 つ の 顔 って いう 意味 。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ }
+}
