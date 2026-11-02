@@ -211,5 +211,101 @@
   "readings": [
    "コキの木＝こきのき"
   ]
+ },
+ "v1mwvtfh": {
+  "episode": "kh-watphnom",
+  "lang": "ja",
+  "speaker": "penh",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 4.520041666666667,
+  "text": "あれまあ、なんて大きな木だろう。",
+  "heard": "あれまあ、なんて大きな木だろう。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vpbgvlr": {
+  "episode": "kh-watphnom",
+  "lang": "ja",
+  "speaker": "penh",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 7.99,
+  "text": "おや、見かけない顔だね。どこから来たのか知らないけれど、ちょうどいい。手を貸しておくれ。",
+  "heard": "「おや、見かけない顔だね。どこから来たのか知らないけれど、ちょうどいい。手を貸しておくれ。」",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1f7i0r": {
+  "episode": "kh-watphnom",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.64,
+  "text": "（小声）ペンおばあさん！ この町の名前になった人だよ。",
+  "heard": "ペン おばあさん 、 この 街 の 名前 に なっ た 人 だ よ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vqqayjg": {
+  "episode": "kh-watphnom",
+  "lang": "ja",
+  "speaker": "penh",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 5.68,
+  "text": "おや、また来たのかい。ちょうどいい、手を貸しておくれ。",
+  "heard": "おや 、 また 来 た の か い ? ちょうど いい 。 手 を 貸し て おくれ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vjv0iyj": {
+  "episode": "kh-watphnom",
+  "lang": "ja",
+  "speaker": "penh",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 7.000041666666666,
+  "text": "おや、見かけない顔だね。……なんだい、昔からの知り合いみたいな目をして。",
+  "heard": "おや 、 見かけ ない 顔 だ ね 。 なん だ い ? 昔 から の 知り合い みたい な 目 を し て 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v90e6y4": {
+  "episode": "kh-watphnom",
+  "lang": "ja",
+  "speaker": "penh",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 3.56,
+  "text": "ちょうどいい。手を貸しておくれ。",
+  "heard": "ちょうどいい。手を貸しておくれ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vsp5hjn": {
+  "episode": "kh-watphnom",
+  "lang": "ja",
+  "speaker": "penh",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 5.23,
+  "text": "あの木を、岸に上げるんだよ。みんな、縄を持っておいで！",
+  "heard": "あの木を、岸に上げるんだよ。みんな、縄を持っておいで！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "va8hwhy": {
+  "episode": "kh-watphnom",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.89,
+  "text": "あなたは、村の男たちと並んで縄をつかんだ。ぬれた縄が、手のひらにくいこむ。",
+  "heard": "あなたは、村の男たちと並んで縄をつかんだ。ぬれた縄が、手のひらにくいこむ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
