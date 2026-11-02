@@ -286,5 +286,101 @@
   "heard": "The Genji, the Minamoto clan, are split. Men from the coast keep sending word. Now the Heike must rise again. If Lord Noritsune leads, all will follow. That is the name they still call me.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "es092ipmyjov": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.470041666666667,
+  "text": "Kunimori untied the bundle on his back.",
+  "heard": "\nKunimori untied the bundle on his back.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1u763a7qm49n": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.2000416666666665,
+  "text": "Inside was an old sword. A little gold still shone on its sheath.",
+  "heard": " Inside was an old sword. A little gold still shone on its sheath.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e9m3i6y163zc": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 7.12,
+  "text": "This sword was always kept at the Emperor's side — the Emperor, still just a boy.",
+  "heard": " This sword was always kept at the Emperor's side — the Emperor, still just a boy.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eob8s771xjou": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.23,
+  "text": "If I raise it high and carry it down this mountain, the war will begin again.",
+  "heard": "If I raise it high and carry it down this mountain, the war will begin again.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1gtum0m855av": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.110041666666667,
+  "text": "If I leave it here — the Heike's war ends here.",
+  "heard": " If I leave it here — the Heike's war",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1a9u0ra1k61o": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 3.92,
+  "text": "I came so this mountain could help me choose.",
+  "heard": " I came so this mountain could help me choose.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "euub1x5zijdb": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.73,
+  "text": "…You have met Yoshitsune, haven't you? It's written all over your face.",
+  "heard": " You have met Yoshitsune, haven't you? It's written all over your face.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e183k8sfiknpl": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.09,
+  "text": "I know. At the battle of Yashima, he never hid from my arrows.",
+  "heard": "I know at the Battle of Yushima, he never hid from my arrows.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
