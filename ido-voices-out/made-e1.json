@@ -478,5 +478,53 @@
   "heard": " Who's there? I'm scared.",
   "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
   "readings": []
+ },
+ "e1dkos99fl6yr": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.76,
+  "text": "A small boy, trembling, still hugging his chestnuts. You grabbed his hand and held on tight.",
+  "heard": " A small boy, trembling, still hugging his chestnuts. You grabbed his hand and held on tight.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e1o6lcz68o5yq": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.94,
+  "text": "…Do not worry. I will never abandon a child.",
+  "heard": " Do not worry. I will never",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e1npried1klv8": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "yaheiji",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 9.170041666666666,
+  "text": "My lord, you stay here. You must not leave the Emperor's side. …This old man will go.",
+  "heard": "My lord, you stay here. You must not leave the emperor's side. This old man will go.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e1rt2pasrq633": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.29,
+  "text": "The old retainer hurried across the half-woven bridge, much faster than you'd expect at his age.",
+  "heard": " The old retainer hurried across the half-woven bridge, much faster than you'd expect at his age.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
  }
 }
