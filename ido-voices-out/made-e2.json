@@ -826,5 +826,17 @@
   "heard": " Under the paper lanterns, a kamishibai man was clacking his wooden clappers.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "et1cqdgf753": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "tatsu",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 15.140041666666667,
+  "text": "Come one, come all! Tonight's tale is a yokai (Japanese spirit) story from right here in Yamashiro: “Konaki-jiji,” the old-man yokai who cries like a baby!",
+  "heard": " Come one, come all! Tonight's tale is a yokai story from right here in Yamashiro: \"Konakijiji,\" the oldman yokai who cries like a baby!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
