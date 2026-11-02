@@ -197,5 +197,19 @@
   "heard": "おーい！何か流れてくるぞ！",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v1xlwnxl": {
+  "episode": "kh-watphnom",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.62,
+  "text": "見ると、一本の大きな木が、ゆっくりと岸へ寄ってくる。コキの木だ。",
+  "heard": "みると1本の色々な木がゆっくりと岸へ寄ってくる。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "コキの木＝こきのき"
+  ]
  }
 }
