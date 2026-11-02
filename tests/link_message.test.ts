@@ -51,3 +51,15 @@ describe("合図を 読む", () => {
     expect(readLinkMessage({ type: DONE_MESSAGE, id: "hoka" }, LINK)).toBeNull();
   });
 });
+
+describe("1問ずつ 送る ツール（Renraku Master・2026-11-02）", () => {
+  it("回の 鍵と「まるごとか」も そのまま 手わたす（形の 検査は 保存側）", () => {
+    const answers = [{ id: "m1-q1", text: "@here", correct: true }];
+    expect(
+      readLinkMessage(
+        { type: ANSWERS_MESSAGE, id: "renraku_slack", answers, attemptId: "x", fullSet: false },
+        "renraku_slack",
+      ),
+    ).toEqual({ kind: "answers", answers, attemptId: "x", fullSet: false });
+  });
+});

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { LINK_ANSWER_PROMPTS } from "@/content/link-answers";
-import { linkAnswerRows, parseLinkAnswers } from "@/lib/answers/link-answers-db";
+import { linkAnswerRows, parseAttemptId, parseLinkAnswers } from "@/lib/answers/link-answers-db";
 
 /*
  * ツール教材（link）に 書いた こたえを、先生の 画面（`/admin/records`）へ 届ける ところ。
@@ -91,5 +91,76 @@ describe("記録の 行に する", () => {
     expect(linkAnswerRows({ profileId: "p1", linkId: "nazo", answers, attemptId: "a1" })).toEqual(
       [],
     );
+  });
+});
+
+/*
+ * 選ぶ 練習（Renraku Master）の こたえ。2026-11-02 の 指定「回答データも 後で 分析できるように」。
+ * ツールが 正誤を 付けて 1問ずつ 送る。書く ものと ちがって ×が ある。
+ */
+describe("選ぶ 練習の こたえ（Renraku Master）", () => {
+  const PICK = "renraku_slack";
+
+  it("正誤は 真偽の ときだけ 受ける（書く ものには 付けない）", () => {
+    expect(
+      parseLinkAnswers([
+        { id: "m1-q1", text: "@here", correct: false },
+        { id: "m1-q2", text: "x", correct: "yes" },
+      ]),
+    ).toEqual([
+      { id: "m1-q1", text: "@here", correct: false },
+      { id: "m1-q2", text: "x" },
+    ]);
+  });
+
+  it("形は「えらぶ」。1回目で まちがえた 問いは ×・0点", () => {
+    const [row] = linkAnswerRows({
+      profileId: "p1",
+      linkId: PICK,
+      answers: [{ id: "m1-q3", text: "ファイルサーバーの… → ファイルのURLは…", correct: false }],
+      attemptId: "a1",
+    });
+    expect(row).toMatchObject({
+      quiz_set_id: PICK,
+      question_id: "m1-q3",
+      question_index: 2,
+      question_type: "pick",
+      correct: false,
+      earned: 0,
+      max_points: 1,
+      full_set: true,
+    });
+    const [ok] = linkAnswerRows({
+      profileId: "p1",
+      linkId: PICK,
+      answers: [{ id: "m1-q1", text: "@here", correct: true }],
+      attemptId: "a1",
+    });
+    expect(ok).toMatchObject({ correct: true, earned: 1, question_index: 0 });
+  });
+
+  it("まちがえた 問いの やり直しは「まちがえた ぶんだけ」の 挑戦", () => {
+    const [row] = linkAnswerRows({
+      profileId: "p1",
+      linkId: PICK,
+      answers: [{ id: "m4-q2", text: "x", correct: true }],
+      attemptId: "a2",
+      fullSet: false,
+    });
+    expect(row?.full_set).toBe(false);
+    expect(row?.attempt_id).toBe("a2");
+  });
+
+  it("台帳は 12問（ミッション5つ）", () => {
+    expect(Object.keys(LINK_ANSWER_PROMPTS[PICK]!)).toHaveLength(12);
+  });
+
+  it("回の 鍵は uuid の 形だけ 受ける（列が uuid なので、崩れた 鍵は 行ごと 弾かれる）", () => {
+    expect(parseAttemptId("0b0c7a1e-3f7d-4c5a-9d2e-1a2b3c4d5e6f")).toBe(
+      "0b0c7a1e-3f7d-4c5a-9d2e-1a2b3c4d5e6f",
+    );
+    expect(parseAttemptId("a1")).toBeNull();
+    expect(parseAttemptId(undefined)).toBeNull();
+    expect(parseAttemptId(42)).toBeNull();
   });
 });

@@ -1,6 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
+import { LINK_ANSWER_PROMPTS } from "@/content/link-answers";
 import { FORBIDDEN_LEARNER_WORDS } from "@/content/schema";
 import { checkCountryNamesInTexts } from "@/lib/content-checks";
 import { KANJI } from "@/lib/text/furigana";
@@ -23,10 +24,14 @@ const HTML_PATH = join("public", "tools", "hourensou", "renraku_slack.html");
 const HTML = readFileSync(HTML_PATH, "utf8");
 
 interface Scenario {
+  id: number;
   title: string;
   instruction: { text: string };
   reply?: { text: string };
-  steps: { options: { text: string; isCorrect: boolean; feedback: string }[] }[];
+  steps: {
+    question: string;
+    options: { text: string; isCorrect: boolean; feedback: string }[];
+  }[];
 }
 interface Word {
   reading: string;
@@ -54,6 +59,7 @@ function loadGame(storage = new Map<string, string>()): {
   restartFromScratch: () => void;
   feedbackReason: (html: string) => string;
   markUrls: (html: string) => string;
+  allQuestionIds: () => string[];
   reloads: () => number;
 } {
   const scripts = [...HTML.matchAll(/<script>([\s\S]*?)<\/script>/g)].map((hit) => hit[1] ?? "");
@@ -91,7 +97,7 @@ function loadGame(storage = new Map<string, string>()): {
     "window",
     "lucide",
     "location",
-    `${body}\nreturn { SCENARIOS, WORDS, USED_TERMS, STORE_KEY, loadSaved, restartFromScratch, feedbackReason, markUrls };`,
+    `${body}\nreturn { SCENARIOS, WORDS, USED_TERMS, STORE_KEY, loadSaved, restartFromScratch, feedbackReason, markUrls, allQuestionIds };`,
   )(documentStub, windowStub, { createIcons() {} }, locationStub);
   return { ...game, reloads: () => reloads };
 }
@@ -409,5 +415,90 @@ describe("Renraku Master の 保存（2026-10-26）", () => {
       '<span id="restart-label"><ruby>最初<rt>さいしょ</rt></ruby>から</span>',
     );
     expect(HTML).not.toContain('onclick="location.reload()"');
+  });
+});
+
+/*
+ * 答えの 記録と、まちがえた 問いの やり直し（2026-11-02 の 指定
+ *「間違えた問題をやり直す」「回答データも後で分析できるように」）。
+ * 画面の 動きは tests/e2e/renraku_slack.spec.ts が 見る。ここでは 台帳と 保存を 見る。
+ */
+describe("Renraku Master の 記録と やり直し（2026-11-02）", () => {
+  const KEY = "nexmax:renraku_slack:v1";
+  const ATTEMPT = "0b0c7a1e-3f7d-4c5a-9d2e-1a2b3c4d5e6f";
+  const base = {
+    scenarioIndex: 4,
+    phase: "completed",
+    currentViewId: "dev-team",
+    stepsDone: 0,
+    score: 90,
+    wrongPicks: [],
+    times: {},
+  };
+  const read = (value: unknown) =>
+    loadGame(new Map([[KEY, JSON.stringify(value)]])).loadSaved() as Record<string, unknown> | null;
+
+  it("先生の 画面の 台帳に、ページの 問いが ぜんぶ 同じ 順・同じ 文で ある", () => {
+    const prompts = LINK_ANSWER_PROMPTS.renraku_slack ?? {};
+    expect(Object.keys(prompts)).toEqual(GAME.allQuestionIds());
+    for (const item of GAME.SCENARIOS) {
+      item.steps.forEach((step, at) => {
+        const id = `m${item.id}-q${at + 1}`;
+        expect(prompts[id], id).toBe(`${plain(item.title)} — ${plain(step.question)}`);
+      });
+    }
+  });
+
+  it("回の 鍵・まちがえた 問い・やり直しの 途中を 保存から 読む", () => {
+    const saved = read({
+      ...base,
+      phase: "retry",
+      scenarioIndex: 0,
+      currentViewId: "project-a",
+      stepsDone: 2,
+      attemptId: ATTEMPT,
+      misses: ["m1-q3", "m4-q2"],
+      retry: { attemptId: ATTEMPT, queue: ["m1-q3", "m4-q2"], pos: 1, misses: ["m1-q3"] },
+      lastRetry: { total: 3, correct: 1 },
+    });
+    expect(saved?.attemptId).toBe(ATTEMPT);
+    expect(saved?.misses).toEqual(["m1-q3", "m4-q2"]);
+    expect(saved?.retry).toEqual({
+      attemptId: ATTEMPT,
+      queue: ["m1-q3", "m4-q2"],
+      pos: 1,
+      misses: ["m1-q3"],
+    });
+    expect(saved?.lastRetry).toEqual({ total: 3, correct: 1 });
+  });
+
+  it("おかしな 記録の 値は 使わない（知らない 問い・uuid で ない 鍵・はみ出した 位置）", () => {
+    const saved = read({
+      ...base,
+      attemptId: "not-a-uuid",
+      misses: ["m9-q9"],
+      retry: { attemptId: ATTEMPT, queue: ["m1-q3"], pos: 5, misses: [] },
+      lastRetry: { total: 1, correct: 3 },
+    });
+    expect(saved).not.toBeNull();
+    expect(saved?.attemptId).toBeUndefined();
+    expect(saved?.misses).toBeUndefined();
+    expect(saved?.retry).toBeUndefined();
+    expect(saved?.lastRetry).toBeUndefined();
+  });
+
+  it("まちがえた 問いを 数える 前の 保存も、これまでどおり 読める", () => {
+    const saved = read(base);
+    expect(saved?.score).toBe(90);
+    expect(saved?.misses).toBeUndefined();
+  });
+
+  it("記録は アプリの 受け口と 同じ 合図で、アプリの 外では 送らない", () => {
+    const body = HTML.slice(HTML.indexOf("function reportAnswer"));
+    const block = body.slice(0, body.indexOf("\n        }\n"));
+    expect(block).toContain("type: 'nexmax:link-answers'");
+    expect(block).toContain("id: LINK_ID");
+    expect(block).toContain("window.parent === window");
+    expect(HTML).toContain("const LINK_ID = 'renraku_slack';");
   });
 });
