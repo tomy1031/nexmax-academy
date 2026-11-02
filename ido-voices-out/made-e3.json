@@ -190,5 +190,101 @@
   "heard": "an ivory biwa pick is tied at Kuni Mori's waist.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "erbt64q1w35f": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 1.87,
+  "text": "(whispering) That's Aya's pick…",
+  "heard": "That's Aya's pick.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "epvo453nam7u": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 8.03,
+  "text": "I hear Minamoto no Yoshitsune is being hunted. Hunted by his own brother, Yoritomo.",
+  "heard": " I hear Minamoto no Yoshitsune is being hunted. Hunted by his own brother, Yoritomo.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eypws3j1tkmw": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 12.51,
+  "text": "(whispering) Minamoto no Yoshitsune is a young general of the Genji (the Minamoto clan). He is the hero who defeated the Heike — but now his own brother, Yoritomo, has turned against him and is hunting him.",
+  "heard": " Minamoto no Yoshitsune is a young general of the Genji—the Minamoto clan. He is the hero who defeated the Heike—but now his own brother, Yoritomo, has turned against him and",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "evge7kcnqx0o": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.55,
+  "text": "No one knows where he is. Some say he fled to Oshu, in the far north.",
+  "heard": "No one knows where he is. Some say he fled to Oshu, in the far",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1l6c96l15pbq": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 11.28,
+  "text": "He is the man who sank me into the sea at Dan-no-ura, the last great sea battle. And now he is hunted… just like me.",
+  "heard": " He is the man who sank me into the sea at Dan-no-ura, the last great sea battle. And now he is hunted… just like me.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "em0l9ab38ebd": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 13.14,
+  "text": "(whispering) Dan-no-ura is the sea where the Genji and the Heike fought their last battle. In this story, Kunimori was once a warrior named Noritsune, who fought on that very sea.",
+  "heard": " Dan no ura is the sea where the Genji and the Heike fought their last battle. In this story, Kunimori was once a warrior named Noritsune, who fought on that very sea.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1cq6g671q08h": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.140041666666667,
+  "text": "Kunimori laughed. But there was no joy in it at all.",
+  "heard": "Kuni Mori laughed, but there was no joy in it at all.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1s1iwyhaae74": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 18,
+  "text": "The Genji (the Minamoto clan) are split. Men from the coast keep sending word. “Now the Heike (the Taira clan) must rise again! If Lord Noritsune leads, all will follow!” …That is the name they still call me.",
+  "heard": "The Genji, the Minamoto clan, are split. Men from the coast keep sending word. Now the Heike must rise again. If Lord Noritsune leads, all will follow. That is the name they still call me.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
