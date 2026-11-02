@@ -1,0 +1,98 @@
+{
+ "e13pompd1cac1": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.680041666666667,
+  "text": "Autumn 1185. The valley of Iya blazed with red and gold autumn leaves.",
+  "heard": "Autumn eleven eighty-five. The valley of Iya blazed with red and gold autumn leaves.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1p8j98h15xda": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.81,
+  "text": "High above the deep valley, men were quietly weaving shirakuchi-kazura (tough mountain vines).",
+  "heard": " High above the deep valley, men were quietly weaving shirakuchi-kazura, tough mountain vines.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e8sdink1gtcw": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 2.2200416666666665,
+  "text": "Don't move.",
+  "heard": "Don't move.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1kd0z1y3bcy9": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 7.26,
+  "text": "…You are not one of the men hunting us. Such strange clothes. Where do you come from?",
+  "heard": "You are not one of the men hunting us. Such strange clothes. Where do you come from?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1j8css01046x": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.9,
+  "text": "W-we're just travelers! We're not suspicious, honest!",
+  "heard": " We're not suspicious, honest!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1at79jo85s4y": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 9.560041666666667,
+  "text": "Suspicious people always say that. …Very well. I am Kunimori. I came into this valley to protect the Emperor.",
+  "heard": "suspicious people always say that Very well I am Kuni Mori I came into this valley to protect the Emperor",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e109ie2n1d2sc": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 12.7,
+  "text": "(whispering) This is Taira no Kunimori. Iya has an old legend: after losing the Battle of Yashima, Kunimori escaped here, protecting the Emperor — who was still a young boy.",
+  "heard": " This is Taira no Kunimori. Iya has an old legend: after losing the Battle of Yashima, Kunimori escaped here, protecting the Emperor — who was still a young boy.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1kr15g01av5e": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 15.6,
+  "text": "(whispering) “Kunimori” was the earlier name of Taira no Noritsune, the fiercest warrior of the Heike (the Taira clan). That's why some people say, “Kunimori was Noritsune himself!”",
+  "heard": " \"Kunimori\" was the earlier name of Taira no Noritsune, the fiercest warrior of the Heike (the Taira clan). That's why some people say, \"Kunimori was Noritsune himself!\"",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ }
+}
