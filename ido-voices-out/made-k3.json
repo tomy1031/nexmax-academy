@@ -1,0 +1,100 @@
+{
+ "v1uepbgq": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.720083333333333,
+  "text": "1994年、2月。乾いた季節のプノンペン。",
+  "heard": "2009 年 2 月 乾い た 季節 の プノムペン",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vid6kwp": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.4,
+  "text": "トンレサップ川の上に、長い橋がのびている。真新しいところと、古いところが、つぎ目でつながっている。",
+  "heard": "トンドサップ 川 の 上 に 長い 橋 が 伸び て いる 。 新しい ところ と 古い ところ が 次目 で 繋がっ て いる 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "トンレサップ川＝とんれさっぷがわ"
+  ]
+ },
+ "v1mr9m3r": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.88,
+  "text": "川べりには、もう人が集まりはじめていた。",
+  "heard": "川べりには、もう人が集まりはじめていた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vhqt8gi": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "sophea",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 2.330041666666667,
+  "text": "おじいちゃん、はやく、はやく！",
+  "heard": "おじい ちゃん 、 早く 早く 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1kb2r4e": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "sophea",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 6.160041666666666,
+  "text": "あ……。ねえ、あなた、外国の人？ あなたも、橋を渡りに来たの？",
+  "heard": " あ……。ねえ、あなた、外国の人？ あなたも、橋を渡りに来たの？",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v178z5x8": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "sophea",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 4.400041666666667,
+  "text": "あ、また会ったね！ あなたも、橋を渡りに来たの？",
+  "heard": "あ、また会ったね！あなたも、橋を渡りに来たの？",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1dni0gw": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "sophea",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 5.92,
+  "text": "あれ？ あなた、わたしのこと知ってるみたいな顔してる。……まあ、いっか！",
+  "heard": "あれ？あなた、わたしのこと知ってるみたいな顔してる。……まあ、いっか！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v57clwc": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "sok",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 5.760041666666667,
+  "text": "ソピア、走るんじゃない。……おや、旅の方ですか。",
+  "heard": "ソピア、走るんじゃない。……おや、旅の方ですか。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ }
+}
