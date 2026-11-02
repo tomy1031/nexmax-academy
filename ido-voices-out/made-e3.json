@@ -754,5 +754,17 @@
   "heard": " The bridge swaying. The setting sun sparkling on the river.",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "e1lzx47z104cl": {
+  "episode": "miyoshi-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.440041666666667,
+  "text": "…We opened all five doors.",
+  "heard": " We opened all five doors.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
