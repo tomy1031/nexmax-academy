@@ -296,5 +296,101 @@
   "heard": "学長 は こう 述べ た 。",
   "scene": "お祝いの、晴れやかな場面。明るく",
   "readings": []
+ },
+ "v1se6oc8": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.58,
+  "text": "今のは、式を伝えたカンボジアの報道に残っている、学長のことばだよ。",
+  "heard": "今のは、式を伝えたカンボジアの報道に残っている、学長のことばだよ。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "v3wm9n7": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.300041666666667,
+  "text": "松井さんが、学生たちのほうを向いた。",
+  "heard": "松井 さん が 学生 たち の 方 を 向い た 。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "v1qrj7i": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.87,
+  "text": "松井さんがその日、どんなことを話したかは、記録に残っていないんだ。でも、きっと、こんな気持ちだったと思う。",
+  "heard": "松井さんがその日、どんなことを話したかは、記録に残っていないんだ。でも、きっと、こんな気持ちだったと思う。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "v1p5wwgi": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.480041666666667,
+  "text": "署名のペンが動き、ホールいっぱいに、拍手が響いた。",
+  "heard": "証明 の ペン が 動き 、 ホール いっぱい に 拍手 が 響い た 。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "vw4ixzc": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 2.7,
+  "text": "……ねえ、打ち明けてもいい？",
+  "heard": "ねえ 、 打ち明けて も いい ?",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vafnzu6": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.03,
+  "text": "ネクストメイクはね、ぼくを生んだ会社なんだ。",
+  "heard": "ネクストメイクはね、僕を産んだ会社なんだ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1pzrgc8": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.6,
+  "text": "ぼくの、もうひとつの仕事。それは、ここで学ぶ学生たちの、日本語の勉強の相棒なんだよ。",
+  "heard": "ぼくの、もうひとつの仕事。それは、ここで学ぶ学生たちの、日本語の勉強の相棒なんだよ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vdt95l5": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.670041666666666,
+  "text": "2026年9月。同じ大学で、Japanese IT Pathway の修了式が開かれた。",
+  "heard": "2026年 9月 同じ大学でJapanese IT pathwayの終了式が開かれた。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
