@@ -526,5 +526,101 @@
   "heard": " The old retainer hurried across the half-woven bridge, much faster than you'd expect at his age.",
   "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
   "readings": []
+ },
+ "e1cdn1g91plwo": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "kotaro",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 1.4000833333333333,
+  "text": "Grandpa!",
+  "heard": "Grampa",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "empuh2x4hxhn": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.270041666666667,
+  "text": "Far off in the darkness, a small voice cried out.",
+  "heard": " Far off in the darkness, a small voice cried",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e16vo74a1hkf6": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.360041666666667,
+  "text": "Just then — torches flickered among the trees on the far bank.",
+  "heard": " Just then — torches flickered among the trees on the far bank.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e6ve8q71tglm": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "genji",
+  "voice": "Fenrir",
+  "model": "gemini-3.8-live",
+  "seconds": 3.330041666666667,
+  "text": "There they are! The last of the Heike!",
+  "heard": "There they are, the last of the Hekis.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e14y8pii1ge6e": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 13.52,
+  "text": "With Kotaro on your back, you hurried back to the middle of the bridge. Behind you, enemy footsteps thudded on the boards.",
+  "heard": " With Kotaro on your back, you hurried back to the middle of the bridge. Behind you, enemy footsteps thudded on the boards.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "exvdhyt1o1uv": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "yaheiji",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 5,
+  "text": "Go, traveler! This old man will hold them off!",
+  "heard": " Go, traveler! This old man will hold",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e1lv3m6p15wbr": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.83,
+  "text": "Somehow the old retainer had come up right behind you. Now he stood in the enemy's way.",
+  "heard": "somehow the old retainer had come up right behind you. Now he stood in the enemy's way.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e1r6zt6pj9mdz": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.08,
+  "text": "Carrying Kotaro, the old retainer made it back to the middle of the bridge and pushed the boy into your arms.",
+  "heard": " Carrying Kotaro, the old retainer made it back to the middle of the bridge and pushed the boy into your arms.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
  }
 }
