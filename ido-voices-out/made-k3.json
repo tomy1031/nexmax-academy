@@ -96,5 +96,101 @@
   "heard": "ソピア、走るんじゃない。……おや、旅の方ですか。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v1iftda6": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "sok",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 5.05,
+  "text": "孫が、すみませんね。わしは、ソックといいます。",
+  "heard": "孫 が すみ ませ ん ね 。 わし は そっ と 言い ます 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vjr4edj": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "sok",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 4.18,
+  "text": "おや、あなたは……。また、お会いしましたな。",
+  "heard": "おや、あなたは……。また、お会いしましたな。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v179fxld": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "sok",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 2.8200416666666666,
+  "text": "わしは、ソックといいます。",
+  "heard": "わしは、ソックといいます。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vf4a361": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "sok",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 7.86,
+  "text": "この橋はね、もとは、わしが若いころに、日本の手を借りて架けられた橋なんです。",
+  "heard": "この橋はね、元はわしが若い頃に日本の手を借りて架けられた橋なんです。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v10746yd": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "sok",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 9.230041666666667,
+  "text": "それが、二十年あまり、途中で途切れていた。それが、日本の協力で、またつながったんですよ。",
+  "heard": "それが20年余り途中で途切れていた。それが日本の協力でまた繋がったんですよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vlw2e9n": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "sophea",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 4.850041666666667,
+  "text": "わたし、生まれてから一度も、この橋を渡ったことないの！",
+  "heard": "わたし、生まれてから一度も、この橋を渡ったことないの！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v20pttm": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.01,
+  "text": "ソックおじいさんは、川を見ながら、昔のことを話しはじめた。",
+  "heard": " ソックおじいさんは、川を見ながら、昔のことを話しはじめた。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vt8yh1u": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "sok",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 9.8,
+  "text": "1960年代。わしは二十歳そこそこで、ロニアットという木琴をたたいていました。",
+  "heard": "1960 年代 わし は 20 そこそこ で ロニアット と いう 木金 を 叩い て い まし た 。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
