@@ -1,0 +1,98 @@
+{
+ "e78vhzw1luhk": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 14.2,
+  "text": "October 1180. At the Fuji River, the huge army of the Heike (the Taira clan) was frightened by the sound of waterbirds flapping their wings — and ran away. Or so the story goes.",
+  "heard": " October 1180. At the Fuji River, the huge army of the Heike (the Taira clan) was frightened by the sound of waterbirds flapping their wings — and ran away. Or so",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1iwqcof17psq": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.77,
+  "text": "The next day, a young man arrived at the army camp at Kisegawa.",
+  "heard": " The next day, a young man arrived at the army camp at Kisegawa.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e12bcex91p567": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.930041666666667,
+  "text": "The soldiers there didn't trust the name he gave, so they wouldn't take his message to their lord.",
+  "heard": "The soldiers there didn't trust the name he gave, so they wouldn't take his message to their lord.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e18njjib10dvb": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.48,
+  "text": "While he waited, the young man kept mumbling the same words over and over.",
+  "heard": "while he waited, the young man kept mumbling the same words over and over.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ead9jan4mwxo": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 5.540041666666666,
+  "text": "“Elder brother, it is an honor to meet you at last. I am Kuro Yoshitsune.” …No, too stiff.",
+  "heard": "Elder brother, it is an honor to meet you at last. I am Kuro Yoshitsune.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1pm03rd7utqc": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 3.39,
+  "text": "“Elder brother! I have longed to see you!” …Too casual.",
+  "heard": "Elder Brother, I have long to see you.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e3mjrt31lhzz": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 1.08,
+  "text": "…! Who's there?!",
+  "heard": "Who's there?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1mwwp451skhh": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 3.56,
+  "text": "You heard all that? …Please, forget it.",
+  "heard": "You heard all that? Please, forget it.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ }
+}
