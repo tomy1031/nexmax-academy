@@ -680,5 +680,91 @@
   "heard": "でも ね それ で 全部 が よく なっ た わけ じゃ ない 。",
   "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
   "readings": []
+ },
+ "vytcuu9": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.7,
+  "text": "失われたものは、戻らない。うまくいかないことも、きっとこれからある。",
+  "heard": "失われたものは、戻らない。うまくいかないことも、きっとこれからある。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vmvrcjx": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.12,
+  "text": "それでも、人は、覚えて、手わたしてきた。一かごずつ、一本ずつ、ひとつずつ。",
+  "heard": " それでも、人は、覚えて、手わたしてきた。一かごずつ、一本ずつ、ひとつずつ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vs6bnc": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.800041666666667,
+  "text": "川の橋は、日本とカンボジアがいっしょに架けた。今度は、人が、橋になるんだ。",
+  "heard": "川の橋は、日本とカンボジアがいっしょに架けた。今度は、人が、橋になるんだ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vdf26do": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.77,
+  "text": "（小声）祖谷で言ったこと、覚えてる？ 覚えておけるのは、人だけ。語りつげるのも、人だけ。",
+  "heard": "親 で 言っ た こと を 覚え て おける の は 人 だけ 。 語り継ぐ の も 人 だけ 。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "祖谷＝いや"
+  ]
+ },
+ "v16csi1f": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 2.74,
+  "text": "（小声）ここでも、同じだったね。",
+  "heard": "ここ で も 同じ だっ た ね 。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vjv5def": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.84,
+  "text": "この町で、たくさんの人がつないできたものを、次の世代へ。",
+  "heard": "この町で、たくさんの人がつないできたものを、次の世代へ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v17q7v0c": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.88,
+  "text": "子どもは、未来の宝。……ソカーさんの一歩も、いつか、だれかの橋になるんだ。",
+  "heard": "子どもは、未来の宝。……ソカーさんの一歩も、いつか、だれかの橋になるんだ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
