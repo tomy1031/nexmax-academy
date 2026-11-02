@@ -15,8 +15,12 @@
  * 問いの 文は `src/content/link-answers.ts` の 台帳から 引く（記録には 入れない
  * ——答えの 文だけを 残し、問いは 教材の 正から 引く のが この アプリの 流儀）。
  *
- * ## 正解は 無い
+ * ## 正解は 無い（選ぶ 練習だけは ある）
  * 調べて 書く ものなので 採点しない。`correct: true` / `earned = max_points` で 残す。
+ *
+ * ただし **選ぶ 練習**（Renraku Master・2026-11-02 の 指定「回答データも 後で 分析できるように」）は
+ * ツールが 正誤（`correct`）を 付けて 送る。そのときは 形を `pick`（えらぶ）に して、
+ * ×は 0点で 残す——先生の 画面の 正答率に そのまま 乗る。
  *
  * **自由記述の もんだい（`free`）とは 同じでは ない**——あちらは「`minLength` より
  * 長く 書けたか」を 見て いる（`src/lib/quiz/draft.ts`）ので ×に なる ことが ある。
@@ -35,6 +39,8 @@ import { insertQuizResultRows, newAttemptId, type QuizResultRow } from "@/lib/qu
 export interface LinkAnswer {
   readonly id: string;
   readonly text: string;
+  /** 選ぶ 練習の 正誤（1回目で 正解したか）。書く ものには 付かない */
+  readonly correct?: boolean;
 }
 
 /**
@@ -55,11 +61,28 @@ export function parseLinkAnswers(value: unknown): LinkAnswer[] {
   const out: LinkAnswer[] = [];
   for (const item of value) {
     if (!item || typeof item !== "object") continue;
-    const { id, text } = item as { id?: unknown; text?: unknown };
+    const { id, text, correct } = item as { id?: unknown; text?: unknown; correct?: unknown };
     if (typeof id !== "string" || id === "" || typeof text !== "string") continue;
-    out.push({ id, text: text.slice(0, MAX_TEXT) });
+    out.push({
+      id,
+      text: text.slice(0, MAX_TEXT),
+      ...(typeof correct === "boolean" ? { correct } : {}),
+    });
   }
   return out;
+}
+
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/**
+ * ツールが 決めた 1回の 挑戦の 鍵。uuid の 形で なければ 使わない（`null`）。
+ *
+ * 1問ずつ 送る ツール（Renraku Master）は、同じ 回の 問いを **同じ 鍵**で 送る。
+ * 先生の 画面の「その回の 点」「何回目」は この 鍵で まとまる。列は uuid なので、
+ * 形の 崩れた 鍵を そのまま 入れると 行が 丸ごと 弾かれる（`newAttemptId` の 註）。
+ */
+export function parseAttemptId(value: unknown): string | null {
+  return typeof value === "string" && UUID.test(value) ? value : null;
 }
 
 /**
@@ -74,17 +97,38 @@ export function linkAnswerRows({
   linkId,
   answers,
   attemptId,
+  fullSet = true,
 }: {
   profileId: string;
   linkId: string;
   answers: readonly LinkAnswer[];
   attemptId: string;
+  /** まるごとの 挑戦か（`false` = まちがえた 問いだけの やり直し） */
+  fullSet?: boolean;
 }): QuizResultRow[] {
   const order = linkAnswerOrder(linkId);
-  const byId = new Map(answers.map((answer) => [answer.id, answer.text]));
+  const byId = new Map(answers.map((answer) => [answer.id, answer]));
   return order.flatMap((id, index) => {
-    const text = byId.get(id);
-    if (text === undefined) return [];
+    const answer = byId.get(id);
+    if (answer === undefined) return [];
+    if (answer.correct !== undefined) {
+      return [
+        {
+          profile_id: profileId,
+          quiz_set_id: linkId,
+          question_id: id,
+          question_index: index,
+          question_type: "pick",
+          answer_text: answer.text,
+          correct: answer.correct,
+          earned: answer.correct ? 1 : 0,
+          max_points: 1,
+          full_set: fullSet,
+          attempt_id: attemptId,
+        },
+      ];
+    }
+    const text = answer.text;
     return [
       {
         profile_id: profileId,
@@ -97,7 +141,7 @@ export function linkAnswerRows({
         correct: true,
         earned: 1,
         max_points: 1,
-        full_set: true,
+        full_set: fullSet,
         attempt_id: attemptId,
       },
     ];
@@ -117,9 +161,14 @@ export function linkAnswerRows({
 export async function saveLinkAnswers({
   linkId,
   answers,
+  attemptId,
+  fullSet = true,
 }: {
   linkId: string;
   answers: readonly LinkAnswer[];
+  /** ツールが 決めた 鍵（`parseAttemptId` を 通した もの）。無ければ ここで 作る */
+  attemptId?: string | null;
+  fullSet?: boolean;
 }): Promise<void> {
   if (answers.length === 0) return;
   try {
@@ -128,7 +177,13 @@ export async function saveLinkAnswers({
     const profileId = await readOwnId(supabase);
     if (!profileId) return; // ログインして いない
     await insertQuizResultRows(
-      linkAnswerRows({ profileId, linkId, answers, attemptId: newAttemptId() }),
+      linkAnswerRows({
+        profileId,
+        linkId,
+        answers,
+        attemptId: attemptId ?? newAttemptId(),
+        fullSet,
+      }),
     );
   } catch (error) {
     // 先生の 画面に 出ない ことに 気づける ように、**黙らせない**

@@ -26,6 +26,25 @@ export const LINK_ANSWER_PROMPTS: Readonly<Record<string, Readonly<Record<string
     houkoku: "「報告」への 考え方は、日本と ちがいますか。",
     joushi: "「上司」との 関係は、日本と ちがいますか。",
   },
+  /**
+   * Renraku Master（public/tools/hourensou/renraku_slack.html）の 選ぶ 練習。
+   * id は `m<ミッションの id>-q<何問目>`、文は「ミッション名 — 問い」（ページの 文を ルビを 外して 写した もの。
+   * ずれたら `tests/renraku_slack_tool.test.ts` が 止める）。
+   */
+  renraku_slack: {
+    "m1-q1": "Doc Update — 1. 誰にメンションしますか？",
+    "m1-q2": "Doc Update — 2. 何をしたか伝えます (件名と事実)",
+    "m1-q3": "Doc Update — 3. ファイルの場所を共有します",
+    "m2-q1": "Client MTG Change — 1. メンションをして、何がどうなったか伝えます",
+    "m2-q2": "Client MTG Change — 2. 【変更点】と、お願いを伝えます",
+    "m3-q1": "Common Logic Update — 1. メンションと、分かりやすい件名（タイトル）を選びます",
+    "m3-q2": "Common Logic Update — 2. メンバーにやってほしいアクションを伝えます",
+    "m4-q1": "DB Reset Notice — 1. 作業内容と時間を伝えます",
+    "m4-q2": "DB Reset Notice — 2. チームへの影響を伝えます",
+    "m5-q1": "Task Request — 1. 誰にメンションしますか？",
+    "m5-q2": "Task Request — 2. 何をして ほしいか書きます",
+    "m5-q3": "Task Request — 3. いつまでかを書きます",
+  },
 };
 
 /** その 教材の こたえの 並び（先生の 画面の Q1・Q2… の 順に なる）。 */

@@ -72,6 +72,11 @@
             color: #64748b;
         }
 
+        /* おわりの 画面の 案内は、ことばの 途中で 折り返さない（「修／了証」に 割れた） */
+        #retry-card ruby {
+            white-space: nowrap;
+        }
+
         /* 色の 付いた ボタン（白い 字）では ふりがなも 白く する（灰色だと 背景に 沈む） */
         .text-white rt {
             color: inherit;
@@ -416,6 +421,10 @@
                         <div class="text-4xl font-black text-amber-700">
                             <span id="diploma-score">100</span><span class="text-base font-bold text-amber-700/60">/100</span>
                         </div>
+                        <!-- まちがえた 問いを やり直しで ぜんぶ 正解した ときは、はじめの 回の 点も 書く（2026-11-02 の 指定） -->
+                        <div id="diploma-first" class="hidden mt-1 text-sm text-amber-800/80">
+                            <ruby>初回<rt>しょかい</rt></ruby> <span id="diploma-first-score"></span><ruby>点<rt>てん</rt></ruby>（やり<ruby>直<rt>なお</rt></ruby>しで ぜんぶ <ruby>正解<rt>せいかい</rt></ruby>）
+                        </div>
                     </div>
                     <div class="mt-5 text-xs text-slate-500" id="diploma-date"></div>
                     <div class="mt-4 text-base text-amber-700" style="font-family: Georgia, serif;">NEXT MAKE</div>
@@ -430,7 +439,7 @@
                     <i data-lucide="refresh-cw" class="w-9 h-9 text-indigo-600"></i>
                 </div>
                 <h2 class="text-2xl font-bold text-slate-800 mb-1">もう<ruby>一度<rt>いちど</rt></ruby> チャレンジしましょう。</h2>
-                <p class="text-slate-500 mb-6 text-sm">100<ruby>点<rt>てん</rt></ruby>で
+                <p id="retry-note" class="text-slate-500 mb-6 text-sm leading-loose">100<ruby>点<rt>てん</rt></ruby>で
                     <ruby>修了証<rt>しゅうりょうしょう</rt></ruby>が もらえます。
                 </p>
                 <div class="bg-slate-100 rounded-xl p-4">
@@ -438,6 +447,12 @@
                     <div class="text-5xl font-black text-indigo-600">
                         <span id="final-score">0</span><span class="text-lg font-bold text-slate-400">/100</span>
                     </div>
+                </div>
+                <p id="retry-result" class="hidden mt-4 text-base font-bold text-slate-700"></p>
+                <!-- まちがえた 問い（2026-11-02 の 指定「間違えた問題をやり直す」） -->
+                <div id="retry-list" class="hidden mt-5 text-left">
+                    <div class="text-sm font-bold text-slate-500 mb-2">まちがえた <ruby>問<rt>と</rt></ruby>い</div>
+                    <ul id="retry-items" class="space-y-2"></ul>
                 </div>
             </div>
 
@@ -447,7 +462,11 @@
               ここで 保存を 消して、ミッション1から はじめる。
             -->
             <div class="px-10 pb-10 pt-6">
-                <button onclick="restartFromScratch()" aria-label="最初から"
+                <button id="retry-wrong" onclick="startRetry()" aria-label="まちがえた問いだけやり直す"
+                    class="hidden w-full py-4 mb-3 bg-rose-500 text-white rounded-xl font-bold hover:bg-rose-600 transition shadow-lg shadow-rose-200 flex items-center justify-center gap-2">
+                    <i data-lucide="rotate-ccw" class="w-5 h-5"></i> <span id="retry-wrong-label"></span>
+                </button>
+                <button onclick="restartFromScratch()" aria-label="最初から" id="restart-button"
                     class="w-full py-4 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition shadow-lg hover:shadow-indigo-500/30 flex items-center justify-center gap-2">
                     <i data-lucide="refresh-cw" class="w-5 h-5"></i> <span id="restart-label"><ruby>最初<rt>さいしょ</rt></ruby>から</span>
                 </button>
@@ -949,7 +968,18 @@
              */
             answered: null,
             /** メッセージの 時刻（開き直しても 変えない） */
-            times: {}
+            times: {},
+            /** この 回（ミッション1〜5）の 記録の 鍵。先生の 画面で 1回の 挑戦に まとまる */
+            attemptId: newAttemptId(),
+            /**
+             * 1回目で まちがえた 問い（`m1-q3` の 形）。やり直して 1回目で 正解すると 消える。
+             * null は「分からない」（これを 数える 前の 保存から 続けた 回）。
+             */
+            misses: [],
+            /** まちがえた 問いの やり直し（`{ attemptId, queue, pos, misses }`）。やり直して いない ときは null */
+            retry: null,
+            /** 前の やり直しの 結果（`{ total, correct }`）。おわりの 画面に 出す */
+            lastRetry: null
         };
 
         // --- 進み具合の 保存（2026-10-26 の 指定「現在の 状況を localStorage で 保存」） ---
@@ -960,7 +990,8 @@
          * ブラウザが 保存を 断る（シークレットの 窓など）ときは、保存せずに そのまま 練習できる。
          */
         const STORE_KEY = 'nexmax:renraku_slack:v1';
-        const PHASES = ['dm_briefing', 'channel_nav', 'drafting', 'sent', 'mission_complete', 'completed'];
+        const PHASES = ['dm_briefing', 'channel_nav', 'drafting', 'sent', 'mission_complete', 'completed', 'retry'];
+        const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
         function save() {
             try {
@@ -971,7 +1002,11 @@
                     stepsDone: state.draftLines.length,
                     score: state.score,
                     wrongPicks: state.wrongPicks,
-                    times: state.times
+                    times: state.times,
+                    attemptId: state.attemptId,
+                    misses: state.misses,
+                    retry: state.retry,
+                    lastRetry: state.lastRetry
                 }));
             } catch (error) {
                 /* 保存できなくても 練習は 止めない */
@@ -1005,8 +1040,35 @@
                     : [],
                 // 時刻は 画面に そのまま 出すので、字だけの 短い もの しか 受け取らない
                 times: Object.fromEntries(Object.entries(saved.times && typeof saved.times === 'object' ? saved.times : {})
-                    .filter(([, value]) => typeof value === 'string' && value.length <= 24 && !/[<>&"']/.test(value)))
+                    .filter(([, value]) => typeof value === 'string' && value.length <= 24 && !/[<>&"']/.test(value))),
+                // 下の 4つは 後から 足した（2026-11-02）。前の 保存には 無いので、無ければ 入れない
+                attemptId: typeof saved.attemptId === 'string' && UUID.test(saved.attemptId) ? saved.attemptId : undefined,
+                misses: readQuestionIds(saved.misses),
+                retry: readRetry(saved.retry),
+                lastRetry: saved.lastRetry && Number.isInteger(saved.lastRetry.total) && Number.isInteger(saved.lastRetry.correct)
+                    && saved.lastRetry.total > 0 && saved.lastRetry.correct >= 0 && saved.lastRetry.correct <= saved.lastRetry.total
+                    ? { total: saved.lastRetry.total, correct: saved.lastRetry.correct }
+                    : undefined
             };
+        }
+
+        /** 問いの id の 並び（教材に ある ものだけ・重なりなし）。形が ちがえば undefined。 */
+        function readQuestionIds(value) {
+            if (!Array.isArray(value)) return undefined;
+            const known = new Set(allQuestionIds());
+            if (!value.every(id => known.has(id))) return undefined;
+            return [...new Set(value)];
+        }
+
+        /** やり直しの 途中の 保存。おかしな ところが あれば 使わない（おわりの 画面に もどる）。 */
+        function readRetry(value) {
+            if (!value || typeof value !== 'object') return undefined;
+            const queue = readQuestionIds(value.queue);
+            const misses = readQuestionIds(value.misses);
+            if (!queue || queue.length === 0 || !misses || !misses.every(id => queue.includes(id))) return undefined;
+            if (typeof value.attemptId !== 'string' || !UUID.test(value.attemptId)) return undefined;
+            if (!Number.isInteger(value.pos) || value.pos < 0 || value.pos > queue.length) return undefined;
+            return { attemptId: value.attemptId, queue, pos: value.pos, misses };
         }
 
         function clearSaved() {
@@ -1021,6 +1083,66 @@
         function restartFromScratch() {
             clearSaved();
             location.reload();
+        }
+
+        // --- 答えの 記録（2026-11-02 の 指定「回答データも 後で 分析できるように」） ---
+        /*
+         * この ページは 静的な 1枚で、DBの 鍵も ログインの 情報も 持たない（規律4）。
+         * だから **問いに 正解した ときに 1問ずつ** 親の 画面（アプリの リンク教材）へ 渡すだけに して、
+         * 保存は アプリ側が 行う（受け口は src/components/link/link-view.tsx・行き先は quiz_results）。
+         * 先生の 画面（/admin/records）に もんだいと 同じ 形で 出る。
+         *  - こたえ: 押した 選択肢を 押した 順に「→」で つなぐ（最後が 正解）
+         *  - 正誤: **1回目で 正解したか**（まちがえてから 正解した 問いは ×）
+         *  - 1回の 挑戦: ミッション1〜5 で 1つ。まちがえた 問いの やり直しは 別の 挑戦（「まちがえた ぶんだけ」）
+         * アプリの 外で 開いた とき（iframe で ない）は 何も 送らない。
+         * 問いの 文は アプリの 台帳（src/content/link-answers.ts）に 写して ある——ずれたら テストが 止める。
+         */
+        const LINK_ID = 'renraku_slack';
+
+        /** 問いの id（`m<ミッションの id>-q<何問目>`）。台帳と 先生の 画面の 鍵に なる。 */
+        function questionId(sc, stepIdx) {
+            return `m${sc.id}-q${stepIdx + 1}`;
+        }
+
+        function allQuestionIds() {
+            return SCENARIOS.flatMap(sc => sc.steps.map((step, stepIdx) => questionId(sc, stepIdx)));
+        }
+
+        /** id から ミッションと 問いを 引く。 */
+        function findQuestion(id) {
+            for (let scenario = 0; scenario < SCENARIOS.length; scenario++) {
+                const stepIdx = SCENARIOS[scenario].steps.findIndex((step, at) => questionId(SCENARIOS[scenario], at) === id);
+                if (stepIdx >= 0) return { scenario, stepIdx };
+            }
+            return null;
+        }
+
+        /** 記録の 鍵（uuid）。`crypto.randomUUID` の 無い 古い 端末でも uuid の 形に する（アプリの newAttemptId と 同じ）。 */
+        function newAttemptId() {
+            try {
+                return crypto.randomUUID();
+            } catch (error) {
+                return '10000000-1000-4000-8000-100000000000'.replace(/[018]/g, c =>
+                    (Number(c) ^ (Math.floor(Math.random() * 256) & (15 >> (Number(c) / 4)))).toString(16));
+            }
+        }
+
+        /** 1問ぶんの 答えを 親の 画面へ 渡す。**待たない・投げない**（記録の ために 練習を 止めない）。 */
+        function reportAnswer(sc, stepIdx, picks, attemptId, fullSet) {
+            try {
+                if (!window.parent || window.parent === window) return;
+                const step = sc.steps[stepIdx];
+                const text = picks.map(at => plainText(step.options[at].text).replace(/\s+/g, ' ').trim()).join(' → ');
+                window.parent.postMessage({
+                    type: 'nexmax:link-answers',
+                    id: LINK_ID,
+                    attemptId,
+                    fullSet,
+                    answers: [{ id: questionId(sc, stepIdx), text, correct: picks.length === 1 }]
+                }, window.location.origin);
+            } catch (error) {
+                /* 記録できなくても 練習は 止めない */
+            }
         }
 
         /** その 時刻を 1回だけ 決める（描き直しても・開き直しても 同じ 時刻）。 */
@@ -1063,10 +1185,19 @@
         function restore(saved) {
             // 送った あとの 演出の 途中で 閉じた ときは、送り終えた ことに する
             state.phase = saved.phase === 'sent' ? 'mission_complete' : saved.phase;
-            state.scenarioIndex = saved.scenarioIndex;
+            state.retry = saved.retry || null;
+            // やり直しの 保存が こわれて いたら、おわりの 画面に もどる
+            if (state.phase === 'retry' && !state.retry) state.phase = 'completed';
+            // おわった あと（やり直しも）は ミッションを ぜんぶ 送った 画面に する
+            const finished = state.phase === 'completed' || state.phase === 'retry';
+            state.scenarioIndex = finished ? SCENARIOS.length - 1 : saved.scenarioIndex;
             state.currentViewId = saved.currentViewId;
             state.score = saved.score;
             state.times = saved.times;
+            if (saved.attemptId) state.attemptId = saved.attemptId;
+            // 数える 前の 保存から 続けた 回は、まちがえた 問いが 分からない（やり直しは 出さない）
+            state.misses = saved.misses || null;
+            state.lastRetry = saved.lastRetry || null;
             const sc = SCENARIOS[state.scenarioIndex];
             state.draftLines = state.phase === 'drafting' ? correctLines(sc, saved.stepsDone) : [];
             state.wrongPicks = state.phase === 'drafting' ? saved.wrongPicks : [];
@@ -1076,12 +1207,18 @@
                 const done = index < state.scenarioIndex;
                 state.dmHistory.push(hendyMessage(index));
                 if (done || state.phase !== 'dm_briefing') state.dmHistory.push(ackMessage(index));
-                if (done || state.phase === 'mission_complete' || state.phase === 'completed') {
+                if (done || state.phase === 'mission_complete' || finished) {
                     postSent(index);
                     postReply(index);
                 }
             }
             els.score.innerText = state.score;
+            if (state.phase === 'retry') {
+                // 「次へ」を 待って いる あいだに 閉じた ときは、次の 問いから（最後なら おわりの 画面）
+                if (state.retry.pos >= state.retry.queue.length) finishRetry();
+                else openRetryQuestion(saved.wrongPicks);
+                return;
+            }
             updateHeader();
             renderNav();
             renderMessagesForView();
@@ -1111,6 +1248,15 @@
             diplomaScore: document.getElementById('diploma-score'),
             diplomaDate: document.getElementById('diploma-date'),
             retryCard: document.getElementById('retry-card'),
+            retryNote: document.getElementById('retry-note'),
+            retryResult: document.getElementById('retry-result'),
+            retryList: document.getElementById('retry-list'),
+            retryItems: document.getElementById('retry-items'),
+            retryWrong: document.getElementById('retry-wrong'),
+            retryWrongLabel: document.getElementById('retry-wrong-label'),
+            restartButton: document.getElementById('restart-button'),
+            diplomaFirst: document.getElementById('diploma-first'),
+            diplomaFirstScore: document.getElementById('diploma-first-score'),
             taskSidebar: document.getElementById('task-sidebar-content'),
             vocabList: document.getElementById('vocab-list')
         };
@@ -1191,7 +1337,7 @@
                 <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
                     <div class="flex justify-between items-center mb-1.5">
                         <div class="text-sm font-bold text-slate-500 uppercase">Mission ${state.scenarioIndex + 1}/${SCENARIOS.length}</div>
-                        <span class="bg-indigo-100 text-indigo-700 text-xs px-2.5 py-0.5 rounded-full font-bold">Active</span>
+                        <span class="bg-indigo-100 text-indigo-700 text-xs px-2.5 py-0.5 rounded-full font-bold">${state.phase === 'retry' ? `やり${r("直", "なお")}し` : 'Active'}</span>
                     </div>
                     <div class="font-bold text-slate-800 mb-3 text-xl leading-tight">${sc.title}</div>
                     <div class="bg-slate-50 text-slate-700 text-[15px] xl:text-base p-3 rounded-lg leading-[2.4] xl:leading-[2.4] border border-slate-200 whitespace-pre-wrap break-words">${sc.instruction.text}</div>
@@ -1237,7 +1383,8 @@
          */
         function updateComposer() {
             const sc = SCENARIOS[state.scenarioIndex];
-            const drafting = state.phase === 'drafting' && state.currentViewId === sc.targetChannel;
+            // やり直しの ときも、その 問いまでの 行を 入力欄に 出す（はじめに 答えた ときと 同じ 見え方）
+            const drafting = (state.phase === 'drafting' || state.phase === 'retry') && state.currentViewId === sc.targetChannel;
             const html = drafting ? markUrls(state.draftLines.join('\n\n')) : '';
             const box = els.draftText;
             box.innerHTML = html;
@@ -1255,7 +1402,8 @@
                 box.append(hint);
             }
             box.scrollTop = box.scrollHeight;
-            els.composerSend.disabled = !(drafting && state.draftLines.length >= sc.steps.length);
+            // やり直しでは 送らない（送るのは はじめの 回だけ）
+            els.composerSend.disabled = !(state.phase === 'drafting' && drafting && state.draftLines.length >= sc.steps.length);
         }
 
         function handleDMClick() {
@@ -1300,7 +1448,7 @@
                 } else {
                     addSystemMessage(`⚠️ ここは #${channelId} です。${r("指示", "しじ")}されたチャンネルは #${sc.targetChannel} です。`);
                 }
-            } else if (state.phase === 'drafting') {
+            } else if (state.phase === 'drafting' || state.phase === 'retry') {
                 if (channelId !== sc.targetChannel) {
                     els.actionArea.innerHTML = `<div class="text-slate-500 text-sm text-center flex items-center justify-center gap-2 py-4"><i data-lucide="alert-circle" class="w-4 h-4"></i> #${sc.targetChannel} に${r("戻", "もど")}って${r("入力", "にゅうりょく")}を${r("続", "つづ")}けてください。</div>`;
                     lucide.createIcons();
@@ -1323,6 +1471,12 @@
             } else {
                 // Channel View
                 addSystemMessage(`Welcome to #${state.currentViewId}`);
+
+                // やり直しの あいだは 送った メッセージを 出さない（正解の 行が そのまま 見えて しまう）
+                if (state.phase === 'retry') {
+                    addSystemMessage(`<span class="text-indigo-500 font-bold">やり${r("直", "なお")}し</span>: まちがえた ${r("問", "と")}いを もう${r("一度", "いちど")} ${r("選", "えら")}んでください。`);
+                    return;
+                }
 
                 // このチャンネルに 送った メッセージと 返事（前の ミッションの ぶんも 残る）
                 (state.channelPosts[state.currentViewId] || []).forEach(post => {
@@ -1445,7 +1599,7 @@
             }
 
             // 2. Drafting Phase
-            else if (state.phase === 'drafting') {
+            else if (state.phase === 'drafting' || state.phase === 'retry') {
                 if (state.currentViewId !== sc.targetChannel) return;
 
                 updateComposer();
@@ -1453,7 +1607,8 @@
                 // 正解の あとは、その 問いを「次へ」まで 出した まま に する（行は もう 下書きに 入って いる）
                 const answered = state.answered;
                 const currentStepIdx = answered ? state.draftLines.length - 1 : state.draftLines.length;
-                if (currentStepIdx >= sc.steps.length) {
+                const retry = state.phase === 'retry' ? state.retry : null;
+                if (!retry && currentStepIdx >= sc.steps.length) {
                     els.actionArea.innerHTML = `
                         <div class="max-w-xl mx-auto text-center fade-in">
                             <p class="text-base text-slate-500 mb-3">メッセージが${r("完成", "かんせい")}しました。</p>
@@ -1468,10 +1623,14 @@
                 }
 
                 const step = sc.steps[currentStepIdx];
+                // やり直しは「何問目の やり直しか」を 出す（ミッションの 中の 何問目かは 問いの 文の 番号で 分かる）
+                const label = retry
+                    ? `やり${r("直", "なお")}し ${(answered ? retry.pos - 1 : retry.pos) + 1}/${retry.queue.length}`
+                    : `Step ${currentStepIdx + 1}/${sc.steps.length}`;
                 els.actionArea.innerHTML = `
                     <div class="max-w-4xl mx-auto fade-in">
                         <div class="step-head flex items-center gap-2 mb-4">
-                            <span class="bg-indigo-100 text-indigo-700 text-sm font-bold px-2.5 py-1 rounded flex-shrink-0">Step ${currentStepIdx + 1}/${sc.steps.length}</span>
+                            <span class="bg-indigo-100 text-indigo-700 text-sm font-bold px-2.5 py-1 rounded flex-shrink-0">${label}</span>
                             <span class="text-base xl:text-lg font-bold text-slate-700">${step.question}</span>
                         </div>
                         <div class="grid md:grid-cols-3 gap-3">
@@ -1547,12 +1706,26 @@
         function handleOptionSelect(optIdx) {
             // 正解の あとは「次へ」を 押すまで 選び直さない
             if (state.answered) return;
+            const retrying = state.phase === 'retry';
+            if (state.phase !== 'drafting' && !retrying) return;
             const sc = SCENARIOS[state.scenarioIndex];
-            const step = sc.steps[state.draftLines.length];
+            const stepIdx = state.draftLines.length;
+            const step = sc.steps[stepIdx];
             const option = step && step.options[optIdx];
             if (!option) return;
 
             if (option.isCorrect) {
+                // 1回目で 正解したかを 数えて、答えを 記録に 渡す
+                const id = questionId(sc, stepIdx);
+                const missed = state.wrongPicks.length > 0;
+                if (retrying) {
+                    if (missed) state.retry.misses.push(id);
+                    state.retry.pos++;
+                } else if (missed && state.misses && !state.misses.includes(id)) {
+                    state.misses.push(id);
+                }
+                reportAnswer(sc, stepIdx, [...state.wrongPicks, optIdx],
+                    retrying ? state.retry.attemptId : state.attemptId, !retrying);
                 // 正解の選択肢（HTMLタグ付き）を保存。入力欄には すぐ 入る
                 state.answered = { optIdx, wrongPicks: state.wrongPicks };
                 state.draftLines.push(option.text);
@@ -1563,19 +1736,79 @@
                 // 同じ 選択肢を 何度 押しても 減るのは 1回だけ（開き直しても 同じ。押した 選択肢は もう 押せない）
                 if (state.wrongPicks.includes(optIdx)) return;
                 state.wrongPicks.push(optIdx);
-                state.score = Math.max(0, state.score - PENALTY);
-                els.score.innerText = state.score;
-                flashScore();
+                // やり直しでは 点は 変えない（点は はじめの 回の もの）
+                if (!retrying) {
+                    state.score = Math.max(0, state.score - PENALTY);
+                    els.score.innerText = state.score;
+                    flashScore();
+                }
                 markWrong(step, optIdx, true);
             }
             save();
         }
 
-        /** 「次へ」。正解の わけを 読んでから、次の 問い（最後なら 送信）へ。 */
+        /** 「次へ」。正解の わけを 読んでから、次の 問い（最後なら 送信）へ。やり直しでは 次の まちがえた 問いへ。 */
         function nextStep() {
             if (!state.answered) return;
             state.answered = null;
+            if (state.phase === 'retry') {
+                if (state.retry.pos >= state.retry.queue.length) finishRetry();
+                else openRetryQuestion();
+                return;
+            }
             renderActionArea();
+        }
+
+        // --- まちがえた 問いの やり直し（2026-11-02 の 指定） ---
+        /*
+         * おわりの 画面で「まちがえた 問いだけ やり直す」を 押すと、Slack の 画面に もどって
+         * **その 問いだけ**を はじめと 同じ 形で 答え直す（右の 欄は その ミッションの 指示、
+         * 入力欄は その 問いの 前までの 行）。点は 変えない。
+         * 1回目で 正解できなかった 問いは 残り、また やり直せる。ぜんぶ 正解したら 修了証。
+         */
+        function startRetry() {
+            if (!state.misses || state.misses.length === 0) return;
+            state.retry = { attemptId: newAttemptId(), queue: [...state.misses], pos: 0, misses: [] };
+            state.phase = 'retry';
+            els.completion.classList.add('hidden');
+            openRetryQuestion();
+        }
+
+        /** やり直しの いまの 問いを 出す。 */
+        function openRetryQuestion(wrongPicks = []) {
+            const found = findQuestion(state.retry.queue[state.retry.pos]);
+            const sc = SCENARIOS[found.scenario];
+            state.scenarioIndex = found.scenario;
+            state.currentViewId = sc.targetChannel;
+            state.draftLines = correctLines(sc, found.stepIdx);
+            state.wrongPicks = wrongPicks;
+            state.answered = null;
+            updateHeader();
+            renderNav();
+            renderMessagesForView();
+            renderActionArea();
+            renderRightSidebar();
+            save();
+        }
+
+        /** やり直しの おわり。残った 問いを 次の やり直しに 回して、おわりの 画面へ。 */
+        function finishRetry() {
+            const { queue, misses } = state.retry;
+            state.lastRetry = { total: queue.length, correct: queue.length - misses.length };
+            state.misses = misses;
+            state.retry = null;
+            state.phase = 'completed';
+            state.scenarioIndex = SCENARIOS.length - 1;
+            state.draftLines = [];
+            state.wrongPicks = [];
+            state.answered = null;
+            updateHeader();
+            renderNav();
+            renderMessagesForView();
+            renderActionArea();
+            renderRightSidebar();
+            save();
+            showCompletion();
         }
 
         /** わけの 文の 頭の「正解！」「不正解。」を はずす（しるしが 言うので 2回 言わない）。「惜しい」は 残す。 */
@@ -1736,11 +1969,18 @@
             loadScenario();
         }
 
-        /** おわり。**100点の ときだけ 修了証**、それ以外は 点数と「もう一度」。 */
+        /**
+         * おわり。**100点か、まちがえた 問いを やり直しで ぜんぶ 正解したら 修了証**（2026-11-02 の 指定
+         *「点数は100点で良いが、初回の点数も記載」）。それ以外は 点数と、まちがえた 問いの 一覧と「やり直す」。
+         */
         function showCompletion() {
-            const perfect = state.score >= MAX_SCORE;
+            const cleared = state.score < MAX_SCORE && Array.isArray(state.misses) && state.misses.length === 0;
+            const perfect = state.score >= MAX_SCORE || cleared;
             els.finalScore.innerText = state.score;
-            els.diplomaScore.innerText = state.score;
+            els.diplomaScore.innerText = cleared ? MAX_SCORE : state.score;
+            els.diplomaFirst.classList.toggle('hidden', !cleared);
+            els.diplomaFirstScore.innerText = state.score;
+            renderRetryCard();
             // 日付は 終えた 日（開き直した 日では ない）
             const [year, month, day] = String(state.times.finishedOn || '').split('-').map(Number);
             const d = year ? { year, month, day } : { year: new Date().getFullYear(), month: new Date().getMonth() + 1, day: new Date().getDate() };
@@ -1749,6 +1989,38 @@
             els.retryCard.classList.toggle('hidden', perfect);
             els.completion.classList.remove('hidden');
             lucide.createIcons();
+        }
+
+        const PRIMARY_BUTTON = ['bg-indigo-600', 'text-white', 'hover:bg-indigo-700', 'shadow-lg'];
+        const SECONDARY_BUTTON = ['bg-white', 'text-indigo-700', 'border-2', 'border-indigo-200', 'hover:bg-indigo-50'];
+
+        /** 100点で ない ときの カード。まちがえた 問いが 分かれば、一覧と「やり直す」を 出す。 */
+        function renderRetryCard() {
+            const misses = Array.isArray(state.misses) ? state.misses : [];
+            const canRetry = misses.length > 0;
+            els.retryNote.innerHTML = canRetry
+                ? `まちがえた ${r("問", "と")}いを やり${r("直", "なお")}して、ぜんぶ ${r("正解", "せいかい")}すると ${r("修了証", "しゅうりょうしょう")}が もらえます。`
+                : `100${r("点", "てん")}で ${r("修了証", "しゅうりょうしょう")}が もらえます。`;
+            // 前の やり直しの 結果（判定を ぼかさない・規律1）
+            const last = state.lastRetry;
+            els.retryResult.classList.toggle('hidden', !last);
+            els.retryResult.innerHTML = last
+                ? `やり${r("直", "なお")}し: ${last.total}${r("問中", "もんちゅう")} ${last.correct}${r("問", "もん")} ${r("正解", "せいかい")}`
+                : '';
+            els.retryList.classList.toggle('hidden', !canRetry);
+            els.retryItems.innerHTML = misses.map(id => {
+                const found = findQuestion(id);
+                const sc = SCENARIOS[found.scenario];
+                return `<li class="flex gap-2 items-start bg-red-50 border border-red-200 rounded-lg px-3 py-2 text-sm leading-loose">
+                    <span class="flex-shrink-0">❌</span>
+                    <span><b class="text-slate-800">${sc.title}</b> <span class="text-slate-700">${sc.steps[found.stepIdx].question}</span></span>
+                </li>`;
+            }).join('');
+            els.retryWrong.classList.toggle('hidden', !canRetry);
+            els.retryWrongLabel.innerHTML = `まちがえた ${r("問", "と")}いだけ やり${r("直", "なお")}す（${misses.length}${r("問", "もん")}）`;
+            // 次の 一手は「やり直す」。「最初から」は 下に 控えめに 置く
+            PRIMARY_BUTTON.forEach(name => els.restartButton.classList.toggle(name, !canRetry));
+            SECONDARY_BUTTON.forEach(name => els.restartButton.classList.toggle(name, canRetry));
         }
 
         // --- ポップアップ辞書（アプリの WordPopover と 同じ 出し方） ---

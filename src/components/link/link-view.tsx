@@ -10,7 +10,7 @@ import {
   recordContentProgress,
   subscribeProgress,
 } from "@/lib/progress/store";
-import { parseLinkAnswers, saveLinkAnswers } from "@/lib/answers/link-answers-db";
+import { parseAttemptId, parseLinkAnswers, saveLinkAnswers } from "@/lib/answers/link-answers-db";
 import { readLinkMessage } from "@/lib/answers/link-message";
 
 /**
@@ -106,6 +106,9 @@ export function LinkView({ link, embedded }: { link: LinkContent; embedded?: boo
         void saveLinkAnswers({
           linkId: link.id,
           answers: parseLinkAnswers(message.answers),
+          // 1問ずつ 送る ツールは 同じ 回を 同じ 鍵で 送る（無ければ 1回ごとに 作る）
+          attemptId: parseAttemptId(message.attemptId),
+          fullSet: message.fullSet !== false,
         }).catch(() => {
           /* 記録できなくても 学習は 止めない */
         });

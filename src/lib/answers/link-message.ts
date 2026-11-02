@@ -27,7 +27,14 @@ export const ANSWERS_MESSAGE = "nexmax:link-answers";
 export type LinkMessage =
   | { readonly kind: "done" }
   | { readonly kind: "owns-done" }
-  | { readonly kind: "answers"; readonly answers: unknown };
+  | {
+      readonly kind: "answers";
+      readonly answers: unknown;
+      /** 1回の 挑戦の 鍵（ツールが 決める。無ければ 保存の ときに 作る）。形は 保存側で 確かめる */
+      readonly attemptId?: unknown;
+      /** まるごとの 挑戦か（`false` = まちがえた 問いだけの やり直し）。形は 保存側で 確かめる */
+      readonly fullSet?: unknown;
+    };
 
 /**
  * この 教材あての 合図か。ちがえば `null`。
@@ -49,7 +56,12 @@ export function readLinkMessage(data: unknown, linkId: string): LinkMessage | nu
   if (id !== linkId) return null;
   if (type === OWNS_DONE_MESSAGE) return { kind: "owns-done" };
   if (type === ANSWERS_MESSAGE) {
-    return { kind: "answers", answers: (data as { answers?: unknown }).answers };
+    const { answers, attemptId, fullSet } = data as {
+      answers?: unknown;
+      attemptId?: unknown;
+      fullSet?: unknown;
+    };
+    return { kind: "answers", answers, attemptId, fullSet };
   }
   return null;
 }

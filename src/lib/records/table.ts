@@ -311,6 +311,8 @@ const QUIZ_TYPE_LABEL: Record<string, string> = {
   fillin: "メールの 型を うめる",
   // バグ報告（🎤で 話して AIが 点を 付ける。60点 より 上で 合格）
   bugreport: "バグ報告",
+  // ツール教材の 選ぶ 練習（Renraku Master）。正誤は 1回目で 正解したか
+  pick: "えらぶ",
 };
 
 export function quizTable(records: readonly QuizRecord[], lookups: Lookups): RecordTable {
