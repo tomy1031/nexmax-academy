@@ -382,5 +382,101 @@
   "heard": "What did you say?",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "eujg9414wl9": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 11.58,
+  "text": "If they finish the bridge, the enemy can cross it too. If they cut the bridge, the child will be left alone on the far side.",
+  "heard": " If they cut the bridge, the child will be left alone on the far side.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e17jmt921j428": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 12.07,
+  "text": "At Dan-no-ura, in the great battle at sea, I could save no one. One after another, my clan sank beneath the waves before my eyes.",
+  "heard": " At Dan-no-ura, in the great battle at sea, I could save no one. One after another, my clan sank beneath the waves before my eyes.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e19t52wg1ue0r": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.63,
+  "text": "…I will not leave a single person behind. Never again.",
+  "heard": " I will not leave a single person behind. Never",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e300xta1i4gg": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.27,
+  "text": "The sun went down. From the bottom of the valley, torches came climbing up — one, then another, and another.",
+  "heard": " From the bottom of the valley, torches came climbing up one, then another, and another.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e1renrwh8ciq9": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.91,
+  "text": "…You? You are only a traveler. You owe us nothing.",
+  "heard": "You You are only a traveler. You owe us nothing.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e1li07pssjqx8": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.27,
+  "text": "It's okay, I'll guide you! Only step where the boards are tied down!",
+  "heard": " It's okay, I'll guide you! Only step where the boards are tied down!",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e1fgtdu11sj3": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.95,
+  "text": "You ran out onto the half-woven bridge.",
+  "heard": "You ran out onto the half-woven bridge.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "elik1lq1apu7": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "kotaro",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 4.09,
+  "text": "…Who's there? I'm scared…",
+  "heard": " Who's there? I'm scared.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
  }
 }
