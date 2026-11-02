@@ -658,5 +658,101 @@
   "heard": " There are people waiting for me in the village. …I must go home.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1cymvuc1y530": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.91,
+  "text": "People say the name “Mt. Tsurugi” (“Sword Mountain”) comes from a legend. In the legend, the sword of Emperor Antoku — the boy Emperor — was laid to rest on this mountain.",
+  "heard": " People say the name \"Mt. Tsurugi\" (\"Sword Mountain\") comes from a legend. In the legend, the sword of Emperor Antoku — the boy Emperor — was laid to rest on this mountain.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1waxyr51hdyc": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.06,
+  "text": "No one knows if the sword is really there. But the mountain's name keeps the story alive today.",
+  "heard": " No one knows if the sword is really there. But the mountain's name keeps the story alive today.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1p4uz9qk8bdj": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.86,
+  "text": "Traveler. When you go down the mountain, tell someone this story.",
+  "heard": "Traveler, when you go down the mountain, tell someone this story.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e94byt41wtnn": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 7.14,
+  "text": "Not a story about a sword. A story about the man who laid his sword down.",
+  "heard": " Not a story about a sword. A story about the man who laid his sword down.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e14yhy5f1i8x1": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.560041666666667,
+  "text": "As long as someone tells our story, we will never disappear.",
+  "heard": " As long as someone tells our story, we will never disappear.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e10j3z1nbopl9": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.980041666666667,
+  "text": "…Yeah. We'll make sure Kunimori's words reach people. Promise.",
+  "heard": " We'll make sure Kunimori's words reach people. Promise.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "epc6yl71t790": {
+  "episode": "miyoshi-finale",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.2400416666666665,
+  "text": "2026. Evening falls on the vine bridge of Iya.",
+  "heard": " Evening falls on the vine bridge of Iya.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e9v6vwskm4rg": {
+  "episode": "miyoshi-finale",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.360041666666667,
+  "text": "Tourists laughing. The bridge swaying. The setting sun sparkling on the river.",
+  "heard": " The bridge swaying. The setting sun sparkling on the river.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
