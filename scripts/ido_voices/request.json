@@ -22,6 +22,66 @@
    "genpei-dannoura:en",
    "genpei-kisegawa:en",
    "genpei-yashima:en"
+  ],
+  "k1": [
+   "kh-prologue:ja",
+   "kh-watphnom:ja",
+   "kh-royalpalace:ja"
+  ],
+  "n1": [
+   "kh-prologue:en",
+   "kh-watphnom:en",
+   "kh-royalpalace:en"
+  ],
+  "k2": [
+   "kh-independence:ja",
+   "kh-museum:ja"
+  ],
+  "n2": [
+   "kh-independence:en",
+   "kh-museum:en"
+  ],
+  "k3": [
+   "kh-chroy:ja",
+   "kh-tsubasa:ja"
+  ],
+  "n3": [
+   "kh-chroy:en",
+   "kh-tsubasa:en"
+  ],
+  "k4": [
+   "kh-finale:ja",
+   "kh-sr-prologue:ja"
+  ],
+  "n4": [
+   "kh-finale:en",
+   "kh-sr-prologue:en"
+  ],
+  "k5": [
+   "kh-angkor-build:ja",
+   "kh-taprohm:ja"
+  ],
+  "n5": [
+   "kh-angkor-build:en",
+   "kh-taprohm:en"
+  ],
+  "k6": [
+   "kh-bayon:ja",
+   "kh-angkor:ja"
+  ],
+  "n6": [
+   "kh-bayon:en",
+   "kh-angkor:en"
+  ],
+  "k7": [
+   "kh-landmine:ja",
+   "kh-banteaykdei:ja",
+   "kh-sr-finale:ja"
+  ],
+  "n7": [
+   "kh-landmine:en",
+   "kh-banteaykdei:en",
+   "kh-sr-finale:en"
   ]
  }
 }
