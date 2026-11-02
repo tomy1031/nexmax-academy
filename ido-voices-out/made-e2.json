@@ -382,5 +382,101 @@
   "heard": "松、get to the bank。 let the logs go。 get out before Koboke。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1rvr3mkad759": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "matsukichi",
+  "voice": "Sadachbia",
+  "model": "gemini-3.8-live",
+  "seconds": 6.720041666666667,
+  "text": "What're you sayin'?! If I get out now, the logs'll jam in the rocks and split apart! I'll clear the jam myself!",
+  "heard": " What're you sayin'?! If I get out now, the logs'll jam in the rocks and split apart! I'll clear the jam myself!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1q1o8upbucs0": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 6.74,
+  "text": "Don't you take this river lightly! You know how many men have died in Koboke when the water's high?!",
+  "heard": " Don't you take this river lightly! You know how many men have died in Koboke when the water's",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1v6shr11uobl": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "matsukichi",
+  "voice": "Sadachbia",
+  "model": "gemini-3.8-live",
+  "seconds": 4.09,
+  "text": "You're too old for this, Pa! I'll do it!",
+  "heard": " You're too old for this, Pa! I'll do it!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eys49ew72fj2": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.86,
+  "text": "The water rose fast. Logs began to jam between the rocks.",
+  "heard": " The water rose fast. Logs began to jam between the rocks.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e4tfcjsncrvu": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.840041666666667,
+  "text": "At the same moment, both of them looked up at you on the bank.",
+  "heard": " At the same moment, both of them looked up at you",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eklfwv0qy687": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 4.840041666666667,
+  "text": "…All right. Go, Matsu. I'll keep the rhythm for ya.",
+  "heard": "All right Go Matsu. I'll keep the rhythm for you.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1xdxbirc8cv4": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "matsukichi",
+  "voice": "Sadachbia",
+  "model": "gemini-3.8-live",
+  "seconds": 2.29,
+  "text": "…Ugh — fine, I'm goin'!",
+  "heard": "Oh, fine, I'm going.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1krs0tbowo2q": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 31.09,
+  "text": "But just as Matsukichi tried to jump to the bank, the log under his feet rolled over.",
+  "heard": " But just as Matsukichi tried to jump to the bank, the log under his feet rolled over.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
