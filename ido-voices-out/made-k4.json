@@ -96,5 +96,103 @@
   "heard": " あ、旅の方ですか？ハロー！……あ、「こんにちは」も言えます。こ、こんにちは！",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "v30bvac": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "sokha",
+  "voice": "Despina",
+  "model": "gemini-3.8-live",
+  "seconds": 10.1,
+  "text": "わたし、ソカーです。IT を勉強している、3年生です。来月から、日本語の勉強が始まるんです。",
+  "heard": "わたし、ソカーです。ITを勉強している、3年生です。来月から、日本語の勉強が始まるんです。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1sk4gop": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "sokha",
+  "voice": "Despina",
+  "model": "gemini-3.8-live",
+  "seconds": 4.2,
+  "text": "あっ、また会えましたね！ こ、こんにちは！",
+  "heard": "あ、また会いましたね。こんにちは。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v18sdlg9": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "sokha",
+  "voice": "Despina",
+  "model": "gemini-3.8-live",
+  "seconds": 5.800041666666667,
+  "text": "あ、旅の方ですか？ ……あれ、どこかでお会いしましたっけ。",
+  "heard": "あ、旅の方ですか？……あれ、どこかでお会いしましたっけ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1ozkfbq": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "sokha",
+  "voice": "Despina",
+  "model": "gemini-3.8-live",
+  "seconds": 6.72,
+  "text": "わたし、ソカーです。IT を勉強している、3年生です。",
+  "heard": "わたし、ソカーです。ITを勉強している、3年生です。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vcsyph5": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "sokha",
+  "voice": "Despina",
+  "model": "gemini-3.8-live",
+  "seconds": 4.9500416666666665,
+  "text": "今日は、この大学と、日本の会社が、約束をする日なんです。",
+  "heard": "今日はこの大学と日本の会社が約束をする日なんです。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1ombr7i": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "sokha",
+  "voice": "Despina",
+  "model": "gemini-3.8-live",
+  "seconds": 8.55,
+  "text": "「Japanese IT Pathway」。日本語と、日本の IT を学んで、日本で働く道をひらくプログラム。",
+  "heard": "Japanese IT パスワード 日本 語 と 日本 の IT を 学ん で 日本 で 働く 道 を 開く プログラム 。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v19hi9g8": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.13,
+  "text": "3年生から2年間。1年目は日本語を集中して学んで、2年目は、日本の会社で役に立つ IT を学ぶんだ。",
+  "heard": "3 年 生 から 2 年間 、 1 年 目 は 日本 語 を 集中 し て 学ん で 、 2 年 目 は 日本 の 会社 で 役 に 立つ IT を 学ぶ ん だ 。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vwe9ahr": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "sokha",
+  "voice": "Despina",
+  "model": "gemini-3.8-live",
+  "seconds": 5.32,
+  "text": "わたし、プレイベンの出身なんです。メコン川の向こう側。",
+  "heard": "わたし、プレイベンの出身なんです。メコン川の向こう側。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "メコン川＝めこんがわ"
+  ]
  }
 }
