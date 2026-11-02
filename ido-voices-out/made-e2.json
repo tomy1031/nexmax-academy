@@ -718,5 +718,17 @@
   "heard": " People who ran away from the capital… Maybe he means the Heike — the samurai clan that lost a war about eight hundred years ago and fled into the mountains of Iya.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "euesioa1wd16": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.760041666666667,
+  "text": "The Iya Kobiki-bushi is a folk song that people in Iya still sing today.",
+  "heard": "The ヤーコビキブシ is a folk song that people in ヤー still sing today.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
