@@ -574,5 +574,53 @@
   "heard": " It's a mountain song, but it sounds a little like gagaku from the capital.",
   "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
   "readings": []
+ },
+ "e4enae4os3v3": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.040041666666667,
+  "text": "One last log is stuck on the big rock right in front of him.",
+  "heard": " One last log is stuck on the big rock right in front of him.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e6lyro71prqv": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 2.42,
+  "text": "Now, Matsu! PUSH!",
+  "heard": " Now, Matsu!",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "ee9nj1au8vn9": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.71,
+  "text": "The tobiguchi shoved the log free. The jam broke, and all the logs rushed down the rapids—",
+  "heard": "The Tobigucci shoved the log free, the jam broke, and all the logs rushed down the rapids.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e1jxrv9h84xjv": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.18,
+  "text": "Matsukichi leaped onto the very last log, shot through the white rapids — and waved to you.",
+  "heard": "松吉 、 Leap onto the very last log 、 Shot through the White Rapids 、 And waved to you 。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
  }
 }
