@@ -94,5 +94,101 @@
   "heard": " So I have come to decide. Today. Here.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e9ofk9d1hz53": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.330041666666666,
+  "text": "At Biwa Falls, you told me, “Don't go.”",
+  "heard": " At Biwa Falls, you told me, \"Don't",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1hofipypk3hf": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.78,
+  "text": "…And that night, I did not go. But my doubts have not gone away.",
+  "heard": " And that night, I did not go. But my doubts have not",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1sa0hzzihvtd": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.96,
+  "text": "At Biwa Falls, you said nothing. You just listened to Aya's song.",
+  "heard": " At Biwa Falls, you said nothing. You just listened to Aya's song.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1619w01apzy": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 3.59,
+  "text": "…That silence hit me hardest of all.",
+  "heard": "That silence hit me hardest of all.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "er0k99lq0hqt": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 8.33,
+  "text": "Every time we meet, you have not aged a day. …Are you a tengu (a long-nosed mountain spirit)?",
+  "heard": " Every time we meet, you have not aged a day. …Are you a tengu (a long-nosed mountain spirit)?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e9jyzm12wfb": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 2.7,
+  "text": "N-no! Not a tengu!",
+  "heard": " N-no! Not a tengu!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1tc9vrbuzo1a": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.930041666666667,
+  "text": "…You look at me as if you have known me for a long, long time.",
+  "heard": " You look at me as if you have known me for a long, long time.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e111dkigwvddl": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.170041666666667,
+  "text": "An ivory biwa pick is tied at Kunimori's waist.",
+  "heard": "an ivory biwa pick is tied at Kuni Mori's waist.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
