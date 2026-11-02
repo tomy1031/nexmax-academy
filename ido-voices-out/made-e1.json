@@ -94,5 +94,101 @@
   "heard": " \"Kunimori\" was the earlier name of Taira no Noritsune, the fiercest warrior of the Heike (the Taira clan). That's why some people say, \"Kunimori was Noritsune himself!\"",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "elm2tsrt8r1a": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 0.82,
+  "text": "…You.",
+  "heard": "You",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e5w69b9q4a9e": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 8.66,
+  "text": "The man before you now is only Kunimori, an ordinary man. Tell no one.",
+  "heard": " The man before you now is only Kunimori, an ordinary man. Tell no one.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e13oomzv721y1": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.79,
+  "text": "(whispering) I knew it…! Just like the legend says — Noritsune, who vanished at Dan-no-ura, and Kunimori of Iya are the same person!",
+  "heard": " I knew it…! Just like the legend says — Noritsune, who vanished at Dan-no-ura, and Kunimori of Iya are the same person!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ezeyxyfy8sh1": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 3.600041666666667,
+  "text": "Don't move. …Who are you?",
+  "heard": "Don't move. Who are you?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ed7fjc2tjldp": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.95,
+  "text": "Why do you look at me with such sad eyes? Do you know me?",
+  "heard": " Why do you know me?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e7dglbj1derz": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.4,
+  "text": "(whispering) For Kunimori, today is the first time he's ever met you. But you've already seen his “future,” haven't you?",
+  "heard": "The Kunimori, today is the first time he's ever met you, but you've already seen his future, haven't you?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e325ihz1szpa": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.56,
+  "text": "(whispering) At Biwa Falls, Aya was mourning someone. “A man who vanished into the mountains last autumn”…",
+  "heard": " At Biwa Falls, Aya was mourning someone. “A man who vanished into the mountains last autumn”",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "emsb6xafv9g1": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 3.910041666666667,
+  "text": "…Very well. I am Kunimori.",
+  "heard": "very well I am Kunimori",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
