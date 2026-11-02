@@ -622,5 +622,101 @@
   "heard": "松吉 、 Leap onto the very last log 、 Shot through the White Rapids 、 And waved to you 。",
   "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
   "readings": []
+ },
+ "e116nxn2p7fqn": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "matsukichi",
+  "voice": "Sadachbia",
+  "model": "gemini-3.8-live",
+  "seconds": 3.3,
+  "text": "…I made it. Pa, I made it through!",
+  "heard": "I made it. Pa, I made it through.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ew49yeb1gwfe": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 0.77,
+  "text": "…Yeah.",
+  "heard": "Yeah",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e9tbzx1m5gj0": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 4.250041666666666,
+  "text": "Well done. …Guess you don't need me out there anymore.",
+  "heard": "Well done. Guess you don't need me out there anymore.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1dqz1dgrcvc1": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 7.36,
+  "text": "You followed my rhythm. Good. …That's the way. Nobody runs this river alone.",
+  "heard": " you followed my rhythm. Good. …That's the way. Nobody runs this river alone.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e35kr011af1z": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 2.68,
+  "text": "Kichizo, what was that song?",
+  "heard": "kichizo",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e13j9n4cemwws": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 11.080083333333333,
+  "text": "That's the Iya Kobiki-bushi, the grinding song. Folks sing it while they turn a millstone to grind grain. A mountain work song.",
+  "heard": " That's the Iya Kobiki-bushi, the grinding song. Folks sing it while they turn a millstone to grind grain. A mountain work song.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e8imee41dz07": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 9.82,
+  "text": "My old grandma used to say this tune was left behind long, long ago — by folks who ran away here from the capital.",
+  "heard": " My old grandma used to say this tune was left behind long, long ago — by folks who ran away here from the capital.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e13qohf2kf174": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.23,
+  "text": "(whispering) People who ran away from the capital… Maybe he means the Heike — the samurai clan that lost a war about 800 years ago and fled into the mountains of Iya.",
+  "heard": " People who ran away from the capital… Maybe he means the Heike — the samurai clan that lost a war about eight hundred years ago and fled into the mountains of Iya.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
