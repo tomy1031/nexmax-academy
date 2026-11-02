@@ -488,5 +488,101 @@
   "heard": "でも、行きます。お母さんに、見せたいんです。",
   "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
   "readings": []
+ },
+ "vs9uw4e": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.040041666666666,
+  "text": "……四百年前、ひとりの侍が、お父さんとお母さんのために、日本から海を渡ってきた。",
+  "heard": "400 年 前 1人 の 侍 が お父さん と お母さん の ため に 日本 から 海 を 渡っ て き た 。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1mfftqb": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.1,
+  "text": "今度は、カンボジアの若い人たちが、海を渡って日本へ行くんだね。",
+  "heard": "今度はカンボジアの若い人たちが海を渡って日本へ行くんだね。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v9iugih": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 2.97,
+  "text": "……海を渡るのは、勇気がいるね。",
+  "heard": "海 を 渡る の は 勇気 が いる ね 。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vsgp010": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.26,
+  "text": "でも、橋がそうだったみたいに、人が渡ると、道ができるんだ。",
+  "heard": " でも、橋がそうだったみたいに、人が渡ると、道ができるんだ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1npwxm0": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.07,
+  "text": "（小声）「家族が、元気でいられますように」。一房さんと同じ、あなたの願い。……ソカーさんも、きっと同じだね。",
+  "heard": "家族 が 元気 で いら れ ます よう に 人 ふさ さん と 同じ あなた の 願い ソカ さん も きっと 同じ だ ね 。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vi9kg8i": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.95,
+  "text": "（小声）「会えなくなった人に、もう一度会いたい」。……一房さんがお母さんを思ったのと、同じ願いだね。その気持ちは、なくさなくていいんだよ。",
+  "heard": "会えなくなった人に、もう一度会いたい。一房さんがお母さんを思ったのと、同じ願いだね。その気持ちは、なくさなくていいんだよ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1wz3knw": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.66,
+  "text": "（小声）「まだ見たことのない明日が、いい日でありますように」。……あなたの願い、今日、ちょっとかなったかもね。",
+  "heard": "まだ見たことのない明日がいい日でありますように。あなたの願い、今日ちょっと叶ったかもね。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v16qeoog": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.310041666666667,
+  "text": "夕方。大学を出ると、空が、オレンジ色に染まっていた。",
+  "heard": "大学を出ると、空が、オレンジ色に染まっていた。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
