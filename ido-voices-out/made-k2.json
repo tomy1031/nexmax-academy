@@ -190,5 +190,17 @@
   "heard": "古い のに 新しい の 。 変 な の 。",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "v191hxxh": {
+  "episode": "kh-independence",
+  "lang": "ja",
+  "speaker": "dara",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 3.3000416666666665,
+  "text": "……ふうん。父ちゃんみたいなこと言う。",
+  "heard": "ふうん。父ちゃんみたいなこと言う。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
