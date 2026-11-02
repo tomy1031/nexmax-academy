@@ -192,5 +192,107 @@
   "heard": "1960 年代 わし は 20 そこそこ で ロニアット と いう 木金 を 叩い て い まし た 。",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "v1wl7q51": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "sok",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 6.480041666666667,
+  "text": "向こう岸の村で結婚式があると、楽器をかついで、この橋を渡ってね。",
+  "heard": "向こう岸の村で結婚式があると、楽器をかついで、この橋を渡ってね。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vqbiohn": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "sok",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 7.88,
+  "text": "町には、独立記念塔が建ったばかりでした。どこかのラジオから、いつも歌が聞こえていた。",
+  "heard": "町には、どくりつきねんとうが建ったばかりでした。どこかのラジオから、いつも歌が聞こえていた。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "独立記念塔＝どくりつきねんとう"
+  ]
+ },
+ "v118ote4": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.71,
+  "text": "（小声）独立記念塔……！ ダラーくんのお父さんたちが建てた、あの蓮の塔だ。",
+  "heard": "独立 記念 塔 だ ラア 君 の お父さん たち が 建て た あの 連 の 塔 だ 。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "独立記念塔＝どくりつきねんとう"
+  ]
+ },
+ "vnzg4vw": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 12.640041666666667,
+  "text": "1953年に独立したあと、1958年から独立記念塔が建てられたんだ。そのころのプノンペンは、「アジアの真珠」と呼ばれていたんだって。",
+  "heard": "独立記念塔は1953年に独立したあと、1958年から独立記念塔が建てられたんだ。そのころのプノンペンはアジアの真珠と呼ばれていたんだって。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "独立記念塔＝どくりつきねんとう"
+  ]
+ },
+ "v1xvttaj": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "sok",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 8.16,
+  "text": "1972年。戦が激しくなって、橋の一部が爆破されて、落ちました。",
+  "heard": "1972年。戦が激しくなって、橋の一部が爆破されて、落ちました。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v18tt71y": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "sok",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 8.93,
+  "text": "それから……1975年の4月。町の人は、みんな、町の外へ出されました。",
+  "heard": "それから……1975年の4月。町の人は、みんな、町の外へ出されました。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1oiquvh": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.77,
+  "text": "ソックおじいさんは、しばらく黙って、川を見ていた。ソピアが、おじいさんの手をにぎった。",
+  "heard": "ソックおじさんはしばらく黙って川を見ていた。 ソピアがおじさんの手を握った。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1256b8s": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.6,
+  "text": "1975年から1979年まで、この国では、とてもたくさんの人が命を落としたんだ。",
+  "heard": " 1975年から 1979年まで、この国では、とてもたくさんの人が命を落としたんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
