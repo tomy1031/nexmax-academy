@@ -286,5 +286,101 @@
   "heard": " The great mass of logs caught the current and began to move.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "evpoqbx1hoxl": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 11.44,
+  "text": "On both banks, cliffs striped white and gray tower high. Between them, Kichizo and Matsukichi leap from one bouncing log to the next.",
+  "heard": " On both banks, cliffs striped white and gray tower high. Between them, Kichizo and Matsukichi leap from one bouncing log to the next.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1n5otfe1mlop": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 10.03,
+  "text": "This is Oboke! They say the name means “big steps are dangerous”! Up ahead is Koboke — “even small steps are dangerous”!",
+  "heard": " This is Oboke! They say the name means “big steps are dangerous”! Up ahead is Koboke — “even small steps are dangerous”!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1jkftvsvwwft": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.9500416666666665,
+  "text": "Another idea is that “hoki” is an old word for “cliff,” and that's where the names come from.",
+  "heard": " Another idea is that \"hoki\" is an old word for \"cliff,\" and that's where the names come",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eln2wb71mews": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 20.15,
+  "text": "These rocks began as sand and mud on the sea floor, back when dinosaurs lived. Deep underground, they were pressed into hard stone. Then, over a very, very long time, the Yoshino River carved them. They show how the islands of Japan were made. That's why they're a National Natural Monument!",
+  "heard": " These rocks began as sand and mud on the sea floor, back when dinosaurs lived. Deep underground, they were pressed into hard stone. Then, over a very, very long time, the Yoshino River carved them. They show how the islands of Japan were made. That's why they're a National Natural Monument!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e8e860hd19vv": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 6.17,
+  "text": "The time of the dinosaurs! Then my forty years ain't more than a blink!",
+  "heard": " The time of the dinosaurs! Then my forty years ain't more than a blink!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1mjj79kufuto": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.16,
+  "text": "Suddenly, the sky went dark.",
+  "heard": " Suddenly, the sky went dark.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e14ajwyw14rao": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 3.87,
+  "text": "…It's rained upstream. The water's comin'!",
+  "heard": " It's rained upstream. The water's comin'!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e2pl2qt1sa5b": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 5.86,
+  "text": "Matsu, get to the bank! Let the logs go! Get out before Koboke!",
+  "heard": "松、get to the bank。 let the logs go。 get out before Koboke。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
