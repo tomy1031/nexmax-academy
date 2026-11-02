@@ -730,5 +730,101 @@
   "heard": "The ヤーコビキブシ is a folk song that people in ヤー still sing today.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1t7cjuz12osz": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 10.12,
+  "text": "Y'see, a river carries trees, and people, and songs too. From up high to down low. From long ago to now.",
+  "heard": " Y'see, a river carries trees, and people, and songs too. From up high to down low. From long ago to now.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "el7fh9z68r6v": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 17.23,
+  "text": "Back on the riverbank, Kichizo pressed his well-worn tobiguchi into Matsukichi's hands.",
+  "heard": " Back on the riverbank, Kichizo pressed his well-worn tobiguchi into Matsukichi's hands.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e4gw5ci1f5av": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 5.47,
+  "text": "From today, you're the boss. …And don't forget the song.",
+  "heard": " From today, you're the boss. …And don't forget the song.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1f1d67u1gwfe": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "matsukichi",
+  "voice": "Sadachbia",
+  "model": "gemini-3.8-live",
+  "seconds": 0.8000416666666667,
+  "text": "…Yeah.",
+  "heard": "Yeah.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eqkwaphuo5t0": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 11.28,
+  "text": "Down in the calm pool below, the logs were being tied into rafts. On the bank, a photographer stood ready with a big box camera.",
+  "heard": " Down in the calm pool below, the logs were being tied into rafts. On the bank, a photographer stood ready with a big box",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1leher6nk8rz": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 8.66,
+  "text": "Look, he says it's for a picture postcard! A keepsake of my last run. Go on, give a wave!",
+  "heard": "Look, he says it's for a picture postcard. A keepsake of my last run. Go on, give a wave.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e111cjic143iw": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.02,
+  "text": "Summer 1968. In the village of Yamashiro, it was the night of the yearly summer festival.",
+  "heard": "Summer1968.Inthe villageof Yamashiro,it wasthe night of theyearly summerfestival.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eulu6jr19rb7": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.52,
+  "text": "Under the paper lanterns, a kamishibai man (a storyteller with a paper picture show) was clacking his wooden clappers.",
+  "heard": " Under the paper lanterns, a kamishibai man was clacking his wooden clappers.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
