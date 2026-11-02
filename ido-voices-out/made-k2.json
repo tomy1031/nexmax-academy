@@ -202,5 +202,17 @@
   "heard": "ふうん。父ちゃんみたいなこと言う。",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "v1q5rfob": {
+  "episode": "kh-independence",
+  "lang": "ja",
+  "speaker": "dara",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 7.120041666666666,
+  "text": "ずっと北のほうにある、すっごく大きな石の寺院なんだって。ぼくも、いつか見に行くんだ！",
+  "heard": "ずっと北のほうにある、すっごく大きな石の寺院なんだって。ぼくも、いつか見に行",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
