@@ -382,5 +382,101 @@
   "heard": "I know at the Battle of Yushima, he never hid from my arrows.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1pgyrwdrxir5": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.62,
+  "text": "…And now a man like that is hunted by his own brother. That is what war does.",
+  "heard": " And now a man like that is hunted by his own brother. That is what war",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ezxd7ml175ly": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 3.8600416666666666,
+  "text": "…I see. So even the winner suffers.",
+  "heard": " So even the winner suffers.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1ejtpuy2gw2j": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 3.32,
+  "text": "Then no one truly won this war.",
+  "heard": " Then no one truly won this war.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1cgiz3a1amkj": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.9600416666666667,
+  "text": "The clouds in the east began to burn gold.",
+  "heard": " The clouds in the east began to burn gold.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1vhat2dui837": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.22,
+  "text": "The sun rises. The sea of clouds turns into a sea of light.",
+  "heard": " The sea of clouds turns into a sea of light.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e167ne4g1wqjg": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 8.16,
+  "text": "At Dan-no-ura, I jumped into the sea. I held two Genji warriors in my arms. I meant to die.",
+  "heard": " At Dan-no-ura, I jumped into the sea. I held two Genji warriors in my arms. I meant to die.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e4l4k0g11tv4": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.27,
+  "text": "But the waves spat me back out. …Ever since, I have wondered why I was left alive.",
+  "heard": " But the waves spat me back out. …Ever since, I have wondered why I was left",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e15gx1191vtxc": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 3.2,
+  "text": "Was it to fight? To get revenge?",
+  "heard": "Was it to fight? To get revenge?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
