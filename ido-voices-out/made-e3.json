@@ -574,5 +574,89 @@
   "heard": " Side by side with Kunimori, you laid the sword in a crack in the rock. It was cold, and heavier",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "ewlok7djou7p": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.4500416666666665,
+  "text": "Alone, Kunimori laid the sword in a crack in the rock.",
+  "heard": "Alone, Kunimori laid the sword in a crack in the rock.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ede5taduiuw7": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 7.04,
+  "text": "Sleep now, sword of the Heike. You never have to cut anyone again.",
+  "heard": "sleep now, sword of the hake, you never have to cut anyone again.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "espsv5zrrjlh": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.920041666666667,
+  "text": "For a long time, Kunimori stood with his head bowed.",
+  "heard": "For a long time, Kunimori stood with his head bowed.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1117qy7hkyhu": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 0.9600416666666667,
+  "text": "…Phew.",
+  "heard": "Pew",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e11wmi6it14hj": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.320041666666667,
+  "text": "Now I am just Kunimori. Nothing more.",
+  "heard": "Now I am just Kunimori. Nothing",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1vqtxoe1amlr": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.37,
+  "text": "Now then. I must go and give back the pick. …What shall I say to Aya?",
+  "heard": "Now then, I must go and give back the pick. What shall I say to Ia?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eb8jvzd20g16": {
+  "episode": "miyoshi-tsurugi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 12.61,
+  "text": "There are people waiting for me in the village. …I must go home.",
+  "heard": " There are people waiting for me in the village. …I must go home.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
