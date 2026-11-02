@@ -1,0 +1,98 @@
+{
+ "ecysdmc1c9d5": {
+  "episode": "miyoshi-prologue",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.76,
+  "text": "You held your phone up to the QR code on the sign. And in that instant—",
+  "heard": " You held your phone up to the QR code on the sign. And in that instant",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "eyouud7lj5a3": {
+  "episode": "miyoshi-prologue",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.2600416666666665,
+  "text": "Every sound in the world disappeared.",
+  "heard": "Every sound in the world disappeared.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1mydmo5lrhja": {
+  "episode": "miyoshi-prologue",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.17,
+  "text": "Hi, nice to meet you! I'm Nexmax, your time-travel navigator!",
+  "heard": " Hi, nice to meet you! I'm Nexmax, your time-travel navigator!",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e12y9ppr57pd1": {
+  "episode": "miyoshi-prologue",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.18,
+  "text": "The QR codes in this town are “Doors of Time.” Scan one, and you'll slip back into that place's past!",
+  "heard": " The QR codes in this town are “Doors of Time.” Scan one, and you'll slip back into that place's past!",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1nxxdhg1nu5r": {
+  "episode": "miyoshi-prologue",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.16,
+  "text": "Don't worry. Over there, I'll stay right by your side and show you around. Ready? Let's go!",
+  "heard": "Don't worry, over there, I'll stay right by your side and show you around. Ready? Let's go.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e8w0dw2f22u5": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.29,
+  "text": "Early summer 1923. On the banks of the Yoshino River, just upstream from Oboke.",
+  "heard": " Early summer 1923. On the banks of the Yoshino River, just upstream",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1bvkmyp1ik1t": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 15.790041666666667,
+  "text": "Logs cut in the mountains of Tosa (today's Kochi) and Yamashiro are piled all over the riverbank. The river itself will carry them downstream.",
+  "heard": " Logs cut in the mountains of Tosa (today's Kochi) and Yamashiro are piled all over the riverbank. The river itself will carry them downstream.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "egsp5r5kosqu": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 5.17,
+  "text": "Hey, you there! Stand around daydreamin' like that, and a log'll flatten ya!",
+  "heard": " Stand around daydreamin' like that, and a log'll flatten ya!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ }
+}
