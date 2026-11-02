@@ -286,5 +286,101 @@
   "heard": " A monk's tale, is it? …That story is far better. A bridge made to help people",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "eqwdhcxuirdf": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "yaheiji",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 2.640041666666667,
+  "text": "My lord! My lo-o-ord!",
+  "heard": "My Lord, My Lord,",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e19avgs31siuy": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.500041666666666,
+  "text": "A white-haired old retainer came running, gasping for breath.",
+  "heard": "a white-haired old retainer came running, gasping for breath.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e12hltl6lxayt": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "yaheiji",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 7.880041666666667,
+  "text": "White banners in the valley below! It's the Genji — about thirty men hunting us! They will be here by sundown!",
+  "heard": " White banners in the valley below! It's the Genji — about thirty men hunting us! They will be here by sundown!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1lym7hduul7f": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 3.02,
+  "text": "…So, they have come.",
+  "heard": " So, they have come.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eqjx23fvphpp": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.91,
+  "text": "Everyone, to the young Emperor's side! Keep weaving those vines — finish the bridge, fast!",
+  "heard": "Everyone to the young emperor side, keep weaving those vines, finish the bridge fast.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ebxsc78a6862": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "yaheiji",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 2.990083333333333,
+  "text": "My lord… there is more.",
+  "heard": " My lord… there",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e6iwjlq1g4sq": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "yaheiji",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 12.33,
+  "text": "Kotaro, a little boy from the village, wanted to bring chestnuts to the Emperor… He went up the mountain on the far side. He has not come back yet.",
+  "heard": " Kotaro, a little boy from the village, wanted to bring chestnuts to the Emperor… He went up the mountain on the far side. He has not come back yet.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e8qkoefv7m92": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 1.53,
+  "text": "…What did you say?",
+  "heard": "What did you say?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
