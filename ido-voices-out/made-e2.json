@@ -190,5 +190,101 @@
   "heard": " From tomorrow, he's the boss. …Though he's still a bit reckless.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1mye8oiyl6jw": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.44,
+  "text": "Do you tie the logs into a raft and ride it down?",
+  "heard": " Do you tie the logs into a raft and ride it down?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1u04e1n15ty3": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 11.05,
+  "text": "Don't be silly! No raft could make it through the rapids of Oboke and Koboke. It'd smash on the rocks and fall to pieces!",
+  "heard": " No raft could make it through the rapids of Oboke and Koboke. It'd smash on the rocks and fall to pieces!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e7siikv1v8m0": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 11.67,
+  "text": "We send the logs down loose. We ride on 'em and chase 'em with just a tobiguchi. We tie 'em into rafts later, down in the calm pool past the rapids.",
+  "heard": " We ride on 'em and chase 'em with just a tobiguchi. We tie 'em into rafts later, down in the calm pool past the rapids.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e18ww4c47j1zt": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.15,
+  "text": "So they float the logs down one by one! In steep valleys like this, that's how people used to move timber.",
+  "heard": " So they float the logs down one by one! In steep valleys like this, that's how people used to move timber.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1bpesliy4x5p": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 5.74,
+  "text": "Good. Stand on the rocks just before Koboke. You'll see everything from there.",
+  "heard": " Stand on the rocks just before Koboke. You'll see everything from there.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eiof5581g3nx": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 7.24,
+  "text": "Ha! A beginner'd be at the bottom of the river before you could count to three. Watch from the bank.",
+  "heard": " Ha! A beginner'd be at the bottom of the river before you could count to three. Watch from the bank.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e3xfufk11rqk": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 2.22,
+  "text": "(whispering) …I think so too.",
+  "heard": "I think so, too.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ednwtez1kgox": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.170041666666666,
+  "text": "The great mass of logs caught the current and began to move.",
+  "heard": " The great mass of logs caught the current and began to move.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
