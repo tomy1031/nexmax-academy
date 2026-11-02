@@ -406,5 +406,17 @@
   "heard": "elder brother I I am Yoshitsune",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "eaqiivp1jinv": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.84,
+  "text": "The words would not come. All the words he had practiced so hard last night — not a single one came out.",
+  "heard": " The words would not come. All the words he had practiced so hard last night — not a single one came out.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
