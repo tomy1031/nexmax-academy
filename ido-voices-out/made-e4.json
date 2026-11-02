@@ -190,5 +190,17 @@
   "heard": "My Lord, please sit down for a little while.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1uq21k91vy0w": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.57,
+  "text": "A sturdy warrior set a folding camp stool beside Yoshitsune.",
+  "heard": "a sturdy warrior set a folding camp stool beside Yoshitsune",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
