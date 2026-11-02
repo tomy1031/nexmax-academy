@@ -584,5 +584,101 @@
   "heard": "大学を出ると、空が、オレンジ色に染まっていた。",
   "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
   "readings": []
+ },
+ "vor01rm": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.04,
+  "text": "ねえ。プノンペンの旅を、ふりかえってみて。",
+  "heard": "ねえ。プノンペンの旅を、ふりかえってみて。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v18vo908": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.64,
+  "text": "ペンおばあさんは言ったよね。「一かごずつ。それが、いつか丘になる」。",
+  "heard": " ペンおばあさんは言ったよね。「一かごずつ、それが、いつか丘になる」。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1g9cuj": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.12,
+  "text": "ピセットくんは言った。「王さまだけじゃ、柱は一本も立たない」。",
+  "heard": "ピセットくんは言った。「王さまだけじゃ、柱は一本も立たない」。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1vdjdwy": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.920041666666667,
+  "text": "ダラーくんのお父さんは言った。「おまえが大人になっても、この塔は、ここに立ってる」。",
+  "heard": "ダラーくんのお父さんは言った。「おまえが大人になっても、この塔は、ここに立ってる」。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1fjf8uv": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.1,
+  "text": "ネアリー先生は言った。「わたしの体から、あなたたちの体へ」。",
+  "heard": " ネアリー先生は言った。「わたしの体から、あなたたちの体へ」。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vzqdr82": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.78,
+  "text": "ソックおじいさんは言った。「渡れる者は、渡る。覚えている者は、教える」。",
+  "heard": " ソックおじいさんは言った。「渡れる者は、渡る。覚えている者は、教える」。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v18fqbee": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.64,
+  "text": "ヴィチェットくんは言った。「だれかが、ひと晩も待たなくてすむような、何か」。",
+  "heard": "ヴィチェットくんは言った。「だれかが、ひと晩も待たなくてすむような、何か」。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v13y30bg": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.54,
+  "text": "でもね。それで、ぜんぶがよくなったわけじゃない。",
+  "heard": "でも ね それ で 全部 が よく なっ た わけ じゃ ない 。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
