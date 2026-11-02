@@ -307,5 +307,17 @@
   "heard": "あなたは、村の男たちと並んで縄をつかんだ。ぬれた縄が、手のひらにくいこむ。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v1v0fu0q": {
+  "episode": "kh-watphnom",
+  "lang": "ja",
+  "speaker": "penh",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 5.9,
+  "text": "そうそう、腰を落として。ひとりで引くんじゃないよ。みんなで、いっしょに。",
+  "heard": "そうそう 、 腰 を 落とし て 1人 で 引く ん じゃ ない よ 。 みんな で 一緒 に 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
