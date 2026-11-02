@@ -94,5 +94,101 @@
   "heard": " Stand around daydreamin' like that, and a log'll flatten ya!",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1kq02nvwubor": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 3.92,
+  "text": "…Huh. Just a traveler with a karakuri doll (a wind-up puppet).",
+  "heard": "Just a traveler with a Karakuri doll.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ev83a4z1hzs1": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.59,
+  "text": "I'm not a wind-up doll! I'm Nexmax!",
+  "heard": " I'm not a wind-up doll! I'm Nexmax!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1dqav4f1vcxg": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 2.7800416666666665,
+  "text": "Well, well! We meet again!",
+  "heard": "well well we meet again",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "egfsvfc1mq2x": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 6.42,
+  "text": "I'm Kichizo. I've been floatin' logs down this river for forty years.",
+  "heard": " I've been floatin' logs down this river for forty years.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1b8xcgv179np": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "matsukichi",
+  "voice": "Sadachbia",
+  "model": "gemini-3.8-live",
+  "seconds": 2.71,
+  "text": "Pa! I've got the tobiguchi (a pole with an iron hook) over here!",
+  "heard": " Pa! I've got the tobiguchi over here!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ed00xpw1b7v2": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.92,
+  "text": "A lively young man hopped up onto a log.",
+  "heard": " A lively young man hopped up onto a log.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eg2gok78ttyn": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 7.9,
+  "text": "That's my boy, Matsukichi. …Today's my last day on the river. This is my final run.",
+  "heard": " That's my boy, Matsukichi. …Today's my last day on the river. This is my final run.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e3bq2gtze53m": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 5.97,
+  "text": "From tomorrow, he's the boss. …Though he's still a bit reckless.",
+  "heard": " From tomorrow, he's the boss. …Though he's still a bit reckless.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
