@@ -190,5 +190,101 @@
   "heard": "very well I am Kunimori",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1inz2vg1elki": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.590041666666667,
+  "text": "Look. We weave this bridge from kazura vines.",
+  "heard": " Look. We weave this bridge from kazura vines.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1he3x8q2vp41": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.270041666666667,
+  "text": "That way, a single axe can cut it down in a moment.",
+  "heard": "that way, a single axe can cut it down in a moment.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e14s38hv18u4z": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 7.81,
+  "text": "It is for the day our enemies, the Genji (the Minamoto clan), chase us into this valley.",
+  "heard": " It is for the day our enemies, the Genji (the Minamoto clan), chase us into this valley.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1dq2kso1bhbi": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.68,
+  "text": "Drop the bridge, and no one can cross from the other side. Then we can keep the Emperor safe.",
+  "heard": " Drop the bridge, and no one can cross from the other side. Then we can keep the Emperor safe.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e46smdlqv26b": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.02,
+  "text": "Yes. A bridge for crossing — and we weave it so it can be cut.",
+  "heard": "Yes, a bridge for crossing, and we weave it so it can be cut.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eu46cp4k0m4x": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.97,
+  "text": "…A strange thing, is it not? But it is all we have left.",
+  "heard": " A strange thing, is it not? But it is all we have left.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e185ojsxrnume": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 12.47,
+  "text": "There's another story about how the vine bridge (Kazurabashi) began. They say Kobo Daishi, a famous Buddhist monk, built it for villagers who had no way to cross the valley.",
+  "heard": " There's another story about how the vine bridge, Kazurabashi, began. They say Kobo Daishi, a famous Buddhist monk, built it for villagers who had no way",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eg5levt1eqqs": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 10.77,
+  "text": "A monk's tale, is it? …That story is far better. A bridge made to help people across.",
+  "heard": " A monk's tale, is it? …That story is far better. A bridge made to help people",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
