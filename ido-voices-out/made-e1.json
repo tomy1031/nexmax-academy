@@ -826,5 +826,41 @@
   "heard": " But as he said it, Kunimori's own voice was",
   "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
   "readings": []
+ },
+ "ey16a221j6s2": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.36,
+  "text": "(whispering) …Konaki-jiji told us. He said he once drank sake under the moon with “an old man who was amazingly good at getting lost.”",
+  "heard": "Kona Kichiji told us. He said he once drank sake under the moon with an old man who was amazingly good at getting lost.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "ezor4ekte6wp": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 1.8900416666666666,
+  "text": "Morning came.",
+  "heard": "Morning came.",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "e1jgfns91mzvq": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.120041666666666,
+  "text": "Above the valley, only the cut vines swayed in the wind.",
+  "heard": " Above the valley, only the cut vines swayed in the wind.",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
  }
 }
