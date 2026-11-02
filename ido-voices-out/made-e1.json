@@ -622,5 +622,101 @@
   "heard": " Carrying Kotaro, the old retainer made it back to the middle of the bridge and pushed the boy into your arms.",
   "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
   "readings": []
+ },
+ "e44hnwvemj9o": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "yaheiji",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 2.890041666666667,
+  "text": "Traveler, take this child!",
+  "heard": "Traveler, take this child,",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "ey484n025ikx": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.04,
+  "text": "Then he spun around — and went back, all alone, toward the bank where the enemy was.",
+  "heard": " Then he spun around — and went back, all alone, toward the bank where the enemy was.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e188by4mlbrhm": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "yaheiji",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 5.87,
+  "text": "Men of the Genji! The Emperor is over here! He has run off up this ridge!",
+  "heard": " Men of the Genji! The Emperor is over here! He has run off up this ridge!",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "ehwk4f796rug": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 12.320083333333333,
+  "text": "Holding a torch high, the old man ran up the dark ridge path, away from the bridge. The enemy's torches went chasing after him.",
+  "heard": " Holding a torch high, the old man ran up the dark ridge path, away from the bridge. The enemy's torches went chasing after him.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "ef7qidqscyn5": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 3.680041666666667,
+  "text": "Yaheiji…! Come back, Yaheiji!",
+  "heard": " Come back, Yaheiji!",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e1xvtbd31ckm5": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "yaheiji",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 6.13,
+  "text": "My lord! You know this old man has always been a master at getting lost!",
+  "heard": " My lord! You know this old man has always been a master at getting lost!",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e1gemb711aq49": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "yaheiji",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 7.84,
+  "text": "I will keep them lost in these mountains for three days at least! …I leave the Emperor to you—",
+  "heard": " I will keep them lost in these mountains for three days at least! …I leave the Emperor to you.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e6nwhiv1s40g": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.790041666666667,
+  "text": "The torches drifted deeper into the mountains. But some of the enemy were still heading for the bridge.",
+  "heard": "Dodges drifted deeper into the mountains, but some of the enemy were still heading for the bridge.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
  }
 }
