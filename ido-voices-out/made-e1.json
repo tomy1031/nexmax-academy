@@ -718,5 +718,17 @@
   "heard": "Dodges drifted deeper into the mountains, but some of the enemy were still heading for the bridge.",
   "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
   "readings": []
+ },
+ "e1fdys5d9x4h4": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 2.7800416666666665,
+  "text": "Kunimori raised his axe.",
+  "heard": "Kunimori raised his axe.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
  }
 }
