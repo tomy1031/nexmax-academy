@@ -478,5 +478,101 @@
   "heard": " But just as Matsukichi tried to jump to the bank, the log under his feet rolled over.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e156pnie4is8o": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 4.06,
+  "text": "Oh no! …Matsu, follow my rhythm!",
+  "heard": " …Matsu, follow my rhythm!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e10nqbw514k3c": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 12.44,
+  "text": "The jammed logs creaked and bucked in the white, swirling water. Matsukichi stood right on top of them.",
+  "heard": " The jammed logs creaked and bucked in the white, swirling water. Matsukichi stood right on top of them.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e16umdsq15nqe": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.170041666666666,
+  "text": "And then — Kichizo began to sing, from deep in his belly.",
+  "heard": " And then — Kichizo began to sing, from deep in his belly.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e1e40y7d1c675": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 4.49,
+  "text": "♪ The vine bridge of Iya, like a spider's web—",
+  "heard": " The vine bridge of Iya, like a spider's web",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e1707y5j10foa": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 5.14,
+  "text": "♪ It sways and sways, though no wind blows—",
+  "heard": " It sways and sways, though no wind blows",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "eiki4qefv2jg": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.66,
+  "text": "In time with the song, Matsukichi's tobiguchi frees the jammed logs, one by one. One push, then another.",
+  "heard": " In time with the song, Matsukichi's tobiguchi frees the jammed logs, one by one. One push, then another.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e60z9su16fo7": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.86,
+  "text": "(whispering) That tune…! It's the same spring song from the capital (Kyoto) that Aya played on her biwa!",
+  "heard": " It's the same spring song from the capital, Kyoto, that Aya played on her biwa!",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e22i5pw1dl2z": {
+  "episode": "miyoshi-oboke",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.15,
+  "text": "(whispering) What a strange tune… It's a mountain song, but it sounds a little like gagaku (old court music) from the capital.",
+  "heard": " It's a mountain song, but it sounds a little like gagaku from the capital.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
  }
 }
