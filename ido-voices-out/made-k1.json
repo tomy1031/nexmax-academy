@@ -96,5 +96,106 @@
   "heard": "ここはチャトモック クメール 語 で 4 つ の 顔 って いう 意味 。",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "v1ys00ck": {
+  "episode": "kh-prologue",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.52,
+  "text": "メコン川と、トンレサップ川と、バサック川が出会って、流れが四つに分かれて見えるんだ。",
+  "heard": "メコン川と、トンレサップ川と、バサック川が出会って、流れが四つに分かれて見えるんだ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "メコン川＝めこんがわ",
+   "トンレサップ川＝とんれさっぷがわ"
+  ]
+ },
+ "vsm8o45": {
+  "episode": "kh-prologue",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.39,
+  "text": "プノンペンっていう名前は「ペンの丘」っていう意味。ペンっていうのは、昔の、あるおばあさんの名前なんだよ。",
+  "heard": "プノンペンっていう名前は「ペンの丘」っていう意味。ペンっていうのは、昔の、あるおばあさんの名前なんだよ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vt4kurt": {
+  "episode": "kh-prologue",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 13.58,
+  "text": "この町には、いくつもの時代が重なっている。言い伝えの丘。王さまの都。独立の日。それから、長くて苦しい時代と、そのあとの立て直し。",
+  "heard": "この町には、いくつもの時代が重なっている。言い伝えの丘。王さまのみやこ。独立の日。それから、長くて苦しい時代と、そのあとの立て直し。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "都＝みやこ"
+  ]
+ },
+ "v1bno25w": {
+  "episode": "kh-prologue",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.78,
+  "text": "世界じゅうから来た人と、この町の人が出会って、いくつもの橋をかけてきた町でもあるんだ。",
+  "heard": "世界じゅうから来た人と、この町の人が出会って、いくつもの橋をかけてきた町でもあるんだ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "viy4a5x": {
+  "episode": "kh-prologue",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.48,
+  "text": "町の5つの「時の扉」でスタンプを集めると、一枚の絵ができあがるよ。さあ、行こう！",
+  "heard": "街 の 5 つ の 時 の 扉 で スタンプ を 集める と 、 1 枚 の 絵 が でき上がる よ 。 さあ 、 行こう 。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1ylo3sv": {
+  "episode": "kh-watphnom",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.640125,
+  "text": "いまから六百五十年ほど前。——ここからは、言い伝えの話。",
+  "heard": "いまから六百五十年ほど前。——ここからは、言い伝えの話。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1srqhxh": {
+  "episode": "kh-watphnom",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.300041666666667,
+  "text": "雨の季節の終わり。川は大きくふくらみ、高床の家の足もとまで、茶色い水が来ていた。",
+  "heard": "雨 の 季節 の 終わり 川 は 大きく 膨らみ 高だこ の 家 の 足元 まで 茶色い 水 が 来 て い た 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v117ik2j": {
+  "episode": "kh-watphnom",
+  "lang": "ja",
+  "speaker": "村の人",
+  "voice": "Rasalgethi",
+  "model": "gemini-3.8-live",
+  "seconds": 3.01,
+  "text": "おーい！ 何か流れてくるぞ！",
+  "heard": "おーい！何か流れてくるぞ！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
