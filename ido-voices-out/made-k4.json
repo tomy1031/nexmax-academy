@@ -194,5 +194,107 @@
   "readings": [
    "メコン川＝めこんがわ"
   ]
+ },
+ "v4yqlrg": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "sokha",
+  "voice": "Despina",
+  "model": "gemini-3.8-live",
+  "seconds": 9.04,
+  "text": "前は、渡し船で何時間もかかったけど、つばさ橋ができてから、大学に来るのも、家に帰るのも、ずっと楽になりました。",
+  "heard": "前は私舟で何時間もかかったけど、翼橋ができてから大学に来るのも家に帰るのもずっと楽になりました。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "渡し船＝わたしぶね"
+  ]
+ },
+ "v1lnxphd": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8,
+  "text": "（小声）つばさ橋……！ ヴィチェットくんの渡し場の、あの橋だ。",
+  "heard": " ヴィチェットくんの わたしぶねの、 あの橋だ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "渡し場＝わたしぶね"
+  ]
+ },
+ "v1k8x6nh": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "sokha",
+  "voice": "Despina",
+  "model": "gemini-3.8-live",
+  "seconds": 8.15,
+  "text": "前は、渡し船で何時間もかかったけど、日本の協力でできた橋のおかげで、ずっと楽になりました。",
+  "heard": " 前は、渡し船で何時間もかかったけど、日本の協力でできた橋のおかげで、ずっと楽になりました。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "渡し船＝わたしぶね"
+  ]
+ },
+ "vew7eof": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "sokha",
+  "voice": "Despina",
+  "model": "gemini-3.8-live",
+  "seconds": 7.18,
+  "text": "お母さんは、わたしに「勉強しなさい」ばっかり言うんです。お母さんは、子どものころ、あまり勉強できなかったから。",
+  "heard": "お母さんは、わたしに「勉強しなさい」ばっかり言うんです。お母さんは、子どものころ、あまり勉強できなかったから。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1m4gfvx": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "sokha",
+  "voice": "Despina",
+  "model": "gemini-3.8-live",
+  "seconds": 3.14,
+  "text": "だから、わたしが、ちゃんと勉強するんです。",
+  "heard": "だから 私 が ちゃんと 勉強 する ん です 。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1748air": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.240041666666666,
+  "text": "式が始まった。カンボジアの大臣、日本の大使、日本カンボジア協会の会長も、前の席に並んでいる。",
+  "heard": "\nカンボジアの大臣、日本の大使、日本カンボジア協会の会長も、前の席に並んでいる。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "v10be7gp": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.55,
+  "text": "大学の学長と、日本の会社「ネクストメイク」の社長、松井亮（まつい あきら）さんが、席についた。",
+  "heard": "大学の学長と、日本の会社「ネクストメイク」の社長、松井亮さんが、席についた。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "v1vm35m5": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 2.39,
+  "text": "学長は、こう述べた。",
+  "heard": "学長 は こう 述べ た 。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
  }
 }
