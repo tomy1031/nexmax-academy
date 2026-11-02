@@ -730,5 +730,101 @@
   "heard": "Kunimori raised his axe.",
   "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
   "readings": []
+ },
+ "e5up7ft1irx0": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 2.28,
+  "text": "Forgive me, Yaheiji—!",
+  "heard": "Forgive me, Yahēji.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "eav81vb1q3om": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.84,
+  "text": "The sound of the vines being cut echoed through the whole valley.",
+  "heard": "The sound of the vines being cut echoed through the whole valley.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "ebe462i10155": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.2400416666666665,
+  "text": "Slowly, the broken bridge swung down into the darkness below.",
+  "heard": " Slowly, the broken bridge swung down into the darkness below.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e12fwp4as5ccf": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "kotaro",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 3.6900416666666667,
+  "text": "…Where's Grandpa? Where's Grandpa Yaheiji?",
+  "heard": " Where's Grandpa? Where's Grandpa Yaheiji?",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "er7jscnb5850": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.94,
+  "text": "Kunimori knelt down and laid his big hand on the boy's head.",
+  "heard": " Kunimori knelt down and laid his big hand on the boy's head.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "erlv71idah6r": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 1.2400416666666667,
+  "text": "…Don't cry.",
+  "heard": "Don't cry.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e3oeuh21l6ne": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 7.48,
+  "text": "Yaheiji has always been a master at getting lost. …I am sure the enemy are the ones crying by now.",
+  "heard": "IRG has always been a master at getting lost. I am sure the enemy are the ones crying by now.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "ecvtiuk1hyvq": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.070041666666667,
+  "text": "But as he said it, Kunimori's own voice was shaking.",
+  "heard": " But as he said it, Kunimori's own voice was",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
  }
 }
