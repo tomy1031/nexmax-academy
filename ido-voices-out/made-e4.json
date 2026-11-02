@@ -202,5 +202,101 @@
   "heard": "a sturdy warrior set a folding camp stool beside Yoshitsune",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "ed90q321px8q": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 4.68,
+  "text": "This is Tsuginobu. He has followed me all the way from Oshu.",
+  "heard": "This is Tsuginobu. He has followed me all the way from Oshu.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eibhj8n1g8ze": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "tsuginobu",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 11.14,
+  "text": "I am Sato Tsuginobu. Lord Hidehira, ruler of the north, sent me here with my younger brother Tadanobu. Our job is to be my lord's shield.",
+  "heard": " I am Sato Tsuginobu. Lord Hidehira, ruler of the north, sent me here with my younger brother Tadanobu. Our job is to be",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1a9h28en2pqd": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "tsuginobu",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 7.23,
+  "text": "My lord has not slept a wink since last night. Meeting his elder brother has made him so…",
+  "heard": " My lord has not slept a wink since last night. Meeting his elder brother has made him so.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e2mlcfa2ck90": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 1.44,
+  "text": "(whispering) Tsuginobu…",
+  "heard": "Tsuginobu",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1368vlm1mj39": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 2.370041666666667,
+  "text": "I never knew my father's face.",
+  "heard": "I never knew my father's face.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1w5fqsc1a70s": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 10.260041666666666,
+  "text": "My father, Yoshitomo, was killed when I was a baby. My mother fled with me in her arms. I was sent to a temple, and later I escaped to Oshu.",
+  "heard": "My father,Yoshitomo,was killed when Iwas a baby.My motherfled with me in her arms.I wassent to a temple,and later I escapedto Oshu.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1a5mqdi1vesh": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 9.75,
+  "text": "I have never once met my elder brother. I do not know his voice. I do not know his face.",
+  "heard": " I have never once met my elder brother. I do not know his voice. I do not know his face.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ec7qeebohkyb": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 5.72,
+  "text": "…Even so, when I heard he was going to war against the Heike, I could not sit still.",
+  "heard": " Even so, when I heard he was going to war against the Heike, I could not sit still.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
