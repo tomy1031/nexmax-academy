@@ -838,5 +838,101 @@
   "heard": " Come one, come all! Tonight's tale is a yokai story from right here in Yamashiro: \"Konakijiji,\" the oldman yokai who cries like a baby!",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1ifw1yb1qq5m": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "tatsu",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 9,
+  "text": "…Mind you, ever since TV came along, hardly any kids come to watch. Tonight's my very last show.",
+  "heard": "Mind you, ever since TV came along, hardly any kids come to watch. Tonight's my very last show.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e19q3e6wdy18s": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 22.940041666666666,
+  "text": "Still, a few children sat up front.",
+  "heard": " Still, a few children sat up front.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e14f3jxf1gpul": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "tatsu",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 8.300041666666667,
+  "text": "If you hear a baby crying on a mountain road at night, never, ever pick it up. Because once you do—",
+  "heard": " If you hear a baby crying on a mountain road at night, never, ever pick it up. Because once you do",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ey7s1vq1sh79": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "tatsu",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 7.24,
+  "text": "That baby gets heavier and heavier… until it's heavy as a stone, and you can't move at all!",
+  "heard": " That baby gets heavier and heavier… until it's heavy as a stone, and you can't move at all!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ehusdr91e16q": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "kenta",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 2.83,
+  "text": "That's a lie! There's no such thing!",
+  "heard": "That's a lie. There's no such thing.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eanjmj14zip": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "kenta",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 5.12,
+  "text": "I'm going to the deep pool by the river right now to see for myself!",
+  "heard": " I'm going to the deep pool by the river right now to see for myself!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1t9afq51pa0v": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.98,
+  "text": "The boy, Kenta, didn't listen to anyone calling him back. He ran off up the dark mountain path.",
+  "heard": " The boy, Kenta, didn't listen to anyone calling him back. He ran off up the dark mountain path.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "etnxbhm15wza": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "tatsu",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 6.47,
+  "text": "Kenta! …Oh no. The path by that pool caved in after the last big rain!",
+  "heard": "Kenta? Oh, no! The path by that pool caved in after the last big rain.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
