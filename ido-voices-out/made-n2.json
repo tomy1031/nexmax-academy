@@ -94,5 +94,17 @@
   "heard": " Hey, look, look! …Huh? Why are you looking at me like you know me?",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "e1lcjeo88jydj": {
+  "episode": "kh-independence",
+  "lang": "en",
+  "speaker": "dara",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 4.22,
+  "text": "This tower is a symbol of “independence,” they say.",
+  "heard": " This tower is a symbol of independence, they say.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
