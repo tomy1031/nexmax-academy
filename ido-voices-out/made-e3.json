@@ -1666,5 +1666,17 @@
   "heard": " Do not tell of how I won. Tell of how I lived.",
   "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
   "readings": []
+ },
+ "e1hlksjg13bsf": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 10.720041666666667,
+  "text": "Tell the story of one man — who laughed, and cried, and loved his elder brother, and ran all this way with his friends' help.",
+  "heard": " Tell the story of one man — who laughed, and cried, and loved his elder brother, and ran all this way with his friends' help.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
  }
 }
