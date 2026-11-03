@@ -910,5 +910,101 @@
   "heard": " The king thinks of his mother this much,",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1dvzfg4dwnr9": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.63,
+  "text": "Evening. Torches were lit in the galleries.",
+  "heard": "",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "eirn86np81dx": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.01,
+  "text": "The sound of drums, xylophones and flutes. The dancers opened their hands slowly, so slowly.",
+  "heard": " The sound of drums, xylophones and flutes. The dancers opened their hands slowly, so slowly.",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "e77pfco6gtz1": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.170041666666667,
+  "text": "Sreymom was among them. Her hands were no longer shaking.",
+  "heard": "",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "e1x6rvv41j3ym": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.41,
+  "text": "…We're back. This is Ta Prohm today.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eyztq68mjkgc": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.63,
+  "text": "Look how the huge tree roots wrap around the stone galleries, as if they're swallowing them. After the temple stopped being used, the forest came back, over hundreds of years.",
+  "heard": " Look how the huge tree roots wrap around the stone galleries, as if they're swallowing them. After the temple stopped being used, the forest came back, over hundreds of years.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1jq6tfk1rl9p": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.9,
+  "text": "It was decided to keep this temple as close as possible to how it looked when it was found, so the trees were left as they were. Today, people from India and Cambodia are restoring it together.",
+  "heard": " It was decided to keep this temple as close as possible to how it looked when it was found, so the trees were left as they were. Today, people from India and Cambodia are restoring it together.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "en1qvt0nqm23": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.36,
+  "text": "Its original name was “Rajavihara,” which means “the king's monastery.” They say it was also a place of learning.",
+  "heard": " Its original name was \"Rajavihara,\" which means \"the king's monastery.\" They say it was also a place",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eme58hwd3lq5": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.38,
+  "text": "The inscription says that every year, at the spring festival, there was a procession of banners and parasols, and men and women danced.",
+  "heard": " The inscription says that every year, at the spring festival, there was a procession of banners and parasols, and men and women danced.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
