@@ -646,5 +646,101 @@
   "heard": "",
   "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
   "readings": []
+ },
+ "eqskvrl13ren": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.56,
+  "text": "Only the sound of pens, the singing voice and the wind off the river passed through the gallery.",
+  "heard": " Only the sound of pens, the singing voice and the wind off the river passed through the gallery.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "eknuuoc4776j": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.57,
+  "text": "During a break, you and Borey stepped outside the gallery.",
+  "heard": " During a break, you and Borey stepped outside the gallery.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "ep388ly12914": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "borey",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 12.16,
+  "text": "Hey, do you know what a train is? A carriage that puffs out smoke and runs on an iron road. They say they're building an iron road all the way to a faraway town right now.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ei4ci6w1yc8o": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "borey",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 5.07,
+  "text": "But how do you say “train” in Khmer? Do we just use the French word?",
+  "heard": " But how do you say \"train\" in Khmer? Do we just use the French word?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1xsedvmz6x8z": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.89,
+  "text": "Just then, a monk in a yellow robe quietly passed by. He was thin, and there was a gentle light deep in his eyes.",
+  "heard": " Just then, a monk in a yellow robe quietly passed by. He was thin, and there was a gentle light deep in his eyes.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e13iouwh11hs5": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.250041666666666,
+  "text": "Borey quickly pressed his palms together and bowed his head. You copied him and put your palms together too.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1rcpg4x1r8sr": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "borey",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 7.35,
+  "text": "It's the Venerable Chuon Nath…! He's a scholar monk who's making the dictionary of the Khmer language.",
+  "heard": " It's the Venerable Chuon Nath…! He's a scholar monk who's making the dictionary of the Khmer language.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e4ypckokjww7": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "chuonnath",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 1.84,
+  "text": "Welcome, traveller.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
