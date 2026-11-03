@@ -486,5 +486,103 @@
   "readings": [
    "仏教研究所＝ぶっきょうけんきゅうじょ"
   ]
+ },
+ "v1k3msqg": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "karpeles",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 7.06,
+  "text": "クロム・ンゴイさん、来てくださって、ありがとうございます。……旅の方も、ようこそ。",
+  "heard": " クロム・ンゴイさん、来てくださって、ありがとうございます。……旅の方も、ようこそ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "ve7gxn9": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "karpeles",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 7.92,
+  "text": "クロム・ンゴイさん、来てくださって、ありがとうございます。……旅の方も、また来てくださったのですね。",
+  "heard": "クロム・ンゴイさん、来てくださって、ありがとうございます。……旅の方も、また来てくださったのですね。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v38bd5k": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "karpeles",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 8.38,
+  "text": "クロム・ンゴイさん、来てくださって、ありがとうございます。……旅の方、どこかでお会いしましたか。",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v127f5ky": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "karpeles",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 8.75,
+  "text": "いつもより、ずっとゆっくり歌っていただけますか。お坊さんたちが、ひとことずつ書き取れるように。",
+  "heard": "いつもより、ずっとゆっくり歌っていただけますか。お坊さんたちが、ひとことずつ書き取れるように。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vzrp8oc": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "kromngoy",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 6.06,
+  "text": "ゆっくり、か。歌は、ゆっくりだと、ねむくなるがのう。ははは。",
+  "heard": "ゆっくり、か。歌は、ゆっくりだと、ねむくなるがのう。ははは。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v18rphrq": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.09,
+  "text": "カルプレスさんは、紙の束を、お坊さんにじかには手わたさなかった。ボレイを呼んで、ボレイにあずけた。",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vszx0i3": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "borey",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 7.02,
+  "text": "女の人は、お坊さんに、じかに物をわたさない決まりなんだ。だから、ぼくが運ぶの。",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vxsa2fs": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.76,
+  "text": "上座部仏教の、お坊さんへの作法だよ。カルプレスさんも、手紙や本を、間に立つ人を通してやりとりしたと伝えられているんだ。",
+  "heard": "上座部仏教の、お坊さんへの作法だよ。カルプレスさんも、手紙や本を、間に立つ人を通してやりとりしたと伝えられているんだ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "上座部仏教＝じょうざぶぶっきょう"
+  ]
  }
 }
