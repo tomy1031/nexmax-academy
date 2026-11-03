@@ -980,5 +980,107 @@
   "heard": "橋のたもとで、青い着物の若い男の人が、紙に、せっせと筆を走らせていた。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v4st2kz": {
+  "episode": "kh-sr-prologue",
+  "lang": "ja",
+  "speaker": "zhou",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.61,
+  "text": "……おや。あなたも、遠くから来た人ですね。足もとの砂ぼこりで、わかります。",
+  "heard": "おや。あなたも、遠くから来た人ですね。足もとの砂ぼこりで、わかります。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v8ph2is": {
+  "episode": "kh-sr-prologue",
+  "lang": "ja",
+  "speaker": "zhou",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 7.56,
+  "text": "わたしは、周達観。海の向こうの、元という国から来た使節団の一人です。",
+  "heard": "わたしは、周達観。海の向こうの、元という国から来た使節団の一人です。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "使節団＝しせつだん"
+  ]
+ },
+ "vmv860i": {
+  "episode": "kh-sr-prologue",
+  "lang": "ja",
+  "speaker": "zhou",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 8.06,
+  "text": "夏の終わりに、この都に着きました。見たものを、ぜんぶ書きとめておこうと思いましてね。",
+  "heard": "この都に着きました。見たものを、ぜんぶ書きとめておこうと思いましてね。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "都＝みやこ"
+  ]
+ },
+ "v10o0fbe": {
+  "episode": "kh-sr-prologue",
+  "lang": "ja",
+  "speaker": "zhou",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.03,
+  "text": "おお、あなたでしたか。また会えましたね。",
+  "heard": "お、あなたでしたか。また会えましたね。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1l34zmw": {
+  "episode": "kh-sr-prologue",
+  "lang": "ja",
+  "speaker": "zhou",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.32,
+  "text": "……おや。あなたも、遠くから来た人ですね。……なぜ、わたしを知っているような顔を？",
+  "heard": "おや。あなたも、遠くから来た人ですね。……なぜ、わたしを知っているような顔を？",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vsnxsqc": {
+  "episode": "kh-sr-prologue",
+  "lang": "ja",
+  "speaker": "zhou",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.67,
+  "text": "わたしは、周達観。元という国から来た使節団の一人です。",
+  "heard": "わたしは、周達観。元という国から来た使節団の一人",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "使節団＝しせつだん"
+  ]
+ },
+ "vn4mhct": {
+  "episode": "kh-sr-prologue",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.53,
+  "text": "周達観さんのことばは、ぼくが通訳するね。……本当にいた人だよ！ 700年前の、旅人の先輩なんだ。",
+  "heard": "周達観さんのことばは、ぼくが通訳するね。……本当にいた人だよ！700年前の、旅人の先",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1yg00o5": {
+  "episode": "kh-sr-prologue",
+  "lang": "ja",
+  "speaker": "zhou",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 9.87,
+  "text": "ごらんなさい。橋の両側に、石の神が五十四ずつ。みんなで、九つの頭の蛇をつかんでいる。",
+  "heard": " ごらんなさい。橋の両側に、石の神が五十四ずつ。みんなで、九つの頭の蛇をつかんでいる。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
