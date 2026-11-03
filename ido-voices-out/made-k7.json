@@ -1126,5 +1126,101 @@
   "heard": "でも……どうして、こんなにたくさんの仏さまが、埋められていたんだろう。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v1epbic5": {
+  "episode": "kh-banteaykdei",
+  "lang": "ja",
+  "speaker": "sovann",
+  "voice": "Umbriel",
+  "model": "gemini-3.8-live",
+  "seconds": 6.45,
+  "text": "こわされて、すてられたのか。それとも、だれかが、大事に埋めて守ったのか。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1uf9zuh": {
+  "episode": "kh-banteaykdei",
+  "lang": "ja",
+  "speaker": "sovann",
+  "voice": "Umbriel",
+  "model": "gemini-3.8-live",
+  "seconds": 5.99,
+  "text": "……ぼくも、そう思いたいです。でも、それをたしかめるのが、ぼくたちの仕事ですね。",
+  "heard": "ぼくも、そう思いたいです。でも、それをたしかめるのが、ぼくたちの仕事ですね。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vz0o5lv": {
+  "episode": "kh-banteaykdei",
+  "lang": "ja",
+  "speaker": "sovann",
+  "voice": "Umbriel",
+  "model": "gemini-3.8-live",
+  "seconds": 5.62,
+  "text": "そうですね。わからないことを、わからないと言えるのも、研究です。",
+  "heard": "そうですね。わからないことを、わからないと言えるのも、研究です。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vn6cu1w": {
+  "episode": "kh-banteaykdei",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.34,
+  "text": "……戻ってきたよ。いまのバンテアイ・クデイ。",
+  "heard": "戻ってきたよ。いまのバンテアイ・クデイ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1ugdi5e": {
+  "episode": "kh-banteaykdei",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 12.2,
+  "text": "2001年、この寺院で、研修中のカンボジアの研修生たちが、仏像を掘り当てたんだ。見つかった仏像やそのかけらは、ぜんぶで274。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v94ajch": {
+  "episode": "kh-banteaykdei",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.11,
+  "text": "一か所から、こんなにたくさんの仏像が出てきたのは、はじめてだったんだって。",
+  "heard": "一か所から、こんなにたくさんの仏像が出てきたのは、はじめてだったんだって。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v16tinbl": {
+  "episode": "kh-banteaykdei",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.57,
+  "text": "大きいものは1.8メートルほど、小さいものは20センチほど。こわされていたけれど、ていねいに埋められていたんだ。",
+  "heard": "大きいものは1.8メートルほど、小さいものは20センチほど。こわされていたけれど、ていねいに埋められていたんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v149f15t": {
+  "episode": "kh-banteaykdei",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.94,
+  "text": "だれが、なぜ埋めたのかは、今も、わかっていない。",
+  "heard": " だれが、なぜ埋めたのかは、今もしられていない。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
