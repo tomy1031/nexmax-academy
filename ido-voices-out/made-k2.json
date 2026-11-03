@@ -722,5 +722,101 @@
   "heard": "この形は「つぼみ」。これは「花がひらく」。これは「実がなる」。",
   "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
   "readings": []
+ },
+ "v1kln9ww": {
+  "episode": "kh-museum",
+  "lang": "ja",
+  "speaker": "neary",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 3.87,
+  "text": "踊りの手のひとつひとつに、意味があるのよ。",
+  "heard": "踊りの 手 の 一つ一つ に 意味 が ある の よ 。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1b93qc": {
+  "episode": "kh-museum",
+  "lang": "ja",
+  "speaker": "leakhena",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 3.76,
+  "text": "……いたた。先生みたいに、曲がらない。",
+  "heard": "いっ た た 、 先生 みたい に 曲がら ない 。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1pake3p": {
+  "episode": "kh-museum",
+  "lang": "ja",
+  "speaker": "neary",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 7.6,
+  "text": "わたしも、あなたくらいのとき、泣いたわ。でもね、毎日やれば、指は覚えてくれる。",
+  "heard": "わたしも、あなたくらいのとき、泣いたわ。でもね、毎日やれば、指は覚えてくれる。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v17hs2bb": {
+  "episode": "kh-museum",
+  "lang": "ja",
+  "speaker": "neary",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 4.55,
+  "text": "旅の方も、やってごらんなさい。どの形がいい？",
+  "heard": "旅の方も、やってごらんなさい。どの形がいい?",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vjmziav": {
+  "episode": "kh-museum",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.2,
+  "text": "指先をそっと合わせて、つぼみの形を作った。",
+  "heard": "ひさき を そっと 合わせ て 蕾 の 形 を 作っ た 。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1okps8s": {
+  "episode": "kh-museum",
+  "lang": "ja",
+  "speaker": "neary",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 6.36,
+  "text": "そう。これから咲く花。……はじまりの形ね。",
+  "heard": "そう。これから咲く花。……はじまりの形ね。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vlm8z0c": {
+  "episode": "kh-museum",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.7500416666666667,
+  "text": "指を、ゆっくりとひらいていく。",
+  "heard": "指 を ゆっくり と 開い て いく 。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1pbcr8o": {
+  "episode": "kh-museum",
+  "lang": "ja",
+  "speaker": "neary",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 5.34,
+  "text": "きれい。ひらく、という動きは、いちばんむずかしいのよ。",
+  "heard": " ひらく、という動きは、いちばんむずかしいのよ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
