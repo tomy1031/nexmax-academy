@@ -605,5 +605,101 @@
   "heard": "日本の暦では寛永九年の正月。ここは、からりと乾いた暑い季節のさなか。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v1kxzpf2": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.69,
+  "text": "森の中から、五つの塔がそびえている。長い参道を、ひとりの侍が歩いてきた。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v3uhsox": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.660041666666666,
+  "text": "侍は、旅の荷物を大事そうに胸にかかえ、塔を見上げて、立ちつくしている。",
+  "heard": "侍は、旅の荷物を大事そうに胸にかかえ、塔を見上げて、立ちつくしている。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v7wsnfr": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.17,
+  "text": "（小声）あの着物……日本の侍だ！ ちょっと、日本のことばで話しかけてみるね。",
+  "heard": "あの着物……日本の侍だ！ちょっと、日本のことばで話しかけてみるね。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1q429pn": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 0.97,
+  "text": "こんにちはー！",
+  "heard": "はい、こんにちは。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1wq8106": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 7.71,
+  "text": "……！ 今の言葉……日本の言葉ではないか！",
+  "heard": "今の言葉……日本の言葉ではないか!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vgx45lh": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 6.83,
+  "text": "このような遠い地で、日本の言葉を聞くとは。そなたたちは、いったい……。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vcm8z6d": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 6.62,
+  "text": "それがしは、肥州の住人、森本右近太夫一房と申す。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v13x9u7t": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.63,
+  "text": "（小声）森本右近太夫一房さん……！ 本当にいた人だよ。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
