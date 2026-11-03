@@ -29,7 +29,7 @@ test("ページ絵は 縦長で 出て、タップで 大きく なり、とじ�
   // 絵の 下の セリフも 出て いる（焼いた 字とは 別に、ふりがな・語彙は ここが 担う）
   const figure = page.locator("figure").first();
   await expect(figure.getByText("ヘンディ").first()).toBeVisible();
-  await expect(figure.getByText("テストして").first()).toBeVisible();
+  await expect(figure.getByText("チェックして").first()).toBeVisible();
   expect(await bareKanjiTexts(page)).toEqual([]);
   await shot(page, "manga-page-01-390");
 
