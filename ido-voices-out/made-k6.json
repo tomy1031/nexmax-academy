@@ -486,5 +486,112 @@
   "heard": "わたしはどっちでもいいや。だって、どの顔も、ほほえんでるもん。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v1k1j4ll": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 2.81,
+  "text": "……戻ってきたよ。いまのバイヨン。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v12rj3jn": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.64,
+  "text": "バイヨンは、ジャヤーヴァルマン7世が、都アンコール・トムのまんなかに建てた寺なんだ。",
+  "heard": "バイヨンは、ジャヤーヴァルマン7世が、都アンコール・トムのまんなかに建てた寺なんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "都＝みやこ"
+  ]
+ },
+ "vpthxc4": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.87,
+  "text": "塔に彫られた顔は、ぜんぶで二百ほど。王さまの顔とも、観音さまの顔ともいわれていて、どちらの意味もある、と考える人もいるよ。",
+  "heard": "塔に彫られた顔は、ぜんぶで二百ほど。王さまの顔とも、観音さまの顔ともいわれていて、どちらの意味もある、と考える人もいるよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "観音＝かんのん"
+  ]
+ },
+ "vlwrri1": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.480041666666667,
+  "text": "外の回廊には、ふつうの暮らしも彫られているよ。魚をはかる人。ごはんをたく人。闘鶏。",
+  "heard": "外の回廊には、ふつうの暮らしもしるされているよ。魚をはかる人。ごはんをたく人。闘鶏。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "回廊＝かいろう",
+   "闘鶏＝とうけい"
+  ]
+ },
+ "v14ge2cj": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 16.9,
+  "text": "ジャヤーヴァルマン7世は、国じゅうに102の病院と、旅人が休む121の家を建てたと、碑文に書かれているんだ。",
+  "heard": "＝ひぶん＝には、ジャヤーヴァルマン7世が、国じゅうに102の病院と、旅人が休む121の家を建てたと書かれているんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "碑文＝ひぶん"
+  ]
+ },
+ "v1t7wosw": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.59,
+  "text": "（小声）シェムリアップの市場でも、今もはかりで魚を量ってるよ。800年前の壁と、見くらべてみて。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vf7v7ds": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.02,
+  "text": "この壁には、八百年前の都に生きた人たちの毎日が、本当に彫られているんだ。",
+  "heard": "この壁には、八百年前の都に生きた人たちの毎日が、本当に彫られているんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "都＝みやこ"
+  ]
+ },
+ "voleswt": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.83,
+  "text": "（小声）どの顔も、ほほえんでる。……チャンティちゃんの言うとおりだね。",
+  "heard": "どの顔も、ほほえんでる。……チャンティちゃんの言う通りだね。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
