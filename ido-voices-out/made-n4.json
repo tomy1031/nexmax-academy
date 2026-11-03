@@ -1258,5 +1258,53 @@
   "heard": "",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "edbvx9i1pgyy": {
+  "episode": "kh-sr-prologue",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 12.42,
+  "text": "After he went home, Zhou Daguan wrote a book called “The Customs of Cambodia.” It survives today as a record of life in the capital of Angkor, written by someone who saw it with his own eyes.",
+  "heard": " After he went home, Zhou Daguan wrote a book called “The Customs of Cambodia.” It survives today as a record of life in the capital of Angkor, written by someone who saw it with his own eyes.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1i0an5g1sa7i": {
+  "episode": "kh-sr-prologue",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.68,
+  "text": "The gate, the market, the festival — they're all written about in that book.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1h02g75oux0k": {
+  "episode": "kh-sr-prologue",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 12.45,
+  "text": "Stone carvers, kings, dancers, people who came from faraway lands to pray, and people who look after the ruins… the time of so many people lies sleeping here.",
+  "heard": " Stone carvers, kings, dancers, people who came from faraway lands to pray, and people who look after the ruins… the time of so many people lies sleeping here.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "equ928l46gnd": {
+  "episode": "kh-sr-prologue",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.380041666666667,
+  "text": "Collect stamps at the five “Doors of Time,” and they'll make one complete picture of Siem Reap. Come on, let's go!",
+  "heard": " Collect stamps at the five \"Doors of Time,\" and they'll make one complete picture of Siem Reap. Come on, let's go!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
