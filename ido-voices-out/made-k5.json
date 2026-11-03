@@ -944,5 +944,17 @@
   "heard": "わが母が、生まれ変わりの海から解かれ、仏の境地を得ますように。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v3gryck": {
+  "episode": "kh-taprohm",
+  "lang": "ja",
+  "speaker": "sreymom",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 4.11,
+  "text": "……王さまも、お母さまのことを、こんなに思ってるんだ。",
+  "heard": "王さまも、お母さまのことを、こんなに思ってるんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
