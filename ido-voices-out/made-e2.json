@@ -1330,5 +1330,101 @@
   "heard": "About 800 years back, men in armor came from the capital, Kyoto. They climbed up this valley with such sad faces,",
   "scene": "こわい夜の山道。おびえて、声が細い",
   "readings": []
+ },
+ "e1vwhgks1fzjb": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 13.68,
+  "text": "(whispering) He means the Heike samurai — the ones who lost the war and fled into the mountains of Iya…!",
+  "heard": " He means the Heike samurai — the ones who lost the war and fled into the mountains of Iya!",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": []
+ },
+ "egpp502i8s64": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "konaki",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 16.38,
+  "text": "One of them was an old fella who was awfully good at taking the wrong road. He got the Genji (the Minamoto clan) soldiers chasing them lost in these mountains for three days and three nights!",
+  "heard": " One of them was an old fella who was awfully good at taking the wrong road. He got the Genji (the Minamoto clan) soldiers chasing them lost in these mountains for three days and three nights!",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": []
+ },
+ "eac1x1k1ey9h": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "konaki",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 10.54,
+  "text": "Afterward, he and I drank sake together all night under the moon. …He was a fine old fella.",
+  "heard": " After he and I drank sake together all night under the moon. …He was a fine old fella.",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": []
+ },
+ "eu967zv82jqp": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.8000416666666665,
+  "text": "(whispering) That's Yaheiji…! Yaheiji survived!",
+  "heard": " That's Yaheiji…! Yaheiji survived!",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": []
+ },
+ "e13hzqgq1vovo": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "konaki",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 14.01,
+  "text": "I knew the big fella who left his sword up on the mountain, too. When he got old, he taught the village kids how to weave vines, like the ones in the vine bridge.",
+  "heard": " I knew the big fella who left his sword up on the mountain, too. When he got old, he taught the village kids how to weave vines, like the ones in the vine bridge.",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": []
+ },
+ "e1i05oir9chb7": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "konaki",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 10.400041666666667,
+  "text": "And beside him was a lady who played the biwa (a Japanese lute). …Those two grew into old folks who laughed a lot.",
+  "heard": " And beside him was a lady who played the biw...Those two grew into old folks who laughed",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": []
+ },
+ "e7p5g23ta5le": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.39,
+  "text": "(whispering) Kunimori and Aya… So he kept his promise and gave the biwa pick back to her.",
+  "heard": " Kunimori and Aya… So he kept his promise and gave the biwa",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": []
+ },
+ "e11u3p4j1a0yf": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "konaki",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 9.19,
+  "text": "A story disappears when there's nobody left to tell it. It's the same for us yokai.",
+  "heard": " A story disappears when there's nobody left to tell it. It's the same for us",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": []
  }
 }
