@@ -805,5 +805,103 @@
   "heard": "いまは、お仕えしていた家を離れておられる。もう、よいお年だ。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v12ex8nu": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 5.43,
+  "text": "父上が、この世で長く、すこやかに暮らせるように。",
+  "heard": "父上が、この世で長く、すこやかに暮らせるように。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vfg3r8": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 5.2,
+  "text": "……そして、母上。母上は、もう、この世にはおられぬ。",
+  "heard": "そして、母上。母上は、もう、この世にはおられぬ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1fs24yl": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 3.890041666666667,
+  "text": "母上が、あの世で安らかであるように。",
+  "heard": "母上が、あの世で安らかであるように。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1cgdag4": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 4.480083333333333,
+  "text": "そのために、仏を四体、お納めにまいったのだ。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vqka0ol": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.800041666666667,
+  "text": "一房は、胸にかかえた布の包みを、そっとなでた。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1tv68h3": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.74,
+  "text": "（小声）……お母さんのために。タ・プロームを建てた王さまと、同じ気持ちだね。",
+  "heard": "お母さんのために。タ・プロームを建てた王さまと、同じ気持ちだね。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vwldxxg": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.2000416666666665,
+  "text": "（小声）あなたも、タ・プロームで「母のために」って答えたね。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1lwj83": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.52,
+  "text": "塔の内側の、十字の形をした回廊。そこには、大小さまざまな仏の像が、ずらりと並んでいた。",
+  "heard": "塔の内側の、十字の形をした回廊。そこには、大小さまざまな仏の像が、ずらりと並んでいた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "回廊＝かいろう"
+  ]
  }
 }
