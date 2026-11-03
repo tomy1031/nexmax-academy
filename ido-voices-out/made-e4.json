@@ -514,5 +514,101 @@
   "heard": " After Yoshitsune left, Yoritomo stayed sitting on the stone by himself. Then he looked over at you.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "ehbwc0xvw6af": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "yoritomo",
+  "voice": "Schedar",
+  "model": "gemini-3.8-live",
+  "seconds": 4.75,
+  "text": "…A traveler, are you? You heard all that, didn't you.",
+  "heard": " A traveler, are you? You heard all that, didn't",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "euz8do31jbnq": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "yoritomo",
+  "voice": "Schedar",
+  "model": "gemini-3.8-live",
+  "seconds": 4.26,
+  "text": "A brother with such a warm heart is a great strength.",
+  "heard": " A brother with such a warm heart is a great strength.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e12hgzqp1mhkv": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "yoritomo",
+  "voice": "Schedar",
+  "model": "gemini-3.8-live",
+  "seconds": 2.3200416666666666,
+  "text": "…And something to fear.",
+  "heard": "and something to fear",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1xg19hc1ro8p": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.850041666666667,
+  "text": "His eyes were not crying anymore.",
+  "heard": " His eyes were not crying anymore.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1vn78znyk2xh": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 4.97,
+  "text": "Traveler! My brother compared me to the great Lord Yoshimitsu!",
+  "heard": "Traveler, my brother compared me to the great Lord Yoshimitsu.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ebgnwbv1hxwu": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 5.04,
+  "text": "If we ever meet on a battlefield, call out to me. …I will remember you.",
+  "heard": " If we ever meet on a battlefield, call out to me. …I will remember you.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1vomm6s13774": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.84,
+  "text": "And so begins the story of the two brothers.",
+  "heard": "And so begins the story of the two brothers.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1cyqcl89ff0f": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.480041666666667,
+  "text": "(whispering) …I won't say what happens nine years from now. Not yet.",
+  "heard": "I won't say what happens 9 years from now, not yet.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
