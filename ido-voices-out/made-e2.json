@@ -1558,5 +1558,73 @@
   "heard": " Here, take a photo with me to remember tonight. …Careful, I'm a little heavy.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e9ez6x1vkgl": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "kenta",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 0.7900416666666666,
+  "text": "…W-waaaah!",
+  "heard": "",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "v2mlcfa": {
+  "episode": "genpei-kisegawa",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 1.1900416666666667,
+  "text": "（小声）継信さん……。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "継信＝つぎのぶ"
+  ]
+ },
+ "v17qqeqm": {
+  "episode": "genpei-kisegawa",
+  "lang": "ja",
+  "speaker": "yoritomo",
+  "voice": "Schedar",
+  "model": "gemini-3.8-live",
+  "seconds": 1.24,
+  "text": "……九郎か。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "九郎＝くろう"
+  ]
+ },
+ "v1q35zbk": {
+  "episode": "genpei-yashima",
+  "lang": "ja",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 0.84,
+  "text": "継信——！",
+  "heard": "",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": [
+   "継信＝つぎのぶ"
+  ]
+ },
+ "vv2sdvf": {
+  "episode": "genpei-dannoura",
+  "lang": "ja",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 1.31,
+  "text": "義経ぇっ！",
+  "heard": "",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": [
+   "義経＝よしつね"
+  ]
  }
 }
