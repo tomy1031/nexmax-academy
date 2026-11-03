@@ -1306,5 +1306,101 @@
   "heard": " Many people have left Buddha statues in this gallery for the ones they love. Please, you may too.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e17pafc01vxac": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 2.37,
+  "text": "I am most grateful…!",
+  "heard": "I am most grateful!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1t1m11d12y0p": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 12.06,
+  "text": "Kazufusa untied his bundle and carefully set out four small Buddha statues. He put his hands together and did not move for a long, long time.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1s5ekhs1ra60": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.64,
+  "text": "(whispering) …Four. The Buddhas Grandmother Penh found in Phnom Penh were four, too.",
+  "heard": " Four. The Buddhas Grandmother Penh found in Phnom Penh were four, too.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e11c819w19d69": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.99,
+  "text": "(whispering) It's just a coincidence, of course. Different times, different places. But somehow, it makes me happy.",
+  "heard": " It's just a coincidence, of course. Different times, different places. But somehow, it makes me happy.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1ta8jtg1xwpf": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 3.56,
+  "text": "…Traveler. May I ask you something?",
+  "heard": " May I ask you something?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e12iwyuy8l4vs": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 3.2300416666666667,
+  "text": "What would you pray for, here?",
+  "heard": " What would you pray",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e5htd6b1q57j": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 10.730041666666667,
+  "text": "Mm. …The same as mine.",
+  "heard": "Mm. …The same as mine.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e69eqv214t12": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 4.11,
+  "text": "…I see. So you too have someone like that.",
+  "heard": " I see. So you too have someone like that.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
