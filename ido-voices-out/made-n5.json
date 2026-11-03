@@ -1198,5 +1198,53 @@
   "heard": " We meet again, traveller. Today we receive the Buddha into the temple I built for my mother.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1fsv0ux1mfzi": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "jayavarman7",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.67,
+  "text": "…I do not know your face. And yet you look at me as if you know me.",
+  "heard": " I do not know your face. And yet you look at me as if you know me.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ejteqda1a9vi": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "jayavarman7",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 7.330041666666666,
+  "text": "How curious. Today we receive the Buddha into the temple I built for my mother.",
+  "heard": " Today we receive the Buddha into the temple I built for my mother.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eas8fdbynpnk": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "jayavarman7",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.45,
+  "text": "My mother always thought of others before herself.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1l9ycu1xw8xg": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "jayavarman7",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 11.66,
+  "text": "So when I divide my food into four, I have always given three parts to my teacher, my mother and my elder brother.",
+  "heard": " So when I divide my food into four, I have always given three parts to my teacher, my mother and my elder brother.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
