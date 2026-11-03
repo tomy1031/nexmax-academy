@@ -910,5 +910,101 @@
   "heard": "",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1kh1n6l11goy": {
+  "episode": "kh-royalpalace",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.88,
+  "text": "You and Piseth called out together and dipped your oars in time. The boat glided forward.",
+  "heard": " You and Piseth called out together and dipped your oars in time. The boat glided forward.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1cohhwjqukw5": {
+  "episode": "kh-royalpalace",
+  "lang": "en",
+  "speaker": "piseth",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 3.37,
+  "text": "Nice! You could race in the boat festival!",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e15gbj551wt7k": {
+  "episode": "kh-royalpalace",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 12.49,
+  "text": "The brown water flowed slowly by. White birds flew over the trees on the bank.",
+  "heard": " The brown water flowed slowly by. White birds flew over the trees on the bank.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "extiqtu1erez": {
+  "episode": "kh-royalpalace",
+  "lang": "en",
+  "speaker": "piseth",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 3.4000416666666666,
+  "text": "Pretty, huh? …But don't stop rowing.",
+  "heard": " …But don't stop rowing.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1isnauj1lmb5": {
+  "episode": "kh-royalpalace",
+  "lang": "en",
+  "speaker": "piseth",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 6.85,
+  "text": "This river does something strange, you know. In the rainy season, its water flows the other way!",
+  "heard": " This river does something strange, you know. In the rainy season, its water flows the other way!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "euqv7ve1tjkh": {
+  "episode": "kh-royalpalace",
+  "lang": "en",
+  "speaker": "piseth",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 11.59,
+  "text": "When the Mekong fills up, it pushes the Tonle Sap River back, and the water flows toward the big lake. When the rains end, it goes back to normal.",
+  "heard": " When the Mekong fills up, it pushes the Tonle Sap River back, and the water flows toward the big lake. When the rains end, it goes back to normal.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1pgqp2rifupj": {
+  "episode": "kh-royalpalace",
+  "lang": "en",
+  "speaker": "piseth",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 8.76,
+  "text": "Around the time the water turns back, the villages hold boat races. My grandpa raced as a rower when he was young!",
+  "heard": " Around the time the water turns back, the villages hold boat races. My grandpa raced as a rower when he was young!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ezl9lpbw1pt6": {
+  "episode": "kh-royalpalace",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 15.62,
+  "text": "Those are the village boat races held after the monks' rainy-season retreat ends. Some scholars think today's Water Festival, Bon Om Touk, held in front of the Royal Palace, began after the capital moved here.",
+  "heard": " Those are the village boat races held after the monks' rainy-season retreat ends. Some scholars think today's Water Festival, Bon Om Touk, held in front of the Royal Palace, began after",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
