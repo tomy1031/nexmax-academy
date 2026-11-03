@@ -486,5 +486,101 @@
   "heard": " ……いっしょに、向こう岸まで渡りませんか。",
   "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
   "readings": []
+ },
+ "vlji0qa": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.69,
+  "text": "あなたは、ソックおじいさんとソピアと並んで、向こう岸まで歩いた。",
+  "heard": "あなたは、ソックおじいさんとソピアと並んで、向こう岸",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v9f8k3r": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "sophea",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 4,
+  "text": "着いたー！ 向こう岸の空気、ちょっとちがう！",
+  "heard": "着いたー！向こう岸の空気、ちょっとちがう！",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v13k3mhl": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.28,
+  "text": "ソピアが、おじいさんの手と、あなたの手を、両方にぎった。三人で、向こう岸まで歩いた。",
+  "heard": "ソピアが、おじいさんの手と、あなたの手を、両方にぎった。三人で、向こう岸まで歩いた。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vuhvauy": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "sophea",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 2.5,
+  "text": "えへへ。三人で渡った！",
+  "heard": "えへへ。三人で渡った！",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vytg8sn": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.020041666666666,
+  "text": "夕方の橋のたもと。ヘルメットをかぶった女の人が、橋の柱を見上げて、ノートに何か書きこんでいる。",
+  "heard": "夕方の橋のたもと。ヘルメットをかぶった女の人が、橋の柱を見上げて、ノートに何か書きこんで",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vzm57lz": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "sophea2",
+  "voice": "Erinome",
+  "model": "gemini-3.8-live",
+  "seconds": 1.68,
+  "text": "……あれ？ あなた……。",
+  "heard": "あれ ? あなた",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v25ekct": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "sophea2",
+  "voice": "Erinome",
+  "model": "gemini-3.8-live",
+  "seconds": 5.83,
+  "text": "うそ。1994年の、あの日、いっしょに橋を渡った……？",
+  "heard": "うそ。1994年の、あの日、いっしょに橋を渡った？",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1ecbsz4": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "sophea2",
+  "voice": "Erinome",
+  "model": "gemini-3.8-live",
+  "seconds": 4.91,
+  "text": "わたしの手、にぎってくれたよね。三人で渡ったの、覚えてる。",
+  "heard": "私 の 手 握っ て くれ た よ ね 。 3 人 で わたっ た の 覚え てる ?",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
