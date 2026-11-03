@@ -390,5 +390,101 @@
   "heard": "そのとき、川べりで、大きな拍手がわきおこった。橋の通行が、始まったのだ。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "vq2enj3": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.000041666666666,
+  "text": "人びとが、ゆっくりと橋を渡っていく。自転車を押す人。赤ちゃんを抱いた人。",
+  "heard": "ゆっくりと橋を渡っていく。自転車を押す人。赤ちゃんを抱いた人。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1r0d8nt": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.83,
+  "text": "ソピアは、おじいさんの手を引いて走り出し——しばらく行ったところで、おじいさんが足を止めた。",
+  "heard": "ソピアは、おじいさんの手を引いて走り出し——しばらく行ったところで、おじいさんが",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v179ae53": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "sok",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 4.020041666666667,
+  "text": "……ここです。ここが、落ちていたところだ。",
+  "heard": "ここが、落ちていたところだ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vvg4mvt": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.140041666666667,
+  "text": "つぎ目の向こうも、こちらも、同じように人が歩いている。",
+  "heard": "つぎ目の向こうも、こちらも、同じように人が歩いている。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1wlmucv": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "sok",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 5.2800416666666665,
+  "text": "橋は、また架けられる。今日、それがわかりました。",
+  "heard": "橋は、また架けられる。今日、それがわかりました。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vgwswz0": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "sok",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 3.58,
+  "text": "でも……渡れなくなった人は、戻らない。",
+  "heard": "でも、割れなくなった人は戻らない。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1ypnm18": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "sok",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 11.080083333333333,
+  "text": "渡れる者は、渡る。覚えている者は、教える。わしにできるのは、それだけです。",
+  "heard": "渡れる者は、渡る。覚えている者は、教える。わしにできるのは、それだけです。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "va3uhml": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "sok",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 4.98,
+  "text": "旅の方。……いっしょに、向こう岸まで渡りませんか。",
+  "heard": " ……いっしょに、向こう岸まで渡りませんか。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
