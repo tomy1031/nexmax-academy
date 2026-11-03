@@ -1,0 +1,98 @@
+{
+ "vtmayju": {
+  "episode": "kh-angkor-build",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.44,
+  "text": "12世紀のなかごろ。森の中に、巨大な寺院が、少しずつ姿をあらわしていた。",
+  "heard": "12世紀のなかごろ。森の中に、巨大な寺院が、少しずつ",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v12v72vu": {
+  "episode": "kh-angkor-build",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.15,
+  "text": "石を積む音。石を削る音。かけ声。あちこちに、木の足場が組まれている。",
+  "heard": "石 を 積む 音 石 を 削る 音 掛け声 あちらこちら に 木 の 足場 が 組ま れ て いる 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vojmls2": {
+  "episode": "kh-angkor-build",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.77,
+  "text": "壁の前で、ひとりの少年が、のみと木づちを手に、じっと石を見つめていた。",
+  "heard": "壁の前で、ひとりの少年が、のみと木づちを手に、じっと石を見つめていた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vepop7b": {
+  "episode": "kh-angkor-build",
+  "lang": "ja",
+  "speaker": "keo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 4.91,
+  "text": "……うわっ！ だ、だれ？ 親方の知り合い？",
+  "heard": "うわっ！ だ、だれ？ 親方の知り合い？",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1ncd1je": {
+  "episode": "kh-angkor-build",
+  "lang": "ja",
+  "speaker": "keo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 4.79,
+  "text": "ぼく、ケオ。石を彫る見習いだよ。十四。",
+  "heard": "ぼく、ケオ。石を彫る見習いだよ。十四。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1wvyiv0": {
+  "episode": "kh-angkor-build",
+  "lang": "ja",
+  "speaker": "keo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 8.54,
+  "text": "今日、はじめて、天女さまをひとり、まかされたんだ。……でも、どんな顔にしたらいいか、わからなくて。",
+  "heard": "今日、はじめて、天女さまをひとり、まかされたんだ。……でも、どんな顔にしたらいいか、わからなくて。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v16ul0zr": {
+  "episode": "kh-angkor-build",
+  "lang": "ja",
+  "speaker": "keo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 4.48,
+  "text": "あっ、また来てくれたの？ ……まだ、顔が決まらないんだ。",
+  "heard": "あっ、また来てくれたの？……まだ、顔が決まらないんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vs4ee85": {
+  "episode": "kh-angkor-build",
+  "lang": "ja",
+  "speaker": "keo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 6.63,
+  "text": "……うわっ！ だ、だれ？ なんで、ぼくのこと知ってるみたいな顔してるの？",
+  "heard": "うわっ た 誰 ? なん で 僕 の こと 知っ てる みたい な 顔 し てる の ?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ }
+}
