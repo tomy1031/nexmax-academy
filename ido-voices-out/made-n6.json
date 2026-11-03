@@ -826,5 +826,101 @@
   "heard": " The queen looked up. Noticing Chanthy and you peeking over the wall, she smiled gently.",
   "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
   "readings": []
+ },
+ "esx4ju9lz4zr": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.81,
+  "text": "The queen stood up and came over to the low wall.",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "el50kxq1w55r": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "indradevi",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 5.730041666666667,
+  "text": "Who is that peeking in? …The fish-seller's daughter, and a traveller.",
+  "heard": " …The fish-seller's daughter, and a traveler.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1cnflbk206od": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "indradevi",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 3.41,
+  "text": "You've come to peek in again, I see.",
+  "heard": " You've come to peek in again, I see.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1fy6utg1ys7y": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "indradevi",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 6.39,
+  "text": "Who is that peeking in? …Traveller, have we met somewhere before?",
+  "heard": " Who is that peeking in? …Traveller, have we met somewhere before?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1g4r08h1jlxd": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "chanthy",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 5.07,
+  "text": "I-I'm sorry! I just… I want to learn to read…",
+  "heard": " I-I'm sorry! I just… I want to learn to read.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e11iy0cpm9vyu": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "indradevi",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 6.440041666666667,
+  "text": "There's no need to apologise. Anyone who wants to learn may come here.",
+  "heard": " There's no need to apologise. Anyone who wants to learn may come here.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1hvjkvj1010j": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "indradevi",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 10.7,
+  "text": "My younger sister was the same. I was the one who taught her the Buddha's teachings. But she went on to help far more people than I ever did.",
+  "heard": "My younger sister was the same. I was the one who taught her the Buddha's teachings. But she went on to help far more people than I ever did.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1f7ayk8oq261": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "indradevi",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 13.3,
+  "text": "My sister took in girls who had been abandoned by their mothers, and raised them as her own daughters. And she had her dancers perform plays of the Buddha's past lives.",
+  "heard": " My sister took in girls who had been abandoned by their mothers, and raised them as her own daughters. And she had her dancers perform plays of the Buddha's past lives.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
