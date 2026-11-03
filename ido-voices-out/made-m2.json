@@ -1030,5 +1030,101 @@
   "heard": " In 1930, the Buddhist Institute was founded in Phnom Penh. It studied sutras and old Khmer literature, printed them as books and sent them to temples all over the country.",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "e18wcnfb1d0x8": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.9,
+  "text": "The ones who copied and protected the palm-leaf manuscripts for hundreds of years were the temples' monks. The Institute helped turn them into books and bring them to many more people.",
+  "heard": " The ones who copied and protected the palm-leaf manuscripts for hundreds of years were the temples' monks. The Institute helped turn them into books and bring them to many more people.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "esp35welpic4": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.75,
+  "text": "Krom Ngoy's songs became books, and people still read them today.",
+  "heard": " Krom Ngoy's songs became books, and people still",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "el7c5zh114cj": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.46,
+  "text": "Masters of the chapei, a long-necked stringed instrument — like Prach Chhuon, who died in 2018 — have kept singing Krom Ngoy's teaching songs on the chapei.",
+  "heard": " Masters of the chapei, a long-necked stringed instrument — like Prach Chhuon, who died in 2018 — have kept singing Krom Ngoy's teaching songs on the chapei.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "exx3qjp1byin": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.87,
+  "text": "In 2016, chapei singing was added to UNESCO's list of Intangible Cultural Heritage in Need of Urgent Safeguarding, because so few players remain.",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "ey20l6h12vtx": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 13.040041666666667,
+  "text": "The first volume of Chuon Nath's dictionary came out in 1938. It kept being revised, and in 2023 a new edition was even made into a smartphone app.",
+  "heard": " The first volume of Chuon Nath's dictionary came out in 1938. It kept being revised, and in 2023 a new edition was even made into a smartphone app.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1r1msab1qauj": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.440041666666667,
+  "text": "Later on, Chuon Nath also wrote the words of Cambodia's national anthem.",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e2jzsyeoe3us": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.76,
+  "text": "In 2008, big statues of Chuon Nath and Krom Ngoy were put up in parks in Phnom Penh.",
+  "heard": " In 2008, big statues of Chuon Nath and Krom Ngoy were put up in parks in Phnom Penh.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1gvnhqy1vr6u": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.49,
+  "text": "(whispering) Leakhena's dance was handed on to her by Teacher Neary, too, wasn't it?",
+  "heard": "Leakhena's dance was handed on to her by Teacher Neary, too, wasn't it?",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
