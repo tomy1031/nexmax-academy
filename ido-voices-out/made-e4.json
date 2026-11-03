@@ -802,5 +802,101 @@
   "heard": "Where is Yoshitsune?! I, Noritsune, Lord of Noto, will fight you myself!",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "eor3wjq13cgk": {
+  "episode": "genpei-yashima",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.98,
+  "text": "(whispering) Taira no Noritsune…! He's the mightiest archer in the whole Heike army!",
+  "heard": " Taira no Noritsune…! He's the mightiest archer in the whole Heike army!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1cexrse18hz7": {
+  "episode": "genpei-yashima",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.84,
+  "text": "…We meet again, traveler. But there's no time to talk now!",
+  "heard": " We meet again, traveler. But there's no time",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ecviy9o5030v": {
+  "episode": "genpei-yashima",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.54,
+  "text": "(whispering) That man… He has the same face as Kunimori, who we met in Iya…!",
+  "heard": " That man… He has the same face as Kunimori, who we met in Iya!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1wj98rv1d7ny": {
+  "episode": "genpei-yashima",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.48,
+  "text": "(whispering) It's Noritsune, who we met at Dan-no-ura. But this Noritsune doesn't know us yet.",
+  "heard": " It's Noritsune, who we met at Dan-no-ura. But this Noritsune doesn't know us yet.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1rx3e0d1olfn": {
+  "episode": "genpei-yashima",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.040041666666666,
+  "text": "Noritsune aimed his arrow straight at Yoshitsune.",
+  "heard": " Noritsune aimed his arrow straight at Yoshitsune.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e10z0rb51hnz6": {
+  "episode": "genpei-yashima",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.17,
+  "text": "But in front of him, a warrior threw his arms wide and stood in the way.",
+  "heard": " But in front of him, a warrior threw his arms wide and stood in the way.",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "etzftemoeeea": {
+  "episode": "genpei-yashima",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.2400416666666665,
+  "text": "Yoshitsune held the fallen Tsuginobu in his arms.",
+  "heard": " Yoshitsune held the fallen Tsuginobu",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "e1xikky11ksgk": {
+  "episode": "genpei-yashima",
+  "lang": "en",
+  "speaker": "tsuginobu",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 16.53,
+  "text": "…My lord. Are you… hurt…?",
+  "heard": "My Lord, are you?",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
  }
 }
