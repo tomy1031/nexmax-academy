@@ -1219,5 +1219,17 @@
   "heard": "へへっ。あんたに言われると、できる気がする！",
   "scene": "お祝いの、晴れやかな場面。明るく",
   "readings": []
+ },
+ "vlq0lmq": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "vichet",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 28.37,
+  "text": "うっ……。母ちゃんと同じこと言う……。でも、そうだよな。",
+  "heard": "うっと かー ちゃん と 同じ こと 言う 。 でも 、 そう だ よ な 。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
  }
 }
