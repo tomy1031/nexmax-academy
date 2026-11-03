@@ -1150,5 +1150,101 @@
   "heard": "Night. In the square in front of the royal palace, a large stage had been built and decorated with lights and flowers.",
   "scene": "お祝いの、晴れやかな場面。明るく",
   "readings": []
+ },
+ "e1y2zayncl12y": {
+  "episode": "kh-sr-prologue",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.19,
+  "text": "From a very, very tall bamboo frame, a ball of fire went whooshing up into the night sky.",
+  "heard": "From a very, very tall bamboo frame, a ball of fire went whooshing up into the night",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "e12v3zzz1ywf4": {
+  "episode": "kh-sr-prologue",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.06,
+  "text": "Boom! The sound seemed to shake the whole capital.",
+  "heard": "\nThe sound seemed to shake the whole capital.",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "evpllu51kd66": {
+  "episode": "kh-sr-prologue",
+  "lang": "en",
+  "speaker": "zhou",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 10.53,
+  "text": "They say these fires can be seen from a hundred li away — very far indeed. And the festival goes on for fifteen whole days.",
+  "heard": " They say these fires can be seen from a hundred li away — very far indeed. And the festival goes on for fifteen whole days.",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "ee94gri17re9": {
+  "episode": "kh-sr-prologue",
+  "lang": "en",
+  "speaker": "zhou",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.16,
+  "text": "…Traveler. If it were you, what would you write down about this journey?",
+  "heard": "If it were you, what would you write down about this journey?",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "e1un8iv11lqt2": {
+  "episode": "kh-sr-prologue",
+  "lang": "en",
+  "speaker": "zhou",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 7.25,
+  "text": "Just like me, then. What you see, just as you see it. That is what lasts the longest.",
+  "heard": " What you see, just as you see it. That is what lasts the longest.",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "e57v0zc1lvo5": {
+  "episode": "kh-sr-prologue",
+  "lang": "en",
+  "speaker": "zhou",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 7.39,
+  "text": "About people? …How fine. People are forgotten far sooner than stone towers, after all.",
+  "heard": " How fine. People are forgotten far sooner than stone towers, after all.",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "e1glkdlpwhis6": {
+  "episode": "kh-sr-prologue",
+  "lang": "en",
+  "speaker": "zhou",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 8.37,
+  "text": "Ha ha ha. That is a traveler's wisdom, too. I have not seen even half of it myself yet.",
+  "heard": " Ha ha ha. That is a traveler's wisdom, too. I have not seen even half of it myself yet.",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "e1j9q4l711oqe": {
+  "episode": "kh-sr-prologue",
+  "lang": "en",
+  "speaker": "zhou",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 7.4,
+  "text": "Well then, I shall go and write a little more. Until we meet again, in some other time.",
+  "heard": "Well then, I shall go and write a little more. Until we meet again, in some other time.",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
  }
 }
