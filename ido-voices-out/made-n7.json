@@ -898,5 +898,17 @@
   "heard": " You put some soil in a sieve and shook it. A small piece of pottery was left",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1mp82w71uty5": {
+  "episode": "kh-banteaykdei",
+  "lang": "en",
+  "speaker": "sovann",
+  "voice": "Umbriel",
+  "model": "gemini-3.8-live",
+  "seconds": 3.76,
+  "text": "That's an important clue, too. Let's record it.",
+  "heard": " That's an important clue, too. Let's record it.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
