@@ -701,5 +701,109 @@
   "heard": "",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v1erw79i": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 3.45,
+  "text": "おお、そなたたち！ また会うたな。",
+  "heard": " おお、そなたたち！ また会うたな。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v4hc0us": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 6.75,
+  "text": "……！ 今の言葉、日本の言葉ではないか。……なぜそのように、なつかしそうな顔をする。",
+  "heard": "！ 今の言葉、日本の言葉ではないか。……なぜそのように、なつかしそうな顔をする。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v4oh7so": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 3.97,
+  "text": "船に乗り、数千里の海を渡ってまいった。",
+  "heard": "船に乗り、数千里の海を渡って参った。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1ji479z": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 6.67,
+  "text": "お釈迦さまが教えを説かれた御堂——祇園精舎に、どうしてもお参りしたくてな。",
+  "heard": "お釈迦さまが教えを説かれた御堂——祇園精舎に、どうしてもお参りし",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "祇園精舎＝ぎおんしょうじゃ"
+  ]
+ },
+ "vc82rgw": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.09,
+  "text": "（小声）このころの日本の人は、アンコール・ワットを「祇園精舎」だと信じていたんだ。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "祇園精舎＝ぎおんしょうじゃ"
+  ]
+ },
+ "vwz11s6": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.900041666666667,
+  "text": "（小声）ほんとうの祇園精舎は、インドにある。でも、一房さんにとっては、ここが祈りの場所なんだ。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "祇園精舎＝ぎおんしょうじゃ"
+  ]
+ },
+ "v1bzy6ya": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 10.04,
+  "text": "父上は、城を築く人であった。加藤清正公にお仕えし、熊本の城には、父上の名のついた櫓もある。",
+  "heard": "加藤清正公にお仕えし、熊本の城には、父上の名のついた櫓もある。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "櫓＝やぐら"
+  ]
+ },
+ "vqvr29c": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 6.43,
+  "text": "いまは、お仕えしていた家を離れておられる。もう、よいお年だ。",
+  "heard": "いまは、お仕えしていた家を離れておられる。もう、よいお年だ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
