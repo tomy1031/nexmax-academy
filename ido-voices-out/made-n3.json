@@ -94,5 +94,101 @@
   "heard": " Sophea, don't run. …Oh, are you a traveler?",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1iftda6o4cgl": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "sok",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 4.75,
+  "text": "Sorry about my granddaughter. My name is Sok.",
+  "heard": " Sorry about my granddaughter. My name is Sok.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ejr4edjdaug1": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "sok",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 4.830041666666666,
+  "text": "Oh, it's you… We meet again.",
+  "heard": " Oh, it's you… We meet again.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e179fxld49op9": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "sok",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 2.7200416666666665,
+  "text": "My name is Sok.",
+  "heard": "My name is Sock.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ef4a361w9pyo": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "sok",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 5.91,
+  "text": "You see, this bridge was first built with Japan's help, back when I was young.",
+  "heard": "You see, this bridge was first built with Japan's help, back when I was young,",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e10746yd1rime": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "sok",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 9.57,
+  "text": "Then, for over twenty years, it was broken in the middle. And now, with Japan's help, it's been joined again.",
+  "heard": " Then, for over twenty years, it was broken in the middle. And now, with Japan's help, it's been joined again.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "elw2e9n1xubt": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "sophea",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 5.880041666666667,
+  "text": "I've never crossed this bridge, not once in my whole life!",
+  "heard": " I've never crossed this bridge, not once in my whole life!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e20pttm1petm": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.090041666666667,
+  "text": "Looking at the river, Grandpa Sok began to talk about the old days.",
+  "heard": " Looking at the river, Grandpa Sok began to talk about the old days.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "et8yh1u1nset": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "sok",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 8.31,
+  "text": "In the 1960s, I was barely twenty. I played a xylophone called the roneat.",
+  "heard": " In the 1960s, I was barely twenty. I played a xylophone called the roneat.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
