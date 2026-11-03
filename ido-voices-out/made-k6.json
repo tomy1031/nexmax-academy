@@ -134,5 +134,109 @@
   "heard": "海岸にはたくさんの船が掘られていた船の上で兵士たちが槍を構えている水の中には大きな魚やワニまでいる",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v1vq70p9": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "石工のヴォンさん",
+  "voice": "Schedar",
+  "model": "gemini-3.8-live",
+  "seconds": 8.17,
+  "text": "それは、湖の上の戦だ。チャンパの国の軍が、この都にせめてきたことがあってな。",
+  "heard": "それは、湖の上の戦だ。チャンパの国の軍が、この都にせめてきたことがあってな。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "都＝みやこ"
+  ]
+ },
+ "vhbqgk1": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.57,
+  "text": "1177年ごろ、となりの国チャンパの軍がアンコールをせめたんだ。そのあと、ジャヤーヴァルマン7世が、都を取りもどしたといわれているよ。",
+  "heard": "1177年ごろ、となりの国チャンパの軍がアンコールをせめたんだ。そのあと、ジャヤーヴァルマン7世が、都を取りもどしたといわれているよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "都＝みやこ"
+  ]
+ },
+ "vfgy0q7": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "chanthy",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 2.39,
+  "text": "でもね、こっちも見て！",
+  "heard": "でもねこっちも見て",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v89lzev": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.9900416666666665,
+  "text": "チャンティが指さした壁には、戦ではない絵が彫られていた。",
+  "heard": "チャンティが指さした壁には、戦ではない",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vhpa8bu": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 17.07,
+  "text": "魚をはかりにのせる人。なべで、ごはんをたく人。闘鶏を見て、はやしたてる人。子どもをあやす人。",
+  "heard": "魚をはかりにのせる人。なべで、ごはんをたく人。闘鶏を見て、はやしたてる人。子どもをあやす人。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "闘鶏＝とうけい"
+  ]
+ },
+ "v1edxwnp": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "chanthy",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 4.02,
+  "text": "あっ……！ このはかりの人、お母さんだ！",
+  "heard": "あっ……！ このはかりの人、お母さんだ！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1yn6bva": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "石工のヴォンさん",
+  "voice": "Schedar",
+  "model": "gemini-3.8-live",
+  "seconds": 6.010041666666667,
+  "text": "ははは。ばれたか。毎日、市場で見ているからな。",
+  "heard": "ばれたか。毎日市場で見ているからな。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vp3mkzx": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "石工のヴォンさん",
+  "voice": "Schedar",
+  "model": "gemini-3.8-live",
+  "seconds": 9.78,
+  "text": "王さまの戦も大事だが、わしは、わしの見たものも彫りたい。都に住む人の、ふつうの毎日をな。",
+  "heard": "王さまの戦も大事だが、わしは、わしの見たものも彫りたい。都に住む人の、ふつうの",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "都＝みやこ"
+  ]
  }
 }
