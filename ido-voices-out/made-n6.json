@@ -226,5 +226,101 @@
   "heard": " The ordinary days of the people who live in this city.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e20y2pt1xfj0": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "石工のヴォンさん",
+  "voice": "Schedar",
+  "model": "gemini-3.8-live",
+  "seconds": 7.14,
+  "text": "Look, over here is a woman caring for someone who's sick. The king has built hospitals all across the land.",
+  "heard": " Look, over here is a woman caring for someone who's sick. The king has built hospitals all across the land.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "exc7hmj174jw": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "石工のヴォンさん",
+  "voice": "Schedar",
+  "model": "gemini-3.8-live",
+  "seconds": 11.57,
+  "text": "They say these words are carved on the stone at the hospitals: “The illness of the people's bodies becomes an illness of the king's heart, and hurts him even more.”",
+  "heard": " They say these words are carved on the stone at the hospitals: \"The illness of the people's bodies becomes an illness of the king's heart, and hurts him even more.\"",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ezpk0odh3et6": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.75,
+  "text": "Those are words from the stone tablets Jayavarman VII set up at his hospitals. They also say that anyone could be cared for there, whatever their rank.",
+  "heard": " Those are words from the stone tablets Jayavarman the Seventh set up at his hospitals. They also say that anyone could be cared for there, whatever their rank.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "esqmlzqjuxdl": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "chanthy",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 3.76,
+  "text": "My mom is in the stone now — she'll be here forever…!",
+  "heard": " My mom is in the stone now — she'll be",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "em5oe3x1tbnb": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "石工のヴォンさん",
+  "voice": "Schedar",
+  "model": "gemini-3.8-live",
+  "seconds": 5.7400416666666665,
+  "text": "Traveler. If you were to carve an ordinary day in your country, what would you carve?",
+  "heard": "If you were to carve an ordinary day in your country, what would you carve?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e193kcx61wjq4": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "石工のヴォンさん",
+  "voice": "Schedar",
+  "model": "gemini-3.8-live",
+  "seconds": 4.750041666666666,
+  "text": "Good choice. In every country, people gather around the cooking pot.",
+  "heard": " In every country, people gather around the cooking pot.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1mawco277bsc": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "石工のヴォンさん",
+  "voice": "Schedar",
+  "model": "gemini-3.8-live",
+  "seconds": 5.5,
+  "text": "Good choice. Even in stone, you'd almost hear the children laughing.",
+  "heard": " Even in stone, you'd almost hear the children laughing.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1azfanl4bpvr": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "石工のヴォンさん",
+  "voice": "Schedar",
+  "model": "gemini-3.8-live",
+  "seconds": 5.22,
+  "text": "Ha ha ha, same as me! The market is the heart of the city.",
+  "heard": " Ha ha ha, same as me! The market is the heart of the city.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
