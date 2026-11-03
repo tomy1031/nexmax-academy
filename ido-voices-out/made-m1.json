@@ -1,0 +1,100 @@
+{
+ "v132iv2h": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.69,
+  "text": "1930年。プノンペンの川岸。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v13xm8m7": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 14.59,
+  "text": "南には、王宮の金色の屋根が光っている。北へ少し歩くと、大きなお寺、ワット・ウナロムがある。",
+  "heard": "南には、王宮の金色の屋根が光っている。北へ少し歩くと、大きなお寺、ワット・ウナロムがある。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vtkb1cc": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.830041666666666,
+  "text": "川岸の大きな木の下に、人だかりができていた。",
+  "heard": "川岸の大きな木の下に、人だかりができていた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vh9wdsp": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "borey",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 4.5,
+  "text": "ねえ、そこの人！ 早く早く、いい場所がなくなっちゃう！",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1t1hm1p": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "borey",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 5.91,
+  "text": "ぼく、ボレイ。十一歳。ワット・ウナロムに住んで、字を習ってるんだ。",
+  "heard": "ぼく、ボレイ。十一歳。ワット・ウナロムに住んで、字を習ってるんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v17gf0mj": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "borey",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 9.7,
+  "text": "お坊さんのお使いをしたり、水をくんだりする「お寺の子」だよ。",
+  "heard": "だよ。お坊さんのお使いをしたり、水をくんだりするおてらのこだよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "お寺の子＝おてらのこ"
+  ]
+ },
+ "v1la7d14": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "borey",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 4.67,
+  "text": "あっ、また来たんだね！ 早く早く、いい場所がなくなっちゃう！",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1nphhce": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "borey",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 7.33,
+  "text": "ねえ、そこの人！ ……あれ？ ぼくのこと、知ってるみたいな顔してる。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ }
+}
