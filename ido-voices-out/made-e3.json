@@ -1270,5 +1270,101 @@
   "heard": " On a night like this?",
   "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
   "readings": []
+ },
+ "e1cmv8gs1pdy2": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 12.760041666666666,
+  "text": "You need not tell me your name. Names mean nothing now. …I am Kuro. Long ago, people called me Minamoto no Yoshitsune.",
+  "heard": " You need not tell me your name. Names mean nothing now. …I am Kuro. Long ago, people called me Minamoto no Yoshitsune.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "eumnbevytocp": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 3.11,
+  "text": "…So it is you, after all.",
+  "heard": "So it is you, after all.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e13ddraogwta1": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 5.54,
+  "text": "At Kisegawa, you told me that my elder brother would surely be pleased with me.",
+  "heard": " At Kisegawa, you told me that my elder brother would surely be pleased with me.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e1q6mm051ex1d": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 5.420125,
+  "text": "…He was pleased with me for one night. Only that one night.",
+  "heard": "He was pleased with me for one night. Only that one night.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "eowya3g1cqxo": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 4.58,
+  "text": "At Kisegawa, you told me to trust my elder brother.",
+  "heard": " At Kisegawa, you told me to trust my elder brother.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e1bsrji8cskxz": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 8.31,
+  "text": "And I did. I trusted him to the very end. …And here I am, still trusting him.",
+  "heard": " I trusted him to the very end. …And here I am, still trusting him.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "ec4ou1911o4u": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 4.74,
+  "text": "At Kisegawa, you told me to take care of myself.",
+  "heard": " At Kisegawa, you told me to take care of myself.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "ecvgvkt1a9c5": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 5.76,
+  "text": "…I laughed at you then. Now, I am a little sorry that I did.",
+  "heard": "I laughed at you then. Now, I am a little sorry that I did.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
  }
 }
