@@ -994,5 +994,101 @@
   "heard": "From out at sea, a single small heke boat rowed toward the shore. On top of a pole stood a fan, crimson with a golden sun painted on it.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1y3jvf13fbz": {
+  "episode": "genpei-yashima",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.440041666666667,
+  "text": "On the boat, a court lady waved them closer, as if to say, “Go on — shoot it!”",
+  "heard": "On the boat, a court lady waved them closer as if to say, \"Go on, shoot it.\"",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "es16aq5dw44m": {
+  "episode": "genpei-yashima",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 2.0900416666666666,
+  "text": "Yoichi. Shoot it.",
+  "heard": "Yoshi, shoot it.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eb2e9541szb6": {
+  "episode": "genpei-yashima",
+  "lang": "en",
+  "speaker": "yoichi",
+  "voice": "Umbriel",
+  "model": "gemini-3.8-live",
+  "seconds": 9.69,
+  "text": "…Hail, Great Bodhisattva Hachiman (god of archers). I pray you, let my arrow hit the very center of that fan.",
+  "heard": "Hail, great Bodhisattva Hachiman, God of Archery. I pray you, let my arrow hit the very center of that fan.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1bvy9bnqjdgo": {
+  "episode": "genpei-yashima",
+  "lang": "en",
+  "speaker": "yoichi",
+  "voice": "Umbriel",
+  "model": "gemini-3.8-live",
+  "seconds": 8.950041666666667,
+  "text": "If I miss, I will break my bow and never show my face to anyone again—",
+  "heard": " If I miss, I will break my bow and never show my face",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eymu9t0hz2nj": {
+  "episode": "genpei-yashima",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.150041666666667,
+  "text": "The whistling arrow tore through the wind.",
+  "heard": " The whistling arrow tore through the wind.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "euk4djup414u": {
+  "episode": "genpei-yashima",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 16.22,
+  "text": "The fan flew up into the sky and fluttered there for a moment — then it danced in the spring wind, twirled once, twice, and scattered onto the sea.",
+  "heard": " The fan flew up into the sky and fluttered there for a moment — then it danced in the spring wind, twirled once, twice, and scattered onto the sea.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e1habks8111wz": {
+  "episode": "genpei-yashima",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10,
+  "text": "Out at sea, the Heike drummed on the sides of their boats. On shore, the Genji (the Minamoto clan) pounded on their quivers (arrow cases). Everyone roared.",
+  "heard": " Out at sea, the Heike drummed on the sides of their boats. On shore, the Genji pounded on their quivers. Everyone roared.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "ek4ej38421dz": {
+  "episode": "genpei-yashima",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 15.52,
+  "text": "Perhaps he couldn't hold back his delight. On a Heike boat, a warrior of about fifty, in black leather armor, began to dance right where the fan had been, holding a white-handled naginata (a long spear with a curved blade).",
+  "heard": " Perhaps he couldn't hold back his delight. On a Heike boat, a warrior of about fifty, in black leather armor, began to dance right where the fan had been, holding a white-handled naginata (a long spear with a curved blade).",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
  }
 }
