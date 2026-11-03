@@ -535,5 +535,101 @@
   "heard": "あなたが連れていった子どもたちも、小さなかごを頭にのせて、列にならんでいる。",
   "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
   "readings": []
+ },
+ "vrfazrc": {
+  "episode": "kh-watphnom",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.300041666666667,
+  "text": "縄を引いた男たちも、手のひらの豆をさすりながら、かごをかついでいる。",
+  "heard": "縄を引いた男たちも、手のひらの豆をさすりながら、かごをかついでいる。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1l745d2": {
+  "episode": "kh-watphnom",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 12.19,
+  "text": "土の山は、少しずつ、少しずつ高くなった。てっぺんには、木で小さなお堂が建てられた。",
+  "heard": "土の山は、少しずつ、少しずつ高くなった。てっぺんには、木で小さなお堂が建てられた。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v9sbs5v": {
+  "episode": "kh-watphnom",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.96,
+  "text": "お坊さんたちは、そこを「ワット・プノン」——丘の寺と呼んだ。",
+  "heard": "お坊さんたちは、そこを「ワット・プノン」——丘の寺と呼んだ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1ve9dfs": {
+  "episode": "kh-watphnom",
+  "lang": "ja",
+  "speaker": "penh",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 4.3,
+  "text": "旅の人。手伝ってくれて、ありがとうよ。",
+  "heard": "旅 の 人 手伝っ て くれ て ありがとう よ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1a6d4a6": {
+  "episode": "kh-watphnom",
+  "lang": "ja",
+  "speaker": "penh",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 5.15,
+  "text": "あんたの国にも、こうやって、みんなで作ったものがあるかい？",
+  "heard": "あんた の 国 に も こう やっ て みんな で 作っ た もの が ある か い ?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vlywfu6": {
+  "episode": "kh-watphnom",
+  "lang": "ja",
+  "speaker": "penh",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 5.51,
+  "text": "そうかい。どこの国でも、人のすることは同じだねえ。",
+  "heard": "そうかい どこの国でも人のすることは同じだね",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vadc1nu": {
+  "episode": "kh-watphnom",
+  "lang": "ja",
+  "speaker": "penh",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 4.91,
+  "text": "そうかい。それなら、帰ったら、さがしてごらん。きっとあるよ。",
+  "heard": " そうかい。それなら、帰ったら、さがしてごらん。きっとあるよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vnm1xm5": {
+  "episode": "kh-watphnom",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.33,
+  "text": "……戻ってきたよ。ここが、いまのワット・プノン。",
+  "heard": " ここが、いまのワット・プノン。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
