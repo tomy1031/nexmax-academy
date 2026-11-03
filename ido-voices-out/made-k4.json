@@ -1082,5 +1082,103 @@
   "heard": " ごらんなさい。橋の両側に、石の神が五十四ずつ。みんなで、九つの頭の蛇をつかんでいる。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "vd32r3b": {
+  "episode": "kh-sr-prologue",
+  "lang": "ja",
+  "speaker": "zhou",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 9.66,
+  "text": "門の両わきには、石のゾウ。門は、昼に開いて、夜には閉まります。番をする人もいるのですよ。",
+  "heard": "門 の 両脇 に は 石 の 像 門 は 昼 に 開い て 夜 に は 閉まり ます 。 番 を する 人 も いる の です よ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1ebybo7": {
+  "episode": "kh-sr-prologue",
+  "lang": "ja",
+  "speaker": "zhou",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.1,
+  "text": "そして、都のまんなかには、金の塔がある。",
+  "heard": "そして 都 の 真ん中 に は 金 の 塔 が ある 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "都＝みやこ"
+  ]
+ },
+ "v1pk8sh6": {
+  "episode": "kh-sr-prologue",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.7400416666666665,
+  "text": "金の塔は、バイヨンのことだよ。周達観さんが来たときには、もう、できてから100年近くたっていたんだ。",
+  "heard": "金の塔は、バイオンのことだよ。周達観さんが来たときには、もう、できてから、100年近くたっていた",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vej3tob": {
+  "episode": "kh-sr-prologue",
+  "lang": "ja",
+  "speaker": "zhou",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.34,
+  "text": "それから、市場。この国では、商いが上手なのは、女の人たちです。",
+  "heard": " それから、市場。この国では、商いが上手なのは、女の人",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1uqdztx": {
+  "episode": "kh-sr-prologue",
+  "lang": "ja",
+  "speaker": "zhou",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 8.26,
+  "text": "店はなくて、地面にござを広げて売るのです。一人ひとり、場所が決まっているそうですよ。",
+  "heard": "店はなくて、地面にござを広げて売るのです。一人ひとり、場所",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v12e0grx": {
+  "episode": "kh-sr-prologue",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 2.37,
+  "text": "（小声）……チャンティちゃんのお母さんも、そうだったね。",
+  "heard": "チャンティー ちゃん の お母さん も そう だっ た ね 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vf5lsr": {
+  "episode": "kh-sr-prologue",
+  "lang": "ja",
+  "speaker": "zhou",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.39,
+  "text": "ところで、今夜は、年のはじめのお祭りです。いっしょに見に行きませんか。",
+  "heard": "ところで 今夜 は 年 の はじめ の お 祭り です 。 一緒 に 見 に 行き ませ ん か ?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vucilhl": {
+  "episode": "kh-sr-prologue",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.57,
+  "text": "夜。王宮の前の広場に、大きな台が組まれ、灯りと花でかざられていた。",
+  "heard": "夜。王宮の前の広場に、大きな台が組まれ、灯りと花でかざられていた。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
  }
 }
