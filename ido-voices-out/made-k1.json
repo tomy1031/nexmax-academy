@@ -941,5 +941,108 @@
   "readings": [
    "都＝みやこ"
   ]
+ },
+ "v1kh1n6l": {
+  "episode": "kh-royalpalace",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.14,
+  "text": "あなたとピセットは、かけ声をそろえて櫂を入れた。舟が、すうっと前に出る。",
+  "heard": "あなたとピセット は 掛け声 を 揃え て 櫂 を 入れ た 。 船 が すっ と 前 に 出る 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "櫂＝かい"
+  ]
+ },
+ "v1cohhwj": {
+  "episode": "kh-royalpalace",
+  "lang": "ja",
+  "speaker": "piseth",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 3.75,
+  "text": "うまい！ あんた、舟の祭りに出られるよ！",
+  "heard": "うまい！ あんた、舟の祭りに出られるよ！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v15gbj55": {
+  "episode": "kh-royalpalace",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 14.85,
+  "text": "茶色い水が、ゆったりと流れていく。岸の木の上を、白い鳥がわたっていく。",
+  "heard": "茶色い水がゆったりと流れていく 。岸の木の上を白い鳥が渡っていく 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vxtiqtu": {
+  "episode": "kh-royalpalace",
+  "lang": "ja",
+  "speaker": "piseth",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 3.32,
+  "text": "きれいだろ。……でも、手は止めないでね。",
+  "heard": "……でも、手は止めないでね。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1isnauj": {
+  "episode": "kh-royalpalace",
+  "lang": "ja",
+  "speaker": "piseth",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 8.47,
+  "text": "川にはね、ふしぎなことがあるんだ。雨の季節には、この川の水が、反対向きに流れるんだよ。",
+  "heard": " 川にはね、ふしぎなことがあるんだ。雨の季節には、この川の水が、反対向き",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vuqv7ve": {
+  "episode": "kh-royalpalace",
+  "lang": "ja",
+  "speaker": "piseth",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 9.89,
+  "text": "メコンの水がいっぱいになると、トンレサップ川を押し返して、大きな湖のほうへ流れていく。雨が終わると、また元にもどる。",
+  "heard": "メコンの水がいっぱいになると、とんれさっぷがわを押し返して、大きな湖のほうへ流れていく。雨がおわると、また元にもどる。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "トンレサップ川＝とんれさっぷがわ"
+  ]
+ },
+ "v1pgqp2r": {
+  "episode": "kh-royalpalace",
+  "lang": "ja",
+  "speaker": "piseth",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 7.54,
+  "text": "水がもどってくるころに、村で舟の競争をするんだ。じいちゃん、若いころ、こぎ手で出たんだって！",
+  "heard": "水が戻って来る頃に村で船の競争をするんだ。じいちゃん、若い頃、漕ぎ手で出たんだって。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vzl9lpb": {
+  "episode": "kh-royalpalace",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 14.16,
+  "text": "雨の季節のおつとめが明けたあとの、村の舟の競争だね。王宮の前で開かれる今の水祭り、ボン・オム・トゥークは、都がここに移ってから始まったと考える学者もいるよ。",
+  "heard": " 雨の季節のおつとめが明けたあとの、村の舟の競争だね。王宮の前で開かれる今の水祭り、ボン・オム・トゥークは、都がここに移ってから始まったと考える学者もいるよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "水祭り＝みずまつり",
+   "都＝みやこ"
+  ]
  }
 }
