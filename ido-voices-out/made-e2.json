@@ -1042,5 +1042,101 @@
   "heard": "Wait, you must never pick up a baby crying on a mountain road.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1jywr1wrxwyg": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.02,
+  "text": "The crying moved off the path, toward the slope on the right.",
+  "heard": " The crying moved off the path, toward the slope on the right.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "elbwmtm1aozi": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.58,
+  "text": "Without thinking, you followed the sound and stepped off the path.",
+  "heard": " Without thinking, you followed the sound and stepped off the path.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1u5mq7l1j70y": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 2.930041666666667,
+  "text": "At that very moment—",
+  "heard": "at that very moment",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1rakppj19e2k": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.360041666666667,
+  "text": "With a great crash, the path you had been about to take crumbled away.",
+  "heard": " With a great crash, the path you had been about to take crumbled away.",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": []
+ },
+ "e1ha9iwhtlacf": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.67,
+  "text": "Far below in the dark, you heard a splash. The deep pool.",
+  "heard": " Far below in the dark, you heard a splash. The deep pool.",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": []
+ },
+ "e1k0yxrzyu09i": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "konaki",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.08,
+  "text": "…Phew. That was a close one, wasn't it?",
+  "heard": " Phew. That was a close one, wasn't it?",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": []
+ },
+ "e1bv5ono17el0": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "konaki",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 7.35,
+  "text": "I'm Konaki-jiji. I've lived on this mountain for a long, long time.",
+  "heard": " I'm Konaki-jiji. I've lived on this mountain for a long, long time.",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": []
+ },
+ "ehkdm9h9f0g": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "konaki",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 7.600041666666667,
+  "text": "…Phew. That was a close one, wasn't it? I'm Konaki-jiji.",
+  "heard": " Phew. That was a close one, wasn't it? I'm Konaki-jiji.",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": []
  }
 }
