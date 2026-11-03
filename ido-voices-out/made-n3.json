@@ -190,5 +190,101 @@
   "heard": " In the 1960s, I was barely twenty. I played a xylophone called the roneat.",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "e1wl7q51c6x6w": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "sok",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 6.590041666666667,
+  "text": "Whenever there was a wedding in a village on the other side, I'd carry my instrument across this bridge.",
+  "heard": "Whenever there was a wedding in a village on the other side, I'd carry my instrument across this bridge.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "eqbiohn1vtw7": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "sok",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 8.410041666666666,
+  "text": "The Independence Monument had just been built in the city. You could always hear songs from a radio somewhere.",
+  "heard": "The independence monument had just been built in the city. You could always hear songs from a radio somewhere.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e118ote4nx0bt": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.7,
+  "text": "(whispering) The Independence Monument…! The lotus tower that Dara's father and the others built.",
+  "heard": " The Independence Monument…! The lotus tower that Dara's",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "enzg4vwbjt8t": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.35,
+  "text": "After independence in 1953, the Independence Monument was built, starting in 1958. They say Phnom Penh back then was called the “Pearl of Asia.”",
+  "heard": "After independence in 1953, the Independence Monument was built, starting in 1958. They say Phnom Penh back then was called the “Pearl of Asia.”",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1xvttajkyhw8": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "sok",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 7.64,
+  "text": "In 1972, the fighting got worse. Part of the bridge was blown up, and it fell.",
+  "heard": " In 1972, the fighting got worse. Part of the bridge was blown up, and it",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e18tt71y1tiwk": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "sok",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 6.44,
+  "text": "And then… in April 1975, everyone in the city was made to leave it.",
+  "heard": " And then… in April 1975, everyone in the city was made to",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1oiquvh1gmmh": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.6,
+  "text": "Grandpa Sok was quiet for a while, looking at the river. Sophea held his hand.",
+  "heard": "Grandpa Sak was quiet for a while, looking at the river. Sophia held his hand.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1256b8s15rsr": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.49,
+  "text": "From 1975 to 1979, a great many people in this country lost their lives.",
+  "heard": " From 1975 to 1979, a great many people in this country lost their lives.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
