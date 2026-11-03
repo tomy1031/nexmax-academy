@@ -946,5 +946,17 @@
   "heard": " Above the gate were great faces. The one in the middle was decorated with gold and shone",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e7nqa0slx55f": {
+  "episode": "kh-sr-prologue",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.33,
+  "text": "At the foot of the bridge, a young man in a blue robe was busily writing on paper with a brush.",
+  "heard": " At the foot of the bridge, a young man in a blue robe was busily writing on paper with a brush.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
