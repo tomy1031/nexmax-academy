@@ -790,5 +790,17 @@
   "heard": "",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1fhb9y817nib": {
+  "episode": "kh-banteaykdei",
+  "lang": "en",
+  "speaker": "sovann",
+  "voice": "Umbriel",
+  "model": "gemini-3.8-live",
+  "seconds": 3.0700416666666666,
+  "text": "Oh, you've come again. Watch your step.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
