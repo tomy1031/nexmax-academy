@@ -348,5 +348,107 @@
   "heard": " ねえ、もうひとつ、見せたいものがあるの。こっち、こっち！",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "vawacvn": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.760125,
+  "text": "お寺の、風の通る広間。ござの上に、女の人や女の子たちが、ヤシの葉の本をひろげてすわっていた。",
+  "heard": "お寺の、風の通る広間。ござの上に、女の人や女の子たちが、ヤシの葉の本をひろげてすわっていた。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1vnzyxz": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.370041666666667,
+  "text": "前に立って教えているのは、白と金の衣の女の人。遠くて、お顔は見えない。",
+  "heard": "前に立って教えているのは、白と金の衣の女の人。遠くて、お顔は見えない。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1i887ak": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "chanthy",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 9.56,
+  "text": "王妃さまだよ。お寺で、女の人たちに、仏さまの教えを教えてくださるの。",
+  "heard": "王妃さまだよ。お寺で、女の人たちに、仏さま",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "王妃＝おうひ"
+  ]
+ },
+ "vcqhro6": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.07,
+  "text": "インドラデーヴィー王妃だね。王妃が、お寺で女の人たちに教えていたことは、石碑の詩に書かれているんだ。",
+  "heard": "インドラデーヴィー王妃だね。王妃が、お寺で女の人たちに教えていたことは、石碑の詩に書かれているんだ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "王妃＝おうひ"
+  ]
+ },
+ "vnu6vsi": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.49,
+  "text": "その詩を作ったのも、インドラデーヴィー王妃自身なんだよ。",
+  "heard": "その詩を作ったのも、インドラデーヴィー王妃自身なんだよ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "王妃＝おうひ"
+  ]
+ },
+ "vxdk60u": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "chanthy",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 8.300041666666667,
+  "text": "わたしもね、いつか、字を読めるようになりたいんだ。……魚の数だけじゃなくて。",
+  "heard": " わたしもね、 いつか、字を読めるようになりたいんだ。……魚の数だけじゃなくて。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1ww2kxz": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "chanthy",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 6.27,
+  "text": "えへへ。じゃあ、まずは、お母さんの名前から書けるようになる！",
+  "heard": "へへへ。じゃ、まずは、お母さんの名前から書けるようになれ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vxq00a4": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.170041666666666,
+  "text": "あなたとチャンティは、低い壁のかげから、しばらく、教えのことばに耳をすませた。",
+  "heard": "あなたとチャンティは、低い壁のかげから、しばらく、教えのことばに耳をすませた。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
