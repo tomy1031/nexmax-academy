@@ -1174,5 +1174,17 @@
   "heard": "Takahashi, a hilltop mansion above the Kuromo River, was about to go up in flames.",
   "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
   "readings": []
+ },
+ "e14y6znxhwdop": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 18.140041666666665,
+  "text": "The attackers were soldiers of the Fujiwara lords of Oshu, forced into this by the government in Kamakura. …It was the army of Yasuhira, son of Hidehira — the lord who had once kept Minamoto no Yoshitsune safe.",
+  "heard": " The attackers were soldiers of the Fujiwara lords of Oshu, forced into this by the government in Kamakura. …It was the army of Yasuhira, son of Hidehira — the lord who had once kept Minamoto no Yoshitsune safe.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
  }
 }
