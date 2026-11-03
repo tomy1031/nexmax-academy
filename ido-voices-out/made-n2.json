@@ -742,5 +742,53 @@
   "heard": "",
   "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
   "readings": []
+ },
+ "e1pake3pyafvg": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "neary",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 8.82,
+  "text": "When I was your age, I cried too. But if you practice every day, your fingers will remember.",
+  "heard": " When I was your age, I cried too. But if you practice every day, your fingers will remember.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e17hs2bbkb92l": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "neary",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 3.86,
+  "text": "You try too, traveler. Which shape would you like?",
+  "heard": " You try too, traveler. Which shape would you like?",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "ejmziav12atw": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 11.850041666666666,
+  "text": "You gently brought your fingertips together and made the shape of a bud.",
+  "heard": "\nYou gently brought your fingertips together and made the shape of a bud.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1okps8s19lnc": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "neary",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 5.89,
+  "text": "Yes. A flower that is about to bloom. …The shape of beginnings.",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
