@@ -786,5 +786,29 @@
   "heard": " あなたも、 この旅人の 列の、 いちばん 新しいひとりだよ。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "vlwkwx2": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.38,
+  "text": "いまの遺跡では、石にのぼったり、かくれんぼをしたりしないでね。大切な石が、くずれてしまうから。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1kp7nk8": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.560041666666667,
+  "text": "（小声）……ニモルちゃんなら、今でも、だれより上手に、この寺を案内してくれそう。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
