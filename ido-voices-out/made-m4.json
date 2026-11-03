@@ -586,5 +586,101 @@
   "heard": " But I want to write down what I see here as truly as I can, and let people in faraway countries know.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "en3q21arzo43": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "nimol",
+  "voice": "Aoede",
+  "model": "gemini-3.8-live",
+  "seconds": 0.7500416666666667,
+  "text": "And then what?",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1rgcs351hxfp": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "mouhot",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 4.03,
+  "text": "…Well. I'm sure many people will want to see this temple.",
+  "heard": "Well. I'm sure many people will want to see this temple.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1qg0uk964nnu": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "nimol",
+  "voice": "Aoede",
+  "model": "gemini-3.8-live",
+  "seconds": 7.53,
+  "text": "Hmm. Then when they come, I'll show them around. Nobody knows the temple of hide-and-seek better than me.",
+  "heard": " Then when they come, I'll show them around. Nobody knows the temple of hide-and-seek better than me.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ehpswrcdzox5": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.420041666666667,
+  "text": "Mouhot burst out laughing. The monkey on his shoulder squeaked too, as if clapping its hands.",
+  "heard": " Mouhot burst out laughing. The monkey on his shoulder squeaked too, as if clapping its hands.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eb0k7x61fuar": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.3100416666666668,
+  "text": "…We're back. This is the Bayon today.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "egk4sbb1hlk1": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.89,
+  "text": "Mouhot stayed at Angkor for about three weeks and wrote down what he saw in his diary.",
+  "heard": " Mouhot stayed at Angkor for about three weeks and wrote down what he saw in his diary.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "emz41t2ghiak": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.32,
+  "text": "He wrote that Angkor Wat was “grander than anything left to us by Greece or Rome.”",
+  "heard": " He wrote that Angkor Wat was “grander than anything left to us by Greece or Rome.”",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e11urbvr1krdb": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.15,
+  "text": "The next year, Mouhot fell ill in Laos and died. His family gathered his letters and diaries and made them into a book.",
+  "heard": " The next year, Mouhot fell ill in Laos and died. His family gathered his letters and diaries and made them",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
