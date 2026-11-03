@@ -744,5 +744,104 @@
   "heard": "ボレイは、あわてて両手を合わせ、頭を下げた。あなたも、まねをして手を合わせる。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v1rcpg4x": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "borey",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 6.5,
+  "text": "チュオン・ナート先生だ……！ クメール語の辞書を作っている、学問のお坊さんだよ。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v4ypcko": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "chuonnath",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 2.4800833333333334,
+  "text": "旅の方、ようこそ。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v10b8ra7": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "chuonnath",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 2.5100416666666665,
+  "text": "また、お会いしましたね。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1wd3cl1": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "chuonnath",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.65,
+  "text": "旅の方、ようこそ。……どこかで、お会いしましたかな。",
+  "heard": "旅の方、ようこそ。……どこかで、お会いしましたかな。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1yclhig": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "borey",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 6.28,
+  "text": "せ、先生。汽車のことを、クメールのことばで、なんて言えばいいですか。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1txjwfs": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "chuonnath",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.79,
+  "text": "よい問いだね。新しいものには、新しい名前が要る。",
+  "heard": "新しいものには、新しい名前が要る。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1blqas1": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "chuonnath",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 12.72,
+  "text": "よその国のことばを借りるだけでなく、パーリ語やサンスクリット語の根から、クメールの言葉を作ることもできる。",
+  "heard": "よその国のことばを借りるだけでなく、ぱーり語やさんすくりっとごの根から、くれめーるのことばを作ることもできる。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "パーリ語＝ぱーりご",
+   "サンスクリット語＝さんすくりっとご"
+  ]
+ },
+ "vbc5bia": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "chuonnath",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.660041666666666,
+  "text": "たとえば汽車なら、「金属」と「乗り物」を合わせて。",
+  "heard": "たとえば汽車なら、「金属」と「乗り物」を合わせて。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
