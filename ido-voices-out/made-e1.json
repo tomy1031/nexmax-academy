@@ -1066,5 +1066,17 @@
   "heard": "야헤이지, from that night.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1v5421f1lfkx": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 0.85,
+  "text": "…What?",
+  "heard": "What?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
