@@ -450,5 +450,41 @@
   "heard": "あなたとチャンティは、低い壁のかげから、しばらく、教えのことばに耳をすませた。",
   "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
   "readings": []
+ },
+ "v12efcrf": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "chanthy",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 3.84,
+  "text": "ねえ、塔の顔って、だれの顔だと思う？",
+  "heard": "ねぇ、10の顔って誰の顔だと思う？",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vg29f7o": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "chanthy",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 7.75,
+  "text": "ヴォンさんは、みんなを見守る仏さまの顔だって。でも、お母さんは、王さまに似てるって言うの。",
+  "heard": " ヴォンさんは、みんなを見守る仏さまの顔だって。でも、お母さんは、王さまに似てるって言うの。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1icd6t5": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "chanthy",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 6.000041666666666,
+  "text": "わたしは……どっちでもいいや。だって、どの顔も、ほほえんでるもん。",
+  "heard": "わたしはどっちでもいいや。だって、どの顔も、ほほえんでるもん。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
