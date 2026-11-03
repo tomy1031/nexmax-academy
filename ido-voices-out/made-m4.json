@@ -106,5 +106,101 @@
   "heard": " Look. There's a strange man over there. His face is all beard. And there's a monkey sitting on his shoulder!",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1sz8bfh13oml": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "mouhot",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 4.7800416666666665,
+  "text": "Ah, hello there. …Did I startle you?",
+  "heard": " Ah, hello there. …Did I",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1t4ht4718cpc": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "mouhot",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 7.84,
+  "text": "I am Henri Mouhot. I came from France. I collect insects and shells in the forest and study them.",
+  "heard": " I am Henri Mouhot. I came from France. I collect insects and shells in the forest and study them.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e3yj78z108ly": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "mouhot",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 3.76,
+  "text": "Ah, we meet again. …Did I startle you?",
+  "heard": " Ah, we meet again. …Did",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1k32bizzymqt": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "mouhot",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 4.23,
+  "text": "Ah, hello there. …Oh? You look as if you know me.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1ga4n3f1cmmm": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "mouhot",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 9.74,
+  "text": "I am Henri Mouhot. I collect insects and shells in the forest and study them.",
+  "heard": " I am Henri Mouhot. I collect insects and shells in the forest and study them.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1anaal51r5mu": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "mouhot",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 11.02,
+  "text": "This monkey and these dogs are my travelling companions. A priest from Battambang guided me here, but I've got completely lost inside this temple.",
+  "heard": " This monkey and these dogs are my travelling companions. A priest from Battambang guided me here, but I've got completely lost inside this temple.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eb0wa1yji9f": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "nimol",
+  "voice": "Aoede",
+  "model": "gemini-3.8-live",
+  "seconds": 3.93,
+  "text": "Ha ha! Everyone gets lost in this temple!",
+  "heard": " Ha ha! Everyone gets lost in this temple!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e9xufok16mlu": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "nimol",
+  "voice": "Aoede",
+  "model": "gemini-3.8-live",
+  "seconds": 7.07,
+  "text": "In the village, we call this place “Prea sat Ling poun.” It means “the temple of hide-and-seek.”",
+  "heard": "In the village, we call this place “Prea sat Ling poun.” It means “the temple of hide-and-seek.”",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
