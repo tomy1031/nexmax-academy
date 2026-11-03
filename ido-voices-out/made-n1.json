@@ -622,5 +622,101 @@
   "heard": " We're back. This is Wat Phnom today.",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "e138aa6l1le2d": {
+  "episode": "kh-watphnom",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.32,
+  "text": "The temple on top of the hill has been rebuilt many times since then.",
+  "heard": " The temple on top of the hill has been rebuilt many times since then.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e15220k5128he": {
+  "episode": "kh-watphnom",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.76,
+  "text": "In a corner of the hill is a small shrine to Grandmother Penh. People still bring flowers and offerings there.",
+  "heard": "\nIn a corner of the hill is a small shrine to Grandmother Penh. People still bring flowers and offerings there.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e3ncf8fnj6d5": {
+  "episode": "kh-watphnom",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.57,
+  "text": "And a city grew up around this hill. That's why it's called “Phnom Penh” — Penh's Hill.",
+  "heard": " And a city grew up around this hill. That's why it's called “Phnom Penh” — Penh's",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e18rphy0137tm": {
+  "episode": "kh-watphnom",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.28,
+  "text": "The story of the hill and the Buddhas is a legend, not a sure record. But the people of this city have always cherished it and passed it down.",
+  "heard": " The story of the hill and the Buddhas is a legend, not a sure record. But the people of this city have always cherished it and passed",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "erx1o7l1ho1l": {
+  "episode": "kh-watphnom",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.65,
+  "text": "Now, recorded history: in the 15th century, a king is said to have moved the capital here from Angkor.",
+  "heard": " Now, recorded history: in the 15th century, a king is said to have moved the capital here from Angkor.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e18on7qm1b5kn": {
+  "episode": "kh-watphnom",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.41,
+  "text": "(whispering) And the day in 1866 when a king made this the capital once again… we saw that with Piseth, didn't we?",
+  "heard": " And the day in 1866 when a king made this the capital once again… we saw that with Piseth, didn't we?",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1k1af9o399wy": {
+  "episode": "kh-watphnom",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.61,
+  "text": "(whispering) You can see the day in 1866 when a king made this the capital once again, through the door at the Royal Palace.",
+  "heard": " You can see the day in 1866 when a king made this the capital once again, through the door at the Royal Palace.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e13krpvmqpl0n": {
+  "episode": "kh-watphnom",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.98,
+  "text": "(whispering) One basket at a time, huh. …Let's remember that.",
+  "heard": " One basket at a time, huh.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
