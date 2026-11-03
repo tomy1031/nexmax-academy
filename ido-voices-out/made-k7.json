@@ -1612,5 +1612,89 @@
   "heard": "",
   "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
   "readings": []
+ },
+ "vg8utwv": {
+  "episode": "kh-sr-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.150041666666667,
+  "text": "それでも、石を彫った人がいて、祈った人がいて、守った人がいて、また学んだ人がいた。",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1gtg0ev": {
+  "episode": "kh-sr-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.3,
+  "text": "一つの石を、次の人へ。……それが、九百年つづいてきたんだね。",
+  "heard": "一つの石を、次の人へ。……それが、九百年つづいてきたんだね。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vhlcl9t": {
+  "episode": "kh-sr-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.95,
+  "text": "（小声）プノンペンで、人が橋になるって話したよね。ここでは、人が、石を手わたしてきたんだ。",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1o1re9o": {
+  "episode": "kh-sr-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.96,
+  "text": "ボパーさんの娘も、ここにいる研修生も、いつか、次の人に石を手わたすんだ。",
+  "heard": "ボパーさんの娘も、ここにいる研修生も、いつか、次の人に石を手わたすんだ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "ve2rwe2": {
+  "episode": "kh-sr-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.75,
+  "text": "ここにいる研修生も、いつか、次の人に石を手わたすんだ。",
+  "heard": "ここにいる研修生も、いつか、次の人に石を手わたすんだ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vitu54f": {
+  "episode": "kh-sr-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.580041666666667,
+  "text": "……旅人さん。シェムリアップに来てくれて、ありがとう。",
+  "heard": "旅人さん。シェムリアップに来てくれて、ありがとう。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1d9mm8k": {
+  "episode": "kh-sr-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.67,
+  "text": "អរគុណ（オークン）！ ——ありがとう！",
+  "heard": "អរគុណオークン",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
