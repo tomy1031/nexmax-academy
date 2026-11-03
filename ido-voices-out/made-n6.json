@@ -514,5 +514,17 @@
   "heard": " The outer gallery shows everyday life, too. People weighing fish. People cooking rice. Cockfights.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e14ge2cj8cnjw": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 12.76,
+  "text": "Inscriptions say that Jayavarman VII built 102 hospitals and 121 rest houses for travelers all across his kingdom.",
+  "heard": " Inscriptions say that Jayavarman VII built 102 hospitals and 121 rest houses for travelers all across his kingdom.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
