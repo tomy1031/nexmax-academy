@@ -1618,5 +1618,101 @@
   "heard": "White foam swirls on the water.",
   "scene": "激しい戦いのさなか。声を張り、息は荒く",
   "readings": []
+ },
+ "ejmmehn1d06k": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.970041666666667,
+  "text": "…For a moment, you thought you saw something in the waves. Something like a big hand, holding on to a piece of wood.",
+  "heard": " For a moment, you thought you saw something in the waves. Something like a big hand, holding on to a piece of wood.",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "ec2svgs4k0vi": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.12,
+  "text": "The next moment, there was only white foam.",
+  "heard": " The next moment, there was only white foam.",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "e1pptlhj1dwnr": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 19.33,
+  "text": "Soon Tomomori, too, said, “I have seen all there is to see. Now it is my time to go.” He put on two suits of armor, one over the other, and sank into the sea with his loyal foster brother. So says The Tale of the Heike.",
+  "heard": " Soon Tomomori, too, said, “I have seen all there is to see. Now it is my time to go.” He put on two suits of armor, one over the other, and sank into the sea with his loyal foster brother. So says The Tale of the Heike.",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "eyivwy41ct6s": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 12.87,
+  "text": "…The Tale of the Heike says Noritsune died right here. And the Azuma Kagami (a record kept by the Kamakura government) even says he was killed a year earlier, at the Battle of Ichi-no-tani.",
+  "heard": " The Tale of the Heike says Noritsune died right here. And the Azuma Kagami (a record kept by the Kamakura government) even says he was killed a year earlier, at the Battle of Ichi-no-tani.",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "e64pry712j7m": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 14.89,
+  "text": "But in Iya, there is a legend about a warrior named Taira no Kunimori. He escaped there, protecting the Emperor. And Kunimori was Noritsune's earlier name! So some people say, “Noritsune was still alive.”",
+  "heard": " But in Iya, there is a legend about a warrior named Taira no Kunimori. He escaped there, protecting the Emperor. And Kunimori was Noritsune's earlier name! So some people say, “Noritsune was still alive.”",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "ey7vh6v12bj7": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 15.45,
+  "text": "Some stories say he escaped after the Battle of Yashima. Others say the man who died at Dan-no-ura was someone else, taking his place. On this journey, let's imagine that Noritsune jumped into the sea… and survived.",
+  "heard": " Some stories say he escaped after the Battle of Yashima. Others say the man who died at Dan-no-ura was someone else, taking his place. On this journey, let's imagine that Noritsune jumped into the sea… and",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "epp2vqz10ju4": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.99,
+  "text": "Written history, and local legends. Nobody knows which one is true. …And that's what makes traveling so fun.",
+  "heard": " Written history, and local legends. Nobody knows which one is true. …And that's what makes traveling so fun.",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "e1qvgqpv1mqoo": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.27,
+  "text": "But you already know, don't you? About that man who was weaving the vine bridge (Kazurabashi).",
+  "heard": " But you already know, don't you? About that man who was weaving the vine bridge (Kazurabashi).",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
  }
 }
