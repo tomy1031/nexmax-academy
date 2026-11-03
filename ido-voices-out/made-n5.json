@@ -94,5 +94,101 @@
   "heard": " Wh-who are you? Why are you looking at me like you know me?",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1lckh111lpkk": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "keo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 9.01,
+  "text": "I'm Keo, an apprentice stone carver. Today, for the first time, they've let me carve a devata — a celestial woman.",
+  "heard": " I'm Keo, an apprentice stone carver. Today, for the first time, they've let me carve a devata — a celestial woman.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ewztd0x1hi5u": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.070041666666667,
+  "text": "Many devatas had already been carved on the wall. Their crowns, their hairstyles, their necklaces — each one was different.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1qbpg0p17laq": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "keo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 6.88,
+  "text": "There are hundreds — thousands — of devatas in this temple. But not one of them has the same face.",
+  "heard": " There are hundreds — thousands — of devatas in this temple. But not one of them has the same face.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e16hx4232s3j8": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "keo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 6.95,
+  "text": "The master always says, “Don't carve two alike. Carve each one like a living person.”",
+  "heard": " The master always says, “Don't carve two alike. Carve each one like a living",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e9wr9seiz2vv": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "親方",
+  "voice": "Alnilam",
+  "model": "gemini-3.8-live",
+  "seconds": 2.89,
+  "text": "Keo! Your hands aren't moving!",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1w420p3fobcd": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "keo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 5.2,
+  "text": "Y-yes, sir! …Hey, what kind of devata do you think would be good?",
+  "heard": " …Hey, what kind of devata do you think would be good?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eflfe798g3u9": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "keo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 6.3,
+  "text": "A smile… Okay, I'll try. I'll make her lips like my mom's when she smiles.",
+  "heard": " Okay, I'll try. I'll make her lips like my mom's when she smiles.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1vt7lh81wgam": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "keo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 5.55,
+  "text": "A flower! Nice. I'll put a little flower between her fingers.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
