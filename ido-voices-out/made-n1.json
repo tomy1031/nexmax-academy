@@ -718,5 +718,101 @@
   "heard": " One basket at a time, huh.",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "efto9g618i0y": {
+  "episode": "kh-royalpalace",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.06,
+  "text": "1866. Many cargo boats loaded with timber were making their way down the Tonle Sap River.",
+  "heard": " 1866. Many cargo boats loaded with timber were making their way down the Tonlé Sap River.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1l57ghe1p01t": {
+  "episode": "kh-royalpalace",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.96,
+  "text": "In those days, the king moved the capital from Oudong, up the river, to this place where the rivers meet.",
+  "heard": " In those days, the king moved the capital from Oudong, up the river, to this place where the rivers meet.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ewqt6x7oqss1": {
+  "episode": "kh-royalpalace",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 21.250041666666668,
+  "text": "Timber to build the palace, and many other goods, were being carried to the new capital by river. — From here on, this is a “maybe” story.",
+  "heard": " Timber to build the palace, and many other goods, were being carried to the new capital by river. — From here on, this is a \"maybe\" story.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ehbbynep69m1": {
+  "episode": "kh-royalpalace",
+  "lang": "en",
+  "speaker": "piseth",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 2.9,
+  "text": "Whoa! When did you get on this boat?",
+  "heard": " Whoa! When did you get on this boat?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "em9xm7u1yso8": {
+  "episode": "kh-royalpalace",
+  "lang": "en",
+  "speaker": "piseth",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 5.43,
+  "text": "…Whatever. Help me row! If we're late, the boat boss will yell at me.",
+  "heard": " Whatever. Help me row! If we're late, the boat boss will yell at me.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1y7wwi61cwbq": {
+  "episode": "kh-royalpalace",
+  "lang": "en",
+  "speaker": "piseth",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 5.96,
+  "text": "I'm Piseth. I row this cargo boat. I'm thirteen.",
+  "heard": " I row this cargo boat. I'm thirteen.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1mzwaay1jjxn": {
+  "episode": "kh-royalpalace",
+  "lang": "en",
+  "speaker": "piseth",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 4.28,
+  "text": "Oh, it's you! You hopped on again? Help me row!",
+  "heard": " You hopped on again? Help me row!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eepalsa10y1u": {
+  "episode": "kh-royalpalace",
+  "lang": "en",
+  "speaker": "piseth",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 5.24,
+  "text": "Whoa! When did you…? Why are you looking at me like you've missed me?",
+  "heard": " Whoa! When did you…? Why are you looking at me like you've missed me?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
