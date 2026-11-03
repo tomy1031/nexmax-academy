@@ -547,5 +547,105 @@
    "回廊＝かいろう",
    "乳海攪拌＝にゅうかいかくはん"
   ]
+ },
+ "v13zo2l8": {
+  "episode": "kh-angkor-build",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.14,
+  "text": "春分と秋分のころには、西の参道から、まんなかの塔の上に朝日がのぼるのが見られるんだ。",
+  "heard": "春分と秋分の頃には 西の参道から 真ん中の塔の上に 朝日が登るのが見られるんだ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v18tlp17": {
+  "episode": "kh-angkor-build",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.24,
+  "text": "ここを彫った人たちの名前は、ほとんど残っていないんだ。",
+  "heard": "ここを彫った人たちの名前は、ほとんど残っていないんだ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v106zm2r": {
+  "episode": "kh-angkor-build",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.43,
+  "text": "（小声）ほほえんでいる天女、花を持っている天女……。歩きながら、ケオくんの天女をさがしてみてね。",
+  "heard": " ほほえんでいる 天女、 花 を 持っ て いる 天女……。 歩き ながら、 ケオくんの 天女 を さが",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1ieae58": {
+  "episode": "kh-angkor-build",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 13.62,
+  "text": "それから、この寺には、もうひとつの物語があるんだ。四百年前、海の向こうの日本から、祈りに来た侍の話。よかったら、そっちもひらいてみて。",
+  "heard": "それから、この寺には、もうひとつの物語があるんだ。四百年前、海の向こうの日本から、祈りに来た侍の話。よかったら、そっちもひらいてみて。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v14xpgcf": {
+  "episode": "kh-taprohm",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.310041666666667,
+  "text": "1186年。森の中の新しい寺院に、仏さまがまつられた。",
+  "heard": "1186年。森の中の新しい寺院に、仏さまがまつられた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1ce5mef": {
+  "episode": "kh-taprohm",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.9,
+  "text": "白っぽい石の回廊が、いくつも、いくつも続いている。たくさんの人が、行き来していた。",
+  "heard": "白っぽい石の回廊が、いくつも、いくつも続いている。たくさんの人が、行き来していた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "回廊＝かいろう"
+  ]
+ },
+ "vtzbzph": {
+  "episode": "kh-taprohm",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.97,
+  "text": "回廊のかげで、ひとりの少女が、手の形を何度もくりかえしていた。",
+  "heard": "通路の影で一人の少女が手の形を何度も繰り返していた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "回廊＝かいろう"
+  ]
+ },
+ "v19gd0gx": {
+  "episode": "kh-taprohm",
+  "lang": "ja",
+  "speaker": "sreymom",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 3.870041666666667,
+  "text": "あっ……見てたの？ はずかしい。",
+  "heard": "あ、見てたの？ 恥ずかしい。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
