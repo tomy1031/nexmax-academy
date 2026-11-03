@@ -622,5 +622,105 @@
   "heard": " 「なれるよ」って言ってくれたの、覚えてる。……なれたよ。一度は、あきらめかけたけどね。",
   "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
   "readings": []
+ },
+ "v1gwq7bj": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "bopha2",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 5.94,
+  "text": "赤いところは、まだ残ってる。でも、毎年、緑がふえていくの。",
+  "heard": "赤いところは、まだ残ってる。でも、毎年、緑がふえていくの。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vdpy1ha": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "bopha2",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 4.23,
+  "text": "村の父さんは、今も、ゆっくり畑をやってるわ。",
+  "heard": "村の父さんは、今もゆっくり畑をやってるわ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1hnhses": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.87,
+  "text": "アキ・ラーさんの博物館は、2007年に、バンテアイ・スレイ寺院の近くの今の場所に移ったんだ。今も、毎日ひらいているよ。",
+  "heard": "アキ・ラーさんの博物館は、2007年に、バンテアイ・スレイ寺院の近くの今の場所に移ったんだ。今も、毎日ひらいているよ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1cum5b": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 12.36,
+  "text": "アキ・ラーさんは、2005年にイギリスで正式な訓練を受けて、仲間といっしょに、地雷を取り除きつづけてきた。2026年の今も、現場に出ているんだって。",
+  "heard": "アキ・ラーさんは、2005年にイギリスで正式な訓練を受けて、仲間といっしょに、地雷を取り除きつづけてきた。2026年の今も、現場に出ているんだって。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "地雷＝じらい"
+  ]
+ },
+ "v6p29br": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.06,
+  "text": "アキ・ラーさんが引き取って育てた子どもたちは、これまでに百人ほど。子どもたちを、学校に通わせてきたんだ。",
+  "heard": "あきらさんが引き取って育てた子供たちは、これまで100人ほど。子供たちを学校に通わせてきたんだ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1ek3fpu": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.77,
+  "text": "子どもたちが暮らした場所は2018年に閉じて、今は、大学に進む子を奨学金で支えているよ。",
+  "heard": "子どもたちが暮らした場所は2018年に閉じて、今は大学に進む子を奨学金で支えているよ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v2qiwdx": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.17,
+  "text": "カンボジアの地雷対策センターは、今では、地雷に苦しむほかの国の人たちに、技術を教える側にもなっているんだ。",
+  "heard": " カンボジアの地雷対策センターは、今では、地雷に苦しむほかの国の人たちに、技術を教える側にもなっているんだ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "地雷＝じらい"
+  ]
+ },
+ "v19xg218": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.35,
+  "text": "世界のたくさんの国や人が、お金や機械や技術で、この仕事を手伝ってきたよ。",
+  "heard": "世界のたくさんの国や人が、お金や機械や技術で、この仕事を手伝ってきたよ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
