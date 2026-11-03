@@ -778,5 +778,17 @@
   "heard": " I'm twenty-four. I'm a trainee, learning how to protect ancient ruins.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "emwv6jtnlr5a": {
+  "episode": "kh-banteaykdei",
+  "lang": "en",
+  "speaker": "sovann",
+  "voice": "Umbriel",
+  "model": "gemini-3.8-live",
+  "seconds": 7.33,
+  "text": "Young Cambodian trainees are learning how to excavate, working with professors from a Japanese university.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
