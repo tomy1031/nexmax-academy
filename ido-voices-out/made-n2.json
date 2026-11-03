@@ -130,5 +130,17 @@
   "heard": " That's right. After that, in 1958, work began on this tower to celebrate independence.",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "e40w9rcc2kj1": {
+  "episode": "kh-independence",
+  "lang": "en",
+  "speaker": "ダラーのお父さん",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 3.4000416666666666,
+  "text": "Dara! …Oh, we have a visitor?",
+  "heard": "Dara. Oh, we have a visitor.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
