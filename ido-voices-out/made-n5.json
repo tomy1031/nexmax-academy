@@ -286,5 +286,101 @@
   "heard": " Once in spring and once in autumn, there's a day when day and night are the same length. On that morning, if you look from the western approach, the sun rises over the central tower.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "eq9mhzc1wjwc": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "親方",
+  "voice": "Alnilam",
+  "model": "gemini-3.8-live",
+  "seconds": 5.480041666666667,
+  "text": "When you build a stone temple, you build the movement of the sky into it, too.",
+  "heard": " When you build a stone temple, you build the movement of the sky into it, too.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1unik5g18fib": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.65,
+  "text": "Just then, the sound of drums and conch shells came from far away.",
+  "heard": " Just then, the sound of drums and conch shells came from far away.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "edqb7wc1gqxr": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.760041666666667,
+  "text": "Looking down from the scaffolding, you saw a procession moving along the long approach.",
+  "heard": " Looking down from the scaffolding, you saw a procession moving along the long approach.",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "erh5e2q1adno": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.54,
+  "text": "Many elephants. Banners. Gold and red parasols, more and more of them. Priests with their hair tied up high.",
+  "heard": " Banners. Gold and red parasols, more and more of them. Priests with their hair tied up high.",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "e1k2m5f41aql4": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.880041666666667,
+  "text": "Farther back, beneath the most parasols of all, you could just make out the small figure of someone riding an elephant.",
+  "heard": " Farther back, beneath the most parasols of all, you could just make out the small figure of someone riding",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "e16a38z10bww": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "keo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 4.49,
+  "text": "It's the king…! He's come to see the work on the temple.",
+  "heard": " He's come to see the work on the temple.",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "e9zvqp2184sx": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "keo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 6.57,
+  "text": "He's too far away to see his face. …But this is the first time I've ever seen the king.",
+  "heard": " He's too far away to see his face. …But this is the first time I've ever",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "edrh0x61osm3": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.6,
+  "text": "That's Suryavarman II, the king who began building this temple.",
+  "heard": " That's Suryavarman the second, the king who began building",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
  }
 }
