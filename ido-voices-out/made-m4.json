@@ -778,5 +778,29 @@
   "heard": " And today — you are the newest traveller in that long line.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "elwkwx22ot1a": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.46,
+  "text": "At the ruins today, please don't climb on the stones or play hide-and-seek. The precious stones could crumble.",
+  "heard": " At the ruins today, please don't climb on the stones or play hide-and-seek. The precious stones could crumble.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1kp7nk8e9vtc": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.27,
+  "text": "(whispering) …I bet Nimol would still be the best guide to this temple, even now.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
