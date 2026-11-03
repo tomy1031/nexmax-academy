@@ -1111,5 +1111,101 @@
   "heard": "次 の 日 2015 年 4 月 6 日 橋 の 周り は 何千 人 も の 人 で 埋め尽くさ れ た 。",
   "scene": "お祝いの、晴れやかな場面。明るく",
   "readings": []
+ },
+ "v1jpysr2": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.82,
+  "text": "式が終わると、人びとが、白い塔のあいだを、ゆっくりと歩きはじめた。",
+  "heard": "式が終わると、人びとが、白い塔のあいだを、ゆっくりと歩きはじめた。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "vjvfv2": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "vichet",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 2.410041666666667,
+  "text": "行こう！ いちばんに渡るんだ！",
+  "heard": "行こう！いちばんに渡るんだ！",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "v1lcp2sj": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.47,
+  "text": "ヴィチェットは、とうもろこしのかごをかかえたまま、走り出した。",
+  "heard": "ウィチェット は トウモロコシ の かご を 抱え た まま 走り出し た 。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "vo4390x": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.620041666666667,
+  "text": "あんなに遠かった向こう岸が、みるみる近づいてくる。",
+  "heard": "あんなに遠かった向こう岸が、みるみる近づいてくる。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "v1y1r75c": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "vichet",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 4.34,
+  "text": "うわっ……！ 着いちゃった。船だと、あんなにかかったのに！",
+  "heard": "うわっ……！ 着いちゃった。船だと、あんなにかかったのに！",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "v1scwir0": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "vichet",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 2.680041666666667,
+  "text": "ねえ、あんた。おれ、決めた。",
+  "heard": "ねえ、あんた。おれ、決めた。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "vrvz2d3": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "vichet",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 6.84,
+  "text": "おれ、大きくなったら、何かをつなぐ仕事をする。橋でも、道でも、なんでもいい。",
+  "heard": "おれ、大きくなったら、何かをつなぐ仕事をする。橋でも、道でも、なんでもいい。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "vfm6xrv": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "vichet",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 3.04,
+  "text": "だれかが、ひと晩も待たなくてすむような、何か。",
+  "heard": "だれかが、ひと晩もまたなくてすむような、何か。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
  }
 }
