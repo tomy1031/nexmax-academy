@@ -394,5 +394,101 @@
   "heard": "",
   "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
   "readings": []
+ },
+ "e140751iyxx0m": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.06,
+  "text": "After a long time, the man slowly stood up. Gently, he put something from his hand into a bag.",
+  "heard": " After a long time, the man slowly stood up. Gently, he put something from his hand into a bag.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "etf15eq1sdym": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.45,
+  "text": "Bopha's face lit up, and she waved.",
+  "heard": "",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e25ebupt6wip": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "bopha",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 4.44,
+  "text": "All the kids here go to school. I go every day, too.",
+  "heard": " All the kids here go to school. I go every day, too.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "eb78lp71q9se": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "bopha",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 3.6300416666666666,
+  "text": "When I grow up, I want to be someone who makes maps.",
+  "heard": "When I grow up, I wantto be someone whomakes maps.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "ejkn2stdu01r": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "bopha",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 6.01,
+  "text": "Maps that show anyone which places are safe and which are still dangerous.",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e11yz3ub1qbnc": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "bopha",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 4.86,
+  "text": "Then people who go out to cut grass won't lose their legs, like my dad did.",
+  "heard": " Then people who go out to cut grass won't lose their legs, like my dad did.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "ez9x2zi13tui": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "bopha",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 4.330041666666666,
+  "text": "Okay! You'll be the very first to see it. It's a promise!",
+  "heard": " Okay! You'll be the very first to see it. It's a promise!",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1i71eh4efgz": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "bopha",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 4.600041666666667,
+  "text": "Really?! Yay! Then let's start with multiplication!",
+  "heard": " Really?! Yay! Then let's start with multiplication!",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
