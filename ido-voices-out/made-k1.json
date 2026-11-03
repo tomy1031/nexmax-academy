@@ -835,5 +835,111 @@
   "heard": "わっ！あんた、いつのまに…。なんで、そんなになつかしそうな顔して",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v1sdl1da": {
+  "episode": "kh-royalpalace",
+  "lang": "ja",
+  "speaker": "piseth",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 4.19,
+  "text": "まあいいや。おれ、ピセット。こぐの、手伝って！",
+  "heard": "まーや。おれピセット、漕ぐのお手伝って。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vgk10at": {
+  "episode": "kh-royalpalace",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 11.28,
+  "text": "ピセットが、あなたに櫂をわたした。舟には、柱にする木や、布の包みが、山のように積まれている。",
+  "heard": "ピセットが、あなたに櫂をわたした。舟には、柱にする木や、布の包みが、山のように積まれている。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "櫂＝かい"
+  ]
+ },
+ "vuct90u": {
+  "episode": "kh-royalpalace",
+  "lang": "ja",
+  "speaker": "piseth",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 8.23,
+  "text": "王さまが、都をプノンペンに移したんだ。だから、新しい都の柱にする木を、みんなで運んでるの。",
+  "heard": "王 様 が 都 を プノンペン に 移し た ん だ 。 だ から 新しい 都 の 柱 に する 木 を みんな で 運ん でる の 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "都＝みやこ"
+  ]
+ },
+ "vbnmf8j": {
+  "episode": "kh-royalpalace",
+  "lang": "ja",
+  "speaker": "piseth",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 8.47,
+  "text": "おれの家族も、ウドンからこっちに移ることになった。……でも、じいちゃんは足が悪いから、ウドンに残るって。",
+  "heard": "おれの家族も、ウドンからこっちに移ることになった。……でも、じいちゃんは足が悪いから、ウドンに残るって。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vde2qj": {
+  "episode": "kh-royalpalace",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 14.4,
+  "text": "川岸に、木で建てた宮殿が見えた。その前に、金の日傘が立っている。まわりの舟の人たちは、その前を通るたびに、静かに頭を下げた。",
+  "heard": "川岸に、木で建てた宮殿が見えた。その前に、金の日傘が立っている。まわりの舟の人たちは、その前を通るたびに、静かに頭を下げた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "殿＝との"
+  ]
+ },
+ "vjpol2d": {
+  "episode": "kh-royalpalace",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 12.4,
+  "text": "新しい王宮ができるまで、ノロドム王が住んでいた、仮の木の宮殿だよ。王さまのお顔は、ここからは見えないね。",
+  "heard": " 新しい王宮ができるまで、ノロドム王が住んでいた、仮の木の宮殿だよ。王さまのお顔は、ここからは見えないね。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "殿＝との"
+  ]
+ },
+ "v1lr4tsr": {
+  "episode": "kh-royalpalace",
+  "lang": "ja",
+  "speaker": "piseth",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 4.92,
+  "text": "じいちゃんが言ってた。プノンペンは、川が四つに分かれて見える場所なんだって。",
+  "heard": "じいちゃんが言ってたプノンペンは川が4つに分かれて見える場所なんだって。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v195smvk": {
+  "episode": "kh-royalpalace",
+  "lang": "ja",
+  "speaker": "piseth",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 7.19,
+  "text": "「四つの顔」。上からも、下からも、横からも、舟が来られる。だから、都にいいんだって。",
+  "heard": "4つの 顔 上 から も 下 から も 横 から も 船 が 来ら れる だ から 都 に いい ん だっ て 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "都＝みやこ"
+  ]
  }
 }
