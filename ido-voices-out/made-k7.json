@@ -201,5 +201,19 @@
   "readings": [
    "地雷＝じらい"
   ]
+ },
+ "v1skf9pk": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "bopha",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 6.92,
+  "text": "あのね、わたしの村の父さんは、牛のえさの草を刈りに行って、地雷をふんだの。",
+  "heard": "あのね、わたしの村の父さんは、牛のえさの草を刈りに行って、地雷をふんだの。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "地雷＝じらい"
+  ]
  }
 }
