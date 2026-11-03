@@ -94,5 +94,112 @@
   "heard": "こんにちは！……あれ？どこかで会ったっけ。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "vq6pl2f": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "bopha",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 3.28,
+  "text": "わたし、ボパー。ここに住んでるの。",
+  "heard": "わたし、ボパー。ここに住んでるの。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vrrjvus": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.78,
+  "text": "ここに並んでいるのは、地雷や不発弾。地雷は、地面に埋めて、人がふむと爆発する武器なんだ。",
+  "heard": " ここに並んでいるのは、地雷や不発弾。地雷は、地面に埋めて、人がふむと爆発する武器なんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "地雷＝じらい",
+   "不発弾＝ふはつだん"
+  ]
+ },
+ "vxh05xp": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.76,
+  "text": "不発弾は、落とされたり撃たれたりしたのに、爆発しないまま残った爆弾のこと。",
+  "heard": "不発弾は、落とされたり撃たれたりしたのに、爆発しないまま残った爆弾の",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "不発弾＝ふはつだん"
+  ]
+ },
+ "v13t819j": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.92,
+  "text": "長い戦争のあいだに、この国には、四百万から六百万個もの地雷が埋められたと考えられているよ。",
+  "heard": "長い戦争の間に、この国には400万から600万個もの地雷が埋められたと考えられているよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "地雷＝じらい"
+  ]
+ },
+ "viqugnb": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "bopha",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 4.58,
+  "text": "ここの子は、みんな、この家の人を「おとうさん」ってよぶの。",
+  "heard": "ここの子は、みんな、この家の人を「おとうさん」ってよぶの。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vrpzxj3": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "bopha",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 7.76,
+  "text": "おとうさんが、畑や道から地雷を見つけて、爆発しないようにして、ここに並べてるの。",
+  "heard": "おとうさんが、畑や道から地雷を見つけて、爆発しないようにして、ここに並べてるの。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "地雷＝じらい"
+  ]
+ },
+ "v1u5b3ho": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.640083333333333,
+  "text": "この家では、見に来た人から1ドルずつもらって、そのお金で、引き取った子どもたちを育てていたんだ。",
+  "heard": "この家では見に来た人から1ドルずつもらって、そのお金で引き取った子供たちを育てていたんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v15sd15d": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "bopha",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 6.19,
+  "text": "ここには、地雷でけがをした子や、おうちの人をなくした子が、いっしょに住んでるの。",
+  "heard": "ここには地雷でケガをした子や、おうちの人をなくした子が一緒に住んでるの。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "地雷＝じらい"
+  ]
  }
 }
