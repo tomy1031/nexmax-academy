@@ -1642,5 +1642,17 @@
   "heard": " Thank you!",
   "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
   "readings": []
+ },
+ "e9loyz10t4c": {
+  "episode": "kh-banteaykdei",
+  "lang": "en",
+  "speaker": "sovann",
+  "voice": "Umbriel",
+  "model": "gemini-3.8-live",
+  "seconds": 0.78,
+  "text": "…Oh.",
+  "heard": "Oh.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
