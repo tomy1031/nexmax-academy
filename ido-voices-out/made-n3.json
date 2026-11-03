@@ -670,5 +670,17 @@
   "heard": " It was named the “Cambodia-Japan Friendship Bridge,” and in Japan it's also called the “Japan Bridge.”",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "ej0j0bcp8s9q": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.68,
+  "text": "In 2019, it got another big repair with Japan's help. Children from schools on both banks were invited to celebrate when the work was finished.",
+  "heard": " In 2019, it got another big repair with Japan's help. Children from schools on both banks were invited to celebrate when the work was finished.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
