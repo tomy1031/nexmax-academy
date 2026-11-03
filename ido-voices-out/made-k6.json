@@ -110,5 +110,17 @@
   "heard": "わたし、チャンティ。お母さんが、市場で魚を売ってるの。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v10tjgyt": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "chanthy",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 4.320041666666667,
+  "text": "ねえ、見て。壁に、すっごく長い絵が彫ってあるの。",
+  "heard": "ね、見て 。 壁にすごく長い絵がほってあるの 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
