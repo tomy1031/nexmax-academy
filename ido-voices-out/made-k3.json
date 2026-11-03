@@ -781,5 +781,105 @@
   "heard": "ねえ、そこの人！ とうもろこし、どう？ 甘いよ！",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "v14h0714": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "vichet",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 5.74,
+  "text": "外国の人？ 船、あと三時間は来ないよ。おなか、すくでしょ。",
+  "heard": "外国人 の 人 ? 船 あと 3 時間 は 来 ない よ 。 お腹 空く でしょう 。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v13o3d2f": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "vichet",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 4.860041666666667,
+  "text": "おれ、ヴィチェット。この渡し場で、いちばん売るのがうまいんだ。",
+  "heard": "俺 、 ビージェット 、 この 私場 で 一番 売る の が うまい ん だ 。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "渡し場＝わたしぶね"
+  ]
+ },
+ "v14xlr1p": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "vichet",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 3.5900416666666666,
+  "text": "あっ、この前の！ 今日もとうもろこし、どう？",
+  "heard": "あ 、 この 前 の 今日 も 唐辛子 どう ?",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v5k3okn": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "vichet",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 6.970041666666667,
+  "text": "ねえ、そこの人！ とうもろこし、どう？ ……あれ、なんでおれのこと、知ってる顔してんの？",
+  "heard": "ねえ、そこの人。トウモロコシどう？ あれ、なんで俺のこと知ってる顔してんの？",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1gvt7da": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "vichet",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 2.89,
+  "text": "まあいいや。おれ、ヴィチェット。",
+  "heard": "まあいいや。おれ、ヴィチェット。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v6f9gt": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "vichet",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 4.810041666666667,
+  "text": "まいどあり！ 500リエル……は冗談。1,000リエルね。",
+  "heard": "まいどあり！500リエル……は冗談。1,000リエルね。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1xkhw0c": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "vichet",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 5.2400416666666665,
+  "text": "三時間なら、いいほうだよ。お祭りの前なんか、もっと待つもん。",
+  "heard": "三時間なら、いいほうだよ。お祭りの前なんか、もっと待つもん。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v16jfgo4": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.38,
+  "text": "この渡し場では、混む時期には、最大で七時間も待つことがあったんだ。",
+  "heard": "この私場では、込む時期には最大で7時間も待つことがあったんだ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "渡し場＝わたしぶね"
+  ]
  }
 }
