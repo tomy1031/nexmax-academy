@@ -910,5 +910,101 @@
   "heard": " That's an important clue, too. Let's record it.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e8p1tb1i57r": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 2.4400416666666667,
+  "text": "Later, Aki Ra said this.",
+  "heard": "",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e10lufm9pajn7": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "bopha",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 1.9100416666666666,
+  "text": "…Yeah! I will!",
+  "heard": " Yeah! I will!",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e14rtoc51n5ga": {
+  "episode": "kh-banteaykdei",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 0.8000416666666667,
+  "text": "Just then—",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eh4ird51e5sx": {
+  "episode": "kh-banteaykdei",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.63,
+  "text": "The tip of Sovann's spatula hit something hard.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1lqz0md1e97x": {
+  "episode": "kh-banteaykdei",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 11.86,
+  "text": "Gently, gently, he swept the soil away with a brush. From the gray stone, a pair of closed eyes and a calm mouth appeared.",
+  "heard": " Gently, he swept the soil away with a brush. From the gray stone, a pair of closed eyes and a calm mouth appeared.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "emxcfb11y5a0": {
+  "episode": "kh-banteaykdei",
+  "lang": "en",
+  "speaker": "sovann",
+  "voice": "Umbriel",
+  "model": "gemini-3.8-live",
+  "seconds": 1.01,
+  "text": "…It's a Buddha.",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "eb7k6e4fhbkk": {
+  "episode": "kh-banteaykdei",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 11.67,
+  "text": "As they dug further, Buddha statues appeared, one after another. Some were big; some were as small as the palm of your hand.",
+  "heard": " As they dug further, Buddha statues appeared, one after another. Some were big; some were as small as the palm of your hand.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e7ewxnppgoll": {
+  "episode": "kh-banteaykdei",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 14.38,
+  "text": "Many of them showed the Buddha sitting on a snake god. On some, the head had come away from the body.",
+  "heard": " Many of them showed the Buddha sitting on a snake god. On some, the head had come away from the body.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
