@@ -1138,5 +1138,101 @@
   "heard": "Some cried, a fine shot. Others said, how heartless.",
   "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
   "readings": []
+ },
+ "ex8fw8p1p2qx": {
+  "episode": "genpei-yashima",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.96,
+  "text": "You'd shoot even a man who was dancing?! You Genji…!",
+  "heard": " You'd shoot even a man who was dancing?! You Genji!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e180tf18129um": {
+  "episode": "genpei-yashima",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.970041666666667,
+  "text": "Yoshitsune. Remember this. Next time, we meet on the sea.",
+  "heard": "Yoshi Tsune, remember this. Next time, we meet on the sea.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e4qhs93qsfcz": {
+  "episode": "genpei-yashima",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 6.48,
+  "text": "This is what winning means. …If I don't tell myself that, I can't keep standing.",
+  "heard": " This is what winning means. …If I don't tell myself that, I can't keep standing.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1piio0k1mc1n": {
+  "episode": "genpei-yashima",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6,
+  "text": "One month later, the Genji and the Heike will face their final battle at Dan-no-ura.",
+  "heard": " One month later, the Genji and the Heike will face their final battle at Dan-no-ura.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "edx8vpqcuvzx": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.650041666666667,
+  "text": "March 24, 1185. The sea at the Kanmon Strait.",
+  "heard": " March 24, 1185. The sea at the Kanmon Strait.",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "e1fbq5azvjrxd": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.04,
+  "text": "The boats of the Genji (the Minamoto clan) and the Heike (the Taira clan) fill the narrow strait.",
+  "heard": " The boats of the Genji and the Heike fill the narrow strait.",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "e15igvir99jqz": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.63025,
+  "text": "At first, the tide was on the Heike's side.",
+  "heard": " At first, the tide was on the Heike's side.",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "e1qpxpdt1n7t4": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.2400416666666665,
+  "text": "You came all the way out here in a tiny boat? You must have no fear at all.",
+  "heard": " You came all the way out here in a tiny boat? You must have no fear",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
  }
 }
