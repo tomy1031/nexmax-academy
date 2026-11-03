@@ -466,5 +466,101 @@
   "heard": " I'd be lying if I said I wasn't scared. Japanese winters are cold, and the work will surely be hard. I think there will be days when things don't go well.",
   "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
   "readings": []
+ },
+ "ekzfe9j153ra": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "sokha",
+  "voice": "Despina",
+  "model": "gemini-3.8-live",
+  "seconds": 3.9,
+  "text": "But I'm going. I want to show my mom.",
+  "heard": " But I'm going. I want to show my mom.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "es9uw4e1u1kb": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.58,
+  "text": "…Four hundred years ago, a samurai crossed the sea from Japan for his father and mother.",
+  "heard": " Four hundred years ago, a samurai crossed the sea from Japan for his father and mother.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1mfftqbrcsmu": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.27,
+  "text": "This time, young people from Cambodia are crossing the sea to Japan.",
+  "heard": " This time, young people from Cambodia are crossing the sea to Japan.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e9iugih108e6": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 2.53,
+  "text": "…It takes courage to cross the sea.",
+  "heard": "It takes courage to cross the sea.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "esgp01019or6": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.11,
+  "text": "But just like with the bridges — when people cross, a path is made.",
+  "heard": " But just like with the bridges — when people cross, a path is made.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1npwxm0z0rgx": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.43,
+  "text": "(whispering) “May my family stay well.” Your wish, the same as Kazufusa's. …I bet Sokha's wish is the same, too.",
+  "heard": "May my family stay well. Your wish? The same as Kazafusa's. Too. I bet Soka's wish is the same, too.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "ei9kg8i1y1bz": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 12.24,
+  "text": "(whispering) “To see someone I can't see anymore, one more time.” …It's the same wish Kazufusa made for his mother. You don't have to let go of that feeling.",
+  "heard": "To see someone I can't see anymore, one more time. It's the same wish Kazufusa made for his mother. You don't have to let go of that feeling.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1wz3knw12x27": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.83,
+  "text": "(whispering) “May tomorrow, still unseen, be a good day.” …Maybe your wish came true a little, today.",
+  "heard": "made tomorrow still unseen be a good day. Maybe your wish came true a little today.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
