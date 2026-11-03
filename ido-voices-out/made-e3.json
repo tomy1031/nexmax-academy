@@ -1678,5 +1678,101 @@
   "heard": " Tell the story of one man — who laughed, and cried, and loved his elder brother, and ran all this way with his friends' help.",
   "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
   "readings": []
+ },
+ "e123wk0h1rqtm": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 2.7800416666666665,
+  "text": "The flames were very close now.",
+  "heard": "",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "ei0me8w1ezm3": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 2.7000416666666665,
+  "text": "Go. Go back to your own time.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1mk6ddw1gljo": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.830041666666666,
+  "text": "Summer 2026. The hill of Takadachi.",
+  "heard": " Summer 2026. The hill of Takadachi.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e2o05d21s4k8": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 14.120041666666667,
+  "text": "Below, the Kitakami River flows slowly by. Summer grass covers everything.",
+  "heard": " Below, the Kitakami River flows slowly by. Summer grass covers everything.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1jwp1mv1n8n3": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.82,
+  "text": "Exactly five hundred years after Yoshitsune died, a haiku poet stood on this very spot.",
+  "heard": " Exactly five hundred years after Yoshitsune died, a haiku poet stood on this",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1pzxpoi1aviq": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.31,
+  "text": "His name was Matsuo Basho. He was on a long journey. When he saw this view, he wrote this poem.",
+  "heard": " His name was Matsuo Basho. He was on a long journey. When he saw this view, he wrote",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "eei22dbsqigg": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.39,
+  "text": "…This story has been passed down for more than eight hundred years.",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e7nrfyresiny": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.76,
+  "text": "And guess what? There really is a legend that Yoshitsune escaped to the north and survived.",
+  "heard": " And guess what? There really is a legend that Yoshitsune escaped to the north and survived.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
