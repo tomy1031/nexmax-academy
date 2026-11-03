@@ -718,5 +718,101 @@
   "heard": " That king was Jayavarman the Seventh. That's what the words carved in stone at this temple — its inscription — say.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e16fvq3uczsvs": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "sreymom",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 10.58,
+  "text": "There are lots of people at this temple — monks, servants, dancers and more. There are 615 dancers alone!",
+  "heard": " There are lots of people at this temple — monks, servants, dancers and more. There are 615 dancers",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1sdx9ud49p3o": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.680041666666666,
+  "text": "According to the inscription, 12,640 people lived at this temple. There were 18 high priests, and 615 women dancers.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ex975wx1ytxq": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.2,
+  "text": "And as many as 79,365 people, from 3,140 villages around it, supported the temple.",
+  "heard": " And as many as 79,365 people, from 3,140 villages around it, supported the temple.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e18cyjdm1hghf": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "sreymom",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 5.32,
+  "text": "Hey, will you do the hand shapes with me? If we do them together, maybe I won't shake.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1mj7z5c1vs5s": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.9,
+  "text": "Copying Sreymom, you gently bent your fingers back.",
+  "heard": " Copying Sreymom, you gently bent your fingers back.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eilgddfg05ed": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "sreymom",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 4.360041666666667,
+  "text": "Hehe, they only bend a little. But it's beautiful.",
+  "heard": "Hehe, they only bend a little. But it's beautiful.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e11q4bwk10h8d": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "sreymom",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 5.730041666666667,
+  "text": "…Okay. It's the temple for the king's mother, after all. I'll dance with the greatest care.",
+  "heard": " Okay. It's the temple for the king's mother, after all. I'll dance with the greatest care.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1lia3abffw6m": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "sreymom",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 3.26,
+  "text": "If it were you, who would you make something for?",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
