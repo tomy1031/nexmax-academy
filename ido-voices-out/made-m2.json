@@ -1,0 +1,98 @@
+{
+ "e132iv2h21pkd": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.47,
+  "text": "1930. The riverbank in Phnom Penh.",
+  "heard": " The riverbank in Phnom Penh.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e13xm8m71m2p2": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.070041666666667,
+  "text": "To the south, the golden roofs of the Royal Palace were shining. A short walk north stood a great temple, Wat Ounalom.",
+  "heard": " To the south, the golden roofs of the Royal Palace were shining. A short walk north stood a great temple, Wat Ounalom.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "etkb1cccolcm": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.200041666666667,
+  "text": "Under a big tree on the riverbank, a crowd had gathered.",
+  "heard": " Under a big tree on the riverbank, a crowd had gathered.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eh9wdsp1qlmi": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "borey",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 4.97,
+  "text": "Hey, you there! Hurry, hurry, or all the good spots will be gone!",
+  "heard": " Hurry, hurry, or all the good spots will be gone!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1t1hm1p1ws2m": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "borey",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 7.92,
+  "text": "I'm Borey. I'm eleven. I live at Wat Ounalom and I'm learning to read and write.",
+  "heard": " I'm eleven. I live at Wat Ounalom and I'm learning to read and write.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e17gf0mjgik49": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "borey",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 5.94,
+  "text": "I'm a “pagoda boy” — I run errands for the monks and fetch their water.",
+  "heard": " I'm a \"pagoda boy\" — I run errands for the monks and fetch their water.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1la7d141lxp1": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "borey",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 5.55,
+  "text": "Oh, you came back! Hurry, hurry, or all the good spots will be gone!",
+  "heard": " Hurry, hurry, or all the good spots will be gone!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1nphhce1vyot": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "borey",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 5.06,
+  "text": "Hey, you there! …Huh? You look like you know me.",
+  "heard": " …Huh? You look like you know me.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ }
+}
