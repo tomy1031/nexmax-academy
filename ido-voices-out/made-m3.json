@@ -592,5 +592,101 @@
   "heard": "でも、ここで見たものを、できるだけそのまま書いて、遠くの国の人に知らせたいんだ。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "vn3q21a": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "nimol",
+  "voice": "Aoede",
+  "model": "gemini-3.8-live",
+  "seconds": 1.9600416666666667,
+  "text": "知らせて、どうするの？",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1rgcs35": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "mouhot",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 4.410041666666666,
+  "text": "……そうだね。きっと、たくさんの人が、この寺を見たくなるだろう。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1qg0uk9": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "nimol",
+  "voice": "Aoede",
+  "model": "gemini-3.8-live",
+  "seconds": 8.8,
+  "text": "ふうん。じゃあ、そのときは、わたしが案内してあげる。かくれんぼの寺のことなら、だれにも負けないもん。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vhpswrc": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.320041666666667,
+  "text": "ムオさんは、声を立てて笑った。肩のサルも、手をたたくように、キキッと鳴いた。",
+  "heard": "ムオさんは、声を立てて笑った。肩のサルも、手をたたくように、キキッと鳴いた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vb0k7x6": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 2.8,
+  "text": "……戻ってきたよ。いまのバイヨン。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vgk4sbb": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.68,
+  "text": "ムオさんは、およそ3週間、アンコールにいて、見たものを日記に書いたんだ。",
+  "heard": "ムオさんは、およそ三週間、アンコールにいて、見たものを日記に書いたんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vmz41t2": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.230041666666667,
+  "text": "アンコール・ワットのことは、「ギリシャやローマが残したどんなものより、大きく、すばらしい」と書いているよ。",
+  "heard": "アンコール・ワットのことは、「ギリシャやローマが残したどんなものより、大きく、すばらしい」と書いているよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v11urbvr": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.29,
+  "text": "ムオさんは、次の年、ラオスで病気になって、亡くなったんだ。家族が、手紙と日記をまとめて、本にしたんだよ。",
+  "heard": "ムオさんは、次の年、ラオスで病気になって、亡くなったんだ。家族が、手紙と日記をまとめて、本にしたんだよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
