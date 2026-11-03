@@ -1582,5 +1582,65 @@
   "heard": " One stone, handed on to the next person. …That's gone on for nine hundred years.",
   "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
   "readings": []
+ },
+ "ehlcl9t1gajs": {
+  "episode": "kh-sr-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.770041666666666,
+  "text": "(whispering) In Phnom Penh, we talked about people becoming bridges, didn't we? Here, people have handed down stones.",
+  "heard": " In Phnom Penh, we talked about people becoming bridges, didn't we? Here, people have handed down stones.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1o1re9o1pim2": {
+  "episode": "kh-sr-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.43,
+  "text": "Someday, Bopha's daughter and the trainees here will hand the stones on to the next people, too.",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "ee2rwe21iwv9": {
+  "episode": "kh-sr-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.1,
+  "text": "Someday, the trainees here will hand the stones on to the next people, too.",
+  "heard": " Someday, the trainees here will hand the stones on to the next people,",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "eitu54f1dw30": {
+  "episode": "kh-sr-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.4,
+  "text": "…Traveler. Thank you for coming to Siem Reap.",
+  "heard": " Traveler. Thank you for coming to Siem Reap.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1d9mm8k4fxf7": {
+  "episode": "kh-sr-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 2.43,
+  "text": "អរគុណ (aw khun)! — Thank you!",
+  "heard": " Thank you!",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
