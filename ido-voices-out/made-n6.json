@@ -730,5 +730,101 @@
   "heard": " The illness of my people's bodies becomes an illness of my heart, and it hurts me even more. For the suffering of the country is the true suffering of the one who rules it.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1uxvcma10jxv": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "jayavarman7",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 10.02,
+  "text": "That is why I built hospitals across the land — so that anyone, whoever they are, can be cared for.",
+  "heard": " That is why I built hospitals across the land — so that anyone, whoever they are, can be cared for.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1hwo3dpc581k": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "jayavarman7",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.58,
+  "text": "Traveller, in your country, what becomes of the sick?",
+  "heard": " Traveller, in your country, what becomes of the sick?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1kj01oy908o6": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "jayavarman7",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.090041666666667,
+  "text": "I see. …I am glad to hear it.",
+  "heard": " I am glad to hear it.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e14ek6zh1t5lc": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "jayavarman7",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 7.05,
+  "text": "I see. Every land still falls short somewhere. I, too, am still on the way.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eatti4n1x0ys": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.840041666666667,
+  "text": "The king pressed his palms together before the relief, then walked quietly on.",
+  "heard": "The king pressed his palms together before the relief, then walked quietly on.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ezdf1pxxx257": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.32,
+  "text": "“The illness of my people's bodies…” — those words are really carved on the stone tablets the king set up at hospitals across the country.",
+  "heard": " “The illness of my people’s bodies…” — those words are really carved on the stone tablets the king set up at hospitals across the country.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e19ldnh01t93b": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.95,
+  "text": "That's Queen Indradevi. She taught women at the temples — and she was a poet, too.",
+  "heard": " That's Queen Indradevi. She taught women at the temples — and she was a poet,",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1uk1fd5thj2q": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 14.960041666666667,
+  "text": "The queen looked up. Noticing Chanthy and you peeking over the wall, she smiled gently.",
+  "heard": " The queen looked up. Noticing Chanthy and you peeking over the wall, she smiled gently.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
