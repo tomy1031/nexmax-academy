@@ -106,5 +106,17 @@
   "heard": " This tower is a symbol of independence, they say.",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "e1o9v27v1yhvs": {
+  "episode": "kh-independence",
+  "lang": "en",
+  "speaker": "dara",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 7.23,
+  "text": "Cambodia became independent from France when I was a baby. On 9 November 1953.",
+  "heard": " Cambodia became independent from France when I was a baby. On nine November nineteen fifty-three.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
