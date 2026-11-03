@@ -313,5 +313,17 @@
   "readings": [
    "地雷＝じらい"
   ]
+ },
+ "vgvmfm7": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.28,
+  "text": "村の道のはし。ずっと遠くの草むらに、赤い看板が立っている。",
+  "heard": "村の道のはし。ずっと遠くの草むらに、赤い看板",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
  }
 }
