@@ -190,5 +190,101 @@
   "heard": "",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "eam89t91vmib": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "keo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 7.54,
+  "text": "All right, I'll give her the most detailed crown of all! …The master might scold me for taking too long, though.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1cqxqla1gbdn": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 11.56,
+  "text": "Keo set his chisel along the rough shape the master had already cut. Tap, tap, tap — the small sounds went on and on.",
+  "heard": "Kio set his chisel along the rough shape the master had already cut. Tap, tap, tap. The small sounds went on and on.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e17l88c7oc4sc": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "keo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 9.38,
+  "text": "You see, the stones are stacked into the wall first, and then we carve them right there. So if you make a mistake, you can't start over.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e12eiv1t8sdc5": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "keo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 9.880041666666667,
+  "text": "This stone was brought here from a mountain far, far away, along canals. Thousands of people are building this temple, over decades.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1moruga15cvw": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 12,
+  "text": "The sandstone of Angkor Wat was cut at the foot of Mount Kulen, to the northeast. Researchers have found more than 50 quarries, and traces of a canal running straight toward the capital.",
+  "heard": " The sandstone of Angkor Wat was cut at the foot of Mount Kulen, to the northeast. Researchers have found more than 50 quarries, and traces of a canal running straight toward the capital.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eu9spezpr780": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "keo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 6.13,
+  "text": "This temple is for the god Vishnu. The king decided that, they say.",
+  "heard": " This temple is for the god Vishnu. The king decided that, they say.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e16ltz5e19kfl": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "keo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 5.750041666666666,
+  "text": "And this temple faces west. Most other temples face east.",
+  "heard": " And this temple faces west. Most other temples face east.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ee78glj1cwoz": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "親方",
+  "voice": "Alnilam",
+  "model": "gemini-3.8-live",
+  "seconds": 14.5,
+  "text": "Once in spring and once in autumn, there's a day when day and night are the same length. On that morning, if you look from the western approach, the sun rises over the central tower.",
+  "heard": " Once in spring and once in autumn, there's a day when day and night are the same length. On that morning, if you look from the western approach, the sun rises over the central tower.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
