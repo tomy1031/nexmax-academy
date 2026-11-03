@@ -1126,5 +1126,29 @@
   "heard": "Leakhena's dance was handed on to her by Teacher Neary, too, wasn't it?",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "e1ymeuerrp1d1": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8,
+  "text": "Learn the songs by heart, write them down, and hand them on to the next person. …That's how words stay alive.",
+  "heard": " Learn the songs by heart, write them down, and hand them on to the next person. …That's how words stay alive.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "etfd03w1vgz1": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.2800416666666665,
+  "text": "(whispering) …I wonder if Borey got to read to his grandma.",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
