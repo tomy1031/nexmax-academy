@@ -502,5 +502,101 @@
   "heard": "The museum garden. A woman holding a little girl's hand stopped in front of an exhibit and turned to look at you.",
   "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
   "readings": []
+ },
+ "excdteon3dc": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "bopha2",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 6.84,
+  "text": "…It's you…! No way — from 1998…!",
+  "heard": " No way — from 1998!",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e460zk81rhlz": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "bopha2",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 5.62,
+  "text": "It's me, Bopha. I'm thirty-eight now. This is my daughter.",
+  "heard": " I'm thirty-eight now. This is my daughter.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "eoz8v4mgpiil": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "bopha2",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 11.2,
+  "text": "These days, I make maps for a team that clears landmines. I talk to people in the villages, and put on a map which places were dangerous and which have become safe.",
+  "heard": " These days, I make maps for a team that clears landmines. I talk to people in the villages, and put on a map which places were dangerous and which have become safe.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "exmvk5bcuvmg": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "bopha2",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 8.21,
+  "text": "I remember our promise. …Look, here it is. I said you'd be the very first to see it, didn't I?",
+  "heard": " …Look, here it is. I said you'd be the very first to see it, didn't I?",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e2bs59128zh2": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.21,
+  "text": "On the map Bopha spread out, there was lots of green, and just a little red.",
+  "heard": "On the map Bophaspread out,there waslots of green,and justa little red.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e12md4gmnx6bg": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "bopha2",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 9.2,
+  "text": "I remember you told me, “I'm sure you can.” …And I did. Though once, I almost gave up.",
+  "heard": " I remember you told me, “I’m sure you can.” …And I did. Though once, I almost gave up.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1gwq7bj1ryru": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "bopha2",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 6.680041666666667,
+  "text": "There are still red places. But every year, the green grows.",
+  "heard": " There are still red places. But every year, the green grows.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "edpy1ha2wupv": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "bopha2",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 4.470041666666667,
+  "text": "My dad in the village still farms his fields, at his own pace.",
+  "heard": " My dad in the village still farms his fields, at his own pace.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
