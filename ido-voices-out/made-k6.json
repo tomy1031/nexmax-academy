@@ -1097,5 +1097,17 @@
   "heard": "父上に、母上に、そして、いつかここに来る者に。ここに、日本の者が祈りに来たのだ、と。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "vmroinq": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.37,
+  "text": "（小声）今は、遺跡に字を書くのは、ぜったいにだめだよ。でもこれは、四百年前の話。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
