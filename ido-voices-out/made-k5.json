@@ -843,5 +843,106 @@
   "heard": "あなたなら、だれのために、何かを作る？",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "vxnv3z8": {
+  "episode": "kh-taprohm",
+  "lang": "ja",
+  "speaker": "sreymom",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 1.87,
+  "text": "王さまと、同じだね。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v14xdfia": {
+  "episode": "kh-taprohm",
+  "lang": "ja",
+  "speaker": "sreymom",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 3.640041666666667,
+  "text": "いいね。わたしも、家族のために踊る。",
+  "heard": "わたしも、家族のために踊る。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1gqueeu": {
+  "episode": "kh-taprohm",
+  "lang": "ja",
+  "speaker": "sreymom",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 5.15,
+  "text": "まだ会ったことのない人……。ずっと先の人にも、届くといいね。",
+  "heard": "ずっと先の人にも、届くといいね。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vmkly79": {
+  "episode": "kh-taprohm",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.08,
+  "text": "回廊の向こうを、旗と日傘の行列が、ゆっくりと進んでいく。太鼓の音が、胸にひびく。",
+  "heard": "回廊の向こうを、旗と日傘の行列が、ゆっくりと進んでいく。太鼓の音が、胸にひびく。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "回廊＝かいろう"
+  ]
+ },
+ "v1c9a4nf": {
+  "episode": "kh-taprohm",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.340041666666666,
+  "text": "いちばん奥の、金の日傘の下に、王さまの姿があった。遠くて、お顔は見えない。",
+  "heard": "いちばん奥の、金の日傘の下に、王さまの姿があった。遠くて、お顔は見えない。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1rclb9z": {
+  "episode": "kh-taprohm",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 2.24,
+  "text": "ジャヤーヴァルマン7世だよ。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v16sh3fa": {
+  "episode": "kh-taprohm",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.31,
+  "text": "石碑の前で、祭官が、碑文に刻まれた王さまの願いを、声高く読みあげた。",
+  "heard": "石碑の前で、祭官が、碑文に刻まれた王さまの願いを、声高く読みあげた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "祭官＝さいかん",
+   "碑文＝ひぶん"
+  ]
+ },
+ "v6cl40n": {
+  "episode": "kh-taprohm",
+  "lang": "ja",
+  "speaker": "祭官",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.360041666666667,
+  "text": "「わが母が、生まれ変わりの海から解かれ、仏の境地を得ますように」",
+  "heard": "わが母が、生まれ変わりの海から解かれ、仏の境地を得ますように。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
