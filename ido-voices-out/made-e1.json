@@ -862,5 +862,101 @@
   "heard": " Above the valley, only the cut vines swayed in the wind.",
   "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
   "readings": []
+ },
+ "e1v1k6bm13ezc": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.720041666666667,
+  "text": "Without a word, Kunimori picked up a fresh vine.",
+  "heard": " Without a word, Kunimori picked up a fresh vine.",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "eu86r2a8l109": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 9.29,
+  "text": "If it is cut, then we weave it again.",
+  "heard": " If it is cut, then we weave it again.",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "e11tsqa6igbva": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 11.31,
+  "text": "This time, not so we can cut it. …So he can cross it when he comes home.",
+  "heard": " This time, not so we can cut it. …So he can cross it when he comes home.",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "e1ci18al0ujz": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.650041666666667,
+  "text": "Even today, the vine bridge is rebuilt every three years. Every time it broke, people wove it again — over and over.",
+  "heard": " Even today, the vine bridge is rebuilt every three years. Every time it broke, people wove it again — over and over.",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "ero3vzxkuoz2": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 8.46,
+  "text": "Traveler, I will not ask your name. If I knew it, I could never forget you.",
+  "heard": " Traveler, I will not ask your name. If I knew it, I could never forget you.",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "eof46l71u2nf": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.42,
+  "text": "…I hope a day comes when we no longer need this bridge.",
+  "heard": "I hope a day comes when we no longer need this bridge.",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "e9b0mjj1buz5": {
+  "episode": "miyoshi-kazurabashi",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.19,
+  "text": "(whispering) Two years from now, he will lay the sword to rest on Mt. Tsurugi. …Maybe it's because of this night.",
+  "heard": " Two years from now, he will lay the sword to rest on Mt. Tsurugi. …Maybe it's because of this night.",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "ej7al919ggoi": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.590041666666666,
+  "text": "Summer 1186. Deep in the forest, a waterfall poured down like a thread of white silk.",
+  "heard": " Summer eleven eighty-six. Deep in the forest, a waterfall poured down like",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
