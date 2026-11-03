@@ -646,5 +646,101 @@
   "heard": " There are no books about the dances. There are no videos, either.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1ox8ucgzz7p7": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "neary",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 11.07,
+  "text": "All we have is what my body remembers. So, one by one, I will copy the dances from my body into yours.",
+  "heard": " All we have is what my body remembers. So, one by one, I will copy the dances from my body into yours.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1c3k9tkluosl": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 20.35,
+  "text": "During the long war and the terrible years that began in 1975, many of the people who carried on the dance and music were lost. Some say as many as nine in ten.",
+  "heard": " During the long war and the terrible years that began in 1975, many of the people who carried on the dance and music were lost. Some say as many as nine in ten.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eb9qsefbnbrf": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.26,
+  "text": "From 1979, the people who survived began teaching children the dances they remembered.",
+  "heard": " From 1979, the people who survived began teaching children the dances they remembered.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1t6vjj410y9a": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.120041666666667,
+  "text": "The first lesson was for the fingers.",
+  "heard": " The first lesson was for the",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "em9a49asy20g": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "neary",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 6.04,
+  "text": "Gently bend your fingers back. A little more each day.",
+  "heard": " Gently bend your fingers back. A little more each",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1emz7k524ama": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "neary",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 6.67,
+  "text": "This shape is “Bud.” This is “Blossoming flower.” And this is “Fruit.”",
+  "heard": " This shape is “Bud.” This is “Blossoming flower.” And this is “Fruit.”",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1kln9wwikiao": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "neary",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 4.59,
+  "text": "Every hand gesture in the dance has a meaning.",
+  "heard": " Every hand gesture in the dance has a meaning.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1b93qc17w92": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "leakhena",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 5.02,
+  "text": "…Ow, ow. My fingers won't bend like yours, Teacher.",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
