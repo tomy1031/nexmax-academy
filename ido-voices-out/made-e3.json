@@ -1078,5 +1078,101 @@
   "heard": "Yes. Now it's your turn to be the storyteller.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1hd8g022jztk": {
+  "episode": "miyoshi-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.24,
+  "text": "Hehe. That's true. Your stamps, your photos — they're all part of your story.",
+  "heard": " That's true. Your stamps, your photos — they're all part of your story.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e4ql5frufs34": {
+  "episode": "miyoshi-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.1,
+  "text": "…Kunimori told us about a young warrior at the battle of Yashima. One who never hid from his arrows.",
+  "heard": " Kunimori told us about a young warrior at the battle of Yashima. One who never hid from his arrows.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1ps5s7fqi4y5": {
+  "episode": "miyoshi-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.18,
+  "text": "Minamoto no Yoshitsune. You've already met him, haven't you? The hunter who became the hunted.",
+  "heard": " Minamoto no Yoshitsune. You've already met him, haven't you? The hunter who became the hunted.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e7pm8aw11nvi": {
+  "episode": "miyoshi-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.79,
+  "text": "Minamoto no Yoshitsune, a great general of the Genji (the Minamoto clan). The hunter who became the hunted.",
+  "heard": " Minamoto no Yoshitsune, a great general of the Genji (the Minamoto clan). The hunter who became",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1eb6c7317t9v": {
+  "episode": "miyoshi-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.33,
+  "text": "His story is waiting for you too, behind doors all over Japan.",
+  "heard": "his story is waiting for you too, behind doors all over Japan.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ek6l04l1qhxu": {
+  "episode": "miyoshi-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.160041666666666,
+  "text": "Now, on to the next town. …See you again, okay?",
+  "heard": "Now on to the next town. See you again, okay?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e19urtby1xhgx": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.48,
+  "text": "Spring 1189. Hiraizumi, in Oshu (the far north).",
+  "heard": " Spring eleven eighty-nine. Hiraizumi, in Oshu (the far north).",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e11zrjl2avptf": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.35,
+  "text": "Takadachi, a hilltop mansion above the Koromo River, was about to go up in flames.",
+  "heard": "Takahashi, a hilltop mansion above the Kuromo River, was about to go up in flames.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
  }
 }
