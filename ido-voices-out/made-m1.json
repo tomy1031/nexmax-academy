@@ -946,5 +946,105 @@
   "readings": [
    "回廊＝かいろう"
   ]
+ },
+ "vh306e4": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.670041666666667,
+  "text": "しばらくして、のどをさすりながら、クロム・ンゴイさんが出てきた。",
+  "heard": "しばらくして、のどをさすりながら、クロム・ンゴイさんが出てきた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v17zu7o8": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "kromngoy",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 6.04,
+  "text": "ふう、のどがかれたわい。……おう、ボレイ。そこにおったか。",
+  "heard": " ふう、のどがかれたわい。……おう、ボレイ。そこにおったか。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1n4imfp": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "kromngoy",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 4.68,
+  "text": "字を覚えたら、わしの歌を、だれかに読んでやってくれ。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1yt0ha2": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "kromngoy",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 11.52,
+  "text": "歌はな、手わたして、はじめて生きるんじゃ。わしの口から、おまえの口へ。おまえの口から、また次の子へな。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1bmw9wl": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "borey",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 9.040041666666667,
+  "text": "……うん！ ぼく、村のおばあちゃんに、読んで聞かせてあげる。おばあちゃん、目が悪いから、ぼくが目のかわりになるんだ。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vsxsrps": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "borey",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 4.06,
+  "text": "へへっ。まずは、字をちゃんと覚えなくちゃ。",
+  "heard": "へへっ。まずは、字をちゃんと覚えなくちゃ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vnsfqb1": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "borey",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 4.8,
+  "text": "じゃあ、いっしょに字を習う？ 石板、かしてあげる！",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "石板＝せきばん"
+  ]
+ },
+ "v1e011t": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.07,
+  "text": "（小声）ピセットくんが柱の木を運んだ岸は、ここから、すぐ南だね。あれから六十四年。都は、すっかり大きくなったんだ。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "都＝みやこ"
+  ]
  }
 }
