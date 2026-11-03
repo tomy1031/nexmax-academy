@@ -346,5 +346,101 @@
   "heard": " Yeah. They sure are.",
   "scene": "お祝いの、晴れやかな場面。明るく",
   "readings": []
+ },
+ "enlin74cajbc": {
+  "episode": "kh-independence",
+  "lang": "en",
+  "speaker": "ダラーのお父さん",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.03,
+  "text": "Dara. Even when you're all grown up, this tower will still be standing here.",
+  "heard": "",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "emwg1u9d9b6n": {
+  "episode": "kh-independence",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.56,
+  "text": "…We're back. This is the Independence Monument today.",
+  "heard": "We're back。 This is the Independence Monument today.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1brdlk315rh3": {
+  "episode": "kh-independence",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.23,
+  "text": "Cambodia declared its independence on 9 November 1953. Every year, 9 November is Independence Day, and a flame is lit at this monument.",
+  "heard": " Cambodia declared its independence on 9 November 1953. Every year, 9 November is Independence Day, and a flame is lit at this monument.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1o546ppxwmln": {
+  "episode": "kh-independence",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 14.33,
+  "text": "Work on the monument began in 1958, and it opened in 1962. It was designed by the Cambodian architect Vann Molyvann. They say its five tiers carry 100 naga heads.",
+  "heard": " Work on the monument began in 1958, and it opened in 1962. It was designed by the Cambodian architect Vann Molyvann. They say its five tiers carry 100 naga heads.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e13o462zoxd95": {
+  "episode": "kh-independence",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.820041666666667,
+  "text": "Vann Molyvann is the one who spread a style of building called “New Khmer Architecture.”",
+  "heard": " Vonn Molyvann is the one who spread a style of building called “New Khmer Architecture.”",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e3rszk5hti9k": {
+  "episode": "kh-independence",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.930041666666667,
+  "text": "He blended modern ways of building with traditional Khmer shapes and clever ways of dealing with heat and rain.",
+  "heard": " He blended modern ways of building with traditional Khmer shapes and clever ways of dealing with heat and rain.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e8el6571w26y": {
+  "episode": "kh-independence",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.42,
+  "text": "The Chaktomuk Conference Hall by the river is a Vann Molyvann building, too. Its roof looks like a palm leaf.",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "eb77i5elref5": {
+  "episode": "kh-independence",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.42,
+  "text": "Just as Dara's father said. Through all the long years that followed, the tower has stood right here.",
+  "heard": " Just as Dara's father said. Through all the long years that followed, the tower has stood right here.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
