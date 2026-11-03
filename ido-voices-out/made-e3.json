@@ -970,5 +970,101 @@
   "heard": " We laid the sword to rest together. I am",
   "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
   "readings": []
+ },
+ "e1cp3bwia6903": {
+  "episode": "miyoshi-finale",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.15,
+  "text": "“The sword sleeps in the mountain. You stayed to watch. I am grateful.”",
+  "heard": " The sword sleeps in the mountain. You stayed to watch. I am grateful.",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "e9fjjob1lfns": {
+  "episode": "miyoshi-finale",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 2.69,
+  "text": "“I gave the biwa pick back.”",
+  "heard": "I gave the B-Whip pick back.",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "en5oftv11snr": {
+  "episode": "miyoshi-finale",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.79,
+  "text": "“Come again. —Kunimori”",
+  "heard": "Come again, Kuni Mori.",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "e17iq9uw1gtj8": {
+  "episode": "miyoshi-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.95,
+  "text": "Kunimori knew. He knew you came from a time far, far in the future.",
+  "heard": " He knew you came from a time far, far in the future.",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "e1cxpmuz1yt2k": {
+  "episode": "miyoshi-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.18,
+  "text": "Eight hundred and forty years… He has been waiting for you here, by this rock, all that time.",
+  "heard": " Eight hundred and forty years… He has been waiting for you here, by this rock,",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "eqy5vp81086y": {
+  "episode": "miyoshi-finale",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.62,
+  "text": "The wind blew. The vine bridge swayed gently.",
+  "heard": " The vine bridge swayed gently.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1u05791y5u0z": {
+  "episode": "miyoshi-finale",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.750041666666666,
+  "text": "Far away, you thought you heard a biwa playing. And then a baby crying, and an old man laughing.",
+  "heard": " Far away, you thought you heard a biwa playing. And then a baby crying, and",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1cb09vz1bnq4": {
+  "episode": "miyoshi-finale",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 3.53,
+  "text": "Traveler. …Will you tell our story?",
+  "heard": " …Will you tell our story?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
