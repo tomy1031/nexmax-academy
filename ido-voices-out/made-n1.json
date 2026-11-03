@@ -526,5 +526,101 @@
   "heard": " The children you led away from the water are in the line too, with small baskets on their heads.",
   "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
   "readings": []
+ },
+ "erfazrc17afr": {
+  "episode": "kh-watphnom",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.380041666666667,
+  "text": "The men who pulled the rope are carrying baskets too, rubbing the blisters on their palms.",
+  "heard": " The men who pulled the rope are carrying baskets too, rubbing the blisters on their palms.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1l745d218nba": {
+  "episode": "kh-watphnom",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.130041666666667,
+  "text": "Little by little, the mound of earth grew taller. On top, they built a small wooden temple.",
+  "heard": " Little by little, the mound of earth grew taller. On top, they built a small wooden temple.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e9sbs5v1f662": {
+  "episode": "kh-watphnom",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.12,
+  "text": "The monks called it “Wat Phnom” — the temple on the hill.",
+  "heard": " The monks called it “Wat Phnom” — the temple on the hill.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1ve9dfs1hsg9": {
+  "episode": "kh-watphnom",
+  "lang": "en",
+  "speaker": "penh",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 3.38,
+  "text": "Traveler. Thank you kindly for your help.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1a6d4a61edp9": {
+  "episode": "kh-watphnom",
+  "lang": "en",
+  "speaker": "penh",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 4.610041666666667,
+  "text": "In your country, are there things that everyone made together like this?",
+  "heard": " In your country, are there things that everyone made together like this?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "elywfu6928rd": {
+  "episode": "kh-watphnom",
+  "lang": "en",
+  "speaker": "penh",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 4.7,
+  "text": "Is that so? People are the same, whatever the country.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eadc1nu155vq": {
+  "episode": "kh-watphnom",
+  "lang": "en",
+  "speaker": "penh",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 6.050041666666667,
+  "text": "I see. Then when you go home, have a look. I'm sure you'll find something.",
+  "heard": " Then when you go home, have a look. I'm sure you'll find something.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "enm1xm51ilde": {
+  "episode": "kh-watphnom",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.7200416666666665,
+  "text": "…We're back. This is Wat Phnom today.",
+  "heard": " We're back. This is Wat Phnom today.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
