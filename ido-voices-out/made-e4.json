@@ -1714,5 +1714,17 @@
   "heard": " But you already know, don't you? About that man who was weaving the vine bridge (Kazurabashi).",
   "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
   "readings": []
+ },
+ "e3o6tqu1xhtf": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.46,
+  "text": "Go see the vine bridge (Kazurabashi) in Iya. An answer might be waiting for you there.",
+  "heard": " Go see the vine bridge Kazurabashi in Iya. An answer might be waiting for you there.",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
  }
 }
