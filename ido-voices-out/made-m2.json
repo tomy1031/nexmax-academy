@@ -742,5 +742,101 @@
   "heard": "",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1o6xjqe16yiv": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "borey",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 0.7900416666666666,
+  "text": "What? They change?",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1wd3cl11dvyj": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "chuonnath",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.120125,
+  "text": "Welcome, traveller. …Have we met somewhere before?",
+  "heard": "Welcome, traveller. …Have we met somewhere before?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1yclhig138lb": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "borey",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 4.6,
+  "text": "V-Venerable Teacher. How should we say “train” in Khmer?",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1txjwfs1txa8": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "chuonnath",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.65,
+  "text": "That is a good question. A new thing needs a new name.",
+  "heard": " That is a good question. A new thing needs a new name.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1blqas11glpy": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "chuonnath",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 10.640041666666667,
+  "text": "Rather than simply borrowing words from other lands, we can also build Khmer words from the roots of Pali and Sanskrit.",
+  "heard": " Rather than simply borrowing words from other lands, we can also build Khmer words from the roots of Pali and Sanskrit.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ebc5bia1yxmu": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "chuonnath",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.670041666666667,
+  "text": "For a train, for example — join “metal” and “vehicle.”",
+  "heard": " for a train, for example — join “metal” and “vehicle.”",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1o8l87tmzbf5": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "chuonnath",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 7.180041666666667,
+  "text": "And the sutras, too. If we print them, we can send them to temples all over the country.",
+  "heard": " If we print them, we can send them to temples all over the country.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ewt9g8nkcwyn": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.160041666666666,
+  "text": "The Venerable Chuon Nath glanced at Borey's slate, smiled, and quietly walked on.",
+  "heard": " The Venerable Chuon Nath glanced at Borey's slate, smiled, and quietly walked on.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
