@@ -1474,5 +1474,101 @@
   "heard": " …May I ask you one thing?",
   "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
   "readings": []
+ },
+ "e4sg7x311og9": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 9.29,
+  "text": "The mighty archer who aimed at me at Yashima. The man who leapt into the sea at Dan-no-ura — Taira no Noritsune, Lord of Noto.",
+  "heard": " The mighty archer who aimed at me at Yashima. The man who leapt into the sea at Dan-no-ura — Taira no Noritsune, Lord of Noto.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "evi3hgq1wxve": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 4.52,
+  "text": "Did he… truly die?",
+  "heard": " Did he… truly die?",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "eiro7vg1gm83": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 13.520041666666666,
+  "text": "(whispering) Noritsune, Lord of Noto, was said to be the strongest warrior of the Heike. The story goes that he leapt into the sea at the battle of Dan-no-ura.",
+  "heard": "",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e1y5japo1xxfj": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 15.71,
+  "text": "You told him everything. The deep mountains of Iya, in Shikoku. The vine bridge (Kazurabashi) that was cut. The biwa (a Japanese lute) by the waterfall. The sword laid to rest on the mountain.",
+  "heard": " You told him everything. The deep mountains of Iya, in Shikoku. The vine bridge that was cut. The biwa by the waterfall. The sword laid to rest on the mountain.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e1iifpv2toti": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.96,
+  "text": "Yoshitsune listened without a word. And then—",
+  "heard": "\nYoshitsune listened without a word. And then",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "eloi2rk1wqwy": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 3.1,
+  "text": "Ha… ha ha ha ha!",
+  "heard": " Ha… ha ha",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e1yk2n4e14c5z": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 6.27,
+  "text": "Is that so! That man is alive! He put down his sword, and lives in the mountains…!",
+  "heard": " That man is alive! He put down his sword, and lives in the mountains!",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e58sne2o0j53": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 3.7,
+  "text": "I am glad. …I am truly glad.",
+  "heard": " …I am truly glad.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
  }
 }
