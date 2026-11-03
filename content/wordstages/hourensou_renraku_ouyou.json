@@ -2,14 +2,14 @@
   "kind": "wordstage",
   "id": "hourensou_renraku_ouyou",
   "title": "報連相：連絡の ことば",
-  "description": "メールの 型と、障害の ときに 使う ことばです。",
+  "description": "メールの 型（宛先・件名・本文）と、全社員への お知らせで 使う ことばです。",
   "label": "上級",
   "fieldSequence": [
     "forest",
     "sky",
     "space"
   ],
-  "questionCount": 50,
+  "questionCount": 25,
   "passRate": 80,
   "furigana": [
     [
@@ -21,8 +21,28 @@
       "れんらく"
     ],
     [
-      "障害",
-      "しょうがい"
+      "型",
+      "かた"
+    ],
+    [
+      "宛先",
+      "あてさき"
+    ],
+    [
+      "件名",
+      "けんめい"
+    ],
+    [
+      "本文",
+      "ほんぶん"
+    ],
+    [
+      "全社員",
+      "ぜんしゃいん"
+    ],
+    [
+      "知",
+      "し"
     ],
     [
       "使",
@@ -41,64 +61,35 @@
       "そう"
     ],
     [
-      "型",
-      "かた"
-    ],
-    [
       "上級",
       "じょうきゅう"
     ]
   ],
   "wordIds": [
     "shagai",
-    "meue",
-    "fuguai",
-    "hassei",
-    "chousa",
-    "fukkyuu",
-    "ubau",
-    "aseru",
-    "musi",
     "kenmei",
     "honbun",
     "osewaninatteorimasu",
-    "mikomi",
-    "sidai",
-    "aratamete",
-    "eikyouhanni",
-    "riyoukaisi",
     "kakuninnonegaisimasu",
     "mousiwakearimasen",
-    "kenshoukankyou",
     "mentenansu",
-    "shougai",
-    "taiou",
     "atesaki",
     "juuyou",
-    "enki",
     "chuuiten",
     "kanribu",
     "kabushikigaisha",
     "gazou",
     "kowareru",
-    "daisikyuu",
     "zenshain",
     "joutai",
-    "nagabiku",
-    "taishou",
     "infura",
-    "hinsitukanri",
     "eigyoubu",
     "honyaku",
     "manyuaru",
     "tesutokankyou",
     "saishuu",
-    "kessai",
-    "nennosi",
-    "kanjou",
     "sama",
     "jikoku",
-    "jiten_toki",
     "apiki-"
   ]
 }

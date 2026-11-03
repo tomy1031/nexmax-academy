@@ -1,0 +1,91 @@
+{
+  "kind": "wordstage",
+  "id": "hourensou_renraku_chukyu",
+  "title": "報連相：連絡の ことば",
+  "description": "連絡の 文で よく 使う 漢字の ことばです。依頼・期限・共有 など、チャットで そのまま 使います。",
+  "label": "中級",
+  "fieldSequence": [
+    "forest",
+    "sky",
+    "space"
+  ],
+  "questionCount": 25,
+  "passRate": 80,
+  "furigana": [
+    [
+      "報連相",
+      "ほうれんそう"
+    ],
+    [
+      "連絡",
+      "れんらく"
+    ],
+    [
+      "文",
+      "ぶん"
+    ],
+    [
+      "漢字",
+      "かんじ"
+    ],
+    [
+      "依頼",
+      "いらい"
+    ],
+    [
+      "期限",
+      "きげん"
+    ],
+    [
+      "共有",
+      "きょうゆう"
+    ],
+    [
+      "使",
+      "つか"
+    ],
+    [
+      "報",
+      "ほう"
+    ],
+    [
+      "連",
+      "れん"
+    ],
+    [
+      "相",
+      "そう"
+    ],
+    [
+      "中級",
+      "ちゅうきゅう"
+    ]
+  ],
+  "wordIds": [
+    "kankeisha",
+    "kyouyuu",
+    "mokuteki",
+    "tabusho",
+    "gutaiteki",
+    "meikaku",
+    "yuusenjunni",
+    "kaihatukankyou",
+    "shuusei",
+    "shiyouritsu",
+    "tsuuchi",
+    "henkou",
+    "koushin",
+    "kaiketu",
+    "sagyou",
+    "teishutu",
+    "irai",
+    "kigen",
+    "sakusei",
+    "douryou",
+    "seiri",
+    "jouhou",
+    "sinchoku",
+    "sinki",
+    "hyouji"
+  ]
+}

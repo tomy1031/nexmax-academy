@@ -1,0 +1,91 @@
+{
+  "kind": "wordstage",
+  "id": "hourensou_renraku_chojokyu",
+  "title": "報連相：連絡の ことば",
+  "description": "障害の ときの 連絡で 使う ことばです。不具合・復旧・影響範囲 など、むずかしい ことばが 入って います。",
+  "label": "超上級",
+  "fieldSequence": [
+    "forest",
+    "sky",
+    "space"
+  ],
+  "questionCount": 25,
+  "passRate": 80,
+  "furigana": [
+    [
+      "報連相",
+      "ほうれんそう"
+    ],
+    [
+      "連絡",
+      "れんらく"
+    ],
+    [
+      "障害",
+      "しょうがい"
+    ],
+    [
+      "不具合",
+      "ふぐあい"
+    ],
+    [
+      "復旧",
+      "ふっきゅう"
+    ],
+    [
+      "影響範囲",
+      "えいきょうはんい"
+    ],
+    [
+      "使",
+      "つか"
+    ],
+    [
+      "入",
+      "はい"
+    ],
+    [
+      "報",
+      "ほう"
+    ],
+    [
+      "連",
+      "れん"
+    ],
+    [
+      "相",
+      "そう"
+    ],
+    [
+      "超上級",
+      "ちょうじょうきゅう"
+    ]
+  ],
+  "wordIds": [
+    "meue",
+    "fuguai",
+    "hassei",
+    "chousa",
+    "fukkyuu",
+    "ubau",
+    "aseru",
+    "musi",
+    "mikomi",
+    "sidai",
+    "aratamete",
+    "eikyouhanni",
+    "riyoukaisi",
+    "kenshoukankyou",
+    "shougai",
+    "taiou",
+    "enki",
+    "daisikyuu",
+    "nagabiku",
+    "taishou",
+    "hinsitukanri",
+    "kessai",
+    "nennosi",
+    "kanjou",
+    "jiten_toki"
+  ]
+}
