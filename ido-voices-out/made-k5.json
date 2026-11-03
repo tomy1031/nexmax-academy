@@ -1258,5 +1258,105 @@
   "heard": "母のために、心をこめて踊ってくれれば、それでよい。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v1fu81kx": {
+  "episode": "kh-taprohm",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.79,
+  "text": "王さまは、石碑の前に立ち、刻まれたばかりの文を、静かに読みあげた。",
+  "heard": "王さまは、石碑の前に立ち、刻まれたばかりの文を、静かに読みあげた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v9kacd4": {
+  "episode": "kh-taprohm",
+  "lang": "ja",
+  "speaker": "jayavarman7",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 7.03,
+  "text": "わが母が、生まれ変わりの海から解かれ、仏の境地を得ますように。",
+  "heard": "わが母が、生まれ変わりの海から解かれ、仏の境地を得ますように。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vxazydw": {
+  "episode": "kh-taprohm",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.11,
+  "text": "この寺の碑文に、本当に刻まれている王さまの願いだよ。食べ物を四つに分けた話も、碑文に書かれているんだ。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "碑文＝ひぶん"
+  ]
+ },
+ "virn86n": {
+  "episode": "kh-taprohm",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 12,
+  "text": "太鼓と、木琴と、笛の音。踊り手たちが、ゆっくりと、ゆっくりと、手をひらいていく。",
+  "heard": "",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "v77pfco": {
+  "episode": "kh-taprohm",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.01,
+  "text": "その中に、スレイモンがいた。もう、手はふるえていなかった。",
+  "heard": "",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "v1x6rvv4": {
+  "episode": "kh-taprohm",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.0000416666666667,
+  "text": "……戻ってきたよ。いまのタ・プローム。",
+  "heard": "いまのタ・プローム。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vyztq68": {
+  "episode": "kh-taprohm",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 23.35,
+  "text": "大きな木の根が、石の回廊をのみこむように、からみついているね。寺が使われなくなってから、何百年もかけて、森がもどってきたんだ。",
+  "heard": "大きな木の根が、石の回廊をのみこむように、からみついているね。寺が使われなくなってから、何百年もかけて、森がもどってきたんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "回廊＝かいろう"
+  ]
+ },
+ "v1jq6tfk": {
+  "episode": "kh-taprohm",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 14.16,
+  "text": "この寺は、見つかったときの姿をなるべく残すことにして、木も、そのまま残されてきた。今は、インドとカンボジアの人たちが、いっしょに修復を進めているよ。",
+  "heard": "この寺は、見つかったときの姿をなるべく残すことにして、木も、そのまま残されてきた。今は、インドとカンボジアの人たちが、いっしょに修復を進めているよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
