@@ -722,5 +722,109 @@
   "heard": "世界のたくさんの国や人が、お金や機械や技術で、この仕事を手伝ってきたよ。",
   "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
   "readings": []
+ },
+ "v1f6nip4": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.5,
+  "text": "アキ・ラーさんは、2010年の取材で、子どもたちにはこう話している、と答えているよ。",
+  "heard": "アキ・ラーさんは、2010年の取材で、子どもたちにはこう話している、と答えているよ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1fd9fzp": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.6,
+  "text": "2023年の取材では、アキ・ラーさんは、地雷を取り除き終えた村の農家の人たちに、こう呼びかけていたよ。",
+  "heard": "2023年の取材では、アキラさんは地雷を取り除き終えた村の農家の人たちにこう呼びかけていたよ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "地雷＝じらい"
+  ]
+ },
+ "vw46ls3": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 14.160041666666666,
+  "text": "地雷や不発弾でけがをしたり、亡くなったりした人は、いちばん多かった1996年には、一年で4,320人。2025年には、39人まで減った。",
+  "heard": "不発弾でけがをしたり、亡くなったりした人は、いちばん多かった1996年には、一年で4,320人。2025年には、39人まで減った。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "地雷＝じらい",
+   "不発弾＝ふはつだん"
+  ]
+ },
+ "vpophkx": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.7,
+  "text": "カンボジアは、2030年までに地雷を、2035年までに不発弾もなくすことを目指しているよ。",
+  "heard": "カンボジアは、2030年までに地雷を、2035年までに不発弾もなくすことを目指しているよ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "地雷＝じらい",
+   "不発弾＝ふはつだん"
+  ]
+ },
+ "v1xvyad0": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.88,
+  "text": "でも、0じゃない。まだ、終わっていないんだ。",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vxbpq80": {
+  "episode": "kh-banteaykdei",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.23,
+  "text": "2001年。森の中の寺院、バンテアイ・クデイ。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vnnbqam": {
+  "episode": "kh-banteaykdei",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 13.350041666666666,
+  "text": "崩れた石のそばに、四角く区切られた発掘の穴がある。若い人たちが、竹のへらとはけで、少しずつ土をよけていた。",
+  "heard": "崩れた石のそばに、四角く区切られた発掘の穴がある。若い人たちが、竹のへらとはけで、少しずつ土をよけていた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v5viu0j": {
+  "episode": "kh-banteaykdei",
+  "lang": "ja",
+  "speaker": "sovann",
+  "voice": "Umbriel",
+  "model": "gemini-3.8-live",
+  "seconds": 4.38,
+  "text": "あ、見学の方ですか？ 足もと、気をつけてくださいね。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
