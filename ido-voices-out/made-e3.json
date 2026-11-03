@@ -862,5 +862,101 @@
   "heard": " Only people can pass stories on.",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "e627q1417pqy": {
+  "episode": "miyoshi-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.410041666666667,
+  "text": "So — I'm really, really glad you came.",
+  "heard": " So — I'm really, really glad you came.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "euzs0tyo3xf3": {
+  "episode": "miyoshi-finale",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.32,
+  "text": "Nexmax stopped in front of a mossy rock at the foot of the bridge.",
+  "heard": "NEXMAX stopped in front of a mossy rock at the foot of the bridge.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1bz7sao1jkwa": {
+  "episode": "miyoshi-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.350041666666667,
+  "text": "There's something carved here. …The writing is really old.",
+  "heard": " There's something carved here. …The writing is really old.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "ejsfniivhuff": {
+  "episode": "miyoshi-finale",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.39,
+  "text": "You traced it with your finger. Slowly, letters worn down by wind and rain appeared.",
+  "heard": " You traced it with your finger. Slowly, letters worn down by wind and rain appeared.",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "e1v1c9x73522z": {
+  "episode": "miyoshi-finale",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 2.2900833333333335,
+  "text": "“To the traveler”",
+  "heard": "To the traveler",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "e18wixo836dao": {
+  "episode": "miyoshi-finale",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.43,
+  "text": "“You ran with Kotaro on your back. I will never forget.”",
+  "heard": "You ran with Kotaro on your back. I will never forget.",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "e1j4qbv61b8vh": {
+  "episode": "miyoshi-finale",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.880041666666667,
+  "text": "“We watched the valley together that night. I will never forget.”",
+  "heard": "“We watched the valley together that night. I will never forget.”",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "e10ax0xmfs1v1": {
+  "episode": "miyoshi-finale",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.480041666666667,
+  "text": "“A bridge that is cut can be woven again.”",
+  "heard": " A bridge that is cut can be woven",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
  }
 }
