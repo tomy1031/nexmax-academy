@@ -1210,5 +1210,101 @@
   "heard": "",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "eqka0ola0iwu": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.320041666666667,
+  "text": "Kazufusa gently stroked the cloth bundle he held to his chest.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1tv68h31r5h3": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.500041666666666,
+  "text": "(whispering) …For his mother. He feels the same way as the king who built Ta Prohm.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ewldxxgmtrwu": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.06,
+  "text": "(whispering) And at Ta Prohm, you answered “For my mother,” too.",
+  "heard": " And at Ta Prohm, you answered \"For my mother,\" too.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1lwj83efxmv": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.950041666666667,
+  "text": "Inside the towers was a cross-shaped gallery. Buddha statues of every size stood there in long rows.",
+  "heard": " Inside the towers was a cross-shaped gallery. Buddha statues of every size stood there in long",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ed90yad18lo1": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.26,
+  "text": "For hundreds of years, the people of this land, and people from far away, had left them here, one by one.",
+  "heard": " For hundreds of years, the people of this land, and people from far away, had left them here, one by one.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "elgl6v91j2py": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 2.7,
+  "text": "I'll translate what the monk says for you.",
+  "heard": " I'll translate what the monk says for you.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "etlh2aoni50v": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "khmonk",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 5.040041666666666,
+  "text": "Traveler from a faraway land. You have come a long way.",
+  "heard": " Traveler from a faraway land. You have come a long way.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1w9lrej7wscr": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "khmonk",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 7.64,
+  "text": "Many people have left Buddha statues in this gallery for the ones they love. Please, you may too.",
+  "heard": " Many people have left Buddha statues in this gallery for the ones they love. Please, you may too.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
