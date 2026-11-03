@@ -478,5 +478,53 @@
   "heard": " This temple was begun in the first half of the 12th century by Suryavarman the Second, as a temple to the god Vishnu. Later it became a Buddhist temple, and there are still monks here today.",
   "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
   "readings": []
+ },
+ "eq515wm1omr9": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.75,
+  "text": "In the south gallery, there's a relief of the king's procession. The people around the king really do have labels carved beside them, giving their names and ranks.",
+  "heard": "In the south gallery, there's a relief of the king's procession. The people around the king really do have labels carved beside them, giving their names and ranks.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1e6ugrruxi4x": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.96,
+  "text": "The name the king was given after he died, “Paramavishnuloka,” is carved on one of those labels, too.",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1vogpkoegtdz": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.53,
+  "text": "More than 1,700 celestial women — devatas — are carved on its walls. They say each one has a different crown or hairstyle.",
+  "heard": " More than 1,700 celestial women — devatas — are carved on its walls. They say each one has a different",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1sv3sgo1gb0m": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.74,
+  "text": "In the east gallery, there's a very, very long relief called the “Churning of the Ocean of Milk,” where gods and demons pull on a giant snake to churn the sea.",
+  "heard": " In the east gallery, there's a very, very long relief called the “Churning of the Ocean of Milk,” where gods and demons pull on a giant snake to churn the sea.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
