@@ -394,5 +394,17 @@
   "heard": " Different versions of the legend tell of different statues inside, and give a different name for the river. Most say there were four Buddhas.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "ej3rdh71nqiy": {
+  "episode": "kh-watphnom",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.03,
+  "text": "(whispering) …Four. Kazufusa offered four Buddhas at Angkor Wat, too, didn't he?",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
