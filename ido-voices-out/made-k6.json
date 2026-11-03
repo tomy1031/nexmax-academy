@@ -1725,5 +1725,107 @@
   "readings": [
    "王妃＝おうひ"
   ]
+ },
+ "vtyke4d": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "chanthy",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 7.47,
+  "text": "わたし、字を習いに行く！ まずは、お母さんの名前から書けるようになるんだ。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vzsygbq": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "chanthy",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 3.16,
+  "text": "えへへ。書けたら、ヴォンさんにも見せてあげる！",
+  "heard": "えへへ。書けたら、ヴォンさんにも見せてあげる！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1hr27ax": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 1.38,
+  "text": "……戻ってきたよ。",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1tx202a": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.2,
+  "text": "一房さんが来た次の年から、日本は、海外へ渡ることをきびしく禁じていったんだ。一房さんは、海を渡れた、さいごのころの日本人のひとりだったんだね。",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v13qagqa": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.800041666666667,
+  "text": "お父さんの儀太夫さんは、それから十九年あとの1651年まで生きて、京都のお寺に眠っているよ。一房さんのその後は、はっきりとはわかっていないんだ。",
+  "heard": "お父さんの儀太夫さんは、それから十九年あとの1651年まで生きて、京都のお寺に眠っているよ。一房さんのその後は、はっきりとはわかっていないんだ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "都＝みやこ"
+  ]
+ },
+ "v1ed8v9g": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.93,
+  "text": "アンコール・ワットには、1612年から1632年までの日本人の墨書が、ぜんぶで14か所見つかっている。夫婦で来た人もいたんだって。",
+  "heard": "アンコール・ワットには、1612年から1632年までの日本人の墨書が、ぜんぶで14か所見つかっている。夫婦で来た人もいたんだって。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "墨書＝ぼくしょ"
+  ]
+ },
+ "v7bbijm": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 16.090041666666668,
+  "text": "一房さんの字は、今も十字回廊の柱に残っている。でも、長い年月と、戦争のころの傷みで、読むのがとてもむずかしくなっているんだ。",
+  "heard": "一房さんの字は、今も十字回廊の柱に残っている。でも、長い年月と、戦争のころの傷みで、読むのがとてもむずかしくなっているんだ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "回廊＝かいろう"
+  ]
+ },
+ "vpmharu": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.360041666666667,
+  "text": "この寺には、昔から、いろんな国の人が祈りに来た。その中に、日本から来た人もいたんだね。",
+  "heard": "この寺には、昔から、いろんな国の人が祈りに来た。その中に、日本から来た人もいたんだね。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
