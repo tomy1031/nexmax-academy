@@ -434,5 +434,103 @@
   "heard": "……母さんに、ちょっと似てる。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v9bvkfr": {
+  "episode": "kh-angkor-build",
+  "lang": "ja",
+  "speaker": "keo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 6,
+  "text": "花、ちゃんと持ってる。……こわれないで、ずっと持っててね。",
+  "heard": "花、ちゃんと持ってる？\n壊れないで、ずっと持っててね。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v10r9ylh": {
+  "episode": "kh-angkor-build",
+  "lang": "ja",
+  "speaker": "keo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 5.38,
+  "text": "冠、こまかすぎた……。でも、きれいだ。",
+  "heard": "冠、こまかすぎた…。でも、きれいだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1llv7qf": {
+  "episode": "kh-angkor-build",
+  "lang": "ja",
+  "speaker": "keo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 7.91,
+  "text": "ぼくの名前は、どこにも残らない。でも、この天女さまは、きっと、ずっと残るよ。",
+  "heard": "ぼく の 名前 は どこ に も 残ら ない 。 で も この 天女 様 は きっと ずっと 残る よ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vhbrj4m": {
+  "episode": "kh-angkor-build",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.38,
+  "text": "……戻ってきたよ。朝日の中の、アンコール・ワット。",
+  "heard": "朝日の中の、アンコール・ワット。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vdfhu6j": {
+  "episode": "kh-angkor-build",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 12.38,
+  "text": "この寺は、12世紀の前半に、スーリヤヴァルマン2世が建てはじめた、ヴィシュヌの神さまの寺なんだ。のちに、仏教の寺になって、今もお坊さんがいるよ。",
+  "heard": "この寺は、12世紀の前半に、スーリヤヴァルマン2世が建てはじめた、ヴィシュヌの神さまの寺なんだ。のちに、仏教の寺になって、今もお坊さんがいるよ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vq515wm": {
+  "episode": "kh-angkor-build",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.44,
+  "text": "南の回廊には、王さまの行列の浮き彫りがある。王さまのまわりの人たちには、名前と位を書いた札が、本当に彫られているんだ。",
+  "heard": "波の回廊には王様の行列の浮き彫りがある。王様の周りの人たちには名前と立ちを書いた札が本当に彫られているんだ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "回廊＝かいろう"
+  ]
+ },
+ "v1e6ugrr": {
+  "episode": "kh-angkor-build",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.51,
+  "text": "王さまが亡くなったあとにつけられた名前、「パラマヴィシュヌローカ」も、その札に刻まれているよ。",
+  "heard": "王さまが亡くなったあとにつけられた名前、「パラマヴィシュヌローカ」も、その札に刻まれているよ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1vogpko": {
+  "episode": "kh-angkor-build",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.4,
+  "text": "壁には、天女——デヴァターが、千七百人以上も彫られている。冠や髪のかたちは、ひとりひとりちがうんだって。",
+  "heard": "壁には、天女——デヴァターが、千七百人以上も彫られている。冠や髪のかたちは、ひとりひとりちがうんだって。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
