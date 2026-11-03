@@ -1078,5 +1078,101 @@
   "heard": "What?",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "exe0g1x1gs52": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 4.87,
+  "text": "How could you know that? …No. I won't ask.",
+  "heard": " How could you know that? …No. I won't ask.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ef95rdj1oa6i": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 5.11,
+  "text": "But thank you. I think I can play today's song a little more brightly.",
+  "heard": "But thank you. I think I can play today's song a little more brightly.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1s7l1ot78gu": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 6.400041666666667,
+  "text": "My name is Aya. I have stayed at the Emperor's side and helped raise him.",
+  "heard": "My name is Aya. I have stayed at the Emperor's side and helped raise him.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1wihddanvvb6": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 11.79,
+  "text": "The Emperor is nine years old now. These days he chases fish in the river with the village children. He is tanned as dark as can be!",
+  "heard": " The Emperor is nine years old now. These days he chases fish in the river with the village children. He is tanned as dark as can be!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e174p4il12z6i": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 5.840041666666667,
+  "text": "…And he smiles in a way I never once saw back in the capital (Kyoto).",
+  "heard": " And he smiles in a way I never once saw back in the capital",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e15468bp1v0st": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.26,
+  "text": "From far away, children's laughter drifted in on the wind.",
+  "heard": " From far away, children's laughter drifted in on the wind.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e14uk3we1vkfd": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.74,
+  "text": "Then came heavy footsteps through the grass.",
+  "heard": " Then came heavy footsteps through the grass.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "elqe6hj16ewn": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 3.2800416666666665,
+  "text": "Aya. …Who are these people?",
+  "heard": "Heyer, who are these people?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
