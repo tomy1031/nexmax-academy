@@ -1006,5 +1006,53 @@
   "heard": " Those are the village boat races held after the monks' rainy-season retreat ends. Some scholars think today's Water Festival, Bon Om Touk, held in front of the Royal Palace, began after",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1efz5a6ptn3w": {
+  "episode": "kh-royalpalace",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.5500416666666665,
+  "text": "The boat reached the bank where the rivers meet.",
+  "heard": " The boat reached the bank where the rivers meet.",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "e1g5f8zi1tlmr": {
+  "episode": "kh-royalpalace",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.71,
+  "text": "Many people were already at work on the bank. Some raised thick pillars. Some leveled the ground. Some carried timber.",
+  "heard": " Some raised thick pillars. Some leveled the ground. Some carried timber.",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "e10favb6xv77n": {
+  "episode": "kh-royalpalace",
+  "lang": "en",
+  "speaker": "荷舟の親方",
+  "voice": "Fenrir",
+  "model": "gemini-3.8-live",
+  "seconds": 6.330041666666666,
+  "text": "Piseth! Unload the pillar timber! Hey, you there, traveler — lend a hand too!",
+  "heard": "",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "e68kjec1pw0v": {
+  "episode": "kh-royalpalace",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.07,
+  "text": "With everyone else, you and Piseth carried the pillar timber on your shoulders.",
+  "heard": " With everyone else, you and Piseth carried the pillar timber on your shoulders.",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
  }
 }
