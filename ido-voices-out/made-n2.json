@@ -142,5 +142,101 @@
   "heard": "Dara. Oh, we have a visitor.",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "ek94y9hnds50": {
+  "episode": "kh-independence",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.2000416666666665,
+  "text": "A suntanned man waved from up on the scaffolding.",
+  "heard": " A suntanned man waved from up on the scaffolding.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "emiwaop650kq": {
+  "episode": "kh-independence",
+  "lang": "en",
+  "speaker": "ダラーのお父さん",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 10.710041666666667,
+  "text": "The man who designed this tower is an architect named Vann Molyvann. He studied architecture abroad, then came back home.",
+  "heard": " The man who designed this tower is an architect named Vann Molyvann. He studied architecture abroad, then",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e10e9o8z163h2": {
+  "episode": "kh-independence",
+  "lang": "en",
+  "speaker": "ダラーのお父さん",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 11.59,
+  "text": "He borrowed its shape from the old temples of Angkor. A symbol for a new country, made in a shape from a thousand years ago — that's his idea.",
+  "heard": " He borrowed its shape from the old temples of Angkor. A symbol for a new country, made in a shape from a thousand years ago — that's his idea.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "ed46kaa1f2uw": {
+  "episode": "kh-independence",
+  "lang": "en",
+  "speaker": "dara",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 3.0900416666666666,
+  "text": "It's old, but it's new. Weird!",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e191hxxh17fbd": {
+  "episode": "kh-independence",
+  "lang": "en",
+  "speaker": "dara",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 2.7,
+  "text": "…Hmm. You sound just like my dad.",
+  "heard": "Hmm, you sound just like my dad.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1q5rfob13vw3": {
+  "episode": "kh-independence",
+  "lang": "en",
+  "speaker": "dara",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 7.19,
+  "text": "They say it's a super-big stone temple, way up north. I'm going to go see it someday!",
+  "heard": " They say it's a super-big stone temple, way up north. I'm going to go see it someday!",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "eiro3bq5lya5": {
+  "episode": "kh-independence",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.33,
+  "text": "(whispering) The towers of Angkor Wat were shaped like lotus buds too, weren't they? The same towers Keo and the others were carving.",
+  "heard": " The towers of Angkor Wat were shaped like lotus buds too, weren't they? The same towers Keo and the others were carving.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "el7cqzi1n4lg": {
+  "episode": "kh-independence",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.45,
+  "text": "At the foot of the tower, a young man in a white shirt had spread out a large plan and was looking up at the tower.",
+  "heard": " At the foot of the tower, a young man in a white shirt had spread out a large plan and was looking",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
