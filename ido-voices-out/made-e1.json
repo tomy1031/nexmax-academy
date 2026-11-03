@@ -1558,5 +1558,101 @@
   "heard": "\nKunimori did not move.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e7y39w41vdi2": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.600041666666667,
+  "text": "The music climbed higher and higher, up to its very peak — and then.",
+  "heard": " The music climbed higher and higher, up to its very peak — and then.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1cniizz1gn7q": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.8,
+  "text": "Snap. One of the strings broke.",
+  "heard": "snap one of the strings broke",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "ek48u391b1hj": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.480041666666667,
+  "text": "Aya kept her head down. Her shoulders were shaking.",
+  "heard": " Her shoulders were shaking.",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "e97b30fy743l": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 2.5100416666666665,
+  "text": "…I will not go tonight.",
+  "heard": " I will not go tonight.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "emnictc3p7n3": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 10.72,
+  "text": "One must never set out on a journey the night a string breaks. …That is the old saying, is it not?",
+  "heard": " One must never set out on a journey the night a string breaks. …That is the old saying, is it not?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e156yvz7ln9bb": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 3.3100416666666668,
+  "text": "I have never heard such a saying.",
+  "heard": " I have never heard such a saying.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e11fz4n44qhp0": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 2.72,
+  "text": "I made it up just now.",
+  "heard": "I made it up just now.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ehvryrw8d8t1": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 2.9400416666666667,
+  "text": "Aya laughed through her tears.",
+  "heard": " Ayanlaughedthroughhertears.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
