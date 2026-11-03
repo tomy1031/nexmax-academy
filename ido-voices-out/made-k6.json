@@ -1429,5 +1429,103 @@
   "heard": "この壁には、戦だけでなく、病の者の世話をする女たちも彫らせている。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "vs9ii4r": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "jayavarman7",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 10.48,
+  "text": "民の体の病は、わたしの心の病となって、もっと痛む。国の苦しみこそが、治める者の苦しみなのだから。",
+  "heard": "民の体の病は、わたしの心の病となって、もっと痛む。国の苦しみこそが、治める者の",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1uxvcma": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "jayavarman7",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 8.130041666666667,
+  "text": "だから、国じゅうに病院を建てた。身分にかかわらず、だれでも手当てを受けられるように。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1hwo3dp": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "jayavarman7",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.8,
+  "text": "旅の人。そなたの国では、病の者は、どうしている。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1kj01oy": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "jayavarman7",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.080041666666666,
+  "text": "そうか。……それを聞いて、うれしく思う。",
+  "heard": " ……それを聞いて、うれしく思う。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v14ek6zh": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "jayavarman7",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 7.67,
+  "text": "そうか。どの国にも、まだ足りぬところがあるのだな。わたしも、まだ道の途中だ。",
+  "heard": " そうか。どの国にも、まだ足りぬところがあるのだな。わたしも、まだ道の途中",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vatti4n": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.33,
+  "text": "王さまは、浮き彫りにそっと手を合わせ、また静かに歩いていった。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vzdf1px": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.33,
+  "text": "「民の体の病は〜」は、王さまが国じゅうの病院に立てた石碑に、本当に刻まれている言葉なんだ。",
+  "heard": "「民の体の病は〜」は、王さまが国じゅうの病院に立てた石碑に、本当に刻まれている言葉なんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v19ldnh0": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.760041666666667,
+  "text": "インドラデーヴィー王妃だね。お寺で女の人たちに教えていた、詩人でもある王妃なんだ。",
+  "heard": "インドラデーヴィー王妃だね。お寺で女の人たちに教えていた、詩人でもある王妃なんだ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "王妃＝おうひ"
+  ]
  }
 }
