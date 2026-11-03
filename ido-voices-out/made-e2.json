@@ -934,5 +934,101 @@
   "heard": "Kenta? Oh, no! The path by that pool caved in after the last big rain.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e6j9an51lpjb": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "tatsu",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 7.73,
+  "text": "Traveler, I'm sorry to ask. My legs are no good… Please, bring that boy back!",
+  "heard": "Traveler, I'm sorry to ask. My legs are no good. Please bring that boy back.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e6ll6b1wr6t6": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.800041666666667,
+  "text": "The mountain path soon went pitch-black. The festival sounds faded away behind you.",
+  "heard": " The mountain path soon went pitch-black. The festival sounds faded away behind you.",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": []
+ },
+ "ejewat31ag35": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 2.5000416666666667,
+  "text": "Kentaaa! Where are you?!",
+  "heard": " Kentaaa! Where",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": []
+ },
+ "e1gqooys1n60s": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.08,
+  "text": "No answer came. Instead, from the tall grass beside the path, came the sound of a baby crying.",
+  "heard": " Instead, from the tall grass beside the path, came the sound of a baby crying.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1x95kdj16t1e": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 2.9200416666666666,
+  "text": "You picked up the baby from the grass.",
+  "heard": " You picked up the baby from the grass.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eyo79qw3wavr": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 1.3400416666666666,
+  "text": "…It's heavy.",
+  "heard": "It's heavy.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e8ude8g1yjlz": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.69,
+  "text": "The moment you tried to take a step, the baby in your arms grew as heavy as a stone.",
+  "heard": "\nThe moment you tried to take a step, the baby in your arms",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1wyutzl1kp49": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.29,
+  "text": "You dropped to your knees. You couldn't move.",
+  "heard": " You couldn't move.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
