@@ -1726,5 +1726,89 @@
   "heard": " Go see the vine bridge Kazurabashi in Iya. An answer might be waiting for you there.",
   "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
   "readings": []
+ },
+ "efrold22y20g": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.3,
+  "text": "The battle was over. Yoshitsune stood alone on his boat, looking out at the sea.",
+  "heard": " The battle was over. Yoshitsune stood alone on his boat, looking out at the sea.",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "e1ukhiga1u9yx": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 0.68,
+  "text": "…We won.",
+  "heard": "",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "e7ml9jvgw55x": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 9.840041666666666,
+  "text": "I have avenged my father. I have made my elder brother Yoritomo's great wish come true. …And yet, why is it…",
+  "heard": " I have avenged my father. I have made my elder brother Yoritomo's great wish come true. ...And yet, why",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "ez7psyt18y4i": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 5.320041666666667,
+  "text": "I am not happy at all. …I feel so cold.",
+  "heard": " I am not happy at all. …I feel so cold.",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "e18gy0togt8kq": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 7.27,
+  "text": "Traveler. At Kisegawa, you told me that my elder brother would surely be pleased with me.",
+  "heard": "",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "e2v8x9d1coxo": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 3.48,
+  "text": "…He will be pleased with me… won't he?",
+  "heard": " He will be pleased with me… won't he?",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "e1wgl63yw4d46": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.44,
+  "text": "(whispering) This winter, Yoshitsune will be hunted by his own elder brother, Minamoto no Yoritomo.",
+  "heard": "",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
  }
 }
