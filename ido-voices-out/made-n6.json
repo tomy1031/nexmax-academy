@@ -1690,5 +1690,77 @@
   "heard": "",
   "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
   "readings": []
+ },
+ "e1tx202a152gp": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 12.36,
+  "text": "Starting the year after Kazufusa came, Japan began to strictly forbid its people from going overseas. Kazufusa was one of the last Japanese who could still cross the sea.",
+  "heard": " Starting the year after Kazufusa came, Japan began to strictly forbid its people from going overseas. Kazufusa was one of the last Japanese who could still cross",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e13qagqa6xcqg": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 12.59,
+  "text": "His father, Gidayu, lived nineteen more years, until 1651, and now rests at a temple in Kyoto. What became of Kazufusa after that isn't clearly known.",
+  "heard": " His father, Gidayu, lived nineteen more years, until 1651, and now rests at a temple in Kyoto. What became of Kazufusa after that isn't clearly known.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1ed8v9g1m66q": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 12.74,
+  "text": "At Angkor Wat, 14 ink inscriptions by Japanese people, from 1612 to 1632, have been found. Some people even came as a married couple.",
+  "heard": " At Angkor Wat, 14 ink inscriptions by Japanese people, from 1612 to 1632, have been found. Some people even came as a married couple.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e7bbijm1bmt9": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.95,
+  "text": "Kazufusa's writing is still on a pillar of the cross-shaped gallery. But after so many years, and the damage from the war years, it has become very hard to read.",
+  "heard": " Kazufusa's writing is still on a pillar of the cross-shaped gallery. But after so many years, and the damage from the war years, it has become",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "epmharu1tp65": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.41,
+  "text": "People from many lands have come to pray at this temple since long ago. And among them were people from Japan.",
+  "heard": " People from many lands have come to pray at this temple since long ago. And among them were people from Japan.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e194ds03m3khc": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.22,
+  "text": "(whispering) Four hundred years ago, someone crossed the sea to pray. The story of Japan and Cambodia goes back that far.",
+  "heard": " Four hundred years ago, someone crossed the sea to pray. The story of Japan and Cambodia goes back that far.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
