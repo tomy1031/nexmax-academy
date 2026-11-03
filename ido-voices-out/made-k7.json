@@ -922,5 +922,17 @@
   "heard": "だから 僕 たち が 学び 直し て いる ん です 。 自分 の 国 の 遺跡 を 自分 たち の 手 で 守れる よう に 。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "vpgvmpk": {
+  "episode": "kh-banteaykdei",
+  "lang": "ja",
+  "speaker": "sovann",
+  "voice": "Umbriel",
+  "model": "gemini-3.8-live",
+  "seconds": 5.93,
+  "text": "へらは、ゆっくり。土を一枚ずつ、はがすみたいに。……やってみますか？",
+  "heard": "へらは、ゆっくり。土を一枚ずつ、はがすみたいに。……やってみますか？",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
