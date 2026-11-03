@@ -898,5 +898,101 @@
   "heard": "My Lord, are you?",
   "scene": "激しい戦いのさなか。声を張り、息は荒く",
   "readings": []
+ },
+ "e1o2q8cd19dso": {
+  "episode": "genpei-yashima",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 2.09,
+  "text": "Don't talk, Tsuginobu!",
+  "heard": "Don't talk, Tuginobu.",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "ef85gjufzmup": {
+  "episode": "genpei-yashima",
+  "lang": "en",
+  "speaker": "tsuginobu",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 12.18,
+  "text": "If people tell for ages to come… that I died in my lord's place… then for a samurai… there is no greater honor…",
+  "heard": " If people tell for ages to come… that I died in my lord's place… then for a samurai… there is no greater honor.",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "e18c1r2x1y2lz": {
+  "episode": "genpei-yashima",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.850041666666667,
+  "text": "And then Tsuginobu moved no more.",
+  "heard": "And then toge knob moved no more.",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "evsq9i5c6vw2": {
+  "episode": "genpei-yashima",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.58,
+  "text": "(whispering) At Kisegawa, Tsuginobu said, “I will be my lord's shield”… and now…",
+  "heard": " At Kisegawa, Tsuginobu said, “I will be my lord's shield”… and now.",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "e15ckecldzek2": {
+  "episode": "genpei-yashima",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.22,
+  "text": "It is said that Yoshitsune gave his own fine horse, Taifuguro, to a monk, so that the monk would pray for Tsuginobu.",
+  "heard": " It is said that Yoshitsune gave his own fine horse, Taifuguro, to a monk, so that the monk would pray for Tsuginobu.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e41n8vw1rxuw": {
+  "episode": "genpei-yashima",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 3.26,
+  "text": "…We must win. For Tsuginobu, too.",
+  "heard": " For Tsuginobu, too.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e3zqjs91116g": {
+  "episode": "genpei-yashima",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.08,
+  "text": "The sun sank low. For now, the fighting had stopped.",
+  "heard": " For now, the fighting had stopped.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "erntmzd16wux": {
+  "episode": "genpei-yashima",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 12.640041666666667,
+  "text": "From out at sea, a single small Heike boat rowed toward the shore. On top of a pole stood a fan: crimson, with a golden sun painted on it.",
+  "heard": "From out at sea, a single small heke boat rowed toward the shore. On top of a pole stood a fan, crimson with a golden sun painted on it.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
