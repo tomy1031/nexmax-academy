@@ -214,5 +214,101 @@
   "heard": "ずっと北のほうにある、すっごく大きな石の寺院なんだって。ぼくも、いつか見に行",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "viro3bq": {
+  "episode": "kh-independence",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.9,
+  "text": "（小声）アンコール・ワットの塔も、蓮のつぼみの形だったね。ケオくんたちが石を彫っていた、あの塔だ。",
+  "heard": "アンコール・ワットの塔も、蓮のつぼみの形だったね。ケオくんたちが石を彫っていた、あの塔だ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vl7cqzi": {
+  "episode": "kh-independence",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.280041666666667,
+  "text": "塔の足もとで、白いシャツの若い男の人が、大きな図面を広げて、塔を見上げていた。",
+  "heard": "塔の足もとで、白いシャツの若い男の人が、大きな図面を広げて、塔を見上げていた。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vd41z0o": {
+  "episode": "kh-independence",
+  "lang": "ja",
+  "speaker": "dara",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 5.89,
+  "text": "あの人だよ。父ちゃんが言ってた、この塔を考えた人。",
+  "heard": "あの人だよ。おじいちゃんが言ってた。この道を作った人。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1uewdws": {
+  "episode": "kh-independence",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.6,
+  "text": "ヴァン・モリヴァンさん。本当にいた建築家だよ。パリで建築を学んで、1956年に国へ帰ってきて、国の建物をたくさん設計したんだ。",
+  "heard": "ヴァン・モリヴァンさん。本当にいた建築家だよ。パリで建築を学んで、1956年に国へ帰ってきて、国の建物をたくさん設計したんだ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1qq8eb6": {
+  "episode": "kh-independence",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.49,
+  "text": "その人は、図面と塔を、何度も見くらべていた。声をかけるのは、やめておいた。",
+  "heard": "その人は、図面と塔を、何度も見くらべていた。声をかけるのは、やめておいた。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vptaoln": {
+  "episode": "kh-independence",
+  "lang": "ja",
+  "speaker": "dara",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 6.51,
+  "text": "……かっこいいな。ぼくも、大きくなったら、何か建てる人になろうかな。",
+  "heard": "かっこいい なあ 。 僕 も 大きく なっ たら 何 か 建てる 人 に なろ う か な 。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1j64gna": {
+  "episode": "kh-independence",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.9900416666666665,
+  "text": "そして、塔ができあがった日。",
+  "heard": "そして、塔ができあがった日。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "v4yxl50": {
+  "episode": "kh-independence",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.73,
+  "text": "塔のまわりは、白い服の人、子どもを肩車した人、旗を持った人で、いっぱいになった。",
+  "heard": "とう の 周り は 白い 服 の 人 子供 を 肩車 し た 人 旗 を 持っ た 人 で いっぱい に なっ た 。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
  }
 }
