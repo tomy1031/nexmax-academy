@@ -1270,5 +1270,101 @@
   "heard": " This is Kunimori one year before we met him on Mt. Tsurugi. He doesn't know us yet.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1t5lpy7segvc": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.450041666666667,
+  "text": "A long sword hung at Kunimori's waist. It was wrapped in cloth — old and finely made.",
+  "heard": " A long sword hung at Kunimori's waist. It was wrapped in cloth — old and",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ezuwocx1g44g": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 3.640083333333333,
+  "text": "…Lord Kunimori. That sword…",
+  "heard": " Lord Kunimori. That sword.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "exj56ox1be7r": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 7.43,
+  "text": "A messenger has come from the coast of Sanuki. He says the survivors of our clan are gathering by the sea.",
+  "heard": " A messenger has come from the coast of Sanuki. He says the survivors of our clan are gathering by the",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e4lv0w9lv0xh": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 12.32,
+  "text": "The Genji (the Minamoto clan) are busy quarreling among themselves in Kamakura. Now is the time for us, the Heike, to rise again — so they say.",
+  "heard": " The Genji the Minamoto clan are busy quarreling among themselves in Kamakura. Now is the time for us, the Heike, to rise again — so they say.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ev3hs93pw92j": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.34,
+  "text": "…There are still men who remember the name Noritsune.",
+  "heard": " There are still men who remember the name Noritsune.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e366qmdt22o6": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 12.21,
+  "text": "(whispering) “Noritsune” was Kunimori’s old name. People said he was the strongest warrior of the Heike.",
+  "heard": " “Noritsune” was Kunimori’s old name. People said he was the strongest warrior of",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1p9v0y61yfa5": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.83,
+  "text": "(whispering) So the Heike survivors want Kunimori to fight the Genji (the Minamoto clan) one more time.",
+  "heard": " So the Heike survivors want Kunimori to fight the Genji the Minamoto clan one more time.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1fucl7h1e9yd": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.9,
+  "text": "Suddenly, the roar of the falls seemed to grow louder.",
+  "heard": "Suddenly, the roar of the falls seemed to grow louder.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
