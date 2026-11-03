@@ -886,5 +886,101 @@
   "heard": " That is how the dance has survived.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "emdncu4kgglp": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.9,
+  "text": "The courtyard of the red-roofed museum. Children were walking in a line past the lotus pond.",
+  "heard": " The courtyard of the red-roofed museum. Children were walking in a line past the lotus pond.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1n1njkw54001": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.59,
+  "text": "At the front was a woman standing tall, her back perfectly straight.",
+  "heard": " At the front was a woman standing tall, her back perfectly straight.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "epwmuao14paj": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "leakhena2",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 3.0400416666666668,
+  "text": "…Oh? Haven't I seen you somewhere…?",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1ytsjp91tpte": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "leakhena2",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 4.73,
+  "text": "…No way. You were in that classroom, in 1981…!",
+  "heard": " No way. You were in that classroom, in 1981!",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e53lde91m462": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "leakhena2",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 6.06,
+  "text": "It's me, Leakhena. These days, I teach these children to dance.",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1ucijvua6cor": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "leakhena2",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 8.64,
+  "text": "There were years when I couldn't live on dancing alone, so I worked at another job during the day. …But I never stopped.",
+  "heard": " There were years when I couldn't live on dancing alone, so I worked at another job during the day. …But I never",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1don6f9oe4vz": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "leakhena2",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 9.25,
+  "text": "Even now, at this school, we bend our fingers back and hold them there while we count to 100.",
+  "heard": " Even now, at this school, we bend our fingers back and hold them there while we count to 100.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "eqgw0mt1lsy2": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "leakhena2",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 5.08,
+  "text": "Teacher Neary is gone now… but her fingers are still right here.",
+  "heard": " Teacher Neary is gone now… but her fingers are still right",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
