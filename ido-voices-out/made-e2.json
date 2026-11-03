@@ -1030,5 +1030,17 @@
   "heard": " You couldn't move.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "ejx2lewtzywu": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.61,
+  "text": "Wait! You must never pick up a baby crying on a mountain road!",
+  "heard": "Wait, you must never pick up a baby crying on a mountain road.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
