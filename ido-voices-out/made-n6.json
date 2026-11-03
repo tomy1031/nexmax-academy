@@ -1114,5 +1114,101 @@
   "heard": "",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1q429pn18yug": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 1.05,
+  "text": "Konnichiwa!",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ewz11s610vma": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.09,
+  "text": "(whispering) The real Jetavana is in India. But for Kazufusa, this is the place to pray.",
+  "heard": " The real Jetavana is in India. But for Kazufusa, this is the place to pray.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1bzy6yaso7yo": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 11.23,
+  "text": "My father was a builder of castles. He served Lord Kato Kiyomasa, and at Kumamoto Castle there is even a tower named after him.",
+  "heard": " My father was a builder of castles. He served Lord Kato Kiyomasa, and at Kumamoto Castle there is even a tower named after him.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eqvr29c1php7": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 6.92,
+  "text": "He has since left the house he once served. He is well on in years now.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e12ex8nu3c61a": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 5.160041666666666,
+  "text": "I pray that my father may live long and in good health in this world.",
+  "heard": " I pray that my father may live long and in good health in this world.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "efg3r81g17t": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 5.0300416666666665,
+  "text": "…And my mother. My mother is no longer in this world.",
+  "heard": " My mother is no longer in this world.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1fs24yl1p4yp": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 4.54,
+  "text": "I pray that my mother may be at peace in the next world.",
+  "heard": "I pray that my mother may be at peace in the next world.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1cgdag4wb2zy": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 4.4900416666666665,
+  "text": "For this, I have come to offer four Buddha statues.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
