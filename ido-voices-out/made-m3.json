@@ -688,5 +688,103 @@
   "heard": "ムオさんは、次の年、ラオスで病気になって、亡くなったんだ。家族が、手紙と日記をまとめて、本にしたんだよ。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "vrgqvgg": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.12,
+  "text": "その本が評判になって、ムオさんは「アンコールを見つけた人」と呼ばれるようになった。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vho0mzw": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 16.94,
+  "text": "でも、英語に訳されたムオさんの本を読むと、アンコールのことを書いた章で、ムオさん自身は「見つけた」とは書いていないんだ。そう呼んだのは、まわりの人と、あとの時代の人たちだったんだね。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vhbshhj": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.73,
+  "text": "アンコールは、見つかったんじゃない。ずっとここにあって、村の人たちが知っていて、お参りしていたんだ。",
+  "heard": "アンコールは見つかったんじゃない。ずっとここにあって、村の人たちが知っていて、お参りしていたんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1l1fa5": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.15,
+  "text": "ムオさんより前にも、たくさんの旅人が、ここに来ているよ。",
+  "heard": "ムオさんより前にも、たくさんの旅人が、ここに来ているよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1pipehw": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 19.28,
+  "text": "1296年には、元という国（いまの中国）から来た周達観さん。1586年には、ポルトガルの修道士。1600年代のはじめには、日本の人たち。1850年には、フランスの神父ブイユヴォーさん。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "修道士＝しゅうどうし"
+  ]
+ },
+ "v1dblsjx": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.390041666666667,
+  "text": "（小声）周達観さんにも、会ったね。あの人も、見たものを書きのこした旅人だった。",
+  "heard": "周達観さんにも、会ったね。あの人も、見たものを書きのこした旅人だった。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vc6pwxk": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.9900416666666665,
+  "text": "（小声）森本右近太夫さんも、柱に墨で、旅のことを書きのこしていたね。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1cvbrz3": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.680041666666667,
+  "text": "そして今日。あなたも、この旅人の列の、いちばん新しいひとりだよ。",
+  "heard": " あなたも、 この旅人の 列の、 いちばん 新しいひとりだよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
