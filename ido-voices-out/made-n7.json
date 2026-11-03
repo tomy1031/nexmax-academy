@@ -1198,5 +1198,101 @@
   "heard": "",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1ik9uyssfx8g": {
+  "episode": "kh-banteaykdei",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 13.26,
+  "text": "Each time a statue was found, the trainees put their hands together before it. Then, with trembling hands, they cleaned off the mud with bamboo spatulas and brushes.",
+  "heard": " Each time a statue was found, the trainees put their hands together before it. Then, with trembling hands, they cleaned off the mud with bamboo spatulas and brushes.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e3tadbl1cr5h": {
+  "episode": "kh-banteaykdei",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.38,
+  "text": "Cambodians who learned through this training are now at the heart of the work to restore Angkor.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1mcxcpl1k0e1": {
+  "episode": "kh-banteaykdei",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.67,
+  "text": "You can see the statues that were found at the Preah Norodom Sihanouk–Angkor Museum in Siem Reap.",
+  "heard": " You can see the statues that were found at the Preah Norodom Sihanouk–Angkor Museum in Siem Reap.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1fopm0z1r7f3": {
+  "episode": "kh-banteaykdei",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.39,
+  "text": "There really were young people who studied so they could protect their country's ruins with their own hands.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e10i9tm6189v4": {
+  "episode": "kh-banteaykdei",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.79,
+  "text": "(whispering) The Buddhas waited in the earth for hundreds of years. …I'm glad they were found.",
+  "heard": " The Buddhas waited in the earth for hundreds of years. …I'm glad",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eeuwzruful91": {
+  "episode": "kh-sr-finale",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.59,
+  "text": "Angkor Wat, before dawn. A cool breeze blew across the paving stones of the approach.",
+  "heard": " Angkor Wat, before dawn. A cool breeze blew across",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ezounhy1j048": {
+  "episode": "kh-sr-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.28,
+  "text": "…We've opened every door in Siem Reap.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1hlmy5v1o3y6": {
+  "episode": "kh-sr-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.62,
+  "text": "The capital Zhou Daguan saw. Keo's devata. Sreymom's dance. Chanthy's market. Bopha's map. And the 274 Buddhas in the earth.",
+  "heard": " The capital Zhou Daguan saw. Keo's devata. Sreymom's dance. Chanthy's market. Bopha's map. And the 274 Buddhas in the",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
