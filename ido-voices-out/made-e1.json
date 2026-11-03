@@ -1366,5 +1366,101 @@
   "heard": "Suddenly, the roar of the falls seemed to grow louder.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e19mw17d1lvy2": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 2.5200416666666667,
+  "text": "Will you go to war again?",
+  "heard": "will you go to war again?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eqw0zw0xwrve": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 6.000041666666666,
+  "text": "Would you make the Emperor see that sea once more — that terrible sea?",
+  "heard": " Would you make the Emperor see that sea once more — that terrible sea?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1ndd9f915pz1": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.85,
+  "text": "I am a samurai. Fighting is the only way of life I know.",
+  "heard": " Fighting is the only way of life I know.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eusi02b1erpa": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 2.4000416666666666,
+  "text": "Then please — learn!",
+  "heard": " Then please —",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1u1e8a810t9i": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 2.83,
+  "text": "…Learn what it means to live.",
+  "heard": "Learn what it means to live.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1g13ew71e6vb": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.56,
+  "text": "Both of them turned to look at you.",
+  "heard": " Both of them turned to look at you.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ev2ro66192fw": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 3.78,
+  "text": "…Even you say so, traveler?",
+  "heard": " even you say so, traveler?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1y3q2bq1xe56": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 1.08,
+  "text": "Thank you.",
+  "heard": "Thank you.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
