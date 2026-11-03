@@ -439,5 +439,101 @@
   "heard": "こんな大水の中を、仏さまは、この岸を選んで、流れてきてくださった。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v1nca3sy": {
+  "episode": "kh-watphnom",
+  "lang": "ja",
+  "speaker": "penh",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 6.61,
+  "text": "それなら、二度と水につからないところに、お住まいを作ってさしあげよう。",
+  "heard": "それなら、二度と水につからないところに、お住まいを作ってさし",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v67g7pe": {
+  "episode": "kh-watphnom",
+  "lang": "ja",
+  "speaker": "penh",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 5.96,
+  "text": "丘を作るんだよ。この平らな岸に、土を盛って。",
+  "heard": "丘を作るんだよ。この平らな岸に、土を盛って。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vk9aqvm": {
+  "episode": "kh-watphnom",
+  "lang": "ja",
+  "speaker": "村の人",
+  "voice": "Rasalgethi",
+  "model": "gemini-3.8-live",
+  "seconds": 4.56,
+  "text": "丘を！？ ペンばあさん、それは、何年かかるか……",
+  "heard": "ペンばあさん、それは、何年かかるか",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v4r7yvc": {
+  "episode": "kh-watphnom",
+  "lang": "ja",
+  "speaker": "penh",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 4.560041666666667,
+  "text": "ひとりで作ったら、一生かかっても終わらないね。",
+  "heard": "ひとりで作ったら、一生かかっても終わらないね。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v6aoiyd": {
+  "episode": "kh-watphnom",
+  "lang": "ja",
+  "speaker": "penh",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 7.38,
+  "text": "でも、村のみんなが、一かごずつ運んだら？ 子どもは小さいかごでいい。",
+  "heard": "でも、村のみんなが、一かごずつ運んだら？子どもは小さいかごでいい。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1gqfj3b": {
+  "episode": "kh-watphnom",
+  "lang": "ja",
+  "speaker": "penh",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 5.31,
+  "text": "一かごずつ。それが、いつか丘になるんだよ。",
+  "heard": "以下 ご ずつ 。 それ が いつか お 金 に なる ん だ よ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vcyb8fb": {
+  "episode": "kh-watphnom",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.140041666666667,
+  "text": "次の日から、村じゅうの人が、かごに土を入れて運びはじめた。",
+  "heard": "村じゅうの人が、かごに土を入れて運びはじめた。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v2v2f8l": {
+  "episode": "kh-watphnom",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.410041666666666,
+  "text": "あなたが連れていった子どもたちも、小さなかごを頭にのせて、列にならんでいる。",
+  "heard": "あなたが連れていった子どもたちも、小さなかごを頭にのせて、列にならんでいる。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
