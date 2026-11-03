@@ -1486,5 +1486,101 @@
   "heard": " You said, \"Write about the people I meet,\" didn't you? …We met so many people",
   "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
   "readings": []
+ },
+ "evp5mhxgng5v": {
+  "episode": "kh-sr-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.690041666666667,
+  "text": "Keo said, “My name won't be remembered. But this devata will last.”",
+  "heard": " Keo said, “My name won’t be remembered. But this devata",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e77lfzx1b99o": {
+  "episode": "kh-sr-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.29,
+  "text": "A king built a temple for his mother. And there, Sreymom danced on a stage for the very first time.",
+  "heard": "A king built a temple for his mother. And there, Sreymom danced on a stage for the very first time.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1dmb5bkvgow8": {
+  "episode": "kh-sr-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.93,
+  "text": "Chanthy's mom is still weighing fish, there in the stone.",
+  "heard": " Chanthy's mom is still weighing fish, there in the stone.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1h8h0kp9dszl": {
+  "episode": "kh-sr-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.460041666666666,
+  "text": "Kazufusa crossed the sea for his father and mother.",
+  "heard": " Kazufusa crossed the sea for his father and mother.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "eygtfs3ykqz2": {
+  "episode": "kh-sr-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.8,
+  "text": "Aki Ra told the children, “Study hard. Do good acts. Love each other.”",
+  "heard": " Aki Ra told the children, \"Study hard. Do good acts. Love each other.\"",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e15mo2uw4c72w": {
+  "episode": "kh-sr-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.4,
+  "text": "This temple has stood here for nearly nine hundred years. In that time, there were wars and hard times. Much has been lost, too.",
+  "heard": " This temple has stood here for nearly nine hundred years. In that time, there were wars and hard times. Much has been lost, too.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "eg8utwv15l4l": {
+  "episode": "kh-sr-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.01,
+  "text": "Even so, there were people who carved the stone, people who prayed, people who protected it, and people who learned all over again.",
+  "heard": " Even so, there were people who carved the stone, people who prayed, people who protected it, and people who learned all over again.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1gtg0evmdjsi": {
+  "episode": "kh-sr-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.12,
+  "text": "One stone, handed on to the next person. …That's gone on for nine hundred years.",
+  "heard": " One stone, handed on to the next person. …That's gone on for nine hundred years.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
