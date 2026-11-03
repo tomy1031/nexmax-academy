@@ -1267,5 +1267,105 @@
   "heard": "あれ ? あんた 、 とうもろこし の",
   "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
   "readings": []
+ },
+ "vo2vy4e": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "vichet2",
+  "voice": "Sadachbia",
+  "model": "gemini-3.8-live",
+  "seconds": 3.61,
+  "text": "おれだよ、ヴィチェット！ もう二十三。",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vko8l65": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "vichet2",
+  "voice": "Sadachbia",
+  "model": "gemini-3.8-live",
+  "seconds": 7.46,
+  "text": "今は、村にインターネットの線をつなぐ仕事をしてる。昼は仕事、夜は技術の学校。",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v18j6831": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "vichet2",
+  "voice": "Sadachbia",
+  "model": "gemini-3.8-live",
+  "seconds": 4.29,
+  "text": "あんたに「勉強だね」って言われたの、けっこう効いたんだよ。",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1aw1yc9": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "vichet2",
+  "voice": "Sadachbia",
+  "model": "gemini-3.8-live",
+  "seconds": 3.67,
+  "text": "あんたに「できる」って言われたの、けっこう効いたんだよ。",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1y931iz": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "vichet2",
+  "voice": "Sadachbia",
+  "model": "gemini-3.8-live",
+  "seconds": 5.21,
+  "text": "橋の次は、線。……つなぐ仕事、ほんとにしてるでしょ。",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vqbqxtq": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "vichet2",
+  "voice": "Sadachbia",
+  "model": "gemini-3.8-live",
+  "seconds": 10.880041666666667,
+  "text": "母ちゃんは、橋のたもとで店をやってる。渡し場がなくなって、はじめは大変だったけど……今は、通る人がふえたからね。",
+  "heard": "母ちゃんは、橋のたもとで店をやってる。わたしぶねがなくなって、はじめは大変だったけど……今は、通る人がふえたからね。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "渡し場＝わたしぶね"
+  ]
+ },
+ "vnm4aks": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.59,
+  "text": "つばさ橋は、長さ2,215メートル。カンボジアで初めての斜張橋——塔からケーブルで橋をつる形の橋なんだ。",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "斜張橋＝しゃちょうきょう"
+  ]
+ },
+ "v1r9ha6p": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.25,
+  "text": "日本の国が出した、返さなくていいお金で架けられて、開通の式には、首相や日本の人たちと、たくさんの人が集まったよ。",
+  "heard": "日本の国が出した、返さなくていいお金で架けられて、開通の式には、首相や日本の人たちと、たくさんの人が集まったよ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
