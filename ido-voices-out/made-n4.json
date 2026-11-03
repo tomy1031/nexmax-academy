@@ -850,5 +850,101 @@
   "heard": "We meet again! This time, we're traveling in Siem Reap.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e19vfgzqlrhja": {
+  "episode": "kh-sr-prologue",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.47,
+  "text": "Hi, nice to meet you! I'm Nexmax, your time-travel navigator!",
+  "heard": " Hi, nice to meet you! I'm Nexmax, your time-travel navigator!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "exob9r127un": {
+  "episode": "kh-sr-prologue",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.72,
+  "text": "QR codes are “Doors of Time.” Scan one, and you'll slip back into that place's past!",
+  "heard": " QR codes are “Doors of Time.” Scan one, and you’ll slip back into that place's past!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e12ddb0bzs4s0": {
+  "episode": "kh-sr-prologue",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.87,
+  "text": "They say the name “Angkor” comes from a word meaning “capital city.”",
+  "heard": " They say the name “Angkor” comes from a word meaning “capital city.”",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ejo8d29weetn": {
+  "episode": "kh-sr-prologue",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.96,
+  "text": "From the 9th century to the early 15th century, the capital of the Khmer kings stood here, in and around this forest.",
+  "heard": " From the 9th century to the early 15th century, the capital of the Khmer kings stood here, in and around this forest.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1rxp60esu1rg": {
+  "episode": "kh-sr-prologue",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.64,
+  "text": "First, let's go and see that capital. There's someone who can show us around!",
+  "heard": " First, let's go and see that capital. There's someone who can show us around!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1k373kwhtgar": {
+  "episode": "kh-sr-prologue",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.4900416666666665,
+  "text": "1296. The South Gate of Angkor Thom, the great capital.",
+  "heard": " The South Gate of Angkor Thom, the great capital.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e11tiac1prkz": {
+  "episode": "kh-sr-prologue",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 11.85,
+  "text": "On both sides of the bridge over the moat stood long rows of stone gods. Together, they held the body of a huge snake, like a rope.",
+  "heard": " On both sides of the bridge over the moat stood long rows of stone gods. Together, they held the body of a huge snake, like a rope.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e196tr1r20epr": {
+  "episode": "kh-sr-prologue",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.27,
+  "text": "Above the gate were great faces. The one in the middle was decorated with gold and shone in the morning sun.",
+  "heard": " Above the gate were great faces. The one in the middle was decorated with gold and shone",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
