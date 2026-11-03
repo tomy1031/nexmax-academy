@@ -838,5 +838,101 @@
   "heard": " The Venerable Chuon Nath glanced at Borey's slate, smiled, and quietly walked on.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "ekyp6tk14iuf": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 12.92,
+  "text": "Chuon Nath was someone who encouraged making names for new things from the roots of Pali and Sanskrit. They say he named the train with a word meaning “a vehicle made of metal.”",
+  "heard": " Chuon Nath was someone who encouraged making names for new things from the roots of Pali and Sanskrit. They say he named the train with a word meaning “a vehicle made of metal.”",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ew3g6x06pw1v": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "borey",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 3.96,
+  "text": "Hey, how do they make new words in your country?",
+  "heard": " Hey, how do they make new words in your country?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1d76c3u12y5l": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "borey",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 4.160041666666666,
+  "text": "Wow! That's just like the Venerable Chuon Nath said.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ebpxbnn15feh": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "borey",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 3.1500416666666666,
+  "text": "I see. So there are lots of different ways.",
+  "heard": "I see. So there are lots of different ways.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1pfxwbi1vrnx": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 15.720041666666667,
+  "text": "The English word “telephone” joins the Greek words for “far” and “sound.” The Japanese word for telephone, denwa, was also made by combining kanji, in the Meiji era. All around the world, people have come up with the same kind of idea.",
+  "heard": " The English word \"telephone\" joins the Greek words for \"far\" and \"sound.\" The Japanese word for telephone, denwa, was also made by combining kanji, in the Meiji era. All around the world, people have come up with the same kind of idea.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ezh5w7ry8jfk": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.440041666666668,
+  "text": "From the gallery, the slow singing could be heard again.",
+  "heard": " From the gallery, the slow singing could be heard again.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eh306e41kwrb": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.94,
+  "text": "After a while, Krom Ngoy came out, rubbing his throat.",
+  "heard": " After a while, Krom Ngoy came out, rubbing his throat.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e17zu7o8a7rbk": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "kromngoy",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 6.71,
+  "text": "Phew, I've sung myself hoarse. …Oh, Borey. There you are.",
+  "heard": " Phew, I've sung myself hoarse. …Oh, Borey. There you are.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
