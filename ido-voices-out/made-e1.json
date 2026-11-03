@@ -1174,5 +1174,101 @@
   "heard": "Heyer, who are these people?",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e171tnjm6sngq": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 2.7200416666666665,
+  "text": "They're travelers, Lord Kunimori.",
+  "heard": " They're travelers, Lord Kunimori.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "epydq21lcgh": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.18,
+  "text": "Travelers, this deep in the mountains…? Very well.",
+  "heard": " this deep in the mountains…? Very well.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1jis8yib3e7k": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 13.66,
+  "text": "(whispering) That’s Kunimori, a samurai of the Heike (the Taira clan). Legend says that after they lost the war, he protected the young Emperor and fled all the way to Iya.",
+  "heard": " That’s Kunimori, a samurai of the Heike (the Taira clan). Legend says that after they lost the war, he protected the young Emperor and fled all the way to Iya.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1vb0xx81r0kj": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 9.360041666666667,
+  "text": "That night, you carried Kotaro back on your back. …I never got the chance to thank you. I am truly grateful.",
+  "heard": " That night, you carried Kotaro back on your back. …I never got the chance to thank you. I am truly",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1c9uaynintqo": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.77,
+  "text": "I have not forgotten that night. …And I can see from your face that you haven't either.",
+  "heard": " I have not forgotten that night. …And I can see from your face that you",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eombn0wplyq8": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.9,
+  "text": "Someone I met back when I still called myself Noritsune.",
+  "heard": " Someone I met back when I still called myself Noritsune.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1chmps8k1lp": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 4.9,
+  "text": "Oh my… Lord Kunimori, you have an old friend?",
+  "heard": " Oh my… Lord Kunimori, you have an old friend?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ewxlfkq1nctd": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.31,
+  "text": "(whispering) This is Kunimori one year before we met him on Mt. Tsurugi. He doesn't know us yet.",
+  "heard": " This is Kunimori one year before we met him on Mt. Tsurugi. He doesn't know us yet.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
