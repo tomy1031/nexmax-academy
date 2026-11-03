@@ -644,5 +644,105 @@
   "heard": "このお寺には、やしの葉に書かれたお経が、たくさんあります。お坊さんたちが、何百年も、写しては守ってきたものです。",
   "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
   "readings": []
+ },
+ "v50zui7": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "karpeles",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 7.24,
+  "text": "わたしたちは、それを本にして、ほかのお寺や、学びたい人に届けるお手伝いをしています。",
+  "heard": "わたしたちは、それを本にして、ほかのお寺や、学びたい人に届けるお手伝いをしています。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v9twkkz": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "karpeles",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 11.48,
+  "text": "歌も、この国の人たちが、ずっと大切にしてきた言葉だからです。……それに、クロム・ンゴイさんの歌を待っている人が、国じゅうにいますから。",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vqskvrl": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.65,
+  "text": "ペンの音と、歌の声と、川からの風の音だけが、回廊を通っていった。",
+  "heard": "ペンの音と、歌の声と、川からの風の音だけが、回廊を通っていった。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "回廊＝かいろう"
+  ]
+ },
+ "vknuuoc": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.2800416666666665,
+  "text": "ひと休みのあいだ、あなたとボレイは、回廊の外に出た。",
+  "heard": "ひと休みのあいだ、あなたとボレイは、回廊の外に出た。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "回廊＝かいろう"
+  ]
+ },
+ "vp388ly": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "borey",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 9.77,
+  "text": "ねえ、汽車って知ってる？ 煙をはいて、鉄の道を走る車。いま、遠くの町まで、鉄の道を作ってるんだって。",
+  "heard": " ねえ、汽車って知ってる？ 煙をはいて、鉄の道を走る車。いま、遠くの町まで、鉄の道を作ってるんだって。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vi4ci6w": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "borey",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 7.84,
+  "text": "でも、クメールのことばで、汽車って、なんて言えばいいんだろう。フランスのことばのまま言うのかな。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1xsedvm": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 11.900041666666667,
+  "text": "そのとき、黄色い衣のお坊さんが、静かに通りかかった。やせていて、目の奥が、やさしく光っている。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v13iouwh": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.56,
+  "text": "ボレイは、あわてて両手を合わせ、頭を下げた。あなたも、まねをして手を合わせる。",
+  "heard": "ボレイは、あわてて両手を合わせ、頭を下げた。あなたも、まねをして手を合わせる。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
