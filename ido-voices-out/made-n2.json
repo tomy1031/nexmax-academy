@@ -118,5 +118,17 @@
   "heard": " Cambodia became independent from France when I was a baby. On nine November nineteen fifty-three.",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "eiizgt9in7jc": {
+  "episode": "kh-independence",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.39,
+  "text": "That's right. After that, in 1958, work began on this tower to celebrate independence.",
+  "heard": " That's right. After that, in 1958, work began on this tower to celebrate independence.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
