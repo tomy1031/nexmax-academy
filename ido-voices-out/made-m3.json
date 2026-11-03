@@ -388,5 +388,101 @@
   "heard": "",
   "scene": "お祝いの、晴れやかな場面。明るく",
   "readings": []
+ },
+ "v3m7uuz": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.24,
+  "text": "ムオさんは、塔を37と数えたんだ。今の数え方では、バイヨンの塔は49とも54とも言われているよ。",
+  "heard": "ムオさんは、塔を37と数えたんだ。今の数え方では、バイヨンの塔は49とも54とも言われているよ。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "vwhzpxt": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "mouhot",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 9.59,
+  "text": "ニモル。ひとつ、教えてほしい。この前に見た、森の向こうの大きな寺……あの寺は、だれが建てたのだろう。",
+  "heard": "ニモル。ひとつ、教えてほしい。この前に見た、森の向こうの大きな寺……あの寺は、だれが建てたのだろう。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vip35ah": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.870041666666666,
+  "text": "そこへ、薪を背負った村の人たちが、通りかかった。ニモルが、おとなたちに聞いてくれる。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1i3xzij": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "村のおじいさん",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 5.0300416666666665,
+  "text": "あれは、天の王さま、プラ・エウンが作ったのさ。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vbq852p": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "村のおばさん",
+  "voice": "Sulafat",
+  "model": "gemini-3.8-live",
+  "seconds": 3.8800416666666666,
+  "text": "あら、巨人が作ったって、わたしは聞いたよ。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vy0v1x6": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "村の若者",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 4.38,
+  "text": "病気の王さまが建てたんだって、じいちゃんは言ってたぞ。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vvoy59v": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "村のおばあさん",
+  "voice": "Despina",
+  "model": "gemini-3.8-live",
+  "seconds": 3.77,
+  "text": "ほっほっ。あれはね、ひとりでにできたのさ。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vpn8o6c": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.970083333333333,
+  "text": "ムオさんは、四つの答えを、ひとつずつ、ていねいに書き取った。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
