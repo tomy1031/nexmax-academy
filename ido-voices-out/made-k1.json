@@ -1156,5 +1156,19 @@
   "heard": "ペコ お ばあさん の 一 かご ずつ と 同じ だ ね 1 本 ずつ 柱 が 立っ て いく",
   "scene": "お祝いの、晴れやかな場面。明るく",
   "readings": []
+ },
+ "v1bwzqre": {
+  "episode": "kh-royalpalace",
+  "lang": "ja",
+  "speaker": "piseth",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 5.4,
+  "text": "おれ、決めた。新しい都の柱を立てたって、じいちゃんに言いに帰るんだ。",
+  "heard": "おれ、決めた。新しい都の柱を立てたって、じいちゃんに言いに帰るんだ。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": [
+   "都＝みやこ"
+  ]
  }
 }
