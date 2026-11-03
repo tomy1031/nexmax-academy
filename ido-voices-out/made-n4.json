@@ -286,5 +286,89 @@
   "heard": " The university's president said this.",
   "scene": "お祝いの、晴れやかな場面。明るく",
   "readings": []
+ },
+ "e1se6oc816a5b": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.070041666666667,
+  "text": "Those are the president's real words, recorded in Cambodian news reports of the ceremony.",
+  "heard": " Those are the president's real words, recorded in Cambodian news reports of the ceremony.",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "e3wm9n71rhfp": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.680041666666667,
+  "text": "Mr. Matsui turned toward the students.",
+  "heard": "Mr. Matsui, turned toward the students.",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "e1qrj7ii394n": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.710041666666666,
+  "text": "There's no record of what Mr. Matsui said that day. But I think he must have felt something like this.",
+  "heard": " There's no record of what Mr. Matsui said that day. But I think he must have felt",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "e1p5wwgi169zc": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.98,
+  "text": "The pen signed the papers, and applause filled the whole hall.",
+  "heard": " The pen signed the papers, and applause filled the whole hall.",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "ew4ixzc19iqa": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.6,
+  "text": "…Hey, can I tell you a secret?",
+  "heard": " Hey, can I tell you a secret?",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "eafnzu6yd7rk": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 2.8000416666666665,
+  "text": "NEXT MAKE is the company that made me.",
+  "heard": "Next make is the company that made me.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1pzrgc81ol4h": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.1,
+  "text": "I have another job, too. I'm a study buddy for the students here, helping them learn Japanese.",
+  "heard": " I have another job, too. I'm a study buddy for the students here, helping them learn Japanese.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
