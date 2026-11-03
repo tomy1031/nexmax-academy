@@ -1221,5 +1221,17 @@
   "heard": "父上は城を築く人ゆえ、御堂の形を見せたら、さぞ喜ばれよう。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v82elcc": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 10.88,
+  "text": "このような御堂を、人が石を積んで作ったのだ。そなた、信じられるか。",
+  "heard": "このような御堂を、人が石を積んで作ったのだ。そなた、信じられるか。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
