@@ -106,5 +106,101 @@
   "heard": " The Mekong, the Tonle Sap and the Bassac rivers all meet here, so the water looks as if it",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "esm8o451t13m": {
+  "episode": "kh-prologue",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.43,
+  "text": "The name Phnom Penh means “Penh's Hill.” Penh was the name of an old woman who lived long ago.",
+  "heard": " The name Phnom Penh means “Penh's Hill.” Penh was the name of an old woman who lived long ago.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "et4kurthron3": {
+  "episode": "kh-prologue",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 14.25,
+  "text": "Many different times are layered in this city. A hill from a legend. A royal capital. The day of independence. And then a long, hard time, and the rebuilding that came after.",
+  "heard": " Many different times are layered in this city. A hill from a legend. A royal capital. The day of independence. And then a long, hard time, and the rebuilding that came after.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1bno25w1nwu9": {
+  "episode": "kh-prologue",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.24,
+  "text": "It's also a city where people from all over the world have met the people who live here, and built many bridges.",
+  "heard": " It's also a city where people from all over the world have met the people who live here, and built many bridges.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "eiy4a5xo7nqm": {
+  "episode": "kh-prologue",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.9,
+  "text": "Collect stamps at the city's five “Doors of Time,” and they'll make one complete picture. Come on, let's go!",
+  "heard": " Collect stamps at the city's five \"Doors of Time,\" and they'll make one complete picture. Come on, let's go!",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1ylo3sv1h7q4": {
+  "episode": "kh-watphnom",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.000041666666666,
+  "text": "About six hundred and fifty years ago. — From here on, this is a legend.",
+  "heard": " About six hundred and fifty years ago. — From here on, this is a legend.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1srqhxh1nrzo": {
+  "episode": "kh-watphnom",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.74,
+  "text": "The rainy season was ending. The river had swollen high, and brown water came right up to the stilts of the houses.",
+  "heard": " The rainy season was ending. The river had swollen high, and brown water came right up to the stilts",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e117ik2j1fiee": {
+  "episode": "kh-watphnom",
+  "lang": "en",
+  "speaker": "村の人",
+  "voice": "Rasalgethi",
+  "model": "gemini-3.8-live",
+  "seconds": 3.18,
+  "text": "Hey! Something's floating down the river!",
+  "heard": " Hey! Something's floating down the river!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1xlwnxl14tcd": {
+  "episode": "kh-watphnom",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.94,
+  "text": "You looked. A huge tree was slowly drifting toward the bank. A koki tree.",
+  "heard": " A huge tree was slowly drifting toward the bank. A koki tree.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
