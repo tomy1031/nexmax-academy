@@ -622,5 +622,101 @@
   "heard": " Oh… were you watching? How embarrassing.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "ehj4bf01qq3x": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "sreymom",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 4.77,
+  "text": "I'm Sreymom. I'm twelve. I'm a dancer at this temple.",
+  "heard": " I'm twelve. I'm a dancer at this temple.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ezern3cd54ec": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "sreymom",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 9.63,
+  "text": "Today is the spring festival. It's my first time dancing at a festival. …My hands keep shaking.",
+  "heard": " Today is the spring festival. It's my first time dancing at a festival. …My hands keep shaking.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "epqtims1jsyk": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "sreymom",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 4.94,
+  "text": "Oh, you came back? …My hands are shaking today, too.",
+  "heard": " Oh, you came back? …My hands are shaking today, too.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e5ieplq1tzas": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "sreymom",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 6.71,
+  "text": "Oh… were you watching? …Huh? Have we met before?",
+  "heard": "Oh… were you watching? …Huh? Have we met before?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "efzmlvh1rk6a": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "sreymom",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 8.67,
+  "text": "I'm Sreymom, a dancer at this temple. Today I'm dancing at a festival for the first time.",
+  "heard": " I'm Sreymom, a dancer at this temple. Today I'm dancing at a festival for the first time.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1jgoi8jcs7ey": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "sreymom",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 3.2600416666666665,
+  "text": "The king built this temple for his mother, they say.",
+  "heard": " The king built this temple for his mother, they say.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1do4zu31p2b7": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "sreymom",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 6.56,
+  "text": "In the central shrine, there's a Buddhist statue of wisdom, made in his mother's image.",
+  "heard": " In the central shrine, there's a Buddhist statue of wisdom, made in his mother's image.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1m1iyorxqlpj": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.14,
+  "text": "That king was Jayavarman VII. That's what the words carved in stone at this temple — its inscription — say.",
+  "heard": " That king was Jayavarman the Seventh. That's what the words carved in stone at this temple — its inscription — say.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
