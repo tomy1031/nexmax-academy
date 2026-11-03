@@ -322,5 +322,105 @@
   "heard": "人びとが、いっせいに拍手をした。",
   "scene": "お祝いの、晴れやかな場面。明るく",
   "readings": []
+ },
+ "vokoatp": {
+  "episode": "kh-independence",
+  "lang": "ja",
+  "speaker": "dara",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 3.59,
+  "text": "父ちゃん、ほら！ みんな、父ちゃんたちの塔を見てるよ！",
+  "heard": "父ちゃん、ほら！みんな、父ちゃんたちの塔を見てるよ！",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "veonnb4": {
+  "episode": "kh-independence",
+  "lang": "ja",
+  "speaker": "ダラーのお父さん",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 1.8100416666666668,
+  "text": "……ああ。見てるな。",
+  "heard": "ああ 、 見 てる な 。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "vnlin74": {
+  "episode": "kh-independence",
+  "lang": "ja",
+  "speaker": "ダラーのお父さん",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.48,
+  "text": "ダラー。おまえが大人になっても、この塔は、ここに立ってる。",
+  "heard": "ダラー。おまえが大人になっても、この塔は、ここに立ってる。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "vmwg1u9": {
+  "episode": "kh-independence",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.5500416666666665,
+  "text": "……戻ってきたよ。いまの独立記念塔。",
+  "heard": "戻ってきたよ。いまの独立記念塔。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "独立記念塔＝どくりつきねんとう"
+  ]
+ },
+ "v1brdlk3": {
+  "episode": "kh-independence",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 12.73,
+  "text": "カンボジアは、1953年11月9日に独立を宣言したんだ。毎年11月9日は独立記念日で、この塔の記念の火がともされるんだよ。",
+  "heard": "カンボジアは、1953年11月9日に独立を宣言したんだ。毎年11月9日は独立記念日で、この塔の記念の火がともされるんだよ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1o546pp": {
+  "episode": "kh-independence",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 13.88,
+  "text": "塔は1958年に建てはじめて、1962年に開いた。設計したのは、カンボジアの建築家、ヴァン・モリヴァンさん。5つの段に、ナーガの頭が100ついているんだって。",
+  "heard": "塔は1958年に建てはじめて、1962年に開いた。設計したのは、カンボジアの建築家、ヴァン・モリヴァンさん。5つの段に、ナーガの頭が100ついているんだって。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v13o462z": {
+  "episode": "kh-independence",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.36,
+  "text": "ヴァン・モリヴァンさんは、「新クメール建築」とよばれる建物を広めた人なんだ。",
+  "heard": "ヴァン・モリヴァンさんは、「新クメール建築」とよばれる建物を広めた人なんだ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "新クメール建築＝しんくめーるけんちく"
+  ]
+ },
+ "v3rszk5": {
+  "episode": "kh-independence",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.61,
+  "text": "新しい建て方に、クメールの伝統の形と、暑さや雨に合わせた工夫を重ねたんだよ。",
+  "heard": " 新しい建て方に、クメールの伝統の形と、暑さや雨に合わせた工夫を重ねたんだよ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
