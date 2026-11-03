@@ -118,5 +118,17 @@
   "heard": "",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "et90kfd12h0y": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 11.18,
+  "text": "Many boats were carved on the wall. On the boats, soldiers held their spears ready. In the water there were big fish — and even crocodiles.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
