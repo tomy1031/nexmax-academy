@@ -418,5 +418,101 @@
   "heard": " The words would not come. All the words he had practiced so hard last night — not a single one came out.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "es4q70c2mblf": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "yoritomo",
+  "voice": "Schedar",
+  "model": "gemini-3.8-live",
+  "seconds": 1,
+  "text": "Raise your head.",
+  "heard": "Raise your head.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e10cl2nd151op": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "yoritomo",
+  "voice": "Schedar",
+  "model": "gemini-3.8-live",
+  "seconds": 13.820041666666667,
+  "text": "Long ago, our ancestor Hachiman Taro Yoshiie was in trouble in a war in Oshu. They say his younger brother, Shinra Saburo Yoshimitsu, gave up his post at court and rushed to his side.",
+  "heard": "Long ago,our ancestorHachiman TaroYoshiie wasin trouble in a warin Oshu. They sayhis youngerbrother, ShinraSaburo Yoshimitsu,gave up his postat court and rushedto his side.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1p4mh6mwfbwo": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "yoritomo",
+  "voice": "Schedar",
+  "model": "gemini-3.8-live",
+  "seconds": 3.8200416666666666,
+  "text": "…Kuro. You are my Yoshimitsu.",
+  "heard": "Kuro You are my Yoshimitsu",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1e9xy68lplp9": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.640041666666667,
+  "text": "Tears spilled from Yoritomo's eyes. Yoshitsune cried out loud, too.",
+  "heard": " Tears spilled from Yoritomo's eyes. Yoshitsune cried out loud, too.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "efxbd40kw5wk": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.040041666666667,
+  "text": "It is said the two brothers sat side by side on a stone and talked about the old days.",
+  "heard": "It is said the two brothers sat side by side on a stone and talked about the old days.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ed5w9u41rj9t": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.14,
+  "text": "The Azuma Kagami (a record kept by the Kamakura government) says the two of them shed “tears for the old days” right then.",
+  "heard": " The Azuma Kagami (a record kept by the Kamakura government) says the two of them shed “tears for the old days” right then.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e16u3h2gbubdy": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.72,
+  "text": "The stones they are said to have sat on are called the Meeting Stones (Taimen-ishi). They're still at Hachiman Shrine in Shimizu Town today.",
+  "heard": " The stones they are said to have sat on are called the Meeting Stones (Taimen-ishi). They're still at Hachiman Shrine in Shimizu Town",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ey88mne1kl6m": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.710041666666666,
+  "text": "After Yoshitsune left, Yoritomo stayed sitting on the stone by himself. Then he looked over at you.",
+  "heard": " After Yoshitsune left, Yoritomo stayed sitting on the stone by himself. Then he looked over at you.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
