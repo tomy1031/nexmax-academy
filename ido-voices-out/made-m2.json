@@ -202,5 +202,101 @@
   "heard": "",
   "scene": "お祝いの、晴れやかな場面。明るく",
   "readings": []
+ },
+ "e1wwtse9tjspe": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "kromngoy",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 7.26,
+  "text": "♪ Learn your letters and you'll see the road — never learn, and you'll be fooled",
+  "heard": "",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "e1xbcbrw8j8b2": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.05,
+  "text": "The crowd burst out laughing and nodded. Borey was clapping and humming along.",
+  "heard": " The crowd burst out laughing and nodded. Borey was clapping and humming along.",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "e7vxpi6b1xjm": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.83,
+  "text": "Krom Ngoy taught through his songs — about work in the fields, and why learning matters. The song you just heard is a simple retelling of what he taught.",
+  "heard": " Krom Ngoy taught through his songs—about work in the fields, and why learning matters. The song you just heard is a simple retelling of what he taught.",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "ebqw85jj6sd1": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.800041666666667,
+  "text": "When the song ended, the old man looked your way and grinned.",
+  "heard": " When the song ended, the old man looked your way and grinned.",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "eithuey1a9dd": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "kromngoy",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 4.760041666666667,
+  "text": "Haven't seen your face before. Come from far away, have you?",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e13s1ggu2ikqy": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "kromngoy",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 8.25,
+  "text": "I'm Krom Ngoy. The name I was born with is Ouk Ou, but everyone calls me Krom Ngoy.",
+  "heard": " I'm Krom Ngoy. The name I was born with is Ouk Ou, but everyone calls me Krom Ngoy.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e42kho17cb9q": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "kromngoy",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 5.920041666666667,
+  "text": "Well, well, you came again. My songs must have caught your fancy.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1ejhrfzaozuf": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "kromngoy",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 6.63,
+  "text": "Haven't seen your face before. …No, wait — have we met somewhere?",
+  "heard": " Haven't seen your face before. …No, wait — have we met somewhere?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
