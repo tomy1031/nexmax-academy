@@ -1066,5 +1066,101 @@
   "heard": "千年のちの者も、きっと、この塔を見上げるだろう。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v1dvi5mv": {
+  "episode": "kh-angkor-build",
+  "lang": "ja",
+  "speaker": "suryavarman2",
+  "voice": "Schedar",
+  "model": "gemini-3.8-live",
+  "seconds": 8.87,
+  "text": "そなたの名は、残らぬかもしれぬ。だが、そなたの手が彫った天女は、千年、ここでほほえんでいる。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vxn5txo": {
+  "episode": "kh-angkor-build",
+  "lang": "ja",
+  "speaker": "keo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 0.83,
+  "text": "……はいっ！",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v196uk9d": {
+  "episode": "kh-angkor-build",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.12,
+  "text": "王さまは、もう一度だけ天女を見て、日傘の列の中へもどっていった。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1mv32xd": {
+  "episode": "kh-angkor-build",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.11,
+  "text": "スーリヤヴァルマン2世が亡くなったあとの名前、「パラマヴィシュヌローカ」は、「ヴィシュヌ神の世界へ行った王」という意味なんだ。",
+  "heard": "スーリヤヴァルマン2世が亡くなったあとの名前、「パラマヴィシュヌローカ」は、「ヴィシュヌ神の世界へ行った王」という意味なんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vznkalz": {
+  "episode": "kh-taprohm",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.880041666666667,
+  "text": "いちばん奥の、金の日傘の下に、王さまの姿があった。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1320o07": {
+  "episode": "kh-taprohm",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 12.16,
+  "text": "行列が、新しい石碑の前で止まった。王さまは、踊り手の列のはしにいるスレイモンと、見なれない旅のあなたに、ふと目をとめた。",
+  "heard": "行列が、新しい石碑の前で止まった。王さまは、踊り手の列のはしにいるスレイモンと、見なれない旅のあなたに、ふと目をとめた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1svwi9e": {
+  "episode": "kh-taprohm",
+  "lang": "ja",
+  "speaker": "jayavarman7",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 3.74,
+  "text": "……見かけぬ顔だな。遠くから来た人か。",
+  "heard": " 見かけぬ顔だな。遠くから来た人か。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v10ed0u4": {
+  "episode": "kh-taprohm",
+  "lang": "ja",
+  "speaker": "jayavarman7",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 7.660041666666666,
+  "text": "よく来てくれた。今日は、わたしの母のための寺に、仏をお迎えする日なのだ。",
+  "heard": "今日は、わたしの母のための寺に、仏をお迎えする日なのだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
