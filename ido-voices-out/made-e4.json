@@ -1090,5 +1090,53 @@
   "heard": " Perhaps he couldn't hold back his delight. On a Heike boat, a warrior of about fifty, in black leather armor, began to dance right where the fan had been, holding a white-handled naginata (a long spear with a curved blade).",
   "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
   "readings": []
+ },
+ "e1hnupor106d0": {
+  "episode": "genpei-yashima",
+  "lang": "en",
+  "speaker": "伊勢三郎義盛",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 4.18,
+  "text": "…Yoichi. It is the general's order. Do it.",
+  "heard": "Yoshi, it is the general's order. Do it.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "et40sxx19lwg": {
+  "episode": "genpei-yashima",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.72,
+  "text": "A second arrow flew. It pierced the dancing warrior through the neck, and he fell into the bottom of the boat.",
+  "heard": " A second arrow flew. It pierced the dancing warrior through the neck, and he fell into the bottom of the boat.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e13b5ndg19q5u": {
+  "episode": "genpei-yashima",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.61,
+  "text": "The Heike boats fell completely silent. The Genji side pounded their quivers and roared again.",
+  "heard": "The Heike boats fell completely silent. The Genji side pounded their quivers and roared again.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "esmboda3v6d6": {
+  "episode": "genpei-yashima",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.340041666666667,
+  "text": "Some cried, “A fine shot!” Others said, “How heartless.”",
+  "heard": "Some cried, a fine shot. Others said, how heartless.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
  }
 }
