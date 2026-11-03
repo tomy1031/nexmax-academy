@@ -1294,5 +1294,101 @@
   "heard": " The capital Zhou Daguan saw. Keo's devata. Sreymom's dance. Chanthy's market. Bopha's map. And the 274 Buddhas in the",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e8swdu41b8a2": {
+  "episode": "kh-sr-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.18,
+  "text": "The last door is where we started. …Look, over there.",
+  "heard": " The last door is where we started. …Look, over there.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "els9nzf6idhz": {
+  "episode": "kh-sr-finale",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.380041666666667,
+  "text": "Beside the approach, young people in helmets were stretching out tape measures, measuring stones that were starting to crumble.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1keykvc10z8j": {
+  "episode": "kh-sr-finale",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.39,
+  "text": "In the middle of them, a man with graying hair was spreading out a set of plans.",
+  "heard": " In the middle of them, a man with graying hair was spreading out a set of plans.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e194q3gz5leeq": {
+  "episode": "kh-sr-finale",
+  "lang": "en",
+  "speaker": "sovann2",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 7.58,
+  "text": "Take your time. For each stone, write a number, take a photo, and record where it was. …Huh?",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "etjbgdg1sxp7": {
+  "episode": "kh-sr-finale",
+  "lang": "en",
+  "speaker": "sovann2",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 7.2400416666666665,
+  "text": "You're… from Banteay Kdei…! From that day in 2001…!",
+  "heard": " You're… from Banteay Kdei…! From that day",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ew5v1bxxptru": {
+  "episode": "kh-sr-finale",
+  "lang": "en",
+  "speaker": "sovann2",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 7.87,
+  "text": "It's me, Sovann. I'm forty-nine now. These days, my job is protecting the ruins.",
+  "heard": "It's me, Sovann. I'm forty-nine now. These days, my job is protecting the ruins.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e4e8tx719ib9": {
+  "episode": "kh-sr-finale",
+  "lang": "en",
+  "speaker": "sovann2",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 5.420041666666667,
+  "text": "These young people are trainees. Just like I was back then.",
+  "heard": " These young people are trainees. Just like I was back then.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1c4ndqz190y9": {
+  "episode": "kh-sr-finale",
+  "lang": "en",
+  "speaker": "sovann2",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 9.77,
+  "text": "“I want to respect what we don't know, too.” I've always remembered your words. We still don't know why the Buddhas were buried.",
+  "heard": "“I want to respect what we don't know, too.” I've always remembered your words. We still don't know why the Buddhas were buried.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
