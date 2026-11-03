@@ -298,5 +298,65 @@
   "heard": " Haven't seen your face before. …No, wait — have we met somewhere?",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1p18n9d14zl8": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "kromngoy",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 4.960041666666666,
+  "text": "I'm Krom Ngoy. Just a singer of songs.",
+  "heard": " I'm Krom Ngoy. Just a singer of songs.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e900bqgci2gp": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "borey",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 7.04,
+  "text": "I'm Borey! Krom Ngoy, how do you remember all your songs? Are they written on paper?",
+  "heard": " Krom Ngoy, how do you remember all your songs? Are they written on paper?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "evvxk1ta3a61": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "kromngoy",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 6.9900416666666665,
+  "text": "Ha ha ha. I've never once written a song on paper. They're all kept in here.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ed2erra11m56": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.190041666666667,
+  "text": "The old man thumped his chest with his big hand.",
+  "heard": " The old man thumped his chest with his big hand.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1n1yegh1tsg6": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "kromngoy",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 9.750041666666666,
+  "text": "But you know, I'm sixty-five now. And as a song passes from mouth to mouth, little by little, it changes.",
+  "heard": " But you know, I'm sixty-five now. And as a song passes from mouth to mouth, little by little, it changes.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
