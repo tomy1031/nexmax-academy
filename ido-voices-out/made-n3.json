@@ -574,5 +574,101 @@
   "heard": " It's me, Sophea. I've already turned forty!",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "e1nef98x1kwzd": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "sophea2",
+  "voice": "Erinome",
+  "model": "gemini-3.8-live",
+  "seconds": 7.2,
+  "text": "These days, my job is inspecting bridges. I check for cracks, and for loose bolts.",
+  "heard": " my job is inspecting bridges. I check for cracks, and for loose bolts.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "en2qk5rczyd3": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "sophea2",
+  "voice": "Erinome",
+  "model": "gemini-3.8-live",
+  "seconds": 7.520041666666667,
+  "text": "In 2019, when this bridge got another big repair, I worked alongside the Japanese engineers.",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1xwwdkd1bw1v": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "sophea2",
+  "voice": "Erinome",
+  "model": "gemini-3.8-live",
+  "seconds": 9.95,
+  "text": "Grandpa is gone now. I couldn't learn every one of his roneat songs. Some of the songs that were in his head can never be heard again.",
+  "heard": " Grandpa is gone now. I couldn't learn every one of his roneat songs. Some of the songs that were in his head can never be heard again.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "emasz961e2vr": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "sophea2",
+  "voice": "Erinome",
+  "model": "gemini-3.8-live",
+  "seconds": 3.910041666666667,
+  "text": "But the songs I did learn, I'm teaching to my daughter now.",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e2uzvnc1rg76": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "sophea2",
+  "voice": "Erinome",
+  "model": "gemini-3.8-live",
+  "seconds": 7.52,
+  "text": "“Those who can cross, cross. Those who remember, teach.” Grandpa always used to say that.",
+  "heard": " \"Those who can cross, cross. Those who remember, teach.\" Grandpa always used to say that.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "evbh3jvjn9kb": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.27,
+  "text": "This bridge was built with Japan's help in the 1960s. Part of it fell during the civil war in 1972.",
+  "heard": " This bridge was built with Japan's help in the 1960s. Part of it fell during the civil war in 1972.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1phecuxu9wd3": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.06,
+  "text": "It was repaired with money from the government of Japan — money that didn't have to be paid back — and in 1994, people could cross it again.",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e3i8qrb13024": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.25,
+  "text": "It was named the “Cambodia-Japan Friendship Bridge,” and in Japan it's also called the “Japan Bridge.”",
+  "heard": " It was named the “Cambodia-Japan Friendship Bridge,” and in Japan it's also called the “Japan Bridge.”",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
