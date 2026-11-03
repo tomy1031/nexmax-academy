@@ -914,5 +914,101 @@
   "heard": "その 先頭 に 背筋 の ピン と し た 女 の 人 が い た 。",
   "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
   "readings": []
+ },
+ "vpwmuao": {
+  "episode": "kh-museum",
+  "lang": "ja",
+  "speaker": "leakhena2",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 3.1100416666666666,
+  "text": "……あら？ あなた、どこかで……。",
+  "heard": "あら？ あなた、どこかで。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1ytsjp9": {
+  "episode": "kh-museum",
+  "lang": "ja",
+  "speaker": "leakhena2",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 5.09,
+  "text": "……うそ。1981年の、あの教室にいた……！",
+  "heard": "嘘、 1981年のあの教室にいた。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v53lde9": {
+  "episode": "kh-museum",
+  "lang": "ja",
+  "speaker": "leakhena2",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 6.17,
+  "text": "わたし、リアクナよ。今は、この子たちに踊りを教えてるの。",
+  "heard": "わたし、リアクナよ。今は、この子たちに踊りを教えてるの。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1ucijvu": {
+  "episode": "kh-museum",
+  "lang": "ja",
+  "speaker": "leakhena2",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 7.46,
+  "text": "踊りだけでは暮らせなくて、昼は別の仕事をしていた年もあったわ。……でも、やめなかった。",
+  "heard": " 踊りだけでは暮らせなくて、昼は別の仕事をしていた年もあったわ。……でも、や",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1don6f9": {
+  "episode": "kh-museum",
+  "lang": "ja",
+  "speaker": "leakhena2",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 6.28,
+  "text": "今もこの学校ではね、指を反らせたまま、100まで数えるのよ。",
+  "heard": "いまも この学校ではね 指をそろえたまま 100まで数えるのよ",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vqgw0mt": {
+  "episode": "kh-museum",
+  "lang": "ja",
+  "speaker": "leakhena2",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 6.44,
+  "text": "ネアリー先生は、もういないけれど……先生の指は、ちゃんと、ここにあるわ。",
+  "heard": "ネアリー 先生 は もう い ない けれど 、 先生 の 指 は ちゃんと ここ に ある わ 。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1b54ih3": {
+  "episode": "kh-museum",
+  "lang": "ja",
+  "speaker": "leakhena2",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 8.040041666666667,
+  "text": "あなたが作った「つぼみ」、覚えてる。この子たちも、今日はつぼみから始めたのよ。",
+  "heard": "あなたが作った「つぼみ」、覚えてる。この子たちも、今日はつぼみから始めたのよ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vh27i1g": {
+  "episode": "kh-museum",
+  "lang": "ja",
+  "speaker": "leakhena2",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 7.56,
+  "text": "あなたの「花がひらく」、覚えてる。先生が、いちばんむずかしいって言った形。",
+  "heard": " あなたの「花がひらく」、覚えてる。先生が、いちばんむずかしいって言った形。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
