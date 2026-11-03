@@ -370,5 +370,101 @@
   "heard": " I have another job, too. I'm a study buddy for the students here, helping them learn Japanese.",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "edt95l52pcyu": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 21.64,
+  "text": "September 2026. At the same university, the Japanese IT Pathway graduation ceremony was held.",
+  "heard": " September 2026. At the same university, the Japanese IT Pathway graduation ceremony was held.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "eulhclk6vq5o": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.49,
+  "text": "The first students have finished their two years of study, and are heading off to work at Japanese companies.",
+  "heard": " The first students have finished their two years of study, and are heading off to work at Japanese companies.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1tvfkuw1kyal": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "sokha",
+  "voice": "Despina",
+  "model": "gemini-3.8-live",
+  "seconds": 4.2,
+  "text": "Oh! It's you, from that day…! I remember you!",
+  "heard": " Oh! It's you, from that day…! I remember you!",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e12ad6ju8i7ev": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "sokha",
+  "voice": "Despina",
+  "model": "gemini-3.8-live",
+  "seconds": 2.4900416666666665,
+  "text": "Has my Japanese gotten better?",
+  "heard": "Has my Japanese gotten better?",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1rqff2u1pc8m": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "sokha",
+  "voice": "Despina",
+  "model": "gemini-3.8-live",
+  "seconds": 5.5,
+  "text": "Really?! I'm so happy! I practiced so, so much.",
+  "heard": "Really? I'm so happy. I practiced so, so much.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "eth50ui1ky69": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "sokha",
+  "voice": "Despina",
+  "model": "gemini-3.8-live",
+  "seconds": 3.7200416666666665,
+  "text": "Yes. I studied with Nexmax every day!",
+  "heard": "\nYes. I studied with Nexmax every day!",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1m56g9j1gj1r": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "sokha",
+  "voice": "Despina",
+  "model": "gemini-3.8-live",
+  "seconds": 5.63,
+  "text": "Next year, I'm going to Japan. I'll work as an engineer at a Japanese company.",
+  "heard": " Next year, I'm going to Japan. I'll work as an engineer at a Japanese company.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "egr3f8b1q172": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "sokha",
+  "voice": "Despina",
+  "model": "gemini-3.8-live",
+  "seconds": 11.66,
+  "text": "I'd be lying if I said I wasn't scared. Japanese winters are cold, and the work will surely be hard. I think there will be days when things don't go well.",
+  "heard": " I'd be lying if I said I wasn't scared. Japanese winters are cold, and the work will surely be hard. I think there will be days when things don't go well.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
