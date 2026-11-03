@@ -202,5 +202,101 @@
   "heard": " A huge tree was slowly drifting toward the bank. A koki tree.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1mwvtfh148a0": {
+  "episode": "kh-watphnom",
+  "lang": "en",
+  "speaker": "penh",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 3.600041666666667,
+  "text": "My, my! What a big tree.",
+  "heard": "My, my, what a big tree!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "epbgvlrhbtza": {
+  "episode": "kh-watphnom",
+  "lang": "en",
+  "speaker": "penh",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 11.32,
+  "text": "Oh? I haven't seen your face before. I don't know where you've come from, but you're just in time. Lend me a hand.",
+  "heard": " Oh? I haven't seen your face before. I don't know where you've come from, but you're just in time. Lend me a hand.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1f7i0r1seod": {
+  "episode": "kh-watphnom",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.6,
+  "text": "(whispering) That's Grandmother Penh! The city is named after her.",
+  "heard": " That's Grandmother Penh! The city is named after",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eqqayjgqtbql": {
+  "episode": "kh-watphnom",
+  "lang": "en",
+  "speaker": "penh",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 5.270041666666667,
+  "text": "Oh, you've come back, have you? Just in time. Lend me a hand.",
+  "heard": " Oh, you've come back, have you? Just in time. Lend me a hand.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ejv0iyjs8pxb": {
+  "episode": "kh-watphnom",
+  "lang": "en",
+  "speaker": "penh",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 8.88,
+  "text": "Oh? I haven't seen your face before. …What is it? You're looking at me as if we were old friends.",
+  "heard": " Oh? I haven't seen your face before. …What is it? You're looking at me as if we were old friends.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e90e6y4cb7d0": {
+  "episode": "kh-watphnom",
+  "lang": "en",
+  "speaker": "penh",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 4.12,
+  "text": "Well, you're just in time. Lend me a hand.",
+  "heard": " Well, you're just in time. Lend me a hand.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "esp5hjn1kxut": {
+  "episode": "kh-watphnom",
+  "lang": "en",
+  "speaker": "penh",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 5.89,
+  "text": "We're going to pull that tree up onto the bank. Everyone, bring rope!",
+  "heard": " We're going to pull that tree up onto the bank. Everyone, bring rope!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ea8hwhyglebw": {
+  "episode": "kh-watphnom",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.72,
+  "text": "You grabbed the rope beside the village men. The wet rope dug into your palms.",
+  "heard": " You grabbed the rope beside the village men. The wet rope dug into your palms.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
