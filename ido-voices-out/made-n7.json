@@ -1006,5 +1006,101 @@
   "heard": " Many of them showed the Buddha sitting on a snake god. On some, the head had come away from the body.",
   "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
   "readings": []
+ },
+ "e1k0uwx0vkyyr": {
+  "episode": "kh-banteaykdei",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.320041666666667,
+  "text": "Each time another Buddha appeared, the trainees quietly put their hands together.",
+  "heard": " Each time another Buddha appeared, the trainees quietly put their hands together.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1iqis8x1lhh1": {
+  "episode": "kh-banteaykdei",
+  "lang": "en",
+  "speaker": "sovann",
+  "voice": "Umbriel",
+  "model": "gemini-3.8-live",
+  "seconds": 3.2400416666666665,
+  "text": "There's more… There's still more…!",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1umydnl1bcfd": {
+  "episode": "kh-banteaykdei",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 2.69,
+  "text": "Sovann's hands were trembling.",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "eci8doqidpb": {
+  "episode": "kh-banteaykdei",
+  "lang": "en",
+  "speaker": "sovann",
+  "voice": "Umbriel",
+  "model": "gemini-3.8-live",
+  "seconds": 4.620041666666666,
+  "text": "For hundreds of years, they've been here, with no one finding them…",
+  "heard": "For hundreds of years, they've been here, with no one finding them.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1n83tosudgyt": {
+  "episode": "kh-banteaykdei",
+  "lang": "en",
+  "speaker": "sovann",
+  "voice": "Umbriel",
+  "model": "gemini-3.8-live",
+  "seconds": 4.300041666666667,
+  "text": "People of our own country found them — with our own hands.",
+  "heard": " People of our own country found them — with our own hands.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e77qjc1ck55z": {
+  "episode": "kh-banteaykdei",
+  "lang": "en",
+  "speaker": "sovann",
+  "voice": "Umbriel",
+  "model": "gemini-3.8-live",
+  "seconds": 4.170041666666667,
+  "text": "But… why were so many Buddha statues buried here?",
+  "heard": " But… why were so many Buddha statues",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1epbic5pg9o4": {
+  "episode": "kh-banteaykdei",
+  "lang": "en",
+  "speaker": "sovann",
+  "voice": "Umbriel",
+  "model": "gemini-3.8-live",
+  "seconds": 6.2400416666666665,
+  "text": "Were they broken and thrown away? Or did someone bury them carefully to keep them safe?",
+  "heard": " Were they broken and thrown away? Or did someone bury them carefully to keep them safe?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1uf9zuh1tshc": {
+  "episode": "kh-banteaykdei",
+  "lang": "en",
+  "speaker": "sovann",
+  "voice": "Umbriel",
+  "model": "gemini-3.8-live",
+  "seconds": 4.99,
+  "text": "…I'd like to think so too. But finding out for sure — that's our job.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
