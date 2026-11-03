@@ -958,5 +958,101 @@
   "heard": " At the foot of the bridge, a young man in a blue robe was busily writing on paper with a brush.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e4st2kz10jhl": {
+  "episode": "kh-sr-prologue",
+  "lang": "en",
+  "speaker": "zhou",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 7.85,
+  "text": "…Oh, my. You have come from far away too, haven't you? I can tell from the dust on your feet.",
+  "heard": "Oh, my. You have come from far away too, haven't you? I can tell from the dust on your feet.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e8ph2isz74o8": {
+  "episode": "kh-sr-prologue",
+  "lang": "en",
+  "speaker": "zhou",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 8.76,
+  "text": "My name is Zhou Daguan. I am one of a group of envoys from a country across the sea called Yuan.",
+  "heard": " My name is Zhou Daguan. I am one of a group of envoys from a country across the sea called Yuan.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "emv860ii2ye2": {
+  "episode": "kh-sr-prologue",
+  "lang": "en",
+  "speaker": "zhou",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.74,
+  "text": "We reached this capital at the end of summer. I mean to write down everything I see.",
+  "heard": " We reached this capital at the end of summer. I mean to write down everything I see.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e10o0fbe1b4m0": {
+  "episode": "kh-sr-prologue",
+  "lang": "en",
+  "speaker": "zhou",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 3.89,
+  "text": "Oh, it's you! How good to meet you again.",
+  "heard": " Oh, it's you! How good to meet you again.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1l34zmw1uus7": {
+  "episode": "kh-sr-prologue",
+  "lang": "en",
+  "speaker": "zhou",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 8.68,
+  "text": "…Oh, my. You have come from far away too, haven't you? …But why do you look at me as if you know me?",
+  "heard": " Oh, my. You have come from far away too, haven't you? …But why do you look at me as if you know me?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "esnxsqc3b0gu": {
+  "episode": "kh-sr-prologue",
+  "lang": "en",
+  "speaker": "zhou",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 7.18,
+  "text": "My name is Zhou Daguan. I am one of a group of envoys from a country called Yuan.",
+  "heard": " My name is Zhou Daguan. I am one of a group of envoys from a country called Yuan.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "en4mhct1siij": {
+  "episode": "kh-sr-prologue",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.26,
+  "text": "I'll translate what Zhou Daguan says for you. …He was a real person! A traveler who came here 700 years before us.",
+  "heard": " I'll translate what Zhou Daguan says for you. …He was a real person! A traveler who came here 700 years before us.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1yg00o51gakb": {
+  "episode": "kh-sr-prologue",
+  "lang": "en",
+  "speaker": "zhou",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 10.160041666666666,
+  "text": "Look. On each side of the bridge stand fifty-four stone gods. Together, they hold a snake with nine heads.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
