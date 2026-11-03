@@ -1,0 +1,98 @@
+{
+ "e1jov6a8tmid2": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.080041666666666,
+  "text": "1998. A wooden house, not far from Angkor Wat.",
+  "heard": " A wooden house, not far from Angkor Wat.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1ls80at1jw3f": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 11.480041666666667,
+  "text": "On shelves under the eaves sat rows and rows of rusty red round things, and things shaped like tubes.",
+  "heard": " On shelves under the eaves sat rows and rows of rusty red round things, and things shaped like tubes.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e7kg0li1i46f": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.370041666666666,
+  "text": "In the shade of a tree behind the house, a girl sat with her notebook open.",
+  "heard": " In the shade of a tree behind the house, a girl sat with her notebook open.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1ybnoqq1me0e": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "bopha",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 2.4800416666666667,
+  "text": "Hello! Did you come to look around?",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e19s89tvfp6mx": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "bopha",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 5.35,
+  "text": "Oh, don't worry. Everything here has been made safe, so it can't explode anymore.",
+  "heard": " Oh, don't worry. Everything here has been made safe, so it can't explode",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eu07tf91hfss": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "bopha",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 3.5500416666666665,
+  "text": "I'm Bopha. It means “flower.” I live here.",
+  "heard": " It means \"flower.\" I live here.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eno9ue0u6f2k": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "bopha",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 2.5600416666666668,
+  "text": "Oh, you came back? Hehe.",
+  "heard": " Oh, you came back? Hehe.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1wu1rgqsvbs3": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "bopha",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 4.37,
+  "text": "Hello! …Huh? Have we met somewhere?",
+  "heard": " …Huh? Have we met somewhere?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ }
+}
