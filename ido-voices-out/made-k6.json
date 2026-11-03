@@ -1,0 +1,102 @@
+{
+ "v1ah2q6l": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.830041666666666,
+  "text": "1200年ごろ。大きな都、アンコール・トムのまんなか。",
+  "heard": "大きな都、アンコール・トムのまんなか。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "都＝みやこ"
+  ]
+ },
+ "vx2oexm": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.58,
+  "text": "いくつもの塔に、大きな顔が彫られている。どの顔も、目をふせて、静かにほほえんでいる。",
+  "heard": "いくつもの塔に、大きな顔が彫られている。どの顔も、目をふせて、静かにほほえんでいる。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vtmuklk": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.2000416666666665,
+  "text": "寺の外の回廊では、石工たちが、長い長い壁に浮き彫りを彫っていた。",
+  "heard": "寺の外の回廊では、石工たちが、長い長い壁に浮き彫りを彫っていた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "回廊＝かいろう"
+  ]
+ },
+ "v1wvle2j": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "chanthy",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 5.48,
+  "text": "お昼の魚、持ってきたよー！ ……あれ？ あなた、だれ？",
+  "heard": " お昼の魚、持ってきたよー！ ……あれ？あなた、だれ？",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vxopkt3": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "chanthy",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 5.44,
+  "text": "わたし、チャンティ。九つ。お母さんが、市場で魚を売ってるの。",
+  "heard": "わたし、チャンティ。九つ。お母さんが、市場で魚を売ってるの。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vy53p69": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "chanthy",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 4.52,
+  "text": "石を彫ってるおじさんたちに、毎日お昼を届けてるんだ。",
+  "heard": "石を掘ってるおじさんたちに毎日お昼を届けてるんだ",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vnm1clb": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "chanthy",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 4.84,
+  "text": "あっ、また来たの？ 今日も、お昼の魚、持ってきたよ！",
+  "heard": "あ 、 また き た の ? 今日 も お 昼 の 魚 もっ て き た よ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vug9us": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "chanthy",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 5.28,
+  "text": "お昼の魚、持ってきたよー！ ……あれ、あなた、わたしのこと知ってる？",
+  "heard": "お昼の魚、持ってきたよー！ ……あれ、あなた、わたしのこと知ってる？",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ }
+}
