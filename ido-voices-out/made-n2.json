@@ -1,0 +1,98 @@
+{
+ "e7ibgwv1qxtr": {
+  "episode": "kh-independence",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.96,
+  "text": "1962. A square in Phnom Penh where big avenues meet.",
+  "heard": " A square in Phnom Penh where big avenues meet.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e10dx1vn1k20e": {
+  "episode": "kh-independence",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.320041666666667,
+  "text": "A reddish-brown tower, wrapped in scaffolding, rose toward the sky.",
+  "heard": "A reddish-brown tower, wrapped in scaffolding, rose toward the sky.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "eomzn5t1a17e": {
+  "episode": "kh-independence",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.38,
+  "text": "The tower was shaped like a lotus bud. All the way around each of its many tiers were the heads of the snake god — the naga.",
+  "heard": " The tower was shaped like a lotus bud. All the way around each of its many tiers were the heads of the snake god — the naga.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1l70fancv83o": {
+  "episode": "kh-independence",
+  "lang": "en",
+  "speaker": "dara",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 4.090041666666667,
+  "text": "Hey, look, look! My dad made the very top of that!",
+  "heard": " Hey, look, look! My dad made the very top of that!",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "emco0wgvxd8j": {
+  "episode": "kh-independence",
+  "lang": "en",
+  "speaker": "dara",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 5.25,
+  "text": "…Oh, actually, it was my dad “and the others.” But my dad was one of them!",
+  "heard": " Oh, actually, it was my dad “and the others.” But my dad was one of them!",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e8uff3k1oqx9": {
+  "episode": "kh-independence",
+  "lang": "en",
+  "speaker": "dara",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 3.410041666666667,
+  "text": "I'm Dara. I came to bring my dad his lunch.",
+  "heard": "00:00 I'm Dara. 00:01 I came to bring my dad his lunch.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1c9cstw1evzf": {
+  "episode": "kh-independence",
+  "lang": "en",
+  "speaker": "dara",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 4.520041666666667,
+  "text": "Oh, you came back? Look, the tower's almost finished!",
+  "heard": " Oh, you came back? Look, the tower's almost finished!",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e19o9llw1l01c": {
+  "episode": "kh-independence",
+  "lang": "en",
+  "speaker": "dara",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 6.830041666666666,
+  "text": "Hey, look, look! …Huh? Why are you looking at me like you know me?",
+  "heard": " Hey, look, look! …Huh? Why are you looking at me like you know me?",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ }
+}
