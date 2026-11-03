@@ -298,5 +298,101 @@
   "heard": " You walked down the dark gallery. The dancers carved on the walls seemed to look back at you. …She wasn't",
   "scene": "お祝いの、晴れやかな場面。明るく",
   "readings": []
+ },
+ "ennr3n31wevz": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.64,
+  "text": "When you turned around, Nimol was giggling behind a pillar you had just walked past.",
+  "heard": " When you turned around, Nimol was giggling behind a pillar you had just walked past.",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "e1tn124rxpjf3": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 12.39,
+  "text": "You looked up. A huge stone face was gazing down at you. From a gap below the face, Nimol's hand was waving at you.",
+  "heard": " A huge stone face was gazing down at you. From a gap below the face, Nimol's hand was waving at you.",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "e1hi3g68zvl5y": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "nimol",
+  "voice": "Aoede",
+  "model": "gemini-3.8-live",
+  "seconds": 4.720041666666667,
+  "text": "You two kept going round and round the same spot the whole time.",
+  "heard": "",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "e1uvgk1sxqsuc": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.420083333333333,
+  "text": "The monkey on Mouhot's shoulder gave a squeak, as if it were laughing.",
+  "heard": "",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "e1scnta413h81": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "mouhot",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 7.2400416666666665,
+  "text": "I give up. …But thanks to that, I was able to count every tower. Thirty-seven.",
+  "heard": " But thanks to that, I was able to count every tower. Thirty-seven.",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "ezj2mypr4w8j": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "nimol",
+  "voice": "Aoede",
+  "model": "gemini-3.8-live",
+  "seconds": 6.400041666666667,
+  "text": "You counted them? You don't need to count. Everyone in the village knows this place.",
+  "heard": " You don't need to count. Everyone in the village knows this place.",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "e2nxvfknni6q": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "nimol",
+  "voice": "Aoede",
+  "model": "gemini-3.8-live",
+  "seconds": 4.560041666666667,
+  "text": "My grandma comes here to offer flowers on the day of the full moon, too.",
+  "heard": "",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "e3m7uuz1h1jv": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.74,
+  "text": "Mouhot counted thirty-seven towers. Counted the way we do today, the Bayon is said to have 49 or 54 towers.",
+  "heard": " Mouhot counted thirty-seven towers. Counted the way we do today, the Bayon is said to have 49 or 54 towers.",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
  }
 }
