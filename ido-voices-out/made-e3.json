@@ -1570,5 +1570,101 @@
   "heard": " …I am truly glad.",
   "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
   "readings": []
+ },
+ "et60gk0uj80m": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.96,
+  "text": "Tears were falling from Yoshitsune's eyes.",
+  "heard": "",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "etntsug1w6aj": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 3.79,
+  "text": "…I see. Perhaps it is better not to know.",
+  "heard": " Perhaps it is better not to know.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "edqlxlodbo4o": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 6.3,
+  "text": "…You do not know. No… of course not.",
+  "heard": " You do not know. No… of course not.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "eg8tza714pm8": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.520041666666667,
+  "text": "(whispering) …In Iya, deep in the mountains of Shikoku, there's a legend that he survived, though.",
+  "heard": " In Iya, deep in the mountains of Shikoku, there's a legend that he survived,",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e3umot510x9o": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 3.61,
+  "text": "Traveler. I have a favor to ask of you.",
+  "heard": "",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "ekeagjvf0bg8": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 6.19,
+  "text": "Could you imagine that I, too, am alive somewhere? …Just like Noritsune.",
+  "heard": " Could you imagine that I, too, am alive somewhere? …Just like Noritsune.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e1rtbmpw2f8wk": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 5,
+  "text": "When you tell my story—",
+  "heard": " When you tell my story",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "empvktv1b580": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 5.41,
+  "text": "Do not tell of how I won. Tell of how I lived.",
+  "heard": " Do not tell of how I won. Tell of how I lived.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
  }
 }
