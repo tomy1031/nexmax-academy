@@ -622,5 +622,101 @@
   "heard": "Those words just now… were they not Japanese?!",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1bhl491l4nbi": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 12.8,
+  "text": "Just then, a golden parasol came toward you from the far end of the gallery. The stonemasons all stopped work at once and bowed their heads.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ek8yzp61gyke": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.670083333333333,
+  "text": "The king stopped in front of the relief of people caring for the sick.",
+  "heard": " The king stopped in front of the relief of people caring for the sick.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "edvw5lahn5pk": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "jayavarman7",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.66,
+  "text": "There is no need to stop working. …Ah — a traveller I do not know.",
+  "heard": " There is no need to stop working. …Ah — a traveller I do not know.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "efdvwwp9kdeh": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "jayavarman7",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.890041666666667,
+  "text": "…Are you not the traveller who was at Ta Prohm that day?",
+  "heard": " Are you not the traveller who was at Ta Prohm that",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ehpe7s61rctw": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "jayavarman7",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.9500416666666665,
+  "text": "Fourteen years have passed since then. You have not changed at all.",
+  "heard": " Fourteen years have passed since then. You have not changed at all.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e93pho8uszz8": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.830041666666666,
+  "text": "The king narrowed his eyes, puzzled — but pleased.",
+  "heard": " The king narrowed his eyes, puzzled — but pleased.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "epl530x6sm4h": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "jayavarman7",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 7.9,
+  "text": "There is no need to stop working. …Ah, a traveller. You look at me as if you know me.",
+  "heard": " There is no need to stop working. …Ah, a traveller. You look at me as if you know",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ewjtdbao3rzt": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "jayavarman7",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 7.480041666666667,
+  "text": "On this wall I have had them carve not only battles, but also women caring for the sick.",
+  "heard": "On this wall I have had them carve not only battles, but also women caring for the sick.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
