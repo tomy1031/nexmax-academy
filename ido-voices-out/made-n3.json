@@ -778,5 +778,101 @@
   "heard": "",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "e14xlr1p13fjk": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "vichet",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 3.89,
+  "text": "Oh, it's you from before! Want some corn today, too?",
+  "heard": " Oh, it's you from before! Want some corn today, too?",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e5k3okn1f9hc": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "vichet",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 5.87,
+  "text": "Hey, you there! Want some corn? …Huh? Why are you looking at me like you know me?",
+  "heard": " Hey, you there! Want some corn? …Huh? Why are you looking at me like you know me?",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1gvt7da1ywxl": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "vichet",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 2.0400416666666668,
+  "text": "Whatever. I'm Vichet.",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e6f9gte80tc": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "vichet",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 6.35,
+  "text": "Thanks for buying! That's 500 riel… just kidding. It's 1,000 riel.",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1xkhw0cr5uid": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "vichet",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 5.04,
+  "text": "Three hours is good! Before festivals, you wait even longer.",
+  "heard": " Three hours is good! Before festivals, you wait even longer.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e16jfgo414mh4": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.03,
+  "text": "At busy times, people sometimes waited as long as seven hours at this ferry landing.",
+  "heard": " At busy times, people sometimes waited as long as seven hours at this ferry landing.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1u0ko0118uva": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "vichet",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 3.38,
+  "text": "But that's ending soon. …Here, look.",
+  "heard": " …Here, look.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1lt77lg1058z": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.56,
+  "text": "Vichet pulled out a banknote tucked into the brim of his hat and showed it to you.",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
