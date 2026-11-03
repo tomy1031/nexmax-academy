@@ -682,5 +682,101 @@
   "heard": " In a 2010 interview, Aki Ra said this is what he tells the children.",
   "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
   "readings": []
+ },
+ "e1fd9fzp1bfoa": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.46,
+  "text": "In a 2023 interview, Aki Ra said this to farmers in a village where the mines had been cleared.",
+  "heard": " In a 2023 interview, Aki Ra said this to farmers in a village where the mines",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "ew46ls31p3jc": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 15.16,
+  "text": "The number of people hurt or killed by landmines and unexploded bombs was highest in 1996: 4,320 in one year. By 2025, it had dropped to 39.",
+  "heard": " The number of people hurt or killed by landmines and unexploded bombs was highest in 1996: 4,320 in one year. By 2025, it had dropped to 39.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "epophkxd3xos": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.600041666666667,
+  "text": "Cambodia aims to be free of landmines by 2030, and of unexploded bombs by 2035.",
+  "heard": " Cambodia aims to be free of landmines by 2030, and of unexploded bombs by 2035.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1xvyad015epw": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.53,
+  "text": "But it isn't zero. It's not over yet.",
+  "heard": " But it isn't zero. It's not over yet.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "exbpq801yqzu": {
+  "episode": "kh-banteaykdei",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.960041666666666,
+  "text": "2001. Banteay Kdei, a temple in the forest.",
+  "heard": "\nBanteay Kdei, a temple in the forest.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ennbqam12v85": {
+  "episode": "kh-banteaykdei",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 29.040041666666667,
+  "text": "Beside some fallen stones was an excavation pit, marked out in squares. Young people were clearing away the soil, little by little, with bamboo spatulas and brushes.",
+  "heard": " Beside some fallen stones was an excavation pit, marked out in squares. Young people were clearing away the soil, little by little, with bamboo spatulas and brushes.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e5viu0j1qlj7": {
+  "episode": "kh-banteaykdei",
+  "lang": "en",
+  "speaker": "sovann",
+  "voice": "Umbriel",
+  "model": "gemini-3.8-live",
+  "seconds": 3.7500416666666667,
+  "text": "Oh, are you visiting? Please watch your step.",
+  "heard": "Oh, are you visiting? Please watch your step.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1s6la4lccha0": {
+  "episode": "kh-banteaykdei",
+  "lang": "en",
+  "speaker": "sovann",
+  "voice": "Umbriel",
+  "model": "gemini-3.8-live",
+  "seconds": 6.960083333333333,
+  "text": "I'm Sovann. I'm twenty-four. I'm a trainee, learning how to protect ancient ruins.",
+  "heard": " I'm twenty-four. I'm a trainee, learning how to protect ancient ruins.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
