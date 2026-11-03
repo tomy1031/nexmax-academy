@@ -394,5 +394,101 @@
   "heard": " Mouhot counted thirty-seven towers. Counted the way we do today, the Bayon is said to have 49 or 54 towers.",
   "scene": "お祝いの、晴れやかな場面。明るく",
   "readings": []
+ },
+ "ewhzpxthhw1g": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "mouhot",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 8.64,
+  "text": "Nimol. Will you tell me one thing? The great temple beyond the forest that I saw the other day… who built it, I wonder?",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eip35ahkwl15": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.42,
+  "text": "Just then, villagers carrying firewood on their backs came by. Nimol asked the grown-ups for him.",
+  "heard": " Just then, villagers carrying firewood on their backs came by. Nimol asked the grown-ups for him.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1i3xzijqmxcz": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "村のおじいさん",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 4.93,
+  "text": "That was made by the king of the heavens, Pra-Eun.",
+  "heard": " That was made by the king of the heavens, Pra-Eun.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ebq852p1ob39": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "村のおばさん",
+  "voice": "Sulafat",
+  "model": "gemini-3.8-live",
+  "seconds": 3.680041666666667,
+  "text": "Oh? I heard giants made it.",
+  "heard": "Oh? I heard giants made it.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ey0v1x61mkqi": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "村の若者",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 3.08,
+  "text": "My grandpa said the Sick King built it.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "evoy59v19498": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "村のおばあさん",
+  "voice": "Despina",
+  "model": "gemini-3.8-live",
+  "seconds": 4.660041666666666,
+  "text": "Ho ho. That one? It made itself.",
+  "heard": " Ho ho. That one? It made itself.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "epn8o6c28v1a": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.520041666666667,
+  "text": "Mouhot carefully wrote down the four answers, one by one.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1o6dg2tidbcj": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "mouhot",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 6.11,
+  "text": "The work of giants, eh? …As a figure of speech, that is exactly right.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
