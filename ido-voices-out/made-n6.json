@@ -94,5 +94,17 @@
   "heard": " …Huh? Do you know me?",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e7c4r7684qov": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "chanthy",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 3.64,
+  "text": "I'm Chanthy. My mom sells fish at the market.",
+  "heard": " My mom sells fish at the market.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
