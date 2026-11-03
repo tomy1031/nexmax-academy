@@ -958,5 +958,17 @@
   "heard": " A bridge that is cut can be woven",
   "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
   "readings": []
+ },
+ "e159jo6356e3": {
+  "episode": "miyoshi-finale",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.640041666666667,
+  "text": "“We laid the sword to rest together. I am grateful.”",
+  "heard": " We laid the sword to rest together. I am",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
  }
 }
