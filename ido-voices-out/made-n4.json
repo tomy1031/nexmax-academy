@@ -1246,5 +1246,17 @@
   "heard": "Well then, I shall go and write a little more. Until we meet again, in some other time.",
   "scene": "お祝いの、晴れやかな場面。明るく",
   "readings": []
+ },
+ "eeho1ys1mun4": {
+  "episode": "kh-sr-prologue",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 1.14,
+  "text": "…We're back.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
