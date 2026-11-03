@@ -428,5 +428,101 @@
   "heard": "2019年のイギリスの新聞の取材での言葉だよ",
   "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
   "readings": []
+ },
+ "v140751i": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.41,
+  "text": "長い時間がたって、男の人は、ゆっくりと立ち上がった。手の中の何かを、そっと袋にしまう。",
+  "heard": "長い時間が経って男の人はゆっくりと立ち上がった。手の中の何かをそっと袋にしまう。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "vtf15eq": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.35,
+  "text": "ボパーが、ぱっと笑顔になって、手をふった。",
+  "heard": "が、ぱっと笑顔になって、手をふった。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "v25ebup": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "bopha",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 4.62,
+  "text": "ここの子は、みんな学校に行くの。わたしも、毎日行ってる。",
+  "heard": " ここの子は、みんな学校に行くの。わたしも、毎日",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vb78lp7": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "bopha",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 4.77,
+  "text": "わたしね、大きくなったら、地図を作る人になりたいの。",
+  "heard": "わたしね、大きくなったら、地図を作る人になりたいの。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vjkn2st": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "bopha",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 5.3,
+  "text": "どこが安全で、どこがまだあぶないか、だれが見てもわかる地図。",
+  "heard": "どこが安全で どこがまだ危ないか 誰が見ても分かる地図",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v11yz3ub": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "bopha",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 6.15,
+  "text": "そしたら、お父さんみたいに、草を刈りに行った人が、足をなくさなくてすむでしょ。",
+  "heard": "そしたら お父さんみたいに 草を刈りに行った人が 足を無くさなくて済むでしょう",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v10lufm9": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "bopha",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 1.74,
+  "text": "……うん！ なる！",
+  "heard": "なる",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vz9x2zi": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "bopha",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 3.55,
+  "text": "うん！ いちばんに見せてあげる。約束ね！",
+  "heard": " いちばんに見せてあげる。 約束ね！",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
