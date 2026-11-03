@@ -903,5 +903,103 @@
   "readings": [
    "回廊＝かいろう"
   ]
+ },
+ "vd90yad": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 12.270041666666666,
+  "text": "何百年ものあいだ、この国の人たちや、遠くから来た人たちが、ひとつ、またひとつと置いていった仏さまだ。",
+  "heard": "何百年ものあいだ、この国の人たちや、遠くから来た人たちが、ひとつ、またひとつと置いていった仏さまだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vlgl6v9": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.18,
+  "text": "お坊さんのことばは、ぼくが通訳するね。",
+  "heard": "お坊さんのことばは、ぼくが通訳するね。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vtlh2ao": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "khmonk",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 3.97,
+  "text": "遠い国のお方。よくぞ、ここまで。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1w9lrej": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "khmonk",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 8.51,
+  "text": "この回廊には、たくさんの人が、たいせつな人のために仏さまを置いていきました。あなたも、どうぞ。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "回廊＝かいろう"
+  ]
+ },
+ "v17pafc0": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 1.36,
+  "text": "かたじけない……！",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1t1m11d": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.56,
+  "text": "一房は包みをほどき、四体の小さな仏を、ていねいに並べた。手を合わせ、長いあいだ、動かなかった。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1s5ekhs": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.18,
+  "text": "（小声）……四体。プノンペンで、ペンおばあさんが見つけた仏さまも、四体だったね。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v11c819w": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.33,
+  "text": "（小声）もちろん、偶然だよ。時代も、場所も、ぜんぜんちがう。でも、なんだか、うれしいね。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
