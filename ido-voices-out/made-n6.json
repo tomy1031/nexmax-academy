@@ -922,5 +922,101 @@
   "heard": " My sister took in girls who had been abandoned by their mothers, and raised them as her own daughters. And she had her dancers perform plays of the Buddha's past lives.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "ef9rvng16g89": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "indradevi",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 7.24,
+  "text": "She is gone now… but I mean to write what she did in a poem, and have it carved in stone.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e8v6bhhpx52d": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "indradevi",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 4.61,
+  "text": "Traveller, is learning to read hard in your country too?",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1dd6rp4ns9wr": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "indradevi",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 6.27,
+  "text": "Oh — all of them… I hope that one day this country will be like that too.",
+  "heard": " Oh — all of them… I hope that one day this country will be like that too.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ez6ity31jm7c": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "indradevi",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 4.98,
+  "text": "That's true. Words carved in stone can reach people far in the future.",
+  "heard": " That's true. Words carved in stone can reach people far in the future.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "er10xa2osc59": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "indradevi",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 6.92,
+  "text": "Chanthy, isn't it? Come tomorrow morning, once you've finished selling your mother's fish.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e19ofb8m984p2": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.31,
+  "text": "The inscription poem Queen Indradevi composed really does survive. It tells in detail about her sister, Queen Jayarajadevi.",
+  "heard": " The inscription poem Queen Indradevi composed really does survive. It tells in detail about her sister, Queen Jayarajadevi.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "etyke4d13skn": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "chanthy",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 5.220041666666667,
+  "text": "I'm going to learn to read! First, I'll learn to write my mum's name.",
+  "heard": " I'm going to learn to read! First, I'll learn to write my mum's name.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ezsygbq1w1zc": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "chanthy",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 4.13,
+  "text": "Hehe. When I can, I'll show Mr Vong too!",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
