@@ -733,5 +733,107 @@
   "heard": "いか ご ずつ か 覚え て お こ ね 。",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "vfto9g6": {
+  "episode": "kh-royalpalace",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.440041666666668,
+  "text": "1866年。トンレサップ川を、材木を積んだ荷舟が、何そうも下っていく。",
+  "heard": "「1866年。トンレサップ川を、材木を積んだ荷舟が、何そうも下っていく。」",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "トンレサップ川＝とんれさっぷがわ"
+  ]
+ },
+ "v1l57ghe": {
+  "episode": "kh-royalpalace",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.69,
+  "text": "そのころ、王さまは、都を、川をさかのぼったウドンから、この川の出会う場所へ移した。",
+  "heard": "その頃、王様は都を川を遡ったうどんから、この川の出会う場所へ移した。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "都＝みやこ"
+  ]
+ },
+ "vwqt6x7": {
+  "episode": "kh-royalpalace",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 11.55,
+  "text": "新しい都には、王宮を建てる材木や、たくさんの荷物が、川から運ばれていた。——ここからは「もしかしたら」のお話。",
+  "heard": "新しい都には、王宮を建てる材木や、たくさんの荷物が、川から運ばれていた。ここからはもしかしたらのお話。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "都＝みやこ"
+  ]
+ },
+ "vhbbyne": {
+  "episode": "kh-royalpalace",
+  "lang": "ja",
+  "speaker": "piseth",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 3.1900416666666667,
+  "text": "わっ！ あんた、いつのまに舟に乗ってたの？",
+  "heard": "わっ！あんた、いつのまに舟に乗ってたの？",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vm9xm7u": {
+  "episode": "kh-royalpalace",
+  "lang": "ja",
+  "speaker": "piseth",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 5.2,
+  "text": "……まあいいや。こぐの、手伝って！ 遅れたら、荷舟の親方にどなられる。",
+  "heard": "まあいいや。こぐの、手伝って！遅れたら、荷舟の親方にどなられる。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1y7wwi6": {
+  "episode": "kh-royalpalace",
+  "lang": "ja",
+  "speaker": "piseth",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 5.26,
+  "text": "おれ、ピセット。この荷舟のこぎ手。十三歳。",
+  "heard": "おれ、ピセット。この荷舟のこぎ手。十三歳。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1mzwaay": {
+  "episode": "kh-royalpalace",
+  "lang": "ja",
+  "speaker": "piseth",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 4.44,
+  "text": "あっ、あんた！ また乗ってきたの？ こぐの、手伝って！",
+  "heard": "あっ、あんた！また乗ってきたの？こぐの、手伝って！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vepalsa": {
+  "episode": "kh-royalpalace",
+  "lang": "ja",
+  "speaker": "piseth",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 4.75,
+  "text": "わっ！ あんた、いつのまに……。なんで、そんなになつかしそうな顔してんの？",
+  "heard": "わっ！あんた、いつのまに…。なんで、そんなになつかしそうな顔して",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
