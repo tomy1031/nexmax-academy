@@ -631,5 +631,107 @@
   "heard": " ここが、いまのワット・プノン。",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "v138aa6l": {
+  "episode": "kh-watphnom",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.640041666666667,
+  "text": "丘のてっぺんのお寺は、そのあと何度も建て直されてきたんだ。",
+  "heard": "丘のてっぺんのお寺は、そのあと何度も建て直されてきたんだ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v15220k5": {
+  "episode": "kh-watphnom",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.900041666666667,
+  "text": "丘のかたすみには、ペンおばあさんの小さなお堂があって、今も、花やお供えを持ってくる人がいるよ。",
+  "heard": "丘のかたすみには、ペンおばあさんの小さなお堂があって、今も、花やお供えを持ってくる",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v3ncf8f": {
+  "episode": "kh-watphnom",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.7000416666666665,
+  "text": "そして、この丘のまわりに、町ができた。だから「プノン・ペン」——ペンの丘。",
+  "heard": "そして この丘 の まわり に 町 が できた だから プノンペン ペン の 丘",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v18rphy0": {
+  "episode": "kh-watphnom",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.11,
+  "text": "丘と仏さまのお話は言い伝え。たしかな記録じゃないんだ。でも、この町の人たちは、ずっと大事に語りついできたんだよ。",
+  "heard": "丘と仏さまのお話は言い伝え。たしかな記録じゃないんだ。でも、この町の人たちは、ずっと大事に語りついできたんだよ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vrx1o7l": {
+  "episode": "kh-watphnom",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.31,
+  "text": "ここからは記録に残っている歴史。15世紀には、王さまが、アンコールからこの地へ都を移したと伝えられている。",
+  "heard": "ここからは記録に残っている歴史15世紀には王様がアンコールからこの地へ都を移したと伝えられている。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "都＝みやこ"
+  ]
+ },
+ "v18on7qm": {
+  "episode": "kh-watphnom",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.04,
+  "text": "（小声）1866年に、王さまがもう一度ここを都にした日のことは……ピセットくんと見たよね。",
+  "heard": "1866 年 に 王 様 が もう 一度 ここ を 都 に し た 日 の こと は ピセット 君 と 見 た よ ね 。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "都＝みやこ"
+  ]
+ },
+ "v1k1af9o": {
+  "episode": "kh-watphnom",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.78,
+  "text": "（小声）1866年に、王さまがもう一度ここを都にした日のことは、王宮の扉で見られるよ。",
+  "heard": "延暦866年に王様がもう一度ここを都にした日のことは応急の扉で見られるよ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "都＝みやこ"
+  ]
+ },
+ "v13krpvm": {
+  "episode": "kh-watphnom",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.88,
+  "text": "（小声）一かごずつ、かあ。……覚えておこうね。",
+  "heard": "いか ご ずつ か 覚え て お こ ね 。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
