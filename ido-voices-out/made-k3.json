@@ -1231,5 +1231,41 @@
   "heard": "うっと かー ちゃん と 同じ こと 言う 。 でも 、 そう だ よ な 。",
   "scene": "お祝いの、晴れやかな場面。明るく",
   "readings": []
+ },
+ "vqken5e": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.76,
+  "text": "（小声）地図を作りたいボパーちゃん。何かをつなぎたいヴィチェットくん。……なんだか、似てるね。",
+  "heard": "チーズ を 作り たい ボパー ちゃん 何か を つなぎ たい ビゼット 君 なん だ か 似 てる ね 。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "v4mf2rl": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.400041666666667,
+  "text": "橋のたもとの道ばたに、ケーブルの束を積んだバイクが止まっている。",
+  "heard": "橋のたもとの道ばたに、ケーブルの束を積んだバイクが止まっている。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vi0fpez": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "vichet2",
+  "voice": "Sadachbia",
+  "model": "gemini-3.8-live",
+  "seconds": 2.99,
+  "text": "……あれ？ あんた……とうもろこしの……！",
+  "heard": "あれ ? あんた 、 とうもろこし の",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
