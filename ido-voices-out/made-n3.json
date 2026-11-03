@@ -1258,5 +1258,77 @@
   "heard": " When you told me I could do it, that really stuck",
   "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
   "readings": []
+ },
+ "e1y931iza2aou": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "vichet2",
+  "voice": "Sadachbia",
+  "model": "gemini-3.8-live",
+  "seconds": 5.66,
+  "text": "After bridges come cables. …See? I really do connect things for a living.",
+  "heard": " After bridges come cables. …See? I really do connect things",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "eqbqxtqq58te": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "vichet2",
+  "voice": "Sadachbia",
+  "model": "gemini-3.8-live",
+  "seconds": 9.07,
+  "text": "Mom runs a shop at the foot of the bridge. It was hard at first, after the ferry landing closed… but now lots more people come through.",
+  "heard": " Mom runs a shop at the foot of the bridge. It was hard at first, after the ferry landing closed... but now lots more people come through.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "enm4aksbhjjo": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.35,
+  "text": "The Tsubasa Bridge is 2,215 meters long. It was Cambodia's first cable-stayed bridge — a bridge hung by cables from towers.",
+  "heard": " The Tsubasa Bridge is 2,215 meters long. It was Cambodia's first cable-stayed bridge — a bridge hung by cables from towers.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1r9ha6pwc7i8": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.85,
+  "text": "It was built with money from the government of Japan that didn't have to be paid back. At the opening ceremony, the prime minister, people from Japan and many, many others gathered.",
+  "heard": " It was built with money from the government of Japan that didn't have to be paid back. At the opening ceremony, the prime minister, people from Japan and many, many others gathered.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "ekf2q1es1g95": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.51,
+  "text": "Upstream in Kampong Cham is the Kizuna Bridge, opened in 2001. It was the first bridge across the Mekong in Cambodia.",
+  "heard": " Upstream in Kampong Cham is the Kizuna Bridge, opened in 2001. It was the first bridge across the Mekong in Cambodia.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1l6wyskxqm28": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.56,
+  "text": "With the Kizuna Bridge, the east and west of the country were joined by road for the first time. They say more than ten thousand people came to its opening ceremony.",
+  "heard": " With the Kizuna Bridge, the east and west of the country were joined by road for the first time. They say more than ten thousand people came to its opening",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
