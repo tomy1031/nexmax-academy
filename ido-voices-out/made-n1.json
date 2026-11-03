@@ -298,5 +298,101 @@
   "heard": " You grabbed the rope beside the village men. The wet rope dug into your palms.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1v0fu0q8slsn": {
+  "episode": "kh-watphnom",
+  "lang": "en",
+  "speaker": "penh",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 6.07,
+  "text": "That's it, get down low. Don't pull on your own. Everyone, together.",
+  "heard": " That's it, get down low. Don't pull on your own. Everyone, together.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1e1zjeteu88v": {
+  "episode": "kh-watphnom",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.81,
+  "text": "Some children were playing at the water's edge. You took their hands and led them up to higher ground.",
+  "heard": "Some children were playing at the water's edge. You took their hands and led them up to higher ground.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ei0rpcn119mj": {
+  "episode": "kh-watphnom",
+  "lang": "en",
+  "speaker": "penh",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 5.98,
+  "text": "Thank you kindly. After a flood, the river is much stronger than it looks.",
+  "heard": " After a flood, the river is much stronger than it looks.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eyn2aec1kimz": {
+  "episode": "kh-watphnom",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.71,
+  "text": "Everyone shouted together and pulled, again and again. With a heavy thud, the big tree landed on the bank.",
+  "heard": " Everyone shouted together and pulled, again and again. With a heavy thud, the big tree landed on the bank.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e5vs5v5f0s00": {
+  "episode": "kh-watphnom",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.87,
+  "text": "There was a big hollow in the trunk. A villager peered inside and cried out.",
+  "heard": " There was a big hollow in the trunk. A villager peered inside and cried out.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ec4331b18ydl": {
+  "episode": "kh-watphnom",
+  "lang": "en",
+  "speaker": "村の人",
+  "voice": "Rasalgethi",
+  "model": "gemini-3.8-live",
+  "seconds": 3.3200833333333333,
+  "text": "Buddhas…! There are Buddha statues in here!",
+  "heard": " Buddhas…! There are Buddha statues in here!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ena8v81gxbm": {
+  "episode": "kh-watphnom",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.260041666666667,
+  "text": "Out of the hollow came four Buddha statues — and one statue of the god Vishnu.",
+  "heard": "Out of the hollow came four Buddha statues and one statue of the god Vishnu.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ezkxo291i3ro": {
+  "episode": "kh-watphnom",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.5,
+  "text": "Different versions of the legend tell of different statues inside, and give a different name for the river. Most say there were four Buddhas.",
+  "heard": " Different versions of the legend tell of different statues inside, and give a different name for the river. Most say there were four Buddhas.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
