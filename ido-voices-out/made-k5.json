@@ -745,5 +745,103 @@
   "readings": [
    "碑文＝ひぶん"
   ]
+ },
+ "v16fvq3u": {
+  "episode": "kh-taprohm",
+  "lang": "ja",
+  "speaker": "sreymom",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 10.23,
+  "text": "この寺には、お坊さんや、お仕えする人や、踊り手や、たくさんの人がいるの。踊り手だけで、615人。",
+  "heard": "この寺には、 お坊さんや、 お仕えする人や、 踊り手や、 たくさんの人がいるの。 踊り手だけで、 615人。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1sdx9ud": {
+  "episode": "kh-taprohm",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.66,
+  "text": "碑文によると、この寺には12,640人がいた。高いお坊さんが18人。女の人の踊り手が615人。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "碑文＝ひぶん"
+  ]
+ },
+ "vx975wx": {
+  "episode": "kh-taprohm",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.36,
+  "text": "まわりの3,140の村の、79,365人もの人が、この寺を支えていたんだって。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v18cyjdm": {
+  "episode": "kh-taprohm",
+  "lang": "ja",
+  "speaker": "sreymom",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 6.22,
+  "text": "ねえ、手の形、いっしょにやってくれる？ ふたりでやると、ふるえないかも。",
+  "heard": "ねえ手 の 形 一緒 に やっ て くれる ? 2人 で やる と 震え ない か も 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1mj7z5c": {
+  "episode": "kh-taprohm",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.800041666666667,
+  "text": "あなたは、スレイモンのまねをして、指をそっと反らせた。",
+  "heard": "あなたは、スレイモンのまねをして、指をそっと反らせた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vilgddf": {
+  "episode": "kh-taprohm",
+  "lang": "ja",
+  "speaker": "sreymom",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 3.88,
+  "text": "ふふっ、ちょっとだけ曲がってる。でも、きれい。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v11q4bwk": {
+  "episode": "kh-taprohm",
+  "lang": "ja",
+  "speaker": "sreymom",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 4.98,
+  "text": "……うん。お母さまのための寺だもん。いちばん、ていねいに踊る。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1lia3ab": {
+  "episode": "kh-taprohm",
+  "lang": "ja",
+  "speaker": "sreymom",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 3.91,
+  "text": "あなたなら、だれのために、何かを作る？",
+  "heard": "あなたなら、だれのために、何かを作る？",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
