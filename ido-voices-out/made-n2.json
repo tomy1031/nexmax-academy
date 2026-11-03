@@ -238,5 +238,17 @@
   "heard": " At the foot of the tower, a young man in a white shirt had spread out a large plan and was looking",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "ed41z0oriil5": {
+  "episode": "kh-independence",
+  "lang": "en",
+  "speaker": "dara",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 7.76,
+  "text": "That's him. The man my dad told me about — the one who designed this tower.",
+  "heard": " That's him. The man my dad told me about — the one",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
