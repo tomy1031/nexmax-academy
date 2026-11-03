@@ -490,5 +490,17 @@
   "heard": " Really?! Yay! Then let's start with multiplication!",
   "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
   "readings": []
+ },
+ "e1fkrryv10f8k": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.14,
+  "text": "The museum garden. A woman holding a little girl's hand stopped in front of an exhibit and turned to look at you.",
+  "heard": "The museum garden. A woman holding a little girl's hand stopped in front of an exhibit and turned to look at you.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
