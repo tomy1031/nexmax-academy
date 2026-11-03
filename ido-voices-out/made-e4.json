@@ -1522,5 +1522,101 @@
   "heard": " Noritsune leaps from boat to boat, closing in on Yoshitsune. He raises his sword high.",
   "scene": "激しい戦いのさなか。声を張り、息は荒く",
   "readings": []
+ },
+ "eglvs8z15yi5": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 14.96,
+  "text": "Yoshitsune slips lightly aside — then, with his naginata (a long-bladed spear) tucked under his arm, he floats through the air to a Genji boat about six meters away.",
+  "heard": " Yoshitsune slips lightly aside — then, with his naginata a longbladed spear tucked under his arm, he floats through the air to a Genji boat about six meters away.",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "e48377dq2wj": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.94,
+  "text": "This is the scene people later called “the Eight-Boat Leap”…! In The Tale of the Heike, he jumps to just one boat. But as people kept retelling the story, it grew to eight!",
+  "heard": "This is the scene people later called the eight-boat leap. In the tale of the Heike, he jumps to just one boat, but as people kept retelling the story, it grew to eight.",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "e12f1vuo11uq8": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 2.86,
+  "text": "…That man is quick to run away.",
+  "heard": "That man is quick to run away.",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "egafqvf6h3uq": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.74,
+  "text": "Noritsune threw down his sword and tossed off his helmet.",
+  "heard": "Noritsune threw down his sword and tossed off his helmet,",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "e17zxza71du6x": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.9900416666666665,
+  "text": "Just then, two strong Genji warriors grabbed him, one from each side.",
+  "heard": "Just then, two strong Genji warriors grabbed him, one from each side.",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "e1w9lhcisfzgg": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.95,
+  "text": "Come, you two — you will go with me on my final journey!",
+  "heard": " Come, you two — you will go with me on my final journey!",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "e34d4bv4warc": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.86,
+  "text": "With one man under each arm, Noritsune leapt into the sea.",
+  "heard": " With one man under each arm, Noritsune leapt into the sea.",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "e40yfrg8per2": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 2.7200416666666665,
+  "text": "White foam swirls on the water.",
+  "heard": "White foam swirls on the water.",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
  }
 }
