@@ -1102,5 +1102,101 @@
   "heard": "",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "ez0o5lv1mqbu": {
+  "episode": "kh-banteaykdei",
+  "lang": "en",
+  "speaker": "sovann",
+  "voice": "Umbriel",
+  "model": "gemini-3.8-live",
+  "seconds": 6.95,
+  "text": "That's true. Being able to say “we don't know” when we don't know — that's part of research, too.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "en6cu1w1dhbe": {
+  "episode": "kh-banteaykdei",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.83,
+  "text": "…We're back. This is Banteay Kdei today.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1ugdi5ev5gxt": {
+  "episode": "kh-banteaykdei",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.18,
+  "text": "In 2001, Cambodian trainees in the middle of their training dug up Buddha statues at this temple. In all, 274 statues and pieces of statues were found.",
+  "heard": " In 2001, Cambodian trainees in the middle of their training dug up Buddha statues at this temple. In all, 274 statues and pieces of statues were found.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e94ajchwz06f": {
+  "episode": "kh-banteaykdei",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.16,
+  "text": "They say it was the first time so many Buddha statues had been found in one place.",
+  "heard": " They say it was the first time so many Buddha statues had been found in one place.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e16tinbl1wsmg": {
+  "episode": "kh-banteaykdei",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.11,
+  "text": "The biggest are about 1.8 meters tall, and the smallest about 20 centimeters. They had been broken, but they were buried with great care.",
+  "heard": " The biggest are about 1.8 meters tall, and the smallest about 20 centimeters. They had been broken, but they were buried with great care.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e149f15t1bc1r": {
+  "episode": "kh-banteaykdei",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.560041666666667,
+  "text": "Even now, no one knows who buried them, or why.",
+  "heard": " Even now, no one knows who buried them, or why.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ea4p16tgr9ia": {
+  "episode": "kh-banteaykdei",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.23,
+  "text": "This training has been run since the early 1990s by a research team from Sophia University in Japan.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e9c4sdd190r8": {
+  "episode": "kh-banteaykdei",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.02,
+  "text": "Yoshiaki Ishizawa, who led the team, later described it like this.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
