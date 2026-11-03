@@ -1170,5 +1170,109 @@
   "readings": [
    "都＝みやこ"
   ]
+ },
+ "vtvupcu": {
+  "episode": "kh-royalpalace",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.8,
+  "text": "……戻ってきたよ。ここが、いまの王宮。",
+  "heard": "戻ってきたよ。ここが、いまの王宮。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1ps5e12": {
+  "episode": "kh-royalpalace",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.54,
+  "text": "ノロドム王は、1866年に、ウドンからプノンペンに都を移したんだ。資料によっては1865年とも書かれているよ。",
+  "heard": "ノロドム王は、1866年に、ウドンからプノンペンに都を移したんだ。資料によっては、1865年とも書かれているよ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "都＝みやこ"
+  ]
+ },
+ "vp8gkjt": {
+  "episode": "kh-royalpalace",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.14,
+  "text": "王宮は、1866年から建てられたんだ。そのあと、建て直されたり、建物が足されたりしてきた。",
+  "heard": "王宮は、1866年から建てられたんだ。そのあと、建て直されたり、建物が足されたりしてきた。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vf0kgyj": {
+  "episode": "kh-royalpalace",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.8,
+  "text": "いまの即位殿（玉座の間）は、1919年にできたものだよ。",
+  "heard": "今 の 続 位 伝 玉座 の 周り は 1919 年 に でき た もの だ よ 。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "即位殿＝そくいでん"
+  ]
+ },
+ "vc37bwo": {
+  "episode": "kh-royalpalace",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.74,
+  "text": "となりのシルバー・パゴダの床には、銀のタイルが5,000枚以上しきつめられているんだって。",
+  "heard": "となりのシルバー・パゴダの床には、銀のタイルが五千枚以上しきつめられている",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vg6j3u2": {
+  "episode": "kh-royalpalace",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.410041666666666,
+  "text": "王宮は、今も王さまの住まいなんだ。見学できるのは、その一部だよ。肩とひざがかくれる服で行こうね。",
+  "heard": "王宮は、今も王さまの住まいなんだ。見学できるのは、その一部だよ。肩とひざがくれる服で行こうね。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vbsgsgc": {
+  "episode": "kh-royalpalace",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.46,
+  "text": "そして多くの年、10月の終わりか11月のはじめには、王宮の前の川で、竜の頭をつけた舟が競争する水祭りがあるよ。",
+  "heard": "そして多くの年、10月の終わりか11月のはじめには、王宮の前の川で、竜の頭をつけた舟が競争する水祭りがあるよ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "水祭り＝みずまつり"
+  ]
+ },
+ "v2i0n40": {
+  "episode": "kh-royalpalace",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.380041666666667,
+  "text": "都が動くと、人の暮らしも動く。ピセットくんも、そのひとりだったんだね。",
+  "heard": "都が動くと、人の暮らしも動く。ピセットくんも、そのひとりだったんだね。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "都＝みやこ"
+  ]
  }
 }
