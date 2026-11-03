@@ -1330,5 +1330,101 @@
   "heard": " Why do you look at me like that? …Do you know me?",
   "scene": "激しい戦いのさなか。声を張り、息は荒く",
   "readings": []
+ },
+ "eg6pmu7k16c2": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.14,
+  "text": "(whispering) This is Kunimori from Iya — half a year before we met him there… He doesn't know us yet.",
+  "heard": " This is Kunimori from Iya — half a year before we met him there… He doesn't know us yet.",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "ejzxjlp1j97w": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.330041666666666,
+  "text": "(whispering) For him, today is our very first meeting. But you've already seen what comes next for him, haven't you?",
+  "heard": "For him, today is our very first meeting, but you've already seen what comes next for him, haven't you?",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "eueffrfcavw6": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.71,
+  "text": "Past noon — or so the story goes — the tide turned.",
+  "heard": " — or so the story goes — the tide turned.",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "e1q1bz4a1w92e": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.17,
+  "text": "The Heike boats are pushed back. Genji arrows pour down like rain.",
+  "heard": " The Heike boats are pushed back. Genji arrows pour down like rain.",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "e1inwzyk6izsf": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "平家の武者",
+  "voice": "Rasalgethi",
+  "model": "gemini-3.8-live",
+  "seconds": 10.15,
+  "text": "Lord Tomomori has boarded the imperial boat, the Emperor's own ship! “Throw everything unsightly into the sea,” he says — and he is cleaning the ship with his own hands…!",
+  "heard": " Lord Tomomori has boarded the imperial boat, the Emperor's own ship! \"Throw everything unsightly into the sea,\" he says — and he is cleaning the ship with his own hands!",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "eq9wa4g1m7c2": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 12.200041666666667,
+  "text": "That's Taira no Tomomori… the man who led the Heike army. He knows they will lose. So he is cleaning the Emperor's boat himself, to leave nothing shameful behind.",
+  "heard": " That's Taira no Tomomori… the man who led the Heike army. He knows they will lose. So he is cleaning the Emperor's boat himself, to leave nothing shameful",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1ofmavndo59l": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.78,
+  "text": "From the imperial boat, the ladies of the court leap into the sea, one after another.",
+  "heard": " From the imperial boat, the ladies of the court leap into the sea, one after",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "e1dgrp6j1kdzf": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 22.88,
+  "text": "Nii-no-ama, the Emperor's grandmother, held the young Emperor — still a little boy — in her arms. “There is a capital beneath the waves, too,” she told him. Then she sank into the deep sea. So says The Tale of the Heike, the great old story of this war.",
+  "heard": " Nii-no-ama, the Emperor's grandmother, held the young Emperor — still a little boy — in her arms. “There is a capital beneath the waves, too,” she told him. Then she sank into the deep sea. So says The Tale of the Heike, the great old story of this war.",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
  }
 }
