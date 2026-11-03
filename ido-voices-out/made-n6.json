@@ -718,5 +718,17 @@
   "heard": "On this wall I have had them carve not only battles, but also women caring for the sick.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "es9ii4r1kt0r": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "jayavarman7",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 15.44,
+  "text": "The illness of my people's bodies becomes an illness of my heart, and it hurts me even more. For the suffering of the country is the true suffering of the one who rules it.",
+  "heard": " The illness of my people's bodies becomes an illness of my heart, and it hurts me even more. For the suffering of the country is the true suffering of the one who rules it.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
