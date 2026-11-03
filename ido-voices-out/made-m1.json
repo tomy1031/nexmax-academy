@@ -386,5 +386,105 @@
   "heard": "だから今日は、お寺へ行くんじゃ。わしの歌を、ちゃんとした本にしてもらいにな。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "vswchpk": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "kromngoy",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 7.84,
+  "text": "そうじゃ。わしがゆっくり歌って、若いお坊さんたちが、ひとことずつ書き取るんじゃと。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vw7u41g": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "kromngoy",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 9.530041666666667,
+  "text": "そのとおり。じゃが、書いておけば、百年先の子どもも、わしが歌ったとおりに読める。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1yu8lrr": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.010041666666667,
+  "text": "あなたとボレイは、クロム・ンゴイさんについて、北のお寺まで歩いた。",
+  "heard": "あなたとボレイは、クロム・ンゴイさんについて、北のお寺まで歩いた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v2d68p6": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.21,
+  "text": "ワット・ウナロムの、風の通る回廊。",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "回廊＝かいろう"
+  ]
+ },
+ "vhwbeoi": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.140125,
+  "text": "若いお坊さんたちが、低い机の前にすわり、ペンを手に、紙のノートを広げている。",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vqn4x5a": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.410041666666666,
+  "text": "少しはなれたところに、黒っぽい服の、外国の女の人がすわっていた。",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vcjwe9n": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "borey",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 6.8,
+  "text": "カルプレスさんだよ。フランスから来た学者で、お経や古い本を集める図書館で働いてるの。",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vsx6a3f": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.96,
+  "text": "シュザンヌ・カルプレスさんだね。この年、プノンペンに「仏教研究所」ができて、カルプレスさんは、その仕事をまとめる係になったんだ。",
+  "heard": " シュザンヌ・カルプレスさんだね。この年、プノンペンに「仏教研究所」ができて、カルプレスさんは、その仕事をまとめる係になったんだ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "仏教研究所＝ぶっきょうけんきゅうじょ"
+  ]
  }
 }
