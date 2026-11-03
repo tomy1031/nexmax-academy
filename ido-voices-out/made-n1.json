@@ -814,5 +814,101 @@
   "heard": " Whoa! When did you…? Why are you looking at me like you've missed me?",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1sdl1da8qt3x": {
+  "episode": "kh-royalpalace",
+  "lang": "en",
+  "speaker": "piseth",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 3.5300416666666665,
+  "text": "Whatever. I'm Piseth. Help me row!",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "egk10at14hvl": {
+  "episode": "kh-royalpalace",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 14.760041666666666,
+  "text": "Piseth handed you an oar. The boat was piled high with timber for pillars and bundles wrapped in cloth.",
+  "heard": " Piseth handed you an oar. The boat was piled high with timber for pillars and bundles wrapped in cloth.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "euct90uuuf5r": {
+  "episode": "kh-royalpalace",
+  "lang": "en",
+  "speaker": "piseth",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 8.55,
+  "text": "The king has moved the capital to Phnom Penh. So everyone's carrying wood for the pillars of the new capital.",
+  "heard": " The king has moved the capital to Phnom Penh. So everyone's carrying wood for the pillars of the new capital.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ebnmf8j1wfz8": {
+  "episode": "kh-royalpalace",
+  "lang": "en",
+  "speaker": "piseth",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 7.68,
+  "text": "My family's moving here from Oudong too. …But Grandpa's legs are bad, so he says he'll stay in Oudong.",
+  "heard": "My family's moving here from Oudong too. …But Grandpa's legs are bad, so he says he'll stay in",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ede2qj14q6o": {
+  "episode": "kh-royalpalace",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 15.080041666666666,
+  "text": "On the riverbank, you could see a palace built of wood, with a golden parasol standing in front of it. Whenever the people on the boats around you passed it, they quietly bowed their heads.",
+  "heard": " On the riverbank, you could see a palace built of wood, with a golden parasol standing in front of it. Whenever the people on the boats around you passed it, they quietly bowed their heads.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ejpol2dlhhpf": {
+  "episode": "kh-royalpalace",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.36,
+  "text": "That's the temporary wooden palace where King Norodom lived until the new palace was ready. We can't see the king's face from here, though.",
+  "heard": " That's the temporary wooden palace where King Norodom lived until the new palace was ready. We can't see the king's face from here, though.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1lr4tsr18tes": {
+  "episode": "kh-royalpalace",
+  "lang": "en",
+  "speaker": "piseth",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 7.260041666666667,
+  "text": "My grandpa told me Phnom Penh is the place where the rivers look like they split into four.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e195smvkqtqcu": {
+  "episode": "kh-royalpalace",
+  "lang": "en",
+  "speaker": "piseth",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 8.55,
+  "text": "“Four faces.” Boats can come from upriver, from downriver and from the sides. That's why it's a good place for a capital, he says.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
