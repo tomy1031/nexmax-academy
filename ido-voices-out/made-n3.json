@@ -382,5 +382,101 @@
   "heard": " Just then, loud applause rose up along the river. People had started crossing the bridge.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "eq2enj3b2vy1": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.71,
+  "text": "People slowly crossed the bridge. Some pushed bicycles. Some carried babies.",
+  "heard": " People slowly crossed the bridge. Some pushed bicycles. Some carried babies.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1r0d8nt1xmou": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.640041666666667,
+  "text": "Sophea took her grandpa's hand and started to run — and a little way along, he stopped.",
+  "heard": " Sophea took her grandpa's hand and started to run—and a little way along, he stopped.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e179ae53ej9co": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "sok",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 3.0600416666666668,
+  "text": "…Here. This is where it had fallen.",
+  "heard": "Here. This is where it had fallen.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "evg4mvt1420w": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.080041666666666,
+  "text": "On both sides of the joint, people were walking just the same.",
+  "heard": "On both sides of the joint people were walking just the same",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1wlmucvqk34x": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "sok",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 5.71,
+  "text": "A bridge can be built again. Today, I learned that.",
+  "heard": " A bridge can be built again. Today, I learned that.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "egwswz0s7jni": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "sok",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 9.920041666666666,
+  "text": "But… the people who can no longer cross will not come back.",
+  "heard": " But… the people who can no longer cross will not come back.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1ypnm18djwn3": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "sok",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 11.07,
+  "text": "Those who can cross, cross. Those who remember, teach. That is all I can do.",
+  "heard": " Those who can cross, cross. Those who remember, teach. That is all I can do.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "ea3uhml1546w": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "sok",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 4.2000416666666665,
+  "text": "Traveler. …Would you cross to the other side with us?",
+  "heard": "Traveler, would you cross to the other side with us?",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
