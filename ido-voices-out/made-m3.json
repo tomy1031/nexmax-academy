@@ -1,0 +1,98 @@
+{
+ "v1ebm10u": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.290041666666666,
+  "text": "1860年1月。アンコール・トムの森。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v25nttg": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 12.720041666666667,
+  "text": "大きな木の根が、石の塔にからみついている。塔の顔は、木の葉のあいだから、静かにほほえんでいた。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vxa1hzv": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 11.72,
+  "text": "このあたりは、そのころ、となりのシャムの国が治めていた。それでも、森のそばの村の人たちは、むかしと変わらず、ここで暮らしていた。",
+  "heard": "このあたりは、そのころ、となりのシャムの国が治めていた。それでも、森のそばの村の人たちは、むかしと変わらず、ここで暮らしていた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vrltcl7": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.500041666666666,
+  "text": "どこかで、サルの鳴き声と、犬のほえる声がした。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vlgku9p": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "nimol",
+  "voice": "Aoede",
+  "model": "gemini-3.8-live",
+  "seconds": 6.48,
+  "text": "しーっ！ ……あなた、だれ？ 村の人じゃないよね。",
+  "heard": " ……あなた、だれ？村の人じゃないよね。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1it7sgp": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "nimol",
+  "voice": "Aoede",
+  "model": "gemini-3.8-live",
+  "seconds": 7.18,
+  "text": "わたし、ニモル。十歳。この森で、水牛に草を食べさせてるの。",
+  "heard": "わたし、ニモル。十歳。この森で、水牛に草を食べさせてる",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vybnsgx": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "nimol",
+  "voice": "Aoede",
+  "model": "gemini-3.8-live",
+  "seconds": 4.060041666666667,
+  "text": "あっ、また来たの？ しーっ、静かにね。",
+  "heard": "あっ、また来たの？ しーっ、静かにね。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vuk6p2y": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "nimol",
+  "voice": "Aoede",
+  "model": "gemini-3.8-live",
+  "seconds": 6.04,
+  "text": "しーっ！ ……あれ、あなた、わたしのこと知ってるの？",
+  "heard": " ……あれ、あなた、わたしのこと知ってるの?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ }
+}
