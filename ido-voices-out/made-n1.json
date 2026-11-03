@@ -1150,5 +1150,89 @@
   "heard": "In 1866, King Norodom moved the capital from Oudong to Phnom Penh. Some sources say 1865.",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "ep8gkjth3ine": {
+  "episode": "kh-royalpalace",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.36,
+  "text": "Work on the palace began in 1866. Since then, parts of it have been rebuilt and new buildings have been added.",
+  "heard": " Work on the palace began in 1866. Since then, parts of it have been rebuilt and new buildings have been added.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "ef0kgyj1q96s": {
+  "episode": "kh-royalpalace",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.230041666666667,
+  "text": "Today's Throne Hall was completed in 1919.",
+  "heard": " Today's Throne Hall was completed in 1919.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "ec37bwouh1wx": {
+  "episode": "kh-royalpalace",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.69,
+  "text": "They say the floor of the Silver Pagoda next door is covered with more than 5,000 silver tiles.",
+  "heard": " They say the floor of the Silver Pagoda next door is covered with more than five thousand silver tiles.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "eg6j3u22vnzp": {
+  "episode": "kh-royalpalace",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.87,
+  "text": "The palace is still the king's home today. Only part of it is open to visitors. Be sure to wear clothes that cover your shoulders and knees.",
+  "heard": " The palace is still the king's home today. Only part of it is open to visitors. Be sure to wear clothes that cover your shoulders and knees.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "ebsgsgc1kbe7": {
+  "episode": "kh-royalpalace",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.64,
+  "text": "And in most years, in late October or early November, there's the Water Festival, when boats with dragon heads race on the river in front of the palace.",
+  "heard": " And in most years, in late October or early November, there's the Water Festival, when boats with dragon heads race on the river in front of the palace.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e2i0n401jlpn": {
+  "episode": "kh-royalpalace",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.88,
+  "text": "When a capital moves, people's lives move too. Piseth was one of those people, wasn't he?",
+  "heard": "When a capital moves, people's lives move too. Piseth was one of those people, wasn't he?",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1dl88lc1nrnz": {
+  "episode": "kh-royalpalace",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.74,
+  "text": "(whispering) The pillars remain. …I wonder if the hands that raised them remain somewhere, too.",
+  "heard": " The pillars remain. …I wonder if the hands that raised them remain",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
