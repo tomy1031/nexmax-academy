@@ -1162,5 +1162,101 @@
   "heard": "今日は、わたしの母のための寺に、仏をお迎えする日なのだ。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "vt2j9nu": {
+  "episode": "kh-taprohm",
+  "lang": "ja",
+  "speaker": "jayavarman7",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 9.690041666666668,
+  "text": "また会えたな、旅の人。今日は、わたしの母のための寺に、仏をお迎えする日なのだ。",
+  "heard": "また会えたな、旅の人。今日は、わたしの母のための寺に、仏をお迎えする日なのだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1fsv0ux": {
+  "episode": "kh-taprohm",
+  "lang": "ja",
+  "speaker": "jayavarman7",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.01,
+  "text": "……見かけぬ顔だな。それなのに、わたしを知っているような目をしている。",
+  "heard": " それなのに、わたしを知っているような目をしている。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vjteqda": {
+  "episode": "kh-taprohm",
+  "lang": "ja",
+  "speaker": "jayavarman7",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 7.42,
+  "text": "ふしぎな人だ。今日は、わたしの母のための寺に、仏をお迎えする日なのだ。",
+  "heard": "ふしぎな人だ。今日は、わたしの母のための寺に、仏をお迎えする日なのだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vas8fdb": {
+  "episode": "kh-taprohm",
+  "lang": "ja",
+  "speaker": "jayavarman7",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 8.190041666666668,
+  "text": "母は、いつも、自分より先に人のことを考える人だった。",
+  "heard": "母は、いつも、自分より先に人のことを考える人だった。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1l9ycu1": {
+  "episode": "kh-taprohm",
+  "lang": "ja",
+  "speaker": "jayavarman7",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 9.21,
+  "text": "だから、わたしは、食べ物を四つに分けるとき、三つを、師と、母と、兄に配ってきた。",
+  "heard": " だから、わたしは、食べ物を四つに分けるとき、三つを、師と、母と、兄に配ってきた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v10g66da": {
+  "episode": "kh-taprohm",
+  "lang": "ja",
+  "speaker": "jayavarman7",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 10.23,
+  "text": "……踊り手の娘よ。手がふるえているな。",
+  "heard": " 踊り手の娘よ。 手がふるえているな。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v11usqsz": {
+  "episode": "kh-taprohm",
+  "lang": "ja",
+  "speaker": "sreymom",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 1.63,
+  "text": "は、はいっ……！",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "verjsmy": {
+  "episode": "kh-taprohm",
+  "lang": "ja",
+  "speaker": "jayavarman7",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 7.31,
+  "text": "ふるえてもよい。母のために、心をこめて踊ってくれれば、それでよい。",
+  "heard": "母のために、心をこめて踊ってくれれば、それでよい。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
