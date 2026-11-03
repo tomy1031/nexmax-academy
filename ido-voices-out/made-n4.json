@@ -1054,5 +1054,101 @@
   "heard": "",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "ed32r3b1imfx": {
+  "episode": "kh-sr-prologue",
+  "lang": "en",
+  "speaker": "zhou",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 12.21,
+  "text": "On either side of the gate are stone elephants. The gate opens in the daytime and closes at night. There are even guards to watch over it.",
+  "heard": " On either side of the gate are stone elephants. The gate opens in the daytime and closes at night. There are even guards to watch over it.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1ebybo71u21z": {
+  "episode": "kh-sr-prologue",
+  "lang": "en",
+  "speaker": "zhou",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.03,
+  "text": "And in the very center of the capital stands a golden tower.",
+  "heard": " And in the very center of the capital stands a golden tower.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1pk8sh611nap": {
+  "episode": "kh-sr-prologue",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.63,
+  "text": "The golden tower is the Bayon. By the time Zhou Daguan came, it had already been standing for almost 100 years.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eej3tob1mxir": {
+  "episode": "kh-sr-prologue",
+  "lang": "en",
+  "speaker": "zhou",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.11,
+  "text": "Then there is the market. In this country, it is the women who are good at trading.",
+  "heard": " Then there is the market. In this country, it is the women who are good at trading.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1uqdztxcyi88": {
+  "episode": "kh-sr-prologue",
+  "lang": "en",
+  "speaker": "zhou",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 9.42,
+  "text": "There are no shops. People spread mats on the ground and sell from them. I hear each seller has her own place.",
+  "heard": " There are no shops. People spread mats on the ground and sell from them. I hear each seller has her own place.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e12e0grx1wuya": {
+  "episode": "kh-sr-prologue",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.23,
+  "text": "(whispering) …That's just how Chanthy's mother did it, too.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ef5lsr1rjwy": {
+  "episode": "kh-sr-prologue",
+  "lang": "en",
+  "speaker": "zhou",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.8,
+  "text": "By the way, tonight is the festival for the start of the new year. Would you like to come and see it with me?",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eucilhl1lwvl": {
+  "episode": "kh-sr-prologue",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.44,
+  "text": "Night. In the square in front of the royal palace, a large stage had been built and decorated with lights and flowers.",
+  "heard": "Night. In the square in front of the royal palace, a large stage had been built and decorated with lights and flowers.",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
  }
 }
