@@ -1522,5 +1522,41 @@
   "heard": "Mr. He was there. He was really, really there. Konaki GG.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "eix680j5es68": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "tatsu",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 2.430041666666667,
+  "text": "…I see. I see.",
+  "heard": "I see. I see.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e72n7p91oia7": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "tatsu",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 7.32,
+  "text": "So even when I'm not telling the stories… from now on, these kids will tell them.",
+  "heard": " So even when I'm not telling the stories… from now on, these kids will tell them.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e12dfmm1stq0": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "konaki",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 7.32,
+  "text": "Here, take a photo with me to remember tonight. …Careful, I'm a little heavy.",
+  "heard": " Here, take a photo with me to remember tonight. …Careful, I'm a little heavy.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
