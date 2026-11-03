@@ -1078,5 +1078,29 @@
   "heard": "",
   "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
   "readings": []
+ },
+ "eusesuo1ddp8": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 13.8,
+  "text": "In 2003, UNESCO proclaimed Cambodia's royal court dance a “Masterpiece of the Oral and Intangible Heritage of Humanity.” Today it's recognized as Intangible Cultural Heritage.",
+  "heard": " In 2003, UNESCO proclaimed Cambodia's royal court dance a “Masterpiece of the Oral and Intangible Heritage of Humanity.” Today it's recognized as Intangible Cultural Heritage.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e17n6ix6ymirh": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.79,
+  "text": "(whispering) From my body into yours. …That's how dance has been carried on, all this time.",
+  "heard": " …That's how dance has been carried on, all this time.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
