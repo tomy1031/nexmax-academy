@@ -62,6 +62,7 @@ const save = (message) => {
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 let made = 0;
 let pending = 0;
+let quotaHits = 0;
 const failed = [];
 for (const l of lines) {
   const file = `${OUT}/${l.vid}.wav`;
@@ -164,6 +165,7 @@ for (const l of lines) {
     };
     made += 1;
     pending += 1;
+    quotaHits = 0;
     console.log(`✓ ${l.speaker}（${c.voice}）${seconds.toFixed(1)}秒 ${l.text.slice(0, 24)}`);
     if (pending >= PUSH_EVERY) {
       if (save(`一時：IDO の 声 ${group} ${Object.keys(log).length}行（マージしない）`)) pending = 0;
@@ -173,8 +175,16 @@ for (const l of lines) {
     failed.push(l.vid);
     console.error(`✗ ${l.speaker} ${l.text.slice(0, 24)}\n  ${message.slice(0, 400)}`);
     if (/429|quota|RESOURCE_EXHAUSTED/i.test(message)) {
-      console.error("1日の 枠に 当たった ようです。ここで 止めます");
-      break;
+      // 同時に いくつも 走らせると、1分あたりの 枠に 当たる ことが ある。
+      // 少し 待って 続ける。3回 続けて 当たったら、1日の 枠と みて 止める
+      quotaHits += 1;
+      if (quotaHits >= 3) {
+        console.error("枠に 3回 続けて 当たったので、ここで 止めます");
+        break;
+      }
+      console.error("枠に 当たりました。90秒 待って 続けます");
+      await wait(90_000);
+      continue;
     }
   }
   await wait(4_000); // 成功した ときは すぐ 返る ので、つづけて つなぐと 断られる
