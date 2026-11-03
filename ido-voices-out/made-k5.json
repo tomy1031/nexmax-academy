@@ -970,5 +970,101 @@
   "readings": [
    "回廊＝かいろう"
   ]
+ },
+ "v7eiq4f": {
+  "episode": "kh-angkor-build",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.53,
+  "text": "行列は、寺の前で止まった。しばらくして、日傘の列が、こちらの壁のほうへ近づいてくる。",
+  "heard": "行列は、寺の前で止まった。しばらくして、日傘の列が、こちらの壁のほうへ近づいてくる。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "v126itdq": {
+  "episode": "kh-angkor-build",
+  "lang": "ja",
+  "speaker": "親方",
+  "voice": "Alnilam",
+  "model": "gemini-3.8-live",
+  "seconds": 5.47,
+  "text": "み、みんな、頭を下げろ！ 王さまが、壁をご覧になるぞ！",
+  "heard": "み、みんな、頭を下げろ！王さまが、壁をご覧になるぞ！",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "v1cq5raq": {
+  "episode": "kh-angkor-build",
+  "lang": "ja",
+  "speaker": "suryavarman2",
+  "voice": "Schedar",
+  "model": "gemini-3.8-live",
+  "seconds": 5.21,
+  "text": "手を休めずともよい。……この天女は、だれが彫っている。",
+  "heard": " 手を休めずともよい。……この天女は、だれが彫っている。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1cbqem9": {
+  "episode": "kh-angkor-build",
+  "lang": "ja",
+  "speaker": "suryavarman2",
+  "voice": "Schedar",
+  "model": "gemini-3.8-live",
+  "seconds": 6.91,
+  "text": "手を休めずともよい。……そなた、どこかで会ったか。いや、よい。",
+  "heard": "手を休めずともよい。……そなた、どこかで会ったか。いや、",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vbstrm5": {
+  "episode": "kh-angkor-build",
+  "lang": "ja",
+  "speaker": "suryavarman2",
+  "voice": "Schedar",
+  "model": "gemini-3.8-live",
+  "seconds": 3.350041666666667,
+  "text": "この天女は、だれが彫っている。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vtu4it8": {
+  "episode": "kh-angkor-build",
+  "lang": "ja",
+  "speaker": "keo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 3.62,
+  "text": "ぼ、ぼくです……！ まだ、彫りかけですけど……。",
+  "heard": " ま、 まだ、彫りかけですけど。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vwh1mwa": {
+  "episode": "kh-angkor-build",
+  "lang": "ja",
+  "speaker": "suryavarman2",
+  "voice": "Schedar",
+  "model": "gemini-3.8-live",
+  "seconds": 10.06,
+  "text": "よい顔になりそうだ。この寺は、ヴィシュヌ神にささげる寺。神々の住む山を、この地上に建てるのだ。",
+  "heard": "よい顔になりそうだ。この寺は、ヴィシュヌ神にささげる寺。神々の住む山を、この地上に建てるのだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vpm6wza": {
+  "episode": "kh-angkor-build",
+  "lang": "ja",
+  "speaker": "suryavarman2",
+  "voice": "Schedar",
+  "model": "gemini-3.8-live",
+  "seconds": 6.220041666666667,
+  "text": "千年のちの者も、きっと、この塔を見上げるだろう。",
+  "heard": "千年のちの者も、きっと、この塔を見上げるだろう。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
