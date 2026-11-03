@@ -1418,5 +1418,101 @@
   "heard": "",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v4e8tx7": {
+  "episode": "kh-sr-finale",
+  "lang": "ja",
+  "speaker": "sovann2",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 5.630041666666667,
+  "text": "この子たちは、研修生。あのころのぼくと、同じです。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1c4ndqz": {
+  "episode": "kh-sr-finale",
+  "lang": "ja",
+  "speaker": "sovann2",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 10.66,
+  "text": "「わからないことも、大事にしたい」。あなたの言葉、ずっと覚えていました。仏さまが埋められたわけは、まだ、わからないんです。",
+  "heard": " 「わからないことも、大事にしたい」。あなたの言葉、ずっと覚えていました。仏さまが埋められたわけは、",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vuj7u4r": {
+  "episode": "kh-sr-finale",
+  "lang": "ja",
+  "speaker": "sovann2",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 10.05,
+  "text": "「だれかが守ったんだと思いたい」。あなたの言葉、ずっと覚えていました。答えは、まだ、出ていないんですけどね。",
+  "heard": " 「だれかが守ったんだと思いたい」。あなたの言葉、ずっと覚えていました。答えは、まだ、出ていないんですけどね。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v9upybz": {
+  "episode": "kh-sr-finale",
+  "lang": "ja",
+  "speaker": "sovann2",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 4.9,
+  "text": "ぼくたちの仕事は、石を、次の人へ手わたすことなんです。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1uv1d7g": {
+  "episode": "kh-sr-finale",
+  "lang": "ja",
+  "speaker": "sovann2",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 8.99,
+  "text": "この寺を建てた人たちから、守ってきた人たちから、ぼくたちへ。ぼくたちから、この子たちへ。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vw95s7k": {
+  "episode": "kh-sr-finale",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.34,
+  "text": "そのとき、五つの塔のうしろから、朝日がのぼりはじめた。",
+  "heard": "そのとき、五つの塔のうしろから、朝日がのぼりはじめた。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v16xma4a": {
+  "episode": "kh-sr-finale",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.2000416666666665,
+  "text": "参道に集まった、いろんな国の人たちが、いっせいに息をのむ。",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v36b13r": {
+  "episode": "kh-sr-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.41,
+  "text": "ねえ。シェムリアップの旅を、ふりかえってみて。",
+  "heard": "ねえ。シェムリアップの旅を、ふりかえってみて。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
