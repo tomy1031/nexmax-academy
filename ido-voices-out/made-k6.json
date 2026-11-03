@@ -1627,5 +1627,103 @@
   "heard": " 妹に仏の教えを伝えたのは、姉のわたし。でも、あの子は、わたしよりずっとたくさんの人を助けたの。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v1f7ayk8": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "indradevi",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 12.49,
+  "text": "妹は、母に捨てられた少女たちを、自分の娘として育てました。そして、自分の踊り手たちに、仏さまの前世の物語を、劇にして演じさせたのです。",
+  "heard": "妹は、母に捨てられた少女たちを、自分の娘として育てました。そして、自分の踊り手たちに、仏さまの前世の物語を、劇にして演じさせたのです。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vf9rvng": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "indradevi",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 7.5,
+  "text": "妹は、もういないけれど……妹のしたことを、わたしは詩に書いて、石に刻むつもりよ。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v8v6bhh": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "indradevi",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 5.52,
+  "text": "旅の方。あなたの国でも、字を学ぶのは、むずかしいことかしら。",
+  "heard": "旅の方。あなたの国でも、字を学ぶのは、むずかしいことかしら。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1dd6rp4": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "indradevi",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 5.95,
+  "text": "まあ、みんな……。いつか、この国も、そうなるといいわね。",
+  "heard": "まあ、みんな……。いつか、この国も、そうなるといいわね。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vz6ity3": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "indradevi",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 5.59,
+  "text": "そうね。石に刻んだ字なら、ずっと先の人にも届くわ。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vr10xa2": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "indradevi",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 6.78,
+  "text": "チャンティ、だったわね。明日の朝、お母さんの魚を売り終わったら、いらっしゃい。",
+  "heard": " チャンティ、だったわね。明日の朝、お母さんの魚を売り終わったら、いらっしゃい。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v9yvd5o": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "chanthy",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 0.95,
+  "text": "……はいっ！",
+  "heard": "はいっ！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v19ofb8m": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.61,
+  "text": "インドラデーヴィー王妃が作った石碑の詩は、本当に残っているんだ。妹のジャヤラージャデーヴィー王妃のことが、くわしく書かれているよ。",
+  "heard": "インドラデーヴィー王妃が作った石碑の詩は、本当に残っているんだ。妹のジャヤラージャデーヴィー王妃のことが、くわしく書かれているよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "王妃＝おうひ"
+  ]
  }
 }
