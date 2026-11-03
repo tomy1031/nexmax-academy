@@ -524,5 +524,103 @@
   "heard": " いちばんに見せてあげる。 約束ね！",
   "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
   "readings": []
+ },
+ "v1i71eh4": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "bopha",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 3.47,
+  "text": "ほんと！？ やったあ！ じゃあ、かけ算から！",
+  "heard": "本当！やったー！じゃあ掛け算から！",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1fkrryv": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.710041666666667,
+  "text": "博物館の庭。小さな女の子の手を引いた女の人が、展示の前で足を止めて、こちらをふりかえった。",
+  "heard": "博物館の庭 小さな女の子のの手を引いた女の人が 展示の前で足を止めて こちらを振り返った。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vxcdte": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "bopha2",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 4.6,
+  "text": "……あなた……！ うそ、1998年の……！",
+  "heard": "あなた……！ うそ、1998年の！",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v460zk8": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "bopha2",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 6.390041666666667,
+  "text": "わたし、ボパー。もう三十八よ。この子は、わたしの娘。",
+  "heard": "私 ボパー もう38よ。 この子は私の娘。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "voz8v4m": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "bopha2",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 12.9,
+  "text": "今はね、地雷を取り除くチームで、地図を作ってるの。村の人に話を聞いて、どこがあぶなかったか、どこが安全になったかを、地図にする仕事。",
+  "heard": "今はね、地雷を取り除くチームで、地図を作ってるの。村の人に話を聞いて、どこがあぶなかったか、どこが安全になったかを、地図にする仕事。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "地雷＝じらい"
+  ]
+ },
+ "vxmvk5b": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "bopha2",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 6.75,
+  "text": "約束、覚えてる。……ほら、これ。いちばんに見せるって言ったでしょ。",
+  "heard": " ほら、これ。いちばんに見せるって言ったでしょ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v2bs591": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.93,
+  "text": "ボパーが広げた地図には、緑の色がたくさん、赤い色が少しだけ、ぬられていた。",
+  "heard": "ボパーが広げた地図には、緑の色がたくさん、赤い色が少しだけ、ぬられて",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v12md4gm": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "bopha2",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 8.08,
+  "text": "「なれるよ」って言ってくれたの、覚えてる。……なれたよ。一度は、あきらめかけたけどね。",
+  "heard": " 「なれるよ」って言ってくれたの、覚えてる。……なれたよ。一度は、あきらめかけたけどね。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
