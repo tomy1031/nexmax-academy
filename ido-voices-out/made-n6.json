@@ -526,5 +526,101 @@
   "heard": " Inscriptions say that Jayavarman VII built 102 hospitals and 121 rest houses for travelers all across his kingdom.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1t7wosws7nkl": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.44,
+  "text": "(whispering) At the markets in Siem Reap, people still weigh fish on scales today. Try comparing them with the 800-year-old wall.",
+  "heard": "At the markets in Siem Reap, people still weigh fish on scales today. Try comparing them with the eight-hundred-year-old wall.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ef7v7ds13xzp": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.000041666666666,
+  "text": "The everyday lives of people who lived in this city eight hundred years ago really are carved on this wall.",
+  "heard": " The everyday lives of people who lived in this city eight hundred years ago really are carved on this wall.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eoleswtbd3m2": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.78,
+  "text": "(whispering) Every face is smiling. …Chanthy was right.",
+  "heard": " Every face is smiling. ...Chanthy was right.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1mzl8vl1d8tb": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 11.680041666666666,
+  "text": "1632. By the Japanese calendar, it was the New Year of Kan'ei 9. But here, it was the middle of the hot, dry season.",
+  "heard": " 1632. By the Japanese calendar, it was the New Year of Kan'ei 9. But here, it was the middle of the hot, dry season.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1kxzpf2aoxwi": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.870125,
+  "text": "Five towers rose out of the forest. A samurai came walking along the long approach to the temple.",
+  "heard": "Five towers rose out of the forest. A samurai came walking along the long approach to the temple.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e3uhsox1xiap": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.260041666666666,
+  "text": "He held his travel bundle carefully to his chest. He stood still, gazing up at the towers.",
+  "heard": "He held his travel bundle carefully to his chest. He stood still, gazing up at the towers.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e7wsnfr3mj5a": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.68,
+  "text": "(whispering) That kimono… he's a samurai from Japan! Let me try saying something to him in Japanese.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1wq8106541dm": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 3.87,
+  "text": "…! Those words just now… were they not Japanese?!",
+  "heard": "Those words just now… were they not Japanese?!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
