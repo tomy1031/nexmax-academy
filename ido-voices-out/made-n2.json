@@ -634,5 +634,17 @@
   "heard": " Teacher Neary had no books, no sheet music, no photographs.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1wbjm971g7d3": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "neary",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 5.12,
+  "text": "There are no books about the dances. There are no videos, either.",
+  "heard": " There are no books about the dances. There are no videos, either.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
