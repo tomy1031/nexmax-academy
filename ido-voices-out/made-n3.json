@@ -1066,5 +1066,101 @@
   "heard": " When the ceremony ended, people slowly began to walk between the white towers.",
   "scene": "お祝いの、晴れやかな場面。明るく",
   "readings": []
+ },
+ "ejvfv21cu97": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "vichet",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 2.7500416666666667,
+  "text": "Come on! Let's be the first to cross!",
+  "heard": " Come on! Let's be the first to cross!",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "e1lcp2sj1s3vj": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.54,
+  "text": "Still holding his basket of corn, Vichet started to run.",
+  "heard": "",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "eo4390xatb1d": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.6,
+  "text": "The far bank, once so far away, came closer and closer before your eyes.",
+  "heard": " The far bank, once so far away, came closer and closer before your eyes.",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "e1y1r75c1k892": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "vichet",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 4.87,
+  "text": "Whoa…! We're already here. It took so long by ferry!",
+  "heard": "",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "e1scwir013i23": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "vichet",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 3.080041666666667,
+  "text": "Hey, you. I've made up my mind.",
+  "heard": "",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "ervz2d31awyy": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "vichet",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 6.640041666666667,
+  "text": "When I grow up, I'm going to do a job that connects things. Bridges, roads, anything.",
+  "heard": " When I grow up, I'm going to do a job that connects things. Bridges, roads, anything.",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "efm6xrv1nlpm": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "vichet",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 3.24,
+  "text": "Something so nobody has to wait all night.",
+  "heard": "",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "e1dle5epmneqr": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "vichet",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 3.930041666666667,
+  "text": "Heh heh. When you say it, I feel like I really can!",
+  "heard": "",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
  }
 }
