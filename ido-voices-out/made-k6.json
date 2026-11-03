@@ -238,5 +238,103 @@
   "readings": [
    "都＝みやこ"
   ]
+ },
+ "v20y2pt": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "石工のヴォンさん",
+  "voice": "Schedar",
+  "model": "gemini-3.8-live",
+  "seconds": 8.690041666666668,
+  "text": "ほら、こっちは、病気の人の世話をする女の人だ。王さまは、国じゅうに病院を建てなさった。",
+  "heard": "ほら、こっちは、病気の人の世話をする女の人だ。王さまは、国じゅうに病院を建てなさった。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vxc7hmj": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "石工のヴォンさん",
+  "voice": "Schedar",
+  "model": "gemini-3.8-live",
+  "seconds": 10.59,
+  "text": "病院の石碑には、こう刻んであるそうだ。「民の体の病は、王の心の病となって、もっと痛む」とな。",
+  "heard": "病院の石碑には、こう刻んであるそうだ。「民の体の病は、王の心の病となって、もっと痛む」とな。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vzpk0od": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.1,
+  "text": "ジャヤーヴァルマン7世が病院に立てた石碑の言葉だよ。病院は、身分に関係なく、だれでも手当てを受けられたと書かれているんだ。",
+  "heard": "ジャヤーヴァルマン七世が病院に立てた石碑の言葉だよ。病院は、身分に関係無く、だれでも手当てを受けられたと書かれているんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vsqmlzq": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "chanthy",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 3.52,
+  "text": "お母さんが、石になって、ずっと残るんだ……！",
+  "heard": "お母さんが、石になって、ずっと残るんだ！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vm5oe3x": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "石工のヴォンさん",
+  "voice": "Schedar",
+  "model": "gemini-3.8-live",
+  "seconds": 6.69,
+  "text": "旅の人。おまえさんの国の、ふつうの毎日を彫るとしたら、何を彫る？",
+  "heard": "旅の人 お前さんの国の普通の毎日を掘るとしたら何を掘る？",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v193kcx6": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "石工のヴォンさん",
+  "voice": "Schedar",
+  "model": "gemini-3.8-live",
+  "seconds": 5.6,
+  "text": "いいな。どこの国でも、なべのまわりには、人が集まるもんだ。",
+  "heard": "いいな。どこの国でも、なべのまわりには、人が集まるもんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1mawco2": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "石工のヴォンさん",
+  "voice": "Schedar",
+  "model": "gemini-3.8-live",
+  "seconds": 5.87,
+  "text": "いいな。子どもの笑い声は、石にしても聞こえてきそうだ。",
+  "heard": " いいな。子どもの笑い声は、石にしても聞こえてきそうだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1azfanl": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "石工のヴォンさん",
+  "voice": "Schedar",
+  "model": "gemini-3.8-live",
+  "seconds": 5.33,
+  "text": "ははは、わしと同じだな。市場は、都の心臓だ。",
+  "heard": "ははは。わしと同じだな。市場は都の心臓だ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "都＝みやこ"
+  ]
  }
 }
