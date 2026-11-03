@@ -1527,5 +1527,105 @@
   "readings": [
    "王妃＝おうひ"
   ]
+ },
+ "v1uk1fd5": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.62,
+  "text": "王妃が、ふと顔を上げた。壁のかげからのぞくチャンティとあなたに気づいて、やさしくほほえむ。",
+  "heard": "王妃が、ふと顔を上げた。壁のかげからのぞくチャンティとあなたに気づいて、やさしくほほえむ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "王妃＝おうひ"
+  ]
+ },
+ "vsx4ju9": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.76,
+  "text": "王妃は立ちあがり、低い壁のそばまで来てくれた。",
+  "heard": "王妃は立ちあがり、低い壁のそばまで来てくれた。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "王妃＝おうひ"
+  ]
+ },
+ "vl50kxq": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "indradevi",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 7.41,
+  "text": "のぞいているのは、だれかしら。……魚売りの娘さんと、旅の方ね。",
+  "heard": "のぞいているのは、だれかしら。……魚売りの娘さんと、旅の方ね。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1cnflbk": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "indradevi",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 2.68,
+  "text": "また、のぞきに来てくれたのね。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1fy6utg": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "indradevi",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 6.26,
+  "text": "のぞいているのは、だれかしら。……旅の方、どこかでお会いしたかしら。",
+  "heard": "のぞいているのは、だれかしら。……旅の方、どこかでお会いしたかしら。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1g4r08h": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "chanthy",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 5.39,
+  "text": "ご、ごめんなさい！ わたし、字を読めるようになりたくて……。",
+  "heard": "ご、ごめんなさい！わたし、字を読めるようになりたくて。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v11iy0cp": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "indradevi",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 5.71,
+  "text": "あやまることはないわ。学びたい人は、だれでも、ここへ来ていいのよ。",
+  "heard": "あやまることはないわ。学びたい人は、だれでも、ここへ来て",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1hvjkvj": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "indradevi",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 12.74,
+  "text": "わたしの妹も、そうだった。妹に仏の教えを伝えたのは、姉のわたし。でも、あの子は、わたしよりずっとたくさんの人を助けたの。",
+  "heard": " 妹に仏の教えを伝えたのは、姉のわたし。でも、あの子は、わたしよりずっとたくさんの人を助けたの。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
