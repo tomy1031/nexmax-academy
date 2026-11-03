@@ -1222,5 +1222,101 @@
   "heard": " だれが、なぜ埋めたのかは、今もしられていない。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "va4p16t": {
+  "episode": "kh-banteaykdei",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.76,
+  "text": "この研修は、日本の上智大学の調査団が、1990年代のはじめから続けてきたものなんだ。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v9c4sdd": {
+  "episode": "kh-banteaykdei",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.98,
+  "text": "調査団の団長だった石澤良昭さんは、のちに、こう話しているよ。",
+  "heard": "調査団の団長だった石澤良昭さんは、のちに、こう話しているよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1ik9uys": {
+  "episode": "kh-banteaykdei",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.1,
+  "text": "研修生たちは、仏像が見つかると一体ずつ手を合わせ、手をふるわせながら、竹のへらとはけで泥を落としていた——って。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v3tadbl": {
+  "episode": "kh-banteaykdei",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.04,
+  "text": "この研修で学んだカンボジアの人たちが、今は、アンコールの修復の中心にいるんだ。",
+  "heard": "この研修で学んだカンボジアの人たちが、今は、アンコールの修復",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1mcxcpl": {
+  "episode": "kh-banteaykdei",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.95,
+  "text": "見つかった仏像は、シェムリアップのプリア・ノロドム・シハヌーク＝アンコール博物館で見られるよ。",
+  "heard": "の見つかった仏像は、シェムリアップのプリア・ノロドム・シハヌーク＝アンコール博物館で見られるよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1fopm0z": {
+  "episode": "kh-banteaykdei",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.190041666666667,
+  "text": "自分の国の遺跡を、自分たちの手で守ろうと学んだ若い人たちが、本当にいたんだ。",
+  "heard": "自分の国の遺跡を、自分たちの手で守ろうと学んだ若い人たちが、本当にいたんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v10i9tm6": {
+  "episode": "kh-banteaykdei",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.6,
+  "text": "（小声）何百年も、土の中で待っていた仏さま。……見つけてもらえて、よかったね。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "veuwzru": {
+  "episode": "kh-sr-finale",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.02,
+  "text": "夜明け前のアンコール・ワット。参道の石だたみに、ひんやりとした風が通っていく。",
+  "heard": "夜明け前のアンコール・ワット。参道の石だたみに、ひんやりとした風が通っていく。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
