@@ -1234,5 +1234,101 @@
   "heard": " You came all the way out here in a tiny boat? You must have no fear",
   "scene": "激しい戦いのさなか。声を張り、息は荒く",
   "readings": []
+ },
+ "e1phb9et6trlm": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 10.48,
+  "text": "I am Noritsune, Lord of Noto. …Out of my way. There is only one man I seek: Yoshitsune of the Genji.",
+  "heard": " I am Noritsune, Lord of Noto. ...Out of my way. There is only one man I seek: Yoshitsune of the",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "ewjh9fq3kf3u": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.32,
+  "text": "(whispering) That's Taira no Noritsune. He is the fiercest warrior of the Heike.",
+  "heard": " That's Taira no Noritsune. He is the fiercest warrior of the Heike.",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "e1twxdu51xjvt": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.03,
+  "text": "When that dancing warrior was shot, you said, “That's cruel.”",
+  "heard": " When that dancing warrior was shot, you said, \"That's cruel.\"",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "e1thfbpn1ry12": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.56,
+  "text": "…In the whole Genji camp, you were the only one who said that.",
+  "heard": " In the whole Genji camp, you were the only one who said that.",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "eujqr3t1ruqe": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.32,
+  "text": "When that dancing warrior was shot, you said, “This is what war is.”",
+  "heard": " When that dancing warrior was shot, you said, \"This is what war is.\"",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "e15i2e6acnd8e": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 9.63,
+  "text": "…And you were right. Today, I will show you what war really is.",
+  "heard": "And you were right. Today, I will show you what war really is.",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "ex2mbrtnyz16": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 9.89,
+  "text": "That arrow through the fan was splendid. He is my enemy, but I can never forget that shot.",
+  "heard": " That arrow through the fan was splendid. He is my enemy, but I can never forget that shot.",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "e1o2240udjsmj": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.24,
+  "text": "Why do you look at me like that? …Do you know me?",
+  "heard": " Why do you look at me like that? …Do you know me?",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
  }
 }
