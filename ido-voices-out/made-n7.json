@@ -202,5 +202,101 @@
   "heard": " You see, my dad back in my village went to cut grass for the cows, and he stepped on a landmine.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e10i740m1iqkn": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "bopha",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 6.09,
+  "text": "He lived, but he lost one leg. And it got hard for him to work in the fields.",
+  "heard": " He lived, but he lost one leg. And it got hard for him to work in the fields.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ewq7ac91ahfk": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "bopha",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 5.14,
+  "text": "So I came here. If I stay here, I can go to school.",
+  "heard": " So I came here. If I stay here, I can go to school.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e45wwo74ju61": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.61,
+  "text": "Bopha hugged the notebook she was holding tight against her chest.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ezxlwey11nuo": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "bopha",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 2.92,
+  "text": "Yes, I love it! Math is my favorite.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ej9arb01n12r": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "bopha",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 3.6300416666666666,
+  "text": "I'm not amazing. Everybody does the same.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ebkv1x71ul34": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "bopha",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 2.76,
+  "text": "It's almost time for Papa to come home.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e11w870a4l0wj": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "bopha",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 7.080041666666666,
+  "text": "But when Papa's working, we're not allowed to go out to him. Let's wait at the edge of the village road.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eikyvn21r145": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "bopha",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 6.8,
+  "text": "You must never, ever step off the path. There might still be landmines past the red signs.",
+  "heard": " You must never, ever step off the path. There might still be landmines past the red",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
