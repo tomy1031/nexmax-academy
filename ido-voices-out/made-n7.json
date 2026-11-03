@@ -190,5 +190,17 @@
   "heard": " Kids who were hurt by landmines, and kids who lost their families, live here together.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1skf9pk1ff4p": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "bopha",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 6.64,
+  "text": "You see, my dad back in my village went to cut grass for the cows, and he stepped on a landmine.",
+  "heard": " You see, my dad back in my village went to cut grass for the cows, and he stepped on a landmine.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
