@@ -977,5 +977,41 @@
   "heard": "明日あの橋が開くんだ。",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "v1k51umo": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "vichet",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 3.54,
+  "text": "……そしたら、もう、だれも船を待たなくなる。",
+  "heard": "そしたら、もう、だれも船を待たなくなる。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "ve4ojhe": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "vichet",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 4.28,
+  "text": "待つ人がいなくなったら、とうもろこし、だれが買うんだろ。",
+  "heard": "待つ人がいなくなったら、とうもろこし、だれが買うんだろ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1lbgb7e": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "ヴィチェットのお母さん",
+  "voice": "Sulafat",
+  "model": "gemini-3.8-live",
+  "seconds": 3.630125,
+  "text": "ヴィチェット！ また、お客さんに弱音をはいて。",
+  "heard": "ヴィチェット！ また、お客さんに弱音をはいて。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
