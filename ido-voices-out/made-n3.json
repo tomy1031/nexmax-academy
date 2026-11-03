@@ -478,5 +478,101 @@
   "heard": "Traveler, would you cross to the other side with us?",
   "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
   "readings": []
+ },
+ "elji0qau6tod": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.020041666666667,
+  "text": "You walked to the other side, side by side with Grandpa Sok and Sophea.",
+  "heard": " You walked to the other side, side by side with Grandpa Sok and Sophea.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e9f8k3r1xvyo": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "sophea",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 4.5,
+  "text": "We made it! The air feels a little different over here!",
+  "heard": " We made it! The air feels a little different over here!",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e13k3mhl30jdn": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.32,
+  "text": "Sophea held her grandpa's hand and your hand, both at once. The three of you walked to the other side.",
+  "heard": "\nSophea held her grandpa's hand and your hand, both at once. The three of you walked to the other side.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "euhvauy12e5w": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "sophea",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 3.9200416666666666,
+  "text": "Hehe. We crossed, all three of us!",
+  "heard": "We crossed all three of us.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "eytg8sn1t3sl": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.880041666666667,
+  "text": "Evening, at the foot of the bridge. A woman in a helmet was looking up at the bridge's pillars and writing something in a notebook.",
+  "heard": "evening at the foot of the bridge a woman in a helmet was looking up at the bridge's pillars and writing something in a notebook.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e25ekct1kejw": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "sophea2",
+  "voice": "Erinome",
+  "model": "gemini-3.8-live",
+  "seconds": 6.2800416666666665,
+  "text": "No way. Are you the one who crossed the bridge with us that day in 1994…?",
+  "heard": "No way! Are you the one who crossed the bridge with us that day in 1994?",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1ecbsz4w9idt": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "sophea2",
+  "voice": "Erinome",
+  "model": "gemini-3.8-live",
+  "seconds": 6.18,
+  "text": "You held my hand, didn't you? I remember — the three of us crossed together.",
+  "heard": " You held my hand, didn't you? I remember— the three of us crossed together.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1lq189h1kimg": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "sophea2",
+  "voice": "Erinome",
+  "model": "gemini-3.8-live",
+  "seconds": 4.2400416666666665,
+  "text": "It's me, Sophea. I've already turned forty!",
+  "heard": " It's me, Sophea. I've already turned forty!",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
