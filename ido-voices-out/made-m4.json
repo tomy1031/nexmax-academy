@@ -202,5 +202,101 @@
   "heard": "In the village, we call this place “Prea sat Ling poun.” It means “the temple of hide-and-seek.”",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "euk6p2y1h1ov": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "nimol",
+  "voice": "Aoede",
+  "model": "gemini-3.8-live",
+  "seconds": 3.19,
+  "text": "Shhh! …Huh, do you know me?",
+  "heard": " …Huh, do you know me?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1qe2op6nprvr": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "nimol",
+  "voice": "Aoede",
+  "model": "gemini-3.8-live",
+  "seconds": 5.29,
+  "text": "Because the paths go round and round, and there are lots of places to hide.",
+  "heard": " Because the paths go round and round, and there are lots of places to hide.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1e1l3rj1v10k": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "mouhot",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 5.53,
+  "text": "The temple of hide-and-seek…! What a fine name. I must write that down.",
+  "heard": " The temple of hide-and-seek…! What a fine name. I must write that down.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ey426wvce03m": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.260041666666667,
+  "text": "Mouhot opened the sketchbook he carried under his arm and jotted it down quickly.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e10owa6t1y2cs": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.52,
+  "text": "That's a name Mouhot really wrote down. He also wrote that the galleries cross each other, so it's hard to find your way.",
+  "heard": " That's a name Mouhot really wrote down. He also wrote that the galleries cross each other, so it's hard to find your way.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e9f6s5k1vkol": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "nimol",
+  "voice": "Aoede",
+  "model": "gemini-3.8-live",
+  "seconds": 4.37,
+  "text": "Hey, let's play! I'll hide, and you two come and find me!",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e16nqw56116kf": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.56,
+  "text": "Nimol slipped away behind a stone pillar.",
+  "heard": "",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "ecniq3ll2n6l": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.39,
+  "text": "You walked down the dark gallery. The dancers carved on the walls seemed to look back at you. …She wasn't there.",
+  "heard": " You walked down the dark gallery. The dancers carved on the walls seemed to look back at you. …She wasn't",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
  }
 }
