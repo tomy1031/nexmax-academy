@@ -1750,5 +1750,41 @@
   "heard": " The waterfall's name is still around! People call it “Biwa Falls.”",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1xu2f3whjpxu": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 3.5600416666666668,
+  "text": "The name… Then that is enough.",
+  "heard": " Then that is enough.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eu59vsc4raun": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 5.680041666666667,
+  "text": "Hehe. What a kind lie. …But it makes me happy.",
+  "heard": "What a kind lie, but it makes me happy.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1cdb1oj134us": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.05,
+  "text": "(whispering) …No, wait — the song survived too! That tune Kichizo the raftsman sang at Oboke…!",
+  "heard": "No wait. The song survived too. That tune Kichizō the raftsman sang at Oboke.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
