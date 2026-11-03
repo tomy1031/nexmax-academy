@@ -190,5 +190,17 @@
   "heard": " He held the gourd against his chest and plucked the string. Bonn, bonn… a low sound drifted out over",
   "scene": "お祝いの、晴れやかな場面。明るく",
   "readings": []
+ },
+ "e14a15z35um5w": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "kromngoy",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 6.62,
+  "text": "♪ The rice field will not wait for you — a morning slept away won't come back",
+  "heard": "",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
  }
 }
