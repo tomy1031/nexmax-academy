@@ -647,5 +647,103 @@
   "heard": "あ、見てたの？ 恥ずかしい。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "vhj4bf0": {
+  "episode": "kh-taprohm",
+  "lang": "ja",
+  "speaker": "sreymom",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 5.35,
+  "text": "わたし、スレイモン。十二歳。この寺の踊り手なの。",
+  "heard": "わたし、スレイモン。十二歳。この寺の踊り手なの。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vzern3c": {
+  "episode": "kh-taprohm",
+  "lang": "ja",
+  "speaker": "sreymom",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 7.49,
+  "text": "今日は、春のお祭り。わたし、はじめて、お祭りで踊るの。……手が、ふるえちゃって。",
+  "heard": "今日は、春のお祭り。わたし、はじめて、お祭りで踊るの。……手が、ふるえちゃって。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vpqtims": {
+  "episode": "kh-taprohm",
+  "lang": "ja",
+  "speaker": "sreymom",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 4.72,
+  "text": "あっ、また来てくれたの？ ……今日も、手がふるえちゃう。",
+  "heard": "あっ、また来てくれたの？ ……今日も、手がふるえちゃう。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v5ieplq": {
+  "episode": "kh-taprohm",
+  "lang": "ja",
+  "speaker": "sreymom",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 5.2,
+  "text": "あっ……見てたの？ ……あれ、どこかで会った？",
+  "heard": "あっ……見てたの？ ……あれ、どこかで会った？",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vfzmlvh": {
+  "episode": "kh-taprohm",
+  "lang": "ja",
+  "speaker": "sreymom",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 6.95,
+  "text": "わたし、スレイモン。この寺の踊り手。今日、はじめてお祭りで踊るの。",
+  "heard": "わたし、スレイモン。この寺の踊り手。今日、はじめてお祭りで踊るの。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1jgoi8j": {
+  "episode": "kh-taprohm",
+  "lang": "ja",
+  "speaker": "sreymom",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 4.98,
+  "text": "この寺はね、王さまが、お母さまのために建てたんだって。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1do4zu3": {
+  "episode": "kh-taprohm",
+  "lang": "ja",
+  "speaker": "sreymom",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 6.590041666666667,
+  "text": "まんなかのお堂には、お母さまの姿をうつした、知恵の仏さまがまつられているの。",
+  "heard": " まんなかのお堂には、お母さまの姿をうつした、知恵の仏さまがまつられているの。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1m1iyor": {
+  "episode": "kh-taprohm",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.6,
+  "text": "ジャヤーヴァルマン7世という王さまだよ。この寺に残る、石に刻まれた文——碑文に、そう書かれているんだ。",
+  "heard": "ジャヤーヴァルマン7世という王さまだよ。この寺に残る、石に刻まれた文——碑文に、そう書かれているん",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "碑文＝ひぶん"
+  ]
  }
 }
