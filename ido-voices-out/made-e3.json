@@ -1378,5 +1378,101 @@
   "heard": " My elder brother Yoritomo turned against me. He hunted me. I crossed mountain after mountain, and at last I reached Lord Hidehira.",
   "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
   "readings": []
+ },
+ "exh4mm7dxfk7": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 6.47,
+  "text": "Now Lord Hidehira has died too… and his own son is attacking me like this.",
+  "heard": "\nNow Lord Hidehira has died too… and his own son is attacking me",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "edqapzx3oy1g": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 7.78,
+  "text": "I do not hate him for it. Kamakura pressed Lord Yasuhira hard. He had no other choice.",
+  "heard": " I do not hate him for it. Kamakura pressed Lord Yasuhira hard. He had no other choice.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e1q0g353f0b3s": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.15,
+  "text": "Outside, a great battle cry went up.",
+  "heard": "outside a great battle cry went up",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e1jos52pdf8qr": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "benkei",
+  "voice": "Alnilam",
+  "model": "gemini-3.8-live",
+  "seconds": 9.070041666666667,
+  "text": "My lord! Until your final preparations are done, I, Benkei, will not let a single man pass!",
+  "heard": " My lord! Until your final preparations are done, I, Benkei, will not let a single man pass!",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "epxlt7qo20td": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 13.56,
+  "text": "Even when countless arrows struck him, Benkei leaned on his naginata (a long-bladed spear) and never fell. He stood there to the end, still guarding the gate. This legend is known as “Benkei's standing death.”",
+  "heard": " Even when countless arrows struck him, Benkei leaned on his naginata (a long-bladed spear) and never fell. He stood there to the end, still guarding the gate. This legend is known as",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "e12b1n7oxbml1": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 9.390041666666667,
+  "text": "Sato Tsuginobu and his brother Tadanobu both gave their lives to shield me. And now, Benkei too.",
+  "heard": " Sato Tsuginobu and his brother Tadanobu both gave their lives to shield me. And now,",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "emfz2vk6kybi": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 3.09,
+  "text": "…I keep losing the ones who shield me.",
+  "heard": "I keep losing the ones who shield me.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e1c35hmh1m2m1": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 16.950041666666667,
+  "text": "Traveler. …May I ask you one thing?",
+  "heard": " …May I ask you one thing?",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
  }
 }
