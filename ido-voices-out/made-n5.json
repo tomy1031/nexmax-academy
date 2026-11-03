@@ -814,5 +814,101 @@
   "heard": "",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "exnv3z81oxi6": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "sreymom",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 1.8400833333333333,
+  "text": "Just like the king.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e14xdfia69tvm": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "sreymom",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 3.4600416666666667,
+  "text": "That's nice. I dance for my family, too.",
+  "heard": " That's nice. I dance for my family, too.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1gqueeu1l5xp": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "sreymom",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 5.29,
+  "text": "Someone you've never met… I hope it reaches people far in the future, too.",
+  "heard": " Someone you've never met… I hope it reaches people far in the future, too.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "emkly791tnv8": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.840041666666666,
+  "text": "Beyond the gallery, a procession of banners and parasols moved slowly along. The beat of the drums echoed in your chest.",
+  "heard": " Beyond the gallery, a procession of banners and parasols moved slowly along. The beat of the drums echoed",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1c9a4nf1riia": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.88,
+  "text": "Far at the back, beneath a golden parasol, was the king. He was too far away for you to see his face.",
+  "heard": " Far at the back, beneath a golden parasol, was the king. He was too far away for you to see his face.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e16sh3fa13zde": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.790041666666667,
+  "text": "In front of the stone tablet, a priest read out in a loud voice the king's wish, carved in the inscription.",
+  "heard": "In front of the stone tablet, a priest read out in a loud voice the king's wish, carved in the inscription.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e6cl40n17e7b": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "祭官",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.500041666666666,
+  "text": "“May my mother be freed from the ocean of rebirth and reach Buddhahood.”",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e3gryck3cuws": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "sreymom",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 2.67,
+  "text": "…The king thinks of his mother this much, too.",
+  "heard": " The king thinks of his mother this much,",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
