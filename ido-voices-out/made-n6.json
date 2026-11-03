@@ -1402,5 +1402,101 @@
   "heard": " I see. So you too have someone like that.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e2x68cy5pzra": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 3.63,
+  "text": "Surely the Buddha is listening.",
+  "heard": " Surely the Buddha is listening.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eb9ovkse7lw1": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 7.750041666666666,
+  "text": "“Tomorrow, still unseen,” is it? …A fine wish. The wish of one who crosses the sea.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eq8hek2e9ok0": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 4.600041666666667,
+  "text": "I wish to leave a written mark that I came here.",
+  "heard": " I wish to leave a written mark that I came here.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e6hweu686omq": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 10.76,
+  "text": "For my father, for my mother, and for whoever comes here someday. So they will know that a man of Japan came here to pray.",
+  "heard": " For my father, for my mother, and for whoever comes here someday. So they will know that a man of Japan came",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "emroinq18ds2": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.41,
+  "text": "(whispering) Today, writing on ancient ruins is absolutely not allowed. But this is four hundred years ago.",
+  "heard": " Today, writing on ancient ruins is absolutely not allowed. But this is four hundred years ago.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1yb6jlq546d3": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.75,
+  "text": "Kazufusa took a brush from the yatate (a portable brush-and-ink case) at his waist. He climbed onto a step and touched the brush to the pillar, above his head.",
+  "heard": " Kazufusa took a brush from the yatate at his waist. He climbed onto a step and touched the brush to",
+  "scene": "かなしみの場面。静かに、こらえるように。大げさにしない",
+  "readings": []
+ },
+ "ewtuupw7jpiq": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.76,
+  "text": "The faint smell of ink drifted on the dry wind.",
+  "heard": "The faint smell of ink drifted on the dry wind.",
+  "scene": "かなしみの場面。静かに、こらえるように。大げさにしない",
+  "readings": []
+ },
+ "e151xyf915rwv": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "一房が書いた字",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 14.900041666666667,
+  "text": "In the first month of Kan'ei 9 (1632), I came here for the first time. Born in Japan, a man of Hishu: Morimoto Ukondayu Kazufusa.",
+  "heard": " In the first month of Kan'ei 9 (1632), I came here for the first time. Born in Japan, a man of Hishu: Morimoto Ukondayu Kazufusa.",
+  "scene": "かなしみの場面。静かに、こらえるように。大げさにしない",
+  "readings": []
  }
 }
