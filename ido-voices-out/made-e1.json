@@ -1462,5 +1462,101 @@
   "heard": "Thank you.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "erk2y8h16hq4": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 3.9200416666666666,
+  "text": "…So you see me as a true samurai.",
+  "heard": "So you see me as a true samurai?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ep9zlae1x9zq": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 8.65,
+  "text": "You'll just listen quietly, won't you, traveler? …Then please, listen.",
+  "heard": " You'll just listen quietly, won't you, traveler? …Then please, listen.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1y4kvlyizvga": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.560083333333333,
+  "text": "Aya took a firm grip on the pick of her biwa (a Japanese lute).",
+  "heard": "Ella took a firm grip on the pick of her biwa, a Japanese lute.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1n47psja0hbm": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 6.27,
+  "text": "I will play a spring song from the capital. It was the Emperor's very favorite.",
+  "heard": " I will play a spring song from the capital. It was the Emperor's very favorite.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eq4yaz014d6n": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 5.53,
+  "text": "Lord Kunimori. …If you must go, please hear this song first.",
+  "heard": " …If you must go, please hear this song first.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e16w6dzo1sa84": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.760041666666667,
+  "text": "The sound of the falls faded far away.",
+  "heard": " The sound of the falls faded far",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1wzfjdmh1n1i": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 11.7,
+  "text": "The capital in cherry-blossom time. The little Emperor, laughing. Days that would never come back bloomed on the strings, then scattered like petals.",
+  "heard": " The capital in cherry blossom time. The little Emperor, laughing. Days that would never come back bloomed on the strings, then scattered like petals.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1ja7m0h15g50": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.26,
+  "text": "Kunimori did not move.",
+  "heard": "\nKunimori did not move.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
