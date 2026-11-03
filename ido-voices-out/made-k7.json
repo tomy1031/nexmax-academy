@@ -826,5 +826,101 @@
   "heard": "",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v1s6la4l": {
+  "episode": "kh-banteaykdei",
+  "lang": "ja",
+  "speaker": "sovann",
+  "voice": "Umbriel",
+  "model": "gemini-3.8-live",
+  "seconds": 7.21,
+  "text": "ぼく、ソワン。二十四歳。遺跡を守る仕事をするための、研修生です。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vmwv6jt": {
+  "episode": "kh-banteaykdei",
+  "lang": "ja",
+  "speaker": "sovann",
+  "voice": "Umbriel",
+  "model": "gemini-3.8-live",
+  "seconds": 7.67,
+  "text": "日本の大学の先生たちといっしょに、カンボジアの若い研修生が、発掘のしかたを学んでいるんです。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1fhb9y8": {
+  "episode": "kh-banteaykdei",
+  "lang": "ja",
+  "speaker": "sovann",
+  "voice": "Umbriel",
+  "model": "gemini-3.8-live",
+  "seconds": 3.98,
+  "text": "あ、また来てくださったんですね。足もと、気をつけて。",
+  "heard": " あ、また来てくださったんですね。足もと、気につけて。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1reyv8j": {
+  "episode": "kh-banteaykdei",
+  "lang": "ja",
+  "speaker": "sovann",
+  "voice": "Umbriel",
+  "model": "gemini-3.8-live",
+  "seconds": 5.88,
+  "text": "あ、見学の方ですか？ ……あれ、どこかでお会いしましたか。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v10tdstw": {
+  "episode": "kh-banteaykdei",
+  "lang": "ja",
+  "speaker": "sovann",
+  "voice": "Umbriel",
+  "model": "gemini-3.8-live",
+  "seconds": 5.660041666666666,
+  "text": "ぼく、ソワン。遺跡を守る仕事をするための、研修生です。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1gbrc39": {
+  "episode": "kh-banteaykdei",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.26,
+  "text": "アンコールの遺跡を守るカンボジアの専門家を育てる研修が、1990年代のはじめから続いているんだ。",
+  "heard": "アンコールの遺跡を守るカンボジアの専門家を育てる研修が、1990年代のはじめから続いているんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1timzey": {
+  "episode": "kh-banteaykdei",
+  "lang": "ja",
+  "speaker": "sovann",
+  "voice": "Umbriel",
+  "model": "gemini-3.8-live",
+  "seconds": 8.5,
+  "text": "遺跡を守る人は、昔、たくさんいたんです。でも、長い戦争のあいだに、ほとんどいなくなってしまった。",
+  "heard": "遺跡を守る人は、昔、たくさんいたんです。でも、長い戦争のあいだに、ほとんどいなくなってしまった。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v5rtfzr": {
+  "episode": "kh-banteaykdei",
+  "lang": "ja",
+  "speaker": "sovann",
+  "voice": "Umbriel",
+  "model": "gemini-3.8-live",
+  "seconds": 7.84,
+  "text": "だから、ぼくたちが、学びなおしているんです。自分の国の遺跡を、自分たちの手で守れるように。",
+  "heard": "だから 僕 たち が 学び 直し て いる ん です 。 自分 の 国 の 遺跡 を 自分 たち の 手 で 守れる よう に 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
