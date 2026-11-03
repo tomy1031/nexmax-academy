@@ -934,5 +934,101 @@
   "heard": " Phew, I've sung myself hoarse. …Oh, Borey. There you are.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1n4imfp1dt52": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "kromngoy",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 4.95,
+  "text": "Once you've learned your letters, read my songs to someone for me.",
+  "heard": " Once you've learned your letters, read my songs to someone for me.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1yt0ha217qcr": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "kromngoy",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 11.700041666666667,
+  "text": "A song only comes alive when it's handed on, you see. From my mouth to yours. And from your mouth, on to the next child.",
+  "heard": " A song only comes alive when it's handed on, you see. From my mouth to yours. And from your mouth, on to the next child.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1bmw9wl17lzl": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "borey",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 5.74,
+  "text": "…Okay! I'll read them to my grandma in the village. Her eyes are bad, so I'll be her eyes.",
+  "heard": " Okay! I'll read them to my grandma in the village. Her eyes are bad, so I'll be her eyes.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "esxsrps12219": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "borey",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 3.5500416666666665,
+  "text": "Heh heh. First I have to learn my letters properly.",
+  "heard": " Heh heh. First I have to learn my letters properly.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ensfqb11gjb5": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "borey",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 4.64,
+  "text": "Then do you want to learn your letters with me? I'll lend you my slate!",
+  "heard": " Then do you want to learn your letters with me? I'll lend you my slate!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1e011t1g1u3": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.87,
+  "text": "(whispering) The bank where Piseth carried the pillar timber is just south of here. Sixty-four years since then. The capital has grown so much.",
+  "heard": " The bank where Piseth carried the pillar timber is just south of here. Sixty-four years since then. The capital has grown so much.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e2fhyuj13t08": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.840041666666667,
+  "text": "…We're back. This is the riverbank of Phnom Penh today.",
+  "heard": " We're back. This is the riverbank of Phnom Penh today.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "evw6hhpnlknl": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.84,
+  "text": "In 1930, the Buddhist Institute was founded in Phnom Penh. It studied sutras and old Khmer literature, printed them as books and sent them to temples all over the country.",
+  "heard": " In 1930, the Buddhist Institute was founded in Phnom Penh. It studied sutras and old Khmer literature, printed them as books and sent them to temples all over the country.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
