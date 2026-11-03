@@ -530,5 +530,101 @@
   "heard": "ちょっと 怖い の 。 うまく でき なかっ たら どう しよう 。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v1esjchw": {
+  "episode": "kh-museum",
+  "lang": "ja",
+  "speaker": "leakhena",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 4.83,
+  "text": "あっ、また来てくれたの？ ……今日も、ちょっとこわいの。",
+  "heard": " あっ、また来てくれたの？ ……今日も、ちょっとこわいの。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vw6no0e": {
+  "episode": "kh-museum",
+  "lang": "ja",
+  "speaker": "leakhena",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 5.98,
+  "text": "ねえ、あなたも、踊りを習いに来たの？ ……あれ、どこかで会った？",
+  "heard": " ねぇ、あなたも、踊りを習いに来たの？ ……あれ、どこ",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vpqnwsi": {
+  "episode": "kh-museum",
+  "lang": "ja",
+  "speaker": "leakhena",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 4.55,
+  "text": "わたし、リアクナ。今日から、ここの生徒なの。",
+  "heard": "わたし、リアクナ。今日から、ここの",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v16sbuef": {
+  "episode": "kh-museum",
+  "lang": "ja",
+  "speaker": "neary",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 5.78,
+  "text": "こわくていいのよ、リアクナ。最初は、だれでもこわいの。",
+  "heard": "こわくていいのよ、リアクナ。最初は、だれでもこわ",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ved6bx": {
+  "episode": "kh-museum",
+  "lang": "ja",
+  "speaker": "neary",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 12.46,
+  "text": "あら、旅の方。……どうぞ、すわって見ていらして。わたしは、ネアリー。この子たちに、踊りを教えます。",
+  "heard": "あら 旅 の 方 どうぞ 座っ て 見 て いらし て 私 は ネアリー この 子 たち に 踊り を 教え ます 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v80n5x1": {
+  "episode": "kh-museum",
+  "lang": "ja",
+  "speaker": "neary",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 4.8,
+  "text": "あら、また、いらしてくださったのね。どうぞ、すわって見ていらして。",
+  "heard": "あら 、 まぁ 、 たいら し て くださっ た の ね 。 どうぞ 座っ て 見 て いらし て 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1qlb6hj": {
+  "episode": "kh-museum",
+  "lang": "ja",
+  "speaker": "neary",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 7.87,
+  "text": "こわくていいのよ、リアクナ。……あら、旅の方。どうぞ、すわって見ていらして。",
+  "heard": "怖くていいのよ。リアルな。 あら、旅の方。 どうぞ、座ってみいらして。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1cqijtn": {
+  "episode": "kh-museum",
+  "lang": "ja",
+  "speaker": "neary",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 6.000041666666666,
+  "text": "わたしは、ネアリー。この子たちに、踊りを教えます。",
+  "heard": "わたしは、ネアリー。この子たちに、踊りを教えます。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
