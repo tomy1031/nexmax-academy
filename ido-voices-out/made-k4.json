@@ -766,5 +766,101 @@
   "heard": "子どもは、未来の宝。……ソカーさんの一歩も、いつか、だれかの橋になるんだ。",
   "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
   "readings": []
+ },
+ "vzl1ec6": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.85,
+  "text": "……旅人さん。プノンペンに来てくれて、ありがとう。",
+  "heard": "旅人 さん 、 ブノンペン に 来 て くれ て ありがとう 。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vdfn922": {
+  "episode": "kh-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 0.82,
+  "text": "អរគុណ（オークン）！ ——ありがとう！",
+  "heard": "អរគុណ（オークン）！ ——ありがとう！",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vbqakz3": {
+  "episode": "kh-sr-prologue",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 18.040041666666667,
+  "text": "まだ暗い、朝の五時。アンコール・ワットの西の参道に、朝日を待つ人たちが集まっている。",
+  "heard": " まだ暗い、朝の五時。 アンコール・ワットの西の参道に、朝日を待つ人たちが集まっている。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1csw3wm": {
+  "episode": "kh-sr-prologue",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.000041666666666,
+  "text": "いろんな国のことばが、ひそひそと聞こえる。",
+  "heard": "いろんな 国 の 言葉 が ひそひそ と 聞こえる 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v15qs0vp": {
+  "episode": "kh-sr-prologue",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.400041666666667,
+  "text": "案内板のQRコードに、スマホをかざした。その瞬間——",
+  "heard": "案内板のQRコードに、スマホをかざした。その瞬間",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v86n9bk": {
+  "episode": "kh-sr-prologue",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.7500416666666667,
+  "text": "ざわめきが、すうっと遠くなった。",
+  "heard": "ざわめき が すっ と 遠く なっ た 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1pry1dp": {
+  "episode": "kh-sr-prologue",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.73,
+  "text": "ជម្រាបសួរ（チョムリアップ・スオ）！ カンボジアのことばで「こんにちは」だよ。",
+  "heard": "「ជម្រាបសួរ（チョムリアップ・スオ）！ カンボジアのことばで「こんにちは」だよ。」",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v41t0mf": {
+  "episode": "kh-sr-prologue",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.23,
+  "text": "また会えたね！ 今度は、シェムリアップの旅だよ。",
+  "heard": "また会えたね！今度は、シェムリアップの旅だよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
