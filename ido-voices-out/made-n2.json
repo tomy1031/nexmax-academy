@@ -538,5 +538,101 @@
   "heard": " …I'm a little scared today, too.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "ew6no0e1thsi": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "leakhena",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 5.62,
+  "text": "Hey, did you come to learn dance too? …Huh? Have we met before?",
+  "heard": " Hey, did you come to learn dance too? …Huh? Have we met",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "epqnwsi9sy6y": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "leakhena",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 4.46,
+  "text": "I'm Leakhena. Starting today, I'm a student here.",
+  "heard": " I'm Leakhena. Starting today, I'm a student here.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e16sbuef169z0": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "neary",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 6.56,
+  "text": "It's all right to be scared, Leakhena. Everyone is scared at first.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eed6bx1pqdm": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "neary",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 8.710041666666667,
+  "text": "Oh, a traveler. …Please, sit and watch. I am Neary. I teach these children to dance.",
+  "heard": " Oh, a traveler. …Please, sit and watch. I am Neary. I teach these",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e80n5x1rwpw2": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "neary",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 4.640041666666667,
+  "text": "Oh, you've come again. Please, sit and watch.",
+  "heard": " Oh, you've come again. Please, sit",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1qlb6hj1uxop": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "neary",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 8.640041666666667,
+  "text": "It's all right to be scared, Leakhena. …Oh, a traveler. Please, sit and watch.",
+  "heard": " It's all right to be scared, Leakhena. …Oh, a traveler. Please, sit and watch.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1cqijtn75vi2": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "neary",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 5.000041666666666,
+  "text": "I am Neary. I teach these children to dance.",
+  "heard": " I teach these children to dance.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ejjskfi129yh": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.470041666666667,
+  "text": "Teacher Neary had no books, no sheet music, no photographs.",
+  "heard": " Teacher Neary had no books, no sheet music, no photographs.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
