@@ -682,5 +682,101 @@
   "heard": " In 2019, it got another big repair with Japan's help. Children from schools on both banks were invited to celebrate when the work was finished.",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "e8kfgpg1i30w": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.84,
+  "text": "(whispering) Those who remember, teach. …Sophea really did receive what he handed down.",
+  "heard": " Those who remember, teach. …Sophea really did receive what he handed down.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1ip7tj9xwl8m": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.960041666666666,
+  "text": "April 2015. The ferry landing at Neak Loeung, on the banks of the Mekong.",
+  "heard": " April twenty fifteen. The ferry landing at Neak Loeung, on the banks of the Mekong.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "ekrs0n3kck1n": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.37,
+  "text": "Trucks, buses, motorbikes, people. The line waiting for the ferry stretched far down the road.",
+  "heard": " Trucks, buses, motorbikes, people. The line waiting for the ferry stretched far down",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1cky7bw60kph": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.000041666666666,
+  "text": "Upstream, you could see two pure white towers, and a long bridge spanning the river.",
+  "heard": " Upstream, you could see two pure white towers, and a long bridge spanning the river.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "eioso2w3y51s": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "物売りの声",
+  "voice": "Fenrir",
+  "model": "gemini-3.8-live",
+  "seconds": 3.350041666666667,
+  "text": "Grilled corn! Mangoes! We've got bread too!",
+  "heard": " Mangoes! We've got bread too!",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "erb699v11140": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "vichet",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 3.75,
+  "text": "Hey, you there! Want some corn? It's sweet!",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e14h0714jtjmv": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "vichet",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 6.970041666666667,
+  "text": "Are you from another country? The ferry won't come for at least three more hours. You'll get hungry, right?",
+  "heard": " Are you from another country? The ferry won't come for at least three more hours. You'll get hungry, right?",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e13o3d2f90hp0": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "vichet",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 4.270041666666667,
+  "text": "I'm Vichet. Best seller at this whole ferry landing!",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
