@@ -96,5 +96,103 @@
   "heard": "",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "vls7v3r": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "borey",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 5.87,
+  "text": "ぼく、ボレイ。ワット・ウナロムに住んで、字を習ってる「お寺の子」だよ。",
+  "heard": "ぼく、ボレイ。ワット・ウナロムに住んで、字を習ってる「おてらのこ」だよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "お寺の子＝おてらのこ"
+  ]
+ },
+ "v1t4g47z": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.19,
+  "text": "むかしのカンボジアでは、男の子がお寺に住んで、お坊さんから字や教えを習うことが多かったんだ。",
+  "heard": "むかしのカンボジアでは、男の子がお寺に住んで、お坊さんから字や教えを習うことが多かったんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1k748k9": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "borey",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 6.3,
+  "text": "今日はね、クロム・ンゴイさんが来るんだ！ 国でいちばんの、歌うたいのおじいさん！",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v143minz": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "borey",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 8.83,
+  "text": "村の祭りで、いちど聞いたことがあるの。歌を聞いてると、笑ったり、泣いたり、いそがしいんだよ。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vbayrb9": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.04,
+  "text": "大きな体のおじいさんが、ござの上に、どっかりとすわった。",
+  "heard": "大きな体におじいさんが、ござの上に、どっかりとすわった。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "vwnn2jv": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.24,
+  "text": "おじいさんは、長い杖に、半分に割ったひょうたんを結びつけ、糸を一本、ぴんと張った。",
+  "heard": "おじいさんは、長い杖に、半分に割ったひょうたんを結びつけ、糸を一本、ぴんと張った。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "v1rm1tfb": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.03,
+  "text": "クセー・ディエウっていう、糸が一本だけの楽器だよ。クロム・ンゴイさんは、いつも持ち歩く杖で、その場で組み立てたと伝えられているんだ。",
+  "heard": "クセー・ディエウっていう、糸が一本だけの楽器だよ。クロム・ンゴイさんは、いつも持ち歩く杖で、その場で組み立てたと伝えられているんだ。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "v9y2edx": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.93,
+  "text": "ひょうたんを胸に当てて、糸をはじく。ぼん、ぼん……と、低い音が、川の上を流れていく。",
+  "heard": "ひょうたんを胸に当てて、糸をはじく。ぼん、ぼん……と、低い音が、川の上を流れていく。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
  }
 }
