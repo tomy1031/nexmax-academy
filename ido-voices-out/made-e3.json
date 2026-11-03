@@ -1366,5 +1366,17 @@
   "heard": "I laughed at you then. Now, I am a little sorry that I did.",
   "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
   "readings": []
+ },
+ "e1spfnni3wp8g": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 10.52,
+  "text": "My elder brother Yoritomo turned against me. He hunted me. I crossed mountain after mountain, and at last I reached Lord Hidehira.",
+  "heard": " My elder brother Yoritomo turned against me. He hunted me. I crossed mountain after mountain, and at last I reached Lord Hidehira.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
  }
 }
