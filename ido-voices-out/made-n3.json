@@ -1162,5 +1162,101 @@
   "heard": "",
   "scene": "お祝いの、晴れやかな場面。明るく",
   "readings": []
+ },
+ "elq0lmqvyfdf": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "vichet",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 4.7400416666666665,
+  "text": "Ugh… You sound just like Mom… But yeah, you're right.",
+  "heard": " Ugh… You sound just like Mom… But yeah, you're right.",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "eqken5e1fehh": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.95,
+  "text": "(whispering) Bopha, who wants to make maps. Vichet, who wants to connect things. …They're kind of alike, aren't they?",
+  "heard": " Bopha, who wants to make maps. Vichet, who wants to connect things. …They're kind of alike, aren't they?",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "e4mf2rlsdd26": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.54,
+  "text": "By the road at the foot of the bridge, a motorbike loaded with coils of cable was parked.",
+  "heard": " By the road at the foot of the bridge, a motorbike loaded with coils of cable was parked.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "ei0fpez1hbu4": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "vichet2",
+  "voice": "Sadachbia",
+  "model": "gemini-3.8-live",
+  "seconds": 4.960041666666666,
+  "text": "…Huh? Hey, you're… from back when I sold corn…!",
+  "heard": " Huh? Hey, you're… from back when I sold corn!",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "eo2vy4egqhiv": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "vichet2",
+  "voice": "Sadachbia",
+  "model": "gemini-3.8-live",
+  "seconds": 3.03,
+  "text": "It's me, Vichet! I'm twenty-three now.",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "eko8l65i9d38": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "vichet2",
+  "voice": "Sadachbia",
+  "model": "gemini-3.8-live",
+  "seconds": 6.98,
+  "text": "These days, my job is running internet cables to villages. I work during the day, and go to a technical school at night.",
+  "heard": " These days, my job is running internet cables to villages. I work during the day, and go to a technical school at night.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e18j68311aa9u": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "vichet2",
+  "voice": "Sadachbia",
+  "model": "gemini-3.8-live",
+  "seconds": 4.68,
+  "text": "When you told me, “Then you'll need to study,” it really stuck with me.",
+  "heard": " When you told me, \"Then you'll need to study,\" it really stuck with me.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1aw1yc9mp4tv": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "vichet2",
+  "voice": "Sadachbia",
+  "model": "gemini-3.8-live",
+  "seconds": 3.57,
+  "text": "When you told me I could do it, that really stuck with me.",
+  "heard": " When you told me I could do it, that really stuck",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
