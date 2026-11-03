@@ -358,5 +358,101 @@
   "heard": " But you know, I'm sixty-five now. And as a song passes from mouth to mouth, little by little, it changes.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "ewo1xnr1tivw": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "kromngoy",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 6.52,
+  "text": "That's why I'm going to the temple today. To have my songs made into a proper book.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eswchpk186fb": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "kromngoy",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 7.71,
+  "text": "That's right. I'll sing slowly, and the young monks will write them down, word by word, so they tell me.",
+  "heard": " That's right. I'll sing slowly, and the young monks will write them down, word by word, so they tell me.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ew7u41gt1fmi": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "kromngoy",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 8.87,
+  "text": "Just so. But write them down, and children a hundred years from now can read them just as I sang them.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1yu8lrr1cw5a": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.340041666666667,
+  "text": "You and Borey followed Krom Ngoy north to the temple.",
+  "heard": "You and Borey followed Krom Ngoy north to the temple.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e2d68p64mr5r": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.610041666666667,
+  "text": "A breezy gallery at Wat Ounalom.",
+  "heard": " A breezy gallery at Wat Ounalom.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "ehwbeoi6psju": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.05,
+  "text": "Young monks sat at low desks, pens in hand, with paper notebooks open in front of them.",
+  "heard": " Young monks sat at low desks, pens in hand, with paper notebooks open in front",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "eqn4x5ap9y0j": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.12,
+  "text": "A little way off sat a foreign woman in a dark dress.",
+  "heard": " A little way off sat a foreign woman in a dark dress.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "ecjwe9n7j8p4": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "borey",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 9.85,
+  "text": "That's Miss Karpelès. She's a scholar from France. She works at a library that collects sutras and old books.",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
