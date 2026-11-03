@@ -982,5 +982,101 @@
   "heard": " Teacher Neary is gone now… but her fingers are still right",
   "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
   "readings": []
+ },
+ "e1b54ih31tn1x": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "leakhena2",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 6.47,
+  "text": "I remember the “Bud” you made. Today, these children started with the bud, too.",
+  "heard": " I remember the “Bud” you made. Today, these children started with the bud,",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "eh27i1g390wh": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "leakhena2",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 5.8,
+  "text": "I remember your “Blossoming flower.” The shape Teacher said was the hardest.",
+  "heard": " I remember your “Blossoming flower.” The shape Teacher said was the hardest.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "evnbm8jgynet": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "leakhena2",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 7.71,
+  "text": "I remember your “Fruit.” The fruit falls and becomes a seed again… That's exactly how it turned out.",
+  "heard": " I remember your \"Fruit.\" The fruit falls and becomes a seed again… That's exactly how it turned out.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1avfgatpg6e1": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 12.35,
+  "text": "This is the National Museum. It opened on 13 April 1920, on Khmer New Year's Day. It holds more than 14,000 objects, including many Khmer sculptures.",
+  "heard": " This is the National Museum. It opened on 13 April 1920, on Khmer New Year's Day. It holds more than 14,000 objects, including many Khmer sculptures.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e4z93j5d5oec": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.78,
+  "text": "It was closed from 1975, but it opened again on 13 April 1979 — on the same day, exactly 59 years later.",
+  "heard": " It was closed from 1975, but it opened again on 13 April 1979 — on the same day, exactly 59 years",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1g7zlnmp9dnq": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.830041666666666,
+  "text": "The arts school next door opened again in 1981, too. Today it's the Royal University of Fine Arts.",
+  "heard": " The arts school next door opened again in 1981, too. Today it's the Royal University of Fine Arts.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "enlv7bj2l5nd": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 12.54,
+  "text": "Teachers who had once danced at the royal court came back and traveled around the country to find students. One of them, Chea Samy, said something like this in a 1993 interview.",
+  "heard": " Teachers who had once danced at the royal court came back and traveled around the country to find students. One of them, Chea Samy, said something like this in a 1993 interview.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1ald2fm1qge5": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.37,
+  "text": "“The dance survived those terrible years. So we can survive, too.”",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
