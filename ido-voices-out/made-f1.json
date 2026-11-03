@@ -1,0 +1,26 @@
+{
+ "v1dl88lc": {
+  "episode": "kh-royalpalace",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.76,
+  "text": "（小声）柱は残る。……その柱を立てた人の手も、どこかに残ってるのかな。",
+  "heard": "……その柱を立てた人の手も、どこかに残ってるのかな。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v194ds03": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.06,
+  "text": "（小声）四百年前、海を渡って祈った人がいた。日本とカンボジアの物語は、そんなに昔から続いているんだ。",
+  "heard": "四百年前、海を渡って祈った人がいた。日本とカンボジアの物語は、そんなに昔から続いているんだ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ }
+}
