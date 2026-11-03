@@ -94,5 +94,17 @@
   "heard": "うわっ た 誰 ? なん で 僕 の こと 知っ てる みたい な 顔 し てる の ?",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v1lckh11": {
+  "episode": "kh-angkor-build",
+  "lang": "ja",
+  "speaker": "keo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 6.26,
+  "text": "ぼく、ケオ。石を彫る見習い。今日、はじめて天女さまをまかされたんだ。",
+  "heard": " ぼく、ケオ。石を彫る見習い。今日、はじめて天女さまをまかされたんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
