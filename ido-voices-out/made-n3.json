@@ -874,5 +874,101 @@
   "heard": "",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "ezj0zee8svih": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "vichet",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 5.44,
+  "text": "It's the new 500-riel note. They say the bridge on it is that one, right there.",
+  "heard": " It's the new 500-riel note. They say the bridge on it is that one, right there.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1mewc5w1g1z4": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "vichet",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 4.54,
+  "text": "I've never crossed that bridge, but I see it on money every day.",
+  "heard": " I've never crossed that bridge, but I see it on money every day.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1s1bnzqvpoy9": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.41,
+  "text": "The new 500-riel note shows that bridge and the Kizuna Bridge in Kampong Cham. Both were built with Japan's help.",
+  "heard": " The new 500-riel note shows that bridge and the Kizuna Bridge in Kampong Cham. Both were built with Japan's",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "ez64w2u1ex36": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "vichet",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 6.61,
+  "text": "It's called “Tsubasa.” They say it's the Japanese word for the wings a bird spreads when it flies.",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1lhdaubdy90d": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.22,
+  "text": "Cambodia's prime minister named it in January, at a ceremony to celebrate the two halves of the bridge meeting in the middle.",
+  "heard": " Cambodia's prime minister named it in January, at a ceremony to celebrate the two halves of the bridge meeting in the middle.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e766ql710ox6": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "vichet",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 2.24,
+  "text": "That bridge opens tomorrow.",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1k51umo1jhcb": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "vichet",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 2.71,
+  "text": "…Then nobody will wait for the ferry anymore.",
+  "heard": " Then nobody will wait for the ferry anymore.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "ee4ojhe1gk97": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "vichet",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 3.33,
+  "text": "If nobody's waiting, who's going to buy my corn?",
+  "heard": " If nobody's waiting, who's going to buy my corn?",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
