@@ -94,5 +94,101 @@
   "heard": " …Huh? Have we met somewhere?",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "eq6pl2ffv6bg": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "bopha",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 2.34,
+  "text": "I'm Bopha. I live here.",
+  "heard": " I live here.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "errjvus11ai9": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.12,
+  "text": "These are landmines and unexploded bombs. A landmine is a weapon buried in the ground. It explodes when someone steps on it.",
+  "heard": " These are landmines and unexploded bombs. A landmine is a weapon buried in the ground. It explodes when someone steps on it.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "exh05xp1ed6m": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.56,
+  "text": "An unexploded bomb is one that was dropped or fired but never went off — so it's still out there.",
+  "heard": " An unexploded bomb is one that was dropped or fired but never went off — so it's still out there.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e13t819jkrn7l": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.82,
+  "text": "During the long wars, it's thought that four to six million landmines were buried in this country.",
+  "heard": " During the long wars, it's thought that four to six million landmines were buried in this",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eiqugnbntsyl": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "bopha",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 3.3400416666666666,
+  "text": "All the kids here call the man of this house “Papa.”",
+  "heard": " All the kids here call the man of this house “Papa.”",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "erpzxj31phzd": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "bopha",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 6.22,
+  "text": "Papa finds landmines in fields and on roads, makes them so they can't explode, and puts them here.",
+  "heard": " Papa finds landmines in fields and on roads, makes them so they can't explode, and puts them here.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1u5b3horkoo2": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.75,
+  "text": "At this house, each visitor paid one dollar, and that money helped raise the children who had been taken in.",
+  "heard": " At this house, each visitor paid one dollar, and that money helped raise the children who had been taken in.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e15sd15d56rjh": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "bopha",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 5.4,
+  "text": "Kids who were hurt by landmines, and kids who lost their families, live here together.",
+  "heard": " Kids who were hurt by landmines, and kids who lost their families, live here together.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
