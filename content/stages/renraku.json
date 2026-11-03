@@ -45,7 +45,9 @@
   ],
   "wordStageIds": [
     "hourensou_renraku_kihon",
-    "hourensou_renraku_ouyou"
+    "hourensou_renraku_chukyu",
+    "hourensou_renraku_ouyou",
+    "hourensou_renraku_chojokyu"
   ],
   "furigana": [
     [
