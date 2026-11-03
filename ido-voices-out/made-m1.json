@@ -843,5 +843,108 @@
   "heard": "たとえば汽車なら、「金属」と「乗り物」を合わせて。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v1o8l87t": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "chuonnath",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.560041666666667,
+  "text": "それから、お経もね。印刷すれば、国じゅうのお寺に届けられる。",
+  "heard": "それから、お経もね。印刷すれば、国じゅうのお寺に届けられる。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vwt9g8n": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.810041666666667,
+  "text": "チュオン・ナート先生は、ボレイの石板にちらりと目をやり、ほほえんで、また静かに歩いていった。",
+  "heard": "チュオン・ナート先生は、ボレイの石板にちらりと目をやり、ほほえんで、また静かに歩いていった。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "石板＝せきばん"
+  ]
+ },
+ "vkyp6tk": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 18.610041666666667,
+  "text": "チュオン・ナートさんは、新しいものの名前を、パーリ語やサンスクリット語の根から作ることを、すすめた人なんだ。汽車を、「金属でできた乗り物」という意味の言葉で表したんだって。",
+  "heard": "チュオン・ナートさんは、新しいものの名前を、パーリ語やサンスクリット語の根から作ることを、すすめた人なんだ。汽車を、「金属でできた乗り物」という意味の言葉で表したんだって。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "パーリ語＝ぱーりご",
+   "サンスクリット語＝さんすくりっとご"
+  ]
+ },
+ "vw3g6x0": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "borey",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 5.120041666666666,
+  "text": "ねえ、あなたの国では、新しい言葉、どうやって作るの？",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1d76c3u": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "borey",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 3.74,
+  "text": "へえ！ チュオン・ナート先生と、同じだね。",
+  "heard": " へえ！ チュオン・ナート先生と、同じだね。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vbpxbnn": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "borey",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 3.26,
+  "text": "そっか。いろんなやり方があるんだね。",
+  "heard": "そっか。いろんなやり方があるんだね。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1pfxwbi": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 15.92,
+  "text": "英語の「テレフォン（電話）」は、ギリシャ語の「遠く」と「音」を合わせた言葉。日本語の「電話」も、明治のころに、漢字を組み合わせて作られたんだ。世界のあちこちで、同じような工夫をしてきたんだね。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vzh5w7r": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.27,
+  "text": "回廊のほうから、また、ゆっくりした歌が聞こえてきた。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "回廊＝かいろう"
+  ]
  }
 }
