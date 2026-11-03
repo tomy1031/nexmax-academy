@@ -1233,5 +1233,103 @@
   "heard": "このような御堂を、人が石を積んで作ったのだ。そなた、信じられるか。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v15fn9v6": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.22,
+  "text": "（小声）……ケオくんたちが、彫ったんだよ。名前は残ってないけど。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vrn1ejl": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 13.35,
+  "text": "水戸には、昔の日本人が描いた図を写した「祇園精舎の図」が伝わっていて、今に残る、世界でいちばん古いアンコール・ワットの見取り図といわれているよ。",
+  "heard": "祇園精舎の図は、昔の日本人が描いた図を写したもので、今に残る、世界でいちばん古いアンコールワットの見取り図といわれているよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "祇園精舎＝ぎおんしょうじゃ"
+  ]
+ },
+ "v1s9pv3u": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.61,
+  "text": "その図を描いたのは、一房さんだったかもしれない——と考える学者さんもいる。でも、たしかなことは、わかっていないんだ。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v7g7dnn": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.58,
+  "text": "十日後、一房は、もう一か所にも、同じはじまりの言葉を書き残した。そして、深く頭を下げた。",
+  "heard": "十日後、一房は、もう一か所にも、同じはじまりの言葉を書き残した。そして、深く頭を下げた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vq928eg": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 6.040041666666666,
+  "text": "では、日本へ帰る。父上に、この旅の話をしてさしあげねば。",
+  "heard": "では、日本へ帰る。父上に、ことびの話をしてさしあげねば。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vv7hx68": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 4.79,
+  "text": "そなたの「まだ見ぬ明日」、それがしも、もらってゆくぞ。",
+  "heard": "そなたの「まだ見ぬ明日」、それがしも、もらってゆくぞ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v14xzeuv": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 4,
+  "text": "そなたの願いも、どうか、かないますように。",
+  "heard": "そなたの願いも、どうか、かないますように。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v14a7y9j": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.61,
+  "text": "一房の背中が、参道の向こうの、白い光の中に消えていった。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
