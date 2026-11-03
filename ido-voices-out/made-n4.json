@@ -1,0 +1,98 @@
+{
+ "e7sjmaw1kn9n": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.530041666666667,
+  "text": "27 August 2024. AUPP — the American University of Phnom Penh.",
+  "heard": " 27 August 2024. AUPP—the American University of Phnom Penh.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1kmoapu7ao2t": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.800041666666667,
+  "text": "Chairs were lined up in a large hall, and students were gathering.",
+  "heard": "\nChairs were lined up in a large hall, and students were gathering.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "ezqy1u9l3b71": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.67,
+  "text": "…We've opened every door in Phnom Penh.",
+  "heard": "We've opened every door in Phnom Penh.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "eede4p218adc": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.200041666666667,
+  "text": "Grandmother Penh's hill. The capital where the rivers meet. The lotus tower. The dance in the fingertips. Grandpa Sok's bridge.",
+  "heard": " Grandmother Penh's hill. The capital where the rivers meet. The lotus tower. The dance in the fingertips. Grandpa Sok's bridge.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "ea79pwq1spk2": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 2.75,
+  "text": "And Vichet's Tsubasa Bridge.",
+  "heard": " And Vichet's Tsubasa Bridge.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1j69icng4s05": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.54,
+  "text": "The last door is here. …Actually, this place is special for me, too.",
+  "heard": " …Actually, this place is special for me, too.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1mudztq1sr3a": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "sokha",
+  "voice": "Despina",
+  "model": "gemini-3.8-live",
+  "seconds": 4.59,
+  "text": "Um, excuse me. Is this where the ceremony is?",
+  "heard": " Um, excuse me. Is this where the ceremony",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "eq84enwjy0v5": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "sokha",
+  "voice": "Despina",
+  "model": "gemini-3.8-live",
+  "seconds": 6.63,
+  "text": "Oh, are you a traveler? Hello! …Oh, I can say “konnichiwa,” too. K-konnichiwa!",
+  "heard": " Oh! Oh, I can say \"konnichiwa,\" too. K-konnichiwa!",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ }
+}
