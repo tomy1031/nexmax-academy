@@ -1148,5 +1148,53 @@
   "heard": "チュオン・ナートさんは、のちに、カンボジアの国歌の歌詞も書いたんだよ。",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "v2jzsye": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.430041666666666,
+  "text": "2008年には、プノンペンの公園に、チュオン・ナートさんとクロム・ンゴイさんの、大きな像が建てられたんだ。",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1gvnhqy": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.210041666666666,
+  "text": "（小声）リアクナちゃんの踊りも、ネアリー先生から手わたされたものだったね。",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1ymeuer": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.23,
+  "text": "歌を覚えて、書いて、次の人へ手わたす。……言葉は、そうやって、生きつづけるんだね。",
+  "heard": "歌を覚えて、書いて、次の人へ手わたす。……言葉は、そうやって、生きつづけるんだね。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vtfd03w": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.25,
+  "text": "（小声）……ボレイくんは、おばあちゃんに、読んであげられたかな。",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
