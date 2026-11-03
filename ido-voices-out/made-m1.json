@@ -1046,5 +1046,107 @@
   "readings": [
    "都＝みやこ"
   ]
+ },
+ "v2fhyuj": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.01,
+  "text": "……戻ってきたよ。いまのプノンペンの川岸。",
+  "heard": "いまのプノンペンの川岸。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vvw6hhp": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.760041666666666,
+  "text": "1930年、プノンペンに仏教研究所ができたんだ。お経や、クメールの古い文学を調べて本にし、国じゅうのお寺に届けたんだよ。",
+  "heard": " 1930年、プノンペンに仏教研究所ができたんだ。お経や、クメールの古い文学を調べて本にし、国じゅうのお寺に届けたんだよ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "仏教研究所＝ぶっきょうけんきゅうじょ"
+  ]
+ },
+ "v18wcnfb": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 12.36,
+  "text": "やしの葉の写本を、何百年も写して守ってきたのは、お寺のお坊さんたち。研究所は、それを本にして、もっとたくさんの人に届ける手伝いをしたんだね。",
+  "heard": "やしの葉の写本を、何百年も写して守ってきたのは、お寺のお坊さんたち。研究所は、それを本にして、もっとたくさんの人に届ける手伝いをしたんだね。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "写本＝しゃほん"
+  ]
+ },
+ "vsp35we": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.82,
+  "text": "クロム・ンゴイさんの歌は、本になって、今も読まれているよ。",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vl7c5zh": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 13.520041666666666,
+  "text": "チャパイという、首の長い弦の楽器の名人、プラーチ・チューンさん（2018年に亡くなった）たちは、クロム・ンゴイさんの教えの歌を、チャパイで歌いついできたんだ。",
+  "heard": "チャパイという、首の長い弦の楽器の名人、プラーチ・チューンさん（2018年に亡くなった）たちは、クロム・ンゴイさんの教えの歌を、チャパイで歌いついできたんだ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vxx3qjp": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.8,
+  "text": "チャパイの弾き語りは、2016年に、ユネスコの「緊急に守る必要がある」無形文化遺産になったよ。弾き手が少なくなっているからなんだ。",
+  "heard": "チャパイの弾き語りは、2016年に、ユネスコの「緊急に守る必要がある」無形文化遺産になったよ。弾き手が少なくなっているからなんだ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "無形文化遺産＝むけいぶんかいさん"
+  ]
+ },
+ "vy20l6h": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 14.970083333333333,
+  "text": "チュオン・ナートさんの辞書は、1938年に、最初の巻が出たんだ。そのあとも直しつづけられて、2023年には、新しい版がスマートフォンのアプリにもなったんだって。",
+  "heard": "チュオン・ナートさんの辞書は、1938年に、最初の巻が出たんだ。そのあとも直しつづけられて、2023年には、新しい版がスマートフォンのアプリにもなったんだって。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1r1msab": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.09,
+  "text": "チュオン・ナートさんは、のちに、カンボジアの国歌の歌詞も書いたんだよ。",
+  "heard": "チュオン・ナートさんは、のちに、カンボジアの国歌の歌詞も書いたんだよ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
