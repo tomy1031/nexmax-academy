@@ -968,5 +968,17 @@
   "heard": "門の上には、大きな顔。そのまんなかの顔は、金でかざられて、朝日にかがやいている。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v7nqa0s": {
+  "episode": "kh-sr-prologue",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.3,
+  "text": "橋のたもとで、青い着物の若い男の人が、紙に、せっせと筆を走らせていた。",
+  "heard": "橋のたもとで、青い着物の若い男の人が、紙に、せっせと筆を走らせていた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
