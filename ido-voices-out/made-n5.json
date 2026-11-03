@@ -1342,5 +1342,17 @@
   "heard": " The finger shapes Leakhena was learning in Phnom Penh. Maybe people danced the same way here, 800 years ago.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e9uakvt1qc1h": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.6,
+  "text": "(whispering) Cambodian dance is still being passed down today. You can see that story through a door in Phnom Penh.",
+  "heard": " Cambodian dance is still being passed down today. You can see that story through a door in Phnom Penh.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
