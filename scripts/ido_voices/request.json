@@ -82,6 +82,18 @@
    "kh-landmine:en",
    "kh-banteaykdei:en",
    "kh-sr-finale:en"
+  ],
+  "m1": [
+   "kh-songbook:ja"
+  ],
+  "m2": [
+   "kh-songbook:en"
+  ],
+  "m3": [
+   "kh-mouhot:ja"
+  ],
+  "m4": [
+   "kh-mouhot:en"
   ]
  }
 }
