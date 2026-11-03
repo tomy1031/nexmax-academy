@@ -215,5 +215,103 @@
   "readings": [
    "地雷＝じらい"
   ]
+ },
+ "v10i740m": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "bopha",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 5.880041666666667,
+  "text": "命は助かったけど、片足をなくしちゃった。畑仕事も、むずかしくなって。",
+  "heard": "命 は 助かっ た けど 、 片足 を なくし ちゃっ た 。 畑 仕事 も 難しく なっ て 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vwq7ac9": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "bopha",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 4.910041666666666,
+  "text": "だから、わたし、ここに来たの。ここにいれば、学校に行けるから。",
+  "heard": "だから 私 ここ に 来 た の ここ に いれ ば 学校 に 行ける から",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v45wwo7": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.5300416666666665,
+  "text": "ボパーは、胸にかかえたノートを、ぎゅっと抱きしめた。",
+  "heard": "ボパーは、胸にかかえたノートを、ぎゅっと",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vzxlwey": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "bopha",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 3.5500416666666665,
+  "text": "うん、大好き！ 算数がいちばん好き。",
+  "heard": "うん、大好き。算数が一番好き。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vj9arb0": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "bopha",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 2.85,
+  "text": "えらくないよ。みんな、そうしてるもん。",
+  "heard": "えらく ない よ みんな そう し て る もん",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vbkv1x7": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "bopha",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 3.4800416666666667,
+  "text": "もうすぐ、おとうさんが帰ってくる時間なの。",
+  "heard": "もうすぐお父さんが帰ってくる時間なの。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v11w870a": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "bopha",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 7.54,
+  "text": "でもね、おとうさんが仕事のときは、迎えに行っちゃだめなの。村の道のはしで、待ってよう。",
+  "heard": "でも ね お父さん が 仕事 の 時 は 迎え に 行っ ちゃ だめ な の 村 の 道 の 端 で 待っ て よう 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vikyvn2": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "bopha",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 7.05,
+  "text": "ぜったい、道からはずれちゃだめだよ。赤い看板の向こうには、まだ地雷があるかもしれないから。",
+  "heard": "絶対 道 から 外れ ちゃ だめ だ よ 。 赤い 看板 の 向こう に は まだ 地雷 が ある か も しれ ない から 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "地雷＝じらい"
+  ]
  }
 }
