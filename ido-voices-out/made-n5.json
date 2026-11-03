@@ -382,5 +382,101 @@
   "heard": " That's Suryavarman the second, the king who began building",
   "scene": "お祝いの、晴れやかな場面。明るく",
   "readings": []
+ },
+ "e1tj42px1geev": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "親方",
+  "voice": "Alnilam",
+  "model": "gemini-3.8-live",
+  "seconds": 8.37,
+  "text": "Someday, processions like that one will be carved on this temple's walls too — each person with a little label giving their name.",
+  "heard": "",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "e79ci931ulle": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.73,
+  "text": "In the evening light, Keo's devata seemed to float softly up out of the stone.",
+  "heard": " In the evening light, Keo's devata seemed to float softly up out of the stone.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e101j2kz3ttcj": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "keo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 4.850041666666667,
+  "text": "She's smiling. …She looks a little like my mom.",
+  "heard": " …She looks a little like my mom.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e9bvkfrtsakp": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "keo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 5.84,
+  "text": "She's holding her flower. …Don't break, okay? Keep holding it forever.",
+  "heard": " She's holding her flower. …Don't break, okay? Keep holding it forever.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e10r9ylhrogsi": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "keo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 4.180041666666667,
+  "text": "The crown's way too detailed… But it's beautiful.",
+  "heard": " The crown's way too detailed… But it's beautiful.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1llv7qf64bpd": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "keo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 7.75,
+  "text": "My name won't be remembered anywhere. But this devata — I'm sure she'll last for ages and ages.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ehbrj4m1w72e": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4,
+  "text": "…We're back. Angkor Wat, in the morning sun.",
+  "heard": " Angkor Wat, in the morning sun.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "edfhu6j177lw": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.95,
+  "text": "This temple was begun in the first half of the 12th century by Suryavarman II, as a temple to the god Vishnu. Later it became a Buddhist temple, and there are still monks here today.",
+  "heard": " This temple was begun in the first half of the 12th century by Suryavarman the Second, as a temple to the god Vishnu. Later it became a Buddhist temple, and there are still monks here today.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
