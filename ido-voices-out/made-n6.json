@@ -418,5 +418,101 @@
   "heard": "\nHehe. Then first, I'll learn to write my mom's name!",
   "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
   "readings": []
+ },
+ "exq00a413j7h": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.41,
+  "text": "From behind a low wall, you and Chanthy listened closely to the teaching for a while.",
+  "heard": " From behind a low wall, you and Chanthy listened closely to the teaching for a while.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e12efcrf1djta": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "chanthy",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 3.5,
+  "text": "Hey, whose faces do you think those are, on the towers?",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eg29f7o39nuw": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "chanthy",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 7.3,
+  "text": "Mr. Vong says it's the face of a Buddha who watches over everyone. But my mom says it looks like the king.",
+  "heard": " Mr. Vong says it's the face of a Buddha who watches over everyone. But my mom says it looks like the king.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1icd6t5163ku": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "chanthy",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 4.9900416666666665,
+  "text": "Me… I don't mind either way. Because every face is smiling.",
+  "heard": " Me… I don't mind either way. Because every face is smiling.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1k1j4ll1fuar": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.81,
+  "text": "…We're back. This is the Bayon today.",
+  "heard": " We're back. This is the Bayon today.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e12rj3jn1d8j2": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.07,
+  "text": "The Bayon is a temple that Jayavarman VII built at the center of his capital, Angkor Thom.",
+  "heard": " The Bayon is a temple that Jayavarman the Seventh built at the center of his capital, Angkor Thom.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "epthxc41hgiq": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 12.500041666666666,
+  "text": "There are about two hundred faces carved on the towers in all. Some say they're the king's face, others say they're the face of the bodhisattva Lokeshvara — and some people think they mean both.",
+  "heard": " There are about two hundred faces carved on the towers in all. Some say they're the king's face, others say they're the face of the bodhisattva Lokeshvara — and some people think they mean both.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "elwrri1w6r3w": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.64,
+  "text": "The outer gallery shows everyday life, too. People weighing fish. People cooking rice. Cockfights.",
+  "heard": " The outer gallery shows everyday life, too. People weighing fish. People cooking rice. Cockfights.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
