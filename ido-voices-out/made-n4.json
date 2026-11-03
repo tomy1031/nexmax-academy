@@ -754,5 +754,101 @@
   "heard": "",
   "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
   "readings": []
+ },
+ "ezl1ec6ekdl1": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.720041666666667,
+  "text": "…Traveler. Thank you for coming to Phnom Penh.",
+  "heard": " Traveler. Thank you for coming to",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "edfn9224fxf7": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 2.4000416666666666,
+  "text": "អរគុណ (aw khun)! — Thank you!",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "ebqakz3kc6ng": {
+  "episode": "kh-sr-prologue",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 18.88,
+  "text": "Five in the morning, still dark. On the western approach to Angkor Wat, people are gathering to wait for the sunrise.",
+  "heard": " Five in the morning, still dark. On the western approach to Angkor Wat, people are gathering to wait for the sunrise.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1csw3wmj0urc": {
+  "episode": "kh-sr-prologue",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.95,
+  "text": "You can hear whispers in many different languages.",
+  "heard": " You can hear whispers in many different languages.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e15qs0vpcz8ok": {
+  "episode": "kh-sr-prologue",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.140041666666667,
+  "text": "You held your phone up to the QR code on a sign. And in that instant—",
+  "heard": " You held your phone up to the QR code on a sign. And in that instant",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e86n9bkr6bxx": {
+  "episode": "kh-sr-prologue",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.72,
+  "text": "The murmur of voices faded softly away.",
+  "heard": " The murmur of voices faded softly",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1pry1dp7r62o": {
+  "episode": "kh-sr-prologue",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.640041666666667,
+  "text": "ជម្រាបសួរ (chum reap suor)! That's “hello” in Khmer, the language of Cambodia.",
+  "heard": " ជម្រាបសួរ, that's “hello” in Khmer, the language of Cambodia.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e41t0mf76uez": {
+  "episode": "kh-sr-prologue",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4,
+  "text": "We meet again! This time, we're traveling in Siem Reap.",
+  "heard": "We meet again! This time, we're traveling in Siem Reap.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
