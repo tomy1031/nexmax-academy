@@ -18,7 +18,9 @@ import { OUT_RATE, synthesizeWithFallback, toWav } from "../lib/live_tts.ts";
 const DIR = "scripts/ido_voices";
 const OUT = "ido-voices-out";
 const MODELS = ["gemini-3.8-live"]; // 1人の 声を そろえる ため、モデルは 1つに 決める
-const BUDGET_MS = 22 * 60 * 1000;
+const BUDGET_MS = 19 * 60 * 1000;
+// 最後の push を やり直せる 期限（ジョブの 持ち時間 30分 から、準備の 約2分と 後の 手順を 引いた 残り）
+const FINAL_PUSH_DEADLINE_MS = 26 * 60 * 1000;
 const PUSH_EVERY = 8;
 
 const started = Date.now();
@@ -40,22 +42,31 @@ mkdirSync(OUT, { recursive: true });
 const logFile = `${OUT}/made-${group}.json`;
 const log = existsSync(logFile) ? JSON.parse(readFileSync(logFile, "utf8")) : {};
 
-const git = (...args) => spawnSync("git", args, { stdio: "inherit" });
+const git = (...args) => spawnSync("git", args, { stdio: args[0] === "rev-list" ? "pipe" : "inherit" });
 git("config", "user.name", "tomy1031");
 git("config", "user.email", "33148568+tomy1031@users.noreply.github.com");
-/** いま できて いる ぶんを コミットして、この ブランチに 送る（3回まで やり直す） */
-const save = (message) => {
+/**
+ * いま できて いる ぶんを コミットして、この ブランチに 送る。
+ * 同時に いくつもの 組が 送る うえ、push の 前の 検査に 約50秒 かかるので、その あいだに ほかの 組が 先に 送ると 断られる。
+ * 途中の 送りは 2回で あきらめて 次の 送りに まとめる。最後の 送りは、期限まで 間を ばらして やり直す
+ * （2026-11-03：最後の 送りが 一斉に ぶつかり、作った 声が ジョブの 中に 残った まま 消えた ことが あった）
+ */
+const save = (message, final = false) => {
   writeFileSync(logFile, JSON.stringify(log, null, 1));
   git("add", OUT);
-  if (git("diff", "--cached", "--quiet").status === 0) return true;
-  git("commit", "-q", "-m", message);
-  for (let i = 0; i < 5; i += 1) {
+  if (git("diff", "--cached", "--quiet").status !== 0) git("commit", "-q", "-m", message);
+  if (git("rev-list", "--count", `origin/${branch}..HEAD`).stdout?.toString().trim() === "0") return true;
+  for (let i = 0; ; i += 1) {
     // ほかの 組が 先に 送って いたら、その ぶんを 取りこんでから 送る
     if (git("pull", "-q", "--rebase", "origin", branch).status !== 0) git("rebase", "--abort");
     if (git("push", "-q", "origin", `HEAD:${branch}`).status === 0) return true;
-    spawnSync("sleep", [String(5 * (i + 1))]);
+    if (!final && i >= 1) break;
+    if (final && Date.now() - started > FINAL_PUSH_DEADLINE_MS) break;
+    spawnSync("sleep", [String(3 + Math.floor(Math.random() * 20))]);
   }
-  console.error("⚠ push できませんでした（できた 声は この ジョブの 中に だけ 残って います）");
+  console.error(final
+    ? "⚠ push できませんでした（できた 声は この ジョブの 中に だけ 残って います）"
+    : "push が ぶつかりました。次の 送りに まとめます");
   return false;
 };
 
@@ -168,7 +179,9 @@ for (const l of lines) {
     quotaHits = 0;
     console.log(`✓ ${l.speaker}（${c.voice}）${seconds.toFixed(1)}秒 ${l.text.slice(0, 24)}`);
     if (pending >= PUSH_EVERY) {
-      if (save(`一時：IDO の 声 ${group} ${Object.keys(log).length}行（マージしない）`)) pending = 0;
+      // 送れなくても コミットは 手もとに 残り、次の 送りで まとめて 送る
+      save(`一時：IDO の 声 ${group} ${Object.keys(log).length}行（マージしない）`);
+      pending = 0;
     }
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
@@ -189,5 +202,5 @@ for (const l of lines) {
   }
   await wait(4_000); // 成功した ときは すぐ 返る ので、つづけて つなぐと 断られる
 }
-save(`一時：IDO の 声 ${group} ${Object.keys(log).length}行（マージしない）`);
+save(`一時：IDO の 声 ${group} ${Object.keys(log).length}行（マージしない）`, true);
 console.log(`\n今回：${made}行／失敗：${failed.length}行／ブランチに ある 声：${Object.keys(log).length}行`);
