@@ -562,5 +562,101 @@
   "heard": "made tomorrow still unseen be a good day. Maybe your wish came true a little today.",
   "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
   "readings": []
+ },
+ "e16qeoogdc0ai": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.48,
+  "text": "Evening. When you left the university, the sky had turned orange.",
+  "heard": "\nWhen you left the university, the sky had turned orange.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "eor01rm1vkqv": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.87,
+  "text": "Hey. Let's look back on our journey through Phnom Penh.",
+  "heard": "Hey, let's look back on our journey through Phnom Penh.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e18vo908zdg1v": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.000041666666666,
+  "text": "Grandmother Penh said, “One basket at a time. Someday, that becomes a hill.”",
+  "heard": " Grandmother Penh said, “One basket at a time. Someday, that becomes a hill.”",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1g9cuj9lc6y": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.28,
+  "text": "Piseth said, “With only the king, not one pillar would go up.”",
+  "heard": " Piseth said, \"With only the king, not one pillar would go up.\"",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1vdjdwy7xu41": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.69,
+  "text": "Dara's father said, “Even when you're all grown up, this tower will still be standing here.”",
+  "heard": " Dara's father said, \"Even when you're all grown up, this tower will still be standing here.\"",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1fjf8uvkfep9": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.51,
+  "text": "Teacher Neary said, “From my body into yours.”",
+  "heard": " Teacher Neary said, \"From my body into yours.\"",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "ezqdr82lssau": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.2000416666666665,
+  "text": "Grandpa Sok said, “Those who can cross, cross. Those who remember, teach.”",
+  "heard": " Grandpa Sok said, “Those who can cross, cross. Those who remember, teach.”",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e18fqbee12jde": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.64,
+  "text": "Vichet said, “Something so nobody has to wait all night.”",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
