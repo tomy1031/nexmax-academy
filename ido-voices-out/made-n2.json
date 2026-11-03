@@ -442,5 +442,101 @@
   "heard": " Just as Dara's father said. Through all the long years that followed, the tower has stood right here.",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "e1xud0e1z2q79": {
+  "episode": "kh-independence",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.11,
+  "text": "(whispering) A symbol of a new country, in the shape of something old. …Interesting, isn't it?",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e12er54c76742": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.290041666666666,
+  "text": "Early 1981. A building next to the red-roofed museum.",
+  "heard": " Early 1981. A building next to the red-roofed museum.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1vo6xqikzepu": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 12.88,
+  "text": "Children had gathered in a classroom whose roof had just been partly repaired. They were all different ages and heights.",
+  "heard": " Children had gathered in a classroom whose roof had just been partly repaired. They were all different ages and heights.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1k8gi7066kd0": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 12.890041666666667,
+  "text": "This school had been closed for years. Now it had opened again.",
+  "heard": " This school had been closed for years. Now it had opened again.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1704g401st1i": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "leakhena",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 2.830041666666667,
+  "text": "Hey, did you come to learn dance too?",
+  "heard": "Hey, did you come to learn dance too?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "enkh9fitig2q": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "leakhena",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 7.37,
+  "text": "I'm Leakhena. I'm nine. Starting today, I'm a student here.",
+  "heard": " I'm nine. Starting today, I'm a student here.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "es6jro41e56w": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "leakhena",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 4.040041666666666,
+  "text": "…I'm a little scared. What if I can't do it well?",
+  "heard": " What if I can't do it well?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1esjchw1p2ep": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "leakhena",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 5.12,
+  "text": "Oh, you came back? …I'm a little scared today, too.",
+  "heard": " …I'm a little scared today, too.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
