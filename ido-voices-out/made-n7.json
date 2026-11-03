@@ -802,5 +802,101 @@
   "heard": "",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1reyv8j1552x": {
+  "episode": "kh-banteaykdei",
+  "lang": "en",
+  "speaker": "sovann",
+  "voice": "Umbriel",
+  "model": "gemini-3.8-live",
+  "seconds": 5.7000416666666665,
+  "text": "Oh, are you visiting? …Huh, have we met somewhere before?",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e10tdstw1pbtf": {
+  "episode": "kh-banteaykdei",
+  "lang": "en",
+  "speaker": "sovann",
+  "voice": "Umbriel",
+  "model": "gemini-3.8-live",
+  "seconds": 5.35,
+  "text": "I'm Sovann. I'm a trainee, learning how to protect ancient ruins.",
+  "heard": " I'm a trainee, learning how to protect ancient ruins.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1gbrc39818s6": {
+  "episode": "kh-banteaykdei",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.120041666666667,
+  "text": "Since the early 1990s, there's been a training program to raise Cambodian experts who can protect the ruins of Angkor.",
+  "heard": " Since the early 1990s, there's been a training program to raise Cambodian experts who can protect the ruins of Angkor.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1timzey13ks9": {
+  "episode": "kh-banteaykdei",
+  "lang": "en",
+  "speaker": "sovann",
+  "voice": "Umbriel",
+  "model": "gemini-3.8-live",
+  "seconds": 7.36,
+  "text": "There used to be many people who looked after the ruins. But during the long war, almost all of them were lost.",
+  "heard": " There used to be many people who looked after the ruins. But during the long war, almost all of them were lost.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e5rtfzrq94v8": {
+  "episode": "kh-banteaykdei",
+  "lang": "en",
+  "speaker": "sovann",
+  "voice": "Umbriel",
+  "model": "gemini-3.8-live",
+  "seconds": 6.320041666666667,
+  "text": "So we're learning it all over again. So that we can protect our country's ruins with our own hands.",
+  "heard": " So we're learning it all over again. So that we can protect our country's ruins with our own hands.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "epgvmpk11r9n": {
+  "episode": "kh-banteaykdei",
+  "lang": "en",
+  "speaker": "sovann",
+  "voice": "Umbriel",
+  "model": "gemini-3.8-live",
+  "seconds": 8.440041666666668,
+  "text": "Go slowly with the spatula. As if you're peeling the soil off one thin layer at a time. …Would you like to try?",
+  "heard": " Go slowly with the spatula. As if you're peeling the soil off one thin layer at a time. Would you like to try?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eb2tn3t9e3bh": {
+  "episode": "kh-banteaykdei",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.670041666666666,
+  "text": "You crouched next to Sovann and moved the spatula. The dry soil crumbled softly away.",
+  "heard": " You crouched next to Sovann and moved the spatula. The dry soil crumbled softly away.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1xxnqay6w7mm": {
+  "episode": "kh-banteaykdei",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.410041666666666,
+  "text": "You put some soil in a sieve and shook it. A small piece of pottery was left behind.",
+  "heard": " You put some soil in a sieve and shook it. A small piece of pottery was left",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
