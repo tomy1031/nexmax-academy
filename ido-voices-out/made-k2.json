@@ -818,5 +818,101 @@
   "heard": " ひらく、という動きは、いちばんむずかしいのよ。",
   "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
   "readings": []
+ },
+ "v1ceya8o": {
+  "episode": "kh-museum",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.580041666666667,
+  "text": "手のひらを、そっと下に向けた。",
+  "heard": "\n手のひらを、そっと下に向けた。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v15aeq4j": {
+  "episode": "kh-museum",
+  "lang": "ja",
+  "speaker": "neary",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 7.24,
+  "text": "実がなって、落ちて、また種になる。……くりかえしの形ね。",
+  "heard": "身 が なっ て 落ち て また 種 に なる 。 繰り返し の 形 ね 。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1g8d2u2": {
+  "episode": "kh-museum",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.15,
+  "text": "（小声）……タ・プロームで会ったスレイモンちゃんも、似た形をしてた。800年前と、つながってるのかもしれないね。",
+  "heard": "プローム で あっ た スレイモン ちゃん も 似 た 形 を し て た 800 年 前 と 繋がっ てる の か も しれ ない ね 。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vdndgij": {
+  "episode": "kh-museum",
+  "lang": "ja",
+  "speaker": "leakhena",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 6.92,
+  "text": "先生。わたし、いつか、先生みたいに踊れる？",
+  "heard": " わたし、いつか、先生みたいに踊れる?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vtwet5x": {
+  "episode": "kh-museum",
+  "lang": "ja",
+  "speaker": "neary",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 5.750041666666666,
+  "text": "踊れるわ。そして、いつか、あなたが、次の子に教えるの。",
+  "heard": "踊れるわ 。 そしていつかあなたが次の 子 に 教える の 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v45vj4p": {
+  "episode": "kh-museum",
+  "lang": "ja",
+  "speaker": "neary",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 3.3600416666666666,
+  "text": "そうやって、踊りは生きのびてきたのよ。",
+  "heard": "そうやって、踊りは生きのびてきた",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vmdncu4": {
+  "episode": "kh-museum",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.67,
+  "text": "赤い屋根の博物館の中庭。蓮の池のそばを、子どもたちが、ならんで歩いていく。",
+  "heard": "赤い屋根の博物館の中庭。蓮の池のそばを、子どもたちが、ならんで歩いていく。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1n1njkw": {
+  "episode": "kh-museum",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.65,
+  "text": "その先頭に、背すじのぴんとした女の人がいた。",
+  "heard": "その 先頭 に 背筋 の ピン と し た 女 の 人 が い た 。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
