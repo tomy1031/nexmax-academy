@@ -338,5 +338,101 @@
   "readings": [
    "祭官＝さいかん"
   ]
+ },
+ "v1k2m5f4": {
+  "episode": "kh-angkor-build",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.07,
+  "text": "その奥の、いちばん多くの日傘の下に、ゾウに乗った人の姿が、小さく見えた。",
+  "heard": "その 奥 の 1 番 多く の 日傘 の 下 に 象 に 乗っ た 人 の 姿 が 小さく 見え た 。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "v16a38z": {
+  "episode": "kh-angkor-build",
+  "lang": "ja",
+  "speaker": "keo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 4.340041666666667,
+  "text": "王さまだ……！ 寺の工事を、見に来られたんだ。",
+  "heard": " 王さまだ……！ 寺の工事を、見に来られたんだ。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "v9zvqp2": {
+  "episode": "kh-angkor-build",
+  "lang": "ja",
+  "speaker": "keo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 5.97,
+  "text": "遠くて、お顔は見えないけど。……ぼく、王さまを見たの、はじめて。",
+  "heard": "遠く て お 顔 は 見え ない けど 僕 王 様 を 見 た の 。 初めて 。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "vdrh0x6": {
+  "episode": "kh-angkor-build",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.460041666666666,
+  "text": "スーリヤヴァルマン2世。この寺を建てはじめた王さまだよ。",
+  "heard": " スーリヤヴァルマン 2世。この寺を建てはじめた",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "v1tj42px": {
+  "episode": "kh-angkor-build",
+  "lang": "ja",
+  "speaker": "親方",
+  "voice": "Alnilam",
+  "model": "gemini-3.8-live",
+  "seconds": 8.48,
+  "text": "ああいう行列も、いずれ、この寺の壁に彫られることになる。一人ひとりに、名前の札をつけてな。",
+  "heard": "あの夕行列も、いずれこの寺の壁に彫られることになる。一人一人に、名前の札を付けてな。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "v1d20ge6": {
+  "episode": "kh-angkor-build",
+  "lang": "ja",
+  "speaker": "keo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 0.78,
+  "text": "……できた。",
+  "heard": "できた",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v79ci93": {
+  "episode": "kh-angkor-build",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.710041666666667,
+  "text": "夕方の光の中で、ケオの天女が、石の中から、ふわりと浮かびあがって見えた。",
+  "heard": "夕方 の 光 の 中 で 京 の 天女 が 石 の 中 から ふわり と 浮かび上がっ て 見え た 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v101j2kz": {
+  "episode": "kh-angkor-build",
+  "lang": "ja",
+  "speaker": "keo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 5,
+  "text": "ほほえんでる。……母さんに、ちょっと似てる。",
+  "heard": "……母さんに、ちょっと似てる。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
