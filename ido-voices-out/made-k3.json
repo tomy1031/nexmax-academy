@@ -680,5 +680,106 @@
   "heard": "日本の国が出したお金——返さなくていいお金で直されて、",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "v3i8qrb": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6,
+  "text": "「カンボジア日本友好橋」と名づけられて、日本では「日本橋」とも呼ばれているよ。",
+  "heard": "「カンボジア日本友好橋」と名づけられて、日本では「日本橋」とも呼ばれているよ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vj0j0bc": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.82,
+  "text": "2019年には、日本の協力で、もう一度大きく直した。完成のお祝いには、両岸の学校の子どもたちが招かれたんだって。",
+  "heard": "2019年には日本 の 協力 で もう 一度 大きく 直し た 。 完成 の お 祝い に は 両眼 の 学校 の 子供 たち が 招か れ た ん だって 。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v8kfgpg": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.06,
+  "text": "（小声）覚えている者が、教える。……ソピアさん、ちゃんと受けとったんだね。",
+  "heard": "黒 譜 読み て いる もの が 教える 。 ソビア さん 、 ちゃんと 受け取っ た ん だ ね 。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1ip7tj9": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.77,
+  "text": "2015年、4月。メコン川のほとり、ネアックルンの渡し場。",
+  "heard": "のほとり、ネアックルンの渡し場。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "メコン川＝めこんがわ",
+   "渡し場＝わたしぶね"
+  ]
+ },
+ "vkrs0n3": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.89,
+  "text": "トラック、バス、バイク、人。渡し船を待つ列が、道のずっと向こうまで続いている。",
+  "heard": "トラック 、 バス 、 バイク 、 人 。 私舟 を 待つ 列 が 道 の ずっと 向こう まで 続い て いる 。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "渡し船＝わたしぶね"
+  ]
+ },
+ "v1cky7bw": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.66,
+  "text": "川の上流には、真っ白な二本の塔と、川をまたぐ長い橋が見えていた。",
+  "heard": "川の上流には、真っ白な二本の塔と、川をまたぐ長い橋が見えていた。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vioso2w": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "物売りの声",
+  "voice": "Fenrir",
+  "model": "gemini-3.8-live",
+  "seconds": 3.8000416666666665,
+  "text": "焼きとうもろこし！ マンゴー！ パンもあるよー！",
+  "heard": "焼きとうもろこし！マンゴー！パンもあるよー！",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vrb699v": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "vichet",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 4.13,
+  "text": "ねえ、そこの人！ とうもろこし、どう？ 甘いよ！",
+  "heard": "ねえ、そこの人！ とうもろこし、どう？ 甘いよ！",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
