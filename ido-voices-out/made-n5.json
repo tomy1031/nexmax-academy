@@ -1,0 +1,98 @@
+{
+ "etmayjuhso6f": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.11,
+  "text": "The middle of the 12th century. In the forest, a gigantic temple was slowly taking shape.",
+  "heard": " The middle of the 12th century. In the forest, a gigantic temple was slowly taking shape.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e12v72vu6fcwr": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 11.060041666666667,
+  "text": "The sound of stones being stacked. The sound of stones being chiseled. Workers calling out. Wooden scaffolding stood everywhere.",
+  "heard": " The sound of stones being chiseled. Workers calling out. Wooden scaffolding stood everywhere.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eojmls21t2gn": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.66,
+  "text": "In front of a wall, a boy with a chisel and a wooden mallet in his hands was staring hard at the stone.",
+  "heard": "In front of a wall, a boy with a chisel and a wooden mallet in his hands was staring hard at the stone.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eepop7b1txs9": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "keo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 4.44,
+  "text": "…Whoa! Wh-who are you? A friend of the master's?",
+  "heard": " Whoa! Wh-who are you? A friend of the master's?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1ncd1je1o9rx": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "keo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 4.9500416666666665,
+  "text": "I'm Keo. I'm an apprentice stone carver. I'm fourteen.",
+  "heard": " I'm an apprentice stone carver. I'm fourteen.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1wvyiv0w4wcl": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "keo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 11.73,
+  "text": "Today, for the first time, they've let me carve a devata — a celestial woman — all by myself. …But I don't know what kind of face to give her.",
+  "heard": " Today, for the first time, they've let me carve a devata — a celestial woman — all by myself. …But I don't know what kind of face to give her.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e16ul0zr1bzuv": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "keo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 5.23,
+  "text": "Oh, you came back? …I still can't decide on her face.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "es4ee85usk3i": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "keo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 6.12,
+  "text": "…Whoa! Wh-who are you? Why are you looking at me like you know me?",
+  "heard": " Wh-who are you? Why are you looking at me like you know me?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ }
+}
