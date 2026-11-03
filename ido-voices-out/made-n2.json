@@ -790,5 +790,101 @@
   "heard": "",
   "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
   "readings": []
+ },
+ "elm8z0cmib90": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.7600416666666665,
+  "text": "Slowly, you opened your fingers.",
+  "heard": "\nSlowly, you opened",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1pbcr8o1luaw": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "neary",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 4.56,
+  "text": "Beautiful. Opening is the hardest movement of all.",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1ceya8o1k0cc": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.830041666666667,
+  "text": "You gently turned your palm downward.",
+  "heard": "You gently turned your palm downward.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e15aeq4j1vd54": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "neary",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 8.8,
+  "text": "The fruit grows, falls, and becomes a seed again. …The shape of things that come around again.",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1g8d2u211hwp": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.25,
+  "text": "(whispering) …Sreymom, the girl we met at Ta Prohm, made a shape like that, too. Maybe it's connected all the way back to 800 years ago.",
+  "heard": " Sreymom, the girl we met at Ta Prohm, made a shape like that, too. Maybe it's connected all the way back to 800 years ago.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "edndgijuwn8h": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "leakhena",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 3.96,
+  "text": "Teacher. Will I be able to dance like you someday?",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "etwet5x3m1qn": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "neary",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 6.87,
+  "text": "You will. And someday, you will teach the next child.",
+  "heard": " And someday, you will teach the next child.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e45vj4ptyvzx": {
+  "episode": "kh-museum",
+  "lang": "en",
+  "speaker": "neary",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 8.000041666666666,
+  "text": "That is how the dance has survived.",
+  "heard": " That is how the dance has survived.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
