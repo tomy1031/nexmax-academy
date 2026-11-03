@@ -1278,5 +1278,68 @@
   "heard": "で は 私 は もう 少し 書い て き ます 。 また どこ か の 時代 で",
   "scene": "お祝いの、晴れやかな場面。明るく",
   "readings": []
+ },
+ "veho1ys": {
+  "episode": "kh-sr-prologue",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 1.42,
+  "text": "……戻ってきたよ。",
+  "heard": "戻って来たよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vdbvx9i": {
+  "episode": "kh-sr-prologue",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.8,
+  "text": "周達観さんは、国に帰ってから『真臘風土記』という本を書いた。アンコールの都の暮らしを、その目で見て書いた記録として、今に残っているんだ。",
+  "heard": "周達観さんは、国に帰ってから『真臘風土記』という本を書いた。アンコールの都の暮らしを、その目で見て書いた記録として、今に残っているんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "真臘風土記＝しんろうふうどき",
+   "都＝みやこ"
+  ]
+ },
+ "v1i0an5g": {
+  "episode": "kh-sr-prologue",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.34,
+  "text": "門のようすも、市場も、お祭りも、この本に書いてあることなんだよ。",
+  "heard": " 門のようすも、市場も、お祭りも、この本に書いてあることなんだよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1h02g75": {
+  "episode": "kh-sr-prologue",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 13.07,
+  "text": "ここには、石を彫った人、王さま、踊り手、遠い国から祈りに来た人、それから、遺跡を守る人……たくさんの人の時間が眠ってる。",
+  "heard": "ここには、石を彫った人、王さま、踊り手、遠い国から祈りに来た人、それから、遺跡を守る人……たくさんの人の時間が眠ってる。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vqu928l": {
+  "episode": "kh-sr-prologue",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.64,
+  "text": "5つの「時の扉」でスタンプを集めると、シェムリアップの一枚の絵ができあがるよ。さあ、行こう！",
+  "heard": "5つの「時の扉」でスタンプを集めると、シェムリアップの一枚の絵ができあがるよ。さあ、行こう！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
