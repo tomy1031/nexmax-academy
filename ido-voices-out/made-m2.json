@@ -454,5 +454,101 @@
   "heard": "",
   "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
   "readings": []
+ },
+ "esx6a3f26fyl": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.98,
+  "text": "That's Suzanne Karpelès. That year a Buddhist Institute was founded in Phnom Penh, and she became the person in charge of running its work.",
+  "heard": " That's Suzanne Karpelès. That year a Buddhist Institute was founded in Phnom Penh, and she became the person in charge of running its work.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1k3msqgkx8ps": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "karpeles",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 5.76,
+  "text": "Krom Ngoy, thank you for coming. …And welcome to you too, traveller.",
+  "heard": " Krom Ngoy, thank you for coming. …And welcome to you too,",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "ee7gxn91y48d": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "karpeles",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 6.98,
+  "text": "Krom Ngoy, thank you for coming. …And you've come again too, traveller.",
+  "heard": " Krom Ngoy, thank you for coming. …And you've come again",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e38bd5kibzhd": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "karpeles",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 6.7800416666666665,
+  "text": "Krom Ngoy, thank you for coming. …Traveller, have we met somewhere before?",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e127f5ky1ubj1": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "karpeles",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 7,
+  "text": "Would you sing much more slowly than usual? So that the monks can write down every word.",
+  "heard": " Would you sing much more slowly than usual? So that the monks can write down every word.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "ezrp8ockdjja": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "kromngoy",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 7.15,
+  "text": "Slowly, eh? Sing slowly and folks fall asleep, you know. Ha ha ha.",
+  "heard": " Slowly, eh? Sing slowly and folks fall asleep, you know. Ha ha ha.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e18rphrqk5e0m": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.66,
+  "text": "Miss Karpelès did not hand the bundle of paper to the monks herself. She called Borey over and gave it to him.",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "eszx0i3k7m1t": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "borey",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 5.35,
+  "text": "Women don't hand things straight to monks — that's the rule. So I carry them.",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
