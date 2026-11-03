@@ -106,5 +106,17 @@
   "heard": " My mom sells fish at the market.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e10tjgyt7co7z": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "chanthy",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 4.120041666666666,
+  "text": "Hey, look. There's a super-long picture carved on the wall.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
