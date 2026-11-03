@@ -622,5 +622,101 @@
   "heard": " What's waiting for them? Go through the next door and find out for yourself.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "et0bghd16w9p": {
+  "episode": "genpei-yashima",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.21,
+  "text": "February 1185. A storm was raging over Watanabe port in Settsu (today's Osaka).",
+  "heard": " February eleven eighty five. A storm was raging over Watanabe port in Settsu, today's Osaka.",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "e1px1vr1sdh9": {
+  "episode": "genpei-yashima",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.77,
+  "text": "“We cannot sail in this wind!” his men begged. But Yoshitsune would not be stopped. With only five boats, he rowed out onto the wild sea.",
+  "heard": " “We cannot sail in this wind!” his men begged. But Yoshitsune would not be stopped. With only five boats, he rowed out onto",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "e1uqirse1tdfx": {
+  "episode": "genpei-yashima",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 17.55,
+  "text": "A crossing that normally took three days, he made in a single night. He landed at Katsuura in Awa (today's Tokushima), rode all night long, and attacked Yashima from behind.",
+  "heard": " A crossing that normally took three days, he made in a single night. He landed at Katsuura in Awa (today's Tokushima), rode all night long, and attacked Yashima from behind.",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "e1nqungrfo7u0": {
+  "episode": "genpei-yashima",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.140041666666667,
+  "text": "Awa is what we call Tokushima Prefecture today. Yoshitsune came through Tokushima, on the island of Shikoku, to attack Yashima!",
+  "heard": " Awa is what we call Tokushima Prefecture today. Yoshitsune came through Tokushima, on the island of Shikoku, to attack Yashima!",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "erv5mazrq201": {
+  "episode": "genpei-yashima",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.600041666666667,
+  "text": "The temporary palace of the Heike (the Taira clan) was going up in flames.",
+  "heard": " The temporary palace of the Heike (the Taira clan) was going up in flames.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e6duogp1ihtg": {
+  "episode": "genpei-yashima",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 4.400083333333333,
+  "text": "You there, get back! You'll be hit by a stray arrow!",
+  "heard": " You there, get back! You'll be hit by a stray arrow!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1d6scng1jbia": {
+  "episode": "genpei-yashima",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.880041666666667,
+  "text": "(whispering) That's Minamoto no Yoshitsune. Right now, nobody can stop him.",
+  "heard": "Date's Minamoto no Yoshitsune. Right now, nobody can stop him.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1628riwp5me1": {
+  "episode": "genpei-yashima",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 4.2000416666666665,
+  "text": "You were right! My brother called me his Yoshimitsu!",
+  "heard": " You were right! My brother called me his Yoshimitsu!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
