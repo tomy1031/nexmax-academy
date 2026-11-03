@@ -1001,5 +1001,101 @@
   "heard": "",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v1ta8jtg": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 4.39,
+  "text": "……旅のお方。ひとつ、たずねてもよいか。",
+  "heard": "旅のお方。ひとつ、たずねてもよいか。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v12iwyuy": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 3.13,
+  "text": "そなたなら、ここで何を願う。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v5htd6b": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 6.47,
+  "text": "うむ。……それがしと、同じだな。",
+  "heard": "……それがしと、同じだな。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v69eqv2": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 5.250041666666666,
+  "text": "……そうか。そなたにも、そういう人がおるのだな。",
+  "heard": "そうか。そなたにも、そういう人がおるのだな。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v2x68cy": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 3.71,
+  "text": "仏さまは、きっと聞いておられる。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vb9ovks": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 7.400041666666667,
+  "text": "まだ見ぬ明日、か。……よい願いだ。海を渡る者の願いだな。",
+  "heard": " ……よい願いだ。海を渡る者の願いだな。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vq8hek2": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 4.61,
+  "text": "それがしは、ここに来たしるしを、書き残しておきたい。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v6hweu6": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 11.89,
+  "text": "父上に、母上に、そして、いつかここに来る者に。ここに、日本の者が祈りに来たのだ、と。",
+  "heard": "父上に、母上に、そして、いつかここに来る者に。ここに、日本の者が祈りに来たのだ、と。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
