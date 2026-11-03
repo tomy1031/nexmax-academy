@@ -956,5 +956,19 @@
   "heard": "王さまも、お母さまのことを、こんなに思ってるんだ。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v1dvzfg4": {
+  "episode": "kh-taprohm",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.32,
+  "text": "夕方。回廊に、たいまつがともされた。",
+  "heard": "",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": [
+   "回廊＝かいろう"
+  ]
  }
 }
