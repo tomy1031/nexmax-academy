@@ -1594,5 +1594,101 @@
   "heard": "",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "ern1ejl1l8y0": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.36,
+  "text": "In Mito, Japan, there's a copy of an old drawing by a Japanese person, called the “Plan of Jetavana.” It's said to be the oldest surviving plan of Angkor Wat in the world.",
+  "heard": " In Mito, Japan, there's a copy of an old drawing by a Japanese person, called the “Plan of Jetavana.” It's said to be the oldest surviving plan of Angkor Wat in the world.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1s9pv3u8tvia": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.74,
+  "text": "Some scholars think Kazufusa may have drawn it. But no one knows for sure.",
+  "heard": " Some scholars think Kazufusa may have drawn it. But no one knows for sure.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e7g7dnn17zjm": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.140041666666667,
+  "text": "Ten days later, Kazufusa wrote the same opening words in one more place. Then he bowed deeply.",
+  "heard": " Ten days later, Kazufusa wrote the same opening words in one more place. Then he bowed deeply.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eq928egjuz7g": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 6.29,
+  "text": "Now I return to Japan. I must tell my father all about this journey.",
+  "heard": " Now I return to Japan. I must tell my father all about this journey.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ev7hx68n3ywi": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 5.860041666666667,
+  "text": "Your “tomorrow, still unseen” — I shall take it with me, too.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e14xzeuv1ichd": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 3.64,
+  "text": "May your wish come true, as well.",
+  "heard": " May your wish come true, as well.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e14a7y9jt34y9": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.910041666666666,
+  "text": "Kazufusa walked away down the approach, until he vanished into the white light.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1hr27ax1mun4": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 0.76,
+  "text": "…We're back.",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
