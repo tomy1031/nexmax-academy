@@ -310,5 +310,17 @@
   "heard": "とう の 周り は 白い 服 の 人 子供 を 肩車 し た 人 旗 を 持っ た 人 で いっぱい に なっ た 。",
   "scene": "お祝いの、晴れやかな場面。明るく",
   "readings": []
+ },
+ "v6vw4df": {
+  "episode": "kh-independence",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.2400416666666665,
+  "text": "人びとが、いっせいに拍手をした。",
+  "heard": "人びとが、いっせいに拍手をした。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
  }
 }
