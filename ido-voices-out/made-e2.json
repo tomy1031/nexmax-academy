@@ -1138,5 +1138,101 @@
   "heard": " Phew. That was a close one, wasn't it? I'm Konaki-jiji.",
   "scene": "こわい夜の山道。おびえて、声が細い",
   "readings": []
+ },
+ "ejzepyi1ohy5": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "konaki",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 8.59,
+  "text": "I don't get heavy to be mean, you know. I do it so folks can't go any farther.",
+  "heard": " I don't get heavy to be mean, you know. I do it so folks can't go any farther.",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": []
+ },
+ "e12l3hxbio841": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "konaki",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 11.63,
+  "text": "I cried to lead you away from that path. …Good thing you followed along so nicely. Made my job easy.",
+  "heard": " I cried to lead you away from that path. …Good thing you followed along so nicely. Made my job easy.",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": []
+ },
+ "e10wvpgc9l27b": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.81,
+  "text": "Yamashiro Town is said to be Konaki-jiji's birthplace. The folklore scholar Yanagita Kunio wrote about him as a yokai of the mountains of Awa (today's Tokushima).",
+  "heard": " Yamashiro Town is said to be Konaki-jiji's birthplace. The folklore scholar Yanagita Kunio wrote about him as a yokai of the mountains of Awa (today's Tokushima).",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": []
+ },
+ "e1tf8o52186tf": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.42,
+  "text": "…I thought it was just a scary story. But maybe…",
+  "heard": " I thought it was just a scary story. But maybe",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": []
+ },
+ "emzs2ck11rj9": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "konaki",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 13.8,
+  "text": "Yokai stories, you see, were also a way to warn children about the dangerous places in the mountains and by the deep pools.",
+  "heard": " Yokai stories, you see, were also a way to warn children about the dangerous places in the mountains and by the deep pools.",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": []
+ },
+ "emdst6s1tg8c": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "kenta",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 2.8800416666666666,
+  "text": "…Help… me…",
+  "heard": "Help me",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": []
+ },
+ "e1krc2luh6usk": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.88,
+  "text": "Below the crumbled slope, Kenta was clinging to a tree root. Beneath him lay the pitch-black pool.",
+  "heard": "Below the crumbled slope, Kenta was clinging to a tree root. Beneath him lay the pitch black pool.",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": []
+ },
+ "ebbvf961bmng": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "konaki",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.54,
+  "text": "No, no! You there, reach out your hand! I'll be your weight and hold you down!",
+  "heard": " No, no! You there, reach out your hand! I'll be your weight and hold you down!",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": []
  }
 }
