@@ -1,0 +1,98 @@
+{
+ "e1ah2q6ldh2w8": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.6,
+  "text": "Around 1200. The center of the great city of Angkor Thom.",
+  "heard": " Around twelve hundred. The center of the great city of Angkor Thom.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ex2oexm1egii": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 23.04,
+  "text": "Huge faces were carved on tower after tower. Every face had its eyes cast down, quietly smiling.",
+  "heard": " Huge faces were carved on tower after tower. Every face had its eyes cast down, quietly smiling.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "etmuklk3d81r": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.840041666666667,
+  "text": "In the temple's outer gallery, stonemasons were carving reliefs along a very, very long wall.",
+  "heard": "In the temple's outer gallery, stonemasons were carving reliefs along a very, very long wall.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1wvle2j1f7vb": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "chanthy",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 4.64,
+  "text": "I brought the fish for lunch! …Huh? Who are you?",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "exopkt31mm7j": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "chanthy",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 4.44,
+  "text": "I'm Chanthy. I'm nine. My mom sells fish at the market.",
+  "heard": " I'm nine. My mom sells fish at the market.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ey53p691jnqu": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "chanthy",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 4.73,
+  "text": "Every day, I bring lunch to the men carving the stone.",
+  "heard": " Every day, I bring lunch to the men carving the stone.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "enm1clb1sjj8": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "chanthy",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 4.08,
+  "text": "Oh, you came back? I brought the fish for lunch again today!",
+  "heard": " Oh, you came back? I brought the fish for lunch",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eug9usntilf": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "chanthy",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 4.52,
+  "text": "I brought the fish for lunch! …Huh? Do you know me?",
+  "heard": " …Huh? Do you know me?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ }
+}
