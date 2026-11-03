@@ -1209,5 +1209,17 @@
   "readings": [
    "回廊＝かいろう"
   ]
+ },
+ "v8531v3": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 6.06,
+  "text": "父上は城を築く人ゆえ、御堂の形を見せたら、さぞ喜ばれよう。",
+  "heard": "父上は城を築く人ゆえ、御堂の形を見せたら、さぞ喜ばれよう。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
