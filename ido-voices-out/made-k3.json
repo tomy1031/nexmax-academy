@@ -294,5 +294,101 @@
   "heard": " 1975年から 1979年まで、この国では、とてもたくさんの人が命を落としたんだ。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v1ai8tk7": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.420041666666667,
+  "text": "あなたは、何も言わずに、おじいさんのとなりで川を見た。川は、ゆっくりと流れていた。",
+  "heard": "何も言わずに、おじいさんのとなりで川を見た。川は、ゆっくりと流れていた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v3mpfo5": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "sok",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 1.0400416666666668,
+  "text": "……ありがとう。",
+  "heard": "ありがと",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vmko5vo": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "sok",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 5.14,
+  "text": "いいえ。……聞いてくれる人がいるのは、ありがたいことです。",
+  "heard": "いや、聞いてくれる人がいるのはありがたいことです。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vnuogdg": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "sok",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 8.93,
+  "text": "1979年に、わしは町に戻りました。……それから何年かして、この子が生まれた。",
+  "heard": "1979 年 に わし は 街 に 戻り まし た 。 それ から 何 年 か し て この 子 が 生まれ た 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1gfr3mm": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "sophea",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 3.350041666666667,
+  "text": "わたしもね、おじいちゃんに、ロニアットを習ってるの！",
+  "heard": "私 も ね おじいちゃん に ロニア 戸 を 習っ てる の 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1fxfxdq": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "sophea",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 5.890041666666667,
+  "text": "まだ、へたっぴだけど。おじいちゃんの頭の中にある曲、ぜんぶ覚えるんだ。",
+  "heard": "まだ下手っぴだけどおじいちゃん頭の中にある曲全部覚えるんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vi8a2rg": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "sok",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 3.94,
+  "text": "ほほ。それは、何年かかることやら。",
+  "heard": "おほー それは何 年 かかる こと やら 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v10hpnp6": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.5300416666666665,
+  "text": "そのとき、川べりで、大きな拍手がわきおこった。橋の通行が、始まったのだ。",
+  "heard": "そのとき、川べりで、大きな拍手がわきおこった。橋の通行が、始まったのだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
