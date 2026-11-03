@@ -434,5 +434,101 @@
   "heard": "川べりのチャトモック会議場も、ヴァン・モリヴァンさんの建物だよ。ヤシの葉のような屋根なんだ。",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "vb77i5e": {
+  "episode": "kh-independence",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.14,
+  "text": "ダラーくんのお父さんの言ったとおり。塔は、そのあとの長い時代も、ずっとここに立っていたんだ。",
+  "heard": "ダラーくんのお父さんの言ったとおり。塔は、そのあとの長い時代も、ずっとここに立っていたんだ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1xud0e1": {
+  "episode": "kh-independence",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.21,
+  "text": "（小声）古いものの形で、新しい国のしるしを。……おもしろいね。",
+  "heard": "古いものの形で、新しい国のしるしを。……おもしろいね。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v12er54c": {
+  "episode": "kh-museum",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.480083333333333,
+  "text": "1981年のはじめ。赤い屋根の博物館の、となりの建物。",
+  "heard": "1981年のはじめ。赤い屋根の博物館の、となりの建物。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1vo6xqi": {
+  "episode": "kh-museum",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.1,
+  "text": "屋根の一部が直されたばかりの教室に、子どもたちが集まっていた。年も、背の高さも、ばらばらだ。",
+  "heard": "屋根の一部が直されたばかりの教室に、子どもたちが集まっていた。年も背の高さもバラバラだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1k8gi70": {
+  "episode": "kh-museum",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.2800416666666665,
+  "text": "この学校は、何年も閉じられていた。それが、ふたたび開いたのだ。",
+  "heard": "この学校は、何年も閉じられていた。それが、ふたたび開いたのだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1704g40": {
+  "episode": "kh-museum",
+  "lang": "ja",
+  "speaker": "leakhena",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 3.61,
+  "text": "ねえ、あなたも、踊りを習いに来たの？",
+  "heard": "ね あなた も 踊り を 習い に 来 た の ?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vnkh9fi": {
+  "episode": "kh-museum",
+  "lang": "ja",
+  "speaker": "leakhena",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 5.71,
+  "text": "わたし、リアクナ。九歳。今日から、ここの生徒なの。",
+  "heard": "わたし、リアクナ。九歳。今日から、ここの",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vs6jro4": {
+  "episode": "kh-museum",
+  "lang": "ja",
+  "speaker": "leakhena",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 4.24,
+  "text": "……ちょっと、こわいの。うまくできなかったら、どうしよう。",
+  "heard": "ちょっと 怖い の 。 うまく でき なかっ たら どう しよう 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
