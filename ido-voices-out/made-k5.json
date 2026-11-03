@@ -118,5 +118,101 @@
   "heard": "壁には、すでに何人もの天女が彫られていた。冠も、髪のかたちも、首かざりも、ひとりひとり、ちがう。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v1qbpg0p": {
+  "episode": "kh-angkor-build",
+  "lang": "ja",
+  "speaker": "keo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 8.42,
+  "text": "この寺には、天女さまが、何百人も、何千人もいるんだ。でも、同じ顔の人は、ひとりもいない。",
+  "heard": "この寺には、天女さまが、何百人も、何千人もいるんだ。でも、同じ顔の人は、ひとりもいない。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v16hx423": {
+  "episode": "kh-angkor-build",
+  "lang": "ja",
+  "speaker": "keo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 7.46,
+  "text": "親方が言うんだ。「同じものを彫るな。ひとりひとり、生きている人のように彫れ」って。",
+  "heard": "親方が言うんだ。「同じものを彫るな。ひとりひとり、生きている人のように彫れ」って。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v9wr9se": {
+  "episode": "kh-angkor-build",
+  "lang": "ja",
+  "speaker": "親方",
+  "voice": "Alnilam",
+  "model": "gemini-3.8-live",
+  "seconds": 2.2700416666666667,
+  "text": "ケオ！ 手が止まっとるぞ。",
+  "heard": "ケ 、 手 が 止まっ とる ぞ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1w420p3": {
+  "episode": "kh-angkor-build",
+  "lang": "ja",
+  "speaker": "keo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 4.64,
+  "text": "は、はいっ！ ……ねえ、どんな天女さまがいいと思う？",
+  "heard": "はい はい ねえ 、 どんな 天女 様 が いい と 思う ?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vflfe79": {
+  "episode": "kh-angkor-build",
+  "lang": "ja",
+  "speaker": "keo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 20.640041666666665,
+  "text": "ほほえみ……。うん、やってみる。母さんが笑ったときの口もとにしよう。",
+  "heard": "微笑み うん 。 やっ て みる 。 母さん が 笑っ た 時 の 口元 に しよう 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1vt7lh8": {
+  "episode": "kh-angkor-build",
+  "lang": "ja",
+  "speaker": "keo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 6.130041666666667,
+  "text": "花！ いいね。指のあいだに、小さな花をはさんであげよう。",
+  "heard": " いいね。 指のあいだに、 小さな花をはさんであげよう。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vam89t9": {
+  "episode": "kh-angkor-build",
+  "lang": "ja",
+  "speaker": "keo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 7.57,
+  "text": "よーし、いちばん手がこんだ冠にする！ ……親方に、時間かけすぎって怒られるかも。",
+  "heard": "よし 。 一 番 手 が 今度 冠 に する 。 親方 に 時間 かけ すぎ っ て 怒ら れる かも 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1cqxqla": {
+  "episode": "kh-angkor-build",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.13,
+  "text": "ケオは、親方が荒く削った形にそって、のみを当てた。コツ、コツ、と、小さな音が続く。",
+  "heard": "ケオは、親方が荒く削った形にそって、のみを当てた。コツ、コツ、と、小さな音が続く。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
