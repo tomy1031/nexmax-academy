@@ -290,5 +290,101 @@
   "heard": "",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v1ejhrfz": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "kromngoy",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 5.28,
+  "text": "見なれん顔じゃな。……いや、どこかで会うたかの。",
+  "heard": "見なれん顔じゃな。……いや、どこかで会うたかの。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1p18n9d": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "kromngoy",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 4.28,
+  "text": "わしはクロム・ンゴイ。ただの歌うたいじゃ。",
+  "heard": " わしはクロム・ンゴイ。ただの歌うたいじゃ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v900bqg": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "borey",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 7.5,
+  "text": "ぼく、ボレイです！ クロム・ンゴイさん、その歌、どうやって覚えてるの？ 紙に書いてあるの？",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vvvxk1t": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "kromngoy",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 9.080041666666666,
+  "text": "ははは。わしは、歌を紙に書いたことはない。歌は、ぜんぶ、ここにしまってある。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vd2erra": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.980083333333333,
+  "text": "おじいさんは、大きな手で、自分の胸を、とんとたたいた。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1n1yegh": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "kromngoy",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 10.39,
+  "text": "じゃがな、わしも六十五じゃ。それに、歌は、人の口から口へ伝わるうちに、少しずつ変わってしまう。",
+  "heard": "じゃがな、わしも六十五じゃ。それに、歌は、人の口から口へ伝わるうちに、少しずつ変わってしまう。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1o6xjqe": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "borey",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 2.0100416666666665,
+  "text": "えっ、変わっちゃうの？",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vwo1xnr": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "kromngoy",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 7.26,
+  "text": "だから今日は、お寺へ行くんじゃ。わしの歌を、ちゃんとした本にしてもらいにな。",
+  "heard": "だから今日は、お寺へ行くんじゃ。わしの歌を、ちゃんとした本にしてもらいにな。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
