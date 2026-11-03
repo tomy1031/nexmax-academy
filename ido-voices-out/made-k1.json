@@ -343,5 +343,101 @@
   "heard": " ありがとうよ。大水のあとの川は、見た目よりずっと強いからね。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "vyn2aec": {
+  "episode": "kh-watphnom",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.120041666666667,
+  "text": "かけ声をそろえて、何度も引く。大きな木が、どさりと岸に上がった。",
+  "heard": "かけ声 を 揃え て 何 度 も 引く 。 大きな 木 が どさり と 騎士 に 上がっ た 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v5vs5v5": {
+  "episode": "kh-watphnom",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.180041666666666,
+  "text": "木の幹には、大きなうろがあいていた。中をのぞきこんだ村の人が、声をあげる。",
+  "heard": "木の幹には、大きなうろがあいていた。中をのぞきこんだ村の人が、声をあげる。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vc4331b": {
+  "episode": "kh-watphnom",
+  "lang": "ja",
+  "speaker": "村の人",
+  "voice": "Rasalgethi",
+  "model": "gemini-3.8-live",
+  "seconds": 4.17,
+  "text": "仏さまだ……！ 仏さまが入っている！",
+  "heard": "仏さまだ……！ 仏さまが入っている！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vna8v8": {
+  "episode": "kh-watphnom",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.240166666666667,
+  "text": "うろの中から出てきたのは、四体の仏の像。それから、ヴィシュヌという神さまの像が一体。",
+  "heard": "うろ の 中 から 出 て き た の は 4 体 の 仏 の 像 それ から ビシュヌ と いう 神 様 の 像 が 1 体",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vzkxo29": {
+  "episode": "kh-watphnom",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.17,
+  "text": "言い伝えによって、いっしょに入っていた像や、流れてきた川の名前が少しずつちがうんだ。仏さまは四体、と語られることが多いよ。",
+  "heard": "言い伝えによって、いっしょに入っていた像や、流れてきた川の名前が少しずつちがうんだ。仏さまは四体、と語られることが多いよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vj3rdh7": {
+  "episode": "kh-watphnom",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.17,
+  "text": "（小声）……四体。アンコール・ワットで、一房さんがおさめた仏さまも、四体だったね。",
+  "heard": "死体 アンコール ワット で 一歩 さん が 収め た 仏 様 も 死体 だっ た ね 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1i082cm": {
+  "episode": "kh-watphnom",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.61,
+  "text": "（小声）もちろん、偶然だよ。時代も、場所も、ぜんぜんちがう。でも、なんだか、うれしいね。",
+  "heard": "もちろん偶然だよ。 時代も場所も全然違う。 でも なんだか嬉しいね。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1i0mbqf": {
+  "episode": "kh-watphnom",
+  "lang": "ja",
+  "speaker": "penh",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 7.4,
+  "text": "こんな大水の中を、仏さまは、この岸を選んで、流れてきてくださった。",
+  "heard": "こんな大水の中を、仏さまは、この岸を選んで、流れてきてくださった。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
