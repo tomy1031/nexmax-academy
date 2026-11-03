@@ -490,5 +490,101 @@
   "heard": "",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1nydnifzeykn": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.320083333333333,
+  "text": "These four answers are really written in Mouhot's book. The villagers each knew that temple through their own legends.",
+  "heard": " These four answers are really written in Mouhot's book. The villagers each knew that temple through their own legends.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1x99ufvc09qa": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "mouhot",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 3.27,
+  "text": "Traveller. Which answer do you like best?",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1teh0zs1a7sz": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "mouhot",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 6.790041666666666,
+  "text": "Yes — that's how magnificent the temple is. …But it was human hands that carved those stones.",
+  "heard": " Yes — that's how magnificent the temple is. …But it was human hands that carved",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "efefcn41t72g": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "mouhot",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 4.74,
+  "text": "I vote for that one too. As a figure of speech, that is.",
+  "heard": " I vote for that one too. As a figure of speech,",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1j04ykl1hv4s": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "mouhot",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 7.16,
+  "text": "…Yes. There must have been countless people who carried and carved the stones. Even if their names were not left behind.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e16q92901s2ix": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.56,
+  "text": "(whispering) That means Keo and the others. All the stone carvers whose names were never recorded.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e8fzzjnq2vpp": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "mouhot",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 4.39,
+  "text": "I'm no expert at all in buildings or ancient things.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1otsnkjsrlch": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "mouhot",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 8.8,
+  "text": "But I want to write down what I see here as truly as I can, and let people in faraway countries know.",
+  "heard": " But I want to write down what I see here as truly as I can, and let people in faraway countries know.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
