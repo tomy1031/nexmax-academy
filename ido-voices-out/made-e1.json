@@ -958,5 +958,101 @@
   "heard": " Summer eleven eighty-six. Deep in the forest, a waterfall poured down like",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1bm90dmgo6gr": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.980041666666667,
+  "text": "Through the splash of the water came the sound of strings. …Such a sad, sad sound.",
+  "heard": "Through the splash of the water came the sound of strings. Such a sad, sad sound.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1sev82n11qns": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 1.3000416666666668,
+  "text": "…Who's there?",
+  "heard": "Who's there?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1fay15smgx27": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 4.25,
+  "text": "Only the village people are supposed to know about this waterfall.",
+  "heard": " Only the village people are supposed to know about this waterfall.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "edyog8n10s7s": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.58,
+  "text": "S-sorry! We're just travelers. The music was so beautiful, we couldn't help it.",
+  "heard": "Sorry. We're just travelers. The music was so beautiful. We couldn't help it.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ek5gvu3s5i6h": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 6.12,
+  "text": "Beautiful… do you think so? That was a song for someone we lost.",
+  "heard": "Beautiful. Do you think so? That was a song for someone we lost.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1fcgsg5clgr6": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 4.7800416666666665,
+  "text": "…Who's there? That was a song for someone we lost.",
+  "heard": " That was a song for someone we lost.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1yfpne716jsw": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 13.45,
+  "text": "Last autumn, a man vanished into the mountains all alone, so that the rest of us could escape. His name was Yaheiji — a fussy old man who was always scolding us.",
+  "heard": " Last autumn, a man vanished into the mountains all alone, so that the rest of us could escape. His name was Yaheiji — a fussy old man who was always scolding us.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e5zcdmt19qln": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 12.38,
+  "text": "It's been nearly a year, and he still hasn't come home. …So today, just for today, I decided to play a sad song.",
+  "heard": "It's been nearly a year and he still hasn't come home. So today, just for today, I decided to play a sad song.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
