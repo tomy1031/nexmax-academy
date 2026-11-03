@@ -582,5 +582,103 @@
   "heard": "私 の 手 握っ て くれ た よ ね 。 3 人 で わたっ た の 覚え てる ?",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "v1lq189h": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "sophea2",
+  "voice": "Erinome",
+  "model": "gemini-3.8-live",
+  "seconds": 3.2,
+  "text": "わたし、ソピア。もう、四十になっちゃった。",
+  "heard": "わたし、ソピア。もう、四十になっちゃった。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1nef98x": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "sophea2",
+  "voice": "Erinome",
+  "model": "gemini-3.8-live",
+  "seconds": 6.77,
+  "text": "今はね、橋を見回る仕事をしてるの。ひびがないか、ボルトがゆるんでないか。",
+  "heard": "今はね、橋を見回る仕事をしてるの。ひびがないか、ボルトがゆるんでないか。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vn2qk5r": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "sophea2",
+  "voice": "Erinome",
+  "model": "gemini-3.8-live",
+  "seconds": 9.23,
+  "text": "2019年に、この橋をもう一度大きく直したとき、わたしも、日本の技術者の人たちといっしょに働いたのよ。",
+  "heard": "2019 年 に この 橋 を もう 一度 大きく 直し た 時 、 私 も 日本 の 技術 者 の 人 たち と 一緒 に 働い た の よ 。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1xwwdkd": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "sophea2",
+  "voice": "Erinome",
+  "model": "gemini-3.8-live",
+  "seconds": 10.58,
+  "text": "おじいちゃんは、もういないの。ロニアットの曲は、ぜんぶは覚えきれなかった。おじいちゃんの頭の中にあった曲、いくつかは、もう聞けない。",
+  "heard": "おじいちゃんはもういないの。ロニアットの曲はぜんぶは覚えきれなかった。おじいちゃんの頭の中にあった曲、いくつかはもう聞けない。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vmasz96": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "sophea2",
+  "voice": "Erinome",
+  "model": "gemini-3.8-live",
+  "seconds": 3.87,
+  "text": "でも、覚えた曲は、今、娘に教えてる。",
+  "heard": "でも、覚えた曲は、今娘に教えてる。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v2uzvnc": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "sophea2",
+  "voice": "Erinome",
+  "model": "gemini-3.8-live",
+  "seconds": 5.860041666666667,
+  "text": "「渡れる者は、渡る。覚えている者は、教える」。おじいちゃんの口ぐせ。",
+  "heard": "おじいちゃんの口ぐせ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vvbh3jv": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.070041666666667,
+  "text": "この橋は、1960年代に日本の協力で架けられて、1972年の内戦で一部が落ちたんだ。",
+  "heard": "この橋は、一九六〇年代に日本の協力で架けられて、一九七二年の内戦で一部が落ちたんだ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "内戦＝ないせん"
+  ]
+ },
+ "v1phecux": {
+  "episode": "kh-chroy",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.04,
+  "text": "日本の国が出したお金——返さなくていいお金で直されて、1994年に、ふたたび渡れるようになった。",
+  "heard": "日本の国が出したお金——返さなくていいお金で直されて、",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
