@@ -1018,5 +1018,101 @@
   "heard": "",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "egx45lh1vuvn": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 8.4,
+  "text": "To hear Japanese spoken in a land so very far away! Who in the world are you…?",
+  "heard": " To hear Japanese spoken in a land so very far away! Who in the world",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ecm8z6d16g26": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 9.55,
+  "text": "I am Morimoto Ukondayu Kazufusa, of Hishu (in Kyushu, Japan).",
+  "heard": "I amMorimoto UkondayuKazufusa,of Hishu(in Kyushu,Japan).",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e13x9u7t16wpf": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.81,
+  "text": "(whispering) Morimoto Ukondayu Kazufusa…! He was a real person.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1erw79ijrx14": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 4.350041666666667,
+  "text": "Ah, it is you two! So we meet again.",
+  "heard": " Ah, it is you two! So we meet again.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e4hc0us13wjl": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 8.340041666666666,
+  "text": "…! Those words — were they not Japanese? …And why do you look at me like that, as if you have missed me?",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e4oh7soj8pzo": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 5.87,
+  "text": "I came by ship, across thousands of miles of sea.",
+  "heard": " I came by ship, across thousands of miles of sea.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1ji479zydz01": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 8.62,
+  "text": "For I longed, with all my heart, to pray at the hall where the Buddha taught — Jetavana (Gion Shoja).",
+  "heard": " For I longed, with all my heart, to pray at the hall where the Buddha taught — Jetavana Gion Shoja.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ec82rgwece5k": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.58,
+  "text": "(whispering) Back then, Japanese people believed Angkor Wat was Jetavana.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
