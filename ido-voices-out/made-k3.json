@@ -1013,5 +1013,103 @@
   "heard": "ヴィチェット！ また、お客さんに弱音をはいて。",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "v10k0q5r": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "vichet",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 1.67,
+  "text": "げっ、母ちゃん。",
+  "heard": "けっ カー ちゃん",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v168rk1y": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "ヴィチェットのお母さん",
+  "voice": "Sulafat",
+  "model": "gemini-3.8-live",
+  "seconds": 8.6,
+  "text": "売る場所は、また探せばいい。困ることもあるでしょう。それでも、橋はいるのよ。",
+  "heard": " 売る場所は、また探せばいい。困ることもあるでしょう。それでも、橋はいるのよ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vetrmla": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "ヴィチェットのお母さん",
+  "voice": "Sulafat",
+  "model": "gemini-3.8-live",
+  "seconds": 6.000041666666666,
+  "text": "それにね。あんた、覚えてないでしょう。小さいころ、ひどい熱を出して。",
+  "heard": "それにね。あんた、覚えてないでしょう。小さいころ、ひどい熱を出して。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1ov94k3": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "ヴィチェットのお母さん",
+  "voice": "Sulafat",
+  "model": "gemini-3.8-live",
+  "seconds": 7.26,
+  "text": "プノンペンの病院へ行くのに、この渡し場で、ひと晩じゅう、あんたを抱いて船を待ったのよ。",
+  "heard": " プノンペンの病院へ行くのに、この渡し場で、ひと晩じゅう、あんたを抱いて船を待ったのよ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "渡し場＝わたしぶね"
+  ]
+ },
+ "v622mkh": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.850041666666667,
+  "text": "ヴィチェットは、だまって、川の上の白い塔を見上げた。",
+  "heard": "ヴィ セッ ト は 黙っ て 川 の 上 の 白い 塔 を 見上げ た 。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1ta70pi": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "vichet",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 1.09,
+  "text": "……そっか。",
+  "heard": "そっ か 。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v2cgaw7": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "vichet",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 4.66,
+  "text": "あの橋があったら、母ちゃん、ひと晩も待たなくてよかったんだ。",
+  "heard": "あの橋があったら、母ちゃん、ひと晩も待たなくてよかったんだ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v7jpgcp": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.15,
+  "text": "次の日。2015年4月6日。橋のまわりは、何千人もの人でうめつくされた。",
+  "heard": "次 の 日 2015 年 4 月 6 日 橋 の 周り は 何千 人 も の 人 で 埋め尽くさ れ た 。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
  }
 }
