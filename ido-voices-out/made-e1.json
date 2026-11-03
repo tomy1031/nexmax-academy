@@ -1654,5 +1654,101 @@
   "heard": " Ayanlaughedthroughhertears.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "ey251qsm2vmo": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 1.89,
+  "text": "Then, take this.",
+  "heard": " Then, take",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "evhq31vd3csx": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.54,
+  "text": "Aya pressed her ivory pick into Kunimori's hand.",
+  "heard": "Aya pressed her ivory pick into Kunimori's hand.",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "euouetvxhnxn": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 4.89,
+  "text": "Please keep it safe for me. …Until the day I play again.",
+  "heard": "Please keep it safe for me until the day I play again.",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "e5qs9lt1sjyq": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 3.2400416666666665,
+  "text": "…I will bring it back. I promise.",
+  "heard": " I promise.",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "egg21wm1wpd6": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.26,
+  "text": "A tiny rainbow appeared in the spray of the falls.",
+  "heard": " A tiny rainbow appeared in the spray of the falls.",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "eq1xa1g16pjf": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.03,
+  "text": "People say this waterfall is called “Biwa Falls” because the Heike played the biwa here, dreaming of the capital they had lost.",
+  "heard": " People say this waterfall is called “Biwa Falls” because the Heike played the biwa here, dreaming of the capital they had lost.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1eyay9r1t2yt": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 5.76,
+  "text": "Traveler. In your time, do people still remember this song?",
+  "heard": " Traveler. In your time, do people still remember this song?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "erbr8jx1yaz7": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.720041666666667,
+  "text": "The waterfall's name is still around! People call it “Biwa Falls.”",
+  "heard": " The waterfall's name is still around! People call it “Biwa Falls.”",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
