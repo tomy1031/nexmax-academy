@@ -1186,5 +1186,89 @@
   "heard": " The attackers were soldiers of the Fujiwara lords of Oshu, forced into this by the government in Kamakura. …It was the army of Yasuhira, son of Hidehira — the lord who had once kept Minamoto no Yoshitsune safe.",
   "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
   "readings": []
+ },
+ "ej96mms7blz4": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "benkei",
+  "voice": "Alnilam",
+  "model": "gemini-3.8-live",
+  "seconds": 1.7500416666666667,
+  "text": "Who goes there!",
+  "heard": "Who goes there?",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "esv3nfb7qqlt": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "benkei",
+  "voice": "Alnilam",
+  "model": "gemini-3.8-live",
+  "seconds": 7.49,
+  "text": "…You are no enemy. No one can fool the eyes of Musashibo Benkei.",
+  "heard": " You are no enemy. No one can fool the eyes of Musashibo Benkei.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e513dq91cpok": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.46,
+  "text": "(whispering) It's Musashibo Benkei, Yoshitsune's mighty warrior monk…!",
+  "heard": " It's Musashibo Benkei, Yoshitsune's mighty",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "en2l8vo1fe80": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "benkei",
+  "voice": "Alnilam",
+  "model": "gemini-3.8-live",
+  "seconds": 2.77,
+  "text": "…So, it's you.",
+  "heard": " So, it's",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "ew1i7d21wiax": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "benkei",
+  "voice": "Alnilam",
+  "model": "gemini-3.8-live",
+  "seconds": 4.550041666666667,
+  "text": "Who goes there! …Hm. You are no enemy.",
+  "heard": "Who goes there? Hm. You are no enemy.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "eu2ixnowg5cq": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "benkei",
+  "voice": "Alnilam",
+  "model": "gemini-3.8-live",
+  "seconds": 5.17,
+  "text": "Go on inside. My lord is waiting for you. …Or so I feel.",
+  "heard": "Go on inside. My Lord is waiting for you, or so I feel.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e5qh9beulodv": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 3.09,
+  "text": "…A visitor? On a night like this?",
+  "heard": " On a night like this?",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
  }
 }
