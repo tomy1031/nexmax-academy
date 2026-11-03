@@ -1054,5 +1054,101 @@
   "heard": " With everyone else, you and Piseth carried the pillar timber on your shoulders.",
   "scene": "お祝いの、晴れやかな場面。明るく",
   "readings": []
+ },
+ "e1qup4up2bohg": {
+  "episode": "kh-royalpalace",
+  "lang": "en",
+  "speaker": "piseth",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 3.9600416666666667,
+  "text": "The king's palace is going to be built right here.",
+  "heard": " The king's palace is going to be built right here.",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "eoj67os1hj5g": {
+  "episode": "kh-royalpalace",
+  "lang": "en",
+  "speaker": "piseth",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 6.9,
+  "text": "…The wood my boat carried is going to be a pillar of the new capital. Isn't that kind of amazing?",
+  "heard": "",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "ebygri35wgi4": {
+  "episode": "kh-royalpalace",
+  "lang": "en",
+  "speaker": "piseth",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 4.97,
+  "text": "Heh heh. My name won't last, though. But maybe the pillar will.",
+  "heard": " Heh heh. My name won't last, though. But maybe the pillar will.",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "e1yrvt5y186k7": {
+  "episode": "kh-royalpalace",
+  "lang": "en",
+  "speaker": "piseth",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 4.150041666666667,
+  "text": "Yeah. With only the king, not one pillar would go up.",
+  "heard": "",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "e144selasynur": {
+  "episode": "kh-royalpalace",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.81,
+  "text": "(whispering) It's just like Grandmother Penh's “one basket at a time.” One by one, the pillars go up.",
+  "heard": " It's just like Grandmother Penh's \"one basket at a time.\" One by one, the pillars go up.",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "e1bwzqre1ying": {
+  "episode": "kh-royalpalace",
+  "lang": "en",
+  "speaker": "piseth",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 7.54,
+  "text": "I've made up my mind. I'm going back to tell Grandpa that I helped raise a pillar of the new capital.",
+  "heard": " I'm going back to tell Grandpa that I helped raise a pillar of the new capital.",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "etvupcu1a9gm": {
+  "episode": "kh-royalpalace",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.88,
+  "text": "…We're back. This is the Royal Palace today.",
+  "heard": " This is the Royal Palace today.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1ps5e121qqs1": {
+  "episode": "kh-royalpalace",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.7,
+  "text": "In 1866, King Norodom moved the capital from Oudong to Phnom Penh. Some sources say 1865.",
+  "heard": "In 1866, King Norodom moved the capital from Oudong to Phnom Penh. Some sources say 1865.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
