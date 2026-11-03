@@ -881,5 +881,101 @@
   "readings": [
    "渡し場＝わたしぶね"
   ]
+ },
+ "v1u0ko01": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "vichet",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 4.58,
+  "text": "でも、それも、もうすぐおしまい。……ほら、見て。",
+  "heard": "でも、それも、もうすぐおしまい。……ほら、見て。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1lt77lg": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.48,
+  "text": "ヴィチェットは、帽子のふちにはさんだお札を一枚ぬいて、見せてくれた。",
+  "heard": "ヴィチェットは、帽子のふちにはさんだお札を一枚ぬいて、見せてくれた。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vzj0zee": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "vichet",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 5.12,
+  "text": "新しい500リエル札。ここに描いてあるの、あの橋なんだって。",
+  "heard": "新しい500リエル札。ここに描いてあるの、あの橋なんだって。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1mewc5w": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "vichet",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 5.63,
+  "text": "あの橋、まだ渡ったことないのに、お札では毎日見てるんだ。",
+  "heard": "あの橋 、まだ渡った こと ない のに、 お札 で は 毎日 見 てる ん だ 。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1s1bnzq": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.56,
+  "text": "新しい500リエル札には、あの橋と、コンポンチャムの「きずな橋」が描かれているんだ。どっちも、日本の協力で架けた橋だよ。",
+  "heard": "新しい500 リアル 札 に は 、 あの 橋 と 根元 ちゃむ の 絆橋 が 描か れ て いる ん だ 。 どっち も 日本 の 協力 で かけ た 橋 だ よ 。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vz64w2u": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "vichet",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 7.59,
+  "text": "名前は「つばさ」。日本の言葉で、鳥が空を飛ぶときに広げる、翼のことなんだって。",
+  "heard": "名前はつばさ。日本の言葉で、鳥が空を飛ぶときに広げる翼のことなんだって。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1lhdaub": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.920041666666667,
+  "text": "1月に、橋のまんなかがつながったお祝いの式で、カンボジアの首相が名づけたんだ。",
+  "heard": "1 月 に 橋 の 真ん中 が 繋がっ た お 祝い の 式 で カンボジア の 首相 が 名付け た ん だ 。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v766ql7": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "vichet",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 2.35,
+  "text": "明日、あの橋が開くんだ。",
+  "heard": "明日あの橋が開くんだ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
