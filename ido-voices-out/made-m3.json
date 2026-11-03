@@ -484,5 +484,101 @@
   "heard": "",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v1o6dg2t": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "mouhot",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 6.71,
+  "text": "巨人の仕事、か。……たとえとしてなら、まさに、そのとおりだ。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1nydnif": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.440041666666668,
+  "text": "この四つの答えも、ムオさんの本に、本当に書かれているんだ。村の人たちは、それぞれの言い伝えで、あの寺を知っていたんだね。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1x99ufv": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "mouhot",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 8.62,
+  "text": "旅の人。あなたは、どの答えが好きかな。",
+  "heard": " 旅の人。あなたは、どの答えが好きかな。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1teh0zs": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "mouhot",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 9.04,
+  "text": "そうだね。それほど見事な寺だ、ということだね。……でも、あの石を彫ったのは、人の手だよ。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vfefcn4": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "mouhot",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 4.04,
+  "text": "わたしも、それに一票だ。たとえとしてなら、ね。",
+  "heard": "わたしも、それに一票だ。たとえとしてなら、",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1j04ykl": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "mouhot",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 8.21,
+  "text": "……そうだね。石を運び、彫った人が、数えきれないほどいたはずだ。名前は、残っていなくても。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v16q9290": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.920041666666667,
+  "text": "（小声）ケオくんたちのことだね。名前の残らなかった、石工のみんな。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v8fzzjn": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "mouhot",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 5.44,
+  "text": "わたしは、建物にも、古いものにも、少しもくわしくない。",
+  "heard": "わたしは、建物にも、古いものにも、少しもくわしくない。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
