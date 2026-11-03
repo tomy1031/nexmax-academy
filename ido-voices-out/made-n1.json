@@ -418,5 +418,17 @@
   "heard": " It's just a coincidence, of course. The times and places are completely different. But somehow, it makes me happy.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1i0mbqf19802": {
+  "episode": "kh-watphnom",
+  "lang": "en",
+  "speaker": "penh",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 6.8,
+  "text": "Through a flood like this, the Buddhas chose our bank and floated here to us.",
+  "heard": " Through a flood like this, the Buddhas chose our bank and floated here to us.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
