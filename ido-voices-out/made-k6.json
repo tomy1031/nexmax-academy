@@ -1331,5 +1331,103 @@
   "heard": "",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v1bhl491": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 11.25,
+  "text": "そのとき、回廊の向こうから、金の日傘が近づいてきた。石工たちが、いっせいに手を止めて、頭を下げる。",
+  "heard": "回廊の向こうから、金の日傘が近づいてきた。石工たちが、いっせいに手を止めて、頭を下げる。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "回廊＝かいろう"
+  ]
+ },
+ "vk8yzp6": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.2400416666666665,
+  "text": "王さまは、病気の人の世話をする浮き彫りの前で、足を止めた。",
+  "heard": "王さまは、病気の人の世話をする浮き彫りの前で、足を止めた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vdvw5la": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "jayavarman7",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.250041666666666,
+  "text": "手を止めずともよい。……おや、見かけぬ旅の人だな。",
+  "heard": "……おや、見かけぬ旅の人だな。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vfdvwwp": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "jayavarman7",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.84,
+  "text": "……そなたは、あの日、タ・プロームにいた旅の人ではないか。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vhpe7s6": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "jayavarman7",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.25,
+  "text": "あれから十四年になる。そなたは、少しも変わらぬな。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v93pho8": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.760041666666667,
+  "text": "王さまは、ふしぎそうに、でもうれしそうに目を細めた。",
+  "heard": "ふしぎそうに、でもうれしそうに目を細めた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vpl530x": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "jayavarman7",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.940041666666667,
+  "text": "手を止めずともよい。……おや、旅の人。わたしを知っているような目をしているな。",
+  "heard": "手を止めずともよい。……おや、旅の人。わたしを知っているような目をしているな。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vwjtdba": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "jayavarman7",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 8.040041666666667,
+  "text": "この壁には、戦だけでなく、病の者の世話をする女たちも彫らせている。",
+  "heard": "この壁には、戦だけでなく、病の者の世話をする女たちも彫らせている。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
