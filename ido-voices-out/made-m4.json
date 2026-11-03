@@ -94,5 +94,17 @@
   "heard": " I look after the water buffalo in this forest.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1jha1xf1mm1r": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "nimol",
+  "voice": "Aoede",
+  "model": "gemini-3.8-live",
+  "seconds": 6.56,
+  "text": "Look. There's a strange man over there. His face is all beard. And there's a monkey sitting on his shoulder!",
+  "heard": " Look. There's a strange man over there. His face is all beard. And there's a monkey sitting on his shoulder!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
