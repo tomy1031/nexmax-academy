@@ -430,5 +430,101 @@
   "heard": " Through a flood like this, the Buddhas chose our bank and floated here to us.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1nca3sy148tt": {
+  "episode": "kh-watphnom",
+  "lang": "en",
+  "speaker": "penh",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 5.69,
+  "text": "Then let's make them a home where the water can never reach them again.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e67g7pex88cr": {
+  "episode": "kh-watphnom",
+  "lang": "en",
+  "speaker": "penh",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 6.07,
+  "text": "We'll build a hill. Right here on this flat bank, out of piled-up earth.",
+  "heard": " We'll build a hill. Right here on this flat bank, out of piled-up earth.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ek9aqvmmz5fm": {
+  "episode": "kh-watphnom",
+  "lang": "en",
+  "speaker": "村の人",
+  "voice": "Rasalgethi",
+  "model": "gemini-3.8-live",
+  "seconds": 5.310041666666667,
+  "text": "A hill?! Granny Penh, that would take years and years…",
+  "heard": " A hill?! Granny Penh, that would take years and years.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e4r7yvc1wn0g": {
+  "episode": "kh-watphnom",
+  "lang": "en",
+  "speaker": "penh",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 7.38,
+  "text": "If one person did it alone, it would never be done, not even in a whole lifetime.",
+  "heard": " If one person did it alone, it would never be done, not even in a whole lifetime.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e6aoiydior36": {
+  "episode": "kh-watphnom",
+  "lang": "en",
+  "speaker": "penh",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 6.88,
+  "text": "But what if everyone in the village carried one basket at a time? The children can use small baskets.",
+  "heard": " But what if everyone in the village carried one basket at a time? The children can use small baskets.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1gqfj3b6zs6d": {
+  "episode": "kh-watphnom",
+  "lang": "en",
+  "speaker": "penh",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 5.560041666666667,
+  "text": "One basket at a time. Someday, that becomes a hill.",
+  "heard": " One basket at a time. Someday, that becomes",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ecyb8fbgcave": {
+  "episode": "kh-watphnom",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.24,
+  "text": "From the next day on, the whole village began carrying earth in baskets.",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e2v2f8lxcfsz": {
+  "episode": "kh-watphnom",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.720041666666667,
+  "text": "The children you led away from the water are in the line too, with small baskets on their heads.",
+  "heard": " The children you led away from the water are in the line too, with small baskets on their heads.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
