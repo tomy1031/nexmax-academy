@@ -1,0 +1,98 @@
+{
+ "v1jov6a8": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.160041666666666,
+  "text": "1998年。アンコール・ワットからそう遠くない、木の家。",
+  "heard": "アンコール・ワットからそう遠くない、木の家。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1ls80at": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.800041666666667,
+  "text": "軒下の棚に、赤くさびた丸いものや、筒のようなものが、ずらりと並んでいる。",
+  "heard": "軒下の棚に、赤くさびた丸いものや、筒のようなものが、ずらりと並んでいる。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v7kg0li": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.8,
+  "text": "家の裏の木かげで、女の子がひとり、ノートを広げていた。",
+  "heard": "家の裏の木かげで、女の子がひとり、ノートを広げていた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1ybnoqq": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "bopha",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 2.160041666666667,
+  "text": "こんにちは！ 見に来たの？",
+  "heard": "こんにちは 。見 に 来 た の ?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v19s89tv": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "bopha",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 5.53,
+  "text": "あ、だいじょうぶ。ここに並んでるのは、ぜんぶ、もう爆発しないようにしてあるの。",
+  "heard": " あ、だいじょうぶ。 ここに並んでるのは、ぜんぶ、もう爆発しないようにしてあるの。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vu07tf9": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "bopha",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 5.16,
+  "text": "わたし、ボパー。「花」っていう意味なの。ここに住んでるんだ。",
+  "heard": "私ボパ 、 花って いう 意味 な の 。 ここ に 住ん でる ん だ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vno9ue0": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "bopha",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 3.38,
+  "text": "あっ、また来てくれたの？ えへへ。",
+  "heard": "あ 、 また 来 て くれ た の ? へえ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1wu1rgq": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "bopha",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 3.7,
+  "text": "こんにちは！ ……あれ？ どこかで会ったっけ。",
+  "heard": "こんにちは！……あれ？どこかで会ったっけ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ }
+}
