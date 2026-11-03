@@ -290,5 +290,103 @@
   "heard": "",
   "scene": "お祝いの、晴れやかな場面。明るく",
   "readings": []
+ },
+ "vcniq3l": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.67,
+  "text": "暗い回廊を進むと、壁に彫られた踊り子たちが、こちらを見ている。……いない。",
+  "heard": "回廊を進むと、壁に彫られた踊り子たちが、こちらを見ている。……いない。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": [
+   "回廊＝かいろう"
+  ]
+ },
+ "vnnr3n3": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.160041666666666,
+  "text": "ふり返ると、さっき通った柱のかげで、ニモルがくすくす笑っていた。",
+  "heard": "",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "v1tn124r": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 13.68,
+  "text": "見上げると、大きな石の顔が、あなたを見下ろしていた。その顔の下のすきまから、ニモルの手が、ひらひらとふられている。",
+  "heard": "見上げると、大きな石の顔が、あなたを見下ろしていた。その顔の下のすきまから、ニモルの手が、ひらひらとふられている。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "v1hi3g68": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "nimol",
+  "voice": "Aoede",
+  "model": "gemini-3.8-live",
+  "seconds": 3.98,
+  "text": "あなたたち、ずっと同じところを、ぐるぐる回ってたよ。",
+  "heard": "",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "v1uvgk1s": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.630041666666667,
+  "text": "ムオさんの肩のサルが、キキッと笑うように鳴いた。",
+  "heard": " ムオさんの肩のサルが、キキッと笑うように鳴いた。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "v1scnta4": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "mouhot",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 6.7,
+  "text": "まいった。……でも、おかげで、塔をぜんぶ数えられたよ。三十七だ。",
+  "heard": "……でも、おかげで、塔をぜんぶ数えられたよ。三十七だ。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "vzj2myp": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "nimol",
+  "voice": "Aoede",
+  "model": "gemini-3.8-live",
+  "seconds": 5.55,
+  "text": "数えたの？ そんなの、数えなくても、ここは、村のみんなが知ってるよ。",
+  "heard": " 数えたの？ そんなの、数えなくても、ここは、村のみんなが知ってるよ。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "v2nxvfk": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "nimol",
+  "voice": "Aoede",
+  "model": "gemini-3.8-live",
+  "seconds": 4.71,
+  "text": "おばあちゃんは、満月の日に、ここへお花をそなえに来るし。",
+  "heard": "",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
  }
 }
