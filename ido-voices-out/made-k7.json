@@ -1514,5 +1514,103 @@
   "heard": "ねえ。シェムリアップの旅を、ふりかえってみて。",
   "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
   "readings": []
+ },
+ "vkq52b1": {
+  "episode": "kh-sr-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.94,
+  "text": "周達観さんは、旅で見たものを書きのこした。だから、ぼくたちは、700年前の都の暮らしを知ることができるんだ。",
+  "heard": "周達観さんは、旅で見たものを書きのこした。だから、ぼくたちは、700年前の都の暮らしを知ることが",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "都＝みやこ"
+  ]
+ },
+ "vf8s0fz": {
+  "episode": "kh-sr-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.380041666666667,
+  "text": "（小声）あなたは「会った人のことを書く」って言ったね。……この旅で、たくさん会えたね。",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vvp5mhx": {
+  "episode": "kh-sr-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.88,
+  "text": "ケオくんは言ったよね。「ぼくの名前は残らない。でも、この天女さまは残る」。",
+  "heard": " ケオくんは言ったよね。「ぼくの名前は残らない。でも、この天女さまは残る」。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v77lfzx": {
+  "episode": "kh-sr-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.63,
+  "text": "王さまは、お母さんのために、寺を建てた。スレイモンちゃんは、そこで、はじめての舞台に立った。",
+  "heard": "王さまは、お母さんのために、寺を建てた。スレイモンちゃんは、そこで、はじめての舞台に立った。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1dmb5bk": {
+  "episode": "kh-sr-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.81,
+  "text": "チャンティちゃんのお母さんは、石の中で、今も魚をはかってる。",
+  "heard": "チャンティちゃんのお母さんは、石の中で、今も魚をはかってる。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1h8h0kp": {
+  "episode": "kh-sr-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.18,
+  "text": "一房さんは、お父さんとお母さんのために、海を渡ってきた。",
+  "heard": "一房さんは、お父さんとお母さんのために、海を渡ってきた。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vygtfs3": {
+  "episode": "kh-sr-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.69,
+  "text": "アキ・ラーさんは、子どもたちに話していた。「よく勉強しなさい。よいことをしなさい。おたがいを大切にしなさい」。",
+  "heard": " アキ・ラーさんは、子どもたちに話していた。「よく勉強しなさい。よいことをしなさい。おたがいを大切にしなさい」。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v15mo2uw": {
+  "episode": "kh-sr-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 12.72,
+  "text": "この寺は、九百年ちかく、ここに立ってきた。そのあいだに、戦も、苦しい時代もあった。失われたものも、たくさんある。",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
