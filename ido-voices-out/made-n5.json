@@ -526,5 +526,101 @@
   "heard": " In the east gallery, there's a very, very long relief called the “Churning of the Ocean of Milk,” where gods and demons pull on a giant snake to churn the sea.",
   "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
   "readings": []
+ },
+ "e13zo2l8qfx46": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.67,
+  "text": "Around the spring and autumn equinoxes, you can watch the sun rise over the central tower from the western approach.",
+  "heard": " Around the spring and autumn equinoxes, you can watch the sun rise over the central tower from the",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e18tlp17r2bih": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.27,
+  "text": "Almost none of the names of the people who carved this place have survived.",
+  "heard": " Almost none of the names of the people who carved this place have survived.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e106zm2r1viv5": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.95,
+  "text": "(whispering) A smiling devata, a devata holding a flower… As you walk around, try to find Keo's devata.",
+  "heard": " A smiling devata, a devata holding a flower… As you walk around, try to find Keo's devata.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1ieae5891coj": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.44,
+  "text": "And this temple has one more story. It's about a samurai who crossed the sea from Japan four hundred years ago to pray here. If you like, open that one too.",
+  "heard": " And this temple has one more story. It's about a samurai who crossed the sea from Japan four hundred years ago to pray here. If you like, open that one too.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e14xpgcf1jelv": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.15,
+  "text": "1186. In a new temple in the forest, a sacred Buddhist statue was enshrined.",
+  "heard": " In a new temple in the forest, a sacred Buddhist statue was enshrined.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1ce5mef1b383": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.790041666666666,
+  "text": "Galleries of pale stone stretched on and on. Many people were coming and going.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "etzbzphjhj2t": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.170125,
+  "text": "In the shade of a gallery, a girl was practicing hand shapes over and over.",
+  "heard": " In the shade of a gallery, a girl was practicing hand shapes over and over.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e19gd0gx92g20": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "sreymom",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 3.95,
+  "text": "Oh… were you watching? How embarrassing.",
+  "heard": " Oh… were you watching? How embarrassing.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
