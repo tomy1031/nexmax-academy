@@ -1109,5 +1109,105 @@
   "heard": "",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v1yb6jlq": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 11.5,
+  "text": "一房は、腰の矢立から筆を取り出した。踏み台にのぼり、頭より高いところの柱に、筆を当てる。",
+  "heard": "一房は、腰の矢立から筆を取り出した。踏み台にのぼり、頭より高いところの柱に、筆を当てる。",
+  "scene": "かなしみの場面。静かに、こらえるように。大げさにしない",
+  "readings": [
+   "矢立＝やたて"
+  ]
+ },
+ "vwtuupw": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.000083333333333,
+  "text": "墨のにおいが、乾いた風にのって、ほのかに広がった。",
+  "heard": "",
+  "scene": "かなしみの場面。静かに、こらえるように。大げさにしない",
+  "readings": []
+ },
+ "v151xyf9": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "一房が書いた字",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 12.91,
+  "text": "寛永九年正月に、初めてここに来る。生まれは日本、肥州の住人、森本右近太夫一房。",
+  "heard": "寛永九年正月に、初めてここに来る。生まれは日本、肥州の住人、森本右近太夫一房。",
+  "scene": "かなしみの場面。静かに、こらえるように。大げさにしない",
+  "readings": []
+ },
+ "vdnd8sm": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "一房が書いた字",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 6.62,
+  "text": "数千里の海を渡り……そのために、仏を四体、たてまつる。",
+  "heard": "数千里の海を渡り……そのために、仏を四体、たてまつる。",
+  "scene": "かなしみの場面。静かに、こらえるように。大げさにしない",
+  "readings": []
+ },
+ "v160gve3": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "一房が書いた字",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 10.880041666666667,
+  "text": "父の、この世のしあわせのために。亡き母の、あの世の安らぎのために。",
+  "heard": "父の、この世のしあわせのために。亡き母の、あの世の安らぎのために。",
+  "scene": "かなしみの場面。静かに、こらえるように。大げさにしない",
+  "readings": []
+ },
+ "v1e3z9j8": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.22,
+  "text": "一房さんが書いた文は、今も残っていて、学者さんたちが読みといたんだ。今のは、それをやさしく言いかえたものだよ。",
+  "heard": "一房さんが書いた文は、今も残っていて、学者さんたちが読みといたんだ。今のは、それをやさしく言いかえたものだよ。",
+  "scene": "かなしみの場面。静かに、こらえるように。大げさにしない",
+  "readings": []
+ },
+ "vgy4m8x": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.58,
+  "text": "それから十日のあいだ、一房は御堂に通いつづけた。——ここからは「もしかしたら」のお話。",
+  "heard": "それから十日のあいだ、一房は御堂に通いつづけた。——ここからは「もしかしたら」のお話。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vp3gf5o": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.2,
+  "text": "縄で回廊の長さを測り、紙に、塔や参道の形を、ていねいに写していく。",
+  "heard": "縄で回廊の長さを測り、紙に、塔や参道の形を、ていねいに",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "回廊＝かいろう"
+  ]
  }
 }
