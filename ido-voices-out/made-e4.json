@@ -1426,5 +1426,101 @@
   "heard": " Nii-no-ama, the Emperor's grandmother, held the young Emperor — still a little boy — in her arms. “There is a capital beneath the waves, too,” she told him. Then she sank into the deep sea. So says The Tale of the Heike, the great old story of this war.",
   "scene": "激しい戦いのさなか。声を張り、息は荒く",
   "readings": []
+ },
+ "e6f4s6dubsbg": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.07,
+  "text": "…But you know what? In Iya, on the island of Shikoku, people say the Emperor survived and fled deep into the mountains.",
+  "heard": " But you know what? In Iya, on the island of Shikoku, people say the Emperor survived and fled deep into the mountains.",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "e1j0dpjaigfqy": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 2.68,
+  "text": "…So this is the end.",
+  "heard": "So, this is the end.",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "e15zr7e118fmx": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.92,
+  "text": "Then at least — that one man will not escape me!",
+  "heard": "Then, at least, that one man will not escape me.",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "e9imgdugjf93": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 3.760083333333333,
+  "text": "You there, look out! Get down behind the boat!",
+  "heard": "You there, look out. Get down behind the boat.",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "e103xrrc1me3h": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 4.150041666666667,
+  "text": "Stay down. …Today, everything will be decided!",
+  "heard": " …Today, everything will be decided!",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "e1uvvd77bntgd": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.71,
+  "text": "(whispering) …Four years from now, at Takadachi in the far north, he will be hunted, too.",
+  "heard": "4 years from now at Takadachi in the far north, he will be hunted too.",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "ev2sdvf1teyr": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 1.7000416666666667,
+  "text": "Yoshitsuneee!",
+  "heard": "Yoshi Sune",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "e10trti98ej35": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.34,
+  "text": "Noritsune leaps from boat to boat, closing in on Yoshitsune. He raises his sword high.",
+  "heard": " Noritsune leaps from boat to boat, closing in on Yoshitsune. He raises his sword high.",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
  }
 }
