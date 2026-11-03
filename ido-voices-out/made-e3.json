@@ -1066,5 +1066,17 @@
   "heard": " …Will you tell our story?",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1lq4u3f1bgxt": {
+  "episode": "miyoshi-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.7700416666666667,
+  "text": "Yes. Now it's your turn to be the storyteller.",
+  "heard": "Yes. Now it's your turn to be the storyteller.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
