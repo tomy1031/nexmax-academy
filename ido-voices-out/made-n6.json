@@ -1498,5 +1498,101 @@
   "heard": " In the first month of Kan'ei 9 (1632), I came here for the first time. Born in Japan, a man of Hishu: Morimoto Ukondayu Kazufusa.",
   "scene": "かなしみの場面。静かに、こらえるように。大げさにしない",
   "readings": []
+ },
+ "ednd8sm1iigd": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "一房が書いた字",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 9.9,
+  "text": "I crossed thousands of miles of sea… and for this, I offer four Buddha statues.",
+  "heard": " I crossed thousands of miles of sea… and for this, I offer four Buddha statues.",
+  "scene": "かなしみの場面。静かに、こらえるように。大げさにしない",
+  "readings": []
+ },
+ "e160gve31gvst": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "一房が書いた字",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 7.43,
+  "text": "For my father's happiness in this world. For my late mother's peace in the next.",
+  "heard": " For my late mother's peace in the next.",
+  "scene": "かなしみの場面。静かに、こらえるように。大げさにしない",
+  "readings": []
+ },
+ "e1e3z9j8r0gm9": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.63,
+  "text": "The words Kazufusa wrote still survive, and scholars have worked out what they say. What you just heard is that, put into simple words.",
+  "heard": " The words Kazufusa wrote still survive, and scholars have worked out what they say. What you just heard is that, put into simple words.",
+  "scene": "かなしみの場面。静かに、こらえるように。大げさにしない",
+  "readings": []
+ },
+ "egy4m8x12s0b": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.04,
+  "text": "For the next ten days, Kazufusa kept coming back to the temple. — From here on, this is a “maybe” story.",
+  "heard": "For the next ten days, Kazufusa kept coming back to the temple. — From here on, this is a “maybe”",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ep3gf5oofbh0": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 16.94,
+  "text": "He measured the galleries with a rope, and carefully copied the shapes of the towers and the approach onto paper.",
+  "heard": " He measured the galleries with a rope, and carefully copied the shapes of the towers and the approach onto paper.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e8531v350ixv": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 8.15,
+  "text": "My father builds castles. If I show him the shape of this holy hall, he will surely be delighted.",
+  "heard": " My father builds castles. If I show him the shape of this holy hall, he will surely be delighted.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e82elcc1t7da": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "ukon",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 6.51,
+  "text": "People built a hall such as this by piling up stones. Can you believe it?",
+  "heard": " People built a hall such as this by piling up stones. Can you believe it?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e15fn9v643vic": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.340041666666667,
+  "text": "(whispering) …Keo and the others carved it. Their names are forgotten, though.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
