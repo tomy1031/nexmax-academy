@@ -1102,5 +1102,101 @@
   "heard": " Your name may not be remembered. But the maiden your hands carve will be smiling here for a thousand years.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e196uk9d1o6dp": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.46,
+  "text": "The king looked at the maiden once more, then went back into the line of parasols.",
+  "heard": "\n\nThe king looked at the maiden once more, then went",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1mv32xdf8cab": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.23,
+  "text": "After Suryavarman II died, he was given the name “Paramavishnuloka.” It means “the king who went to the world of Vishnu.”",
+  "heard": " After Suryavarman II died, he was given the name “Paramavishnuloka.” It means “the king who went to the world of Vishnu.”",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eznkalzzye0i": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.47,
+  "text": "Far at the back, beneath a golden parasol, was the king.",
+  "heard": " Far at the back, beneath a golden parasol, was the king.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1rclb9z1fhb3": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 2.26,
+  "text": "That's Jayavarman VII.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1320o07yvr0e": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 15.53,
+  "text": "The procession stopped in front of a new stone tablet. The king's eyes fell on Sreymom at the end of the line of dancers — and on you, a stranger.",
+  "heard": " The procession stopped in front of a new stone tablet. The king's eyes fell on Sreymom at the end of the line of dancers — and on you, a stranger.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1svwi9e1p2hf": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "jayavarman7",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.390041666666667,
+  "text": "…I do not know your face. Have you come from far away?",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e10ed0u419r2z": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "jayavarman7",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 8.09,
+  "text": "You are welcome here. Today we receive the Buddha into the temple I built for my mother.",
+  "heard": " You are welcome here. Today we receive the Buddha into the temple I built for my mother.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "et2j9nuw56ml": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "jayavarman7",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 8.82,
+  "text": "We meet again, traveller. Today we receive the Buddha into the temple I built for my mother.",
+  "heard": " We meet again, traveller. Today we receive the Buddha into the temple I built for my mother.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
