@@ -1,0 +1,98 @@
+{
+ "e1ebm10u7wok5": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.810041666666667,
+  "text": "January 1860. The forest of Angkor Thom.",
+  "heard": " January eighteen sixty. The forest of Angkor Thom.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e25nttget8sk": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 37,
+  "text": "The roots of huge trees were wrapped around the stone towers. The faces on the towers smiled quietly between the leaves.",
+  "heard": " The roots of huge trees were wrapped around the stone towers. The faces on the towers smiled quietly between the leaves.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "exa1hzv1yagq": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 16.07,
+  "text": "In those days, this area was ruled by the neighbouring kingdom of Siam. Even so, the people of the villages by the forest still lived here, just as they always had.",
+  "heard": " In those days, this area was ruled by the neighbouring kingdom of Siam. Even so, the people of the villages by the forest still lived here, just as they always had.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "erltcl71qmbd": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.2400416666666665,
+  "text": "Somewhere, a monkey was chattering and dogs were barking.",
+  "heard": " Somewhere, a monkey was chattering and dogs were barking.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "elgku9pvmglc": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "nimol",
+  "voice": "Aoede",
+  "model": "gemini-3.8-live",
+  "seconds": 4.4900416666666665,
+  "text": "Shhh! …Who are you? You're not from the village, are you?",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1it7sgp1rtoo": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "nimol",
+  "voice": "Aoede",
+  "model": "gemini-3.8-live",
+  "seconds": 6.64,
+  "text": "I'm Nimol. I'm ten. I bring the water buffalo to graze in this forest.",
+  "heard": " I'm ten. I bring the water buffalo to graze in this forest.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eybnsgxmtw77": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "nimol",
+  "voice": "Aoede",
+  "model": "gemini-3.8-live",
+  "seconds": 5.06,
+  "text": "Oh, you came again? Shhh, keep quiet.",
+  "heard": " Oh, you came again? Shhh, keep quiet.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1asgbx21f14e": {
+  "episode": "kh-mouhot",
+  "lang": "en",
+  "speaker": "nimol",
+  "voice": "Aoede",
+  "model": "gemini-3.8-live",
+  "seconds": 5.26,
+  "text": "I'm Nimol. I look after the water buffalo in this forest.",
+  "heard": " I look after the water buffalo in this forest.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ }
+}
