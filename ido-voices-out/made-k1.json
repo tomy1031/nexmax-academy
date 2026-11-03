@@ -1144,5 +1144,17 @@
   "heard": "うん。王さまだけじゃ、柱は一本も立たないもん。",
   "scene": "お祝いの、晴れやかな場面。明るく",
   "readings": []
+ },
+ "v144sela": {
+  "episode": "kh-royalpalace",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.79,
+  "text": "（小声）ペンおばあさんの「一かごずつ」と、同じだね。一本ずつ、柱が立っていく。",
+  "heard": "ペコ お ばあさん の 一 かご ずつ と 同じ だ ね 1 本 ずつ 柱 が 立っ て いく",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
  }
 }
