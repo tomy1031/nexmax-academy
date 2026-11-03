@@ -1180,5 +1180,103 @@
   "heard": "夜。王宮の前の広場に、大きな台が組まれ、灯りと花でかざられていた。",
   "scene": "お祝いの、晴れやかな場面。明るく",
   "readings": []
+ },
+ "v1y2zayn": {
+  "episode": "kh-sr-prologue",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.27,
+  "text": "高い高い竹の足場から、火の玉が、ひゅう、と夜空にのぼる。",
+  "heard": "高い高い竹の足場から、火の玉が、ひゅう、と夜空にのぼる。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "v12v3zzz": {
+  "episode": "kh-sr-prologue",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.48,
+  "text": "ぱあん！ 都じゅうが、ゆれるような音。",
+  "heard": "ぱあん！みやこじゅうが、ゆれるような音。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": [
+   "都＝みやこ"
+  ]
+ },
+ "vvpllu5": {
+  "episode": "kh-sr-prologue",
+  "lang": "ja",
+  "speaker": "zhou",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 7.51,
+  "text": "この火は、百里先からも見えるそうです。お祭りは、十五日も続くのですよ。",
+  "heard": "この日は百里先からも見えるそうです。お祭り は15日も続く の です よ 。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "ve94gri": {
+  "episode": "kh-sr-prologue",
+  "lang": "ja",
+  "speaker": "zhou",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.52,
+  "text": "……旅の人。あなたなら、この旅のことを、何と書きのこしますか。",
+  "heard": "旅の人。あなたなら、この旅のことを、何と書きのこしますか。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "v1un8iv1": {
+  "episode": "kh-sr-prologue",
+  "lang": "ja",
+  "speaker": "zhou",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.55,
+  "text": "わたしと、同じですね。見たものを、見たとおりに。それが、いちばん長く残ります。",
+  "heard": "わたしと、同じですね。見たものを、見たとおりに。それが、いちばん長く残ります。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "v57v0zc": {
+  "episode": "kh-sr-prologue",
+  "lang": "ja",
+  "speaker": "zhou",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 9.24,
+  "text": "人のこと、ですか。……いいですね。石の塔より、人のほうが、すぐに忘れられてしまうから。",
+  "heard": "人のこと、ですか。……いいですね。石の塔より、人のほうが、すぐに忘れられてしまうから。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "v1glkdlp": {
+  "episode": "kh-sr-prologue",
+  "lang": "ja",
+  "speaker": "zhou",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 7.160041666666666,
+  "text": "ははは。それも、旅人の知恵です。わたしも、まだ半分も見ていません。",
+  "heard": "ははは。それも、旅人の知恵です。わたしも、まだ半分も見ていません。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "v1j9q4l7": {
+  "episode": "kh-sr-prologue",
+  "lang": "ja",
+  "speaker": "zhou",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.32,
+  "text": "では、わたしは、もう少し書いてきます。また、どこかの時代で。",
+  "heard": "で は 私 は もう 少し 書い て き ます 。 また どこ か の 時代 で",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
  }
 }
