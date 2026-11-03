@@ -626,5 +626,101 @@
   "heard": "わたしは、ネアリー。この子たちに、踊りを教えます。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "vjjskfi": {
+  "episode": "kh-museum",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.87,
+  "text": "ネアリー先生の手もとには、本も、楽譜も、写真もなかった。",
+  "heard": "ネアリー先生の手もとには、本も、楽譜も、写真",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1wbjm97": {
+  "episode": "kh-museum",
+  "lang": "ja",
+  "speaker": "neary",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 4.08,
+  "text": "踊りの本は、ありません。映像もありません。",
+  "heard": " 映像もありません。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1ox8ucg": {
+  "episode": "kh-museum",
+  "lang": "ja",
+  "speaker": "neary",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 12.13,
+  "text": "あるのは、わたしの体が覚えていることだけ。だから、わたしの体から、あなたたちの体へ、ひとつずつ写していくの。",
+  "heard": " あるのは、わたしの体が覚えていることだけ。だから、わたしの体から、あなたたちの体力へ、ひとつずつ写していくの。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1c3k9tk": {
+  "episode": "kh-museum",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 12.61,
+  "text": "長い戦いと、1975年からの苦しい時代のあいだに、踊りや音楽をになう人たちの多くが失われたんだ。九割ともいわれている。",
+  "heard": "長い戦いと1975年からの苦しい時代の間に踊りや音楽を担う人たちの多くが失われたんだ。9割とも言われている。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vb9qsef": {
+  "episode": "kh-museum",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.54,
+  "text": "1979年から、残った人たちが、覚えていた踊りを、子どもたちに教えはじめたんだよ。",
+  "heard": "1979 年 から 残っ た 人 たち が 覚え て い た 踊り を 子供 たち に 教え 始め た ん だ よ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1t6vjj4": {
+  "episode": "kh-museum",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.490083333333333,
+  "text": "最初の練習は、指だった。",
+  "heard": "最初 の 練習 は 指 だっ た 。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vm9a49a": {
+  "episode": "kh-museum",
+  "lang": "ja",
+  "speaker": "neary",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 6.93,
+  "text": "指を、うしろへ、そっと反らせて。毎日、少しずつ。",
+  "heard": "指 を 後ろ へ そっと そらし て 毎日 少し ずつ",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1emz7k5": {
+  "episode": "kh-museum",
+  "lang": "ja",
+  "speaker": "neary",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 52.01,
+  "text": "この形は「つぼみ」。これは「花がひらく」。これは「実がなる」。",
+  "heard": "この形は「つぼみ」。これは「花がひらく」。これは「実がなる」。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
