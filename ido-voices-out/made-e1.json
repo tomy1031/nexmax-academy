@@ -1054,5 +1054,17 @@
   "heard": "It's been nearly a year and he still hasn't come home. So today, just for today, I decided to play a sad song.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1i06r6s1ixf1": {
+  "episode": "miyoshi-biwa",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 2.47,
+  "text": "(whispering) Yaheiji… from that night.",
+  "heard": "야헤이지, from that night.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
