@@ -94,5 +94,101 @@
   "heard": " Oh! Oh, I can say \"konnichiwa,\" too. K-konnichiwa!",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "e30bvac1upm5": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "sokha",
+  "voice": "Despina",
+  "model": "gemini-3.8-live",
+  "seconds": 7.35,
+  "text": "I'm Sokha. I'm a third-year student studying IT. Next month, I start learning Japanese.",
+  "heard": " I'm a third-year student studying IT. Next month, I start learning Japanese.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1sk4gop4p0mw": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "sokha",
+  "voice": "Despina",
+  "model": "gemini-3.8-live",
+  "seconds": 3.89,
+  "text": "Oh, we meet again! K-konnichiwa!",
+  "heard": " Oh, we meet again! K-konnichiwa!",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e18sdlg91ebfl": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "sokha",
+  "voice": "Despina",
+  "model": "gemini-3.8-live",
+  "seconds": 6,
+  "text": "Oh, are you a traveler? …Huh, have we met somewhere before?",
+  "heard": "Oh, are you a traveler? …Huh, have we met somewhere before?",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1ozkfbq1on8o": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "sokha",
+  "voice": "Despina",
+  "model": "gemini-3.8-live",
+  "seconds": 4.27,
+  "text": "I'm Sokha. I'm a third-year student studying IT.",
+  "heard": " I'm a third-year student studying IT.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "ecsyph5un5kd": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "sokha",
+  "voice": "Despina",
+  "model": "gemini-3.8-live",
+  "seconds": 4.7400416666666665,
+  "text": "Today, this university and a Japanese company are making an agreement.",
+  "heard": " Today, this university and a Japanese company are making an agreement.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1ombr7i1qcuy": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "sokha",
+  "voice": "Despina",
+  "model": "gemini-3.8-live",
+  "seconds": 9.72,
+  "text": "It's called the “Japanese IT Pathway.” It's a program to learn Japanese and Japanese IT, and open a path to working in Japan.",
+  "heard": " It's called the “Japanese IT Pathway.” It's a program to learn Japanese and Japanese IT, and open a path to working in Japan.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e19hi9g81r0mx": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.46,
+  "text": "It runs for two years, starting in the third year. In the first year, students focus on Japanese. In the second, they learn IT that's useful at Japanese companies.",
+  "heard": " It runs for two years, starting in the third year. In the first year, students focus on Japanese. In the second, they learn IT that's useful at Japanese companies.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "ewe9ahr10pe1": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "sokha",
+  "voice": "Despina",
+  "model": "gemini-3.8-live",
+  "seconds": 3.92,
+  "text": "I'm from Prey Veng. On the other side of the Mekong.",
+  "heard": "I'm from Prey Veng on the other side of the Mekong.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
