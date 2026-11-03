@@ -336,5 +336,17 @@
   "readings": [
    "都＝みやこ"
   ]
+ },
+ "v6qroqc": {
+  "episode": "kh-bayon",
+  "lang": "ja",
+  "speaker": "chanthy",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 4.52,
+  "text": "ねえ、もうひとつ、見せたいものがあるの。こっち、こっち！",
+  "heard": " ねえ、もうひとつ、見せたいものがあるの。こっち、こっち！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
