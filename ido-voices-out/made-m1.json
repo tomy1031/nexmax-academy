@@ -194,5 +194,101 @@
   "heard": "ひょうたんを胸に当てて、糸をはじく。ぼん、ぼん……と、低い音が、川の上を流れていく。",
   "scene": "お祝いの、晴れやかな場面。明るく",
   "readings": []
+ },
+ "v14a15z3": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "kromngoy",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 4.890041666666667,
+  "text": "♪ 田んぼは　待って　くれないよ　ねぼうの朝は　もどらない",
+  "heard": "",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "v1wwtse9": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "kromngoy",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 5.39,
+  "text": "♪ 字を学べば　道が見える　学ばなければ　だまされる",
+  "heard": "",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "v1xbcbrw": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.29,
+  "text": "まわりの人たちが、どっと笑って、うなずいた。ボレイも、手をたたきながら、いっしょに口ずさんでいる。",
+  "heard": " まわりの人たちが、どっと笑って、うなずいた。ボレイも、手をたたきながら、いっしょに口ずさんでいる。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "v7vxpi6": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.370041666666667,
+  "text": "クロム・ンゴイさんは、田畑の仕事や、学ぶことの大切さを、歌で教えた人なんだ。いまの歌は、その教えを、やさしく言いかえたものだよ。",
+  "heard": " クロム ンゴイ さんは 田畑 の仕事 や、学ぶ ことの大切 さを、歌で教えた人なんだ。いまの歌は、その教えを、やさ",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "vbqw85j": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.96,
+  "text": "歌が終わると、おじいさんは、あなたのほうを見て、にやりと笑った。",
+  "heard": "",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "vithuey": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "kromngoy",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 4.310041666666667,
+  "text": "見なれん顔じゃな。遠くから来なさったか。",
+  "heard": " みなれん顔じゃな。遠くから来なさったか。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v13s1ggu": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "kromngoy",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 7.49,
+  "text": "わしはクロム・ンゴイ。生まれたときの名はウック・ウーじゃが、みんな、こう呼ぶ。",
+  "heard": "わしはクロム・ンゴイ。生まれたときの名はウック・ウーじゃが、みんな、こう呼ぶ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v42kho1": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "kromngoy",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 4.860041666666667,
+  "text": "おう、また来なさったか。歌が気に入ったと見える。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
