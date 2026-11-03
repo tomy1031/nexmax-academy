@@ -1246,5 +1246,101 @@
   "heard": " So when I divide my food into four, I have always given three parts to my teacher, my mother and my elder brother.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "etu4it8xc74f": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "keo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 4.26,
+  "text": "I-it's me…! She isn't finished yet, though…",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e10g66dabtqjv": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "jayavarman7",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.350041666666667,
+  "text": "…Young dancer. Your hands are trembling.",
+  "heard": " Your hands are trembling.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eerjsmykaqid": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "jayavarman7",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 7.49,
+  "text": "It is all right to tremble. Dance for my mother with all your heart — that is enough.",
+  "heard": " It is all right to tremble. Dance for my mother with all your heart— that is enough.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1fu81kx1pb7k": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.950041666666667,
+  "text": "The king stood before the stone and quietly read out the words that had just been carved into it.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e9kacd41s18w": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "jayavarman7",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 11.52,
+  "text": "May my mother be freed from the ocean of rebirth and reach Buddhahood.",
+  "heard": " May my mother be freed from the ocean of rebirth and reach Buddhahood.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "exazydw1ln9e": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.27,
+  "text": "That is the king's wish, really carved in this temple's inscription. The story of dividing his food into four is in the inscription too.",
+  "heard": " That is the king's wish, really carved in this temple's inscription. The story of dividing his food into four is in the inscription too.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e12c7gb21idiq": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.52,
+  "text": "No one knows what those dances were like. But Cambodian dancers today believe the shapes of their dance have come down to them from the celestial women on the walls of Angkor.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eoaemxewbdce": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.25,
+  "text": "(whispering) …The finger shapes Leakhena was learning in Phnom Penh. Maybe people danced the same way here, 800 years ago.",
+  "heard": " The finger shapes Leakhena was learning in Phnom Penh. Maybe people danced the same way here, 800 years ago.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
