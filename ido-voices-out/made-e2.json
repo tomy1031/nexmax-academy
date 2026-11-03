@@ -1426,5 +1426,101 @@
   "heard": " A story disappears when there's nobody left to tell it. It's the same for us",
   "scene": "こわい夜の山道。おびえて、声が細い",
   "readings": []
+ },
+ "e1f2awn1noro": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "konaki",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 12.31,
+  "text": "It's the age of TV now. The picture-show man is closing up shop. I suppose my time is just about over, too.",
+  "heard": " It's the age of TV now. The picture-show man is closing up shop. I suppose my time is just about over,",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": []
+ },
+ "es9as5msj8jk": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.080041666666666,
+  "text": "It's true! About forty years from now, Yamashiro Town will be named a “Yokai Heritage” site — a place that keeps yokai legends alive for the future.",
+  "heard": "About forty years from now, Yamashiro Town will be named a \"Yokai Heritage\" site — a place that keeps yokai legends alive for the future.",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": []
+ },
+ "egrghj21x9jc": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.95,
+  "text": "A Yokai House museum gets built there too, and it still tells your story today.",
+  "heard": " A Yokai House museum gets built there too, and it still tells your story today.",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": []
+ },
+ "eklnnda1fsih": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "konaki",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.98,
+  "text": "…Oho. Well, isn't that nice. All that crying was worth it after all.",
+  "heard": "Oh ho. Well, isn't that nice? All that crying was worth it, after all.",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": []
+ },
+ "e13ntv9p1k2eq": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "konaki",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 7.96,
+  "text": "…Ho ho ho. I see. So now there's one more storyteller.",
+  "heard": "ho ho ho I see. So now there's one more storyteller.",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": []
+ },
+ "e1dyl6t51x0eu": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 13.040041666666667,
+  "text": "And guess what? About forty years from now, Yamashiro Town will be named a “Yokai Heritage” site, a place that keeps yokai legends alive. A Yokai House museum there will tell your story.",
+  "heard": " And guess what? About forty years from now, Yamashiro Town will be named a \"Yokai Heritage\" site, a place that keeps yokai legends alive. A Yokai House museum there will tell your story.",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": []
+ },
+ "ed3sfvhdcfax": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 15.070041666666667,
+  "text": "Back at the festival grounds, the picture-show man hugged Kenta tight and cried.",
+  "heard": " Back at the festival grounds, the picture-show man hugged Kenta tight and cried.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e7685vpsicpv": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "kenta",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 6.63,
+  "text": "Mister… he was there. He was really, really there! Konaki-jiji!",
+  "heard": "Mr. He was there. He was really, really there. Konaki GG.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
