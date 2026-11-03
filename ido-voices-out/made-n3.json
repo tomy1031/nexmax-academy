@@ -286,5 +286,101 @@
   "heard": " From 1975 to 1979, a great many people in this country lost their lives.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1ai8tk71fwjp": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.680041666666667,
+  "text": "Without a word, you watched the river beside him. The river flowed slowly on.",
+  "heard": " Without a word, you watched the river beside him. The river flowed slowly on.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e3mpfo51khzw": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "sok",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 1.08,
+  "text": "…Thank you.",
+  "heard": "THank you.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "emko5vo1lo3s": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "sok",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 4.500041666666666,
+  "text": "Not at all. …It's a blessing to have someone who listens.",
+  "heard": "Not at all. It's a blessing to have someone who listens.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "enuogdgxth82": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "sok",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 8.49,
+  "text": "In 1979, I came back to the city. …A few years later, this child was born.",
+  "heard": " In 1979, I came back to the city. …A few years later, this child was born.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1gfr3mm5g886": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "sophea",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 2.8200416666666666,
+  "text": "I'm learning the roneat from Grandpa, too!",
+  "heard": " I'm learning the roneat from Grandpa,",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1fxfxdq1r15p": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "sophea",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 6.34,
+  "text": "I'm still really bad at it. But I'm going to learn every song in Grandpa's head.",
+  "heard": " I'm still really bad at it. But I'm going to learn every song in Grandpa's head.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ei8a2rg1dxdd": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "sok",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 4.310041666666667,
+  "text": "Ho ho. Who knows how many years that will take.",
+  "heard": "Ho ho. Who knows how many years that will take.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e10hpnp61dq7z": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.330041666666666,
+  "text": "Just then, loud applause rose up along the river. People had started crossing the bridge.",
+  "heard": " Just then, loud applause rose up along the river. People had started crossing the bridge.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
