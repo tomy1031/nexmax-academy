@@ -190,5 +190,101 @@
   "heard": "I'm from Prey Veng on the other side of the Mekong.",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "e4yqlrg13apo": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "sokha",
+  "voice": "Despina",
+  "model": "gemini-3.8-live",
+  "seconds": 7.880041666666667,
+  "text": "It used to take hours by ferry. But since the Tsubasa Bridge was built, coming to university and going home are much easier.",
+  "heard": " It used to take hours by ferry. But since the Tsubasa Bridge was built, coming to university and going home are much",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1lnxphd101j1": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.91,
+  "text": "(whispering) The Tsubasa Bridge…! That's the bridge at Vichet's ferry landing.",
+  "heard": " The Tsubasa",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1k8x6nh7kxco": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "sokha",
+  "voice": "Despina",
+  "model": "gemini-3.8-live",
+  "seconds": 7.16,
+  "text": "It used to take hours by ferry. But thanks to a bridge built with Japan's help, it's much easier now.",
+  "heard": " It used to take hours by ferry. But thanks to a bridge built with Japan's help, it's much easier now.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "eew7eof1m0w3": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "sokha",
+  "voice": "Despina",
+  "model": "gemini-3.8-live",
+  "seconds": 7.31,
+  "text": "My mom is always telling me, “Study!” When she was a child, she didn't get to study much.",
+  "heard": "My mom is always telling me, study. When she was a child, she didn't get to study much.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1m4gfvxqiad6": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "sokha",
+  "voice": "Despina",
+  "model": "gemini-3.8-live",
+  "seconds": 3.8000416666666665,
+  "text": "So I'm the one who's going to study properly.",
+  "heard": "So I'm the one who's going to study properly.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1748air1lygx": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 12.96,
+  "text": "The ceremony began. A Cambodian minister, the Japanese ambassador and the president of the Japan-Cambodia Association were seated in the front row, too.",
+  "heard": " The ceremony began. A Cambodian minister, the Japanese ambassador and the president of the Japan-Cambodia Association were seated in the front row, too.",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "e10be7gp3ccbn": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.89,
+  "text": "The university's president and Akira Matsui, president of the Japanese company NEXT MAKE, took their seats.",
+  "heard": " The university's president and Akira Matsui, president of the Japanese company NEXT MAKE, took their seats.",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "e1vm35m5owopd": {
+  "episode": "kh-finale",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.840041666666667,
+  "text": "The university's president said this.",
+  "heard": " The university's president said this.",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
  }
 }
