@@ -1774,5 +1774,41 @@
   "heard": " And guess what? There really is a legend that Yoshitsune escaped to the north and survived.",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "ejc7wmm4kjo0": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.600041666666667,
+  "text": "Some stories even say he crossed the sea and went much, much farther.",
+  "heard": " Some stories even say he crossed the sea and went much, much farther.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1delsfc49eme": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.86,
+  "text": "Actually, there's also a legend that Yoshitsune escaped to the north and survived.",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "efdvo9t66gs3": {
+  "episode": "genpei-takadachi",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.41,
+  "text": "Not the story of how he won, but the story of how he lived. …Now it's your turn to tell it.",
+  "heard": " Not the story of how he won, but the story of how he lived. …Now it's your turn to tell it.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
