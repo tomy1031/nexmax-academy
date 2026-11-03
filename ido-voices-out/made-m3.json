@@ -580,5 +580,17 @@
   "heard": "わたしは、建物にも、古いものにも、少しもくわしくない。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v1otsnkj": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "mouhot",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 6.66,
+  "text": "でも、ここで見たものを、できるだけそのまま書いて、遠くの国の人に知らせたいんだ。",
+  "heard": "でも、ここで見たものを、できるだけそのまま書いて、遠くの国の人に知らせたいんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
