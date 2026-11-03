@@ -1006,5 +1006,101 @@
   "heard": " The inscription says that every year, at the spring festival, there was a procession of banners and parasols, and men and women danced.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e7eiq4fxmbx4": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.440041666666668,
+  "text": "The procession stopped in front of the temple. After a while, the line of parasols began to move toward your wall.",
+  "heard": " The procession stopped in front of the temple. After a while, the line of parasols began to move toward your wall.",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "e126itdq18g3b": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "親方",
+  "voice": "Alnilam",
+  "model": "gemini-3.8-live",
+  "seconds": 4.960083333333333,
+  "text": "B-bow your heads, everyone! The king is coming to see the wall!",
+  "heard": " Bow your heads, everyone! The king is coming to see the wall!",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "e1cq5raq1icrf": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "suryavarman2",
+  "voice": "Schedar",
+  "model": "gemini-3.8-live",
+  "seconds": 8.07,
+  "text": "There is no need to stop working. …Who is carving this celestial maiden?",
+  "heard": " There is no need to stop working. …Who is carving this celestial maiden?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1cbqem95g0pv": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "suryavarman2",
+  "voice": "Schedar",
+  "model": "gemini-3.8-live",
+  "seconds": 8.04,
+  "text": "There is no need to stop working. …Have we met somewhere before? No — never mind.",
+  "heard": " There is no need to stop working. …Have we met somewhere before? No — never mind.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ebstrm51g9jw": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "suryavarman2",
+  "voice": "Schedar",
+  "model": "gemini-3.8-live",
+  "seconds": 8.690041666666668,
+  "text": "Who is carving this celestial maiden?",
+  "heard": "\nWho is carving this celestial maiden?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ewh1mwa1rwm4": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "suryavarman2",
+  "voice": "Schedar",
+  "model": "gemini-3.8-live",
+  "seconds": 14.2,
+  "text": "She will have a fine face. This temple is an offering to the god Vishnu. We are building the mountain where the gods live, here on earth.",
+  "heard": " She will have a fine face. This temple is an offering to the god Vishnu. We are building the mountain where the gods live, here on earth.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "epm6wzab9as9": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "suryavarman2",
+  "voice": "Schedar",
+  "model": "gemini-3.8-live",
+  "seconds": 6.72,
+  "text": "A thousand years from now, people will surely still look up at these towers.",
+  "heard": " A thousand years from now, people will surely still look up at these towers.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1dvi5mva3x7c": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "suryavarman2",
+  "voice": "Schedar",
+  "model": "gemini-3.8-live",
+  "seconds": 9.87,
+  "text": "Your name may not be remembered. But the maiden your hands carve will be smiling here for a thousand years.",
+  "heard": " Your name may not be remembered. But the maiden your hands carve will be smiling here for a thousand years.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
