@@ -1234,5 +1234,101 @@
   "heard": " No, no! You there, reach out your hand! I'll be your weight and hold you down!",
   "scene": "こわい夜の山道。おびえて、声が細い",
   "readings": []
+ },
+ "e1h0tm8agbl4x": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.33,
+  "text": "You lay flat at the edge of the cliff and grabbed Kenta's hand. But you began to slide, little by little—",
+  "heard": " You lay flat at the edge of the cliff and grabbed Kenta's hand. But you began to slide, little by little.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e1cwlqos1n12u": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.52,
+  "text": "Then Konaki-jiji jumped onto your back.",
+  "heard": "Then Konaki Jijii jumped onto your back.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e1iff60j1yzmk": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "konaki",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.64,
+  "text": "Hnnngh…! I'll get heavier than a stone!",
+  "heard": "Hn. I'll get heavier than a stone.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "esnlwvp9e9dc": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.870041666666666,
+  "text": "Your body was pinned to the ground. With every bit of strength you had, you pulled Kenta up.",
+  "heard": " Your body was pinned to the ground. With every bit of strength you had, you pulled Kenta up.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e1m9c2s1lo54": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.89,
+  "text": "Konaki-jiji patted the sobbing boy's head with his wrinkled hand.",
+  "heard": " Konaki-jiji patted the sobbing boy's head with his wrinkled hand.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e1jraw8d1avrn": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "konaki",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 8.93,
+  "text": "Go on, cry all you want. Crying means you're alive.",
+  "heard": "Go on, cry all you want. Crying means you're alive.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e1ca5mhno6lvc": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "konaki",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.7,
+  "text": "…You know, I remember crying from much longer ago, too.",
+  "heard": "You know, I remember crying from much longer ago, too.",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": []
+ },
+ "e1r1fgal1khsx": {
+  "episode": "miyoshi-youkai",
+  "lang": "en",
+  "speaker": "konaki",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 12.58,
+  "text": "About eight hundred years back, men in armor came from the capital (Kyoto). They climbed up this valley with such sad faces.",
+  "heard": "About 800 years back, men in armor came from the capital, Kyoto. They climbed up this valley with such sad faces,",
+  "scene": "こわい夜の山道。おびえて、声が細い",
+  "readings": []
  }
 }
