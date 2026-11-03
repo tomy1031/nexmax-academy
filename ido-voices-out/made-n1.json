@@ -1,0 +1,98 @@
+{
+ "e11gqzpd1z10o": {
+  "episode": "kh-prologue",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.62,
+  "text": "Evening in Phnom Penh. Across the street, the roofs of the Royal Palace shine gold.",
+  "heard": " Evening in Phnom Penh. Across the street, the roofs of the Royal Palace shine gold.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1gxfyp51ipzl": {
+  "episode": "kh-prologue",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.45,
+  "text": "You held your phone up to the QR code on a sign by the river. And in that instant—",
+  "heard": " You held your phone up to the QR code on a sign by the river. And in that instant",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1u041hu12ksj": {
+  "episode": "kh-prologue",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.3,
+  "text": "The breeze from the river stopped, all at once.",
+  "heard": " The breeze from the river stopped, all at once.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1ntode77r62o": {
+  "episode": "kh-prologue",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.22,
+  "text": "ជម្រាបសួរ (chum reap suor)! That's “hello” in Khmer, the language of Cambodia.",
+  "heard": " That's \"hello\" in Khmer, the language of Cambodia.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "ei3883a1xnk2": {
+  "episode": "kh-prologue",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.150041666666667,
+  "text": "We meet again! This time, we're traveling in Phnom Penh.",
+  "heard": " We meet again! This time, we're traveling in Phnom Penh.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e7oivtwlrhja": {
+  "episode": "kh-prologue",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.32,
+  "text": "Hi, nice to meet you! I'm Nexmax, your time-travel navigator!",
+  "heard": " Hi, nice to meet you! I'm Nexmax, your time-travel navigator!",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1b49fxl127un": {
+  "episode": "kh-prologue",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.720041666666667,
+  "text": "QR codes are “Doors of Time.” Scan one, and you'll slip back into that place's past!",
+  "heard": "QR codes are \"Doors of Time.\" Scan one, and you'll slip back into that place's",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "en92sp6kljzm": {
+  "episode": "kh-prologue",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.2,
+  "text": "This is Chaktomuk. In Khmer, that means “four faces.”",
+  "heard": " In Khmer,",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ }
+}
