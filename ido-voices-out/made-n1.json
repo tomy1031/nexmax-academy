@@ -94,5 +94,17 @@
   "heard": " In Khmer,",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "e1ys00ck1kb6o": {
+  "episode": "kh-prologue",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.64,
+  "text": "The Mekong, the Tonle Sap and the Bassac rivers all meet here, so the water looks as if it splits into four.",
+  "heard": " The Mekong, the Tonle Sap and the Bassac rivers all meet here, so the water looks as if it",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
