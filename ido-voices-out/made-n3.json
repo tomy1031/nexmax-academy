@@ -1,0 +1,98 @@
+{
+ "e1uepbgqjdzqv": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.900041666666667,
+  "text": "February 1994. Phnom Penh, in the dry season.",
+  "heard": " February 1994. Phnom Penh, in the dry season.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eid6kwp1g37j": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.71,
+  "text": "A long bridge stretched across the Tonle Sap River. Its brand-new part and its old part met at a joint.",
+  "heard": " A long bridge stretched across the Tonle Sap River. Its brand-new part and its old part met at a joint.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1mr9m3r1w4yi": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.2800416666666665,
+  "text": "People were already gathering by the river.",
+  "heard": "\nPeople were already gathering by the river.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ehqt8gi1ntzz": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "sophea",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 2.430041666666667,
+  "text": "Grandpa, hurry, hurry!",
+  "heard": "Grandpa, hurry, hurry.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1kb2r4ejhogr": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "sophea",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 6.230041666666667,
+  "text": "Oh… Hey, are you from another country? Did you come to cross the bridge too?",
+  "heard": " Oh… Hey, are you from another country? Did you come to cross the bridge too?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e178z5x85xgsd": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "sophea",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 4.590041666666667,
+  "text": "Oh, it's you again! Did you come to cross the bridge too?",
+  "heard": " Oh, it's you again! Did you come to cross the bridge too?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1dni0gwn4iib": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "sophea",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 4.59,
+  "text": "Huh? You look like you know me. …Oh well, never mind!",
+  "heard": " Huh? You look like you know me. …Oh well, never mind!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e57clwc13u3p": {
+  "episode": "kh-chroy",
+  "lang": "en",
+  "speaker": "sok",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 4.71,
+  "text": "Sophea, don't run. …Oh, are you a traveler?",
+  "heard": " Sophea, don't run. …Oh, are you a traveler?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ }
+}
