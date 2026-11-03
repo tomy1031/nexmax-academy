@@ -550,5 +550,101 @@
   "heard": "",
   "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
   "readings": []
+ },
+ "exsa2fs1kqu1": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.97,
+  "text": "It's a custom of Theravada Buddhism toward monks. It's said that Karpelès, too, sent her letters and books through someone who stood in between.",
+  "heard": " It's a custom of Theravada Buddhism toward monks. It's said that Karpelès, too, sent her letters and books through someone who stood in between.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "efnxbq11fqfw": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.12,
+  "text": "Borey carefully set the bundle of paper down in front of the monks with both hands.",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1accsvw1qrhk": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 15.860041666666667,
+  "text": "Krom Ngoy held the gourd to his chest and began to sing — slowly, very slowly.",
+  "heard": " Krom Ngoy held the gourd to his chest and began to sing — slowly, very slowly.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1fg8wt61voc7": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "kromngoy",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 5.88,
+  "text": "♪ Learn… your letters… and you'll see… the road…",
+  "heard": " Learn… your letters… and you'll see…",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "eujuyf4p8p7n": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.260041666666666,
+  "text": "The monks' pens moved with a soft scratching. Word by word, the song lined up on the paper.",
+  "heard": " The monks' pens moved with a soft scratching. Word by word, the song lined up on the paper.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "ekekhxs1dhi3": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "karpeles",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 9.88,
+  "text": "This temple holds many sutras written on palm leaves. The monks have copied and protected them for hundreds of years.",
+  "heard": " This temple holds many sutras written on palm leaves. The monks have copied and protected them for hundreds of years.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e50zui71ezzn": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "karpeles",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 7.590041666666667,
+  "text": "We help make them into books, and send them to other temples and to anyone who wants to learn.",
+  "heard": " We help make them into books, and send them to other temples and to anyone who wants to learn.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e9twkkziw30o": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "karpeles",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 10.99,
+  "text": "Because songs are words the people of this country have always treasured too. …And because all over the country, people are waiting for Krom Ngoy's songs.",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
