@@ -322,5 +322,101 @@
   "heard": " Ha ha ha, same as me! The market is the heart of the city.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e6qroqc12ftt": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "chanthy",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 4.56,
+  "text": "Hey, there's one more thing I want to show you. This way, this way!",
+  "heard": " Hey, there's one more thing I want to show you. This way, this way!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eawacvn147rr": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.04,
+  "text": "A breezy hall in the temple. Women and girls sat on mats, with books made of palm leaves open in front of them.",
+  "heard": "A breezy hall in the temple. Women and girls sat on mats, with books made of palm leaves open in front of them.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1vnzyxz11dm0": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.05,
+  "text": "Standing at the front and teaching was a woman in white and gold robes. She was too far away for you to see her face.",
+  "heard": " Standing at the front and teaching was a woman in white and gold robes. She was too far away for you to see her face.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1i887ak1g5l1": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "chanthy",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 6.8,
+  "text": "That's the queen. She teaches the Buddha's teachings to the women here at the temple.",
+  "heard": " She teaches the Buddha's teachings to the women here at the temple.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "ecqhro61la3k": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.580041666666666,
+  "text": "That's Queen Indradevi. A poem on a stone tablet tells how she taught women at the temples.",
+  "heard": " That's Queen Indradevi. A poem on a stone tablet tells how she taught women at the temples.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "enu6vsih40vw": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.41,
+  "text": "And that poem was written by Queen Indradevi herself!",
+  "heard": " And that poem was written by Queen Indradevi herself!",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "exdk60u1tj3o": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "chanthy",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 5.280083333333334,
+  "text": "Someday, I want to be able to read too. …Not just count fish.",
+  "heard": " Someday, I want to be able to read too. …Not just count fish.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1ww2kxzq2mmw": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "chanthy",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 3.75,
+  "text": "Hehe. Then first, I'll learn to write my mom's name!",
+  "heard": "\nHehe. Then first, I'll learn to write my mom's name!",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
