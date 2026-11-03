@@ -1044,5 +1044,105 @@
    "水祭り＝みずまつり",
    "都＝みやこ"
   ]
+ },
+ "v1efz5a6": {
+  "episode": "kh-royalpalace",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.74,
+  "text": "舟が、川の出会う岸に着いた。",
+  "heard": "舟 が 川 の 出会う 騎士 に 着い た 。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "v1g5f8zi": {
+  "episode": "kh-royalpalace",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.22,
+  "text": "岸では、もう、たくさんの人が働いていた。太い柱を立てる人。土をならす人。材木を運ぶ人。",
+  "heard": "岸では、もう、たくさんの人が働いていた。太い柱を立てる人。土をならす人。材木を運ぶ",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "v10favb6": {
+  "episode": "kh-royalpalace",
+  "lang": "ja",
+  "speaker": "荷舟の親方",
+  "voice": "Fenrir",
+  "model": "gemini-3.8-live",
+  "seconds": 5.55,
+  "text": "ピセット！ 柱の木を下ろせ！ ほら、そっちの旅の人も手を貸してくれ！",
+  "heard": "ピ セット 、 柱 の 木 を 下ろせ 。 ほら 、 そっち の 旅 の 人 も 手 を 貸し て くれ 。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "v68kjec": {
+  "episode": "kh-royalpalace",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.960083333333333,
+  "text": "あなたとピセットは、柱にする木を、みんなで肩にかついで運んだ。",
+  "heard": "あなた と ピセット は 柱 に する 木 を みんな で 肩 に 担い で 運ん だ 。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "v1qup4up": {
+  "episode": "kh-royalpalace",
+  "lang": "ja",
+  "speaker": "piseth",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 3.64,
+  "text": "ここに、王さまの住む宮殿ができるんだ。",
+  "heard": "ここに 王 様 の 住む 宮殿 が できる ん だ 。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": [
+   "殿＝との"
+  ]
+ },
+ "voj67os": {
+  "episode": "kh-royalpalace",
+  "lang": "ja",
+  "speaker": "piseth",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 5.910041666666666,
+  "text": "……おれの舟が運んだ木が、新しい都の柱になる。なんか、すごくない？",
+  "heard": "おれの舟が運んだ木が、新しい都の柱になる。なんか、すごくない？",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": [
+   "都＝みやこ"
+  ]
+ },
+ "vbygri3": {
+  "episode": "kh-royalpalace",
+  "lang": "ja",
+  "speaker": "piseth",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 5.05,
+  "text": "へへっ。おれの名前は残らないけどね。でも、柱は残るかも。",
+  "heard": "おれの名前は残らないけどね。でも、柱は残るかも。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "v1yrvt5y": {
+  "episode": "kh-royalpalace",
+  "lang": "ja",
+  "speaker": "piseth",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 3.79,
+  "text": "うん。王さまだけじゃ、柱は一本も立たないもん。",
+  "heard": "うん。王さまだけじゃ、柱は一本も立たないもん。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
  }
 }
