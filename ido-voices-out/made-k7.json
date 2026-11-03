@@ -1030,5 +1030,101 @@
   "heard": "",
   "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
   "readings": []
+ },
+ "vb7k6e4": {
+  "episode": "kh-banteaykdei",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 13.19,
+  "text": "掘り進めると、仏さまは、ひとつ、またひとつと、あらわれた。大きなものも、手のひらほどの小さなものもある。",
+  "heard": "\n仏さまは、ひとつ、またひとつと、あらわれた。大きなものも、手のひらほどの小さなものもある。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v7ewxnp": {
+  "episode": "kh-banteaykdei",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.090041666666666,
+  "text": "蛇の神さまの上に、すわっている仏さまが多かった。首が、体からはなれているものもある。",
+  "heard": "蛇の神さまの上に、すわっている仏さまが多かった。首が、体から",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1k0uwx0": {
+  "episode": "kh-banteaykdei",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.64,
+  "text": "研修生たちは、仏さまがひとつ出てくるたびに、そっと手を合わせた。",
+  "heard": "研修生たちは、仏さまがひとつ出てくるたびに、そっと手を合わせた。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1iqis8x": {
+  "episode": "kh-banteaykdei",
+  "lang": "ja",
+  "speaker": "sovann",
+  "voice": "Umbriel",
+  "model": "gemini-3.8-live",
+  "seconds": 3.1900416666666667,
+  "text": "まだある……。まだ、ある……！",
+  "heard": "まだ、ある！",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1umydnl": {
+  "episode": "kh-banteaykdei",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 2.5000416666666667,
+  "text": "ソワンの手が、ふるえていた。",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vci8do": {
+  "episode": "kh-banteaykdei",
+  "lang": "ja",
+  "speaker": "sovann",
+  "voice": "Umbriel",
+  "model": "gemini-3.8-live",
+  "seconds": 5.240083333333334,
+  "text": "何百年も、ここで、だれにも見つからずに……。",
+  "heard": "ここで、だれにも見つからずに。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1n83tos": {
+  "episode": "kh-banteaykdei",
+  "lang": "ja",
+  "speaker": "sovann",
+  "voice": "Umbriel",
+  "model": "gemini-3.8-live",
+  "seconds": 3.94,
+  "text": "ぼくたちの国の人が、ぼくたちの手で、見つけたんだ。",
+  "heard": "ぼくたちの手で、見つけたんだ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v77qjc1": {
+  "episode": "kh-banteaykdei",
+  "lang": "ja",
+  "speaker": "sovann",
+  "voice": "Umbriel",
+  "model": "gemini-3.8-live",
+  "seconds": 4.400041666666667,
+  "text": "でも……どうして、こんなにたくさんの仏さまが、埋められていたんだろう。",
+  "heard": "でも……どうして、こんなにたくさんの仏さまが、埋められていたんだろう。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
