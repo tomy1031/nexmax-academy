@@ -584,5 +584,65 @@
   "readings": [
    "上座部仏教＝じょうざぶぶっきょう"
   ]
+ },
+ "vfnxbq1": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.26,
+  "text": "ボレイが、紙の束を、両手でていねいに、お坊さんの前に置いた。",
+  "heard": "ボレイが、紙の束を、両手でていねいに、お坊さんの前に置いた。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1accsvw": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.46,
+  "text": "クロム・ンゴイさんが、ひょうたんを胸に当てて、ゆっくり、ゆっくり、歌いはじめた。",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1fg8wt6": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "kromngoy",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 4.25,
+  "text": "♪ 字を……学べば……　道が……見える……",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vujuyf4": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.930041666666666,
+  "text": "お坊さんたちのペンが、さらさらと動く。歌が、ひとことずつ、紙の上に並んでいく。",
+  "heard": "お坊さんたちのペンが、さらさらと動く。歌が、ひとことずつ、紙の上に並んでいく。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vkekhxs": {
+  "episode": "kh-songbook",
+  "lang": "ja",
+  "speaker": "karpeles",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 10.83,
+  "text": "このお寺には、やしの葉に書かれたお経が、たくさんあります。お坊さんたちが、何百年も、写しては守ってきたものです。",
+  "heard": "このお寺には、やしの葉に書かれたお経が、たくさんあります。お坊さんたちが、何百年も、写しては守ってきたものです。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
