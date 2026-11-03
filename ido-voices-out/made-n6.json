@@ -130,5 +130,101 @@
   "heard": "",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1vq70p9vi290": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "石工のヴォンさん",
+  "voice": "Schedar",
+  "model": "gemini-3.8-live",
+  "seconds": 7.25,
+  "text": "That's a battle on the lake. Once, an army from the kingdom of Champa attacked this city.",
+  "heard": " That's a battle on the lake. Once, an army from the kingdom of Champa attacked this city.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ehbqgk133f0d": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 12.44,
+  "text": "Around 1177, an army from the neighboring kingdom of Champa attacked Angkor. After that, Jayavarman VII is said to have won the capital back.",
+  "heard": " Around 1177, an army from the neighboring kingdom of Champa attacked Angkor. After that, Jayavarman the VII is said to have",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "efgy0q715xba": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "chanthy",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 1.79,
+  "text": "But look over here, too!",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e89lzev8rmb4": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.430041666666667,
+  "text": "On the wall Chanthy pointed to, the carvings weren't of battles.",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ehpa8bu1b6gp": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 12.31,
+  "text": "Someone weighing fish on a scale. Someone cooking rice in a pot. People cheering on a cockfight. Someone comforting a child.",
+  "heard": " Someone cooking rice in a pot. People cheering on a cockfight. Someone comforting a child.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1edxwnp1a7h1": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "chanthy",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 4.07,
+  "text": "Oh…! The person with the scale — that's my mom!",
+  "heard": " Oh…! The person with the scale — that's my mom!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1yn6bvaex1g6": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "石工のヴォンさん",
+  "voice": "Schedar",
+  "model": "gemini-3.8-live",
+  "seconds": 4.96,
+  "text": "Ha ha ha. You caught me. I see her at the market every day, you know.",
+  "heard": " Ha ha ha. You caught me. I see her at the market every day, you know.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ep3mkzx1s1mb": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "石工のヴォンさん",
+  "voice": "Schedar",
+  "model": "gemini-3.8-live",
+  "seconds": 8.8,
+  "text": "The king's battles matter, but I want to carve what I see with my own eyes, too. The ordinary days of the people who live in this city.",
+  "heard": " The ordinary days of the people who live in this city.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
