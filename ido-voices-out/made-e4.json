@@ -718,5 +718,89 @@
   "heard": " You were right! My brother called me his Yoshimitsu!",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "efshz5jjvk5j": {
+  "episode": "genpei-yashima",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 7.42,
+  "text": "You told me, “Trust your brother.” I did — and it brought me all the way here.",
+  "heard": "You told me, \"Trust your brother.\" I did, and it brought me all the way here.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e11lkgk5fkz1h": {
+  "episode": "genpei-yashima",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 7.570041666666667,
+  "text": "You told me, “Take care of yourself.” …Sorry. I just crossed a stormy sea to get here.",
+  "heard": " You told me, \"Take care of yourself.\" …Sorry. I just crossed a stormy sea to get here.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "enr235s1efa0": {
+  "episode": "genpei-yashima",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 3.95,
+  "text": "…What's that look? It's as if you know what will become of me.",
+  "heard": "What's that look? It's as if you know what will become of me.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ep51ge3ak258": {
+  "episode": "genpei-yashima",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3,
+  "text": "(whispering) …We've already seen his future, haven't we.",
+  "heard": "We've already seen his future, haven't we?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1iixh0w1x693": {
+  "episode": "genpei-yashima",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.62,
+  "text": "Just then, an arrow, sharper and faster than any other, shot out from a Heike boat.",
+  "heard": " Just then, an arrow, sharper and faster than any other, shot out from a Heike boat.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1owm3n81k67q": {
+  "episode": "genpei-yashima",
+  "lang": "en",
+  "speaker": "tsuginobu",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 1.7900416666666668,
+  "text": "My lord, get down!",
+  "heard": " My lord, get",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "enpfwl2adzty": {
+  "episode": "genpei-yashima",
+  "lang": "en",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 7.36,
+  "text": "Where is Yoshitsune?! I, Noritsune, Lord of Noto, will fight you myself!",
+  "heard": "Where is Yoshitsune?! I, Noritsune, Lord of Noto, will fight you myself!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
