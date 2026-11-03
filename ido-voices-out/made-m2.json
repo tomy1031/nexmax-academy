@@ -94,5 +94,101 @@
   "heard": " …Huh? You look like you know me.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "els7v3r2xs5i": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "borey",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 7,
+  "text": "I'm Borey. I'm a “pagoda boy” — I live at Wat Ounalom and I'm learning to read and write.",
+  "heard": " I'm a \"pagoda boy\" — I live at Wat Ounalom and I'm learning to read and write.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1t4g47z15yta": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.61,
+  "text": "In old Cambodia, boys often lived at temples and learned reading, writing and the teachings from the monks.",
+  "heard": " In old Cambodia, boys often lived at temples and learned reading, writing and the teachings from the monks.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1k748k91v166": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "borey",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 4.78,
+  "text": "Today Krom Ngoy is coming! The best singer in the whole country!",
+  "heard": " Today Krom Ngoy is coming! The best singer in the whole country!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e143minzpcft2": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "borey",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 9.68,
+  "text": "I heard him once at a village festival. When you listen to his songs, you laugh, then you cry — you're busy the whole time!",
+  "heard": " I heard him once at a village festival. When you listen to his songs, you laugh, then you cry — you're busy the whole time!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ebayrb91lwtl": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.11,
+  "text": "A big old man sat himself down heavily on a straw mat.",
+  "heard": " A big old man sat himself down heavily on a straw mat.",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "ewnn2jv1glmw": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 14.270041666666666,
+  "text": "He tied half a gourd to his long walking stick and stretched a single string tight.",
+  "heard": " He tied half a gourd to his long walking stick and stretched a single string tight.",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "e1rm1tfbkvfpl": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.19,
+  "text": "That's a khse diev — an instrument with just one string. They say Krom Ngoy would put it together on the spot, from the walking stick he always carried.",
+  "heard": " That's a khse diev — an instrument with just one string. They say Krom Ngoy would put it together on the spot, from the walking stick",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "e9y2edx3eyel": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 11.28,
+  "text": "He held the gourd against his chest and plucked the string. Bonn, bonn… a low sound drifted out over the river.",
+  "heard": " He held the gourd against his chest and plucked the string. Bonn, bonn… a low sound drifted out over",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
  }
 }
