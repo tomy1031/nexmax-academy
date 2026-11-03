@@ -862,5 +862,111 @@
   "heard": "また会えたね！今度は、シェムリアップの旅だよ。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v19vfgzq": {
+  "episode": "kh-sr-prologue",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.18,
+  "text": "はじめまして！ ぼくはネクマックス。時渡りのナビゲーターだよ。",
+  "heard": "はじめまして 、僕 は ネク マックス 、 時渡り の ナビゲーター だ よ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "時渡り＝ときわたり"
+  ]
+ },
+ "vxob9r": {
+  "episode": "kh-sr-prologue",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.22,
+  "text": "QRは「時の扉」。かざすと、その場所の昔へタイムスリップするんだ。",
+  "heard": "QR は 時 の 扉 かざす と その 場所 の 昔 へ タイム スリップ する ん だ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v12ddb0b": {
+  "episode": "kh-sr-prologue",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.39,
+  "text": "「アンコール」は、「都」という意味のことばから来ているんだって。",
+  "heard": "アンコール は 宮古 と いう 意味 の 言葉 から 来 て いる ん だっ て 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "都＝みやこ"
+  ]
+ },
+ "vjo8d29": {
+  "episode": "kh-sr-prologue",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.59,
+  "text": "9世紀から15世紀のはじめまで、この森のあたりに、クメールの王たちの都があったんだ。",
+  "heard": "9世紀から15世紀の初めまで、この森のあたりにクメールの王たちの都があったんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "都＝みやこ"
+  ]
+ },
+ "v1rxp60e": {
+  "episode": "kh-sr-prologue",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.84,
+  "text": "まずは、その都を見に行こう。案内してくれる人が、いるんだ。",
+  "heard": "まずは、その都を見に行こう。案内してくれる人が、いるんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "都＝みやこ"
+  ]
+ },
+ "v1k373kw": {
+  "episode": "kh-sr-prologue",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.16,
+  "text": "1296年。大きな都、アンコール・トムの南の門。",
+  "heard": "大きな都、アンコール・トムの南の門。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "都＝みやこ"
+  ]
+ },
+ "v11tiac": {
+  "episode": "kh-sr-prologue",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 12.17,
+  "text": "堀にかかる橋の両側に、石の神さまたちが、ずらりと並んでいる。みんなで、大きな蛇の体を、綱のようにかかえていた。",
+  "heard": "堀にかかる橋の両側に、石の神さまたちが、ずらりと並んでいる。みんなで、大きな蛇の体を、綱のようにかかえていた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v196tr1r": {
+  "episode": "kh-sr-prologue",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 11.250041666666666,
+  "text": "門の上には、大きな顔。そのまんなかの顔は、金でかざられて、朝日にかがやいている。",
+  "heard": "門の上には、大きな顔。そのまんなかの顔は、金でかざられて、朝日にかがやいている。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
