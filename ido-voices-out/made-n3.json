@@ -970,5 +970,101 @@
   "heard": " If nobody's waiting, who's going to buy my corn?",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "e1lbgb7e2duav": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "ヴィチェットのお母さん",
+  "voice": "Sulafat",
+  "model": "gemini-3.8-live",
+  "seconds": 4.560041666666667,
+  "text": "Vichet! There you go again, whining to a customer.",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e168rk1y18hzl": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "ヴィチェットのお母さん",
+  "voice": "Sulafat",
+  "model": "gemini-3.8-live",
+  "seconds": 7.54,
+  "text": "We'll just find another place to sell. It won't always be easy. Even so, we need that bridge.",
+  "heard": " We'll just find another place to sell. It won't always be easy. Even so, we need that bridge.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "eetrmlaivcjw": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "ヴィチェットのお母さん",
+  "voice": "Sulafat",
+  "model": "gemini-3.8-live",
+  "seconds": 7.050041666666667,
+  "text": "And besides. You don't remember, do you? When you were little, you had a terrible fever.",
+  "heard": " You don't remember, do you? When you were little, you had a terrible fever.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1ov94k31688y": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "ヴィチェットのお母さん",
+  "voice": "Sulafat",
+  "model": "gemini-3.8-live",
+  "seconds": 8.680041666666666,
+  "text": "To get you to the hospital in Phnom Penh, I held you all night long at this landing, waiting for the ferry.",
+  "heard": " To get you to the hospital in Phnom Penh, I held you all night long at this landing, waiting for the ferry.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e622mkh1y718": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.360041666666667,
+  "text": "Vichet said nothing. He looked up at the white towers over the river.",
+  "heard": " Vichet said nothing. He looked up at the white towers over the river.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e2cgaw718899": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "vichet",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 3.7,
+  "text": "If that bridge had been there, Mom wouldn't have had to wait all night.",
+  "heard": " If that bridge had been there, Mom wouldn't have had to wait all night.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e7jpgcpeyhxb": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.75,
+  "text": "The next day: 6 April 2015. Thousands and thousands of people filled the area around the bridge.",
+  "heard": " The next day: 6 April 2015. Thousands and thousands of people filled the area around the bridge.",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "e1jpysr2c3mln": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.160041666666666,
+  "text": "When the ceremony ended, people slowly began to walk between the white towers.",
+  "heard": " When the ceremony ended, people slowly began to walk between the white towers.",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
  }
 }
