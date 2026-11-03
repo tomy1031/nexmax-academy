@@ -94,5 +94,101 @@
   "heard": " ……あれ、あなた、わたしのこと知ってるの?",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v1asgbx2": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "nimol",
+  "voice": "Aoede",
+  "model": "gemini-3.8-live",
+  "seconds": 6.02,
+  "text": "わたし、ニモル。この森で、水牛の番をしてるの。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1jha1xf": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "nimol",
+  "voice": "Aoede",
+  "model": "gemini-3.8-live",
+  "seconds": 8.83,
+  "text": "見て。あそこに、へんな人がいるの。顔じゅう、ひげだらけ。それに、肩にサルがのってる！",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1sz8bfh": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "mouhot",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 3.27,
+  "text": "やあ、こんにちは。……驚かせてしまったかな。",
+  "heard": "……驚かせてしまったかな。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1t4ht47": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "mouhot",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 7.54,
+  "text": "わたしはアンリ・ムオ。フランスから来た。森の虫や貝を集めて、調べているんだ。",
+  "heard": "わたしはアンリ・ムオ。フランスから来た。森の虫や貝を集めて、調べているんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v3yj78z": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "mouhot",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 4.14,
+  "text": "やあ、また会えたね。……驚かせてしまったかな。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1k32biz": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "mouhot",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 8.33,
+  "text": "やあ、こんにちは。……おや、あなたは、わたしを知っているような顔をしている。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1ga4n3f": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "mouhot",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 6.45,
+  "text": "わたしはアンリ・ムオ。森の虫や貝を集めて、調べている者だ。",
+  "heard": "わたしはアンリ・ムオ。森の虫や貝を集めて、調べている者だ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1anaal5": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "mouhot",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 11.1,
+  "text": "このサルと犬たちは、旅の仲間だよ。バッタンバンの神父さまに案内してもらって来たのだが、この寺の中で、すっかり迷ってしまってね。",
+  "heard": " このサルと犬たちは、旅の仲間だよ。バッタンバンの神父さまに案内してもらって来たのだが、この寺の中で、すっかり迷ってしまってね。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
