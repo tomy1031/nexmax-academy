@@ -1367,5 +1367,55 @@
   "heard": "日本の国が出した、返さなくていいお金で架けられて、開通の式には、首相や日本の人たちと、たくさんの人が集まったよ。",
   "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
   "readings": []
+ },
+ "vkf2q1e": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.02,
+  "text": "上流のコンポンチャムには、2001年に開いた「きずな橋」がある。カンボジアで初めて、メコン川に架かった橋なんだ。",
+  "heard": "上流のコンポンチャムには、2001年に開いた「きずな橋」がある。カンボジアで初めて、メコン川に架かった橋なんだ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "メコン川＝めこんがわ"
+  ]
+ },
+ "v1l6wysk": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.78,
+  "text": "きずな橋ができて、この国の東と西が、はじめて道でつながったんだよ。開通の式には、一万人以上が集まったんだって。",
+  "heard": " きずな橋ができて、この国の東と西が、はじめて道でつながったんだよ。開通の式には、一万人以上が集まったんだって。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1loljh": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.35,
+  "text": "「きずな」と「つばさ」。どっちも日本の言葉の名前を持つ橋で、どっちも、カンボジアのお札に描かれているんだ。",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vv87all": {
+  "episode": "kh-tsubasa",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.32,
+  "text": "（小声）絆の橋と、翼の橋。……さいごの扉は、きっと、その先にあるよ。",
+  "heard": " 絆 の 橋 と 、 翼 の 橋 。 …… さいご の 扉 は 、 きっと 、 その",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
