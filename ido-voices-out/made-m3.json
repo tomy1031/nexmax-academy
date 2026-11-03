@@ -190,5 +190,105 @@
   "heard": " このサルと犬たちは、旅の仲間だよ。バッタンバンの神父さまに案内してもらって来たのだが、この寺の中で、すっかり迷ってしまってね。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "vb0wa1": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "nimol",
+  "voice": "Aoede",
+  "model": "gemini-3.8-live",
+  "seconds": 3.77,
+  "text": "あはは！ この寺で迷うのは、あたりまえだよ。",
+  "heard": " あはは！ この寺で迷うのは、あたりまえだよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v9xufok": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "nimol",
+  "voice": "Aoede",
+  "model": "gemini-3.8-live",
+  "seconds": 6.16,
+  "text": "村では、ここを「プレア・サット・リン・プオン」って呼ぶの。「かくれんぼの寺」っていう意味。",
+  "heard": "村では、ここを「プレア・サット・リン・プオン」って呼ぶの。「かくれんぼの寺」",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1qe2op6": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "nimol",
+  "voice": "Aoede",
+  "model": "gemini-3.8-live",
+  "seconds": 3.81,
+  "text": "道がぐるぐるしてて、かくれるところが、いっぱいあるから。",
+  "heard": "道がぐるぐるしてて、かくれるところが、",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1e1l3rj": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "mouhot",
+  "voice": "Achird",
+  "model": "gemini-3.8-live",
+  "seconds": 5.42,
+  "text": "かくれんぼの寺……！ それは、いい名前だ。書いておかなくては。",
+  "heard": " かくれんぼの寺……！ それは、いい名前だ。書いておかなくては。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vy426wv": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.640041666666667,
+  "text": "ムオさんは、わきにかかえた画帳を開いて、さらさらと書きつけた。",
+  "heard": "ムオさんは、わきにかかえた画帳を開いて、さらさらと書きつけた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "画帳＝がちょう"
+  ]
+ },
+ "v10owa6t": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.48,
+  "text": "これは、ムオさんが本当に書きのこした呼び名なんだ。回廊がたがいに交わって、道を見つけにくい、とも書いているよ。",
+  "heard": " これは、ムオさんが本当に書きのこした呼び名なんだ。回廊がたがいに交わって、道を見つけにくい、とも書いているよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "回廊＝かいろう"
+  ]
+ },
+ "v9f6s5k": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "nimol",
+  "voice": "Aoede",
+  "model": "gemini-3.8-live",
+  "seconds": 4.79,
+  "text": "ねえ、遊ぼうよ！ わたしがかくれるから、ふたりでさがして！",
+  "heard": " ねぇ、遊ぼうよ！わたしがかくれるから、ふたりでさがして！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v16nqw56": {
+  "episode": "kh-mouhot",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.92,
+  "text": "ニモルは、石の柱のかげに、すっと消えた。",
+  "heard": "",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
  }
 }
