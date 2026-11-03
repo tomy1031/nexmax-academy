@@ -250,5 +250,101 @@
   "heard": " That's him. The man my dad told me about — the one",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "e1uewdws1tuv5": {
+  "episode": "kh-independence",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.18,
+  "text": "That's Vann Molyvann. He was a real architect. He studied architecture in Paris, came home in 1956, and designed many of the country's buildings.",
+  "heard": " That's Vann Molyvann. He was a real architect. He studied architecture in Paris, came home in 1956, and designed many of the country's buildings.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1qq8eb6c0488": {
+  "episode": "kh-independence",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.72,
+  "text": "He kept looking from the plan to the tower and back again. You decided not to call out to him.",
+  "heard": "He kept looking from the plan to the tower and back again. You decided not to call out to him.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "eptaoln1afol": {
+  "episode": "kh-independence",
+  "lang": "en",
+  "speaker": "dara",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 6.000041666666666,
+  "text": "…He's so cool. Maybe when I grow up, I'll be someone who builds things too.",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1j64gnaylqbl": {
+  "episode": "kh-independence",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.630041666666667,
+  "text": "And then came the day the tower was finished.",
+  "heard": "And then came the day the tower was finished.",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "e4yxl50yp2vu": {
+  "episode": "kh-independence",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.62,
+  "text": "The area around the tower filled with people — people in white, people carrying children on their shoulders, people holding flags.",
+  "heard": " The area around the tower filled with people — people in white, people carrying children on their shoulders, people",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "e6vw4df4epda": {
+  "episode": "kh-independence",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 2.39,
+  "text": "Everyone clapped at once.",
+  "heard": "\n",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "eokoatp6sy0z": {
+  "episode": "kh-independence",
+  "lang": "en",
+  "speaker": "dara",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 4.43,
+  "text": "Dad, look! Everybody's looking at the tower you all built!",
+  "heard": " Dad, look! Everybody's looking at the tower you all built!",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "eeonnb41fwf2": {
+  "episode": "kh-independence",
+  "lang": "en",
+  "speaker": "ダラーのお父さん",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 2.2100416666666667,
+  "text": "…Yeah. They sure are.",
+  "heard": " Yeah. They sure are.",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
  }
 }
