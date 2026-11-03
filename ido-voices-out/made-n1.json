@@ -406,5 +406,17 @@
   "heard": "",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1i082cm109kf": {
+  "episode": "kh-watphnom",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.04,
+  "text": "(whispering) It's just a coincidence, of course. The times and places are completely different. But somehow, it makes me happy.",
+  "heard": " It's just a coincidence, of course. The times and places are completely different. But somehow, it makes me happy.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
