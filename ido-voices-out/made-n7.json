@@ -298,5 +298,101 @@
   "heard": " You must never, ever step off the path. There might still be landmines past the red",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "egvmfm76s4jj": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.64,
+  "text": "The edge of the village road. Far off, red signs stood in the tall grass.",
+  "heard": " The edge of the village road. Far off, red signs stood in the tall grass.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "el8lfv4rmbjl": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 11.88,
+  "text": "Beyond them, you could just see a man's back, small in the distance. He was kneeling, staring hard at one spot on the ground.",
+  "heard": " Beyond them, you could just see a man's back, small in the distance. He was kneeling, staring hard at one spot on the ground.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "eiq3io21ajmo": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "bopha",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 5.66,
+  "text": "Shh. When Papa's touching the soil, we mustn't call out to him.",
+  "heard": "",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "edg5ye3vlm8e": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.84,
+  "text": "That's Aki Ra. His job is clearing landmines. He's a real person.",
+  "heard": " That's Aki Ra. His job is clearing landmines. He's a real",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e1jwe7no13knl": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.83,
+  "text": "When Aki Ra was a child, he was taken from his family and forced to become a soldier. He lost his father and mother in the Khmer Rouge years.",
+  "heard": "",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e1y94y2e4z623": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.34,
+  "text": "As a child soldier, he was even made to bury landmines. After that, he was made to fight in several different armies.",
+  "heard": " As a child soldier, he was even made to bury landmines. After that, he was made to fight in several different armies.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "em8ad4w1dvhd": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.93,
+  "text": "In the early 1990s, he was trained by the UN to clear landmines. After that, he started clearing them on his own. His tools were a thin stick and a single knife.",
+  "heard": " In the early 1990s, he was trained by the UN to clear landmines. After that, he started clearing them on his own. His tools were a thin stick and a single knife.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e1843jlvot3t": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.890041666666667,
+  "text": "He said that to a British newspaper in 2019.",
+  "heard": "",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
  }
 }
