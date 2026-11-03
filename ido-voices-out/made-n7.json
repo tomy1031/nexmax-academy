@@ -1390,5 +1390,101 @@
   "heard": "“I want to respect what we don't know, too.” I've always remembered your words. We still don't know why the Buddhas were buried.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "euj7u4r167r7": {
+  "episode": "kh-sr-finale",
+  "lang": "en",
+  "speaker": "sovann2",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 8.240041666666666,
+  "text": "“I'd like to think someone protected them.” I've always remembered your words. We still don't have the answer, though.",
+  "heard": " I'd like to think someone protected them.\" I've always remembered your words. We still don't have the answer, though.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e9upybzgnfmr": {
+  "episode": "kh-sr-finale",
+  "lang": "en",
+  "speaker": "sovann2",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 4.55,
+  "text": "Our job is to hand the stones on to the next people.",
+  "heard": " Our job is to hand the stones on to the next people.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1uv1d7gbb03m": {
+  "episode": "kh-sr-finale",
+  "lang": "en",
+  "speaker": "sovann2",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 8.93,
+  "text": "From the people who built this temple, and the people who protected it, to us. And from us, to these young people.",
+  "heard": " From the people who built this temple, and the people who protected it, to us. And from us, to these young people.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ew95s7kfifw4": {
+  "episode": "kh-sr-finale",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.620041666666666,
+  "text": "Just then, the morning sun began to rise from behind the five towers.",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e16xma4acximg": {
+  "episode": "kh-sr-finale",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.880041666666667,
+  "text": "The people from many countries gathered on the approach all caught their breath at once.",
+  "heard": " The people from many countries gathered on the approach all caught their breath at once.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e36b13r1wl98": {
+  "episode": "kh-sr-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.82,
+  "text": "Hey. Let's look back on our journey through Siem Reap.",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "ekq52b11ymg0": {
+  "episode": "kh-sr-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.08,
+  "text": "Zhou Daguan wrote down what he saw on his journey. That's why we can know about life in the capital 700 years ago.",
+  "heard": " Zhou Daguan wrote down what he saw on his journey. That's why we can know about life in the capital 700 years ago.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "ef8s0fz1vo5q": {
+  "episode": "kh-sr-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.66,
+  "text": "(whispering) You said, “Write about the people I meet,” didn't you? …We met so many people on this journey.",
+  "heard": " You said, \"Write about the people I meet,\" didn't you? …We met so many people",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
