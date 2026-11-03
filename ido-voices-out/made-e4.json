@@ -610,5 +610,17 @@
   "heard": "I won't say what happens 9 years from now, not yet.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e17soi4p1lkhw": {
+  "episode": "genpei-kisegawa",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.59,
+  "text": "(whispering) What's waiting for them? Go through the next door and find out for yourself.",
+  "heard": " What's waiting for them? Go through the next door and find out for yourself.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
