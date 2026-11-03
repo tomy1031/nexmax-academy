@@ -1318,5 +1318,105 @@
   "heard": "夜明け前のアンコール・ワット。参道の石だたみに、ひんやりとした風が通っていく。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "vzounhy": {
+  "episode": "kh-sr-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.2200416666666665,
+  "text": "……シェムリアップの扉、ぜんぶひらいたね。",
+  "heard": "シェムリアップの扉、ぜんぶひらいたね。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1hlmy5v": {
+  "episode": "kh-sr-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 13.800041666666667,
+  "text": "周達観さんの見た都。ケオくんの天女。スレイモンちゃんの踊り。チャンティちゃんの市場。ボパーちゃんの地図。それから、土の中の274の仏さま。",
+  "heard": "周達観さんの見た都。ケオくんの天女。スレイモンちゃんの踊り。チャンティちゃんの市場。ボパーちゃんの地図。それから、土の中の274の仏さま。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "都＝みやこ"
+  ]
+ },
+ "v8swdu4": {
+  "episode": "kh-sr-finale",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.24,
+  "text": "さいごの扉は、はじまりの場所。……ほら、あそこ。",
+  "heard": "さいごの扉は、はじまりの場所。……ほら、あそこ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vls9nzf": {
+  "episode": "kh-sr-finale",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.76,
+  "text": "参道のわきで、ヘルメットをかぶった若い人たちが、メジャーを伸ばして、くずれかけた石を測っていた。",
+  "heard": "参道のわきで、ヘルメットをかぶった若い人たちが、メジャーを伸ばして、くずれかけた石を測っていた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1keykvc": {
+  "episode": "kh-sr-finale",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.26,
+  "text": "その中心で、白髪まじりの男の人が、図面を広げている。",
+  "heard": "その中心で、しらがまじりの男の人が、図面を広げている。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "白髪＝しらが"
+  ]
+ },
+ "v194q3gz": {
+  "episode": "kh-sr-finale",
+  "lang": "ja",
+  "speaker": "sovann2",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 12.59,
+  "text": "ゆっくりでいい。一つの石に、番号を書いて、写真をとって、元の場所を記録する。……あれ？",
+  "heard": "ゆっくりでいい。一つの石に、番号を書いて、写真をとって、元の場所を記録する。……あれ？",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vtjbgdg": {
+  "episode": "kh-sr-finale",
+  "lang": "ja",
+  "speaker": "sovann2",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 6.25,
+  "text": "あなたは……バンテアイ・クデイの……！ 2001年の、あの日の……！",
+  "heard": "あなたは……バンテアイ・クデイの……！2001年の、あの日の！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vw5v1bx": {
+  "episode": "kh-sr-finale",
+  "lang": "ja",
+  "speaker": "sovann2",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 7.36,
+  "text": "ソワンです。もう四十九ですよ。今は、遺跡を守る仕事をしています。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
