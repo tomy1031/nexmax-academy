@@ -934,5 +934,101 @@
   "heard": "へらは、ゆっくり。土を一枚ずつ、はがすみたいに。……やってみますか？",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "vb2tn3t": {
+  "episode": "kh-banteaykdei",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.980041666666667,
+  "text": "あなたは、ソワンのとなりにしゃがんで、へらを動かした。乾いた土が、ほろほろとくずれる。",
+  "heard": "あなたは、ソワンのとなりにしゃがんで、へらを動かした。乾いた土が、ほろほろとくずれる。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1xxnqay": {
+  "episode": "kh-banteaykdei",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.750041666666666,
+  "text": "あなたは、土をふるいにのせて、ゆすった。小さな土器のかけらが、ころんと残った。",
+  "heard": "あなたは、土をふるいにのせて、ゆすった。小さな土器のかけらが、ころんと残った。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1mp82w7": {
+  "episode": "kh-banteaykdei",
+  "lang": "ja",
+  "speaker": "sovann",
+  "voice": "Umbriel",
+  "model": "gemini-3.8-live",
+  "seconds": 4.450083333333334,
+  "text": "それも、大事な手がかりです。記録しておきましょう。",
+  "heard": "それも、大事な手がかりです。記録しておきましょう。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v14rtoc5": {
+  "episode": "kh-banteaykdei",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 1.1900833333333334,
+  "text": "そのとき——",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v9loyz": {
+  "episode": "kh-banteaykdei",
+  "lang": "ja",
+  "speaker": "sovann",
+  "voice": "Umbriel",
+  "model": "gemini-3.8-live",
+  "seconds": 0.56025,
+  "text": "……あ。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vh4ird5": {
+  "episode": "kh-banteaykdei",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.560041666666667,
+  "text": "ソワンのへらの先が、何かかたいものに当たった。",
+  "heard": "ソワンのへらの先が、何かかたいものに当たった。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1lqz0md": {
+  "episode": "kh-banteaykdei",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 11.61,
+  "text": "そっと、そっと、はけで土をはらう。灰色の石の中から、とじた目と、静かな口もとが、あらわれた。",
+  "heard": "そっと、そっと、はけで土をはらう。灰色の石の中から、とじた目と、静かな口もとが、あらわれた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vmxcfb1": {
+  "episode": "kh-banteaykdei",
+  "lang": "ja",
+  "speaker": "sovann",
+  "voice": "Umbriel",
+  "model": "gemini-3.8-live",
+  "seconds": 1.4301666666666666,
+  "text": "……仏さまだ。",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
