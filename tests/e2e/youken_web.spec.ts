@@ -57,6 +57,8 @@ test("深く 聞く たいわ: なぜ と 聞くと 数が 増え、カードの
   // しつもんメモは 二人の 欄
   await expect(page.getByLabel("山本に 聞く こと")).toBeVisible();
   await expect(page.getByLabel("佐々木に 聞く こと")).toBeVisible();
+  // メモが 1つも 無いと 入れない（手元に 何も 無い まま 相手の 前に 立たせない）
+  await page.getByLabel("山本に 聞く こと").fill("サイトの 目的は 何ですか");
   await page.getByRole("button", { name: /ミーティングに/ }).click();
 
   await expect(page.getByText("はなす まえに")).toBeVisible();
@@ -101,6 +103,7 @@ test("深く 聞く たいわの 数は、ほかの たいわ（アプリの 要
     await page.getByRole("button", { name: "つぎへ" }).click();
   }
   await page.getByRole("button", { name: /しつもんメモへ/ }).click();
+  await page.getByLabel("田中に 聞く こと").fill("在庫は 今 どう 数えて いますか");
   await page.getByRole("button", { name: /ミーティングに/ }).click();
   await joinCall(page);
   await expect(page.getByRole("radiogroup", { name: "だれに 話しかけるか" })).toBeVisible();
