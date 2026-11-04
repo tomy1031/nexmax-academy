@@ -33,6 +33,7 @@ import {
   type TalkLine,
 } from "./people";
 import { useLiveSession } from "./use-live-session";
+import { isDeepQuestion, isOpinionAnswer, OPEN_TALK } from "./open-talk";
 import { CertificatePanel } from "@/components/certificate/certificate-panel";
 import { useCertificateIssuer } from "@/components/certificate/use-certificate-issuer";
 import { CertificateCorner } from "@/components/certificate/certificate-corner";
@@ -182,6 +183,14 @@ export function TalkSession({
   );
   const [open, setOpen] = useState<ReadonlySet<string>>(new Set());
   /**
+   * 深く 聞く たいわ（`OPEN_TALK`・2026-11-04 の 指定）の 2つの 数。
+   * カードは 最低限の 要件だけ。カードに 無い くわしい 話を 引き出した しつもんと、
+   * 相手に 意見を 聞かれて 答えた 回を 数えて 見せる（決まった 答えを 当てるだけに しない）。
+   */
+  const openTalk = OPEN_TALK.has(scenario.id);
+  const [deepCount, setDeepCount] = useState(0);
+  const [opinionCount, setOpinionCount] = useState(0);
+  /**
    * 修了証（願い #562 の 第2段・回答「取りこぼしなし」）。話し始めた ときに 回を 始め、
    * **退室した 瞬間**に 発行する。パーフェクト＝聞き出す ことを ぜんぶ 聞けた。ヒントは よい。
    */
@@ -312,10 +321,25 @@ export function TalkSession({
       setSpoke(true);
       setWrongOwner(null);
       const scripted = live.status !== "live" && live.status !== "connecting";
+      /*
+       * 深く 聞く たいわ: 相手に 意見を 聞かれた あとの 答えは、カードの 照合に かけない
+       *（答えの ことばで 札が 開くと、相手が 言って いない 中身が ボードに 出る）。
+       */
+      if (openTalk && isOpinionAnswer(history, utterance)) {
+        setOpinionCount((count) => count + 1);
+        setNote("talk.opinion");
+        if (scripted) {
+          setPast((prev) => [...prev, ...current, { from: "me", text: utterance, mode: "text" }]);
+          setFolded(live.transcript.length);
+        }
+        return;
+      }
+      const deep = openTalk && isDeepQuestion(utterance);
+      if (deep) setDeepCount((count) => count + 1);
       const closed = reqs.filter((req) => !openRef.current.has(req.id));
       if (closed.length === 0) {
         // ぜんぶ 開いた あとの 発言。前の 案内を 残さず、送った ことだけ 記録に 残す
-        setNote(null);
+        setNote(deep ? "talk.deepAsk" : null);
         if (scripted) {
           setPast((prev) => [...prev, ...current, { from: "me", text: utterance, mode: "text" }]);
           setFolded(live.transcript.length);
@@ -379,10 +403,15 @@ export function TalkSession({
         setNote("talk.askOwner");
         return;
       }
+      // 深く 聞いた しつもんは、札に 当たらなくても「番では ない」と 言わない（open-talk.ts）
+      if (deep) {
+        setNote("talk.deepAsk");
+        return;
+      }
       // 1語だけ当たった＝話題は合っている。「ずれている」ではなく「あと ひとこと」へ
       setNote(outcome.kind === "close" ? CLOSE_NOTE : "talk.offTopic");
     },
-    [scenario, target.id, live.status, live.transcript.length, current],
+    [scenario, target.id, live.status, live.transcript.length, current, history, openTalk],
   );
 
   /*
@@ -494,6 +523,8 @@ export function TalkSession({
     sessionIdRef.current = "";
     openedHintRef.current = null;
     setOpen(new Set());
+    setDeepCount(0);
+    setOpinionCount(0);
     setNote(null);
     setHintId(null);
     setHintLevel(1);
@@ -910,6 +941,30 @@ export function TalkSession({
           </ruby>
           すこと（{open.size} / {scenario.interview.reqs.length}）
         </h3>
+        {openTalk && (
+          <>
+            <p className="text-ink-soft mt-1 text-xs font-bold">
+              <RubyText
+                text="カードは 最低限 聞く ことです。カードに 無い 話は、メモして 議事録に 書こう。"
+                index={uiFurigana}
+              />
+            </p>
+            <div className="mt-2 flex flex-wrap gap-2 text-xs font-extrabold">
+              <span
+                className="bg-sky-soft text-navy rounded-full px-3 py-1"
+                data-testid="deep-count"
+              >
+                🔎 <RubyText text="深く 聞いた しつもん" index={uiFurigana} /> {deepCount}
+              </span>
+              <span
+                className="bg-sky-soft text-navy rounded-full px-3 py-1"
+                data-testid="opinion-count"
+              >
+                💡 <RubyText text="伝えた 意見" index={uiFurigana} /> {opinionCount}
+              </span>
+            </div>
+          </>
+        )}
         {/*
           札は **要件の 種類ごとの 段**に 分けて 出す（こまって いる こと → 機能要件 →
           非機能要件 → 予算・納期）。聞き出した ことを どの 箱に 入れるかが 要件定義の

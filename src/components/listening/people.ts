@@ -182,8 +182,8 @@ export const REQ_KIND_ORDER: readonly ScenarioReqKind[] = [
 /** 段の 見出し（画面の ことば。読みは `PEOPLE_FURIGANA`）。 */
 export const REQ_KIND_LABEL: Record<ScenarioReqKind, string> = {
   problem: "😥 こまって いる こと",
-  functional: "⚙️ 機能要件（アプリが する こと）",
-  nonfunctional: "🛡️ 非機能要件（アプリの ようす・まもる こと）",
+  functional: "⚙️ 機能要件（する こと）",
+  nonfunctional: "🛡️ 非機能要件（ようす・まもる こと）",
   constraint: "💰 予算・納期・きまり",
 };
 
@@ -218,4 +218,11 @@ export const PEOPLE_FURIGANA: readonly FuriganaEntry[] = [
   ["見", "み"],
   ["下", "した"],
   ["言い方", "いいかた"],
+  // 深く 聞く たいわ（open-talk.ts）の ボードの ことば
+  ["最低限", "さいていげん"],
+  ["議事録", "ぎじろく"],
+  ["意見", "いけん"],
+  ["深く", "ふかく"],
+  ["伝え", "つたえ"],
+  ["無い", "ない"],
 ];
