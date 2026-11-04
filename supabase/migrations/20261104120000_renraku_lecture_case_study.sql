@@ -13,7 +13,7 @@
 --   4節 【 】     フォーマルで なくても 使う、見やすく する ラベル。箇条書きと セットで 使う
 --   5節 電話      「電話の あとは」→「電話で 大切な 話を した ときは」
 --   5節 人に よって 箇条書き 4つ と「ここが ポイント」を 消す
--- 読み辞書（furigana）には 新しい 文の 語だけ 足す（本番環境・箇条書き・日にち・話を・元気・関係・電車・遅刻・欠席・早退・下・休・帰）。
+-- 読み辞書（furigana）には 新しい 文の 語だけ 足す（本番環境・箇条書き・日にち・話を・元気・電車・遅刻・欠席・早退・休・帰）。
 -- 今 ある 読みと、ほかの 節には 触らない。
 --
 -- ## いま 流して 安全か
@@ -33,7 +33,7 @@ set data = jsonb_set(
           when 8 then t.block || jsonb_build_object('text', $t$気持ちを 伝えると、相手は あなたが 元気に なる ために 時間を 使って しまいます。事実だけを 伝えれば、相手は すぐに 解決の ために 動けます。$t$::text)
           when 11 then $j${
   "kind": "paragraph",
-  "text": "どんな ときに 連絡するのでしょうか。よく ある 4つの ケースを 見て みましょう。どれも、チームの みんなの 仕事に 関係が あります。"
+  "text": "どんな ときに 連絡しますか。よく ある 4つの ケースを 見て みましょう。どれも、チームの みんなが 知りたい ことです。"
 }$j$::jsonb
           when 12 then $j${
   "kind": "cards",
@@ -101,10 +101,10 @@ set data = jsonb_set(
     }
   ]
 }$j$::jsonb
-          when 16 then t.block || jsonb_build_object('text', $t$4. 【 】と 箇条書きで 見やすく する$t$::text)
+          when 16 then t.block || jsonb_build_object('text', $t$4. 【 】と 箇条書き（bullet points）で 見やすく する$t$::text)
           when 17 then t.block || jsonb_build_object('caption', $t$【 】と 箇条書きで 書いた 連絡の 見本$t$::text)
-          when 18 then t.block || jsonb_build_object('text', $t$【 】は、連絡を 見やすく する ための ラベルの ような ものです。フォーマルな メールだけで なく、ふだんの チャットでも 使います。【 】の 下には、箇条書き（・ bullet points）で 短く 書きます。【 】と 箇条書きは セットで 使いましょう。$t$::text)
-          when 19 then jsonb_set(t.block, '{items,1}', to_jsonb($t$本文でも【原因】【対策】【期限】のように 見出しを 付けて、その 下に 箇条書きで 書くと、長い 文も 読んで もらえます。$t$::text))
+          when 18 then t.block || jsonb_build_object('text', $t$【 】は、連絡を 見やすく する ための ラベルの ような ものです。フォーマルな メールでも、いつもの チャットでも 使います。【 】と 箇条書き（・）は セットで 使いましょう。$t$::text)
+          when 19 then jsonb_set(t.block, '{items,1}', to_jsonb($t$本文でも【原因】【対策】【期限】のように 見出し（heading）を 付けて、箇条書きで 短く 書くと、長い 文も 読んで もらえます。$t$::text))
           when 27 then t.block || jsonb_build_object('text', $t$電話で 大切な 話を した ときは、決まった ことを 文字でも 送りましょう。記録が 残ります。$t$::text)
           else t.block
         end
@@ -137,10 +137,6 @@ set data = jsonb_set(
     "げんき"
   ],
   [
-    "関係",
-    "かんけい"
-  ],
-  [
     "電車",
     "でんしゃ"
   ],
@@ -155,10 +151,6 @@ set data = jsonb_set(
   [
     "早退",
     "そうたい"
-  ],
-  [
-    "下",
-    "した"
   ],
   [
     "休",
