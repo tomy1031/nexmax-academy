@@ -1,0 +1,695 @@
+{
+  "kind": "article",
+  "id": "youkenweb_story",
+  "title": "採用ページの その あと",
+  "description": "採用ページで、お茶の 先生と 店長が 決まりました。山本社長から、こんどは 店の ウェブサイトの 相談が 来ました。",
+  "blocks": [
+    {
+      "kind": "hero",
+      "eyebrow": "ステップ 1",
+      "title": "採用ページの その あと",
+      "lead": "あなたの チームが 作った 採用ページで、二人が Aobaに 来ました。",
+      "note": "8月、お茶の 先生と 店長が プノンペンに 着きました。オープンは 11月11日です。",
+      "image": {
+        "prompt": "Japanese-style anime illustration, warm flat colors, soft outlines, no readable text anywhere. Two newly hired Japanese staff stand in front of a small cafe under renovation in Phnom Penh BKK1 on a sunny morning: a calm woman in her forties in a deep green kimono holding a small cloth bag of tea tools, and a cheerful man in his thirties in a white shirt and dark apron holding a tablet. Workers paint the walls inside the open glass front; tropical trees and a tuk-tuk on the street. Hopeful, busy atmosphere.",
+        "refs": [],
+        "status": "empty"
+      }
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "前回の 話"
+    },
+    {
+      "kind": "steps",
+      "items": [
+        "山本社長に 質問して、採用ページの 要件定義書を 作った",
+        "6月の 終わりに、採用ページを 公開した",
+        "7月に 23名が 応募した（お茶の 先生 9名・店長 14名）",
+        "8月に、佐々木先生と 田中店長が プノンペンに 来た"
+      ]
+    },
+    {
+      "kind": "banner",
+      "tone": "quote",
+      "icon": "✉️",
+      "title": "山本社長からの メッセージ",
+      "text": "みなさんが 作った 採用ページの おかげで、すてきな 二人に 会えました。ありがとうございます。11月11日に、いよいよ 店が オープンします。こんどは、店の ウェブサイトを お願いできますか。"
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "新しく 来た 二人"
+    },
+    {
+      "kind": "cards",
+      "columns": 2,
+      "items": [
+        {
+          "icon": "🍵",
+          "label": "お茶の 先生",
+          "title": "佐々木先生",
+          "text": "京都で 20年、茶道を 教えて きました。プノンペンでは 茶道体験の ほかに、茶道教室も 始めます。",
+          "items": [
+            "お客様に 茶道を 教える",
+            "茶道教室を 開く",
+            "店の 見せ方の アドバイス"
+          ],
+          "image": {
+            "prompt": "Japanese-style anime illustration, warm flat colors, soft outlines, no readable text anywhere. Portrait of a calm Japanese woman in her forties wearing a deep green kimono, hair neatly tied, gentle smile, holding a tea whisk (chasen). Plain warm background, bust shot, facing camera.",
+            "refs": [],
+            "status": "empty"
+          }
+        },
+        {
+          "icon": "🏪",
+          "label": "店長",
+          "title": "田中店長",
+          "text": "東京の カフェで 10年 働きました。いまは 店の 工事と、スタッフの 採用で 毎日 いそがしいです。",
+          "items": [
+            "スタッフを 集める",
+            "工事の 立ち会い",
+            "オープンの 準備"
+          ],
+          "image": {
+            "prompt": "Japanese-style anime illustration, warm flat colors, soft outlines, no readable text anywhere. Portrait of an energetic Japanese man in his thirties wearing a dark apron over a white shirt, short hair, sleeves rolled up, holding a tablet and a pen, friendly determined expression. Plain warm background, bust shot, facing camera.",
+            "refs": [],
+            "status": "empty"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "paragraph",
+      "text": "店は プノンペンの BKK1に あります。カフェの 席と、6名が 入れる 小さな 茶室が できます。"
+    },
+    {
+      "kind": "image",
+      "src": "/img/youken/shop_image.webp",
+      "refs": [],
+      "status": "done",
+      "caption": "できあがる 店の イメージ"
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "あなたの 役割"
+    },
+    {
+      "kind": "paragraph",
+      "text": "あなたは、ネクストメイクの ウェブサイト チームの メンバーです。担当は「お客様調査と 提案」です。"
+    },
+    {
+      "kind": "characters",
+      "items": [
+        {
+          "ref": "hendy",
+          "role": "PM・打ち合わせの 進行",
+          "note": "お客様と 話して、要件定義書を まとめます。"
+        },
+        {
+          "ref": "okuda",
+          "role": "デザインと コーディング",
+          "note": "サイトの 見た目を 作ります。"
+        },
+        {
+          "ref": "nyam",
+          "role": "サーバーと 更新の しくみ",
+          "note": "店の 人が 自分で サイトを 直せる しくみを 作ります。"
+        }
+      ]
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "お客様の 先に いる 人"
+    },
+    {
+      "kind": "paragraph",
+      "text": "ウェブサイトを たのんだ のは、山本社長です。でも、毎日 サイトを 見る のは 社長では ありません。店に 来る お客様です。"
+    },
+    {
+      "kind": "cards",
+      "columns": 2,
+      "items": [
+        {
+          "icon": "🏢",
+          "label": "たのむ 人",
+          "title": "山本社長・佐々木先生",
+          "text": "「こんな サイトに したい」と 考えて います。"
+        },
+        {
+          "icon": "📱",
+          "label": "見る 人（エンドユーザー）",
+          "title": "店に 来る お客様",
+          "text": "「これが 知りたい」「これが 心配」と 思いながら、スマホで 見ます。"
+        }
+      ]
+    },
+    {
+      "kind": "paragraph",
+      "text": "この 二つは、同じとは かぎりません。たのむ 人の 思いと、見る 人の 気持ち。両方を 考えるのが、作る 人の 仕事です。"
+    },
+    {
+      "kind": "heading",
+      "level": 3,
+      "text": "サイトを 見る 3つの お客様"
+    },
+    {
+      "kind": "cards",
+      "columns": 3,
+      "items": [
+        {
+          "icon": "✈️",
+          "title": "外国人の 観光客",
+          "text": "旅行で プノンペンに 来た 人です。英語で 読みます。",
+          "image": {
+            "prompt": "Japanese-style anime illustration, warm flat colors, soft outlines, no readable text anywhere. A young European woman tourist with a backpack and a smartphone stands on a Phnom Penh street near the riverside, looking at a map app, curious and excited. Bright daytime.",
+            "refs": [],
+            "status": "empty"
+          }
+        },
+        {
+          "icon": "🏠",
+          "title": "日本人の 駐在員の 家族",
+          "text": "仕事で プノンペンに 住んで いる 日本人の 家族です。とくに 奥さん。日本語で 読みます。",
+          "image": {
+            "prompt": "Japanese-style anime illustration, warm flat colors, soft outlines, no readable text anywhere. A Japanese mother in her thirties and her seven-year-old daughter in a modern Phnom Penh apartment living room, the mother looking at her smartphone while the daughter draws at the table. Calm morning light.",
+            "refs": [],
+            "status": "empty"
+          }
+        },
+        {
+          "icon": "🎓",
+          "title": "カンボジアの 若い 人",
+          "text": "抹茶が 好きな 学生や、若い 社会人です。",
+          "image": {
+            "prompt": "Japanese-style anime illustration, warm flat colors, soft outlines, no readable text anywhere. Three Cambodian university students in their early twenties sit in a stylish Phnom Penh cafe, holding iced matcha lattes and taking photos with their smartphones, laughing. Casual modern clothes.",
+            "refs": [],
+            "status": "empty"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "callout",
+      "tone": "point",
+      "text": "カンボジアの 若い 人の ことを、いちばん よく 知って いるのは だれでしょうか。——あなたです。こんどは 聞くだけでは なく、社長と 先生に 提案も します。"
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "きょうの ことば"
+    },
+    {
+      "kind": "vocab",
+      "wordIds": [
+        "enduser",
+        "kankoukyaku",
+        "chuuzaiin",
+        "teian"
+      ]
+    },
+    {
+      "kind": "link",
+      "ref": "youkenweb_sado",
+      "type": "article",
+      "label": "茶道を 知る"
+    }
+  ],
+  "furigana": [
+    [
+      "佐々木先生",
+      "ささきせんせい"
+    ],
+    [
+      "要件定義書",
+      "ようけんていぎしょ"
+    ],
+    [
+      "打ち合わせ",
+      "うちあわせ"
+    ],
+    [
+      "山本社長",
+      "やまもとしゃちょう"
+    ],
+    [
+      "田中店長",
+      "たなかてんちょう"
+    ],
+    [
+      "要件定義",
+      "ようけんていぎ"
+    ],
+    [
+      "茶道体験",
+      "さどうたいけん"
+    ],
+    [
+      "茶道教室",
+      "さどうきょうしつ"
+    ],
+    [
+      "客様調査",
+      "きゃくさまちょうさ"
+    ],
+    [
+      "立ち会い",
+      "たちあい"
+    ],
+    [
+      "観光客",
+      "かんこうきゃく"
+    ],
+    [
+      "駐在員",
+      "ちゅうざいいん"
+    ],
+    [
+      "佐々木",
+      "ささき"
+    ],
+    [
+      "外国人",
+      "がいこくじん"
+    ],
+    [
+      "社会人",
+      "しゃかいじん"
+    ],
+    [
+      "日本人",
+      "にほんじん"
+    ],
+    [
+      "日本語",
+      "にほんご"
+    ],
+    [
+      "気持ち",
+      "きもち"
+    ],
+    [
+      "決まり",
+      "きまり"
+    ],
+    [
+      "終わり",
+      "おわり"
+    ],
+    [
+      "新しく",
+      "あたらしく"
+    ],
+    [
+      "教える",
+      "おしえる"
+    ],
+    [
+      "集める",
+      "あつめる"
+    ],
+    [
+      "入れる",
+      "いれる"
+    ],
+    [
+      "小さな",
+      "ちいさな"
+    ],
+    [
+      "見た目",
+      "みため"
+    ],
+    [
+      "直せる",
+      "なおせる"
+    ],
+    [
+      "考える",
+      "かんがえる"
+    ],
+    [
+      "奥さん",
+      "おくさん"
+    ],
+    [
+      "山本",
+      "やまもと"
+    ],
+    [
+      "田中",
+      "たなか"
+    ],
+    [
+      "二人",
+      "ふたり"
+    ],
+    [
+      "毎日",
+      "まいにち"
+    ],
+    [
+      "月に",
+      "つきに"
+    ],
+    [
+      "来た",
+      "きた"
+    ],
+    [
+      "来る",
+      "くる"
+    ],
+    [
+      "茶室",
+      "ちゃしつ"
+    ],
+    [
+      "抹茶",
+      "まっちゃ"
+    ],
+    [
+      "茶道",
+      "さどう"
+    ],
+    [
+      "日本",
+      "にほん"
+    ],
+    [
+      "公開",
+      "こうかい"
+    ],
+    [
+      "更新",
+      "こうしん"
+    ],
+    [
+      "店長",
+      "てんちょう"
+    ],
+    [
+      "先生",
+      "せんせい"
+    ],
+    [
+      "社長",
+      "しゃちょう"
+    ],
+    [
+      "家族",
+      "かぞく"
+    ],
+    [
+      "若い",
+      "わかい"
+    ],
+    [
+      "客様",
+      "きゃくさま"
+    ],
+    [
+      "提案",
+      "ていあん"
+    ],
+    [
+      "二つ",
+      "ふたつ"
+    ],
+    [
+      "採用",
+      "さいよう"
+    ],
+    [
+      "相談",
+      "そうだん"
+    ],
+    [
+      "作っ",
+      "つくっ"
+    ],
+    [
+      "着き",
+      "つき"
+    ],
+    [
+      "前回",
+      "ぜんかい"
+    ],
+    [
+      "質問",
+      "しつもん"
+    ],
+    [
+      "要件",
+      "ようけん"
+    ],
+    [
+      "定義",
+      "ていぎ"
+    ],
+    [
+      "応募",
+      "おうぼ"
+    ],
+    [
+      "会え",
+      "あえ"
+    ],
+    [
+      "願い",
+      "ねがい"
+    ],
+    [
+      "京都",
+      "きょうと"
+    ],
+    [
+      "教え",
+      "おしえ"
+    ],
+    [
+      "体験",
+      "たいけん"
+    ],
+    [
+      "教室",
+      "きょうしつ"
+    ],
+    [
+      "始め",
+      "はじめ"
+    ],
+    [
+      "開く",
+      "ひらく"
+    ],
+    [
+      "見せ",
+      "みせ"
+    ],
+    [
+      "東京",
+      "とうきょう"
+    ],
+    [
+      "働き",
+      "はたらき"
+    ],
+    [
+      "工事",
+      "こうじ"
+    ],
+    [
+      "準備",
+      "じゅんび"
+    ],
+    [
+      "役割",
+      "やくわり"
+    ],
+    [
+      "担当",
+      "たんとう"
+    ],
+    [
+      "調査",
+      "ちょうさ"
+    ],
+    [
+      "進行",
+      "しんこう"
+    ],
+    [
+      "話し",
+      "はなし"
+    ],
+    [
+      "作り",
+      "つくり"
+    ],
+    [
+      "自分",
+      "じぶん"
+    ],
+    [
+      "見る",
+      "みる"
+    ],
+    [
+      "考え",
+      "かんがえ"
+    ],
+    [
+      "知り",
+      "しり"
+    ],
+    [
+      "心配",
+      "しんぱい"
+    ],
+    [
+      "思い",
+      "おもい"
+    ],
+    [
+      "同じ",
+      "おなじ"
+    ],
+    [
+      "両方",
+      "りょうほう"
+    ],
+    [
+      "作る",
+      "つくる"
+    ],
+    [
+      "仕事",
+      "しごと"
+    ],
+    [
+      "外国",
+      "がいこく"
+    ],
+    [
+      "観光",
+      "かんこう"
+    ],
+    [
+      "旅行",
+      "りょこう"
+    ],
+    [
+      "英語",
+      "えいご"
+    ],
+    [
+      "読み",
+      "よみ"
+    ],
+    [
+      "駐在",
+      "ちゅうざい"
+    ],
+    [
+      "住ん",
+      "すん"
+    ],
+    [
+      "好き",
+      "すき"
+    ],
+    [
+      "学生",
+      "がくせい"
+    ],
+    [
+      "社会",
+      "しゃかい"
+    ],
+    [
+      "知っ",
+      "しっ"
+    ],
+    [
+      "聞く",
+      "きく"
+    ],
+    [
+      "知る",
+      "しる"
+    ],
+    [
+      "人",
+      "ひと"
+    ],
+    [
+      "日",
+      "にち"
+    ],
+    [
+      "月",
+      "がつ"
+    ],
+    [
+      "来",
+      "き"
+    ],
+    [
+      "名",
+      "めい"
+    ],
+    [
+      "茶",
+      "ちゃ"
+    ],
+    [
+      "店",
+      "みせ"
+    ],
+    [
+      "二",
+      "に"
+    ],
+    [
+      "話",
+      "はなし"
+    ],
+    [
+      "書",
+      "しょ"
+    ],
+    [
+      "年",
+      "ねん"
+    ],
+    [
+      "方",
+      "かた"
+    ],
+    [
+      "席",
+      "せき"
+    ],
+    [
+      "先",
+      "さき"
+    ],
+    [
+      "見",
+      "み"
+    ],
+    [
+      "客",
+      "きゃく"
+    ],
+    [
+      "員",
+      "いん"
+    ]
+  ]
+}

@@ -1,15 +1,15 @@
 {
   "kind": "stage",
   "id": "youken2",
-  "order": 11,
+  "order": 12,
   "title": "アプリの 要件定義",
   "reading": "あぷりの ようけんていぎ",
   "description": "1年前に 採用ページを 作った Aobaの 店は、大にぎわいに なりました。こんどは 店の アプリを 作ります。山本社長・お茶の 先生・店長の 三人に 聞いて、要件を まとめます。",
   "color": "leaf",
   "status": "published",
   "area": {
-    "image": "/img/scenes/area_citadel_perfume_river.webp",
-    "note": "おしろと かわが ある、むかしの みやこです。ここで 三人に 会います。"
+    "image": "/img/scenes/area_lake_oldquarter.webp",
+    "note": "みずうみと ふるい まちなみの ある みやこです。ここで 三人に 会います。"
   },
   "contents": [
     {

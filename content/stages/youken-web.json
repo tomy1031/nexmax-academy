@@ -1,0 +1,149 @@
+{
+  "kind": "stage",
+  "id": "youken-web",
+  "order": 11,
+  "title": "ウェブサイトの 要件定義",
+  "reading": "うぇぶさいとの ようけんていぎ",
+  "description": "採用ページで、お茶の 先生と 店長が 来ました。こんどは プノンペンの 店の ウェブサイトを 作ります。山本社長と 佐々木先生に Zoomで 聞いて、店に 来る お客様の ための 提案を します。",
+  "color": "leaf",
+  "status": "published",
+  "area": {
+    "image": "/img/scenes/area_citadel_perfume_river.webp",
+    "note": "おしろと かわが ある、むかしの みやこです。ここで 二人と Zoomで 話します。"
+  },
+  "contents": [
+    {
+      "ref": "youkenweb_story",
+      "type": "article"
+    },
+    {
+      "ref": "youkenweb_sado",
+      "type": "article"
+    },
+    {
+      "ref": "youkenweb_call",
+      "type": "listening"
+    },
+    {
+      "ref": "youkenweb_call_check",
+      "type": "quizset"
+    },
+    {
+      "ref": "youkenweb_skit",
+      "type": "skit"
+    },
+    {
+      "ref": "youkenweb_zoom",
+      "type": "scenario"
+    },
+    {
+      "ref": "youkenweb_teian",
+      "type": "quizset"
+    },
+    {
+      "ref": "youkenweb_doc",
+      "type": "article"
+    },
+    {
+      "ref": "youkenweb_site",
+      "type": "link"
+    }
+  ],
+  "wordStageIds": [
+    "youkenweb_kotoba"
+  ],
+  "furigana": [
+    [
+      "佐々木先生",
+      "ささきせんせい"
+    ],
+    [
+      "山本社長",
+      "やまもとしゃちょう"
+    ],
+    [
+      "要件定義",
+      "ようけんていぎ"
+    ],
+    [
+      "佐々木",
+      "ささき"
+    ],
+    [
+      "山本",
+      "やまもと"
+    ],
+    [
+      "二人",
+      "ふたり"
+    ],
+    [
+      "来る",
+      "くる"
+    ],
+    [
+      "店長",
+      "てんちょう"
+    ],
+    [
+      "先生",
+      "せんせい"
+    ],
+    [
+      "社長",
+      "しゃちょう"
+    ],
+    [
+      "客様",
+      "きゃくさま"
+    ],
+    [
+      "提案",
+      "ていあん"
+    ],
+    [
+      "要件",
+      "ようけん"
+    ],
+    [
+      "定義",
+      "ていぎ"
+    ],
+    [
+      "採用",
+      "さいよう"
+    ],
+    [
+      "作り",
+      "つくり"
+    ],
+    [
+      "聞い",
+      "きい"
+    ],
+    [
+      "話し",
+      "はなし"
+    ],
+    [
+      "人",
+      "ひと"
+    ],
+    [
+      "来",
+      "き"
+    ],
+    [
+      "茶",
+      "ちゃ"
+    ],
+    [
+      "店",
+      "みせ"
+    ],
+    [
+      "二",
+      "に"
+    ]
+  ]
+}

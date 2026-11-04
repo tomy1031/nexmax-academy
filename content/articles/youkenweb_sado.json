@@ -1,0 +1,597 @@
+{
+  "kind": "article",
+  "id": "youkenweb_sado",
+  "title": "はじめての 茶道",
+  "description": "茶道を 伝える サイトを 作る 前に、まず 自分が 茶道を 知りましょう。5分で 読めます。",
+  "blocks": [
+    {
+      "kind": "hero",
+      "eyebrow": "ステップ 2",
+      "title": "はじめての 茶道",
+      "lead": "茶道（Tea ceremony）は、お茶を 点てて、お客様を もてなす 日本の 文化です。",
+      "note": "作る 人が 茶道を 知らないと、お客様に 伝わる サイトは 作れません。",
+      "image": {
+        "src": "/img/youken/sado.webp",
+        "refs": [],
+        "status": "done"
+      }
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "抹茶と 茶道は ちがう？"
+    },
+    {
+      "kind": "cards",
+      "columns": 2,
+      "items": [
+        {
+          "icon": "🥤",
+          "title": "抹茶",
+          "text": "緑の お茶の 粉です。ラテや アイスにも なります。カフェで 気軽に 飲めます。",
+          "image": {
+            "src": "/img/youken/macha_latte.webp",
+            "refs": [],
+            "status": "done"
+          }
+        },
+        {
+          "icon": "🍵",
+          "title": "茶道",
+          "text": "抹茶を 点てる ときの、決まった 動きと 心です。ゆっくり、静かに 楽しみます。",
+          "image": {
+            "src": "/img/youken/matcha_culture.webp",
+            "refs": [],
+            "status": "done"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "callout",
+      "tone": "point",
+      "text": "Aobaの 店には、両方が あります。カフェでは 抹茶を 気軽に。茶室では 茶道を ゆっくり。"
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "茶道の 流れ（40分）"
+    },
+    {
+      "kind": "steps",
+      "items": [
+        "① 席入り（entering）: 茶室に 入って、すわります。",
+        "② お菓子: さきに 和菓子を 食べます。お茶が もっと おいしく なります。",
+        "③ お点前（making tea）: 先生が お茶を 点てます。お客様は 静かに 見ます。",
+        "④ お茶を いただく: 茶碗の 正面（front）を さけて、2回 回してから 飲みます。",
+        "⑤ 茶碗を 見る: 茶碗の 形や 色を 楽しみます。",
+        "⑥ あいさつ: 「ありがとうございました」と 言って、茶室を 出ます。"
+      ],
+      "images": [
+        {
+          "prompt": "Japanese-style anime illustration, warm flat colors, soft outlines, no readable text anywhere. Guests in casual clothes enter a small tatami tea room through a low sliding door and sit down quietly. Soft light through paper screens.",
+          "refs": [],
+          "status": "empty"
+        },
+        {
+          "prompt": "Japanese-style anime illustration, warm flat colors, soft outlines, no readable text anywhere. Close-up of a small seasonal Japanese sweet (wagashi) shaped like a flower on a paper napkin, a guest holding a wooden pick. Tatami background.",
+          "refs": [],
+          "status": "empty"
+        },
+        {
+          "prompt": "Japanese-style anime illustration, warm flat colors, soft outlines, no readable text anywhere. A Japanese woman in a deep green kimono whisks matcha in a tea bowl with a bamboo whisk, guests watch quietly in the background. Calm tea room.",
+          "refs": [],
+          "status": "empty"
+        },
+        {
+          "prompt": "Japanese-style anime illustration, warm flat colors, soft outlines, no readable text anywhere. Close-up of hands turning a tea bowl of green matcha clockwise before drinking. Tatami and paper screen background.",
+          "refs": [],
+          "status": "empty"
+        },
+        {
+          "prompt": "Japanese-style anime illustration, warm flat colors, soft outlines, no readable text anywhere. A guest holds a handmade tea bowl with both hands and looks at its shape and color with interest. Calm tea room.",
+          "refs": [],
+          "status": "empty"
+        },
+        {
+          "prompt": "Japanese-style anime illustration, warm flat colors, soft outlines, no readable text anywhere. Guests bow politely to the tea teacher at the end of the tea ceremony, smiling. Small tatami tea room.",
+          "refs": [],
+          "status": "empty"
+        }
+      ]
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "大切な 心"
+    },
+    {
+      "kind": "cards",
+      "columns": 2,
+      "items": [
+        {
+          "icon": "🤝",
+          "title": "おもてなし（hospitality）",
+          "text": "お客様の ことを 考えて、心を こめて 準備する ことです。"
+        },
+        {
+          "icon": "🌸",
+          "title": "一期一会（once in a lifetime）",
+          "text": "この 時間は 一度だけです。だから、今を 大切に します。"
+        }
+      ]
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "茶道体験と 茶道教室"
+    },
+    {
+      "kind": "cards",
+      "columns": 2,
+      "items": [
+        {
+          "icon": "🎟️",
+          "title": "茶道体験",
+          "text": "1回だけの 体験です。はじめての 人や、旅行の 人に 向いて います。",
+          "items": [
+            "1回で おわる",
+            "見て、飲んで、楽しむ"
+          ]
+        },
+        {
+          "icon": "📚",
+          "title": "茶道教室",
+          "text": "毎月 通って、少しずつ 習います。お点前を 自分で できる ように なります。",
+          "items": [
+            "何回も 通う",
+            "先生に 習う"
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "はじめての 人の「？」"
+    },
+    {
+      "kind": "paragraph",
+      "text": "はじめての 人は、こんな ことが 心配に なります。"
+    },
+    {
+      "kind": "list",
+      "items": [
+        "正座（sitting on your knees）が できないけど、大丈夫？",
+        "着物（kimono）を 持って いないけど、大丈夫？",
+        "作法（manners）を 知らないけど、大丈夫？",
+        "高そう…いくら かかる？"
+      ]
+    },
+    {
+      "kind": "paragraph",
+      "text": "答えは、店に よって ちがいます。Aobaでは どうなのか、佐々木先生に 聞いて みましょう。"
+    },
+    {
+      "kind": "callout",
+      "tone": "point",
+      "text": "あなたも、今 はじめて 茶道を 知りましたか。カンボジアの 若い お客様も、きっと 同じです。あなたが 今 思った「？」は、サイトに 書く ことの ヒントに なります。"
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "text": "きょうの ことば"
+    },
+    {
+      "kind": "vocab",
+      "wordIds": [
+        "sadou",
+        "otemae",
+        "chashitsu",
+        "wagashi",
+        "sadou_taiken",
+        "sadou_kyoushitsu"
+      ]
+    },
+    {
+      "kind": "link",
+      "ref": "youkenweb_call",
+      "type": "listening",
+      "label": "山本社長からの Zoomを 聞く"
+    }
+  ],
+  "furigana": [
+    [
+      "佐々木先生",
+      "ささきせんせい"
+    ],
+    [
+      "山本社長",
+      "やまもとしゃちょう"
+    ],
+    [
+      "茶道体験",
+      "さどうたいけん"
+    ],
+    [
+      "茶道教室",
+      "さどうきょうしつ"
+    ],
+    [
+      "一期一会",
+      "いちごいちえ"
+    ],
+    [
+      "佐々木",
+      "ささき"
+    ],
+    [
+      "席入り",
+      "せきいり"
+    ],
+    [
+      "和菓子",
+      "わがし"
+    ],
+    [
+      "伝える",
+      "つたえる"
+    ],
+    [
+      "伝わる",
+      "つたわる"
+    ],
+    [
+      "点てる",
+      "たてる"
+    ],
+    [
+      "決まっ",
+      "きまっ"
+    ],
+    [
+      "楽しみ",
+      "たのしみ"
+    ],
+    [
+      "楽しむ",
+      "たのしむ"
+    ],
+    [
+      "大丈夫",
+      "だいじょうぶ"
+    ],
+    [
+      "山本",
+      "やまもと"
+    ],
+    [
+      "毎月",
+      "まいつき"
+    ],
+    [
+      "一度",
+      "いちど"
+    ],
+    [
+      "何回",
+      "なんかい"
+    ],
+    [
+      "点前",
+      "てまえ"
+    ],
+    [
+      "茶室",
+      "ちゃしつ"
+    ],
+    [
+      "茶碗",
+      "ちゃわん"
+    ],
+    [
+      "抹茶",
+      "まっちゃ"
+    ],
+    [
+      "茶道",
+      "さどう"
+    ],
+    [
+      "正座",
+      "せいざ"
+    ],
+    [
+      "作法",
+      "さほう"
+    ],
+    [
+      "着物",
+      "きもの"
+    ],
+    [
+      "点て",
+      "たて"
+    ],
+    [
+      "日本",
+      "にほん"
+    ],
+    [
+      "先生",
+      "せんせい"
+    ],
+    [
+      "社長",
+      "しゃちょう"
+    ],
+    [
+      "若い",
+      "わかい"
+    ],
+    [
+      "客様",
+      "きゃくさま"
+    ],
+    [
+      "作る",
+      "つくる"
+    ],
+    [
+      "自分",
+      "じぶん"
+    ],
+    [
+      "知り",
+      "しり"
+    ],
+    [
+      "読め",
+      "よめ"
+    ],
+    [
+      "文化",
+      "ぶんか"
+    ],
+    [
+      "知ら",
+      "しら"
+    ],
+    [
+      "作れ",
+      "つくれ"
+    ],
+    [
+      "気軽",
+      "きがる"
+    ],
+    [
+      "飲め",
+      "のめ"
+    ],
+    [
+      "動き",
+      "うごき"
+    ],
+    [
+      "静か",
+      "しずか"
+    ],
+    [
+      "両方",
+      "りょうほう"
+    ],
+    [
+      "流れ",
+      "ながれ"
+    ],
+    [
+      "入り",
+      "いり"
+    ],
+    [
+      "入っ",
+      "はいっ"
+    ],
+    [
+      "菓子",
+      "かし"
+    ],
+    [
+      "食べ",
+      "たべ"
+    ],
+    [
+      "正面",
+      "しょうめん"
+    ],
+    [
+      "回し",
+      "まわし"
+    ],
+    [
+      "飲み",
+      "のみ"
+    ],
+    [
+      "見る",
+      "みる"
+    ],
+    [
+      "言っ",
+      "いっ"
+    ],
+    [
+      "大切",
+      "たいせつ"
+    ],
+    [
+      "考え",
+      "かんがえ"
+    ],
+    [
+      "準備",
+      "じゅんび"
+    ],
+    [
+      "時間",
+      "じかん"
+    ],
+    [
+      "体験",
+      "たいけん"
+    ],
+    [
+      "教室",
+      "きょうしつ"
+    ],
+    [
+      "旅行",
+      "りょこう"
+    ],
+    [
+      "向い",
+      "むい"
+    ],
+    [
+      "飲ん",
+      "のん"
+    ],
+    [
+      "通っ",
+      "かよっ"
+    ],
+    [
+      "少し",
+      "すこし"
+    ],
+    [
+      "習い",
+      "ならい"
+    ],
+    [
+      "通う",
+      "かよう"
+    ],
+    [
+      "習う",
+      "ならう"
+    ],
+    [
+      "心配",
+      "しんぱい"
+    ],
+    [
+      "持っ",
+      "もっ"
+    ],
+    [
+      "答え",
+      "こたえ"
+    ],
+    [
+      "聞い",
+      "きい"
+    ],
+    [
+      "同じ",
+      "おなじ"
+    ],
+    [
+      "思っ",
+      "おもっ"
+    ],
+    [
+      "書く",
+      "かく"
+    ],
+    [
+      "聞く",
+      "きく"
+    ],
+    [
+      "人",
+      "ひと"
+    ],
+    [
+      "日",
+      "にち"
+    ],
+    [
+      "月",
+      "がつ"
+    ],
+    [
+      "何",
+      "なに"
+    ],
+    [
+      "前",
+      "まえ"
+    ],
+    [
+      "分",
+      "ふん"
+    ],
+    [
+      "茶",
+      "ちゃ"
+    ],
+    [
+      "緑",
+      "みどり"
+    ],
+    [
+      "粉",
+      "こな"
+    ],
+    [
+      "心",
+      "こころ"
+    ],
+    [
+      "店",
+      "みせ"
+    ],
+    [
+      "席",
+      "せき"
+    ],
+    [
+      "見",
+      "み"
+    ],
+    [
+      "回",
+      "かい"
+    ],
+    [
+      "形",
+      "かたち"
+    ],
+    [
+      "色",
+      "いろ"
+    ],
+    [
+      "出",
+      "で"
+    ],
+    [
+      "一",
+      "いち"
+    ],
+    [
+      "度",
+      "ど"
+    ],
+    [
+      "今",
+      "いま"
+    ],
+    [
+      "高",
+      "たか"
+    ]
+  ]
+}

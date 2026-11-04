@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aoba Phnom Penh — 抹茶カフェと茶道（学習用の見本）</title>
+<style>
+:root{--green:#1f5133;--green2:#2f6b45;--leaf:#8eba43;--paper:#fbfbf8;--sub:#f1f4ef;--ink:#2b2b2b;--light:#5f665f;--line:#e2e6df}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:112px}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Hiragino Sans","Noto Sans JP","Yu Gothic","Noto Sans Khmer","Khmer OS",sans-serif;font-size:17px;line-height:1.9;-webkit-font-smoothing:antialiased}
+rt{font-size:.55em;color:var(--light)}
+a{color:var(--green)}
+body[data-lang="ja"] :is(.en,.km):not(.ja){display:none!important}
+body[data-lang="en"] :is(.ja,.km):not(.en){display:none!important}
+body[data-lang="km"] :is(.ja,.en):not(.km){display:none!important}
+body[data-lang="km"]{font-size:18px;line-height:2.1}
+header{position:sticky;top:0;z-index:10;background:rgba(251,251,248,.96);border-bottom:1px solid var(--line);backdrop-filter:blur(6px)}
+.bar{max-width:960px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.logo{font-weight:700;letter-spacing:.12em;color:var(--green);font-size:18px;white-space:nowrap}
+.logo small{display:block;font-size:11px;letter-spacing:.2em;color:var(--light);font-weight:400}
+.langs{display:flex;gap:6px}
+.langs button{font:inherit;font-size:14px;line-height:1;padding:9px 12px;border-radius:999px;border:1px solid var(--green);background:#fff;color:var(--green);cursor:pointer;min-height:40px}
+.langs button[aria-pressed="true"]{background:var(--green);color:#fff}
+nav{max-width:960px;margin:0 auto;display:flex;gap:4px;overflow-x:auto;padding:0 12px 8px;scrollbar-width:none}
+nav::-webkit-scrollbar{display:none}
+nav a{flex:none;text-decoration:none;font-size:14px;padding:6px 10px;border-radius:8px;color:var(--ink);background:var(--sub)}
+main{max-width:960px;margin:0 auto;padding:0 16px 40px}
+.hero{margin:20px 0 8px;border-radius:24px;background:linear-gradient(160deg,#1f5133,#2f6b45 60%,#5e8f3a);color:#fff;padding:40px 24px;position:relative;overflow:hidden}
+.hero::after{content:"🍵";position:absolute;right:-10px;bottom:-30px;font-size:160px;opacity:.18}
+.hero .open{display:inline-block;background:#fff;color:var(--green);font-weight:700;border-radius:999px;padding:4px 14px;font-size:15px;letter-spacing:.05em}
+.hero h1{font-size:30px;line-height:1.6;margin:16px 0 8px;font-weight:600}
+.hero p{margin:0;max-width:34em;opacity:.95}
+.hero rt{color:#dfe9dc}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.chip{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:4px 12px;font-size:14px}
+.book{margin:16px 0 0;border:2px solid var(--green);border-radius:16px;background:#fff;padding:14px 18px;display:flex;gap:12px;align-items:flex-start}
+.book b{color:var(--green)}
+section{margin-top:44px}
+h2{font-size:24px;margin:0 0 4px;color:var(--green);display:flex;align-items:center;gap:10px}
+h2 .icon{font-size:26px}
+.lead{color:var(--light);margin:0 0 16px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px 18px}
+.card .big{font-size:30px;line-height:1.2}
+.card h3{margin:6px 0 4px;font-size:18px}
+.card p{margin:0}
+.steps{counter-reset:s;list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.steps li{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 16px 12px 56px;position:relative}
+.steps li::before{counter-increment:s;content:counter(s);position:absolute;left:14px;top:12px;width:30px;height:30px;border-radius:50%;background:var(--green);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:15px}
+table{width:100%;border-collapse:collapse;background:#fff;border-radius:14px;overflow:hidden;border:1px solid var(--line)}
+th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{width:34%;background:var(--sub);font-weight:600;color:var(--green)}
+tr:last-child th,tr:last-child td{border-bottom:none}
+.price{white-space:nowrap;font-weight:700;color:var(--green);text-align:right}
+.care{margin-top:14px;border-radius:14px;background:#fff8e6;border:1px solid #f0d58a;padding:12px 16px}
+.soon{margin:0 0 14px;border-radius:12px;background:var(--sub);border:1px dashed var(--green2);padding:10px 14px;font-size:15px;color:var(--green)}
+.class2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.class2 .card h3{color:var(--green)}
+.tag{display:inline-block;font-size:13px;background:var(--sub);border-radius:6px;padding:1px 8px;margin-right:6px}
+details{background:#fff;border:1px solid var(--line);border-radius:14px;padding:4px 16px;margin-bottom:10px}
+summary{cursor:pointer;font-weight:600;padding:10px 0;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"Q.";color:var(--green);margin-right:8px}
+details p{margin:0 0 12px}
+details p::before{content:"A.";color:var(--leaf);font-weight:700;margin-right:8px}
+.news li{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 16px;margin-bottom:10px;list-style:none}
+.news{padding:0;margin:0}
+.news time{display:block;font-size:14px;color:var(--light)}
+.news .by{font-size:13px;color:var(--light)}
+.map{height:180px;border-radius:16px;background:repeating-linear-gradient(45deg,#e8efe4,#e8efe4 12px,#dfe8da 12px,#dfe8da 24px);display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--green);border:1px solid var(--line);margin-bottom:12px;text-align:center;padding:12px}
+footer{margin-top:48px;background:var(--green);color:#fff;padding:28px 16px 36px}
+footer .in{max-width:960px;margin:0 auto}
+.sns{display:flex;flex-wrap:wrap;gap:10px;margin:8px 0 16px}
+.sns a{color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.5);border-radius:999px;padding:6px 14px;font-size:15px}
+.note{font-size:13px;opacity:.85;margin:0}
+footer rt{color:#dfe9dc}
+@media (max-width:420px){.bar{padding:8px 12px;gap:8px}.logo{font-size:16px}.logo small{font-size:10px;letter-spacing:.12em}.langs{gap:4px}.langs button{padding:8px 9px;font-size:13px}.hero h1{font-size:25px}.hero{padding:32px 20px}h2{font-size:21px}th{width:40%}}
+</style>
+</head>
+<body data-lang="ja">
+
+<header>
+  <div class="bar">
+    <div class="logo">AOBA<small>PHNOM PENH · BKK1</small></div>
+    <div class="langs" role="group" aria-label="Language">
+      <button type="button" data-set="ja" aria-pressed="true"><ruby>日本語<rt>にほんご</rt></ruby></button>
+      <button type="button" data-set="en" aria-pressed="false">English</button>
+      <button type="button" data-set="km" aria-pressed="false">ខ្មែរ</button>
+    </div>
+  </div>
+  <nav aria-label="menu">
+    <a href="#top"><span class="ja">トップ</span><span class="en">Home</span><span class="km">ទំព័រដើម</span></a>
+    <a href="#intro"><span class="ja">はじめての <ruby>茶道<rt>さどう</rt></ruby></span><span class="en">Tea ceremony 101</span><span class="km">ពិធីតែ សម្រាប់អ្នកចាប់ផ្តើម</span></a>
+    <a href="#taiken"><span class="ja"><ruby>茶道体験<rt>さどうたいけん</rt></ruby></span><span class="en">Experience</span><span class="km">បទពិសោធន៍ពិធីតែ</span></a>
+    <a href="#class"><span class="ja"><ruby>茶道教室<rt>さどうきょうしつ</rt></ruby></span><span class="en km">Classes</span></a>
+    <a href="#menu"><span class="ja">メニュー</span><span class="en km">Menu</span></a>
+    <a href="#access"><span class="ja">アクセス</span><span class="en">Access</span><span class="km">ទីតាំង</span></a>
+    <a href="#faq"><span class="ja">よくある しつもん</span><span class="en km">FAQ</span></a>
+    <a href="#news"><span class="ja">お<ruby>知<rt>し</rt></ruby>らせ</span><span class="en km">News</span></a>
+  </nav>
+</header>
+
+<main>
+
+<!-- トップ -->
+<section id="top" style="margin-top:0">
+  <div class="hero">
+    <span class="open">2026.11.11 OPEN</span>
+    <h1>
+      <span class="ja"><ruby>抹茶<rt>まっちゃ</rt></ruby>を、<ruby>毎日<rt>まいにち</rt></ruby>の <ruby>楽<rt>たの</rt></ruby>しみに。</span>
+      <span class="en">Matcha, a little joy for every day.</span>
+      <span class="km">ម៉ាឆា ជាសេចក្តីរីករាយរៀងរាល់ថ្ងៃ។</span>
+    </h1>
+    <p class="ja"><ruby>静岡<rt>しずおか</rt></ruby>の <ruby>抹茶<rt>まっちゃ</rt></ruby>の カフェと、<ruby>茶道<rt>さどう</rt></ruby>の <ruby>体験<rt>たいけん</rt></ruby>が できる <ruby>店<rt>みせ</rt></ruby>です。2026<ruby>年<rt>ねん</rt></ruby>11<ruby>月<rt>がつ</rt></ruby>11<ruby>日<rt>にち</rt></ruby>、プノンペン BKK1に オープンします。</p>
+    <p class="en">A matcha café with Shizuoka matcha and a Japanese tea ceremony room. Opening on 11 November 2026 in BKK1, Phnom Penh.</p>
+    <p class="km">ហាងកាហ្វេម៉ាឆាពីប្រទេសជប៉ុន និងបន្ទប់ពិធីតែជប៉ុន។ បើកថ្ងៃទី 11 ខែវិច្ឆិកា ឆ្នាំ 2026 នៅបឹងកេងកង 1 ភ្នំពេញ។</p>
+    <div class="chips">
+      <span class="chip"><span class="ja">🍵 <ruby>抹茶<rt>まっちゃ</rt></ruby>ラテ 3.50ドル</span><span class="en">🍵 Matcha latte $3.50</span><span class="km">🍵 ម៉ាឆាឡាតេ $3.50</span></span>
+      <span class="chip"><span class="ja">🍡 <ruby>茶道体験<rt>さどうたいけん</rt></ruby> 15ドル</span><span class="en">🍡 Tea ceremony $15</span><span class="km">🍡 ពិធីតែ $15</span></span>
+      <span class="chip"><span class="ja">🪑 いすの <ruby>席<rt>せき</rt></ruby>も あります</span><span class="en">🪑 Chairs available</span><span class="km">🪑 មានកៅអី</span></span>
+    </div>
+  </div>
+  <div class="book">
+    <span style="font-size:24px">📩</span>
+    <div>
+      <div class="ja"><b>ご<ruby>予約<rt>よやく</rt></ruby></b>は、Instagramの DMか お<ruby>電話<rt>でんわ</rt></ruby>（012 345 678）で お<ruby>願<rt>ねが</rt></ruby>いします。</div>
+      <div class="en"><b>Booking:</b> please send us an Instagram DM or call 012 345 678.</div>
+      <div class="km"><b>ការកក់៖</b> សូមផ្ញើសារ DM តាម Instagram ឬទូរស័ព្ទមកលេខ 012 345 678។</div>
+    </div>
+  </div>
+</section>
+
+<!-- はじめての 茶道 -->
+<section id="intro">
+  <h2><span class="icon">🌿</span><span class="ja">はじめての <ruby>茶道<rt>さどう</rt></ruby></span><span class="en">Tea ceremony 101</span><span class="km">ពិធីតែ សម្រាប់អ្នកចាប់ផ្តើម</span></h2>
+  <p class="lead ja">3<ruby>分<rt>ぷん</rt></ruby>で <ruby>分<rt>わ</rt></ruby>かります。はじめての <ruby>方<rt>かた</rt></ruby>も <ruby>大丈夫<rt>だいじょうぶ</rt></ruby>です。</p>
+  <p class="lead en">Read this in 3 minutes. First-timers are very welcome.</p>
+  <p class="lead km">អានយល់ក្នុងរយៈពេល 3 នាទី។ សូមស្វាគមន៍អ្នកដែលមិនធ្លាប់ចូលរួម។</p>
+  <div class="card" style="margin-bottom:12px">
+    <p class="ja"><ruby>茶道<rt>さどう</rt></ruby>は、お<ruby>茶<rt>ちゃ</rt></ruby>を <ruby>点<rt>た</rt></ruby>てて、お<ruby>客様<rt>きゃくさま</rt></ruby>を もてなす <ruby>日本<rt>にほん</rt></ruby>の <ruby>文化<rt>ぶんか</rt></ruby>です。<ruby>大切<rt>たいせつ</rt></ruby>なのは、<ruby>作法<rt>さほう</rt></ruby>よりも、<ruby>相手<rt>あいて</rt></ruby>を <ruby>思<rt>おも</rt></ruby>う <ruby>心<rt>こころ</rt></ruby>です。</p>
+    <p class="en">Sadō is the Japanese way of making matcha and welcoming guests. What matters most is not perfect manners, but caring about the other person.</p>
+    <p class="km">ពិធីតែជប៉ុន គឺជាវប្បធម៌ជប៉ុន ដែលឆុងតែម៉ាឆា ហើយទទួលភ្ញៀវដោយចិត្តល្អ។ អ្វីដែលសំខាន់ជាងគេ គឺចិត្តគិតពីអ្នកដទៃ។</p>
+  </div>
+  <div class="cards">
+    <div class="card"><div class="big">🪑</div>
+      <h3 class="ja">いすの <ruby>席<rt>せき</rt></ruby>が あります</h3><h3 class="en">You can sit on a chair</h3><h3 class="km">អាចអង្គុយលើកៅអីបាន</h3>
+      <p class="ja"><ruby>正座<rt>せいざ</rt></ruby>が できなくても <ruby>大丈夫<rt>だいじょうぶ</rt></ruby>です。</p><p class="en">No need to kneel on the floor.</p><p class="km">មិនចាំបាច់អង្គុយលុតជង្គង់ទេ។</p></div>
+    <div class="card"><div class="big">👕</div>
+      <h3 class="ja"><ruby>着物<rt>きもの</rt></ruby>は <ruby>要<rt>い</rt></ruby>りません</h3><h3 class="en">No kimono needed</h3><h3 class="km">មិនចាំបាច់ពាក់គីម៉ូណូ</h3>
+      <p class="ja">いつもの <ruby>服<rt>ふく</rt></ruby>で <ruby>来<rt>き</rt></ruby>て ください。</p><p class="en">Come in your everyday clothes.</p><p class="km">សូមស្លៀកពាក់ធម្មតាមក។</p></div>
+    <div class="card"><div class="big">👩‍🏫</div>
+      <h3 class="ja"><ruby>作法<rt>さほう</rt></ruby>は <ruby>先生<rt>せんせい</rt></ruby>が <ruby>教<rt>おし</rt></ruby>えます</h3><h3 class="en">The teacher shows you</h3><h3 class="km">គ្រូនឹងបង្រៀនអ្នក</h3>
+      <p class="ja"><ruby>先生<rt>せんせい</rt></ruby>が 1つずつ <ruby>教<rt>おし</rt></ruby>えます。<ruby>日本語<rt>にほんご</rt></ruby>と <ruby>英語<rt>えいご</rt></ruby>で <ruby>説明<rt>せつめい</rt></ruby>します。</p><p class="en">Our teacher guides you step by step, in Japanese and English.</p><p class="km">គ្រូនឹងបង្រៀនម្តងមួយជំហានៗ ជាភាសាជប៉ុន និងអង់គ្លេស។</p></div>
+  </div>
+  <h3 style="margin:22px 0 10px;color:var(--green)"><span class="ja"><ruby>茶道体験<rt>さどうたいけん</rt></ruby>の <ruby>流<rt>なが</rt></ruby>れ</span><span class="en">How it goes</span><span class="km">របៀបដំណើរការ</span></h3>
+  <ol class="steps">
+    <li><span class="ja"><ruby>茶室<rt>ちゃしつ</rt></ruby>に <ruby>入<rt>はい</rt></ruby>って、あいさつを します。</span><span class="en">Enter the tea room and greet everyone.</span><span class="km">ចូលបន្ទប់ពិធីតែ ហើយជំរាបសួរ។</span></li>
+    <li><span class="ja"><ruby>季節<rt>きせつ</rt></ruby>の <ruby>和菓子<rt>わがし</rt></ruby>を <ruby>先<rt>さき</rt></ruby>に <ruby>食<rt>た</rt></ruby>べます。</span><span class="en">Eat the seasonal Japanese sweet first.</span><span class="km">ញ៉ាំនំជប៉ុនតាមរដូវមុន។</span></li>
+    <li><span class="ja"><ruby>先生<rt>せんせい</rt></ruby>が お<ruby>茶<rt>ちゃ</rt></ruby>を <ruby>点<rt>た</rt></ruby>てる「お<ruby>点前<rt>てまえ</rt></ruby>」を <ruby>見<rt>み</rt></ruby>ます。</span><span class="en">Watch the teacher make the matcha (otemae).</span><span class="km">មើលគ្រូឆុងតែម៉ាឆា។</span></li>
+    <li><span class="ja">お<ruby>茶<rt>ちゃ</rt></ruby>を いただきます。</span><span class="en">Drink your matcha.</span><span class="km">ផឹកតែម៉ាឆា។</span></li>
+    <li><span class="ja">「ありがとうございました」と あいさつを します。</span><span class="en">Say thank you.</span><span class="km">និយាយថា «អរគុណ»។</span></li>
+  </ol>
+</section>
+
+<!-- 茶道体験 -->
+<section id="taiken">
+  <h2><span class="icon">🍵</span><span class="ja"><ruby>茶道体験<rt>さどうたいけん</rt></ruby></span><span class="en">Tea ceremony experience</span><span class="km">បទពិសោធន៍ពិធីតែ</span></h2>
+  <p class="lead ja"><ruby>抹茶<rt>まっちゃ</rt></ruby>と <ruby>季節<rt>きせつ</rt></ruby>の <ruby>和菓子<rt>わがし</rt></ruby>つきです。</p>
+  <p class="lead en">Includes matcha and a seasonal Japanese sweet.</p>
+  <p class="lead km">រួមមានតែម៉ាឆា និងនំជប៉ុនតាមរដូវ។</p>
+  <table>
+    <tr><th><span class="ja"><ruby>時間<rt>じかん</rt></ruby></span><span class="en">Times</span><span class="km">ម៉ោង</span></th>
+      <td><span class="ja">1<ruby>日<rt>にち</rt></ruby> 4<ruby>回<rt>かい</rt></ruby>　11:00 ・ 13:00 ・ 15:00 ・ 17:00</span><span class="en">4 times a day: 11:00, 13:00, 15:00, 17:00</span><span class="km">ថ្ងៃមួយ 4 ដង៖ 11:00, 13:00, 15:00, 17:00</span></td></tr>
+    <tr><th><span class="ja"><ruby>長<rt>なが</rt></ruby>さ</span><span class="en">Length</span><span class="km">រយៈពេល</span></th>
+      <td><span class="ja">40<ruby>分<rt>ぷん</rt></ruby></span><span class="en">40 minutes</span><span class="km">40 នាទី</span></td></tr>
+    <tr><th><span class="ja"><ruby>人数<rt>にんずう</rt></ruby></span><span class="en">Group size</span><span class="km">ចំនួនមនុស្ស</span></th>
+      <td><span class="ja">1<ruby>回<rt>かい</rt></ruby> 6<ruby>人<rt>にん</rt></ruby>まで</span><span class="en">Up to 6 people</span><span class="km">ម្តងមួយ អតិបរមា 6 នាក់</span></td></tr>
+    <tr><th><span class="ja"><ruby>料金<rt>りょうきん</rt></ruby></span><span class="en">Price</span><span class="km">តម្លៃ</span></th>
+      <td><span class="ja">15ドル（1<ruby>人<rt>ひとり</rt></ruby>）</span><span class="en">$15 per person</span><span class="km">$15 ក្នុងម្នាក់</span></td></tr>
+    <tr><th><span class="ja"><ruby>子<rt>こ</rt></ruby>ども</span><span class="en">Children</span><span class="km">កុមារ</span></th>
+      <td><span class="ja">7さいから <ruby>参加<rt>さんか</rt></ruby>できます。</span><span class="en">From age 7.</span><span class="km">ចាប់ពីអាយុ 7 ឆ្នាំឡើងទៅ។</span></td></tr>
+    <tr><th><span class="ja">ご<ruby>予約<rt>よやく</rt></ruby></span><span class="en">Booking</span><span class="km">ការកក់</span></th>
+      <td><span class="ja">Instagramの DMか お<ruby>電話<rt>でんわ</rt></ruby>で</span><span class="en">Instagram DM or phone</span><span class="km">DM តាម Instagram ឬទូរស័ព្ទ</span></td></tr>
+  </table>
+  <div class="care">
+    <p class="ja" style="margin:0">📷 <b><ruby>写真<rt>しゃしん</rt></ruby>に ついて</b>　お<ruby>点前<rt>てまえ</rt></ruby>の <ruby>間<rt>あいだ</rt></ruby>（20<ruby>分<rt>ぷん</rt></ruby>）は、<ruby>写真<rt>しゃしん</rt></ruby>を ご<ruby>遠慮<rt>えんりょ</rt></ruby>ください。<ruby>最後<rt>さいご</rt></ruby>に 5<ruby>分<rt>ふん</rt></ruby>、<ruby>記念写真<rt>きねんしゃしん</rt></ruby>の <ruby>時間<rt>じかん</rt></ruby>が あります。カフェの <ruby>席<rt>せき</rt></ruby>は、<ruby>写真<rt>しゃしん</rt></ruby>を とっても <ruby>大丈夫<rt>だいじょうぶ</rt></ruby>です。</p>
+    <p class="en" style="margin:0">📷 <b>Photos</b> — Please do not take photos during the 20-minute tea making. At the end, there are 5 minutes for souvenir photos. Photos are fine anywhere in the café.</p>
+    <p class="km" style="margin:0">📷 <b>ការថតរូប</b> — សូមកុំថតរូប ក្នុងពេលគ្រូឆុងតែ 20 នាទី។ នៅចុងក្រោយ មានពេលថតរូបអនុស្សាវរីយ៍ 5 នាទី។ នៅក្នុងហាងកាហ្វេ អាចថតរូបបាន។</p>
+  </div>
+</section>
+
+<!-- 茶道教室（クメール語は 次の 段階） -->
+<section id="class">
+  <h2><span class="icon">📖</span><span class="ja"><ruby>茶道教室<rt>さどうきょうしつ</rt></ruby></span><span class="en km">Tea ceremony classes</span></h2>
+  <p class="soon km">ខ្មែរ（<ruby>近日<rt>きんじつ</rt></ruby>）— ភាសាខ្មែរ នឹងមានឆាប់ៗ។ ឥឡូវនេះ សូមអានជាភាសាអង់គ្លេស។ <span lang="en">Khmer coming soon. Please read in English for now.</span></p>
+  <p class="lead ja"><ruby>店<rt>みせ</rt></ruby>が <ruby>開<rt>あ</rt></ruby>く <ruby>前<rt>まえ</rt></ruby>の、<ruby>静<rt>しず</rt></ruby>かな <ruby>朝<rt>あさ</rt></ruby>の <ruby>時間<rt>じかん</rt></ruby>です。<ruby>佐々木<rt>ささき</rt></ruby><ruby>先生<rt>せんせい</rt></ruby>が <ruby>教<rt>おし</rt></ruby>えます。</p>
+  <p class="lead en km">Quiet morning lessons before the café opens, taught by our tea teacher, Ms. Sasaki.</p>
+  <div class="class2">
+    <div class="card"><span class="tag ja"><ruby>日本語<rt>にほんご</rt></ruby></span><span class="tag en km">Japanese</span>
+      <h3 class="ja"><ruby>水曜<rt>すいよう</rt></ruby>クラス</h3><h3 class="en km">Wednesday class</h3>
+      <p class="ja"><ruby>毎週<rt>まいしゅう</rt></ruby><ruby>水曜日<rt>すいようび</rt></ruby> 9:00〜10:30<br><ruby>月<rt>つき</rt></ruby>4<ruby>回<rt>かい</rt></ruby>　60ドル<br>お<ruby>子<rt>こ</rt></ruby>さんが <ruby>学校<rt>がっこう</rt></ruby>に <ruby>行<rt>い</rt></ruby>って いる <ruby>間<rt>あいだ</rt></ruby>に、<ruby>日本語<rt>にほんご</rt></ruby>で <ruby>習<rt>なら</rt></ruby>えます。</p>
+      <p class="en km">Every Wednesday 9:00–10:30<br>4 lessons a month — $60<br>Lessons in Japanese, while your children are at school.</p></div>
+    <div class="card"><span class="tag ja"><ruby>英語<rt>えいご</rt></ruby></span><span class="tag en km">English</span>
+      <h3 class="ja"><ruby>土曜<rt>どよう</rt></ruby>クラス</h3><h3 class="en km">Saturday class</h3>
+      <p class="ja"><ruby>第<rt>だい</rt></ruby>1・<ruby>第<rt>だい</rt></ruby>3<ruby>土曜日<rt>どようび</rt></ruby> 9:00〜10:30<br><ruby>月<rt>つき</rt></ruby>2<ruby>回<rt>かい</rt></ruby>　20ドル<br><ruby>日本<rt>にほん</rt></ruby>の <ruby>文化<rt>ぶんか</rt></ruby>が <ruby>好<rt>す</rt></ruby>きな <ruby>方<rt>かた</rt></ruby>、<ruby>学生<rt>がくせい</rt></ruby>の <ruby>方<rt>かた</rt></ruby>も どうぞ。</p>
+      <p class="en km">1st &amp; 3rd Saturday 9:00–10:30<br>2 lessons a month — $20<br>For anyone who loves Japanese culture, students welcome.</p></div>
+  </div>
+</section>
+
+<!-- メニュー（クメール語は 次の 段階） -->
+<section id="menu">
+  <h2><span class="icon">🥤</span><span class="ja">メニュー</span><span class="en km">Menu</span></h2>
+  <p class="soon km">ខ្មែរ（<ruby>近日<rt>きんじつ</rt></ruby>）— ភាសាខ្មែរ នឹងមានឆាប់ៗ។ ឥឡូវនេះ សូមអានជាភាសាអង់គ្លេស។ <span lang="en">Khmer coming soon. Please read in English for now.</span></p>
+  <p class="lead ja"><ruby>抹茶<rt>まっちゃ</rt></ruby>は <ruby>静岡<rt>しずおか</rt></ruby>から <ruby>届<rt>とど</rt></ruby>きます。<ruby>値段<rt>ねだん</rt></ruby>は ドルです。</p>
+  <p class="lead en km">Our matcha comes from Shizuoka, Japan. Prices in US dollars.</p>
+  <table>
+    <tr><td><span class="ja"><ruby>抹茶<rt>まっちゃ</rt></ruby>ラテ（ホット・アイス）</span><span class="en km">Matcha latte (hot / iced)</span></td><td class="price">$3.50</td></tr>
+    <tr><td><span class="ja"><ruby>濃<rt>こ</rt></ruby>い <ruby>抹茶<rt>まっちゃ</rt></ruby>ラテ</span><span class="en km">Rich matcha latte</span></td><td class="price">$4.50</td></tr>
+    <tr><td><span class="ja">ほうじ<ruby>茶<rt>ちゃ</rt></ruby>ラテ</span><span class="en km">Hojicha latte</span></td><td class="price">$3.00</td></tr>
+    <tr><td><span class="ja"><ruby>抹茶<rt>まっちゃ</rt></ruby>ソフト</span><span class="en km">Matcha soft-serve</span></td><td class="price">$3.00</td></tr>
+    <tr><td><span class="ja">わらびもち</span><span class="en km">Warabi mochi</span></td><td class="price">$3.50</td></tr>
+    <tr><td><span class="ja"><ruby>季節<rt>きせつ</rt></ruby>の <ruby>和菓子<rt>わがし</rt></ruby>と <ruby>抹茶<rt>まっちゃ</rt></ruby></span><span class="en km">Seasonal sweet &amp; matcha</span></td><td class="price">$5.00</td></tr>
+  </table>
+</section>
+
+<!-- アクセス -->
+<section id="access">
+  <h2><span class="icon">📍</span><span class="ja">アクセス</span><span class="en">Access</span><span class="km">ទីតាំង</span></h2>
+  <div class="map"><span class="ja">🗺️ <ruby>地図<rt>ちず</rt></ruby>（Googleマップ）</span><span class="en">🗺️ Map (Google Maps)</span><span class="km">🗺️ ផែនទី (Google Maps)</span></div>
+  <table>
+    <tr><th><span class="ja"><ruby>場所<rt>ばしょ</rt></ruby></span><span class="en">Address</span><span class="km">អាសយដ្ឋាន</span></th>
+      <td><span class="ja">プノンペン BKK1</span><span class="en">BKK1, Phnom Penh</span><span class="km">បឹងកេងកង 1 ភ្នំពេញ</span></td></tr>
+    <tr><th><span class="ja"><ruby>営業時間<rt>えいぎょうじかん</rt></ruby></span><span class="en">Open</span><span class="km">ម៉ោងបើក</span></th>
+      <td><span class="ja">10:00〜20:00（<ruby>月曜日<rt>げつようび</rt></ruby>は <ruby>休<rt>やす</rt></ruby>み）</span><span class="en">10:00–20:00 (closed on Mondays)</span><span class="km">10:00–20:00 (ឈប់សម្រាករៀងរាល់ថ្ងៃច័ន្ទ)</span></td></tr>
+    <tr><th><span class="ja"><ruby>席<rt>せき</rt></ruby></span><span class="en">Seats</span><span class="km">កៅអី</span></th>
+      <td><span class="ja">カフェ 32<ruby>席<rt>せき</rt></ruby>・<ruby>茶室<rt>ちゃしつ</rt></ruby> 6<ruby>人<rt>にん</rt></ruby></span><span class="en">Café 32 seats · tea room for 6</span><span class="km">ហាងកាហ្វេ 32 កៅអី · បន្ទប់ពិធីតែ 6 នាក់</span></td></tr>
+    <tr><th><span class="ja">お<ruby>支払<rt>しはら</rt></ruby>い</span><span class="en">Payment</span><span class="km">ការបង់ប្រាក់</span></th>
+      <td><span class="ja"><ruby>現金<rt>げんきん</rt></ruby>（ドル・リエル）、KHQR（ABA など）、クレジットカード</span><span class="en">Cash (USD / riel), KHQR (ABA etc.), credit card</span><span class="km">សាច់ប្រាក់ (ដុល្លារ / រៀល), KHQR (ABA ជាដើម), កាតឥណទាន</span></td></tr>
+  </table>
+</section>
+
+<!-- よくある しつもん（クメール語は 次の 段階） -->
+<section id="faq">
+  <h2><span class="icon">💬</span><span class="ja">よくある しつもん</span><span class="en km">FAQ</span></h2>
+  <p class="soon km">ខ្មែរ（<ruby>近日<rt>きんじつ</rt></ruby>）— ភាសាខ្មែរ នឹងមានឆាប់ៗ។ ឥឡូវនេះ សូមអានជាភាសាអង់គ្លេស។ <span lang="en">Khmer coming soon. Please read in English for now.</span></p>
+  <details><summary><span class="ja"><ruby>子<rt>こ</rt></ruby>どもと いっしょに <ruby>行<rt>い</rt></ruby>けますか。</span><span class="en km">Can I bring my children?</span></summary>
+    <p class="ja">はい。<ruby>茶道体験<rt>さどうたいけん</rt></ruby>は 7さいから <ruby>参加<rt>さんか</rt></ruby>できます。もっと <ruby>小<rt>ちい</rt></ruby>さい お<ruby>子<rt>こ</rt></ruby>さんは <ruby>茶室<rt>ちゃしつ</rt></ruby>に <ruby>入<rt>はい</rt></ruby>れませんが、カフェの <ruby>席<rt>せき</rt></ruby>で ご<ruby>家族<rt>かぞく</rt></ruby>と お<ruby>待<rt>ま</rt></ruby>ちいただけます。</p>
+    <p class="en km">Yes. Children aged 7 and over can join the tea ceremony. Younger children cannot enter the tea room, but can wait with family in the café.</p></details>
+  <details><summary><span class="ja"><ruby>写真<rt>しゃしん</rt></ruby>を とっても いいですか。</span><span class="en km">Can I take photos?</span></summary>
+    <p class="ja">カフェでは <ruby>大丈夫<rt>だいじょうぶ</rt></ruby>です。<ruby>茶道体験<rt>さどうたいけん</rt></ruby>では、お<ruby>点前<rt>てまえ</rt></ruby>の 20<ruby>分<rt>ぷん</rt></ruby>は ご<ruby>遠慮<rt>えんりょ</rt></ruby>ください。<ruby>最後<rt>さいご</rt></ruby>の 5<ruby>分<rt>ふん</rt></ruby>が <ruby>記念写真<rt>きねんしゃしん</rt></ruby>の <ruby>時間<rt>じかん</rt></ruby>です。</p>
+    <p class="en km">Yes, in the café. During the tea ceremony, please wait for the last 5 minutes — that is our photo time.</p></details>
+  <details><summary><span class="ja"><ruby>予約<rt>よやく</rt></ruby>は <ruby>必要<rt>ひつよう</rt></ruby>ですか。</span><span class="en km">Do I need to book?</span></summary>
+    <p class="ja"><ruby>茶道体験<rt>さどうたいけん</rt></ruby>と <ruby>茶道教室<rt>さどうきょうしつ</rt></ruby>は ご<ruby>予約<rt>よやく</rt></ruby>を お<ruby>願<rt>ねが</rt></ruby>いします。Instagramの DMか お<ruby>電話<rt>でんわ</rt></ruby>で どうぞ。カフェは <ruby>予約<rt>よやく</rt></ruby>なしで <ruby>入<rt>はい</rt></ruby>れます。</p>
+    <p class="en km">Please book the tea ceremony and classes by Instagram DM or phone. No booking needed for the café.</p></details>
+  <details><summary><span class="ja"><ruby>着物<rt>きもの</rt></ruby>が なくても いいですか。</span><span class="en km">Do I need a kimono?</span></summary>
+    <p class="ja">はい、<ruby>要<rt>い</rt></ruby>りません。いつもの <ruby>服<rt>ふく</rt></ruby>で どうぞ。いすの <ruby>席<rt>せき</rt></ruby>も あります。</p>
+    <p class="en km">No. Come in your everyday clothes. Chairs are available.</p></details>
+</section>
+
+<!-- お知らせ（クメール語は 次の 段階） -->
+<section id="news">
+  <h2><span class="icon">📰</span><span class="ja">お<ruby>知<rt>し</rt></ruby>らせ</span><span class="en km">News</span></h2>
+  <p class="soon km">ខ្មែរ（<ruby>近日<rt>きんじつ</rt></ruby>）— ភាសាខ្មែរ នឹងមានឆាប់ៗ។ ឥឡូវនេះ សូមអានជាភាសាអង់គ្លេស។ <span lang="en">Khmer coming soon. Please read in English for now.</span></p>
+  <ul class="news">
+    <li><time>2026.10.28</time>
+      <span class="ja">ウェブサイトが できました。11<ruby>月<rt>がつ</rt></ruby>11<ruby>日<rt>にち</rt></ruby>（<ruby>水<rt>すい</rt></ruby>）に オープンします。</span>
+      <span class="en km">Our website is open! We open on Wednesday, 11 November.</span>
+      <div class="by"><span class="ja"><ruby>副店長<rt>ふくてんちょう</rt></ruby> ソピア</span><span class="en km">Sophea, assistant manager</span></div></li>
+    <li><time>2026.10.28</time>
+      <span class="ja"><ruby>茶道教室<rt>さどうきょうしつ</rt></ruby>の <ruby>生徒<rt>せいと</rt></ruby>さんを <ruby>募集<rt>ぼしゅう</rt></ruby>して います。<ruby>水曜<rt>すいよう</rt></ruby>クラスと <ruby>土曜<rt>どよう</rt></ruby>クラスが あります。</span>
+      <span class="en km">We are now accepting students for the Wednesday and Saturday tea classes.</span>
+      <div class="by"><span class="ja"><ruby>副店長<rt>ふくてんちょう</rt></ruby> ソピア</span><span class="en km">Sophea, assistant manager</span></div></li>
+  </ul>
+</section>
+
+</main>
+
+<footer>
+  <div class="in">
+    <div class="logo" style="color:#fff">AOBA<small style="color:#dfe9dc">PHNOM PENH · BKK1</small></div>
+    <div class="sns">
+      <a href="#" aria-label="Instagram">📷 Instagram</a>
+      <a href="#" aria-label="Facebook">👍 Facebook</a>
+      <a href="#" aria-label="TikTok">🎵 TikTok</a>
+    </div>
+    <p class="note"><ruby>学習用<rt>がくしゅうよう</rt></ruby>の <ruby>見本<rt>みほん</rt></ruby>です（<ruby>実在<rt>じつざい</rt></ruby>しない <ruby>店<rt>みせ</rt></ruby>です）。 <span lang="en">Sample page for learning (not a real shop).</span></p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var KEY = "aoba_pp_lang";
+  var buttons = document.querySelectorAll(".langs button");
+  function set(lang) {
+    document.body.setAttribute("data-lang", lang);
+    document.documentElement.setAttribute("lang", lang === "km" ? "km" : lang === "en" ? "en" : "ja");
+    buttons.forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-set") === lang)); });
+    try { localStorage.setItem(KEY, lang); } catch (e) {}
+  }
+  buttons.forEach(function (b) { b.addEventListener("click", function () { set(b.getAttribute("data-set")); }); });
+  var first = "ja";
+  try {
+    var q = new URLSearchParams(location.search).get("lang");
+    var saved = localStorage.getItem(KEY);
+    first = q || saved || "ja";
+  } catch (e) {}
+  if (["ja", "en", "km"].indexOf(first) < 0) first = "ja";
+  set(first);
+})();
+</script>
+</body>
+</html>
