@@ -218,6 +218,12 @@ export const FEEDBACK = {
     title: "深く 聞けたね！",
     next: "答えを メモして、議事録に 書こう",
   },
+  /** 同じ。AIが つながって いない ときは 相手の 返事が 出ないので、メモの 案内を しない。 */
+  "talk.deepAskNoAi": {
+    tone: "praise",
+    title: "深く 聞けたね！",
+    next: "AIに つながって いる ときは、相手が くわしく 答えて くれるよ",
+  },
   /** 深く 聞く たいわで、相手に 意見を 聞かれて 答えた とき（カードは 開けない）。 */
   "talk.opinion": {
     tone: "praise",
