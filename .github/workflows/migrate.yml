@@ -80,10 +80,12 @@ jobs:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
         run: npx --yes supabase@latest migration list --db-url "$SUPABASE_DB_URL"
 
+      # 2026-11-04 の CLI 3.0 から、画面の無い所では --yes が無いと「確認が要る」で止まる
+      # （何も流さずに exit 1）。前の npx --yes は npx への返事で、supabase には届かない。
       - name: 移行SQLを流す
         env:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
-        run: npx --yes supabase@latest db push --db-url "$SUPABASE_DB_URL" --include-all
+        run: npx --yes supabase@latest db push --db-url "$SUPABASE_DB_URL" --include-all --yes
 
       # 流しっぱなしにしない。**本当に記録されたか**を、そのDBに聞いて確かめる。
       - name: 流れたことを たしかめる
