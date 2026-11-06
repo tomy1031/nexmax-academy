@@ -5,8 +5,10 @@
   元号の 説明（2026-10-26 の 指定）。Renraku Master の 3つめの 連絡の「元号」から 開く。
   中身は tomy さんの 指定どおり 4つ: 元号って なに？／どんな ときに 使う？／
   西暦と 元号の 変換（それぞれ いつまでが 何年か）／プログラムの 例。
-  「日本語は シンプルに、イラストで わかりやすく」——文は 短く、図（色の 帯・書類の 見本・
-  計算の カード）で 見せる。人の 絵は 新しく 描かない（ヘンディ先輩の 顔は いつもの 絵）。
+  「日本語は シンプルに、イラストで わかりやすく」——文は 短く、絵で 見せる。
+  絵は 2026-11-06 の 指定「codexで画像を作って、もっとわかりやすい内容にしてください」で 足した
+  （台帳は scripts/images/gengou.json。1枚に 伝える ことは 1つ）。絵の 字には ルビも 辞書も
+  効かないので、同じ ことばを すぐ そばの 文にも 置く。
 
   ふりがなは {漢字|よみ} と 書き、いちばん 下の スクリプトが <ruby> に する
   （tests/gengou_page.test.ts が 書き忘れを 止める）。<pre> の 中は コードなので 変えない。
@@ -31,6 +33,14 @@
             user-select: none;
             color: inherit;
             opacity: 0.75;
+        }
+
+        .picture {
+            display: block;
+            width: 100%;
+            height: auto;
+            border-radius: 1rem;
+            box-shadow: 0 1px 3px rgb(15 23 42 / 0.15);
         }
 
         .era-bar>div {
@@ -64,7 +74,7 @@
             <nav class="grid grid-cols-2 gap-2 text-base font-bold">
                 <a href="#what" class="rounded-xl bg-white border border-slate-200 px-4 py-2 hover:border-indigo-400">① {元号|げんごう}って なに？</a>
                 <a href="#when" class="rounded-xl bg-white border border-slate-200 px-4 py-2 hover:border-indigo-400">② どんな ときに {使|つか}う？</a>
-                <a href="#convert" class="rounded-xl bg-white border border-slate-200 px-4 py-2 hover:border-indigo-400">③ {西暦|せいれき}と {元号|げんごう}の {変換|へんかん}</a>
+                <a href="#convert" class="rounded-xl bg-white border border-slate-200 px-4 py-2 hover:border-indigo-400">③ {西暦|せいれき}と {元号|げんごう}の {変換|へんかん}（convert）</a>
                 <a href="#program" class="rounded-xl bg-white border border-slate-200 px-4 py-2 hover:border-indigo-400">④ プログラムの {例|れい}</a>
             </nav>
         </header>
@@ -73,45 +83,34 @@
         <section id="what" class="space-y-5 scroll-mt-4">
             <h2 class="text-2xl font-black text-slate-900">① {元号|げんごう}って なに？</h2>
 
-            <!-- 図: 1つの 年に 名前が 2つ -->
-            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
-                <div class="flex flex-col sm:flex-row items-stretch gap-3">
-                    <div class="flex-1 rounded-xl bg-sky-50 border-2 border-sky-200 p-4 text-center">
-                        <div class="text-4xl">🌏</div>
-                        <div class="font-bold text-sky-700">{西暦|せいれき}</div>
-                        <div class="text-4xl font-black text-slate-900 my-1"><span id="now-seireki">2026</span>{年|ねん}</div>
-                        <div class="text-base text-slate-500">{世界|せかい}で {使|つか}う {数|かぞ}え{方|かた}</div>
-                    </div>
-                    <div class="flex items-center justify-center text-3xl font-black text-slate-400">＝</div>
-                    <div class="flex-1 rounded-xl bg-indigo-50 border-2 border-indigo-200 p-4 text-center">
-                        <div class="text-4xl">🗾</div>
-                        <div class="font-bold text-indigo-700">{元号|げんごう}</div>
-                        <div class="text-4xl font-black text-slate-900 my-1"><span id="now-wareki">{令和|れいわ}8{年|ねん}</span></div>
-                        <div class="text-base text-slate-500">{日本|にほん}だけで {使|つか}う {数|かぞ}え{方|かた}</div>
-                    </div>
-                </div>
-                <p class="mt-3 text-center font-bold text-slate-600">どちらも {同|おな}じ {年|とし}です。</p>
-            </div>
+            <!-- 絵: 1つの 年に 名前が 2つ -->
+            <img class="picture" src="/img/hourensou/gengou/two_names.webp" width="1536" height="1024" loading="lazy" decoding="async"
+                alt="同じ 年に 名前が 2つ あります。西暦 2026年は 世界で 使います。元号 令和8年は 日本だけで 使います。" />
+            <p class="text-center font-bold">
+                {今年|ことし}は <span id="now-seireki">2026</span>{年|ねん} ＝ <span id="now-wareki">{令和|れいわ}8{年|ねん}</span>です。どちらも {同|おな}じ {年|とし}です。
+            </p>
+            <p>{西暦|せいれき}（Western calendar）は {世界|せかい}で {使|つか}います。{元号|げんごう}は {日本|にほん}だけで {使|つか}います。<br>
+                カンボジアにも、{西暦|せいれき}の ほかに {仏暦|ぶつれき}（Buddhist Era）が あります。</p>
 
+            <!-- 絵: 元号が 変わると 年の 数は もどる -->
+            <img class="picture" src="/img/hourensou/gengou/gannen.webp" width="1536" height="1024" loading="lazy" decoding="async"
+                alt="平成31年の 次は 令和元年です。元号が 変わると、年の 数は はじめに もどります。{始|はじ}まりの 年は 1年では なく 元年です。" />
             <ul class="space-y-3">
-                <li class="flex gap-3 bg-white rounded-xl border border-slate-200 px-4 py-3">
-                    <span class="text-2xl">👑</span>
-                    <span>{天皇|てんのう}（Emperor）が かわると、{元号|げんごう}も かわります。</span>
+                <li class="bg-white rounded-xl border border-slate-200 px-4 py-3">
+                    {天皇|てんのう}（Emperor）が {変|か}わると、{元号|げんごう}も {変|か}わります。
                 </li>
-                <li class="flex gap-3 bg-white rounded-xl border border-slate-200 px-4 py-3">
-                    <span class="text-2xl">🎉</span>
-                    <span>はじまりの {年|とし}は「1{年|ねん}」では なく「<b>{元年|がんねん}</b>」と {言|い}います。<br>
-                        <span class="text-base text-slate-500">（{例|れい}：{令和|れいわ}{元年|がんねん} ＝ 2019{年|ねん}）</span></span>
+                <li class="bg-white rounded-xl border border-slate-200 px-4 py-3">
+                    {始|はじ}まりの {年|とし}は「1{年|ねん}」では なく「<b>{元年|がんねん}</b>」と {言|い}います。<br>
+                    <span class="text-base text-slate-500">（{例|れい}：{令和|れいわ}{元年|がんねん} ＝ 2019{年|ねん}）</span>
                 </li>
-                <li class="flex gap-3 bg-white rounded-xl border border-slate-200 px-4 py-3">
-                    <span class="text-2xl">📅</span>
-                    <span>いまの {元号|げんごう}は「<b>{令和|れいわ}</b>」です。2019{年|ねん}5{月|がつ}1{日|にち}に はじまりました。</span>
+                <li class="bg-white rounded-xl border border-slate-200 px-4 py-3">
+                    {今|いま}の {元号|げんごう}は「<b>{令和|れいわ}</b>」です。2019{年|ねん}5{月|がつ}{1日|ついたち}に {始|はじ}まりました。
                 </li>
             </ul>
 
             <!-- 図: 元号の ならび（帯の 長さ ＝ 年の 長さ） -->
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
-                <div class="font-bold mb-3">{元号|げんごう}の ならび</div>
+                <div class="font-bold mb-3">{元号|げんごう}の {並|なら}び</div>
                 <div class="era-bar flex rounded-xl overflow-hidden text-white font-bold text-base leading-snug">
                     <div class="bg-slate-400" style="flex: 44 1 0">
                         <div>{明治|めいじ}</div><div class="text-xs opacity-90">1868〜</div>
@@ -129,8 +128,7 @@
                         <div>{令和|れいわ}</div><div class="text-xs opacity-90">2019〜</div>
                     </div>
                 </div>
-                <div class="flex justify-end text-sm font-bold text-indigo-600 pr-3 mt-1">▲ いま</div>
-                <p class="text-base text-slate-500 mt-1">{新|あたら}しい {元号|げんごう}に なると、{前|まえ}の {元号|げんごう}は おわります。</p>
+                <div class="flex justify-end text-sm font-bold text-indigo-600 pr-3 mt-1">▲ {今|いま}</div>
             </div>
         </section>
 
@@ -139,14 +137,14 @@
             <h2 class="text-2xl font-black text-slate-900">② どんな ときに {使|つか}う？</h2>
             <p>{日本|にほん}の {書類|しょるい}では、{西暦|せいれき}では なく {元号|げんごう}で {書|か}く ことが あります。</p>
 
-            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-center text-base font-bold">
-                <div class="bg-white rounded-xl border border-slate-200 p-3"><div class="text-4xl">🏛️</div>{役所|やくしょ}の {書類|しょるい}</div>
-                <div class="bg-white rounded-xl border border-slate-200 p-3"><div class="text-4xl">📝</div>{履歴書|りれきしょ}・{申込書|もうしこみしょ}</div>
-                <div class="bg-white rounded-xl border border-slate-200 p-3"><div class="text-4xl">🪪</div>{運転免許証|うんてんめんきょしょう}</div>
-                <div class="bg-white rounded-xl border border-slate-200 p-3"><div class="text-4xl">🏦</div>{銀行|ぎんこう}の {書類|しょるい}</div>
-                <div class="bg-white rounded-xl border border-slate-200 p-3"><div class="text-4xl">📅</div>カレンダー</div>
-                <div class="bg-white rounded-xl border border-slate-200 p-3"><div class="text-4xl">📰</div>{新聞|しんぶん}</div>
-            </div>
+            <!-- 絵: 元号を 書く 場所 -->
+            <img class="picture" src="/img/hourensou/gengou/places.webp" width="1536" height="1024" loading="lazy" decoding="async"
+                alt="元号を 書く 場所の 絵です。役所の 書類、履歴書、銀行の 書類、運転免許証に 令和8年と 書いて あります。" />
+            <p class="text-base text-slate-600">
+                {役所|やくしょ}の {書類|しょるい}・{履歴書|りれきしょ}・{銀行|ぎんこう}の {書類|しょるい}・{運転免許証|うんてんめんきょしょう} などです。カレンダーや {新聞|しんぶん}にも {出|で}ます。
+            </p>
+
+            <p>{申込書|もうしこみしょ}や {履歴書|りれきしょ}の {生年月日|せいねんがっぴ}（date of birth）も、{元号|げんごう}で {書|か}く ことが あります。</p>
 
             <!-- 図: 書類の 見本（生年月日を 元号で 書く） -->
             <div class="bg-white rounded-2xl border-2 border-slate-300 shadow-sm p-5 max-w-xl">
@@ -159,60 +157,68 @@
                         <span class="rounded-full border border-slate-300 px-2 text-slate-400">{昭和|しょうわ}</span>
                         <span class="rounded-full border-2 border-red-500 px-2 font-bold text-red-600">{平成|へいせい}</span>
                         <span class="rounded-full border border-slate-300 px-2 text-slate-400">{令和|れいわ}</span>
-                        <span class="font-bold">17 {年|ねん} 4 {月|がつ} 1 {日|にち}</span>
+                        <span class="font-bold">17 {年|ねん} 4 {月|がつ} {1日|ついたち}</span>
                     </div>
                 </div>
-                <p class="mt-3 text-base text-red-600 font-bold">↑ 2005{年|ねん}4{月|がつ}1{日|にち}の ことです。</p>
+                <p class="mt-3 text-base text-red-600 font-bold">↑ 2005{年|ねん}4{月|がつ}{1日|ついたち}の ことです。</p>
             </div>
 
-            <div class="rounded-2xl bg-indigo-50 border border-indigo-200 p-5">
+            <div class="rounded-2xl bg-indigo-50 border border-indigo-200 p-5 space-y-3">
                 <div class="font-bold text-indigo-700">💻 IT の {仕事|しごと}では</div>
-                <p class="mt-1">
-                    {日本|にほん}の システムでは、{画面|がめん}に {元号|げんごう}を {出|だ}したり、{元号|げんごう}を {西暦|せいれき}に {直|なお}したり する {機能|きのう}が よく あります。
-                    ヘンディ{先輩|せんぱい}が {作|つく}った「{元号|げんごう}を {計算|けいさん}する {機能|きのう}」も、その ための ものです。
+                <!-- 絵: 画面は 元号・データベースは 西暦 -->
+                <img class="picture" src="/img/hourensou/gengou/system.webp" width="1536" height="1024" loading="lazy" decoding="async"
+                alt="画面には 令和8年と 出ます。データベースには 2026年で 入ります。元号を 計算する 機能が、その 間で 変換します。" />
+                <p>
+                    {書類|しょるい}と {同|おな}じで、{画面|がめん}にも {元号|げんごう}を {出|だ}す ことが あります。データベースには {西暦|せいれき}で {保存|ほぞん}する ことが よく あります。
+                    その {間|あいだ}で {変換|へんかん}（convert）します。これが、{元号|げんごう}を {計算|けいさん}する {機能|きのう}（function）です。
                 </p>
+                <p>ヘンディ{先輩|せんぱい}が {作|つく}ったのも、この {機能|きのう}です。</p>
             </div>
         </section>
 
         <!-- ③ 西暦と 元号の 変換 -->
         <section id="convert" class="space-y-5 scroll-mt-4">
-            <h2 class="text-2xl font-black text-slate-900">③ {西暦|せいれき}と {元号|げんごう}の {変換|へんかん}</h2>
+            <h2 class="text-2xl font-black text-slate-900">③ {西暦|せいれき}と {元号|げんごう}の {変換|へんかん}（convert）</h2>
+
+            <!-- 絵: 2018 を 引く わけ（階段） -->
+            <img class="picture" src="/img/hourensou/gengou/stairs.webp" width="1536" height="1024" loading="lazy" decoding="async"
+                alt="階段の 絵です。2018年が 地面で、1段 上がると 令和元年です。8段 上がると 2026年、令和8年です。2026 引く 2018 は 8 です。" />
+            <p>{令和|れいわ}は 2019{年|ねん}に {始|はじ}まりました。2019{年|ねん}が 1{年目|ねんめ}（{元年|がんねん}）です。</p>
+            <p>2018{年|ねん}は、{令和|れいわ}が {始|はじ}まる {前|まえ}の {年|とし}です。だから、{西暦|せいれき}から 2018 を {引|ひ}きます。</p>
+            <p>{平成|へいせい}も {昭和|しょうわ}も {同|おな}じです。{始|はじ}まる {前|まえ}の {年|とし}を {引|ひ}きます。</p>
 
             <div class="overflow-x-auto bg-white rounded-2xl border border-slate-200 shadow-sm">
                 <table class="w-full text-base">
                     <thead class="bg-slate-100 text-slate-600">
                         <tr>
                             <th class="px-3 py-2 text-left">{元号|げんごう}</th>
-                            <th class="px-3 py-2 text-left">はじまりの {日|ひ}</th>
-                            <th class="px-3 py-2 text-left">おわりの {日|ひ}</th>
+                            <th class="px-3 py-2 text-left">{始|はじ}まりの {日|ひ}</th>
+                            <th class="px-3 py-2 text-left">{終|お}わりの {日|ひ}</th>
                             <th class="px-3 py-2 text-left">{西暦|せいれき} → {元号|げんごう}</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100">
                         <tr>
                             <td class="px-3 py-2"><span class="rounded-md bg-indigo-500 text-white font-bold px-2">{令和|れいわ}</span></td>
-                            <td class="px-3 py-2">2019{年|ねん}5{月|がつ}1{日|にち}</td>
-                            <td class="px-3 py-2 text-slate-500">いまも つづいて います</td>
-                            <td class="px-3 py-2 font-bold">{西暦|せいれき} − 2018</td>
+                            <td class="px-3 py-2 whitespace-nowrap">2019{年|ねん}5{月|がつ}{1日|ついたち}</td>
+                            <td class="px-3 py-2 text-slate-500">{今|いま}も {続|つづ}いて います</td>
+                            <td class="px-3 py-2 whitespace-nowrap font-bold">{西暦|せいれき} − 2018</td>
                         </tr>
                         <tr>
                             <td class="px-3 py-2"><span class="rounded-md bg-emerald-500 text-white font-bold px-2">{平成|へいせい}</span></td>
-                            <td class="px-3 py-2">1989{年|ねん}1{月|がつ}8{日|にち}</td>
-                            <td class="px-3 py-2">2019{年|ねん}4{月|がつ}30{日|にち}</td>
-                            <td class="px-3 py-2 font-bold">{西暦|せいれき} − 1988</td>
+                            <td class="px-3 py-2 whitespace-nowrap">1989{年|ねん}1{月|がつ}{8日|ようか}</td>
+                            <td class="px-3 py-2 whitespace-nowrap">2019{年|ねん}4{月|がつ}30{日|にち}</td>
+                            <td class="px-3 py-2 whitespace-nowrap font-bold">{西暦|せいれき} − 1988</td>
                         </tr>
                         <tr>
                             <td class="px-3 py-2"><span class="rounded-md bg-amber-500 text-white font-bold px-2">{昭和|しょうわ}</span></td>
-                            <td class="px-3 py-2">1926{年|ねん}12{月|がつ}25{日|にち}</td>
-                            <td class="px-3 py-2">1989{年|ねん}1{月|がつ}7{日|にち}</td>
-                            <td class="px-3 py-2 font-bold">{西暦|せいれき} − 1925</td>
+                            <td class="px-3 py-2 whitespace-nowrap">1926{年|ねん}12{月|がつ}25{日|にち}</td>
+                            <td class="px-3 py-2 whitespace-nowrap">1989{年|ねん}1{月|がつ}{7日|なのか}</td>
+                            <td class="px-3 py-2 whitespace-nowrap font-bold">{西暦|せいれき} − 1925</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-            <p class="text-base text-slate-600">{元号|げんごう}から {西暦|せいれき}に {直|なお}す ときは、{反対|はんたい}に {足|た}します。<br>
-                （{例|れい}：{令和|れいわ}8{年|ねん} → 8 ＋ 2018 ＝ 2026{年|ねん}）</p>
-
             <!-- 図: 計算の カード -->
             <div class="grid sm:grid-cols-3 gap-3 text-center">
                 <div class="bg-white rounded-xl border-2 border-indigo-200 p-3">
@@ -235,17 +241,23 @@
                 </div>
             </div>
 
+            <p class="text-base text-slate-600">{元号|げんごう}から {西暦|せいれき}に {直|なお}す ときは、{反対|はんたい}に {足|た}します。<br>
+                （{例|れい}：{令和|れいわ}8{年|ねん} → 8 ＋ 2018 ＝ 2026{年|ねん}）</p>
+
             <!-- 図: 1つの 年に 元号が 2つ（帯の 長さ ＝ 日の 数） -->
             <div class="rounded-2xl bg-amber-50 border-2 border-amber-300 p-5 space-y-4">
                 <div class="font-black text-amber-800">⚠️ 1つの {年|とし}に {元号|げんごう}が 2つ ある {年|とし}</div>
+                <!-- 絵: 2019年の カレンダー -->
+                <img class="picture" src="/img/hourensou/gengou/calendar.webp" width="1536" height="1024" loading="lazy" decoding="async"
+                alt="2019年の カレンダーの 絵です。1月から 4月30日までは 平成31年です。5月1日から 12月までは 令和元年です。" />
                 <div>
                     <div class="font-bold mb-1">2019{年|ねん}</div>
                     <div class="flex rounded-lg overflow-hidden text-white font-bold text-base leading-snug text-center">
                         <div class="bg-emerald-500 px-2 py-2" style="flex: 120 1 0; min-width: 8rem">
-                            {平成|へいせい}31{年|ねん}<div class="text-xs font-semibold">1{月|がつ}1{日|にち}〜4{月|がつ}30{日|にち}</div>
+                            {平成|へいせい}31{年|ねん}<div class="text-xs font-semibold">1{月|がつ}{1日|ついたち}〜4{月|がつ}30{日|にち}</div>
                         </div>
                         <div class="bg-indigo-500 px-2 py-2" style="flex: 245 1 0; min-width: 8rem">
-                            {令和|れいわ}{元年|がんねん}<div class="text-xs font-semibold">5{月|がつ}1{日|にち}〜12{月|がつ}31{日|にち}</div>
+                            {令和|れいわ}{元年|がんねん}<div class="text-xs font-semibold">5{月|がつ}{1日|ついたち}〜12{月|がつ}31{日|にち}</div>
                         </div>
                     </div>
                 </div>
@@ -253,14 +265,14 @@
                     <div class="font-bold mb-1">1989{年|ねん}</div>
                     <div class="flex rounded-lg overflow-hidden text-white font-bold text-base leading-snug text-center">
                         <div class="bg-amber-500 px-2 py-2" style="flex: 7 1 0; min-width: 8rem">
-                            {昭和|しょうわ}64{年|ねん}<div class="text-xs font-semibold">1{月|がつ}1{日|にち}〜1{月|がつ}7{日|にち}</div>
+                            {昭和|しょうわ}64{年|ねん}<div class="text-xs font-semibold">1{月|がつ}{1日|ついたち}〜1{月|がつ}{7日|なのか}</div>
                         </div>
                         <div class="bg-emerald-500 px-2 py-2" style="flex: 358 1 0; min-width: 8rem">
-                            {平成|へいせい}{元年|がんねん}<div class="text-xs font-semibold">1{月|がつ}8{日|にち}〜12{月|がつ}31{日|にち}</div>
+                            {平成|へいせい}{元年|がんねん}<div class="text-xs font-semibold">1{月|がつ}{8日|ようか}〜12{月|がつ}31{日|にち}</div>
                         </div>
                     </div>
                 </div>
-                <p class="font-bold">だから、{年|とし}だけでは {元号|げんごう}が きまりません。{月|つき}と {日|ひ}まで {見|み}ます。</p>
+                <p class="font-bold">だから、{年|とし}だけでは {元号|げんごう}が {決|き}まりません。{月|つき}と {日|ひ}まで {見|み}ます。</p>
             </div>
         </section>
 
@@ -274,13 +286,13 @@
                 <li class="bg-white rounded-xl border border-slate-200 p-4">
                     <div class="font-bold">① {年|ねん}・{月|がつ}・{日|にち}を 1つの {数|かず}に する</div>
                     <div class="mt-2 rounded-lg bg-slate-100 px-3 py-2 font-mono text-base">
-                        2019{年|ねん}5{月|がつ}1{日|にち} → 2019 × 10000 ＋ 5 × 100 ＋ 1 → <b class="text-indigo-600">20190501</b>
+                        2019{年|ねん}5{月|がつ}{1日|ついたち} → 2019 × 10000 ＋ 5 × 100 ＋ 1 → <b class="text-indigo-600">20190501</b>
                     </div>
                 </li>
                 <li class="bg-white rounded-xl border border-slate-200 p-4">
-                    <div class="font-bold">② {新|あたら}しい {元号|げんごう}から じゅんに、はじまりの {日|ひ}と くらべる</div>
+                    <div class="font-bold">② {新|あたら}しい {元号|げんごう}から {順|じゅん}に、{始|はじ}まりの {日|ひ}と {比|くら}べる</div>
                     <div class="mt-2 rounded-lg bg-slate-100 px-3 py-2 font-mono text-base">
-                        20190501 ≧ 20190501（{令和|れいわ}の はじまり） → <b class="text-indigo-600">{令和|れいわ}</b>
+                        20190501 ≧ 20190501（{令和|れいわ}の {始|はじ}まり） → <b class="text-indigo-600">{令和|れいわ}</b>
                     </div>
                 </li>
                 <li class="bg-white rounded-xl border border-slate-200 p-4">
@@ -317,12 +329,12 @@ console.log(toWareki(2019, 5, 1));  // 令和元年5月1日
 console.log(toWareki(1989, 1, 7));  // 昭和64年1月7日</code></pre>
             <p class="text-base text-slate-600">
                 コードの {中|なか}の {漢字|かんじ}：{令和|れいわ}・{平成|へいせい}・{昭和|しょうわ}・{元|がん}・{年|ねん}・{月|がつ}・{日|にち}<br>
-                {新|あたら}しい {元号|げんごう}が できたら、ERAS の いちばん {上|うえ}に 1{行|ぎょう} {足|た}すだけです。
+                {新|あたら}しい {元号|げんごう}が できたら、ERAS の {一番|いちばん} {上|うえ}に 1{行|ぎょう} {足|た}すだけです。
             </p>
 
             <!-- ためして みよう -->
             <div class="rounded-2xl bg-indigo-50 border-2 border-indigo-200 p-5 space-y-3">
-                <div class="font-black text-indigo-700">🧪 ためして みよう</div>
+                <div class="font-black text-indigo-700">🧪 {試|ため}して みよう</div>
                 <div class="flex flex-wrap items-center gap-3">
                     <input id="try-date" type="date" min="1926-12-25"
                         class="rounded-lg border border-slate-300 bg-white px-3 py-2 text-lg" />
@@ -377,8 +389,15 @@ console.log(toWareki(1989, 1, 7));  // 昭和64年1月7日</code></pre>
 
         /** toWareki の 答えに ふりがなを 付ける（答えの 漢字は この 7つだけ）。 */
         const READINGS = { "令和": "れいわ", "平成": "へいせい", "昭和": "しょうわ", "元年": "がんねん", "年": "ねん", "月": "がつ", "日": "にち" };
+        /** 「にち」と 読まない 日。1日は ついたち、8日は ようか（2026-11-06。読みの 検査で 見つかった）。 */
+        const DAY_READINGS = { 1: "ついたち", 2: "ふつか", 3: "みっか", 4: "よっか", 5: "いつか", 6: "むいか", 7: "なのか", 8: "ようか", 9: "ここのか", 10: "とおか", 14: "じゅうよっか", 20: "はつか", 24: "にじゅうよっか" };
         function withRuby(text) {
-            return text.replace(/令和|平成|昭和|元年|年|月|日/g, (word) => `<ruby>${word}<rt>${READINGS[word]}</rt></ruby>`);
+            return text.replace(/(\d+)日|令和|平成|昭和|元年|年|月/g, (word, day) => {
+                if (day === undefined) return `<ruby>${word}<rt>${READINGS[word]}</rt></ruby>`;
+                return DAY_READINGS[day]
+                    ? `<ruby>${word}<rt>${DAY_READINGS[day]}</rt></ruby>`
+                    : `${day}<ruby>日<rt>${READINGS["日"]}</rt></ruby>`;
+            });
         }
 
         // ① の 図は 今日の 年で 出す

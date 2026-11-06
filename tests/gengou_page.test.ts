@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { FORBIDDEN_LEARNER_WORDS } from "@/content/schema";
@@ -12,6 +12,7 @@ import { KANJI } from "@/lib/text/furigana";
  *  1. 読めない 漢字が 残って いないか（{漢字|よみ} の 書き忘れ。規律2）
  *  2. 見せて いる プログラムが ほんとうに 正しく 動くか（境目の 日と 元年）
  *  3. 禁止語・使わない 国名（規律1・規律9）
+ *  4. 絵が 消えて いないか（2026-11-06 に 足した 6枚）
  */
 
 const HTML_PATH = join("public", "tools", "hourensou", "gengou.html");
@@ -86,6 +87,26 @@ describe("元号の 説明ページ", () => {
     const answers = [toWareki(2019, 5, 1), toWareki(2026, 10, 26), toWareki(1989, 1, 7)];
     const rest = answers.join("").replace(/令和|平成|昭和|元年|年|月|日/g, "");
     expect([...rest].filter((char) => KANJI.test(char))).toEqual([]);
+  });
+
+  it("1日〜10日・14日・20日・24日を「にち」と 読ませない", () => {
+    const wrong = [...visibleText().matchAll(/(?<!\d)(\d{1,2}) ?\{日\|にち\}/g)]
+      .map((hit) => Number(hit[1]))
+      .filter((day) => day <= 10 || day === 14 || day === 20 || day === 24);
+    expect(wrong).toEqual([]);
+    for (const reading of ['1: "ついたち"', '8: "ようか"', '20: "はつか"']) {
+      expect(HTML).toContain(reading);
+    }
+  });
+
+  it("絵は ぜんぶ あって、字の 読めない 人にも 同じ ことを 伝える 文（alt）が ある", () => {
+    const pictures = [...HTML.matchAll(/<img class="picture"[^>]*>/g)].map((hit) => hit[0]);
+    expect(pictures).toHaveLength(6);
+    for (const tag of pictures) {
+      const src = tag.match(/src="([^"]+)"/)?.[1] ?? "";
+      expect(existsSync(join("public", src)), `${src} が 無い`).toBe(true);
+      expect(tag.match(/alt="([^"]*)"/)?.[1]?.length ?? 0).toBeGreaterThan(10);
+    }
   });
 
   it("禁止語と 使わない 国名が 無い（規律1・規律9）", () => {

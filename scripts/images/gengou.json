@@ -1,0 +1,99 @@
+{
+  "refs": [
+    "public/img/characters/hendy/sheet.webp",
+    "public/img/characters/soka/sheet.webp",
+    "public/img/hourensou/renraku/s4.webp"
+  ],
+  "_comment": "元号の 説明ページ（public/tools/hourensou/gengou.html）の 絵。2026-11-06 の 指定「codexで画像を作って、もっとわかりやすい内容にしてください」。参照は ヘンディ・ソカの 設定画と、絵柄を そろえる ための 連絡の 講義の 絵（中身は 写さない）。天皇と 皇室の しるしは 描かない。",
+  "style": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading with gentle light, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real windows, plants and furniture. People are drawn as real human beings with natural proportions, warm friendly faces and exactly five fingers on each hand. Draw the two people exactly as their reference sheets show them: same face, hair, skin and clothes. Take only the drawing style and the colours from the THIRD reference picture; do not copy its scene, its people or its words. This is a TEACHING picture, not a mood picture: the one idea must be readable from the picture alone, even by someone who cannot read Japanese sentences. ",
+  "noText": "Japanese lettering — read this part carefully. The picture contains ONLY the Japanese words listed in the scene above, and no other writing at all. Print each word VERY LARGE and horizontally in a rounded gothic Japanese font, with generous space around it, because this picture is shown on a small phone screen. Directly above every kanji, print its reading in small hiragana (furigana), centred over that kanji, clearly separated from it, at about 45% of the kanji height, so that the kanji and the furigana both stay sharp and easy to read at a glance. Words written only in hiragana or katakana take no furigana. Spell every character exactly as given. No other letters, numbers, logos or watermarks anywhere in the picture. ",
+  "negative": "Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, dark or scary mood, angry or crying faces, watermarks, real company logos or brand marks of any kind, national flags, country outlines, maps with borders, any emperor or royal person, crowns, imperial crests or chrysanthemum emblems, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots. ",
+  "output": "1536x1024",
+  "scenes": [
+    {
+      "out": "two_names",
+      "dest": "public/img/hourensou/gengou/two_names.webp",
+      "title": "同じ 年に 名前が 2つ",
+      "where": "public/tools/hourensou/gengou.html ① の 1枚目",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: one and the same year has two names — one name is used all over the world, the other name is used only in Japan. A bright meeting room with a wide wall-mounted whiteboard filling most of the picture. On the whiteboard two very large rounded cards stand side by side with one huge equals sign between them. LEFT card on pale sky blue: the small heading 西暦, the very large year 2026年, and under it 世界で 使う. RIGHT card on pale coral: the small heading 元号, the very large 令和8年, and under it 日本だけで 使う. Across the top of the whiteboard a wide navy label bar holds the title 同じ 年. Hendy (the man in the navy suit of the first reference sheet) stands at the left edge pointing at the cards with a friendly smile. Soka (the young woman in the coral shirt of the second reference sheet) stands at the right edge with her notebook, looking at the cards with a curious, delighted face. FURIGANA EVERYWHERE — this matters as much as the layout: EVERY kanji in this picture carries its reading in small hiragana directly above it, centred over that kanji and clearly separated from it, and the reading sits ONLY over the kanji, never over the kana after it. No kanji is left without its reading. Use exactly these readings: 西暦=せいれき, 世界=せかい, 使=つか, 元号=げんごう, 令和=れいわ, 日本=にほん, 同=おな. In 2026年 and 令和8年 the character 年 reads ねん. In the title 同じ 年 the character 年 reads とし.",
+      "text": ["同じ 年", "西暦", "2026年", "世界で 使う", "元号", "令和8年", "日本だけで 使う"]
+    },
+    {
+      "out": "gannen",
+      "dest": "public/img/hourensou/gengou/gannen.webp",
+      "title": "元号が 変わると 年の 数は 元年に もどる",
+      "where": "public/tools/hourensou/gengou.html ① の 2枚目",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: when the era changes, the year count starts again, and the first year is called 元年, not 1年. A bright office wall. Four large paper calendar pages hang in one row on a string from left to right, with a big arrow running under them from left to right. The first two pages are soft green and carry 平成30年 and 平成31年. The last two pages are sky blue and carry 令和元年 and 令和2年. Between the second and third page there is a clear gap with a bold vertical coral line and, on top of that line, a rounded coral label reading 元号が 変わる. The page 令和元年 is the largest and glows with a soft yellow highlight ring, because it is the point of the picture. Soka (the young woman in the coral shirt of the second reference sheet) stands below at the left, looking up and pointing at the page 令和元年. Hendy (the man in the navy suit of the first reference sheet) stands below at the right, smiling. Beside the page 令和元年 one soft rounded speech balloon, written on ONE single line and never wrapped, carries 1年 では なく 元年. FURIGANA EVERYWHERE — this matters as much as the layout: EVERY kanji in this picture carries its reading in small hiragana directly above it, centred over that kanji and clearly separated from it, and the reading sits ONLY over the kanji, never over the kana after it. No kanji is left without its reading. Use exactly these readings: 平成=へいせい, 令和=れいわ, 元年=がんねん, 元号=げんごう, 変=か. The character 年 after a number reads ねん.",
+      "text": ["平成30年", "平成31年", "令和元年", "令和2年", "元号が 変わる", "1年 では なく 元年"]
+    },
+    {
+      "out": "places",
+      "dest": "public/img/hourensou/gengou/places.webp",
+      "title": "元号を 書く 場所",
+      "where": "public/tools/hourensou/gengou.html ② の 1枚目",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: in Japan the era year is written on real paperwork, so you will meet it in daily life. One picture divided into a 2 by 2 grid of four equal scenes with rounded corners, each scene filled to its edges with a real place, and each scene with a wide navy label bar at its top. TOP LEFT, label 役所の 書類: Soka (the young woman in the coral shirt of the second reference sheet) at a city office counter writing on a paper form. TOP RIGHT, label 履歴書: a hand holding a pen over a job application sheet on a desk beside a laptop. BOTTOM LEFT, label 銀行の 書類: Soka (the young woman in the coral shirt of the second reference sheet) at a bank counter with a paper form and a bank clerk behind the counter. BOTTOM RIGHT, label 運転免許証: a plain, invented driving licence card lying on a table with a blank photo square, large and clearly a card. In each of the four scenes the paper or card clearly shows, large enough to read, the word 令和8年 highlighted with a yellow marker. No real logos, no real emblems, no flags. FURIGANA EVERYWHERE — this matters as much as the layout: EVERY kanji in this picture carries its reading in small hiragana directly above it, centred over that kanji and clearly separated from it, and the reading sits ONLY over the kanji, never over the kana after it. No kanji is left without its reading. Use exactly these readings: 役所=やくしょ, 書類=しょるい, 履歴書=りれきしょ, 銀行=ぎんこう, 運転免許証=うんてんめんきょしょう, 令和=れいわ. In 令和8年 the character 年 reads ねん.",
+      "text": ["役所の 書類", "履歴書", "銀行の 書類", "運転免許証", "令和8年"]
+    },
+    {
+      "out": "system",
+      "dest": "public/img/hourensou/gengou/system.webp",
+      "title": "画面は 元号・データベースは 西暦",
+      "where": "public/tools/hourensou/gengou.html ② の IT の 仕事",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: people see the era year on the screen, the database keeps the Western year, and one function changes one into the other in both directions. A bright meeting room with a wide wall-mounted whiteboard filling most of the picture, read from left to right in three parts. LEFT: a large drawing of a computer monitor headed 画面, with a big input field on it showing 令和8年. MIDDLE: a large rounded coral box labelled 元号を 計算する 機能, printed on ONE single line and never wrapped, with one thick arrow pointing right into it from the monitor and one thick arrow pointing left back to the monitor. RIGHT: a large drawing of a database cylinder headed データベース, with the big number 2026年 on it, with one thick arrow pointing right from the box to the cylinder and one thick arrow pointing left back to the box. Hendy (the man in the navy suit of the first reference sheet) stands at the bottom right pointing at the coral box. Soka (the young woman in the coral shirt of the second reference sheet) stands at the bottom left with her notebook, nodding. FURIGANA EVERYWHERE — this matters as much as the layout: EVERY kanji in this picture carries its reading in small hiragana directly above it, centred over that kanji and clearly separated from it, and the reading sits ONLY over the kanji, never over the kana after it. No kanji is left without its reading. Use exactly these readings: 画面=がめん, 令和=れいわ, 元号=げんごう, 計算=けいさん, 機能=きのう. In 令和8年 and 2026年 the character 年 reads ねん.",
+      "text": ["画面", "令和8年", "元号を 計算する 機能", "データベース", "2026年"]
+    },
+    {
+      "out": "stairs",
+      "dest": "public/img/hourensou/gengou/stairs.webp",
+      "title": "西暦から 2018を 引く わけ（階段）",
+      "where": "public/tools/hourensou/gengou.html ③ の 1枚目",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: 2018 is the ground just before Reiwa began, each year is one step up, so the Reiwa year is simply how many steps you are above 2018. A big staircase drawn in side view, seen from the side, rising from the left to the right across the whole picture, on a soft cream office wall. It has a flat ground on the left and EXACTLY EIGHT steps. On the flat ground a plate reads 2018年. The eight steps are clearly numbered on their front faces, in order from the bottom: 元, 2, 3, 4, 5, 6, 7, 8. The very top step, number 8, has a flag-free signboard reading 2026年 and 令和8年. Soka (the young woman in the coral shirt of the second reference sheet) stands proudly on the top step. Hendy (the man in the navy suit of the first reference sheet) stands on the flat ground at the left, pointing up the stairs. At the top left, in the empty space above the low steps, a wide navy label bar holds the large formula 2026 − 2018 ＝ 8. FURIGANA EVERYWHERE — this matters as much as the layout: EVERY kanji in this picture carries its reading in small hiragana directly above it, centred over that kanji and clearly separated from it, and the reading sits ONLY over the kanji, never over the kana after it. No kanji is left without its reading. Use exactly these readings: 元=がん, 令和=れいわ. The character 年 after a number reads ねん. The digits and the formula take no furigana.",
+      "text": [
+        "2018年",
+        "元",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "2026年",
+        "令和8年",
+        "2026 − 2018 ＝ 8"
+      ]
+    },
+    {
+      "out": "calendar",
+      "dest": "public/img/hourensou/gengou/calendar.webp",
+      "title": "2019年は 元号が 2つ",
+      "where": "public/tools/hourensou/gengou.html ③ の 1つの 年に 元号が 2つ",
+      "priority": "A",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: inside the single year 2019 the era changes, so January to April are 平成31年 and May to December are 令和元年; the year alone cannot tell you the era. A very large wall calendar fills most of the picture, hanging on a bright office wall. At its top a wide navy bar reads 2019年. Under it twelve small month pages stand in a neat grid of EXACTLY three rows of four, numbered only with digits in reading order: top row 1, 2, 3, 4; middle row 5, 6, 7, 8; bottom row 9, 10, 11, 12. All four pages of the top row are soft green. All eight pages of the two lower rows are sky blue. On the left of the top row a green tag reads 平成31年. On the left of the lower rows a blue tag reads 令和元年. A bold coral line runs between the top row and the middle row; on its right end, a rounded coral label reads 4月30日 above the line and 5月1日 below the line. Hendy (the man in the navy suit of the first reference sheet) stands at the right, pointing at the coral line. Soka (the young woman in the coral shirt of the second reference sheet) stands at the left, looking at the calendar with one finger on her chin, thinking. FURIGANA EVERYWHERE — this matters as much as the layout: EVERY kanji in this picture carries its reading in small hiragana directly above it, centred over that kanji and clearly separated from it, and the reading sits ONLY over the kanji, never over the kana after it. No kanji is left without its reading. Use exactly these readings: 平成=へいせい, 令和=れいわ, 元年=がんねん. The character 年 after a number reads ねん. 月=がつ. In 4月30日 the character 日 reads にち. In 5月1日 the two characters 1日 together read ついたち: print ついたち centred over 1日 as one unit, and never print にち there. The month digits take no furigana.",
+      "text": [
+        "2019年",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "平成31年",
+        "令和元年",
+        "4月30日",
+        "5月1日"
+      ]
+    }
+  ]
+}
