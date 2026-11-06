@@ -599,3 +599,16 @@ describe("Renraku Master の 記録と やり直し（2026-11-02）", () => {
     expect(HTML).toContain("const LINK_ID = 'renraku_slack';");
   });
 });
+
+describe("Renraku Master の 問いは 講義で 答えられる（2026-11-06）", () => {
+  const lecture = readFileSync(join("content", "articles", "renraku_lecture.json"), "utf8");
+  /** ページの 文は `r("依頼", "いらい")` の 形なので、読みを ほどいて 比べる。 */
+  const plain = HTML.replace(/\$\{r\("([^"]+)", "[^"]+"\)\}/g, "$1");
+
+  it("問いで 使う メンションと 札を、講義が 説明して いる", () => {
+    for (const word of ["@here", "@channel", "【依頼】", "【連絡】"]) {
+      expect(plain, `${word} が 問いから 消えた`).toContain(word);
+      expect(lecture, `${word} の 説明が 講義に ない`).toContain(`"title": "${word}"`);
+    }
+  });
+});
