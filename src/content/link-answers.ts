@@ -49,7 +49,7 @@ export const LINK_ANSWER_PROMPTS: Readonly<Record<string, Readonly<Record<string
     "m6-q3": "Bug Notice — 3. 昨日のことと、次の連絡を書きます",
     "m7-q1": "Late Arrival Notice — 1. 誰にメンションしますか？",
     "m7-q2": "Late Arrival Notice — 2. 何がどうなるか、結論を書きます",
-    "m7-q3": "Late Arrival Notice — 3. 理由とチームへの影響を書きます",
+    "m7-q3": "Late Arrival Notice — 3. 理由と影響を書きます",
   },
 };
 
