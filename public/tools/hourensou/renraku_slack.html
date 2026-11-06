@@ -257,6 +257,18 @@
                     </div>
                 </div>
             </div>
+
+            <!--
+              ミッションの 途中でも 最初から やり直せる（2026-11-06 の 指定「最初からやり直すボタンも左下に入れてください」）。
+              押しただけでは 消さない（`openRestartConfirm`）。上の 一覧が 長くても 隠れない ように 縮めない。
+            -->
+            <div class="flex-shrink-0 border-t border-slate-700 p-3">
+                <button id="restart-open" type="button" onclick="openRestartConfirm()" aria-label="最初からやり直す"
+                    class="w-full px-3 py-2 rounded-lg text-sm font-bold text-slate-300 hover:bg-slate-800 hover:text-white transition flex items-center justify-center gap-2">
+                    <i data-lucide="rotate-ccw" class="w-4 h-4 flex-shrink-0"></i>
+                    <span><ruby>最初<rt>さいしょ</rt></ruby>から やり<ruby>直<rt>なお</rt></ruby>す</span>
+                </button>
+            </div>
         </div>
 
         <!--
@@ -392,6 +404,31 @@
             <button onclick="closeNotice()"
                 class="mt-6 w-full py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition shadow-lg">
                 わかりました
+            </button>
+        </div>
+    </div>
+
+    <!--
+      「最初から やり直す」の 確かめ。途中で 押すと 進み具合が 消えるので、押しまちがいでは 消さない。
+      confirm() は 端末に よって 字が 小さく、ふりがなも 振れない（上の お知らせと 同じ）。
+    -->
+    <div id="restart-confirm" role="dialog" aria-modal="true" aria-labelledby="restart-confirm-title"
+        class="hidden fixed inset-0 z-[70] bg-slate-900/70 flex items-center justify-center backdrop-blur-sm p-4">
+        <div class="bg-white rounded-2xl w-full max-w-sm shadow-2xl p-8 text-center">
+            <h2 id="restart-confirm-title" class="text-xl font-bold text-slate-800 leading-relaxed">
+                <ruby>最初<rt>さいしょ</rt></ruby>から やり<ruby>直<rt>なお</rt></ruby>しますか？
+            </h2>
+            <p class="mt-3 text-sm leading-7 text-slate-600">
+                <ruby>今<rt>いま</rt></ruby>の <ruby>点数<rt>てんすう</rt></ruby>と
+                <ruby>進<rt>すす</rt></ruby>み<ruby>具合<rt>ぐあい</rt></ruby>は <ruby>消<rt>き</rt></ruby>えます。
+            </p>
+            <button id="restart-cancel" type="button" onclick="closeRestartConfirm()"
+                class="mt-6 w-full py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition shadow-lg">
+                やめる
+            </button>
+            <button type="button" onclick="restartFromScratch()" aria-label="消して最初からやり直す"
+                class="mt-3 w-full py-3 bg-white border-2 border-rose-300 text-rose-600 rounded-xl font-bold hover:bg-rose-50 transition">
+                <ruby>消<rt>け</rt></ruby>して <ruby>最初<rt>さいしょ</rt></ruby>から やり<ruby>直<rt>なお</rt></ruby>す
             </button>
         </div>
     </div>
@@ -592,7 +629,7 @@
                     { w: r("貼る", "はる"), m: "Paste" }
                 ],
                 instruction: {
-                    text: `お${r("疲", "つか")}れ${r("様", "さま")}です。\n${v(r("仕様書", "しようしょ"), "Spec Doc")}を${v(r("更新", "こうしん"), "Update")}したので、チームに${v(r("共有", "きょうゆう"), "Share")}してください。\n\n【${r("更新", "こうしん")}した${r("場所", "ばしょ")}】\n・ユーザー${v(r("登録", "とうろく"), "Registration")}の${r("画面", "がめん")}\n\nファイルのURLも${r("貼", "は")}ってください。\nチャンネルは <b>#project-a</b> でお${r("願", "ねが")}いします。`
+                    text: `お${r("疲", "つか")}れ${r("様", "さま")}です。\n${v(r("仕様書", "しようしょ"), "Spec Doc")}を${v(r("更新", "こうしん"), "Update")}したので、チームに${v(r("共有", "きょうゆう"), "Share")}してください。\n\n【${r("更新", "こうしん")}した${r("場所", "ばしょ")}】\n・ユーザー${v(r("登録", "とうろく"), "Registration")}の${r("画面", "がめん")}\n\nファイルのURLも${r("貼", "は")}ってください。\nhttps://file-server/docs/user-reg-spec\n\nチャンネルは <b>#project-a</b> でお${r("願", "ねが")}いします。`
                 },
                 steps: [
                     {
@@ -747,7 +784,7 @@
                     { w: r("反映", "はんえい"), m: "Reflect / Apply" }
                 ],
                 instruction: {
-                    text: `「${gengouLink(r("元号", "げんごう"))}(Gengō)」を${v(r("計算", "けいさん"), "Calculation")}する${v(r("共通", "きょうつう"), "Common")}${v(r("機能", "きのう"), "Function")}を${v(r("作", "つく"), "Create", "作る")}りました。\n#dev-teamに、GitHubから${v(r("最新", "さいしん"), "Latest")}のコードを \`pull\` して、${r("自分", "じぶん")}のPCに${v(r("反映", "はんえい"), "Reflect")}するように${v(r("依頼", "いらい"), "Request")}してください。\n\n------------ <b>📝 メモ (Note)</b>-----------\n「${gengouLink(r("元号", "げんごう"))}」は、${r("日本", "にほん")}の${r("特別", "とくべつ")}な${r("年", "とし")}の${r("数", "かぞ")}え${r("方", "かた")}です。\n${r("天皇", "てんのう")}(Emperor)が${r("変", "か")}わると、${r("名前", "なまえ")}が${r("変", "か")}わります。\n（${v(r("例", "れい"), "Example")}：1989-2019=${r("平成", "へいせい")}, 2019-=${r("令和", "れいわ")}）\n---------------------------------------`
+                    text: `「${gengouLink(r("元号", "げんごう"))}(Gengō)」を${v(r("計算", "けいさん"), "Calculation")}する${v(r("共通", "きょうつう"), "Common")}${v(r("機能", "きのう"), "Function")}を${v(r("作", "つく"), "Create", "作る")}りました。\n#dev-teamに、GitHubから${v(r("最新", "さいしん"), "Latest")}のコードを \`pull\` して、${r("自分", "じぶん")}のPCに${v(r("反映", "はんえい"), "Reflect")}するように${v(r("依頼", "いらい"), "Request")}してください。\npullしないと、この${r("機能", "きのう")}は${r("使", "つか")}えません。\n\n------------ <b>📝 メモ (Note)</b>-----------\n「${gengouLink(r("元号", "げんごう"))}」は、${r("日本", "にほん")}の${r("特別", "とくべつ")}な${r("年", "とし")}の${r("数", "かぞ")}え${r("方", "かた")}です。\n${r("天皇", "てんのう")}(Emperor)が${r("変", "か")}わると、${r("名前", "なまえ")}が${r("変", "か")}わります。\n（${v(r("例", "れい"), "Example")}：1989-2019=${r("平成", "へいせい")}, 2019-=${r("令和", "れいわ")}）\n---------------------------------------`
                 },
                 steps: [
                     {
@@ -813,7 +850,7 @@
                     { w: r("接続", "せつぞく"), m: "Connection" }
                 ],
                 instruction: {
-                    text: `【${v(r("状況", "じょうきょう"), "Situation")}】\n${v(r("開発用", "かいはつよう"), "For Dev")}データベース(Dev DB)のデータが${r("増", "ふ")}えて、テストがしにくいので、リセット（${v(r("全削除", "ぜんさくじょ"), "Delete all")}＆${v(r("再投入", "さいとうにゅう"), "Re-insert")}）をします。\n${v(r("作業", "さぎょう"), "Work")}${v(r("時間", "じかん"), "Time")}は ${v(r("本日", "ほんじつ"), "Today")} 13:00〜14:00 です。\n\n<b>#project-a</b> で、${v(r("作業", "さぎょう"), "Work")}${v(r("予定", "よてい"), "Schedule")}と${v(r("影響", "えいきょう"), "Impact / Effect")}を${v(r("連絡", "れんらく"), "Contact")}してください。`
+                    text: `【${v(r("状況", "じょうきょう"), "Situation")}】\n${v(r("開発用", "かいはつよう"), "For Dev")}データベース(Dev DB)のデータが${r("増", "ふ")}えて、テストがしにくいので、データの${r("初期化", "しょきか")}（リセット：${v(r("全削除", "ぜんさくじょ"), "Delete all")}＆${v(r("再投入", "さいとうにゅう"), "Re-insert")}）をします。\n${v(r("作業", "さぎょう"), "Work")}${v(r("時間", "じかん"), "Time")}は ${v(r("本日", "ほんじつ"), "Today")} 13:00〜14:00 です。\n${r("作業", "さぎょう")}${r("中", "ちゅう")}はDBに${r("接続", "せつぞく")}できません。\n\n<b>#project-a</b> で、${v(r("作業", "さぎょう"), "Work")}${v(r("予定", "よてい"), "Schedule")}と${v(r("影響", "えいきょう"), "Impact / Effect")}を${v(r("連絡", "れんらく"), "Contact")}してください。`
                 },
                 steps: [
                     {
@@ -877,7 +914,7 @@
                     { w: r("担当", "たんとう"), m: "In charge of" }
                 ],
                 instruction: {
-                    text: `お${r("疲", "つか")}れ${r("様", "さま")}です。\nログイン${r("画面", "がめん")}の${v(r("修正", "しゅうせい"), "Fix")}が${r("終", "お")}わりました。\n\nリリースは${r("明日", "あす")}の${r("朝", "あさ")}です。\n${r("出", "だ")}す${r("前", "まえ")}に、${r("担当", "たんとう")}の${r("奥田", "おくだ")}さんに${v(r("確認", "かくにん"), "Check")}を${r("頼", "たの")}んでおいてください。\n\nチャンネルは <b>#dev-team</b> でお${r("願", "ねが")}いします。`
+                    text: `お${r("疲", "つか")}れ${r("様", "さま")}です。\nログイン${r("画面", "がめん")}の${v(r("修正", "しゅうせい"), "Fix")}が${r("終", "お")}わりました。\n\nリリースは${r("明日", "あす")}の${r("朝", "あさ")}です。\n${r("出", "だ")}す${r("前", "まえ")}に、${r("担当", "たんとう")}の${r("奥田", "おくだ")}さんにコードの${v(r("確認", "かくにん"), "Check")}を${r("頼", "たの")}んでおいてください。\n${r("本日", "ほんじつ")}17:00までに${r("確認", "かくにん")}してもらってください。\n\nチャンネルは <b>#dev-team</b> でお${r("願", "ねが")}いします。`
                 },
                 steps: [
                     {
@@ -1270,6 +1307,23 @@
             location.reload();
         }
 
+        /**
+         * 左下の「最初から やり直す」。押しただけでは 消さず、確かめの 画面を 出す。
+         * 重なった 画面（元号の 説明・お知らせ・おわりの 画面）が 開いて いる ときは 開かない
+         *——マウスは 届かないが、キーボードは 下の ボタンに 届く。
+         */
+        function openRestartConfirm() {
+            if ([els.gengou, els.notice, els.completion].some(screen => !screen.classList.contains('hidden'))) return;
+            closePopover();
+            els.restartConfirm.classList.remove('hidden');
+            els.restartCancel.focus();
+        }
+
+        function closeRestartConfirm() {
+            els.restartConfirm.classList.add('hidden');
+            els.restartOpen.focus();
+        }
+
         // --- 答えの 記録（2026-11-02 の 指定「回答データも 後で 分析できるように」） ---
         /*
          * この ページは 静的な 1枚で、DBの 鍵も ログインの 情報も 持たない（規律4）。
@@ -1433,6 +1487,9 @@
             score: document.getElementById('score-display'),
             completion: document.getElementById('completion-screen'),
             notice: document.getElementById('notice-screen'),
+            restartConfirm: document.getElementById('restart-confirm'),
+            restartOpen: document.getElementById('restart-open'),
+            restartCancel: document.getElementById('restart-cancel'),
             finalScore: document.getElementById('final-score'),
             diplomaCard: document.getElementById('diploma-card'),
             diplomaScore: document.getElementById('diploma-score'),
@@ -1521,7 +1578,7 @@
             // 2. Update Content
             /*
              * 指示の 文は **改行を 残す**（2026-10-26 の 指定「Doc Update は 文章に 改行を」）。
-             * pre-wrap なので、`${sc.instruction.text}` の 前後に 空白や 改行を 入れない。
+             * pre-wrap なので、`${markUrls(sc.instruction.text)}` の 前後に 空白や 改行を 入れない。
              */
             contentDiv.innerHTML = `
                 <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
@@ -1530,7 +1587,7 @@
                         <span class="bg-indigo-100 text-indigo-700 text-xs px-2.5 py-0.5 rounded-full font-bold">${state.phase === 'retry' ? `やり${r("直", "なお")}し` : 'Active'}</span>
                     </div>
                     <div class="font-bold text-slate-800 mb-3 text-xl leading-tight">${sc.title}</div>
-                    <div class="bg-slate-50 text-slate-700 text-[15px] xl:text-base p-3 rounded-lg leading-[2.4] xl:leading-[2.4] border border-slate-200 whitespace-pre-wrap break-words">${sc.instruction.text}</div>
+                    <div class="bg-slate-50 text-slate-700 text-[15px] xl:text-base p-3 rounded-lg leading-[2.4] xl:leading-[2.4] border border-slate-200 whitespace-pre-wrap break-words">${markUrls(sc.instruction.text)}</div>
                     <div class="mt-4 flex items-center gap-2 text-sm font-bold text-slate-500 bg-slate-100 px-3 py-2 rounded-lg">
                         <i data-lucide="map-pin" class="w-4 h-4 text-red-500"></i>
                         Post in: <span class="text-slate-800">#${sc.targetChannel}</span>
@@ -2308,7 +2365,9 @@
         }
 
         document.addEventListener('keydown', (event) => {
-            if (event.key === 'Escape' && !els.gengou.classList.contains('hidden')) closeGengou();
+            if (event.key !== 'Escape') return;
+            if (!els.restartConfirm.classList.contains('hidden')) closeRestartConfirm();
+            else if (!els.gengou.classList.contains('hidden')) closeGengou();
         });
 
         function scrollToBottom() {
