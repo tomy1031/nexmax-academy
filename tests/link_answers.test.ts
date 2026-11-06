@@ -151,8 +151,8 @@ describe("選ぶ 練習の こたえ（Renraku Master）", () => {
     expect(row?.attempt_id).toBe("a2");
   });
 
-  it("台帳は 12問（ミッション5つ）", () => {
-    expect(Object.keys(LINK_ANSWER_PROMPTS[PICK]!)).toHaveLength(12);
+  it("台帳は 18問（ミッション7つ）", () => {
+    expect(Object.keys(LINK_ANSWER_PROMPTS[PICK]!)).toHaveLength(18);
   });
 
   it("回の 鍵は uuid の 形だけ 受ける（列が uuid なので、崩れた 鍵は 行ごと 弾かれる）", () => {

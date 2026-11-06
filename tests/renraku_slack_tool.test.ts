@@ -365,10 +365,61 @@ describe("Renraku Master の 送る 文", () => {
     for (const title of ["Client MTG Change", "Common Logic Update", "DB Reset Notice"]) {
       expect(sent(scenario(title))[0], title).toMatch(/^@channel\n/);
     }
+    // メンションだけの 行なので、札の 説明は 送らない
+    expect(sent(scenario("Late Arrival Notice"))[0]).toBe("@channel");
   });
 
   it("件名が あると 言う 問いの 正解には、件名が ある", () => {
     expect(sent(scenario("Doc Update"))[1]).toMatch(/^【共有】/);
+  });
+});
+
+/**
+ * 講義の ケーススタディ 4つの うち、バグ（ケース3）と 遅刻・欠席・早退（ケース4）の 練習（2026-11-06）。
+ * バグの 文は まんがの「開発環境の ログイン画面で エラー500」の 型に そろえる。
+ */
+describe("Renraku Master の バグと 遅刻の 連絡", () => {
+  const sent = (title: string) =>
+    scenario(title)
+      .steps.map((step) => step.options.find((option) => option.isCorrect))
+      .map((option) => plain(option?.post ?? option?.text ?? ""));
+
+  it("バグの 文は、結論 → 【発生状況】の 箇条書き → 次の 連絡の 時間 の 順", () => {
+    const [head, list, last] = sent("Bug Notice");
+    expect(head).toBe("@奥田さん\n開発環境のユーザー登録画面でエラー500が発生しました。");
+    expect(list).toMatch(/^【発生状況】\n・発生時刻：本日 10:10\n/);
+    expect(last).toMatch(/昨日 17:00/);
+    expect(last).toMatch(/次は 11:10に連絡します。$/);
+  });
+
+  it("遅刻の 文は、【遅刻】の 札と 着く 時間が 先で、理由と 影響は 箇条書き", () => {
+    const [mention, head, list] = sent("Late Arrival Notice");
+    expect(mention).toBe("@channel");
+    expect(head).toBe("【遅刻】本日は 9:30に会社に着きます。");
+    expect(list).toBe("・理由：電車の遅れ\n・影響：9:00の朝礼に出られません");
+  });
+
+  it("札の 問いは 遅刻・欠席・早退を 見分ける（ほかの 字は 同じで、札だけが ちがう）", () => {
+    const options = scenario("Late Arrival Notice").steps[1]?.options ?? [];
+    expect(options.map((option) => plain(option.text).slice(0, 4)).sort()).toEqual(
+      ["【遅刻】", "【欠席】", "【早退】"].sort(),
+    );
+    expect(new Set(options.map((option) => plain(option.text).slice(4))).size).toBe(1);
+  });
+
+  it("指示の 文に 答えの 札（遅刻・欠席・早退）を 書かない", () => {
+    expect(plain(scenario("Late Arrival Notice").instruction.text)).not.toMatch(/遅刻|欠席|早退/);
+  });
+
+  it("遅刻の 問いでは @here との ちがいを 問わない（講義に 無い）", () => {
+    const options = scenario("Late Arrival Notice").steps[0]?.options ?? [];
+    expect(options.map((option) => plain(option.text)).join("\n")).not.toContain("@here");
+  });
+
+  it("問いの 文に 答えの 部品（メンション・【発生状況】）を 書かない", () => {
+    const questions = scenario("Bug Notice").steps.map((step) => plain(step.question));
+    expect(questions[0]).not.toContain("メンション");
+    expect(questions[1]).not.toContain("【");
   });
 });
 

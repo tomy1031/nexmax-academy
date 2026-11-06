@@ -182,12 +182,14 @@ const MISSIONS = [
   { channel: "dev-team", answers: [2, 0] },
   { channel: "project-a", answers: [0, 2] },
   { channel: "dev-team", answers: [1, 0, 2] },
+  { channel: "dev-team", answers: [0, 2, 1] },
+  { channel: "project-a", answers: [2, 1, 0] },
 ];
 const STORE_KEY = "nexmax:renraku_slack:v1";
 const ATTEMPT = "0b0c7a1e-3f7d-4c5a-9d2e-1a2b3c4d5e6f";
 
 /**
- * ミッション1〜5を 通しで 遊ぶ。`wrong` に ある 問い（`m1-q3`）は、まず まちがえてから 正解する
+ * ミッション1〜7を 通しで 遊ぶ。`wrong` に ある 問い（`m1-q3`）は、まず まちがえてから 正解する
  *（まちがえるのは 0番めの 選択肢。`wrong` には 0番めが 不正解の 問いだけを 渡す）。
  */
 async function playAll(page: Page, wrong: readonly string[]) {
@@ -215,9 +217,9 @@ async function openCompleted(page: Page, score: number, misses: string[]) {
   await page.evaluate(([key, value]) => window.localStorage.setItem(key, value), [
     STORE_KEY,
     JSON.stringify({
-      scenarioIndex: 4,
+      scenarioIndex: 6,
       phase: "completed",
-      currentViewId: "dev-team",
+      currentViewId: "project-a",
       stepsDone: 0,
       score,
       wrongPicks: [],
