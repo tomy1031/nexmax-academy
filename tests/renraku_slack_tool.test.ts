@@ -58,6 +58,7 @@ function loadGame(storage = new Map<string, string>()): {
   loadSaved: () => Saved | null;
   restartFromScratch: () => void;
   openRestartConfirm: () => void;
+  learnerName: () => string;
   feedbackReason: (html: string) => string;
   markUrls: (html: string) => string;
   allQuestionIds: () => string[];
@@ -99,7 +100,7 @@ function loadGame(storage = new Map<string, string>()): {
     "window",
     "lucide",
     "location",
-    `${body}\nreturn { SCENARIOS, WORDS, USED_TERMS, STORE_KEY, loadSaved, restartFromScratch, openRestartConfirm, feedbackReason, markUrls, allQuestionIds };`,
+    `${body}\nreturn { SCENARIOS, WORDS, USED_TERMS, STORE_KEY, loadSaved, restartFromScratch, openRestartConfirm, learnerName, feedbackReason, markUrls, allQuestionIds };`,
   )(documentStub, windowStub, { createIcons() {} }, locationStub);
   return { ...game, reloads: () => reloads };
 }
@@ -576,6 +577,19 @@ describe("Renraku Master の 保存（2026-10-26）", () => {
     const box = dialog.slice(0, dialog.indexOf('id="completion-screen"'));
     expect(box).toContain('onclick="closeRestartConfirm()"');
     expect(box).toContain('onclick="restartFromScratch()"');
+  });
+
+  it("修了証の 名前は アプリの プロフィールから 読む。読めない ときは 空（「あなた」の まま）", () => {
+    const KEY_PROFILE = "nexmax.profile.v3";
+    const name = (value?: string) =>
+      loadGame(new Map(value === undefined ? [] : [[KEY_PROFILE, value]])).learnerName();
+    expect(name(JSON.stringify({ displayName: " Sokha " }))).toBe("Sokha");
+    expect(name()).toBe("");
+    expect(name("{こわれた")).toBe("");
+    expect(name(JSON.stringify({ displayName: 3 }))).toBe("");
+    expect(HTML).toContain('<span id="diploma-name">あなた</span>');
+    // 名前は 字として 入れる（タグとして 読ませない）
+    expect(HTML).toContain("els.diplomaName.textContent =");
   });
 
   it("クリアの 画面の ボタンが「最初から」", () => {

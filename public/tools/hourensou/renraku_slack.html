@@ -447,7 +447,7 @@
                     <div class="text-sm text-slate-500"><ruby>連絡<rt>れんらく</rt></ruby>の
                         <ruby>練習<rt>れんしゅう</rt></ruby>
                     </div>
-                    <div class="mt-7 text-xl tracking-[0.3em] text-slate-800">あなた　<ruby>殿<rt>どの</rt></ruby></div>
+                    <div class="mt-7 text-xl tracking-[0.3em] text-slate-800 break-words"><span id="diploma-name">あなた</span>　<ruby>殿<rt>どの</rt></ruby></div>
                     <div class="mx-auto mt-1 h-px w-52 bg-amber-600/40"></div>
                     <p class="mt-6 text-sm leading-7 text-slate-600">
                         あなたは <ruby>上記<rt>じょうき</rt></ruby>の ミッションを すべて<br>
@@ -1495,6 +1495,7 @@
             diplomaCard: document.getElementById('diploma-card'),
             diplomaScore: document.getElementById('diploma-score'),
             diplomaDate: document.getElementById('diploma-date'),
+            diplomaName: document.getElementById('diploma-name'),
             retryCard: document.getElementById('retry-card'),
             retryNote: document.getElementById('retry-note'),
             retryResult: document.getElementById('retry-result'),
@@ -2219,10 +2220,26 @@
         }
 
         /**
+         * 修了証の 名前。アプリの プロフィール（同じ 置き場の localStorage）から 読む。
+         * 読めない ときは 空を 返す——修了証は「あなた」の まま。
+         */
+        const PROFILE_KEY = 'nexmax.profile.v3';
+
+        function learnerName() {
+            try {
+                const name = JSON.parse(window.localStorage.getItem(PROFILE_KEY))?.displayName;
+                return typeof name === 'string' ? name.trim().slice(0, 20) : '';
+            } catch (error) {
+                return '';
+            }
+        }
+
+        /**
          * おわり。**100点か、まちがえた 問いを やり直しで ぜんぶ 正解したら 修了証**（2026-11-02 の 指定
          *「点数は100点で良いが、初回の点数も記載」）。それ以外は 点数と、まちがえた 問いの 一覧と「やり直す」。
          */
         function showCompletion() {
+            els.diplomaName.textContent = learnerName() || els.diplomaName.textContent;
             const cleared = state.score < MAX_SCORE && Array.isArray(state.misses) && state.misses.length === 0;
             const perfect = state.score >= MAX_SCORE || cleared;
             els.finalScore.innerText = state.score;
