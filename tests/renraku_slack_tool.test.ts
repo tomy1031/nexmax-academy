@@ -205,7 +205,9 @@ describe("Renraku Master の 画面", () => {
   });
 
   it("右の 欄の 指示は 改行を 残す（前後に 空白を 入れない）", () => {
-    expect(HTML).toMatch(/whitespace-pre-wrap break-words">\$\{sc\.instruction\.text\}<\/div>/);
+    expect(HTML).toMatch(
+      /whitespace-pre-wrap break-words">\$\{markUrls\(sc\.instruction\.text\)\}<\/div>/,
+    );
   });
 
   it("選択肢の 文も 改行を 残す（前は 改行が 消えて 1行に つながって いた）", () => {
@@ -369,6 +371,36 @@ describe("Renraku Master の 送る 文", () => {
 
   it("件名が あると 言う 問いの 正解には、件名が ある", () => {
     expect(sent(scenario("Doc Update"))[1]).toMatch(/^【共有】/);
+  });
+});
+
+/**
+ * 指示に 無い ことを 正解だけが 言わない（2026-11-06 の 指定
+ *「依頼にはコードの確認と書いてないので、そちらも修正」）。
+ * 前は 指示が「確認を 頼んで」だけで、正解の 選択肢だけが「コードの 確認」と 言って いた。
+ */
+describe("Renraku Master の 指示と 正解の 文", () => {
+  const cases = [
+    ["Doc Update", "https://file-server/docs/user-reg-spec"],
+    ["Common Logic Update", "pullしないと、この機能は使えません"],
+    ["DB Reset Notice", "初期化"],
+    ["DB Reset Notice", "DBに接続できません"],
+    ["Task Request", "コードの確認"],
+    ["Task Request", "本日17:00"],
+  ] as const;
+
+  it("正解の 文の 言葉と 事実が 指示に 書いて ある", () => {
+    for (const [title, words] of cases) {
+      const mission = scenario(title);
+      const answers = mission.steps
+        .map((step) => step.options.find((option) => option.isCorrect))
+        .map((option) => plain(option?.text ?? ""))
+        .join("\n");
+      expect(answers, `${title} の 正解に「${words}」が 無い`).toContain(words);
+      expect(plain(mission.instruction.text), `${title} の 指示に「${words}」が 無い`).toContain(
+        words,
+      );
+    }
   });
 });
 
