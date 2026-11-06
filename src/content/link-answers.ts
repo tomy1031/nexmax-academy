@@ -39,7 +39,7 @@ export const LINK_ANSWER_PROMPTS: Readonly<Record<string, Readonly<Record<string
     "m2-q2": "Client MTG Change — 2. 【変更点】と、お願いを伝えます",
     "m3-q1": "Common Logic Update — 1. メンションと、分かりやすい件名（タイトル）を選びます",
     "m3-q2": "Common Logic Update — 2. メンバーにやってほしいアクションを伝えます",
-    "m4-q1": "DB Reset Notice — 1. 作業内容と時間を伝えます",
+    "m4-q1": "DB Reset Notice — 1. メンションをして、作業内容と時間を伝えます",
     "m4-q2": "DB Reset Notice — 2. チームへの影響を伝えます",
     "m5-q1": "Task Request — 1. 誰にメンションしますか？",
     "m5-q2": "Task Request — 2. 何をして ほしいか書きます",

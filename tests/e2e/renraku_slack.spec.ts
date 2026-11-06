@@ -70,8 +70,9 @@ test("正解すると ⭕ 正解 と わけが 出て、「次へ」を 押す�
   const reason = await plain(right.locator(".feedback-msg"));
   expect(reason).toContain("@here か @channel");
   expect(reason).not.toMatch(/^正解/);
-  // 正解の 行は すぐ 入力欄に 入る。点は 減らない
+  // 正解の 行は すぐ 入力欄に 入る（札の 説明は 送らない）。点は 減らない
   await expect(page.locator("#draft-text")).toContainText("@here");
+  await expect(page.locator("#draft-text")).not.toContainText("オンラインのメンバー");
   await expect(page.locator("#score-display")).toHaveText("100");
   // ほかの 選択肢は 押せない
   await expect(cards.nth(0)).toBeDisabled();
@@ -141,6 +142,34 @@ test("URL は 選択肢・入力欄・送った メッセージで 青い 字。
   await expect(sent).toHaveCSS("color", blue);
 });
 
+test("わけは しるしの すぐ 下に 出る（改行の ある 長い 札でも 隠れない）", async ({ page }) => {
+  await openFirstQuestion(page);
+  const card = page.locator(".option-card").nth(0);
+  await card.click();
+  const reason = await card.locator(".feedback-msg").boundingBox();
+  const text = await card.locator(".option-body > span").first().boundingBox();
+  expect(reason?.y ?? 0).toBeLessThan(text?.y ?? 0);
+});
+
+test("選択肢の 改行は 画面でも 改行に なる", async ({ page }) => {
+  await openFirstQuestion(page);
+  const cards = page.locator(".option-card");
+  const next = page.getByRole("button", { name: "次へ" });
+  // ミッション1の 3つめの 問い（「ファイルのURLはこちらです。」の 次の 行に URL が ある）
+  for (const at of [1, 2]) {
+    await cards.nth(at).click();
+    await next.click();
+  }
+  const text = cards.nth(1).locator(".option-body > span").first();
+  const url = cards.nth(1).locator(".url-text");
+  await expect(text).toHaveCSS("white-space", "pre-wrap");
+  // URL は 文の 続きでは なく、次の 行の 左の 端から 始まる
+  const textBox = await text.boundingBox();
+  const urlBox = await url.boundingBox();
+  expect(urlBox?.x).toBeCloseTo(textBox?.x ?? 0, 0);
+  expect(urlBox?.y ?? 0).toBeGreaterThan(textBox?.y ?? 0);
+});
+
 /*
  * まちがえた 問いの やり直しと 答えの 記録（2026-11-02 の 指定
  *「全問正解でなかった場合に、間違えた問題をやり直す」「回答データも後で分析できるように」）。
@@ -149,17 +178,17 @@ test("URL は 選択肢・入力欄・送った メッセージで 青い 字。
 /** ミッションごとの 正解の 選択肢と、送る チャンネル（教材の データと 同じ 並び）。 */
 const MISSIONS = [
   { channel: "project-a", answers: [1, 2, 1] },
-  { channel: "project-a", answers: [2, 1] },
-  { channel: "dev-team", answers: [2, 1] },
-  { channel: "project-a", answers: [1, 2] },
-  { channel: "dev-team", answers: [1, 1, 2] },
+  { channel: "project-a", answers: [0, 1] },
+  { channel: "dev-team", answers: [2, 0] },
+  { channel: "project-a", answers: [0, 2] },
+  { channel: "dev-team", answers: [1, 0, 2] },
 ];
 const STORE_KEY = "nexmax:renraku_slack:v1";
 const ATTEMPT = "0b0c7a1e-3f7d-4c5a-9d2e-1a2b3c4d5e6f";
 
 /**
  * ミッション1〜5を 通しで 遊ぶ。`wrong` に ある 問い（`m1-q3`）は、まず まちがえてから 正解する
- *（0番めの 選択肢は どの 問いでも 不正解。正解は 1か 2）。
+ *（まちがえるのは 0番めの 選択肢。`wrong` には 0番めが 不正解の 問いだけを 渡す）。
  */
 async function playAll(page: Page, wrong: readonly string[]) {
   const cards = page.locator(".option-card");

@@ -30,7 +30,7 @@ interface Scenario {
   reply?: { text: string };
   steps: {
     question: string;
-    options: { text: string; isCorrect: boolean; feedback: string }[];
+    options: { text: string; isCorrect: boolean; feedback: string; post?: string }[];
   }[];
 }
 interface Word {
@@ -320,6 +320,16 @@ describe("Renraku Master の 正誤の しるしと わけ", () => {
     }
   });
 
+  it("正解の 位置が 偏らない（前は 1番めが 12問で 0回で、読まずに 消せた）", () => {
+    const counts = [0, 0, 0];
+    for (const item of GAME.SCENARIOS) {
+      for (const step of item.steps) {
+        counts[step.options.findIndex((option) => option.isCorrect)]! += 1;
+      }
+    }
+    expect(Math.max(...counts) - Math.min(...counts)).toBeLessThanOrEqual(1);
+  });
+
   it("画面の わけは 頭の「正解！」「不正解。」を 外す。「惜しい」は 残す", () => {
     for (const option of options) {
       const reason = plain(GAME.feedbackReason(option.feedback));
@@ -328,6 +338,37 @@ describe("Renraku Master の 正誤の しるしと わけ", () => {
       if (plain(option.feedback).startsWith("惜しい"))
         expect(reason, option.where).toMatch(/^惜しい/);
     }
+  });
+});
+
+/**
+ * 送る 文の 形（2026-11-06 の 検査）。「メンションは 必須」と 教えて いるのに、
+ * ミッション4の 文に メンションが 無く、ミッション1の 文には 札の 説明まで 入って いた。
+ */
+describe("Renraku Master の 送る 文", () => {
+  const sent = (item: Scenario) =>
+    item.steps
+      .map((step) => step.options.find((option) => option.isCorrect))
+      .map((option) => plain(option?.post ?? option?.text ?? ""));
+
+  it("どの ミッションの 文も メンションで 始まる", () => {
+    for (const item of GAME.SCENARIOS) {
+      expect(sent(item)[0], item.title).toMatch(/^@/);
+    }
+  });
+
+  it("札の 説明は 送らない", () => {
+    expect(sent(scenario("Doc Update"))[0]).toBe("@here");
+  });
+
+  it("全員に して もらう ミッションは @channel（@here は オンラインの 人にしか 届かない）", () => {
+    for (const title of ["Client MTG Change", "Common Logic Update", "DB Reset Notice"]) {
+      expect(sent(scenario(title))[0], title).toMatch(/^@channel\n/);
+    }
+  });
+
+  it("件名が あると 言う 問いの 正解には、件名が ある", () => {
+    expect(sent(scenario("Doc Update"))[1]).toMatch(/^【共有】/);
   });
 });
 
@@ -403,6 +444,12 @@ describe("Renraku Master の 保存（2026-10-26）", () => {
     expect(saved?.currentViewId).toBe("dm-tanaka");
     expect(saved?.wrongPicks).toEqual([0]);
     expect(saved?.times).toEqual({ ok: "10:24" });
+  });
+
+  it("まちがえた 番号が 正解を 指す 保存は 読まない（赤く なると 押せず、先へ 進めない）", () => {
+    // 選択肢の 並びを 変える 前の 保存（ミッション2の 問い1の 正解は 0番め）
+    const saved = read({ ...good, scenarioIndex: 1, stepsDone: 0, wrongPicks: [0, 2] });
+    expect(saved?.wrongPicks).toEqual([2]);
   });
 
   it("「最初から」は 保存を 消して 開き直す", () => {
