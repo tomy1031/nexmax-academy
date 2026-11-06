@@ -372,6 +372,52 @@ describe("Renraku Master の 送る 文", () => {
   });
 });
 
+/**
+ * 講義の ケーススタディ 4つの うち、バグ（ケース3）と 遅刻・欠席・早退（ケース4）の 練習（2026-11-06）。
+ * バグの 文は まんがの「開発環境の ログイン画面で エラー500」の 型に そろえる。
+ */
+describe("Renraku Master の バグと 遅刻の 連絡", () => {
+  const sent = (title: string) =>
+    scenario(title)
+      .steps.map((step) => step.options.find((option) => option.isCorrect))
+      .map((option) => plain(option?.post ?? option?.text ?? ""));
+
+  it("バグの 文は、結論 → 【発生状況】の 箇条書き → 次の 連絡の 時間 の 順", () => {
+    const [head, list, last] = sent("Bug Notice");
+    expect(head).toBe("@奥田さん\n開発環境のユーザー登録画面でエラー500が発生しました。");
+    expect(list).toMatch(/^【発生状況】\n・発生時刻：本日 10:10\n/);
+    expect(last).toMatch(/昨日 17:00/);
+    expect(last).toMatch(/次は 11:10に連絡します。$/);
+  });
+
+  it("遅刻の 文は、結論（遅刻すると 着く 時間）が 先で、理由と 影響は 箇条書き", () => {
+    const [mention, head, list] = sent("Late Arrival Notice");
+    // 変わるのは 自分の 予定だけなので @channel では ない（講義の「@channel の 使いどころ」）
+    expect(mention).toBe("@here");
+    expect(head).toBe("【連絡】本日は遅刻します。9:30に会社に着きます。");
+    expect(list).toBe("・理由：電車の遅れ\n・影響：9:00の朝礼に出られません");
+  });
+
+  it("結論の 問いは 遅刻・欠席・早退を 見分ける（ほかの 字は 同じで、語だけが ちがう）", () => {
+    const options = scenario("Late Arrival Notice").steps[1]?.options ?? [];
+    const texts = options.map((option) => plain(option.text));
+    for (const word of ["遅刻", "欠席", "早退"]) {
+      expect(texts.filter((text) => text.includes(word))).toHaveLength(1);
+    }
+    expect(new Set(texts.map((text) => text.replace(/遅刻|欠席|早退/, ""))).size).toBe(1);
+  });
+
+  it("指示の 文に 答えの 語（遅刻・欠席・早退）を 書かない", () => {
+    expect(plain(scenario("Late Arrival Notice").instruction.text)).not.toMatch(/遅刻|欠席|早退/);
+  });
+
+  it("問いの 文に 答えの 部品（メンション・【発生状況】）を 書かない", () => {
+    const questions = scenario("Bug Notice").steps.map((step) => plain(step.question));
+    expect(questions[0]).not.toContain("メンション");
+    expect(questions[1]).not.toContain("【");
+  });
+});
+
 describe("Renraku Master の URL は 青い 字（2026-10-30）", () => {
   it("URL だけを 青い 字に する。リンクには しない", () => {
     const url = "https://file-server/docs/user-reg-spec";
