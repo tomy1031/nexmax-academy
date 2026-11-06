@@ -90,8 +90,11 @@ jobs:
   # ここが CI で **いちばん 長い ジョブ**（＝PR 1回の 待ちを 決める）。
   # 通し検証そのものの 短縮は playwright.config.ts の 並列数（CI だけ 4本）で、
   # 前後の 支度の 短縮は 下の 3つの キャッシュで やっている（願い #208）。
+  #
+  # ubuntu-latest を 使わない: 2026-11-05 に 26.04 へ 変わり、Playwright 1.56.1 の
+  # ブラウザが 入らなく なった（どの PR の e2e も 落ちた）。対応する Playwright に 上げるまで 固定する。
   e2e:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 25
     environment: Preview
     steps:
