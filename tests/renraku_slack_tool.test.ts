@@ -445,6 +445,14 @@ describe("Renraku Master の バグと 遅刻の 連絡", () => {
     expect(plain(scenario("Late Arrival Notice").instruction.text)).not.toMatch(/遅刻|欠席|早退/);
   });
 
+  it("指示は それだけで 場面が 分かる（学生が 見て いない 出来事を 前提に しない）", () => {
+    for (const title of ["Bug Notice", "Late Arrival Notice"]) {
+      const text = plain(scenario(title).instruction.text);
+      expect(text, title).toMatch(/^【状況】\nあなたは/);
+      expect(text, title).not.toMatch(/さっき|電話/);
+    }
+  });
+
   it("問いの 文に 答えの 部品（メンション・【発生状況】）を 書かない", () => {
     const questions = scenario("Bug Notice").steps.map((step) => plain(step.question));
     expect(questions[0]).not.toContain("メンション");
