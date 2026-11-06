@@ -888,7 +888,7 @@ export const ASSET_VERSIONS: Readonly<Record<string, string>> = {
   "/img/emblems/ISFP.webp": "840b829e",
   "/img/emblems/ISTJ.webp": "c067680d",
   "/img/emblems/ISTP.webp": "77dd8aaf",
-  "/img/hourensou/gengou/calendar.webp": "3782791a",
+  "/img/hourensou/gengou/calendar.webp": "c4d23eab",
   "/img/hourensou/gengou/gannen.webp": "93155baf",
   "/img/hourensou/gengou/places.webp": "c5d1be26",
   "/img/hourensou/gengou/stairs.webp": "cb9923e3",

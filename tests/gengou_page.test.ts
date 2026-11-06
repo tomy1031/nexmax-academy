@@ -89,6 +89,16 @@ describe("元号の 説明ページ", () => {
     expect([...rest].filter((char) => KANJI.test(char))).toEqual([]);
   });
 
+  it("1日〜10日・14日・20日・24日を「にち」と 読ませない", () => {
+    const wrong = [...visibleText().matchAll(/(?<!\d)(\d{1,2}) ?\{日\|にち\}/g)]
+      .map((hit) => Number(hit[1]))
+      .filter((day) => day <= 10 || day === 14 || day === 20 || day === 24);
+    expect(wrong).toEqual([]);
+    for (const reading of ['1: "ついたち"', '8: "ようか"', '20: "はつか"']) {
+      expect(HTML).toContain(reading);
+    }
+  });
+
   it("絵は ぜんぶ あって、字の 読めない 人にも 同じ ことを 伝える 文（alt）が ある", () => {
     const pictures = [...HTML.matchAll(/<img class="picture"[^>]*>/g)].map((hit) => hit[0]);
     expect(pictures).toHaveLength(6);
