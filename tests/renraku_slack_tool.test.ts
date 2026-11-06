@@ -428,7 +428,9 @@ describe("Renraku Master の バグと 遅刻の 連絡", () => {
     const [mention, head, list] = sent("Late Arrival Notice");
     expect(mention).toBe("@here");
     expect(head).toBe("【連絡】本日は遅刻します。9:30に会社に着きます。");
-    expect(list).toBe("・理由：電車の遅れ\n・影響：9:00の朝礼に出られません");
+    expect(list).toBe(
+      "・理由：電車の遅れ\n・影響：9:00の朝礼に出られません\n\nご迷惑おかけしますがよろしくお願いいたします。",
+    );
   });
 
   it("結論の 問いは 遅刻・欠席・早退を 見分ける（ほかの 字は 同じで、語だけが ちがう）", () => {
