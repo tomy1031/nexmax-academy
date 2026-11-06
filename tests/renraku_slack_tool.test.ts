@@ -208,6 +208,10 @@ describe("Renraku Master の 画面", () => {
     expect(HTML).toMatch(/whitespace-pre-wrap break-words">\$\{sc\.instruction\.text\}<\/div>/);
   });
 
+  it("選択肢の 文も 改行を 残す（前は 改行が 消えて 1行に つながって いた）", () => {
+    expect(HTML).toMatch(/whitespace-pre-wrap break-words">\$\{markUrls\(opt\.text\)\}<\/span>/);
+  });
+
   it("新しく 書いた 文に 禁止語と 使わない 国名が 無い（規律1・規律9）", () => {
     const texts = [
       ...Object.values(GAME.WORDS).map((word) => plain(word.ja)),

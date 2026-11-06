@@ -1638,7 +1638,7 @@
                                 <button onclick="handleOptionSelect(${i})" class="option-card text-left p-4 rounded-xl border-2 border-slate-200 bg-white enabled:hover:border-indigo-400 enabled:hover:shadow-md transition flex flex-col gap-2 group h-full relative overflow-hidden disabled:cursor-not-allowed">
                                     <div class="option-stripe absolute top-0 left-0 w-1.5 h-full bg-slate-200 group-enabled:group-hover:bg-indigo-500 transition-colors"></div>
                                     <div class="option-body pl-2 flex flex-col gap-2">
-                                        <span class="text-base text-slate-700 font-medium leading-loose">${markUrls(opt.text)}</span>
+                                        <span class="text-base text-slate-700 font-medium leading-loose whitespace-pre-wrap break-words">${markUrls(opt.text)}</span>
                                     </div>
                                 </button>
                             `).join('')}
