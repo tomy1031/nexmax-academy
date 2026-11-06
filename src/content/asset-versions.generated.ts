@@ -144,6 +144,7 @@ export const ASSET_VERSIONS: Readonly<Record<string, string>> = {
   "/audio/listening/houkoku_shougai_listening/13.wav": "82a6ffdd",
   "/audio/listening/houkoku_shougai_listening/sentences.json": "beec3357",
   "/audio/listening/kaisha_shugyo_keitai_listening.wav": "19a4f9ec",
+  "/audio/listening/youkenweb_call.wav": "6833903a",
   "/audio/meetings/asakai_kantan/s0-ack-0bcb7ef9.wav": "74c7e210",
   "/audio/meetings/asakai_kantan/s0-closing-0-4ace68dd.wav": "22c2a798",
   "/audio/meetings/asakai_kantan/s0-kinou-ex-d5f5b9dc.wav": "e0fe23c3",
