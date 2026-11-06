@@ -329,6 +329,16 @@ test("100点の ときは やり直しを 出さずに 修了証（初回の 点
   await expect(page.locator("#diploma-first")).toBeHidden();
 });
 
+test("修了証の 名前は アプリの プロフィールの 名前。無ければ「あなた」", async ({ page }) => {
+  await openCompleted(page, 100, []);
+  await expect(page.locator("#diploma-name")).toHaveText("あなた");
+  await page.evaluate(() =>
+    window.localStorage.setItem("nexmax.profile.v3", JSON.stringify({ displayName: "Sokha" })),
+  );
+  await page.reload();
+  await expect(page.locator("#diploma-name")).toHaveText("Sokha");
+});
+
 test("答えは 1問ずつ アプリへ 渡る（1回目の 正誤・押した 順・回の 鍵）", async ({ page }) => {
   // アプリの リンク教材と 同じく、同じ 置き場の ページに iframe で 埋める
   await page.goto("/tools/hourensou/gengou.html");

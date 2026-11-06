@@ -58,6 +58,7 @@ function loadGame(storage = new Map<string, string>()): {
   loadSaved: () => Saved | null;
   restartFromScratch: () => void;
   openRestartConfirm: () => void;
+  learnerName: () => string;
   feedbackReason: (html: string) => string;
   markUrls: (html: string) => string;
   allQuestionIds: () => string[];
@@ -99,7 +100,7 @@ function loadGame(storage = new Map<string, string>()): {
     "window",
     "lucide",
     "location",
-    `${body}\nreturn { SCENARIOS, WORDS, USED_TERMS, STORE_KEY, loadSaved, restartFromScratch, openRestartConfirm, feedbackReason, markUrls, allQuestionIds };`,
+    `${body}\nreturn { SCENARIOS, WORDS, USED_TERMS, STORE_KEY, loadSaved, restartFromScratch, openRestartConfirm, learnerName, feedbackReason, markUrls, allQuestionIds };`,
   )(documentStub, windowStub, { createIcons() {} }, locationStub);
   return { ...game, reloads: () => reloads };
 }
@@ -389,6 +390,8 @@ describe("Renraku Master の 指示と 正解の 文", () => {
     ["DB Reset Notice", "DBに接続できません"],
     ["Task Request", "コードの確認"],
     ["Task Request", "本日17:00"],
+    ["Late Arrival Notice", "30分ほど"],
+    ["Late Arrival Notice", "後ほど"],
   ] as const;
 
   it("正解の 文の 言葉と 事実が 指示に 書いて ある", () => {
@@ -416,20 +419,21 @@ describe("Renraku Master の バグと 遅刻の 連絡", () => {
       .steps.map((step) => step.options.find((option) => option.isCorrect))
       .map((option) => plain(option?.post ?? option?.text ?? ""));
 
-  it("バグの 文は、結論 → 【発生状況】の 箇条書き → 次の 連絡の 時間 の 順", () => {
+  it("バグの 文は、結論 → 【発生状況】の 箇条書き → 昨日の 事実 の 順", () => {
     const [head, list, last] = sent("Bug Notice");
     expect(head).toBe("@奥田さん\n開発環境のユーザー登録画面でエラー500が発生しました。");
     expect(list).toMatch(/^【発生状況】\n・発生時刻：本日 10:10\n/);
     expect(last).toMatch(/昨日 17:00/);
-    expect(last).toMatch(/次は 11:10に連絡します。$/);
+    expect(last).toMatch(/原因はまだ分かりません。$/);
   });
 
-  it("遅刻の 文は、結論（遅刻すると 着く 時間）が 先で、理由と 影響は 箇条書き", () => {
+  it("遅刻の 文は、結論が 先で、理由は 分けずに 文章で、最後に おわびの 1文", () => {
     const [mention, head, list] = sent("Late Arrival Notice");
-    // 変わるのは 自分の 予定だけなので @channel では ない（講義の「@channel の 使いどころ」）
     expect(mention).toBe("@here");
-    expect(head).toBe("【連絡】本日は遅刻します。9:30に会社に着きます。");
-    expect(list).toBe("・理由：電車の遅れ\n・影響：9:00の朝礼に出られません");
+    expect(head).toBe("【連絡】本日は遅刻します。");
+    expect(list).toBe(
+      "電車の遅れのため、30分ほど遅れの見込みです。\n朝礼に間に合わないため、後ほど情報共有させてください。\n\nご迷惑おかけしますがよろしくお願いいたします。",
+    );
   });
 
   it("結論の 問いは 遅刻・欠席・早退を 見分ける（ほかの 字は 同じで、語だけが ちがう）", () => {
@@ -443,6 +447,19 @@ describe("Renraku Master の バグと 遅刻の 連絡", () => {
 
   it("指示の 文に 答えの 語（遅刻・欠席・早退）を 書かない", () => {
     expect(plain(scenario("Late Arrival Notice").instruction.text)).not.toMatch(/遅刻|欠席|早退/);
+  });
+
+  it("指示は それだけで 場面が 分かる（学生が 見て いない 出来事を 前提に しない）", () => {
+    for (const title of ["Bug Notice", "Late Arrival Notice"]) {
+      const text = plain(scenario(title).instruction.text);
+      expect(text, title).toMatch(/^【状況】\nあなたは/);
+      expect(text, title).not.toMatch(/さっき|電話/);
+    }
+  });
+
+  it("遅刻の 問いでは @here と @channel の ちがいを 問わない（2026-11-06「厳しすぎる」）", () => {
+    const options = scenario("Late Arrival Notice").steps[0]?.options ?? [];
+    expect(options.map((option) => plain(option.text)).join("\n")).not.toContain("@channel");
   });
 
   it("問いの 文に 答えの 部品（メンション・【発生状況】）を 書かない", () => {
@@ -560,6 +577,19 @@ describe("Renraku Master の 保存（2026-10-26）", () => {
     const box = dialog.slice(0, dialog.indexOf('id="completion-screen"'));
     expect(box).toContain('onclick="closeRestartConfirm()"');
     expect(box).toContain('onclick="restartFromScratch()"');
+  });
+
+  it("修了証の 名前は アプリの プロフィールから 読む。読めない ときは 空（「あなた」の まま）", () => {
+    const KEY_PROFILE = "nexmax.profile.v3";
+    const name = (value?: string) =>
+      loadGame(new Map(value === undefined ? [] : [[KEY_PROFILE, value]])).learnerName();
+    expect(name(JSON.stringify({ displayName: " Sokha " }))).toBe("Sokha");
+    expect(name()).toBe("");
+    expect(name("{こわれた")).toBe("");
+    expect(name(JSON.stringify({ displayName: 3 }))).toBe("");
+    expect(HTML).toContain('<span id="diploma-name">あなた</span>');
+    // 名前は 字として 入れる（タグとして 読ませない）
+    expect(HTML).toContain("els.diplomaName.textContent =");
   });
 
   it("クリアの 画面の ボタンが「最初から」", () => {
