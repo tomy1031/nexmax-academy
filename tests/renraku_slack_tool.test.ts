@@ -57,6 +57,7 @@ function loadGame(storage = new Map<string, string>()): {
   STORE_KEY: string;
   loadSaved: () => Saved | null;
   restartFromScratch: () => void;
+  openRestartConfirm: () => void;
   feedbackReason: (html: string) => string;
   markUrls: (html: string) => string;
   allQuestionIds: () => string[];
@@ -72,6 +73,7 @@ function loadGame(storage = new Map<string, string>()): {
     dataset: {},
     setAttribute() {},
     getAttribute: () => null,
+    focus() {},
   });
   const documentStub = {
     getElementById: element,
@@ -97,7 +99,7 @@ function loadGame(storage = new Map<string, string>()): {
     "window",
     "lucide",
     "location",
-    `${body}\nreturn { SCENARIOS, WORDS, USED_TERMS, STORE_KEY, loadSaved, restartFromScratch, feedbackReason, markUrls, allQuestionIds };`,
+    `${body}\nreturn { SCENARIOS, WORDS, USED_TERMS, STORE_KEY, loadSaved, restartFromScratch, openRestartConfirm, feedbackReason, markUrls, allQuestionIds };`,
   )(documentStub, windowStub, { createIcons() {} }, locationStub);
   return { ...game, reloads: () => reloads };
 }
@@ -536,6 +538,28 @@ describe("Renraku Master の 保存（2026-10-26）", () => {
     game.restartFromScratch();
     expect(storage.has(KEY)).toBe(false);
     expect(game.reloads()).toBe(1);
+  });
+
+  it("左の 欄の 一番下に「最初から やり直す」が ある（途中でも 押せる）", () => {
+    const button = HTML.indexOf('id="restart-open"');
+    expect(button).toBeGreaterThan(HTML.indexOf('id="dm-list"'));
+    expect(button).toBeLessThan(HTML.indexOf('id="messages-container"'));
+    expect(HTML).toMatch(/id="restart-open"[^>]*onclick="openRestartConfirm\(\)"/);
+  });
+
+  it("左下の ボタンは 押しただけでは 消さない（確かめの 画面を 出すだけ）", () => {
+    const storage = new Map([[KEY, JSON.stringify(good)]]);
+    const game = loadGame(storage);
+    game.openRestartConfirm();
+    expect(storage.has(KEY)).toBe(true);
+    expect(game.reloads()).toBe(0);
+  });
+
+  it("確かめの 画面は「やめる」と、保存を 消す ボタンの 2つ", () => {
+    const dialog = HTML.slice(HTML.indexOf('id="restart-confirm"'));
+    const box = dialog.slice(0, dialog.indexOf('id="completion-screen"'));
+    expect(box).toContain('onclick="closeRestartConfirm()"');
+    expect(box).toContain('onclick="restartFromScratch()"');
   });
 
   it("クリアの 画面の ボタンが「最初から」", () => {

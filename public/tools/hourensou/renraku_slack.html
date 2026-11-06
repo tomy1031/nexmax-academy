@@ -257,6 +257,18 @@
                     </div>
                 </div>
             </div>
+
+            <!--
+              ミッションの 途中でも 最初から やり直せる（2026-11-06 の 指定「最初からやり直すボタンも左下に入れてください」）。
+              押しただけでは 消さない（`openRestartConfirm`）。上の 一覧が 長くても 隠れない ように 縮めない。
+            -->
+            <div class="flex-shrink-0 border-t border-slate-700 p-3">
+                <button id="restart-open" type="button" onclick="openRestartConfirm()" aria-label="最初からやり直す"
+                    class="w-full px-3 py-2 rounded-lg text-sm font-bold text-slate-300 hover:bg-slate-800 hover:text-white transition flex items-center justify-center gap-2">
+                    <i data-lucide="rotate-ccw" class="w-4 h-4 flex-shrink-0"></i>
+                    <span><ruby>最初<rt>さいしょ</rt></ruby>から やり<ruby>直<rt>なお</rt></ruby>す</span>
+                </button>
+            </div>
         </div>
 
         <!--
@@ -392,6 +404,31 @@
             <button onclick="closeNotice()"
                 class="mt-6 w-full py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition shadow-lg">
                 わかりました
+            </button>
+        </div>
+    </div>
+
+    <!--
+      「最初から やり直す」の 確かめ。途中で 押すと 進み具合が 消えるので、押しまちがいでは 消さない。
+      confirm() は 端末に よって 字が 小さく、ふりがなも 振れない（上の お知らせと 同じ）。
+    -->
+    <div id="restart-confirm" role="dialog" aria-modal="true" aria-labelledby="restart-confirm-title"
+        class="hidden fixed inset-0 z-[70] bg-slate-900/70 flex items-center justify-center backdrop-blur-sm p-4">
+        <div class="bg-white rounded-2xl w-full max-w-sm shadow-2xl p-8 text-center">
+            <h2 id="restart-confirm-title" class="text-xl font-bold text-slate-800 leading-relaxed">
+                <ruby>最初<rt>さいしょ</rt></ruby>から やり<ruby>直<rt>なお</rt></ruby>しますか？
+            </h2>
+            <p class="mt-3 text-sm leading-7 text-slate-600">
+                <ruby>今<rt>いま</rt></ruby>の <ruby>点数<rt>てんすう</rt></ruby>と
+                <ruby>進<rt>すす</rt></ruby>み<ruby>具合<rt>ぐあい</rt></ruby>は <ruby>消<rt>き</rt></ruby>えます。
+            </p>
+            <button id="restart-cancel" type="button" onclick="closeRestartConfirm()"
+                class="mt-6 w-full py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition shadow-lg">
+                やめる
+            </button>
+            <button type="button" onclick="restartFromScratch()" aria-label="消して最初からやり直す"
+                class="mt-3 w-full py-3 bg-white border-2 border-rose-300 text-rose-600 rounded-xl font-bold hover:bg-rose-50 transition">
+                <ruby>消<rt>け</rt></ruby>して <ruby>最初<rt>さいしょ</rt></ruby>から やり<ruby>直<rt>なお</rt></ruby>す
             </button>
         </div>
     </div>
@@ -1270,6 +1307,23 @@
             location.reload();
         }
 
+        /**
+         * 左下の「最初から やり直す」。押しただけでは 消さず、確かめの 画面を 出す。
+         * 重なった 画面（元号の 説明・お知らせ・おわりの 画面）が 開いて いる ときは 開かない
+         *——マウスは 届かないが、キーボードは 下の ボタンに 届く。
+         */
+        function openRestartConfirm() {
+            if ([els.gengou, els.notice, els.completion].some(screen => !screen.classList.contains('hidden'))) return;
+            closePopover();
+            els.restartConfirm.classList.remove('hidden');
+            els.restartCancel.focus();
+        }
+
+        function closeRestartConfirm() {
+            els.restartConfirm.classList.add('hidden');
+            els.restartOpen.focus();
+        }
+
         // --- 答えの 記録（2026-11-02 の 指定「回答データも 後で 分析できるように」） ---
         /*
          * この ページは 静的な 1枚で、DBの 鍵も ログインの 情報も 持たない（規律4）。
@@ -1433,6 +1487,9 @@
             score: document.getElementById('score-display'),
             completion: document.getElementById('completion-screen'),
             notice: document.getElementById('notice-screen'),
+            restartConfirm: document.getElementById('restart-confirm'),
+            restartOpen: document.getElementById('restart-open'),
+            restartCancel: document.getElementById('restart-cancel'),
             finalScore: document.getElementById('final-score'),
             diplomaCard: document.getElementById('diploma-card'),
             diplomaScore: document.getElementById('diploma-score'),
@@ -2308,7 +2365,9 @@
         }
 
         document.addEventListener('keydown', (event) => {
-            if (event.key === 'Escape' && !els.gengou.classList.contains('hidden')) closeGengou();
+            if (event.key !== 'Escape') return;
+            if (!els.restartConfirm.classList.contains('hidden')) closeRestartConfirm();
+            else if (!els.gengou.classList.contains('hidden')) closeGengou();
         });
 
         function scrollToBottom() {

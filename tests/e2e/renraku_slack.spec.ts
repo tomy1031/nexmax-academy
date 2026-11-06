@@ -13,6 +13,7 @@ import { shot } from "./helpers";
  *  4. 文の 中の URL は 青い 字（リンクには しない。パスは 青く しない）
  *  5. 100点で ない ときは、まちがえた 問いだけ やり直せる。ぜんぶ 正解したら 修了証（初回の 点も 書く）
  *  6. 答えは 1問ずつ 親の 画面（アプリ）へ 渡る（先生の 画面で 分析する ため）
+ *  7. 左下の「最初から やり直す」は、確かめてから 保存を 消して 最初に もどる。重なった 画面の 下からは 開かない
  *
  * 静的な ページなので、アプリの 画面を 通さずに 直に 開く。
  */
@@ -248,7 +249,7 @@ test("まちがえた 問いだけ やり直して、ぜんぶ 正解すると �
   expect(await plain(items.nth(1))).toContain("DB Reset Notice 2. チームへの影響を伝えます");
   const retry = page.getByRole("button", { name: "まちがえた問いだけやり直す" });
   expect(await plain(retry)).toContain("（2問）");
-  await expect(page.getByRole("button", { name: "最初から" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "最初から", exact: true })).toBeVisible();
   await shot(page, "renraku-slack-04-misses");
 
   // やり直し: Slack の 画面で その 問いだけ（右の 欄は その ミッションの 指示・入力欄は 前の 行まで）
@@ -368,4 +369,78 @@ test("答えは 1問ずつ アプリへ 渡る（1回目の 正誤・押した �
   ]);
   expect(second?.attemptId).toBe(first?.attemptId);
   expect(second?.answers[0]).toMatchObject({ id: "m1-q2", correct: true });
+});
+
+test("左下の「最初から やり直す」は、確かめてから 保存を 消して 最初に もどる", async ({
+  page,
+}) => {
+  await openFirstQuestion(page);
+  await page.locator(".option-card").nth(0).click();
+  const score = page.locator("#score-display");
+  await expect(score).toHaveText("95");
+  const saved = () =>
+    page.evaluate(
+      (key) => JSON.parse(window.localStorage.getItem(key) ?? "{}"),
+      STORE_KEY,
+    ) as Promise<{
+      phase?: string;
+      score?: number;
+      attemptId?: string;
+    }>;
+  const before = await saved();
+  expect(before.score).toBe(95);
+
+  // 押しただけでは 消えない。「やめる」で もとの 問いに もどる
+  const open = page.locator("#restart-open");
+  const dialog = page.locator("#restart-confirm");
+  await open.click();
+  await expect(dialog).toBeVisible();
+  await shot(page, "renraku-slack-07-restart-confirm");
+  await dialog.getByRole("button", { name: "やめる" }).click();
+  await expect(dialog).toBeHidden();
+  await expect(score).toHaveText("95");
+  expect((await saved()).score).toBe(95);
+
+  // Esc でも 閉じる
+  await open.click();
+  await expect(dialog).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(dialog).toBeHidden();
+
+  // 消す ほうを 押すと、ミッション1の はじめから（点も 回の 鍵も 新しい）
+  await open.click();
+  await dialog.getByRole("button", { name: "消して最初からやり直す" }).click();
+  await expect(page.getByRole("button", { name: "了解です。対応します。" })).toBeVisible();
+  await expect(score).toHaveText("100");
+  const after = await saved();
+  expect(after).toMatchObject({ phase: "dm_briefing", score: 100 });
+  expect(after.attemptId).not.toBe(before.attemptId);
+});
+
+test("「最初から やり直す」は スマホの 幅でも 見えて、重なった 画面の 下からは 開かない", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(PAGE);
+  const open = page.locator("#restart-open");
+  await expect(open).toBeInViewport({ ratio: 1 });
+  await open.click();
+  const dialog = page.locator("#restart-confirm");
+  await expect(dialog.getByRole("button", { name: "消して最初からやり直す" })).toBeInViewport({
+    ratio: 1,
+  });
+  await page.keyboard.press("Escape");
+
+  // 元号の 説明を 開く。ボタンの 場所には 重なった 画面が 来て、キーボードでも 開かない
+  await page.evaluate(() => (window as unknown as { openGengou: () => void }).openGengou());
+  await expect(page.locator("#gengou-screen")).toBeVisible();
+  const onTop = await open.evaluate((button) => {
+    const box = button.getBoundingClientRect();
+    const top = document.elementFromPoint(box.x + box.width / 2, box.y + box.height / 2);
+    return Boolean(top && button.contains(top));
+  });
+  expect(onTop).toBe(false);
+  await open.focus();
+  await page.keyboard.press("Enter");
+  await expect(dialog).toBeHidden();
 });
