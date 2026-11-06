@@ -426,7 +426,6 @@ describe("Renraku Master の バグと 遅刻の 連絡", () => {
 
   it("遅刻の 文は、結論（遅刻すると 着く 時間）が 先で、理由と 影響は 箇条書き", () => {
     const [mention, head, list] = sent("Late Arrival Notice");
-    // 変わるのは 自分の 予定だけなので @channel では ない（講義の「@channel の 使いどころ」）
     expect(mention).toBe("@here");
     expect(head).toBe("【連絡】本日は遅刻します。9:30に会社に着きます。");
     expect(list).toBe("・理由：電車の遅れ\n・影響：9:00の朝礼に出られません");
@@ -451,6 +450,11 @@ describe("Renraku Master の バグと 遅刻の 連絡", () => {
       expect(text, title).toMatch(/^【状況】\nあなたは/);
       expect(text, title).not.toMatch(/さっき|電話/);
     }
+  });
+
+  it("遅刻の 問いでは @here と @channel の ちがいを 問わない（2026-11-06「厳しすぎる」）", () => {
+    const options = scenario("Late Arrival Notice").steps[0]?.options ?? [];
+    expect(options.map((option) => plain(option.text)).join("\n")).not.toContain("@channel");
   });
 
   it("問いの 文に 答えの 部品（メンション・【発生状況】）を 書かない", () => {
