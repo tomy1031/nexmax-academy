@@ -3366,7 +3366,18 @@
       "reading": "ていあん",
       "meaningJa": "「こう しませんか」と 言う こと",
       "englishTerm": "proposal",
-      "englishMeaning": "saying 「let's do it this way」"
+      "englishMeaning": "saying 「let's do it this way」",
+      "wrongMeanings": [
+        "Complaint",
+        "Decision",
+        "Report"
+      ],
+      "furigana": [
+        [
+          "言う",
+          "いう"
+        ]
+      ]
     },
     {
       "id": "tsutaeru",
@@ -5975,7 +5986,33 @@
         "Pronunciation",
         "Conversation"
       ],
-      "example": "海外へ 送る ため、英語に 翻訳を お願いします。"
+      "example": "海外へ 送る ため、英語に 翻訳を お願いします。",
+      "furigana": [
+        [
+          "国",
+          "くに"
+        ],
+        [
+          "海外",
+          "かいがい"
+        ],
+        [
+          "送る",
+          "おくる"
+        ],
+        [
+          "英語",
+          "えいご"
+        ],
+        [
+          "翻訳",
+          "ほんやく"
+        ],
+        [
+          "願い",
+          "ねがい"
+        ]
+      ]
     },
     {
       "id": "tagengo",
@@ -13733,6 +13770,30 @@
         [
           "議事録",
           "ぎじろく"
+        ],
+        [
+          "会議",
+          "かいぎ"
+        ],
+        [
+          "話した",
+          "はなした"
+        ],
+        [
+          "決めた",
+          "きめた"
+        ],
+        [
+          "読める",
+          "よめる"
+        ],
+        [
+          "書いた",
+          "かいた"
+        ],
+        [
+          "記録",
+          "きろく"
         ]
       ]
     },
@@ -21010,6 +21071,502 @@
         [
           "古",
           "ふる"
+        ]
+      ]
+    },
+    {
+      "id": "enduser",
+      "term": "エンドユーザー",
+      "reading": "えんどゆーざー",
+      "romaji": "endoyu-za-",
+      "meaningJa": "サイトや アプリを 実際に 使う 人です。たのんだ 人とは かぎりません。",
+      "englishTerm": "End user",
+      "example": "この サイトの エンドユーザーは、店に 来る お客様です。",
+      "wrongMeanings": [
+        "Client",
+        "Developer",
+        "Manager"
+      ],
+      "furigana": [
+        [
+          "実際",
+          "じっさい"
+        ],
+        [
+          "使う",
+          "つかう"
+        ],
+        [
+          "人",
+          "ひと"
+        ],
+        [
+          "客様",
+          "きゃくさま"
+        ],
+        [
+          "来る",
+          "くる"
+        ],
+        [
+          "店",
+          "みせ"
+        ]
+      ]
+    },
+    {
+      "id": "kankoukyaku",
+      "term": "観光客",
+      "reading": "かんこうきゃく",
+      "romaji": "kankoukyaku",
+      "meaningJa": "旅行で その 町に 来た 人です。",
+      "englishTerm": "Tourist",
+      "example": "外国人の 観光客は、英語で サイトを 読みます。",
+      "wrongMeanings": [
+        "Resident",
+        "Employee",
+        "Student"
+      ],
+      "furigana": [
+        [
+          "旅行",
+          "りょこう"
+        ],
+        [
+          "町",
+          "まち"
+        ],
+        [
+          "来た",
+          "きた"
+        ],
+        [
+          "人",
+          "ひと"
+        ],
+        [
+          "外国人",
+          "がいこくじん"
+        ],
+        [
+          "英語",
+          "えいご"
+        ],
+        [
+          "読み",
+          "よみ"
+        ]
+      ]
+    },
+    {
+      "id": "chuuzaiin",
+      "term": "駐在員",
+      "reading": "ちゅうざいいん",
+      "romaji": "chuuzaiin",
+      "meaningJa": "会社の 仕事で、外国に 住んで 働く 人です。",
+      "englishTerm": "Expatriate employee",
+      "example": "プノンペンには、日本人の 駐在員の 家族が たくさん 住んで います。",
+      "wrongMeanings": [
+        "Part-time worker",
+        "Tourist",
+        "Exchange student"
+      ],
+      "furigana": [
+        [
+          "会社",
+          "かいしゃ"
+        ],
+        [
+          "仕事",
+          "しごと"
+        ],
+        [
+          "外国",
+          "がいこく"
+        ],
+        [
+          "住ん",
+          "すん"
+        ],
+        [
+          "働く",
+          "はたらく"
+        ],
+        [
+          "人",
+          "ひと"
+        ],
+        [
+          "日本人",
+          "にほんじん"
+        ],
+        [
+          "家族",
+          "かぞく"
+        ]
+      ]
+    },
+    {
+      "id": "otemae",
+      "term": "お点前",
+      "reading": "おてまえ",
+      "romaji": "otemae",
+      "meaningJa": "茶道で、先生が お客様の 前で お茶を 点てる こと、その 動きです。",
+      "englishTerm": "Tea-making procedure",
+      "example": "お点前を 見る ときは、静かに します。",
+      "wrongMeanings": [
+        "Tea shop",
+        "Tea leaves",
+        "Tea party invitation"
+      ],
+      "furigana": [
+        [
+          "点前",
+          "てまえ"
+        ],
+        [
+          "茶道",
+          "さどう"
+        ],
+        [
+          "先生",
+          "せんせい"
+        ],
+        [
+          "客様",
+          "きゃくさま"
+        ],
+        [
+          "前",
+          "まえ"
+        ],
+        [
+          "茶",
+          "ちゃ"
+        ],
+        [
+          "点てる",
+          "たてる"
+        ],
+        [
+          "動き",
+          "うごき"
+        ],
+        [
+          "見る",
+          "みる"
+        ],
+        [
+          "静か",
+          "しずか"
+        ]
+      ]
+    },
+    {
+      "id": "chashitsu",
+      "term": "茶室",
+      "reading": "ちゃしつ",
+      "romaji": "chashitsu",
+      "meaningJa": "茶道を する ための 小さな 部屋です。",
+      "englishTerm": "Tea room",
+      "example": "Aobaの 店の 茶室は、6名まで 使えます。",
+      "wrongMeanings": [
+        "Kitchen",
+        "Waiting room",
+        "Storage room"
+      ],
+      "furigana": [
+        [
+          "茶道",
+          "さどう"
+        ],
+        [
+          "小さな",
+          "ちいさな"
+        ],
+        [
+          "部屋",
+          "へや"
+        ],
+        [
+          "店",
+          "みせ"
+        ],
+        [
+          "茶室",
+          "ちゃしつ"
+        ],
+        [
+          "名",
+          "めい"
+        ],
+        [
+          "使え",
+          "つかえ"
+        ]
+      ]
+    },
+    {
+      "id": "wagashi",
+      "term": "和菓子",
+      "reading": "わがし",
+      "romaji": "wagashi",
+      "meaningJa": "日本の むかしからの お菓子です。季節の 形や 色を 楽しみます。",
+      "englishTerm": "Japanese sweets",
+      "example": "茶道では、お茶の 前に 和菓子を 食べます。",
+      "wrongMeanings": [
+        "Rice cracker",
+        "Green tea",
+        "Chopsticks"
+      ],
+      "furigana": [
+        [
+          "日本",
+          "にほん"
+        ],
+        [
+          "菓子",
+          "かし"
+        ],
+        [
+          "季節",
+          "きせつ"
+        ],
+        [
+          "形",
+          "かたち"
+        ],
+        [
+          "色",
+          "いろ"
+        ],
+        [
+          "楽しみ",
+          "たのしみ"
+        ],
+        [
+          "茶道",
+          "さどう"
+        ],
+        [
+          "茶",
+          "ちゃ"
+        ],
+        [
+          "前",
+          "まえ"
+        ],
+        [
+          "食べ",
+          "たべ"
+        ]
+      ]
+    },
+    {
+      "id": "sadou_taiken",
+      "term": "茶道体験",
+      "reading": "さどうたいけん",
+      "romaji": "sadou taiken",
+      "meaningJa": "茶道を 1回だけ 体験する ことです。はじめての 人に 向いて います。",
+      "englishTerm": "Tea ceremony experience",
+      "example": "茶道体験は、1回 6名までです。",
+      "wrongMeanings": [
+        "Tea ceremony license",
+        "Tea farm tour",
+        "Tea shop opening"
+      ],
+      "furigana": [
+        [
+          "茶道",
+          "さどう"
+        ],
+        [
+          "回",
+          "かい"
+        ],
+        [
+          "体験",
+          "たいけん"
+        ],
+        [
+          "人",
+          "ひと"
+        ],
+        [
+          "向い",
+          "むい"
+        ],
+        [
+          "名",
+          "めい"
+        ]
+      ]
+    },
+    {
+      "id": "sadou_kyoushitsu",
+      "term": "茶道教室",
+      "reading": "さどうきょうしつ",
+      "romaji": "sadou kyoushitsu",
+      "meaningJa": "毎月 通って、先生に 茶道を 習う ところです。",
+      "englishTerm": "Tea ceremony class",
+      "example": "佐々木先生は、プノンペンで 茶道教室を 開きます。",
+      "wrongMeanings": [
+        "Tea ceremony museum",
+        "Tea shop menu",
+        "Kimono rental"
+      ],
+      "furigana": [
+        [
+          "毎月",
+          "まいつき"
+        ],
+        [
+          "通っ",
+          "かよっ"
+        ],
+        [
+          "先生",
+          "せんせい"
+        ],
+        [
+          "茶道",
+          "さどう"
+        ],
+        [
+          "習う",
+          "ならう"
+        ],
+        [
+          "佐々木先生",
+          "ささきせんせい"
+        ],
+        [
+          "開き",
+          "ひらき"
+        ]
+      ]
+    },
+    {
+      "id": "sahou",
+      "term": "作法",
+      "reading": "さほう",
+      "romaji": "sahou",
+      "meaningJa": "その 場所で 決まって いる、ていねいな ふるまいです。",
+      "englishTerm": "Manners",
+      "example": "作法は、先生が 一つずつ 教えます。",
+      "wrongMeanings": [
+        "Recipe",
+        "Price",
+        "Uniform"
+      ],
+      "furigana": [
+        [
+          "場所",
+          "ばしょ"
+        ],
+        [
+          "決まっ",
+          "きまっ"
+        ],
+        [
+          "先生",
+          "せんせい"
+        ],
+        [
+          "一つ",
+          "ひとつ"
+        ],
+        [
+          "教え",
+          "おしえ"
+        ]
+      ]
+    },
+    {
+      "id": "seiza",
+      "term": "正座",
+      "reading": "せいざ",
+      "romaji": "seiza",
+      "meaningJa": "ひざを まげて、足の 上に すわる すわり方です。",
+      "englishTerm": "Sitting on your knees",
+      "example": "正座が できない 人は、いすの 席を 使えます。",
+      "wrongMeanings": [
+        "Standing still",
+        "Lying down",
+        "Sitting cross-legged"
+      ],
+      "furigana": [
+        [
+          "足の",
+          "あしの"
+        ],
+        [
+          "上",
+          "うえ"
+        ],
+        [
+          "方",
+          "かた"
+        ],
+        [
+          "人",
+          "ひと"
+        ],
+        [
+          "席",
+          "せき"
+        ],
+        [
+          "使え",
+          "つかえ"
+        ]
+      ]
+    },
+    {
+      "id": "teiansho",
+      "term": "提案書",
+      "reading": "ていあんしょ",
+      "romaji": "teiansho",
+      "meaningJa": "「こう しませんか」と いう 考えを、理由と いっしょに 書いた 書類です。",
+      "englishTerm": "Proposal document",
+      "example": "金曜日の 午後に、提案書を 山本社長に 送ります。",
+      "wrongMeanings": [
+        "Invoice",
+        "Contract",
+        "Meeting minutes"
+      ],
+      "furigana": [
+        [
+          "考え",
+          "かんがえ"
+        ],
+        [
+          "理由",
+          "りゆう"
+        ],
+        [
+          "書い",
+          "かい"
+        ],
+        [
+          "書類",
+          "しょるい"
+        ],
+        [
+          "金曜日",
+          "きんようび"
+        ],
+        [
+          "午後",
+          "ごご"
+        ],
+        [
+          "山本社長",
+          "やまもとしゃちょう"
+        ],
+        [
+          "送り",
+          "おくり"
         ]
       ]
     }

@@ -1,0 +1,52 @@
+{
+  "kind": "wordstage",
+  "id": "youkenweb_kotoba",
+  "title": "ウェブサイトの 要件定義の ことば",
+  "description": "Aobaの 店の ウェブサイトを 考える 会議で 出て きた ことばです。",
+  "fieldSequence": [
+    "forest",
+    "sky",
+    "space"
+  ],
+  "questionCount": 8,
+  "passRate": 80,
+  "wordIds": [
+    "enduser",
+    "kankoukyaku",
+    "chuuzaiin",
+    "teian",
+    "teiansho",
+    "sadou",
+    "sadou_taiken",
+    "sadou_kyoushitsu",
+    "otemae",
+    "chashitsu",
+    "wagashi",
+    "sahou",
+    "seiza",
+    "honyaku",
+    "koushin"
+  ],
+  "furigana": [
+    [
+      "要件定義",
+      "ようけんていぎ"
+    ],
+    [
+      "考える",
+      "かんがえる"
+    ],
+    [
+      "会議",
+      "かいぎ"
+    ],
+    [
+      "出",
+      "で"
+    ],
+    [
+      "店",
+      "みせ"
+    ]
+  ]
+}
