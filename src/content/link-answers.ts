@@ -46,7 +46,7 @@ export const LINK_ANSWER_PROMPTS: Readonly<Record<string, Readonly<Record<string
     "m5-q3": "Task Request — 3. いつまでかを書きます",
     "m6-q1": "Bug Notice — 1. 何が起きたか伝えます",
     "m6-q2": "Bug Notice — 2. くわしい状況を書きます",
-    "m6-q3": "Bug Notice — 3. 昨日のことと、次の連絡を書きます",
+    "m6-q3": "Bug Notice — 3. 昨日のことを書きます",
     "m7-q1": "Late Arrival Notice — 1. 誰にメンションしますか？",
     "m7-q2": "Late Arrival Notice — 2. 何がどうなるか、結論を書きます",
     "m7-q3": "Late Arrival Notice — 3. 理由と影響を書きます",

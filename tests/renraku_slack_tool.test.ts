@@ -416,12 +416,12 @@ describe("Renraku Master の バグと 遅刻の 連絡", () => {
       .steps.map((step) => step.options.find((option) => option.isCorrect))
       .map((option) => plain(option?.post ?? option?.text ?? ""));
 
-  it("バグの 文は、結論 → 【発生状況】の 箇条書き → 次の 連絡の 時間 の 順", () => {
+  it("バグの 文は、結論 → 【発生状況】の 箇条書き → 昨日の 事実 の 順", () => {
     const [head, list, last] = sent("Bug Notice");
     expect(head).toBe("@奥田さん\n開発環境のユーザー登録画面でエラー500が発生しました。");
     expect(list).toMatch(/^【発生状況】\n・発生時刻：本日 10:10\n/);
     expect(last).toMatch(/昨日 17:00/);
-    expect(last).toMatch(/次は 11:10に連絡します。$/);
+    expect(last).toMatch(/原因はまだ分かりません。$/);
   });
 
   it("遅刻の 文は、結論（遅刻すると 着く 時間）が 先で、理由と 影響は 箇条書き", () => {
