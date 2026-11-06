@@ -389,6 +389,8 @@ describe("Renraku Master の 指示と 正解の 文", () => {
     ["DB Reset Notice", "DBに接続できません"],
     ["Task Request", "コードの確認"],
     ["Task Request", "本日17:00"],
+    ["Late Arrival Notice", "30分ほど"],
+    ["Late Arrival Notice", "後ほど"],
   ] as const;
 
   it("正解の 文の 言葉と 事実が 指示に 書いて ある", () => {
@@ -424,12 +426,12 @@ describe("Renraku Master の バグと 遅刻の 連絡", () => {
     expect(last).toMatch(/原因はまだ分かりません。$/);
   });
 
-  it("遅刻の 文は、結論（遅刻すると 着く 時間）が 先で、理由と 影響は 箇条書き", () => {
+  it("遅刻の 文は、結論が 先で、理由は 分けずに 文章で、最後に おわびの 1文", () => {
     const [mention, head, list] = sent("Late Arrival Notice");
     expect(mention).toBe("@here");
-    expect(head).toBe("【連絡】本日は遅刻します。9:30に会社に着きます。");
+    expect(head).toBe("【連絡】本日は遅刻します。");
     expect(list).toBe(
-      "・理由：電車の遅れ\n・影響：9:00の朝礼に出られません\n\nご迷惑おかけしますがよろしくお願いいたします。",
+      "電車の遅れのため、30分ほど遅れの見込みです。\n朝礼に間に合わないため、後ほど情報共有させてください。\n\nご迷惑おかけしますがよろしくお願いいたします。",
     );
   });
 
