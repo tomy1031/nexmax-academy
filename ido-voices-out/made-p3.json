@@ -541,5 +541,57 @@
   "readings": [
    "兼定＝かねさだ"
   ]
+ },
+ "vrmv00c": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.86,
+  "text": "兼定さんは、しばらく、巻物の上の小さな絵を、指でなぞっていた。",
+  "heard": " 兼定さんは、しばらく、巻物の",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "兼定＝かねさだ"
+  ]
+ },
+ "v14wegtk": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "kanesada",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 3.44,
+  "text": "……このお経にな、こういう一節がある。",
+  "heard": "この応急になこういう一節がある。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v119ikfd": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "kanesada",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 7.63,
+  "text": "刀を持った者たちに、ぐるりとかこまれても、観音さまを思えば——",
+  "heard": "刀 を 持っ た 者 たち に グリリ と 囲ま れ て も 観音 様 を 思え ば",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "観音＝かんのん"
+  ]
+ },
+ "vwliqwl": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "kanesada",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 3.69,
+  "text": "みな、すぐに、やさしい心をおこす。",
+  "heard": "みんな すぐ に 優しい 心 を 起こす 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
