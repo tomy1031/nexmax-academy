@@ -252,5 +252,259 @@
   "readings": [
    "公会堂＝こうかいどう"
   ]
+ },
+ "vv5n7ic": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.47,
+  "text": "1918年に建物ができたとき、北と南の玄関には、ひさしがつけられたんだ。",
+  "heard": "1918 年 に 建物 が でき た 時 、 北 と 南 の 玄関 に は 庇 が つけ られ た ん だ 。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vjgeaik": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.68,
+  "text": "岩本さんが、「雨の日のみんなのために」とつけさせたものだと、そのころの新聞が伝えているよ。",
+  "heard": "岩本さんが、「雨の日のみんなのために」とつけさせたものだと、そのころの新聞が伝えているよ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vxpyega": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.420041666666666,
+  "text": "岩本さんが、いつそう言ったのかは、分かっていないんだ。この日に清吉くんが書きとめた、というのは、物語のための場面だよ。",
+  "heard": "岩本さんが、いつそう言ったのかは、分かっていないんだ。この日に清吉くんが書きとめた、というのは、物語のための",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "清吉＝せいきち"
+  ]
+ },
+ "vfiykut": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 14.3,
+  "text": "それから百年あまり。この建物では、オペラやコンサート、講演会、結婚式が、たくさん開かれてきたんだ。1922年には、科学者のアインシュタインも、ここで講演したんだよ。",
+  "heard": "それから100年余り、この建物ではオペラやコンサート、講演会、結婚式がたくさん開かれたんだ。1922年には科学者のアインシュタインもここで講演したんだよ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v4d30ol": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.82,
+  "text": "（小声）あなたが岩本さんに言ったとおり。結婚式も、ちゃんとここで開かれているよ。",
+  "heard": "あなたが岩本さんに言った通り、結婚式もちゃんとここで開かれているよ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v11wy1kh": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.92,
+  "text": "（小声）あなたが岩本さんに言ったとおり。地下の展示室は、今も無料で、だれでも見られるんだ。",
+  "heard": "あなたが岩本さんに言った通り 地下の展示室は今も無料で誰でも見られるんだ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1kkxvge": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.98,
+  "text": "（小声）あなたが岩本さんに言ったとおり。赤れんがは、百年たっても、ここにあるよ。",
+  "heard": "あなたが岩本さんに行ったとおり、阿迦蓮華は100年経ってもここにあるよ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1szlkdu": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.91,
+  "text": "（小声）アメリカで見た「みんなの家」。岩本さんの思いは、大阪で、こうしてかたちになったんだね。",
+  "heard": "アメリカで見たみんなの家岩本さんの思いは大阪でこうして形になったんだね。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1q708h6": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.04,
+  "text": "（小声）商人も、職人も、子どもも、だれでも入れる建物。……今日ここに来たあなたも、そのひとりだね。",
+  "heard": "00:00 証人も職人も子供も誰でも入れる建物。今日ここに来たあなたもその1人だね。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v9tamsx": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.440041666666667,
+  "text": "でも、1970年代に、この建物は、こわされそうになったことがあるんだ。",
+  "heard": "でも1970年代にこの建物は壊されそうになったことがあるんだ",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1poo7jh": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.730041666666667,
+  "text": "そのとき、大阪の人たちが声をあげた。そして1988年、この建物を、ずっと残すことが決まったんだ。",
+  "heard": "そのとき、大阪の人たちが声をあげた。そして1988年、この建物を、ずっと残すことが",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vrn8ls0": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 12.67,
+  "text": "1989年には、建物を守るお金を集める呼びかけに、およそ1万3千の人や会社が、お金を出したんだよ。地下1階には、その人たちの名前を刻んだレリーフがあるんだ。",
+  "heard": "1989年には建物を守るお金を集める呼びかけに、およそ1万3000の人や会社がお金を出したんだよ。地下1階には、その人たちの名前を刻んだレリーフがあるんだ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vly2is7": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.02,
+  "text": "入るのは無料。岩本さんゆかりの品も、地下1階の展示室で見られるよ。",
+  "heard": "入るのは無料。岩本さんゆかりの品も、地下1階の展示室で見られるよ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vr4e0fg": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.94,
+  "text": "公会堂のお休みは、毎月第4火曜日（祝日のときは、その次の平日）と、年末年始なんだって。",
+  "heard": "公会堂のお休みは、毎月第4火曜日（祝日のときは、その次の平日）と、年末年始なんだって。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "公会堂＝こうかいどう"
+  ]
+ },
+ "vk978j6": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.96,
+  "text": "（小声）正面の大きなアーチは、岡田信一郎さんの最初の絵から生まれたものだったね。",
+  "heard": "正面の大きなアーチは岡田信一郎さんの最初の絵から生まれたものだったね",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "岡田信一郎＝おかだしんいちろう"
+  ]
+ },
+ "vuc0j9j": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.18,
+  "text": "（小声）この建物の、最初の設計図を描いた若い建築家の物語も、公会堂のもうひとつのQRでひらくよ。",
+  "heard": "この建物の、最初の設計図を描いた若い建築家の物語も、公会堂のもうひとつのQRでひらくよ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "設計図＝せっけいず",
+   "建築家＝けんちくか",
+   "公会堂＝こうかいどう"
+  ]
+ },
+ "vtkic2c": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.11,
+  "text": "正面の大きなアーチの上を見上げてみて。商売の神さま・メルクリウスと、ちえの女神・ミネルヴァの像があるんだ。",
+  "heard": "正面の大きなアーチの上を見上げてみて。商売の神さま・メルクリウスと、ちえの女神・ミネルヴァの像があるんだ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vbd7kw6": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.96,
+  "text": "戦争のとき、金属を集めるために、いちどはずされてしまったけど、2002年の工事で、もどってきたんだよ。",
+  "heard": "戦争のとき、金属を集めるために、いちどはずされてしまったけど、2002年の工事で、もどってきたんだよ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1g5r4gu": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.44,
+  "text": "清吉くんは、物語のために作った人。でも、北浜には、本当に、岩本さんの塾で学んだ少年たちがいたんだ。",
+  "heard": "清吉くんは、物語のために作った人。でも、北浜には、本当に、岩本さんの塾で学んだ少年たちがいたんだ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "清吉＝せいきち",
+   "北浜＝きたはま",
+   "塾＝じゅく"
+  ]
+ },
+ "vmutzgt": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.440041666666667,
+  "text": "ひとりの人の「みんなのために」から生まれた建物を、こんどは、1万3千の「みんな」が守った。",
+  "heard": "ひとりの人の「みんなのために」から生まれた建物を、こんどは、1万3千の「みんな」が守った。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
