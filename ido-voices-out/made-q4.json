@@ -1,0 +1,98 @@
+{
+ "e16nrzxoguv1k": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.820041666666667,
+  "text": "Long, long ago. — From here on, this is a legend.",
+  "heard": " Long, long ago. — From here on, this is a legend.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "efcmlz01t2jh": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.4,
+  "text": "The southern coast of Cambodia. On the morning beach, a row of small boats lay waiting.",
+  "heard": " The southern coast of Cambodia. On the morning beach, a row of small boats lay waiting.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1t0flfezbd9z": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 13.250041666666666,
+  "text": "Behind the beach sat a great mountain, solid and still. Its top was always hidden in white cloud.",
+  "heard": " Behind the beach sat a great mountain, solid and still. Its top was always hidden in white cloud.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e8hq7ap10ooi": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.640041666666667,
+  "text": "Before they pushed off, the fishermen stood together in front of a little shrine on the beach and pressed their palms together.",
+  "heard": " Before they pushed off, the fishermen stood together in front of a little shrine on the beach and pressed their palms together.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e11r9w6fm7msf": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "ヴァンナのお父さん",
+  "voice": "Rasalgethi",
+  "model": "gemini-3.8-live",
+  "seconds": 4.520041666666667,
+  "text": "Vanna, you too. Come and greet Grandmother Mao.",
+  "heard": "Vanner YouToo, come and greet Grandmother Mao.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e181s1181o5fr": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "vanna",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 7.34,
+  "text": "Coming! …Oh, who are you? I’ve never seen you before. Did you come by boat?",
+  "heard": " Oh, who are you? I've never seen you before. Did you come by boat?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1x3vwu0w3d9l": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "vanna",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 9.150041666666667,
+  "text": "I’m Vanna. I’m nine. My dad’s a fisherman, and when I grow up, I’m going to be one too.",
+  "heard": " I’m nine. My dad’s a fisherman, and when I grow up, I’m going to be one too.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eqqm6q2do8o8": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "vanna",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 4.680041666666667,
+  "text": "Coming! …Oh, you’re back! Did you come by boat?",
+  "heard": " Oh, you're back! Did you come by boat?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ }
+}
