@@ -1,0 +1,260 @@
+{
+ "v114s5k1": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.560041666666667,
+  "text": "平成六年、九月四日。夜明け前。",
+  "heard": "平成六年、九月四日。夜明け",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1fsygoc": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.040166666666667,
+  "text": "足もとが、ゆらり、とゆれた。",
+  "heard": "足もとが、ゆらり、とゆれた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v3umcql": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.11,
+  "text": "わっ、ほんとだ。ここは、海の上だよ！",
+  "heard": "わっ、ほんとだ。ここは、海の上だよ！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vametsc": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.24,
+  "text": "いまの泉南ロングパークの土地は、海を埋め立てて作ったんだ。時の扉は、そのそばの、海の上にひらいたみたい。",
+  "heard": "いまの泉南ロングパークの土地は、海を埋め立てて作ったんだ。時の扉は、そのそばの、海の上にひらいたみたい。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "泉南＝せんなん",
+   "埋め立て＝うめたて"
+  ]
+ },
+ "vo7kjc7": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.440041666666667,
+  "text": "小さな漁船だった。エンジンの音が、とん、とん、とひびいている。",
+  "heard": "小さな旅線だった エンジンの音が トン トン と 響い て いる",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v13jn3gw": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.670041666666666,
+  "text": "へさきに、男の子が、ひざをかかえてすわっていた。じっと、海の向こうを見ている。",
+  "heard": "客席 に 男の子 が 膝 を 抱え て 座っ て い た 。 じっと 海 の 向こう を 見 て いる 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vrrh3w5": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "takuya",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 3.74,
+  "text": "うわっ！ だ、だれ！？ いつ乗ったん！？",
+  "heard": "うわ 、 だ 、 誰 ? いつ のっ た ?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1mcslww": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "takuya",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 6.51,
+  "text": "……まあ、ええわ。おれ、拓也。十歳。じいちゃんの舟に、乗せてもろてんねん。",
+  "heard": "前 は 、 俺 拓 や 10 歳 じいちゃん の 船 に 乗せ て もろ てん ねん 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "拓也＝たくや"
+  ]
+ },
+ "v19w2xyw": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "takuya",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 4.72,
+  "text": "うわっ！ ……あれ、また、あんた？ いつ乗ったん！？",
+  "heard": "うわ、 あれ また あんた いつ のっ た ん ?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v19divqg": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "takuya",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 13.7,
+  "text": "うわっ！ だ、だれ！？ ……なんか、知ってる人みたいな顔して。",
+  "heard": "うわー。 だ 誰 ? なんか 知っ てる 人 みたい な 顔 し て 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v10dv9n8": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "takuya",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 5.480041666666667,
+  "text": "おれ、拓也。十歳。じいちゃんの舟に、乗せてもろてんねん。",
+  "heard": "おれ、拓也。十歳。じいちゃんの舟に、乗せてもろてんねん。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "拓也＝たくや"
+  ]
+ },
+ "vxkt1dl": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "takuya",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 7.27,
+  "text": "見て見て。あの光。ひとつ、ふたつ、みっつ……ずうっと、ならんでるやろ。",
+  "heard": "見て見て。あの光。ひとつ、ふたつ、みっつ……ずうっと、ならんでるやろ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vy7hahi": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.16,
+  "text": "暗い海の向こうに、光の列が、横にずらりと浮かんでいた。",
+  "heard": " 光の列が、横にずらりと浮かんでいた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vh5gxse": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "takuya",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 5.02,
+  "text": "あれ、空港やねん。海の上に、島ごと、つくったんやで。",
+  "heard": "あれ、空港やねん。海の上に、島ごと、つくったんやで。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1v2hn99": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "takuya",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 3.46,
+  "text": "今日から、あの島に、飛行機が来るんや！",
+  "heard": "今日から、あの島に、飛行機が来るんや！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1jwgnbz": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.14,
+  "text": "関西国際空港だよ。陸から5キロほど沖の海を、埋め立てて作った島なんだ。",
+  "heard": "関西国際空港だよ。陸から五キロほど沖の海を、埋め立てて作った島なんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "関西国際空港＝かんさいこくさいくうこう",
+   "埋め立て＝うめたて"
+  ]
+ },
+ "v1r9hbbo": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.36,
+  "text": "夜も朝も、24時間、飛行機が飛べる空港なんだよ。陸とは、3.75キロの長い橋でつながっているんだ。",
+  "heard": "夜も朝も、24時間、飛行機が飛べる空港なんだよ。陸とは、3.75キロの長い橋でつながっているんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1dyi1uv": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "katsuzo",
+  "voice": "Alnilam",
+  "model": "gemini-3.8-live",
+  "seconds": 5.36,
+  "text": "拓也、だれとしゃべっとんねん。……ん？ なんや、あんた。",
+  "heard": "拓也、だれとしゃべっとんねん。……ん？なんや、あんた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "拓也＝たくや"
+  ]
+ },
+ "v1ucvdpf": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "katsuzo",
+  "voice": "Alnilam",
+  "model": "gemini-3.8-live",
+  "seconds": 10.52,
+  "text": "……まあ、海の上で、追い返すわけにもいかんわな。勝三や。この岡田浦で、五十年、漁師しとる。",
+  "heard": "まあ、海の上で、追い返すわけにもいかんわな。勝三や。この岡田浦で、五十年、漁師しとる。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "勝三＝かつぞう",
+   "岡田浦＝おかだうら",
+   "漁師＝りょうし"
+  ]
+ },
+ "v1i0nk6v": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "katsuzo",
+  "voice": "Alnilam",
+  "model": "gemini-3.8-live",
+  "seconds": 7.72,
+  "text": "拓也、だれとしゃべっとんねん。……なんや、また、あんたか。ほんま、ふしぎな人やな。",
+  "heard": "宅 や だれ と 喋 っ と ん ねん 。 祖難 や また あんた か 。 ほんま 不思議 な 人 や な 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "拓也＝たくや"
+  ]
+ }
+}
