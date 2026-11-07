@@ -190,5 +190,101 @@
   "heard": " Oh, are you a traveller? Come to see them building the public hall?",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "eb57mla1x6zw": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "kiyo2",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 6.94,
+  "text": "I'm Seikichi. I keep the account books at a broker's shop in Kitahama. I'm nineteen.",
+  "heard": " I keep the account books at a broker's shop in Kitahama. I'm nineteen.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1esz1s5s7hkl": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "kiyo2",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 7.25,
+  "text": "When I was little, I was an errand boy who couldn't even read. I learned at young Master Iwamoto's school.",
+  "heard": " When I was little, I was an errand boy who couldn't even read. I learned at young Master Iwamoto's school.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1l3eeee1k333": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "kiyo2",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 7.44,
+  "text": "These days, in the evenings, I teach little ones like Sankichi here to read. Copying the young master.",
+  "heard": " These days, in the evenings, I teach little ones like Sankichi here to read. Copying the young master.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e4fz8cb10rxv": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "kiyo2",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 4.85,
+  "text": "Today there's a big celebration for the hall. C'mon, let's go!",
+  "heard": "Today, there's a big celebration for the hall. Come on, let's go.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1f8ph26jr7tr": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.310041666666667,
+  "text": "When you crossed the bridge, a steel frame rose up in front of you, reaching for the sky.",
+  "heard": " When you crossed the bridge, a steel frame rose up in front of you, reaching for the sky.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1hi6xbz1e255": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.51,
+  "text": "Wooden scaffolding surrounded it. High up, workmen in happi coats with big crests on the back were looking down at you.",
+  "heard": " Wooden scaffolding surrounded it. High up, workmen in happi coats with big crests on the back",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e18w8gh5vq878": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 13.51,
+  "text": "In front of the frame stood a tent with a wavy edge. Shinto priests in white robes and men in black coats with flowers on their chests were lined up beneath it.",
+  "heard": " In front of the frame stood a tent with a wavy edge. Shinto priests in white robes and men in black coats with flowers on their chests were lined up beneath it.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eklbwr2eqm83": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.370041666666667,
+  "text": "Today is the cornerstone ceremony — a celebration where a special stone carved with the word “cornerstone” is set into a corner of the building.",
+  "heard": " Today is the cornerstone ceremony — a celebration where a special stone carved with the word \"cornerstone\" is set into a corner of the building.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
