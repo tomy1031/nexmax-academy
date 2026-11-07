@@ -428,5 +428,118 @@
   "readings": [
    "観音＝かんのん"
   ]
+ },
+ "vdb9b9h": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "hachi",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 3.87,
+  "text": "ぜんぶで、四十もあるんやで！ おれ、かぞえたもん。",
+  "heard": "ぜんぶで40もあるんやで。俺数えたもん。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v9g9ii1": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "kanesada",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 8.690041666666668,
+  "text": "観音経じゃ。困っている人を、観音さまが救ってくださる、という教えのお経よ。",
+  "heard": "観音 行者 困っ て いる 人 を 観音 様 が 救っ て くださる と いう 教え の お 教 よ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "観音経＝かんのんぎょう",
+   "観音＝かんのん"
+  ]
+ },
+ "vutgegn": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "kanesada",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.48,
+  "text": "絵は、海の向こうの国、明の本の絵を、手本にした。",
+  "heard": "絵は、海の向こうの国、みんの本の絵を、手本",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "明の本＝みんのほん"
+  ]
+ },
+ "vgb7685": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.71,
+  "text": "巻物のいちばん最後に、ハスの葉とハスの花の台にかこまれて、字が刷ってあった。",
+  "heard": "巻物のいちばん最後に、ハスの葉とハスの花の台にかこまれて、字が刷ってあった。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1rshisc": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.41,
+  "text": "「濃州関兼定　永正元甲子九月日」。",
+  "heard": "濃州関兼定永正元甲子九月日",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "濃州＝のうしゅう",
+   "兼定＝かねさだ"
+  ]
+ },
+ "vgowme6": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.62,
+  "text": "「美濃の国の関の、兼定。永正元年の九月」という意味だよ。このお経を、いつ、だれが刷ったかの、しるしなんだ。",
+  "heard": "みののくにのせきの、かねさだ。永正元年の九月」という意味だよ。このお経を、いつ、だれが刷ったかの、しるしなんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "美濃＝みの",
+   "兼定＝かねさだ",
+   "元年＝がんねん"
+  ]
+ },
+ "v1kbr1e6": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.19,
+  "text": "ここにある「兼定」は、刀鍛冶の兼定さんと同じ人だと考えられているよ。",
+  "heard": "ここにある「兼定」は、\n刀鍛冶の兼定さんと同じ人だと考えられているよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "兼定＝かねさだ",
+   "刀鍛冶＝かたなかじ"
+  ]
+ },
+ "v12s02et": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "hachi",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 7.91,
+  "text": "なあ、兼定さま。刀を打つ人が、なんで、お経を刷るん？",
+  "heard": "なぁ 金田 さま 刀 を 打つ 人 が なん で お 経 を する ん ?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "兼定＝かねさだ"
+  ]
  }
 }
