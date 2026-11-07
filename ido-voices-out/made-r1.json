@@ -259,5 +259,251 @@
   "heard": "会ったこともない人の、大きな贈りものだ。……下手なものは、描けないよ。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "vhajmjt": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 11.033666666666667,
+  "text": "岡田さんは、雑誌の一冊をひらいて、外国の建物の写真に、細かいメモを書きこんでいく。",
+  "heard": "岡田さんは 雑誌の1冊を開いて 外国の建物の写真に 細かいメモを書き込んでいく。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1v5gj4r": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "noboru",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 7.3,
+  "text": "先生は、外国に行ったことがないんです。体が弱くて、長い船の旅は、むりだって。",
+  "heard": "先生は、外国に行ったことがないんです。体が弱くて、長い船の旅は、むりだって。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vn00s4w": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "okada",
+  "voice": "Rasalgethi",
+  "model": "gemini-3.8-live",
+  "seconds": 7.69,
+  "text": "そのかわり、雑誌の中なら、どこへでも行ける。ローマにも、パリにも、ロンドンにもね。",
+  "heard": "その代わり 雑誌 の 中 なら どこ へ で も 行ける ローマ に も パリ に も ロンドン に も ね",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1d28wcs": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.54,
+  "text": "岡田さんは体が弱くて、外国へ行くことはなかったんだ。でも、外国の建築の雑誌を、たくさん読みこんでいたと伝えられているよ。",
+  "heard": "岡田さんは体が弱くて、外国へ行くことはなかったんだ。でも、外国の建築の雑誌を、たくさん読みこんでいたと伝えられているよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vyfzhel": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.79,
+  "text": "岡田さんが、机の上の大きな図面を、あなたのほうへ向けた。",
+  "heard": "岡田さんが、机の上の大きな図面を、あなたのほうへ向けた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "図面＝ずめん"
+  ]
+ },
+ "v66lrwn": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 16.82004166666667,
+  "text": "建物の正面の絵だった。まんなかに、大きな半円のアーチ。その下に、太い柱が四本。屋根の上には、小さな丸い屋根がのっている。",
+  "heard": "建物 の 正面 の 絵 だっ た 。 真ん中 に 大きな 半円 の アーチ 。 その 下 に 太い 柱 が 4 本 。 屋根 の 上 に は 小さな 丸い 屋根 が 乗っ て いる 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v163uo84": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "okada",
+  "voice": "Rasalgethi",
+  "model": "gemini-3.8-live",
+  "seconds": 7.25,
+  "text": "まんなかに、大きなアーチを置いた。遠くからでも、ここが、みんなの家だと分かるように。",
+  "heard": " まんなかに、大きなアーチを置いた。遠くからでも、ここが、みんなの家だと分かるように。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vbl86em": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "ノボル",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 3.22,
+  "text": "……先生。ちょっと、はでじゃありませんか？",
+  "heard": "先生 ちょっと 派手 じゃ あり ませ ん か ?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vythvet": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "okada",
+  "voice": "Rasalgethi",
+  "model": "gemini-3.8-live",
+  "seconds": 9.4,
+  "text": "はでかな。でも、大阪は、にぎやかな商いの町だろう。にぎやかな町には、にぎやかな顔が似あうと思うんだ。",
+  "heard": "でも、大阪は、にぎやかな商いの町だろう。にぎやかな町には、にぎやかな顔が似あうと思うんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1eya73o": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "okada",
+  "voice": "Rasalgethi",
+  "model": "gemini-3.8-live",
+  "seconds": 2.64,
+  "text": "きみは、どこがいちばん好きだい？",
+  "heard": "きみは、どこがいちばん好きだい？",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v12uz0op": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "okada",
+  "voice": "Rasalgethi",
+  "model": "gemini-3.8-live",
+  "seconds": 6.02,
+  "text": "うれしいな。ぼくも、そこから描きはじめたんだ。ここが、この建物の顔だよ。",
+  "heard": " うれしいな。ぼくも、そこから描きはじめたんだ。ここが、この建物の顔だよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vtzi440": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "okada",
+  "voice": "Rasalgethi",
+  "model": "gemini-3.8-live",
+  "seconds": 6.870041666666666,
+  "text": "いいところを見るね。柱が四本あると、建物が、どっしりと立って見えるんだ。",
+  "heard": "いい ところ を 見る ね 。 柱 が 4 本 ある と 建物 が どっしり と 立っ て 見える ん だ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vwjqsx2": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "okada",
+  "voice": "Rasalgethi",
+  "model": "gemini-3.8-live",
+  "seconds": 11.18,
+  "text": "ははは、そこか。階段の上にのせた、小さな丸い屋根なんだ。小さいところに気づいてくれる人は、めずらしいよ。",
+  "heard": " ははは、そこか。階段の上にのせた、小さな丸い屋根なんだ。小さいところに気づいてくれる人は、めずらしいよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vv2dr71": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.2,
+  "text": "岡田さんは、また、こん、こん、とせきをした。ノボルが、心配そうに水を持ってくる。",
+  "heard": "岡田さんは、また、こん、こん、とせきをした。ノボルが、心配そうに水を持ってくる。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vv1nia9": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "noboru",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 2.89,
+  "text": "先生、少し休んでください。",
+  "heard": "先生 少し 休ん で ください 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v10oucgt": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "okada",
+  "voice": "Rasalgethi",
+  "model": "gemini-3.8-live",
+  "seconds": 7.93,
+  "text": "ありがとう。……でもね、ノボルくん。建物は、生まれたあとも、面倒をみてやらないといけないんだ。",
+  "heard": " ……でもね、ノボルくん。建物は、生まれたあとも、面倒をみてやらないといけないんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vgcyhk1": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "okada",
+  "voice": "Rasalgethi",
+  "model": "gemini-3.8-live",
+  "seconds": 10.66,
+  "text": "親がなくても子は育つと言うけれど、建物だけは、そうはいかない。",
+  "heard": "親がなくても子は育つと言うけれど、建物だけは、そうはいかない。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v17xb8tf": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "okada",
+  "voice": "Rasalgethi",
+  "model": "gemini-3.8-live",
+  "seconds": 6.58,
+  "text": "……ただ、この大阪の図面は、もし選ばれても、ぼくの手をはなれていくんだよ。",
+  "heard": "ただ、この大阪の図面は、もし選ばれても、ぼくの手をはなれていくんだよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "図面＝ずめん"
+  ]
+ },
+ "v1svy5b4": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "noboru",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 2.48,
+  "text": "えっ？ どういうことですか？",
+  "heard": "え? どう いう こと です か ?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v6os67d": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "okada",
+  "voice": "Rasalgethi",
+  "model": "gemini-3.8-live",
+  "seconds": 13.09,
+  "text": "決まりなんだ。出した図面は、建てる側のものになって、形を変えてもよいことになっている。最後に仕上げるのは、ぼくじゃないかもしれない。",
+  "heard": "きまりなんだ 出した図面は建てる側のものになって 形を変えても良いことになっている 最後に仕上げるのは僕じゃないかもしれない",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "図面＝ずめん"
+  ]
  }
 }
