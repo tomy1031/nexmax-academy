@@ -94,5 +94,101 @@
   "heard": "Hey, you came back? Sparks fly over there. Come over here.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e4krdyy1miut": {
+  "episode": "seki-sutra",
+  "lang": "en",
+  "speaker": "hachi",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 6.04,
+  "text": "Hey, no, no — sparks fly over there! …Huh, have we met somewhere?",
+  "heard": " Hey, no, no — sparks fly over there! …Huh, have we met somewhere?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1bjk4hvnoedp": {
+  "episode": "seki-sutra",
+  "lang": "en",
+  "speaker": "hachi",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 6.54,
+  "text": "I'm Hachirō. Just call me Hachi. I'm an apprentice at Master Kanesada's forge.",
+  "heard": " Just call me Hachi. I'm an apprentice at Master Kanesada's forge.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1x8ci001v1hm": {
+  "episode": "seki-sutra",
+  "lang": "en",
+  "speaker": "hachi",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 9.350041666666666,
+  "text": "The one sitting down is Master Kanesada. When he taps “here” with the small hammer, the big fella with the big hammer strikes the same spot.",
+  "heard": " The one sitting down is Master Kanesada. When he taps \"here\" with the small hammer, the big fella with the big hammer strikes the same spot.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eqwdq4h6bav9": {
+  "episode": "seki-sutra",
+  "lang": "en",
+  "speaker": "hachi",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 7.43,
+  "text": "That's called aizuchi — “matching hammers.” If they don't keep in time together, you won't get a good sword.",
+  "heard": " That's called aizuchi — “matching hammers.” If they don't keep in time together, you won't get a good sword.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1ciruv712bzx": {
+  "episode": "seki-sutra",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9,
+  "text": "In Japanese, aizuchi wo utsu means nodding along while someone talks. People say the phrase was born from this way of hammering at the forge.",
+  "heard": " In Japanese, aizuchi wo utsu means nodding along while someone talks. People say the phrase was born from this way of hammering at the forge.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1w119x51yohy": {
+  "episode": "seki-sutra",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.36,
+  "text": "They say other sayings came from swords too — like shinogi wo kezuru, “to compete fiercely,” and sori ga awanai, “to not get along.”",
+  "heard": " They say other sayings came from swords too — like shinogi wo kezuru, “to compete fiercely,” and sori ga awanai, “to not get along.”",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eq6zk2a1bjr8": {
+  "episode": "seki-sutra",
+  "lang": "en",
+  "speaker": "hachi",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 3.47,
+  "text": "Y'know, there are hundreds of swordsmiths in Seki.",
+  "heard": " Y'know, there are hundreds of swordsmiths in Seki.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e2fa63e1lnyd": {
+  "episode": "seki-sutra",
+  "lang": "en",
+  "speaker": "hachi",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 8.6,
+  "text": "Clay for coating the blade, pine charcoal, and clean river water. They say everything you need to make a good sword is right here.",
+  "heard": " Clay for coating the blade, pine charcoal, and clean river water. They say everything you need to make a good sword is right here.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
