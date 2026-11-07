@@ -241,5 +241,139 @@
    "源蔵＝げんぞう",
    "千枚通し＝せんまいどおし"
   ]
+ },
+ "vvextc2": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "genzo",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 3.73,
+  "text": "ミツ。火を、もっと強うせい。",
+  "heard": "みつー　火をもっと強くせー",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v106luit": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "mitsu",
+  "voice": "Aoede",
+  "model": "gemini-3.8-live",
+  "seconds": 0.77,
+  "text": "……うん！",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v14qbiga": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.23,
+  "text": "ふいごが鳴り、火が、ごうっと燃え上がった。",
+  "heard": "ふいごが鳴り、火が、ごうっと燃え上がった。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vpzdsuj": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.76,
+  "text": "とん、とん、という小さな音が、かん、かん、という高い音に変わる。",
+  "heard": "とん、とん、という小さな音が、かん、かん、という高い音に変わる。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1wv70w7": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.43,
+  "text": "ミツは、汗をふきながら、ふいごを押しつづけた。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v16ldskj": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "genzo",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 4.73,
+  "text": "ミツ、よう見とけ。刀の技は、消えん。",
+  "heard": "ミツ、よう見とけ。刀の技は気炎",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vgcg470": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "genzo",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 9.77,
+  "text": "形が、変わるだけじゃ。大きな刀が、小さな刃になる。人の腰から、人のポケットへ。",
+  "heard": " 形が、変わるだけじゃ。大きな刀が、小さな刃になる。人の腰から、人のポケットへ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v3tp0ch": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.350041666666667,
+  "text": "何日かして。源蔵さんの手のひらに、一本の、小さなナイフがのっていた。",
+  "heard": "何 日 か し て 現象 さん の 手のひら に 1 本 の 小さな ナイフ が 乗っ て い た 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "源蔵＝げんぞう"
+  ]
+ },
+ "v1pho7pt": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.840041666666667,
+  "text": "柄は、まだ、ただの木。でも、刃は、水のように光っている。",
+  "heard": "柄は、まだ、ただの木。でも、刃は、水のように光っている。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "viikt4z": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "genzo",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 3.2,
+  "text": "ミツ。柿を、一つ取ってこい。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vpomc4u": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "mitsu",
+  "voice": "Aoede",
+  "model": "gemini-3.8-live",
+  "seconds": 0.91,
+  "text": "かき？",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
