@@ -519,5 +519,17 @@
   "heard": "なあなあ、飛行機って、どこまで行けるん？アメリカとか？もっと遠く？",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v1brtl0j": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "takuya",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 3.1,
+  "text": "おれ、まだ、いっぺんも乗ったことないねん。",
+  "heard": "おれ 、まだ 一歩 も 乗っ た こと ない ねん 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
