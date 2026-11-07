@@ -1,0 +1,104 @@
+{
+ "vp4c4aj": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.48,
+  "text": "大正四年、十月八日。大阪・中之島。",
+  "heard": "大正四年、十月八日。大阪・中之島。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "中之島＝なかのしま"
+  ]
+ },
+ "vn614gk": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.550041666666667,
+  "text": "あなたは、できたばかりの、新しい橋の上に立っていた。",
+  "heard": "あなたは、できたばかりの、新しい橋の上に立っていた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1412dl9": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.4,
+  "text": "橋のたもとに、大きなライオンの像がすわっている。一頭は口をあけ、もう一頭は口をとじて。",
+  "heard": "橋のたもとに、大きなライオンの像がすわっている。一頭は口をあけ、もう一頭は口をとじて。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1a8xu7h": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.14,
+  "text": "難波橋だよ。この年の5月に、かけかえられたばかりなんだ。橋の両はしに2頭ずつ、あわせて4頭のライオンがいるから、「ライオン橋」とも呼ばれているよ。",
+  "heard": "なにわ橋だよ。この年の五月に架け替えられたばかりなんだ。橋の両端に二頭ずつ合わせて四頭のライオンがいるからライオン橋とも呼ばれているよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "難波橋＝なにわばし"
+  ]
+ },
+ "vgp4bru": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.500041666666666,
+  "text": "ライオンの前で、着物にはかまの若い男が、小さな男の子に何か教えていた。",
+  "heard": "ライオンの前で、着物にはかまの若い男が、小さな男の子に何か教えていた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v17wp8lp": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "kiyo2",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 13.09,
+  "text": "ええか、三吉。口あけてるんが「あ」、とじてるんが「うん」や。はじめと、おわり。二頭で、ひとそろいなんや。",
+  "heard": "ええか、三吉。口あけてるんが「あ」、とじてるんが「うん」や。はじめと、おわり。二頭で、ひとそろいなんや。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "三吉＝さんきち"
+  ]
+ },
+ "vercjtt": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "三吉",
+  "voice": "Despina",
+  "model": "gemini-3.8-live",
+  "seconds": 4.23,
+  "text": "あ……うん。ほな、兄ちゃん、あの字は？",
+  "heard": " あ……うん。ほな、兄ちゃん、あの字は？",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vdctm0x": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "kiyo2",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 4.16,
+  "text": "あれは、「なにわばし」。ほら、自分で読んでみ。",
+  "heard": "あれ は 何 岩橋 ほら 自分 で 呼ん で み 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ }
+}
