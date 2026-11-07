@@ -99,6 +99,63 @@
    "kh-royalpalace:ja",
    "kh-angkor:ja",
    "kh-songbook:en"
+  ],
+  "p1": [
+   "osaka-kitahama:ja",
+   "osaka-okada:ja"
+  ],
+  "p2": [
+   "osaka-iwamoto:ja",
+   "sennan-airport:ja"
+  ],
+  "p3": [
+   "seki-sutra:ja",
+   "seki-knife:ja"
+  ],
+  "p4": [
+   "kh-bokor:ja",
+   "kh-pepper:ja"
+  ],
+  "p5": [
+   "kh-kizuna:ja",
+   "kh-kizuna:en"
+  ],
+  "q1": [
+   "osaka-kitahama:en",
+   "osaka-okada:en"
+  ],
+  "q2": [
+   "osaka-iwamoto:en",
+   "sennan-airport:en"
+  ],
+  "q3": [
+   "seki-sutra:en",
+   "seki-knife:en"
+  ],
+  "q4": [
+   "kh-bokor:en",
+   "kh-pepper:en"
+  ],
+  "q5": [
+   "genpei-dannoura:en",
+   "genpei-takadachi:en",
+   "genpei-yashima:en",
+   "genpei-yashima:ja",
+   "kh-angkor-build:en",
+   "kh-bayon:en",
+   "kh-chroy:en",
+   "kh-finale:en",
+   "kh-finale:ja",
+   "kh-landmine:en",
+   "kh-landmine:ja",
+   "kh-songbook:en",
+   "kh-taprohm:en",
+   "kh-tsubasa:en",
+   "miyoshi-biwa:en",
+   "miyoshi-finale:en",
+   "miyoshi-finale:ja",
+   "miyoshi-oboke:en",
+   "miyoshi-youkai:en"
   ]
  }
 }
