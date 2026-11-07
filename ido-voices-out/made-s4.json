@@ -506,5 +506,89 @@
   "heard": "ひとりの人の「みんなのために」から生まれた建物を、こんどは、1万3千の「みんな」が守った。",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "v118jbop": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.39,
+  "text": "（小声）……雨の日にここへ来たら、玄関の前で、岩本さんのひさしの話を、思い出してみてね。",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "ern8ls0xgzgc": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 12.42,
+  "text": "In 1989, a call went out to raise money to protect the building, and about 13,000 people and companies gave. On the first basement floor, there's a relief carved with their names.",
+  "heard": "In 1989, a call went out to raise money to protect the building, and about 13,000 people and companies gave. On the first basement floor, there's a relief carved with their names.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "ely2is71azre": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.19,
+  "text": "It's free to go in. You can see things connected with Iwamoto in the exhibition room on the first basement floor.",
+  "heard": " You can see things connected with Iwamoto in the exhibition room on the first basement floor.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "er4e0fgwih3o": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.79,
+  "text": "The hall is closed on the fourth Tuesday of every month (or the next weekday, if that Tuesday is a holiday), and over the New Year holidays.",
+  "heard": " The hall is closed on the fourth Tuesday of every month (or the next weekday, if that Tuesday is a holiday), and over the New Year holidays.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "ek978j62nmzh": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.190041666666667,
+  "text": "(whispering) The big arch on the front came from Okada Shin'ichirō's first drawing, didn't it?",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "euc0j9jdyixe": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.88,
+  "text": "(whispering) There's also a story about the young architect who drew this building's very first design. The hall's other QR code opens it.",
+  "heard": " There's also a story about the young architect who drew this building's very first design. The hall's other QR code opens it.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "etkic2ctwa1i": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.67,
+  "text": "Look up above the big arch on the front. There are statues of Mercury, the god of trade, and Minerva, the goddess of wisdom.",
+  "heard": " Look up above the big arch on the front. There are statues of Mercury, the god of trade, and Minerva, the goddess of wisdom.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
