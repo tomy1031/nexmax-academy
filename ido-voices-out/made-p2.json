@@ -203,5 +203,120 @@
   "readings": [
    "公会堂＝こうかいどう"
   ]
+ },
+ "vb57mla": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "kiyo2",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 7.21,
+  "text": "おれ、清吉。北浜の仲買の店で、帳面をつけてる。十九や。",
+  "heard": "おれ、清吉。北浜の仲買の店で、帳面をつけてる。十九や。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "清吉＝せいきち",
+   "北浜＝きたはま",
+   "仲買＝なかがい",
+   "帳面＝ちょうめん"
+  ]
+ },
+ "v1esz1s5": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "kiyo2",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 7.25,
+  "text": "子どものころは、字も読まれへん小僧やったけどな。岩本の若だんなの塾で、ならうたんや。",
+  "heard": "子どものころは、字も読まれへん小僧やったけどな。岩本の若だんなの塾で、ならうたんや。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "小僧＝こぞう",
+   "若だんな＝わかだんな",
+   "塾＝じゅく"
+  ]
+ },
+ "v1l3eeee": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "kiyo2",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 8.15,
+  "text": "今はな、夜、塾で、この三吉みたいなちびらに、字を教えてんねん。若だんなのまねや。",
+  "heard": "今はな、夜、塾で、この三吉みたいなちびらに、字を教えてんねん。若だんなのまねや。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "塾＝じゅく",
+   "三吉＝さんきち",
+   "若だんな＝わかだんな"
+  ]
+ },
+ "v4fz8cb": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "kiyo2",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 5.88,
+  "text": "今日はな、公会堂の、お祝いの式があるんや。行こ、行こ！",
+  "heard": "今日はな、公会堂の、お祝いの式があるんや。行こ、行こ！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "公会堂＝こうかいどう"
+  ]
+ },
+ "v1f8ph26": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.990083333333334,
+  "text": "橋をわたると、目の前に、鉄の骨組みが、空にむかって組みあがっていた。",
+  "heard": "橋 を 渡る と 目の前 に 鉄 の 骨組み が 空 に 向かっ て 組み上がっ て い た 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1hi6xbz": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.840041666666666,
+  "text": "まわりには、木の足場。背中に大きな紋の入った法被の職人たちが、高いところで、こちらを見下ろしている。",
+  "heard": "まわりには、木の足場。背中に大きな紋の入った法被の職人たちが、高いところで、こちらを見下ろしている。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "法被＝はっぴ"
+  ]
+ },
+ "v18w8gh5": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 11.92,
+  "text": "骨組みの前に、ふちが波の形のテントが張られ、白い装束の神主さんと、胸に花をつけた黒い服の人たちが、ならんでいた。",
+  "heard": "\n骨組みの前に、ふちが波の形のテントが張られ、白い装束の神主さんと、胸に花をつけた黒い服の人たちが、ならんでいた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vklbwr2": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.79,
+  "text": "今日は、「定礎式」。建物の角に、「定礎」と刻んだ記念の石をすえる、お祝いの式なんだ。",
+  "heard": "今日は低層 式 建物 の 角 に 低層 と 飾ん だ 記念 の 石 を 据える お 祝い の 式 な ん だ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "定礎式＝ていそしき"
+  ]
  }
 }
