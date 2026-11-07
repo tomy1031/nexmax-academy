@@ -1,0 +1,250 @@
+{
+ "v1wyrhjm": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.600041666666667,
+  "text": "1965年ごろ。カンボジアの南、カンポット州。",
+  "heard": "76 年 ごろ カンボジア の 南 カン ポット 州",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1mwa52l": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.78,
+  "text": "白っぽい岩山のふもとに、赤い土の畑が広がっていた。",
+  "heard": "白っぽい岩山の麓に赤い土の畑が広がっていた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vg9bc8y": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.090041666666666,
+  "text": "畑には、人の背の何倍もある木の柱が、林のように、ずらりと立っている。",
+  "heard": "畑 に は 人 の 背 の 何 倍 も ある 木 の 柱 が 林 の よう に ズラリ と 立っ て いる 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1f13vr0": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.58,
+  "text": "どの柱にも、緑のつるが、ぐるぐると巻きついて、てっぺんまで登っていた。",
+  "heard": "どの柱にも、緑のつるが、ぐるぐると巻きついて、てっぺんまで",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1m693z5": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "女の子の声",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 5.31,
+  "text": "チャンナ、そっちじゃない！ そのつるは、まだ早いって、おじいちゃんが言ってたでしょ！",
+  "heard": "じゃあな 、 そっち じゃ ない 。 その つる は まだ 早 いっ て お じい ちゃん が 言っ て た でしょ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vdwrfc0": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "男の子の声",
+  "voice": "Fenrir",
+  "model": "gemini-3.8-live",
+  "seconds": 3.640041666666667,
+  "text": "わかってるよ！ メイは、いちいち、うるさいなあ！",
+  "heard": "わかってるよ！メイは、いちいち、うる",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vvn5i9s": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "mei",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 4.52,
+  "text": "あっ。……お客さん？ ごめんなさい、うるさかった？",
+  "heard": " お客さん? ごめんなさい、うるさかった?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vh222yj": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "mei",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 8.7,
+  "text": "わたし、メイ。十一歳。おじいちゃんが、海南島から来て、この胡椒の畑をはじめたの。",
+  "heard": "私 メイ 11 歳 おじい ちゃん が 海南 島 から 来 て この 故障 の 畑 を 始め た の 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "海南島＝かいなんとう",
+   "胡椒＝こしょう"
+  ]
+ },
+ "v1sjcd9z": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "mei",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 5.04,
+  "text": "あっ、また来てくれたの？ ごめんなさい、うるさかった？",
+  "heard": "あっ 、また来てくれたの ? ごめんなさい 、 うるさかった ?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v5k4jdy": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "mei",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 5.71,
+  "text": "あっ。……お客さん？ あれ、どこかで会ったっけ？",
+  "heard": "あ お 客 さん あれ どこ か で あっ たっ け ?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vipw3c": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "channa",
+  "voice": "Fenrir",
+  "model": "gemini-3.8-live",
+  "seconds": 5.43,
+  "text": "おれは、チャンナ！ となりの家。うちは田んぼと、牛がいる。",
+  "heard": "おれは、チャンナ！となりの家。うちは田んぼと、牛がいる。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1fw798q": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "channa",
+  "voice": "Fenrir",
+  "model": "gemini-3.8-live",
+  "seconds": 6.28,
+  "text": "メイとは、生まれたときから、ずっと、となり。だから、けんかも毎日。",
+  "heard": "メイとは、生まれたときから、ずっと、となり。だから、けんかも毎日。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1guj7hq": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "channa",
+  "voice": "Fenrir",
+  "model": "gemini-3.8-live",
+  "seconds": 5.44,
+  "text": "おれだよ、チャンナ！ また来たの？ メイとは、今日もけんかしてる。",
+  "heard": " おれだよ、チャンナ！ また来たの？ メイとは、今日もけんかしてる。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1jqaxcr": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "channa",
+  "voice": "Fenrir",
+  "model": "gemini-3.8-live",
+  "seconds": 5.12,
+  "text": "おれは、チャンナ！ ……なんで、そんなにうれしそうな顔してんの？",
+  "heard": " ……なんで、そんなにうれしそうな顔してんの？",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vw15uaf": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "channa",
+  "voice": "Fenrir",
+  "model": "gemini-3.8-live",
+  "seconds": 5.040041666666666,
+  "text": "となりの家の子。メイとは、生まれたときから、ずっと、となり。",
+  "heard": " となりの家の子。メイとは、生まれたときから、ずっと、",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1hbor6z": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.480041666666667,
+  "text": "海南島は、海の向こうの、中国の南の島なんだ。カンポットには、むかし、海南島から来て、胡椒を育てはじめた家族が多かったと言われているよ。",
+  "heard": "海南島は、海の向こうの、中国の南の島なんだ。カンポットには、むかし、海南島から来て、胡椒を育てはじめた家族が多かったと言われているよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "海南島＝かいなんとう",
+   "胡椒＝こしょう"
+  ]
+ },
+ "v1mlzzuj": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.510041666666667,
+  "text": "メイとチャンナは、話しながら、ときどき、クメール語の中に、べつのことばをまぜた。",
+  "heard": "メイト チャンナ は 話し ながら 時々 ク メール 語 の 中 に 別 の 言葉 を 混ぜ た 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vbjqzyu": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "channa",
+  "voice": "Fenrir",
+  "model": "gemini-3.8-live",
+  "seconds": 7.61,
+  "text": "メイのうちのことばも、おれ、ちょっとわかるんだ。「ごはん食べた？」とか、「早く！」とか。",
+  "heard": "メイのうちのことばも、おれ、ちょっとわかるんだ。「ごはん食べた？」とか、「早く！」とか。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1bwo5xb": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "mei",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 4.2,
+  "text": "わたしだって、クメール語の歌、チャンナより、たくさん知ってるもん。",
+  "heard": "私だってクメール 語 の 歌 ちゃん な より たくさん 知っ てる もん 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v13dobht": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "channa",
+  "voice": "Fenrir",
+  "model": "gemini-3.8-live",
+  "seconds": 5.17,
+  "text": "ねえ、旅の人。なんで胡椒って、こんな高い柱に登るんだと思う？",
+  "heard": "ねえ、旅の人。なんで胡椒って、こんな高い柱に登るんだと思う？",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "胡椒＝こしょう"
+  ]
+ }
+}
