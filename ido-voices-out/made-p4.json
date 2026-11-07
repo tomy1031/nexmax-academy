@@ -292,5 +292,101 @@
   "heard": "道 どっち だっ け ?",
   "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
   "readings": []
+ },
+ "v1a8dc0n": {
+  "episode": "kh-bokor",
+  "lang": "ja",
+  "speaker": "vanna",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 3.410041666666667,
+  "text": "さっきの岩、また通った気がする……。",
+  "heard": "さっきの岩、また通った気がする。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "vn0acwh": {
+  "episode": "kh-bokor",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.3800416666666666,
+  "text": "ヴァンナの声が、ふるえはじめた。",
+  "heard": "ワン ナ の 声 が 震え 始め た 。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "vj0j1vt": {
+  "episode": "kh-bokor",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.96,
+  "text": "そのとき。霧の向こうで、こつん、と、杖が石をたたく音がした。",
+  "heard": "そのとき 霧の向こうで こつんと 杖 が 石 を 叩く 音 が し た 。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "v1r0zclr": {
+  "episode": "kh-bokor",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.150041666666667,
+  "text": "白い霧の中に、ひとりのおばあさんが立っていた。",
+  "heard": "白い霧の中に一人のおばあさんが立っていた",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "v78u7v4": {
+  "episode": "kh-bokor",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 13.23,
+  "text": "白いブラウスに、黒い巻きスカート。肩には、黄色い布。白い髪をうしろでまとめ、背すじが、まっすぐにのびている。",
+  "heard": "白いブラウスに、黒い巻きスカート。肩には、黄色い布。白い髪をうしろでまとめ、背すじが、まっすぐにのびている。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "viiau8m": {
+  "episode": "kh-bokor",
+  "lang": "ja",
+  "speaker": "yeaymao",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 5.260041666666667,
+  "text": "……おまえたち。山に入るのに、あいさつもしないのかい。",
+  "heard": "山に入るのに、あいさつもしないのかい。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "v1varcty": {
+  "episode": "kh-bokor",
+  "lang": "ja",
+  "speaker": "yeaymao",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 5.52,
+  "text": "……また、おまえかい。今度も、あいさつを忘れたね。",
+  "heard": " また、おまえかい。 今度も、あいさつを忘れたね。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "v1pmebsk": {
+  "episode": "kh-bokor",
+  "lang": "ja",
+  "speaker": "yeaymao",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 5.58,
+  "text": "おや、そっちのおまえは、わたしを知っているような目をしているね。",
+  "heard": "おや? そっちのお前は私を知っているような目をしているね。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
  }
 }
