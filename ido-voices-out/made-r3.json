@@ -260,5 +260,255 @@
   "readings": [
    "羽織＝はおり"
   ]
+ },
+ "v1wesslo": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "刃物商",
+  "voice": "Umbriel",
+  "model": "gemini-3.8-live",
+  "seconds": 4.06,
+  "text": "源蔵さん、おるかね！ ちょっと、見てほしいもんがあるんや！",
+  "heard": "源蔵さん、おるかね！ちょっと、見てほしいもんがあるんや！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "源蔵＝げんぞう"
+  ]
+ },
+ "vexn16q": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "mitsu",
+  "voice": "Aoede",
+  "model": "gemini-3.8-live",
+  "seconds": 6.11,
+  "text": "あっ、刃物屋のだんなさん！ 町いちばんの、刃物の問屋さんなんよ。",
+  "heard": "刃物屋 の 旦那 さん 町 一 番 の 刃物 の 問屋 さん な ん よ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "問屋＝とんや"
+  ]
+ },
+ "v1lbe6t5": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.720041666666667,
+  "text": "男は、ふところから、手のひらにのるくらいの、小さな箱を出した。",
+  "heard": "男は、ふところから、手のひらにのるくらいの、小さな箱を出した。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vq4jtqv": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.5300416666666665,
+  "text": "箱の中には、小さな、ふしぎなものが入っていた。",
+  "heard": "箱 の 中 に は 小さな 不思議 な もの が 入っ て い た 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1f0tf93": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.68,
+  "text": "角のような柄。男が、爪でひっかけて引き起こすと——中から、ぴかっと、刃が出てきた。",
+  "heard": "角のような柄。男が、爪でひっかけて引き起こすと——中から、ぴかっと、刃が出てきた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vnz6i7t": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "刃物商",
+  "voice": "Umbriel",
+  "model": "gemini-3.8-live",
+  "seconds": 7.29,
+  "text": "海の向こうから来たナイフや。たたんで、ポケットに入れて、持ち歩ける。「ポケットナイフ」いうんやて。",
+  "heard": "海の向こうから来たナイフや。たたんで、ポケットに入れて、持ち歩ける。「ポケットナイフ」いうんやて。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vy6nwc4": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "刃物商",
+  "voice": "Umbriel",
+  "model": "gemini-3.8-live",
+  "seconds": 2.34,
+  "text": "これを、関で作れんか。",
+  "heard": "これを、関で作れんか。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vmtfjn6": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "mitsu",
+  "voice": "Aoede",
+  "model": "gemini-3.8-live",
+  "seconds": 3.78,
+  "text": "すごい！ 刃が、柄の中に、かくれるん！？",
+  "heard": "すごい。歯が、柄の中に隠れるん。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vrefnvu": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.880041666666667,
+  "text": "ミツは、ナイフを両手で受けとって、そうっと、たたんだり、ひらいたりした。ぱちん、と、小さな音がする。",
+  "heard": "三つ は ナイフ を 両手 で 受け取っ て そー っ と 畳ん だり 開い たり し た 。 パチン と 小さな 音 が する 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v5op74g": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "genzo",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 3.7900416666666668,
+  "text": "……ふん。こんな、おもちゃみたいなもん。",
+  "heard": "ふー こんなおもちゃみたいなもの",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v4vm9uq": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.31,
+  "text": "そう言いながら、源蔵さんは、ナイフを、窓の光にかざした。",
+  "heard": "そう言いながら、源蔵さんは、ナイフを、窓の光にかざした。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "源蔵＝げんぞう"
+  ]
+ },
+ "v5040yl": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.44,
+  "text": "刃の色を見る。指で、刃の背をなでる。たたむときの、ばねの強さをたしかめる。",
+  "heard": "歯 の 色 を 見る 指 で 歯 の 背 を なでる 。 畳む 時 の バネ の 強 さ を 確かめる 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1ffcft8": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.120041666666666,
+  "text": "その目は、さっきまでとは、まるでちがっていた。",
+  "heard": "その目は、さっきまでとは、まるでちがっていた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vmdkaj4": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "genzo",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 9.05,
+  "text": "……刃の鉄は、悪うない。じゃが、まるごと、かたい鉄ひとつじゃ。これでは、ちょっと無理をさせたら、ぽきりといく。",
+  "heard": "刃の鉄は、悪うない。じゃが、まるごと、かたい鉄ひとつじゃ。これでは、ちょっと無理をさせたら、ぽきりといく。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vc6ssfp": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "genzo",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 9.500041666666666,
+  "text": "よう切れる、かたい鋼。ねばりのある、やわらかい鉄。それを、組みあわせる。……刀と、同じことよ。",
+  "heard": "よう切れる、かたい鋼。ねばりのある、やわらかい鉄。それを、組みあわせる。……刀と、同じことよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "鋼＝はがね"
+  ]
+ },
+ "v1lf0ann": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.36,
+  "text": "関の刀の作り方のひとつでは、まんなかに、やわらかい鉄の芯を入れて、そのまわりを、かたい鉄で包むんだ。",
+  "heard": " 関の刀の作り方のひとつでは、まんなかに、やわらかい鉄の芯を入れて、そのまわりを、かたい鉄で包むんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1lusq2r": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.5,
+  "text": "おにぎりの具を、ご飯とのりで包むようなものだね。かたい鉄でよく切れて、やわらかい芯で、折れにくくなるんだよ。",
+  "heard": " おにぎりの具を、ご飯とのりで包むようなものだね。かたい鉄でよく切れて、やわらかい芯で、",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v4ugvqn": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "genzo",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 2.51,
+  "text": "……旅の人まで、そう言うか。",
+  "heard": "旅 の 人 まで そう いう か",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1s6svxr": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "genzo",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 4.92,
+  "text": "……生きる、か。そうか。生きるのか。",
+  "heard": "生きる か ? そう か 。 生きる の か ?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1ag80xb": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.45,
+  "text": "源蔵さんは、しばらく、だまっていた。",
+  "heard": "さんは、しばらく、だまっていた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "源蔵＝げんぞう"
+  ]
  }
 }
