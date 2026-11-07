@@ -258,5 +258,268 @@
   "heard": "俺 の 名前 や",
   "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
   "readings": []
+ },
+ "v1qngeni": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.910041666666666,
+  "text": "清吉は、紙に顔を近づけて、ゆっくり、ゆっくり、指でなぞっていく。",
+  "heard": "計吉は 紙に顔を近づけて ゆっくり ゆっくり 指でなぞって いく。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": [
+   "清吉＝せいきち"
+  ]
+ },
+ "vfdfh0x": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "kiyo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 24.06,
+  "text": "せいきち、げんきか。かあちゃんは、げんきです。……さむいから、かぜ、ひかんように。",
+  "heard": "せい、きち、げん、き、か。か、あ、ちゃ、ん、は、げ、ん、き、で、す。……さ、む、い、か、ら、か、ぜ、ひ、か、ん、よ、う、に。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "vvdhklr": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.48,
+  "text": "そこまで読んで、清吉は、ぐいっと袖で顔をふいた。",
+  "heard": "そこまで読んで清吉は、ぐいっと袖で顔を拭いた。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": [
+   "清吉＝せいきち"
+  ]
+ },
+ "v1m6vjfm": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "kiyo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 3.58,
+  "text": "……なんや。かあちゃん、そんなこと書いとったんか。",
+  "heard": "なんや。かあちゃん、そんなこと書いとったんか。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "vpn4obd": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "iwamoto",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 5.53,
+  "text": "ほな、返事も書かなあかんな。まずは、自分の名前からや。",
+  "heard": "ほな、返事も書かなあかんな。まずは、自分の",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "v1x2g229": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.99,
+  "text": "岩本さんは、清吉の石盤に、大きく二つの字を書いた。",
+  "heard": "岩本さんはせきちのえきばんに大きく二つの字を書いた。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": [
+   "清吉＝せいきち",
+   "石盤＝せきばん"
+  ]
+ },
+ "v18ghra8": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "iwamoto",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 6.920041666666667,
+  "text": "清吉の「清」はな、川の水が、すきとおってきれいなこと。ええ名前や。",
+  "heard": "景気時のKはな川の水が透き通って綺麗なこと。えー、名前や",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": [
+   "清吉＝せいきち"
+  ]
+ },
+ "v1112p88": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.28,
+  "text": "清吉は、岩本さんの字の横に、ふるえる手で、同じ字を書いた。線が曲がって、はみ出している。",
+  "heard": "清吉は、岩本さんの字の横に、ふるえる手で、同じ字を書いた。線が曲がって、はみ出している。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": [
+   "清吉＝せいきち"
+  ]
+ },
+ "vr94beg": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "kiyo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 1.5100416666666667,
+  "text": "……へたくそや。",
+  "heard": "下手くそやー",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "v1qo3o73": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "iwamoto",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 4.410041666666666,
+  "text": "はじめは、みんな、へたくそや。わしもや。",
+  "heard": "はじめは、みんな、へたくそや。わしもや。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "v91czxq": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "kiyo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 3.25,
+  "text": "へへっ……。もう一ぺん、書いてみる。",
+  "heard": "へへっ……。もう一ぺん、書いてみる。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "v1ke8yic": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "kiyo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 4.24,
+  "text": "うん。走りながらでも、頭の中で書いたる。",
+  "heard": "うん。走りながらでも、頭の中で書いたる。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "v1fiuocs": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.95,
+  "text": "ほかの小僧たちが、清吉の石盤をのぞきこんで、わっと声をあげた。",
+  "heard": "ほかの小僧たちが、清吉の石盤をのぞきこんで、わっと声をあげた。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": [
+   "小僧＝こぞう",
+   "清吉＝せいきち",
+   "石盤＝せきばん"
+  ]
+ },
+ "vkmrs57": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "iwamoto",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 6.57,
+  "text": "あんた、どこから来はったんや。……遠くか。そうか。",
+  "heard": "あんた、どこから来はったんや。……遠くか。そうか。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "v1sygk6n": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "iwamoto",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 13.63,
+  "text": "大阪は、商いの町や。商いはな、ひとりではでけへん。売る人と買う人、運ぶ人、書く人、みんながおって、はじめて回る。",
+  "heard": "大阪は、商いの町や。商いはな、ひとりではでけへん。売る人と買う人、運ぶ人、書く人、みんながおって、はじめて回り",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "v1j0aiva": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "iwamoto",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 8.01,
+  "text": "そやから、もうけたもんは、この町に返さなあかん。……親父の、口ぐせや。",
+  "heard": "そやか、そやから儲けたもんはこの街に返さなあかん。\n親父の口癖や。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "v1h5lgns": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.480041666666667,
+  "text": "岩本さんのお父さんは、利益は世の中に返すもの、と教えていたと伝えられているんだ。",
+  "heard": "岩本さんのお父さんは利益は世の中に返すものと教えていたと伝えられているんだ",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "v1l21c1k": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 2.89,
+  "text": "……戻ってきたよ。いまの北浜。",
+  "heard": "いまの北浜。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "北浜＝きたはま"
+  ]
+ },
+ "v1dmowa0": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 13.63,
+  "text": "あの赤れんがの取引所は、もう残っていないんだ。いまの大阪取引所のビルは、1935年に建てた建物の正面を残して、2004年に建て直したものだよ。",
+  "heard": "あの赤れんがの取引所は、もう残っていないんだ。いまの大阪取引所のビルは、1935年に建てた建物の正面を残して、2004年に建て直したものだよ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "取引所＝とりひきじょ"
+  ]
+ },
+ "v10pq6l4": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.780041666666667,
+  "text": "ビルの前に立っている像は、五代友厚さん。1878年に、仲間といっしょに、大阪株式取引所をつくった人なんだ。",
+  "heard": " ビルの前に立っている像は、ごだいともあつさん。1878年に、仲間といっしょに、大阪株式取引所をつくった人なんだ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "五代友厚＝ごだいともあつ",
+   "株＝かぶ",
+   "取引所＝とりひきじょ"
+  ]
  }
 }
