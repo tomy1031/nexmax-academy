@@ -1,0 +1,272 @@
+{
+ "vxgcl9n": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 14.12,
+  "text": "岩本さんは、1909年に、日本の実業家たちの団体の一員として、アメリカへ渡ったんだ。そこで、お金持ちが、町のみんなのために財産を出しているのを見て、心を動かされたんだって。",
+  "heard": "岩本さんは1909年に日本の実業家たちの団体の一員としてアメリカへ渡ったんだ。そこで、お金持ちが町の皆のために財産を出しているのを見て、心を動かされたんだって。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v19nz0um": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 12.06,
+  "text": "そして1911年、お父さんが残したお金に、自分のお金を足した100万円を、大阪市に寄付したんだ。今のお金で、数十億円と言われているよ。",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vlukts0": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.68,
+  "text": "そのお金で建てられたのが、川の向こう、中之島の大阪市中央公会堂。難波橋をわたれば、歩いてすぐだよ。",
+  "heard": "そのお金で建てられたのが、川の向こう、中之島の大阪市中央公会堂。難波橋をわたれば、歩いてすぐだよ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "中之島＝なかのしま",
+   "公会堂＝こうかいどう",
+   "難波橋＝なにわばし"
+  ]
+ },
+ "v1tz6wm0": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.5,
+  "text": "（小声）赤れんがと白い石の、大きなアーチの建物だよ。公会堂のQRでも、時の扉がひらくんだ。",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "公会堂＝こうかいどう"
+  ]
+ },
+ "v1w3wwz5": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.91,
+  "text": "（小声）あの小さな清吉くんが、九年近くあとには、子どもたちに字を教えているんだね。",
+  "heard": " あの小さな清吉くんが、九年近くあとには、子どもたちに字を教えているんだね。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "清吉＝せいきち"
+  ]
+ },
+ "v87kgqm": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.760041666666666,
+  "text": "清吉くんは、物語のために作った子。でも、北浜には、本当に、岩本さんの塾で学んだ少年たちがいたんだ。",
+  "heard": "清吉くんは、物語のために作った子。でも、北浜には、本当に、岩本さんの塾で学んだ少年たちがいたんだ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "清吉＝せいきち",
+   "北浜＝きたはま",
+   "塾＝じゅく"
+  ]
+ },
+ "vhng7ha": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.98,
+  "text": "（小声）……清吉くん、走りながら、頭の中で、名前を書いたかな。",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "清吉＝せいきち"
+  ]
+ },
+ "v15gui5": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.03,
+  "text": "（小声）……清吉くん、あの夜、何べん、名前を書いたかな。",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "清吉＝せいきち"
+  ]
+ },
+ "v56x7sa": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.62,
+  "text": "IDOの公会堂のスポットにある動画「北浜に生きた男 岩本栄之助」でも、この町の岩本さんの物語が見られるよ。",
+  "heard": "IDOの公会堂のスポットにある動画「北浜に生きた男 岩本栄之助」でも、この町の岩本さんの物語が見られるよ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "公会堂＝こうかいどう",
+   "北浜＝きたはま",
+   "岩本栄之助＝いわもとえいのすけ"
+  ]
+ },
+ "vzre53s": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.82,
+  "text": "字が読めたら、だまされない。数がわかったら、自分の足で立てる。……百二十年たっても、そのとおりだね。",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v17798e7": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "tatsuno",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 2.06,
+  "text": "意匠が、ゴツイ。",
+  "heard": "",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "v1nnnw29": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "tatsuno",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 2.5100416666666665,
+  "text": "……枯れていない。若い。",
+  "heard": "",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "v1lf9ss2": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 12.24,
+  "text": "（小声）設計競技に図面を出した一人、田辺淳吉さんは、1909年に、岩本さんと同じ実業家の団体で、アメリカへ渡った人でもあったんだ。",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "設計競技＝せっけいきょうぎ",
+   "図面＝ずめん",
+   "田辺淳吉＝たなべじゅんきち"
+  ]
+ },
+ "vekufvv": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.67,
+  "text": "この建物は、ひとりの力で完全になったんじゃない。たくさんの人が、たりないところを補いあって、完全になったんだね。",
+  "heard": "この建物は、ひとりの力で完全になったんじゃない。たくさんの人が、たりないところを補いあって、完全になったんだね。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v6v608r": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.94,
+  "text": "岡田さんは、そのあと、東京で、歌舞伎座や、明治生命館などを設計したんだ。そして1932年、48歳で亡くなったよ。",
+  "heard": "岡田さんは、そのあと、東京で、歌舞伎座や、明治生命館などを設計したんだ。そして1932年、48歳で亡くなったよ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1tbiua1": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.340041666666667,
+  "text": "建物は、最後まで面倒をみてやらないといけない——岡田さんは、そう話していたと伝えられているんだ。",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vj211mr": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.82,
+  "text": "この公会堂も、1970年代に、こわされそうになったことがあるんだ。",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "公会堂＝こうかいどう"
+  ]
+ },
+ "voihiu6": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 15.67,
+  "text": "でも、大阪の人たちが声をあげて、1988年に、ずっと残すことが決まった。1999年からの工事では、建物の下に、地震のゆれを小さくするしかけも入れたんだよ。",
+  "heard": "大阪の人たちが声をあげて、1988年に、ずっと残すことが決まった。1999年からの工事では、建物の下に、地震のゆれを小さくするしかけも入れたんだよ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vkn9p0v": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.19,
+  "text": "2002年には、国の重要文化財になったんだ。",
+  "heard": "2002年には、国の重要文化財になったんだ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "重要文化財＝じゅうようぶんかざい"
+  ]
+ },
+ "v1r1617a": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.15,
+  "text": "入るのは無料。地下1階の展示室では、建てたころから今までの、公会堂の歴史が見られるよ。",
+  "heard": "地下1階の展示室では、建てたころから今までの、公会堂の歴史が見られるよ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "公会堂＝こうかいどう"
+  ]
+ }
+}
