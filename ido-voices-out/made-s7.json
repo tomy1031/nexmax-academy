@@ -258,5 +258,251 @@
   "readings": [
    "観音＝かんのん"
   ]
+ },
+ "v9vnh95": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "hachi",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 4.74,
+  "text": "……いつか、兼定さまみたいな刀鍛冶になれますように。",
+  "heard": "いつか、かねさださまみたいなかたなかじになれますように。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "兼定＝かねさだ",
+   "刀鍛冶＝かたなかじ"
+  ]
+ },
+ "v1358d4m": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "hachi",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 5.16,
+  "text": "それと、おれの打った刀も、ぬかれずにすみますように。",
+  "heard": "それ と 俺 の 打っ た 刀 も ぬか れ ず に すみ ます よう に 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vqk5a": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.31,
+  "text": "……戻ってきたよ。いまの関の、春日神社。",
+  "heard": "戻ってきたよ。いまの関の、春日神社。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "春日神社＝かすがじんじゃ"
+  ]
+ },
+ "vjph4km": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 15.91,
+  "text": "となりの関鍛冶伝承館は、ふだんは、昔の刀や、刀づくりの道具を見られるところ。でも、いまは2027年3月まで、建物を新しくする工事で、お休みしているよ。",
+  "heard": "隣の関鍛冶伝承館は普段は昔の刀や刀作りの道具を見られるところ。でも今は2027年3月まで建物を、新しくする工事で休みしているよ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "関鍛冶伝承館＝せきかじでんしょうかん"
+  ]
+ },
+ "v1p3oqmc": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 12.52,
+  "text": "それでも、館の鍛錬場では、ときどき、今も火花が散るんだ。昔ながらのやり方で刀を打つところを、見られる日があるんだよ。",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1h0dszq": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.32,
+  "text": "次は12月6日。1月2日には、その年はじめの「打ち初め式」もあるんだって。",
+  "heard": " 次は12月6日。1月2日には、その年はじめの「打ち初め式」もあるんだって。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vohuw5a": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.7,
+  "text": "（小声）火の粉とすすが舞うから、見に行くときは、白い服はやめておいたほうがいいよ。",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vddcehc": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 14.51,
+  "text": "（小声）「どうして、刀を打つ人が、お経を？」……あなたが聞きたかったこと、兼定さんは、ちゃんと答えてくれたね。",
+  "heard": "どうして\n刀を打つ人が\nお経を\n\nあなたが聞きたかったこと\n兼定さんはちゃんと\n答えてくれたね",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "兼定＝かねさだ"
+  ]
+ },
+ "vemq1m3": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.600041666666666,
+  "text": "春日神社の能面と能装束は、国の重要文化財。毎年10月の刃物まつりの日曜日に、見られるそうだよ。",
+  "heard": "春日神社の能面と能装束は、国の重要文化財。毎年10月の刃物まつりの日曜日に、見られるそうだよ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "春日神社＝かすがじんじゃ",
+   "重要文化財＝じゅうようぶんかざい"
+  ]
+ },
+ "v1fu6o9v": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 2.33,
+  "text": "それから、あの巻物。",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1rgpvpy": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.86,
+  "text": "いまは、イギリスのロンドンの、大英図書館にあるんだ。この版のお経で知られているのは、世界で、あの一本だけなんだよ。",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "大英図書館＝だいえいとしょかん"
+  ]
+ },
+ "vv1ov19": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.03,
+  "text": "もとは、イギリスの外交官、アーネスト・サトウさんが持っていたもので、1884年に、図書館に買い入れられたんだって。",
+  "heard": "もとは、イギリスの外交官、アーネスト・サトウさんが持っていたもので、1884年に、図書館に買い入れられたんだって。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1vu1hxl": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.730041666666667,
+  "text": "明の本の絵を手本に、関で刷られたお経が、また海をわたってロンドンへ。……旅をするお経だね。",
+  "heard": "明の本の絵を手本に、関で刷られたお経が、また海をわたってロンドンへ。……旅をするお経だね。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "明の本＝みんのほん"
+  ]
+ },
+ "v1hambob": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.27,
+  "text": "（小声）カンボジアのチュオン・ナートさんも、お経を刷って、国じゅうのお寺に届けようとしていたね。お経を刷って手わたす人は、どこにもいたんだ。",
+  "heard": "カンボジアのチュオン・ナートさんも、お経を刷って、国じゅうのお寺に届けようとしていたね。お経を刷って手わたす人は、どこにもいたんだ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1iby80o": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.28,
+  "text": "（小声）……ハチくんの、にじんで笑った観音さま。どこかに残っていたら、いいのにね。",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "観音＝かんのん"
+  ]
+ },
+ "v1sv41t": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.7,
+  "text": "（小声）……ハチくん、二枚目は、上手に刷れたかな。",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vlx01pj": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 13.14,
+  "text": "関は、いまでは、ドイツのゾーリンゲン、イギリスのシェフィールドとならぶ、「世界三大刃物産地」のひとつと呼ばれているんだ。",
+  "heard": "関は、いまでは、ドイツのゾーリンゲン、イギリスのシェフィールドとならぶ、「世界三大刃物産地」のひとつと呼ばれているんだ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vpcgur4": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.56,
+  "text": "（小声）刀のまちが、どうして、包丁やはさみのまちになったのか。せきてらすのQRでひらく物語で、わかるよ。",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vm88thw": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.44,
+  "text": "折れず、曲がらず、よく切れる。そして、願うのは、やさしい心。……刀のまちの、いちばん古い祈りだね。",
+  "heard": "折れず、曲がらず、よく切れる。そして、願うのは、やさしい心。……刀のまちの、いちばん古い",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
