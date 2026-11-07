@@ -478,5 +478,41 @@
   "heard": " The “home for everyone” he saw in America… Here in Osaka, his wish took shape",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "e1q708h613na7": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 13.87,
+  "text": "(whispering) A building anyone can come into — merchants, craftsmen, children. …And you, here today, are one of them.",
+  "heard": " A building anyone can come into — merchants, craftsmen, children. ...And you, here today, are one of them.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e9tamsxp1s4c": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.64,
+  "text": "But in the 1970s, this building nearly got torn down.",
+  "heard": " But in the 1970s, this building nearly got torn down.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1poo7jhpyqno": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.590041666666667,
+  "text": "That's when the people of Osaka spoke up. And in 1988, it was decided to keep this building forever.",
+  "heard": " That's when the people of Osaka spoke up. And in 1988, it was decided to keep this building forever.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
