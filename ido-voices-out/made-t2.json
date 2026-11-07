@@ -1,0 +1,264 @@
+{
+ "vhrh0m7": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "mei",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 2.600041666666667,
+  "text": "ねえ、ひとつ、ためしてみる？",
+  "heard": "",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "vtgoxwy": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 13.900041666666667,
+  "text": "1970年代、カンボジアは、長い戦争と、ポル・ポトの政権の時代をむかえたんだ。たくさんの人が亡くなって、家族とはなれた人も、たくさんいたよ。",
+  "heard": " 1970年代、カンボジアは、長い戦争と、ポル・ポトの政権の時代をむかえたんだ。たくさんの人が亡くなって、家族とはなれた人も、たくさんいたよ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vbgr32a": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.050041666666667,
+  "text": "畑は手入れをされなくなって、カンポットの胡椒づくりは、ほとんど止まってしまったんだ。",
+  "heard": "畑は手入れをされなくなって、カンポットの胡椒づくりは、ほとんど止まってしまったんだ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "胡椒＝こしょう"
+  ]
+ },
+ "vsv68t9": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.93,
+  "text": "メイちゃんやチャンナくんは、物語のために作った子どもたち。でも、あのころの子どもたちは、本当に、その時代を生きなければならなかったんだ。",
+  "heard": "メイ ちゃん や ちゃんな くん は 、 物語 の ため に 作っ た 子ども たち 。 でも 、 あの 頃 の 子ども たち は 本当 に その 時代 を 生き なけれ ば なら なかっ た ん だ 。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1t2xni3": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.440041666666668,
+  "text": "戦いが終わって、国が少しずつ落ち着いてきた1998年ごろから、農家の人たちは、また、胡椒を育てはじめたんだ。",
+  "heard": "戦いが終わって、国が少しずつ落ち着いてきた1998年ごろから、農家の人たちは、また、胡椒を育てはじめたんだ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "胡椒＝こしょう"
+  ]
+ },
+ "voqbgq8": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.210041666666666,
+  "text": "一本ずつ柱を立てて、一本ずつ、さし木をして。",
+  "heard": "一本ずつ柱を立てて、一本ずつ、さし木をして。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "さし木＝さしき"
+  ]
+ },
+ "v1tqxpwi": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 14.56,
+  "text": "2010年、カンポットの胡椒は、カンボジアで初めての「地理的表示」になったんだ。この土地で、決まった育て方で作ったものだけが、「カンポット胡椒」と名のれる、というしるしだよ。",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "胡椒＝こしょう",
+   "地理的表示＝ちりてきひょうじ"
+  ]
+ },
+ "v78dg0y": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.26,
+  "text": "2016年には、ヨーロッパでも、同じしるしが認められたんだ。カンボジアのものでは、初めてだったんだよ。",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vidhs4x": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.54,
+  "text": "それでも、2020年ごろにとれたのは、一年に80トンくらい。むかしの3,000トンには、まだ、ずっと遠いんだ。",
+  "heard": "それでも、2020年ごろにとれたのは、一年に80トンくらい。むかしの3,000トンには、まだ、ずっと遠いんだ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vjrnsnd": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.24,
+  "text": "戻ったのは、全部じゃない。……でも、また、柱が立った。",
+  "heard": "戻ったのは、全部じゃない。……でも、また、柱が立った。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1paqqna": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.69,
+  "text": "日本から来て、1990年代から、ほかの州で、カンボジアの胡椒づくりを立て直してきた人もいるんだよ。",
+  "heard": "日本から来て、1990年代から、ほかの州で、カンボジアの胡椒づくりを立て直してきた人もいるんだよ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "胡椒＝こしょう"
+  ]
+ },
+ "v1892nj5": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.21,
+  "text": "海南島から来た家族の子孫も、今もたくさん、このあたりで胡椒を育てていると言われているんだ。",
+  "heard": "海南島から来た家族の子孫も、今もたくさん、このあたりで胡椒を育てていると言われているんだ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "海南島＝かいなんとう",
+   "胡椒＝こしょう"
+  ]
+ },
+ "v9kjnk7": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.05,
+  "text": "（小声）畑では、とれたての緑の胡椒を味見できるところもあるよ。……また、顔がまっ赤になるかもね。",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "胡椒＝こしょう"
+  ]
+ },
+ "vepjhiv": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.33,
+  "text": "（小声）赤い胡椒のあまいかおり、覚えてる？ 町のお店では、赤い胡椒も売られているよ。",
+  "heard": "赤い胡椒の甘い香り、覚えてる？街のお店では、赤い胡椒も売られているよ",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "胡椒＝こしょう"
+  ]
+ },
+ "vc15yqy": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.03,
+  "text": "となりのケップの町のカニ市場では、カンポットの胡椒で、とれたてのカニをいためた料理が、名物なんだって。",
+  "heard": "となりのケップの町のカニ市場では、カンポットの胡椒で、とれたてのカニをいためた料理が、名物なんだって。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "胡椒＝こしょう"
+  ]
+ },
+ "vrkklx7": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.46,
+  "text": "（小声）アンリ・ムオさんも、カンポットに来たことがあるんだ。そのころ、カンポットは、カンボジアのただひとつの港だったんだよ。",
+  "heard": "アンリ・ムオさんも、カンポットにきたことがあるんだ。そのころ、カンポットは、カンボジアのただひとつの港だったんだよ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vsn3dd3": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.31,
+  "text": "（小声）「けんかしても、柱は一本」。……チャンナくんの言葉、なんだか、この国のことみたいだね。",
+  "heard": "……ちゃんなくんの言葉、なんだか、この国のことみたいだね。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1hw25sa": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.71,
+  "text": "（小声）あの夕方の柱が、どこかで、てっぺんまで登っていたら、いいな。",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vbc7r50": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "mony2",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 3.6300416666666666,
+  "text": "わたしよ、モニー。もう、三十五。",
+  "heard": "わたしよ、モニー。もう、三十五。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1bh934": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.45,
+  "text": "カンボジアの500リエル札の裏には、きずな橋と、川下のつばさ橋が、ならんで描かれているよ。",
+  "heard": "カンボジアの五百リエル札の裏には、きずな橋と、川下のつばさ橋が、ならんで描かれているよ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "きずな橋＝きずなばし"
+  ]
+ }
+}
