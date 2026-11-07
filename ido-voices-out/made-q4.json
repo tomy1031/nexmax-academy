@@ -286,5 +286,101 @@
   "heard": "Which way was the path?",
   "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
   "readings": []
+ },
+ "e1a8dc0n17noj": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "vanna",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 2.96,
+  "text": "I think we’ve passed that rock before…",
+  "heard": " I think we’ve passed that rock before.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "en0acwh10xfb": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 2.7400416666666665,
+  "text": "Vanna’s voice began to tremble.",
+  "heard": "Dana's voice began to tremble.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "ej0j1vtax6t2": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.69,
+  "text": "Just then, from beyond the mist, came a small tok — a walking stick tapping on stone.",
+  "heard": "Just then, from beyond the mist, came a small took a walking stick tapping on stone.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e1r0zclr15rln": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.26,
+  "text": "In the white mist stood an old woman.",
+  "heard": "In the white mist stood an old woman.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e78u7v419hee": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 11.82,
+  "text": "A white blouse and a black wrapped skirt. A yellow cloth over her shoulder. Her white hair was tied back, and she stood perfectly straight.",
+  "heard": "\nA white blouse and a black wrapped skirt.\nA yellow cloth over her shoulder.\nHer white hair was tied back, and she stood perfectly straight.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "eiiau8melag2": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "yeaymao",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 5.01,
+  "text": "…You two. Going into the mountain without even a greeting?",
+  "heard": "Going intothe mountainwithout even a greeting?",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e1varctyi82hv": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "yeaymao",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 6.410041666666666,
+  "text": "…You again? You forgot to greet it this time, too.",
+  "heard": " You forgot to greet it this time, too.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e1pmebskeg4co": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "yeaymao",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 6.02,
+  "text": "Oh? And you there — you look at me as if you already know me.",
+  "heard": " Oh? And you there — you look at me as if you already know me.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
  }
 }
