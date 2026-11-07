@@ -1,0 +1,102 @@
+{
+ "v16nrzxo": {
+  "episode": "kh-bokor",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.35,
+  "text": "むかし、むかし。——ここからは、言い伝えの話。",
+  "heard": "ここからは、言い伝えの話。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vfcmlz0": {
+  "episode": "kh-bokor",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.01,
+  "text": "カンボジアの南の海べ。朝の浜に、小さな舟がいくつも並んでいた。",
+  "heard": "カンボジアの南の海べ。朝の浜に、小さな舟がいくつも並んでいた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1t0flfe": {
+  "episode": "kh-bokor",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.910041666666666,
+  "text": "浜のうしろには、大きな山が、どっしりとすわっている。山のてっぺんは、いつも、白い雲にかくれていた。",
+  "heard": "浜のうしろには、大きな山が、どっしりとすわっている。山のてっぺんは、いつも、白い雲にかくれていた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v8hq7ap": {
+  "episode": "kh-bokor",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.44,
+  "text": "舟を出す前に、漁師たちは、浜の小さなほこらの前で、そろって手を合わせた。",
+  "heard": "舟を出す前に、漁師たちは、浜の小さなほこらの前で、そろって手を合わせた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "漁師＝りょうし"
+  ]
+ },
+ "v11r9w6f": {
+  "episode": "kh-bokor",
+  "lang": "ja",
+  "speaker": "ヴァンナのお父さん",
+  "voice": "Rasalgethi",
+  "model": "gemini-3.8-live",
+  "seconds": 4.92,
+  "text": "ヴァンナ、おまえも来い。マオおばあさんに、あいさつだ。",
+  "heard": "ヴァンナ、おまえも来い。マオおばあさんに、あいさつだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v181s118": {
+  "episode": "kh-bokor",
+  "lang": "ja",
+  "speaker": "vanna",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 8.05,
+  "text": "はーい。……あ、だれ？ 見ない顔だね。船で来たの？",
+  "heard": " あ、だれ? 見ない顔だね。船で来たの?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1x3vwu0": {
+  "episode": "kh-bokor",
+  "lang": "ja",
+  "speaker": "vanna",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 7.160041666666666,
+  "text": "ぼく、ヴァンナ。九つ。父ちゃんは漁師で、ぼくも、大きくなったら漁師になるんだ。",
+  "heard": "僕 、 パンナ 。 こつ 。 ちょう ちゃん は 漁師 で 、 僕 も 大きく なっ たら 漁師 に なる ん だ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "漁師＝りょうし"
+  ]
+ },
+ "vqqm6q2": {
+  "episode": "kh-bokor",
+  "lang": "ja",
+  "speaker": "vanna",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 5.83,
+  "text": "はーい。……あっ、また来たの？ 船で来たの？",
+  "heard": " ……あっ、また来たの？船で来たの？",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ }
+}
