@@ -478,5 +478,53 @@
   "heard": " There’s another part of this mountain’s history",
   "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
   "readings": []
+ },
+ "eingpxy1j91p": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.63,
+  "text": "In the 1920s, the French built a town on top of this mountain, to rest away from the heat. A hotel and a church were built.",
+  "heard": " In the 1920s, the French built a town on top of this mountain, to rest away from the heat. A hotel and a church were built.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e15lh54f16afa": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 17.31,
+  "text": "To build the road up the mountain, people who had been put in prison, and people who couldn’t pay their taxes in money, were made to do hard work. Malaria was spreading in the forest, and newspapers of the time reported that nearly 900 people died.",
+  "heard": " To build the road up the mountain, people who had been put in prison, and people who couldn’t pay their taxes in money, were made to do hard work. Malaria was spreading in the forest, and newspapers of the time reported that nearly 900 people died.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1bskhcz4hufw": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.960041666666666,
+  "text": "Even back then, some newspapers wrote that this was wrong.",
+  "heard": " some newspapers wrote that this was wrong.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "ervmpa07d7tg": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.41,
+  "text": "When you look at the old buildings, I hope you’ll remember, just a little, the people who built that road.",
+  "heard": " When you look at the old buildings, I hope you’ll remember, just a little, the people who built that road.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
