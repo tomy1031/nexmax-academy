@@ -426,5 +426,108 @@
   "heard": "男たちの顔に、少しだけ、色がもどった。",
   "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
   "readings": []
+ },
+ "vbsx86y": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 14.3,
+  "text": "相場の世界は、だれかが得をすると、だれかが損をする、むずかしい世界なんだ。それでも岩本さんは、このとき、困っていた仲間の側に立った人として、今も語られているんだよ。",
+  "heard": "相場の世界は、だれかが得をすると、だれかが損をする、むずかしい世界なんだ。それでも岩本さんは、このとき、困っていた仲間の側に立った人として、今も語られているんだよ。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "相場＝そうば"
+  ]
+ },
+ "vnltgo3": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "kiyo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 4.97,
+  "text": "若だんなはな、晩になったら、おれら小僧に、字を教えてくれはるねん。",
+  "heard": "わかだんなはな、晩になったら、おれら小僧に、字を教えてくれはるねん。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "若だんな＝わかだんな",
+   "小僧＝こぞう"
+  ]
+ },
+ "vpanouj": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "kiyo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 3.87,
+  "text": "「学問せなあかん」て。それが、口ぐせなんや。",
+  "heard": "それが、口ぐせなんや。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v18i1lwy": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "kiyo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 3.2000416666666665,
+  "text": "……あんたも、来る？ 今夜も、あるで。",
+  "heard": "あんた も 来る ? 今夜 も ある で 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vn9xnta": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "kiyo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 5.26,
+  "text": "ほな、日がくれたら、店の裏や。おれの名前、言うたら入れてくれはるわ。",
+  "heard": "ほな、日がくれたら、店の裏や。おれの名前、言うたら入れてくれはるわ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1ghbu60": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "kiyo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 2.18,
+  "text": "……！ な、なんでもあらへん！",
+  "heard": "！ な、なんでもあらへん！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v12gou8u": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.870041666666667,
+  "text": "清吉は、ふところを両手で押さえて、そっぽを向いた。耳まで赤くなっている。",
+  "heard": "清吉は、ふところを両手で押さえて、そっぽを向いた。耳まで赤くなっている。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "清吉＝せいきち"
+  ]
+ },
+ "v17930wj": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "kiyo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 4.74,
+  "text": "……日がくれたら、店の裏の、二階や。来たかったら、来たらええ。",
+  "heard": "日がくれたら、店の裏の、二階や。来たかったら、来たらええ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
