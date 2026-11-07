@@ -318,5 +318,111 @@
   "readings": [
    "定礎式＝ていそしき"
   ]
+ },
+ "v1a39u4n": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 12.55,
+  "text": "テントのまんなかで、白い髪の老人が、四角い石の前に進み出た。石には、「定礎」と、大きな字が刻まれている。",
+  "heard": "テントのまんなかで、白い髪の老人が、四角い石の前に進み出た。石には、「定礎」と、大きな字が刻まれている。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1iw16e8": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "kiyo2",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 9.2,
+  "text": "あれが、渋沢栄一さんや。東京から来はったんやて。あの「定礎」の字も、渋沢さんが書かはったんや。",
+  "heard": "あれが、渋沢栄一さんや。東京から来はったんやて。あの「定礎」の字も、渋沢さんが書かはったんや。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "渋沢栄一＝しぶさわえいいち"
+  ]
+ },
+ "v1718k5y": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 14.030041666666667,
+  "text": "渋沢栄一さんは、日本の銀行や会社を、たくさんつくるのを手伝った人なんだ。岩本さんにたのまれて、寄付の話し合いのあいだに立ち、建物づくりの相談役にもなったんだよ。",
+  "heard": "渋沢栄一さんは、日本の銀行や会社を、たくさんつくるのを手伝った人なんだ。岩本さんに頼まれて、寄付の話し合いのあいだに立ち、建物づくりの相談役にもなったんだよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "渋沢栄一＝しぶさわえいいち"
+  ]
+ },
+ "vlgb3h3": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "kiyo2",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 9.96,
+  "text": "それにな、あの石の中には、銀の板が入ってるんやて。だれが、どうしてこの建物を建てたか、ちゃんと書いてあるんや。",
+  "heard": "それにな、あの石の中には銀の板が入ってるんやて。 誰がどうしてこの建物を建てたか、ちゃんと書いてあるんや。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v18s6k3k": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.39,
+  "text": "本当だよ。礎石の中には、寄付と建設のいきさつを書いた銀の板が、納められたんだ。",
+  "heard": "礎石の中には、寄付と建設のいきさつを書いた銀の板が、納められたんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "礎石＝そせき"
+  ]
+ },
+ "v1635bn8": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.260041666666666,
+  "text": "式の輪から、少しはなれたところ。",
+  "heard": " 式の輪から、少しはなれたところ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vc8x58f": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.55,
+  "text": "着物に羽織の男が、ひとり、足場を見上げていた。",
+  "heard": "着物 に 羽織 の 男 が 1人 足場 を 見上げ て い た 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "羽織＝はおり"
+  ]
+ },
+ "v3z2s8x": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "kiyo2",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 3.06,
+  "text": "……あっ。若だんな……いや、岩本はん！",
+  "heard": "あっ。わかだんな……いや、いわもとはん！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "若だんな＝わかだんな"
+  ]
  }
 }
