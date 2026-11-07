@@ -530,5 +530,103 @@
   "heard": "アメリカ に 行っ た 時 に な 、 三 や お 金持ち が 街 の みんな の ため に 図書 館 やら ホール やら を 建て とる の を",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v3bmm5z": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "iwamoto",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 8.98,
+  "text": "胸が、どきどきしてな。……大阪にも、だれでも入れる、みんなの家があったらええ、て思たんや。",
+  "heard": "胸がドキドキしてな 大阪にも 誰 で も 入れる みんなの 家 が あっ たら ええっ て 思たん や。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vfuyqn3": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.57,
+  "text": "1909年に、日本の実業家たちの団体で、アメリカへ渡ったときのことだね。",
+  "heard": "1909年に、日本の実業家たちの団体で、アメリカへ渡った時のことだね。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1n4fvj": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "iwamoto",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 6.1,
+  "text": "みんなが集まって、話を聞いたり、歌を聞いたりできる建物や。",
+  "heard": "みんなが集まって、話を聞いたり、歌を聞いたりできる建物や。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vr9hz1u": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "iwamoto",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 7.76,
+  "text": "偉い人だけやない。商人も、職人も、子どもも、だれでも入れる建物にしたいんや。",
+  "heard": "えらい人だけやない。商人も、職人も、子どもも、だれでも入れる建物にしたいんや。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v6kxuei": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "iwamoto",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 4.98,
+  "text": "この建物は、わしのもんやない。大阪のみんなのもんや。",
+  "heard": "この建物は、わしのもんやない。大阪",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1j78vys": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.43,
+  "text": "岩本さんが寄付を申し出たときの書類には、「みんなの役に立てるため」という意味の言葉が書かれていたんだ。",
+  "heard": "岩本さんが寄付を申し出たときの書類には、「みんなの役に立てるため」という意味の言葉が書かれていた",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v4i23xf": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "iwamoto",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 9.36,
+  "text": "この寄付の半分は、親父が残してくれたお金や。……もうけたもんは、町に返せ。それが、親父の教えやった。",
+  "heard": "この寄付の半分は、親父が残してくれたお金や。……もうけたもんは、町に返せ。それが、親父の教えやった。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vx5j0p3": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "kiyo2",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 5.46,
+  "text": "岩本はん、おれ、今、塾で、ちびらに字を教えてるんです。",
+  "heard": "岩本はん、おれ、今、塾で、ちびらに字を教えてるんです。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "塾＝じゅく"
+  ]
  }
 }
