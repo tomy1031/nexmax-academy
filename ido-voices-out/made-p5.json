@@ -96,5 +96,110 @@
   "heard": "いま、村のみんなで竹の橋をかけてるんだ。おじいちゃんもあそこにいるよ。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v19dqs3g": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "mony",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 4.3,
+  "text": "あっ、また来たの！ そこ、竹がころがってくるよ！",
+  "heard": "あー、また来たの？そこ、竹が転がってくるよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v7g1va1": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "mony",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 5.7,
+  "text": "あっ、あぶない！ ……あれ？ わたしのこと、知ってるの？",
+  "heard": " ……あれ？わたしのこと、知ってるの？",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v90t27z": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "mony",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 5.19,
+  "text": "乾季になると、毎年、竹で橋をかけるんだよ。町まで、ずーっと。",
+  "heard": "換気 に なる と 毎年 竹 で 橋 を かける ん だ よ 。 町 まで ずっと",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "乾季＝かんき"
+  ]
+ },
+ "vujrdrb": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "mony",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 6.56,
+  "text": "わたし、乾季は、この橋を歩いて、町の学校に行くの。雨季は、船だけどね。",
+  "heard": "わたし、乾季は、この橋を歩いて、町の学校に行くの。雨季は、船だけどね。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "乾季＝かんき",
+   "雨季＝うき"
+  ]
+ },
+ "v1emo2t5": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.32,
+  "text": "カンボジアには、雨がたくさん降る「雨季」と、ほとんど降らない「乾季」があるんだ。メコン川の水の高さは、季節で、とても大きく変わるんだよ。",
+  "heard": "カンボジアには雨がたくさん降る雨期とほとんど降らない乾期があるんだ。メコン川の水 の 高 さ は 季節 で とても 大きく 変わる ん だ よ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "雨季＝うき",
+   "乾季＝かんき",
+   "メコン川＝めこんがわ"
+  ]
+ },
+ "vk9l4wk": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.02,
+  "text": "川の中で、腰まで水につかった男の人たちが、長い竹の柱を、川底に打ちこんでいた。",
+  "heard": "川 の 中 で 腰 まで 水 に 浸かっ た 男 の 人 たち が 長い 竹 の 柱 を 川底 に 打ち込ん で い た 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v11008h9": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.890041666666667,
+  "text": "その中の、日にやけた、やせたおじいさんが、こちらに手をふった。",
+  "heard": "その中の 日 に 焼け た 痩せ た おじい さん が こちら に 手 を 振っ た 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v11a9ros": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "roun",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 2.85,
+  "text": "おーい、モニー。お客さんかい。",
+  "heard": "おーい、モニー。お客さ",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
