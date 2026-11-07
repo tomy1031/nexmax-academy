@@ -256,5 +256,268 @@
   "readings": [
    "拓也＝たくや"
   ]
+ },
+ "v14dyi34": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "katsuzo",
+  "voice": "Alnilam",
+  "model": "gemini-3.8-live",
+  "seconds": 5.35,
+  "text": "拓也、だれとしゃべっとんねん。……ん？ どっかで、会うたかいな。",
+  "heard": " 拓也、だれとしゃべっとんねん。……ん？どっかで、会うたかいな。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "拓也＝たくや"
+  ]
+ },
+ "v189om0f": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "katsuzo",
+  "voice": "Alnilam",
+  "model": "gemini-3.8-live",
+  "seconds": 5.36,
+  "text": "勝三や。この岡田浦で、五十年、漁師しとる。",
+  "heard": "活(かつ)ぞや。この岡田浦で50年漁師しとる。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "勝三＝かつぞう",
+   "岡田浦＝おかだうら",
+   "漁師＝りょうし"
+  ]
+ },
+ "viydtbt": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "katsuzo",
+  "voice": "Alnilam",
+  "model": "gemini-3.8-live",
+  "seconds": 6.2000416666666665,
+  "text": "空港が開く日の朝やいうてな、拓也が、どうしても舟に乗る言うてきかんのや。",
+  "heard": "空港 が 開く 日 の 朝 や 言う て な 。 拓也 が どう し て も 船 に 乗る 言う て 聞か ん の よ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "拓也＝たくや"
+  ]
+ },
+ "v186awr2": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "katsuzo",
+  "voice": "Alnilam",
+  "model": "gemini-3.8-live",
+  "seconds": 4.2400416666666665,
+  "text": "ほな、網を入れるついでに、見せたろかと思てな。",
+  "heard": "ほな、網を入れるついでに、見せたろかと思てな。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v12jx9za": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.4400416666666667,
+  "text": "空が、少しずつ、白くなってきた。",
+  "heard": "空 が 少し ずつ 白く なっ て き た 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vpfjde1": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.380041666666667,
+  "text": "浜のほうを見ると、海ぎわに、広い、平らな土地が、まっすぐのびている。",
+  "heard": "浜のほうを見ると、海ぎわに、広い、平らな土地が、まっすぐのびている。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1pwd08n": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "katsuzo",
+  "voice": "Alnilam",
+  "model": "gemini-3.8-live",
+  "seconds": 3.96,
+  "text": "あそこな。ついこのあいだまで、海やったんやで。",
+  "heard": "あそこな。ついこのあいだまで、海やった",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vep6q3": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "katsuzo",
+  "voice": "Alnilam",
+  "model": "gemini-3.8-live",
+  "seconds": 5.47,
+  "text": "わしが若いころは、あのへんまで、舟で魚をとりに行っとった。",
+  "heard": " わしが若いころは、あのへんまで、舟で魚をとりに行っとった。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vaz3l0t": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 14.59,
+  "text": "空港の向かいの岸も、1988年から、海を埋め立てて、新しい土地にしていたんだ。「りんくうタウン」と呼ばれる土地だよ。いまの泉南ロングパークも、その土地の上にあるんだ。",
+  "heard": " 空港の向かいの岸も、1988年から、海を埋め立てて、新しい土地にしていたんだ。「りんくうタウン」と呼ばれる土地だよ。いまの泉南ロングパークも、その土地の上にあるんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "埋め立て＝うめたて",
+   "泉南＝せんなん"
+  ]
+ },
+ "v136lhpu": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "takuya",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 2.9600416666666667,
+  "text": "じいちゃん、海が、ちょっと小さなったん？",
+  "heard": "じい ちゃん 海 が ちょっと ちっ ちゃく なっ た ん ?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vow21vj": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "katsuzo",
+  "voice": "Alnilam",
+  "model": "gemini-3.8-live",
+  "seconds": 4.14,
+  "text": "……さあな。小さなったんか、変わったんか。",
+  "heard": "さあな。小さなったんか、変わったんか。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v16gexlv": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "katsuzo",
+  "voice": "Alnilam",
+  "model": "gemini-3.8-live",
+  "seconds": 9.21,
+  "text": "潮の流れも、魚のおる場所も、ちょっとずつ変わる。漁師はな、それに合わせて、やっていくしかないんや。",
+  "heard": "潮の流れも、魚のおる場所も、ちょっとずつ変わる。漁師はな、それに合わせて、やっていくしかないんや。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "漁師＝りょうし"
+  ]
+ },
+ "v1u6yvfx": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.320041666666667,
+  "text": "勝三さんの声は、怒っても、よろこんでもいなかった。ただ、海を見ていた。",
+  "heard": "こえは、おこっても、よろこんでもいなかった。ただ、海を見ていた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "勝三＝かつぞう"
+  ]
+ },
+ "v1k4m8gu": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "katsuzo",
+  "voice": "Alnilam",
+  "model": "gemini-3.8-live",
+  "seconds": 4.440041666666667,
+  "text": "さ、網、上げるで。拓也、ロープ持て。",
+  "heard": "さあ、網上げるで。拓也、ロープ持て。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "拓也＝たくや"
+  ]
+ },
+ "v1ucfibc": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.19,
+  "text": "勝三さんが、ぐいっと網を引く。海の中から、銀色の小さな魚が、ぴちぴちと上がってくる。",
+  "heard": "勝蔵さんがぐいっと網を引く。海の中から銀色の小さな魚がピチピチと上がってくる。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "勝三＝かつぞう"
+  ]
+ },
+ "v1bdop9e": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "katsuzo",
+  "voice": "Alnilam",
+  "model": "gemini-3.8-live",
+  "seconds": 2.96,
+  "text": "あんたも、ひまやったら、手え貸してんか。",
+  "heard": "あんたも暇やったら定価してんか。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vu9h781": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.18,
+  "text": "ぬれたロープは、思ったよりずっと重い。勝三さんと息を合わせて、ぐい、ぐい、と引く。",
+  "heard": "ぬれたロープは、思ったよりずっと重い。勝三さんと息を合わせて、ぐい、ぐい、と引く。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "勝三＝かつぞう"
+  ]
+ },
+ "vau2goh": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "katsuzo",
+  "voice": "Alnilam",
+  "model": "gemini-3.8-live",
+  "seconds": 4.44,
+  "text": "おっ、ええ腰しとるやないか。漁師になれるで。",
+  "heard": "おっ、ええ腰しとるやないか。漁師になれるで。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "漁師＝りょうし"
+  ]
+ },
+ "vrco8y9": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.980041666666667,
+  "text": "網の中で、小さな魚たちが、朝の光を受けて、きらきら光った。",
+  "heard": "網の中で、小さな魚たちが、朝の光を受けて、きらきら光った。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v3afwa6": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "takuya",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 5.99,
+  "text": "なあなあ、飛行機って、どこまで行けるん？ アメリカとか？ もっと遠く？",
+  "heard": "なあなあ、飛行機って、どこまで行けるん？アメリカとか？もっと遠く？",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
