@@ -480,5 +480,29 @@
   "heard": " A bridge built again every year, and a bridge that never needs building",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "e15pdial16e0x": {
+  "episode": "kh-kizuna",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.960041666666666,
+  "text": "Both of them hold the bonds — the kizuna — between the people who built them and the people who cross them.",
+  "heard": " Both of them hold the bonds — the kizuna — between the people who built them and the people who cross them.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1pvuko21c0vy": {
+  "episode": "kh-kizuna",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.870041666666667,
+  "text": "(whispering) …Remember the clack-clack of the bamboo too.",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
