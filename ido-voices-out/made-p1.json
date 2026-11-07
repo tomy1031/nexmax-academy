@@ -320,5 +320,111 @@
   "heard": "手のかたちで、「売りたい」「買いたい」や、数を伝えあっていたんだ。声だけでは、聞こえないからね。",
   "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
   "readings": []
+ },
+ "v6da773": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 17.64,
+  "text": "部屋のすみに、青い顔をした男たちが、何人か集まっていた。そのまんなかに、山高帽の若い男が立っている。",
+  "heard": " 部屋のすみに、青い顔をした男たちが、何人か集まっていた。そのまんなかに、山高帽の若い男が立っている。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "山高帽＝やまたかぼう"
+  ]
+ },
+ "v1knvvy4": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "kiyo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 7.48,
+  "text": "あれ、岩本の若だんなや。今年、お父はんの店をついで、仲買人になりはった人。",
+  "heard": "あれ 岩本 の 若だん の や 今年 お父さん の 店 を ついで 仲買い に に なり はっ た 人 。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "若だんな＝わかだんな",
+   "仲買人＝なかがいにん"
+  ]
+ },
+ "v19px5ka": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.240125,
+  "text": "青い顔の男たちが、若い男に、何度も頭を下げている。",
+  "heard": "青い 顔 の 男 たち が 若い 男 に 何 度 も 頭 を 下げ て いる 。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "vyyapj8": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.94,
+  "text": "この年の5月ごろから、株の値段は、ずっと上がりつづけていたんだ。「そのうち下がる」と考えていた仲買人たちは、大きな損をしそうになって、困っていたんだよ。",
+  "heard": "この年の 5 月頃から株の値段はずっと上がり続けていたんだ。 そのうち下がると思っていた仲買人たちは大きな損をしそうになって困っていたんだよ。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "株＝かぶ",
+   "仲買人＝なかがいにん"
+  ]
+ },
+ "vramedd": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.77,
+  "text": "仲間たちは、岩本栄之助さんに、自分たちの側について助けてほしい、とたのんだと伝えられているんだ。",
+  "heard": "仲間たちは、岩本栄之助さんに、自分たちの側について助けてほしい、とたのんだと伝えられ",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "岩本栄之助＝いわもとえいのすけ"
+  ]
+ },
+ "v13h4hn3": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.19,
+  "text": "若い男は、しばらく黙っていた。それから、ゆっくりうなずいた。",
+  "heard": "しばらく黙っていた。それから、ゆっくりうなずいた。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "v1h60wdr": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "若い男の声",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 6.77,
+  "text": "父親の代から、お世話になってる皆さんや。恩返しや思て、協力しましょ。",
+  "heard": "父親の代からお世話になってる皆さんや恩返しやと思って協力しましょう。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "vwwroxo": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.660375,
+  "text": "男たちの顔に、少しだけ、色がもどった。",
+  "heard": "男たちの顔に、少しだけ、色がもどった。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
  }
 }
