@@ -382,5 +382,101 @@
   "heard": " Oh? And you there — you look at me as if you already know me.",
   "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
   "readings": []
+ },
+ "ee39b9dom16y": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.92,
+  "text": "The old woman’s voice was low and stern. And yet, though she was frightening, for some reason you didn’t want to run away.",
+  "heard": " The old woman’s voice was low and stern. And yet, though she was frightening, for some reason you didn't want to run away.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e1igpzo1iy8z": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "yeaymao",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 14.37,
+  "text": "When you go out to sea, you greet the sea. When you go into the mountain, you greet the mountain.",
+  "heard": " When you go out to sea, you greet the sea. When you go into the mountain, you greet the mountain.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "eldo8oo1vwvp": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "yeaymao",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 8.01,
+  "text": "This is not your home. You are visiting the home of the creatures of the forest.",
+  "heard": " This is not your home. You are visiting the home of the creatures of the",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e1j1sk3v18t89": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 11.91,
+  "text": "Just as the fishermen had done on the beach, you pressed your palms together in front of your chest and bowed. Vanna hurried to copy you.",
+  "heard": " Just as the fishermen had done on the beach, you pressed your palms together in front of your chest and bowed. Vanna hurried",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e1hevlgl1lprp": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.61,
+  "text": "You turned toward the mountain beyond the mist and said, “Excuse me for coming in.” In a small voice, Vanna said the same.",
+  "heard": " You turned toward the mountain beyond the mist and said, “Excuse me for coming in.” In a small voice, Vanna said",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e1771aya1hcou": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.8000416666666665,
+  "text": "And then — the mist began to thin away.",
+  "heard": " And then — the mist began to thin away.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e2ktmna1se9f": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.160041666666666,
+  "text": "Right in front of you, you could see a narrow path, still leading on.",
+  "heard": " Right in front of you, you could see a narrow path, still leading on.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e79jlr91be02": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "yeaymao",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 5.11,
+  "text": "Good. Those who greet, I protect.",
+  "heard": " Those who greet, I protect.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
  }
 }
