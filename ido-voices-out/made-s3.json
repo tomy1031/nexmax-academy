@@ -1,0 +1,262 @@
+{
+ "v1w87j3z": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "iwamoto",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 7.43,
+  "text": "岩本栄之助いいます。昼は仲買人、夜はここで、字とそろばんの先生のまねごとや。",
+  "heard": "岩本栄之助いいます。昼は仲買人、夜はここで、字とそろばんの先生のまねごとや。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": [
+   "岩本栄之助＝いわもとえいのすけ",
+   "仲買人＝なかがいにん"
+  ]
+ },
+ "vdw2od9": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "iwamoto",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 10.85,
+  "text": "おや、あんたは……。いや、まさかな。よう来はった。すわって、すわって。",
+  "heard": " おや、あんたは……。いや、まさかな。よう来はった。すわって、すわって。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "v19jth91": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "iwamoto",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 9.87,
+  "text": "おや、見ん顔……のはずやけど、なんでやろ。前に、どっかで会うたような気がするわ。",
+  "heard": " おや、見ん顔……のはずやけど、なんでやろ。前に、どっかで会うたような気がするわ。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "vgxwd3v": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 15.22,
+  "text": "岩本さんは、取引所で働く少年たちのために、自分のお金で塾を作ったんだ。でも、どこにあって、いつできたのかは分かっていないから、この部屋は物語のための場面だよ。",
+  "heard": "岩本さんは、取引所で働く少年たちのために、自分のお金で塾を作ったんだ。でも、どこにあって、いつできたのかは分かっていないから、この部屋は物語のための場面だよ。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": [
+   "取引所＝とりひきじょ",
+   "塾＝じゅく"
+  ]
+ },
+ "va2as8g": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "iwamoto",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 3.51,
+  "text": "ええか、みんな。学問せなあかんで。",
+  "heard": "ええか、みんな。学問せなあかんで。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "v1g70ow7": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "iwamoto",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 6.69,
+  "text": "字が読めたら、だまされへん。数がわかったら、自分の足で立てる。",
+  "heard": "字が読めたらダマサレヘン。数が分かったら自分の足で立てる。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "v128h5rj": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "iwamoto",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 7.23,
+  "text": "北浜はな、字と数でできとる町や。それを、大人だけのもんにしといたら、あかん。",
+  "heard": "北浜 は な 、 字 と 数 で でき とる 街 や 。 それ を 大人 だけ の もん に し とい たら あかん 。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": [
+   "北浜＝きたはま"
+  ]
+ },
+ "v1qjqtse": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.880041666666667,
+  "text": "小僧たちが、石盤に、「い」「ろ」「は」と書いていく。",
+  "heard": "小僧たちが、石盤に、「い」「ろ」「は」と書いていく。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": [
+   "小僧＝こぞう",
+   "石盤＝せきばん"
+  ]
+ },
+ "v16wpdsq": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.66,
+  "text": "清吉の石筆だけが、止まっていた。ふところから出した紙を、じっと見つめている。",
+  "heard": "清吉の石筆だけが、止まっていた。ふところから出した紙を、じっと",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": [
+   "清吉＝せいきち",
+   "石筆＝せきひつ"
+  ]
+ },
+ "v1dcnleh": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "kiyo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 7.15,
+  "text": "……これ、かあちゃんからの手紙やねん。村のお寺の和尚さんに、書いてもろたんやて。",
+  "heard": "これ、かあちゃんからの手紙やねん。村のお寺の和尚さんに、書いてもろたんやて。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": [
+   "和尚＝おしょう"
+  ]
+ },
+ "vaqqp1j": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "kiyo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 7.96,
+  "text": "おれが読めるように、ぜんぶ、ひらがなで書いてくれはったらしい。……でも、おれ、まだ読まれへん。",
+  "heard": "俺が読めるように全部ひらがなで書いてくれはったらしい。でも、俺まだ読まれへん。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "v16gk3gf": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "kiyo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 4.35,
+  "text": "もうひと月、ずっと、ふところに入れたまんまや。",
+  "heard": "もうひと月、ずっと、ふところに入れたまんまや。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "v4d6m9h": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "kiyo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 1.6700416666666666,
+  "text": "……あかん。",
+  "heard": "あかん。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "v1noex3e": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "kiyo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 17.46,
+  "text": "ありがたいけど、あかんねん。……これは、おれが、自分で読みたいんや。",
+  "heard": "ありがたいけど、あかんねん。……これは、おれが、自分で読みたいんや。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "vwlvep3": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "kiyo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 2.35,
+  "text": "……うん。笑わんといてな。",
+  "heard": "うん 。 わらわ ん とい て な 。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "v1ey02rl": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.25,
+  "text": "岩本さんが、清吉のとなりに、ひざをついた。",
+  "heard": "岩本 さん が 斉藤 の 隣 に 膝 を つい た 。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": [
+   "清吉＝せいきち"
+  ]
+ },
+ "vr7paag": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "iwamoto",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 5.14,
+  "text": "よっしゃ。清吉、この字は、今日ならうた字や。なんて読む？",
+  "heard": "よっしゃ。せいきち、この字は、今日ならうた字や。なんて読む？",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": [
+   "清吉＝せいきち"
+  ]
+ },
+ "v17sutyu": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "iwamoto",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 1.41,
+  "text": "その次は。",
+  "heard": "その 次 は",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "v7pwdve": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "kiyo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 5.960041666666666,
+  "text": "……い。……き。……ち。……せいきち。",
+  "heard": "い。……き。……ち。……せいきち。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "vjw3psw": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "kiyo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 1.44,
+  "text": "おれの名前や……！",
+  "heard": "俺 の 名前 や",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ }
+}
