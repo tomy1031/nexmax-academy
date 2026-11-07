@@ -94,5 +94,101 @@
   "heard": "Those say Naniwabashi. Go on, try reading it yourself.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1cv25bukclg4": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.390041666666667,
+  "text": "The young man happened to glance your way.",
+  "heard": " The young man happened to glance your way.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1er2m3j80fou": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 2.660041666666667,
+  "text": "And his eyes went wide.",
+  "heard": " And his eyes went",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e14luzfr6b5u": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "kiyo2",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 2.37,
+  "text": "…You. No way.",
+  "heard": "You no way.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "exw82l9b63zr": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "kiyo2",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 10.8,
+  "text": "You're the one who crashed into me in Kitahama… who was at the school that winter night. That was nearly nine years ago, and you haven't changed a bit.",
+  "heard": "You're the one who crashed into me in Kitahama, who was at the school that winter night? That was nearly nine years ago, and you haven't changed a bit.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e923gra9j0ia": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "kiyo2",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 4.360041666666667,
+  "text": "It's me. Seikichi. Kiyo! I'm nineteen now.",
+  "heard": "It's me Seki Chi Kyo I'm 19 now",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e183itbc1t8g3": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "kiyo2",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 8.28,
+  "text": "That night, you offered to read my letter for me, remember? …Ever since, I've read every one of Mum's letters by myself.",
+  "heard": " That night, you offered to read my letter for me, remember? …Ever since, I've read every one of Mum's letters by myself.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "erabfn21p8t6": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "kiyo2",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 9.54,
+  "text": "That night, you read my letter with me, one letter at a time, remember? …Ever since, I've read every one of Mum's letters by myself.",
+  "heard": " That night, you read my letter with me, one letter at a time, remember? …Ever since, I've read every one of Mum's letters by myself.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1vhk0r91bgo3": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "kiyo2",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 5.34,
+  "text": "Oh, are you a traveller? Come to see them building the public hall?",
+  "heard": " Oh, are you a traveller? Come to see them building the public hall?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
