@@ -1,0 +1,109 @@
+{
+ "vsvyz4v": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.43,
+  "text": "永正元年、秋。美濃国、関。",
+  "heard": "平成 元年 秋 美の 国 石",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "元年＝がんねん",
+   "美濃＝みの"
+  ]
+ },
+ "v1gv1yv3": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.5,
+  "text": "かん、かん、と、高い音がひびいてくる。",
+  "heard": "カンカン と 高い 音 が 響い て くる 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vg34dnl": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.86,
+  "text": "うす暗い小屋の中で、赤い火が、ごうごうと燃えていた。",
+  "heard": "うす暗い小屋の中で、赤い火が、ごうごうと燃えていた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1488oxu": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.13,
+  "text": "火のそばにすわった男が、小さな鎚で、まっ赤な鉄を「かん」とたたく。",
+  "heard": "火のそばにすわった男が、小さな鎚で、まっ赤な鉄を「かん」とたたく。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "鎚＝つち"
+  ]
+ },
+ "vimgts1": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.38,
+  "text": "すると、立っている若い男が、大きな鎚で、同じところを「どん」と打った。",
+  "heard": "すると、立っている若い男が、大きな鎚で、同じところを「どん」と打った。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "鎚＝つち"
+  ]
+ },
+ "v1c8s8aa": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.750041666666666,
+  "text": "かん、どん。かん、どん。",
+  "heard": "かん どん かん どん",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1qhse0g": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "hachi",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 4.93,
+  "text": "あっ、だめだめ、そこ、火の粉が飛ぶで！ こっちにおいで。",
+  "heard": "あ 、 だめ だめ 。 そこ ヒノコ が 飛ぶ で 。 こっち に おい で 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v19qwqk1": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "hachi",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 7.79,
+  "text": "おれ、八郎。ハチでいいよ。兼定さまの鍛冶場の、見習いや。十になった。",
+  "heard": "おれ、八郎。ハチでいいよ。兼定さまの鍛冶場の、見習いや。十になった。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "八郎＝はちろう",
+   "兼定＝かねさだ",
+   "鍛冶場＝かじば"
+  ]
+ }
+}
