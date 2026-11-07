@@ -628,5 +628,57 @@
   "readings": [
    "塾＝じゅく"
   ]
+ },
+ "v1bvzyn3": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "iwamoto",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 3.35,
+  "text": "ほう。清吉が、先生か。",
+  "heard": "ほう 、 関口 が 先生 か 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "清吉＝せいきち"
+  ]
+ },
+ "vudzeg8": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "iwamoto",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 6.75,
+  "text": "ええか、清吉。学問せなあかんで。教える人も、まだまだ、学ばなあかん。",
+  "heard": "ええ が 、 生き 地 。 学問 せ なあ かん で 。 教える 人 も まだまだ 学ば なあ かん 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "清吉＝せいきち"
+  ]
+ },
+ "v1utvrp3": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "kiyo2",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 0.4500416666666667,
+  "text": "……はい！",
+  "heard": "はい",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1lmbmav": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.290041666666666,
+  "text": "ぽつ、ぽつ、と、空から雨が落ちてきた。",
+  "heard": "ぽつ、ぽつ、と、空から雨が落ちてきた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
