@@ -21,7 +21,7 @@ const MODELS = ["gemini-3.8-live"]; // 1人の 声を そろえる ため、モ�
 const BUDGET_MS = 19 * 60 * 1000;
 // 最後の push を やり直せる 期限（ジョブの 持ち時間 30分 から、準備の 約2分と 後の 手順を 引いた 残り）
 const FINAL_PUSH_DEADLINE_MS = 26 * 60 * 1000;
-const PUSH_EVERY = 8;
+const PUSH_EVERY = 20;
 
 const started = Date.now();
 const req = JSON.parse(readFileSync(`${DIR}/request.json`, "utf8"));
