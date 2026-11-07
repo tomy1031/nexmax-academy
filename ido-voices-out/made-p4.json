@@ -486,5 +486,29 @@
   "heard": "それ で いい 。 挨拶 を する もの は 私 が 守る 。",
   "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
   "readings": []
+ },
+ "vjk965o": {
+  "episode": "kh-bokor",
+  "lang": "ja",
+  "speaker": "yeaymao",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 7.11,
+  "text": "あいさつをしない者には……まあ、ちょっとばかり、こらしめることもあるがね。",
+  "heard": "あいさつをしない者には……まあ、ちょっとばかり、こらしめることもあるがね。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "v10rc431": {
+  "episode": "kh-bokor",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.02,
+  "text": "（小声）……ヤイ・マオ。「マオおばあさん」っていう意味だよ。",
+  "heard": "ヤイ 、魔王 魔王 お ばあさ んっ て いう 意味 だ よ 。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
  }
 }
