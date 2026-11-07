@@ -286,5 +286,101 @@
   "heard": " Today is the cornerstone ceremony — a celebration where a special stone carved with the word \"cornerstone\" is set into a corner of the building.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1a39u4n1h53g": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 12.98,
+  "text": "In the middle of the tent, an old man with white hair stepped up to a square stone. Big characters were carved on it: 定礎, “cornerstone.”",
+  "heard": " In the middle of the tent, an old man with white hair stepped up to a square stone. Big characters were carved on it: 定礎, “cornerstone.”",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1iw16e86jhed": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "kiyo2",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 8.48,
+  "text": "That's Shibusawa Eiichi. They say he came all the way from Tokyo. He wrote those “cornerstone” characters himself, too.",
+  "heard": "Date Shibusawa H They say he came all the way from Tokyo. He wrote those cornerstone characters himself, too.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1718k5y141w6": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 12,
+  "text": "Shibusawa Eiichi helped start many of Japan's banks and companies. Iwamoto asked him to help arrange the gift with the city, and he also became an adviser for building the hall.",
+  "heard": " Shibusawa Eiichi helped start many of Japan's banks and companies. Iwamoto asked him to help arrange the gift with the city, and he also became an adviser for building the hall.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "elgb3h39csgr": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "kiyo2",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 7.55,
+  "text": "And y'know what? There's a silver plate inside that stone. It tells who built this building, and why.",
+  "heard": "And you know what? There's a silver plate inside that stone. It tells who built this building and why.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e18s6k3k1yco1": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.15,
+  "text": "It's true. A silver plate telling the story of the gift and the building was placed inside the cornerstone.",
+  "heard": " A silver plate telling the story of the gift and the building was placed inside the cornerstone.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1635bn8lc6k": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.910083333333333,
+  "text": "A little way off from the crowd at the ceremony…",
+  "heard": "A little way off from the crowd at the ceremony.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ec8x58ffjx92": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.430041666666667,
+  "text": "a man in a kimono and haori jacket stood alone, looking up at the scaffolding.",
+  "heard": " a man in a kimono and haori jacket stood alone, looking up at the scaffolding.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e3z2s8x1jw86": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "kiyo2",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 3.84,
+  "text": "…Oh! Young master… I mean, Mr. Iwamoto!",
+  "heard": " Oh! Young master… I mean, Mr. Iwamoto!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
