@@ -100,5 +100,108 @@
   "heard": "あれ は 何 岩橋 ほら 自分 で 呼ん で み 。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v1cv25bu": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.400041666666667,
+  "text": "若い男が、ふと、こちらを見た。",
+  "heard": "若い男がふと こちらを見た",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1er2m3j": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 2.7500416666666667,
+  "text": "そして、目をまるくした。",
+  "heard": "そして 目 を 丸く し た 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v14luzf": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "kiyo2",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 2.04,
+  "text": "……あんた。うそやろ。",
+  "heard": "あんた 、 うそ やろ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vxw82l9": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "kiyo2",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 10.190041666666668,
+  "text": "北浜で、おれとぶつかった……あの冬の夜、塾におった人や。もう九年近くも前やのに、ちっとも変わってへん。",
+  "heard": "北浜 で 俺 と ぶつかっ た 。 あの 冬 の 夜 塾 に おっ た 人 や 。 もう 9 年 近く も 前 や の に ちっと も 変わっ て へん 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "北浜＝きたはま",
+   "塾＝じゅく"
+  ]
+ },
+ "v923gra": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "kiyo2",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 5.03,
+  "text": "おれや。清吉や。キヨや！ もう十九やで。",
+  "heard": " おれや。清吉や。キヨや！ もう十九やで。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "清吉＝せいきち"
+  ]
+ },
+ "v183itbc": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "kiyo2",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 8.97,
+  "text": "あの晩、手紙、読んだろかって言うてくれたやろ。……おれ、あれから、かあちゃんの手紙、ぜんぶ自分で読んでるで。",
+  "heard": "あの晩、手紙、読んだろかって言うてくれたやろ。……おれ、あれから、かあちゃんの手紙、ぜんぶ自分で読んでるで。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vrabfn2": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "kiyo2",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 8.23,
+  "text": "あの晩、いっしょに一字ずつ読んでくれたやろ。……おれ、あれから、かあちゃんの手紙、ぜんぶ自分で読んでるで。",
+  "heard": "あの晩、いっしょに一字ずつ読んでくれたやろ。……おれ、あれから、かあちゃんの手紙、ぜんぶ自分で読んでるで。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1vhk0r9": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "kiyo2",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 4.55,
+  "text": "あ、旅の人？ 公会堂の工事、見に来はったん？",
+  "heard": "あ、旅の人？公会堂の工事、見に来はったん？",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "公会堂＝こうかいどう"
+  ]
  }
 }
