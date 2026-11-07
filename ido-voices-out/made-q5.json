@@ -1,0 +1,98 @@
+{
+ "e7lnw9y88boa": {
+  "episode": "genpei-dannoura",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 5.21,
+  "text": "…I see. Even you do not know.",
+  "heard": " Even you do not know.",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "e10b8ra71ox5n": {
+  "episode": "kh-songbook",
+  "lang": "en",
+  "speaker": "chuonnath",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 2.3,
+  "text": "We meet again.",
+  "heard": "We meet again.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e10k0q5rx22vb": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "vichet",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 2.1500416666666666,
+  "text": "Uh-oh. Mom.",
+  "heard": "Uh oh. Mom.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1ta70pi7z3gd": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "vichet",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 1.08,
+  "text": "…I see.",
+  "heard": "I see",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1loljh2nsut": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.54,
+  "text": "“Kizuna” (bonds) and “Tsubasa” (wings). Both bridges have Japanese names, and both are pictured on Cambodian money.",
+  "heard": " “Kizuna” (bonds) and “Tsubasa” (wings). Both bridges have Japanese names, and both are pictured on Cambodian",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "ev87all3cadu": {
+  "episode": "kh-tsubasa",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.96,
+  "text": "(whispering) The bridge of bonds, and the bridge of wings. …I bet the last door is just beyond them.",
+  "heard": " The bridge of wings. I bet the last door is just beyond them.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "exn5txonkxki": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "keo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 1.140125,
+  "text": "…Yes, sir!",
+  "heard": "Yes sir.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1d20ge699cj4": {
+  "episode": "kh-angkor-build",
+  "lang": "en",
+  "speaker": "keo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 0.9600416666666667,
+  "text": "…Done.",
+  "heard": "done",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ }
+}
