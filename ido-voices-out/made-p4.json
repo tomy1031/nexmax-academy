@@ -98,5 +98,103 @@
   "heard": " ……あっ、また来たの？船で来たの？",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "vrh2mlo": {
+  "episode": "kh-bokor",
+  "lang": "ja",
+  "speaker": "vanna",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 6.04,
+  "text": "はーい。……あれ？ なんで、ぼくのこと、知ってるみたいに笑ってるの？",
+  "heard": "はい 。 あれ ? なん で 僕 の こと を 知っ てる みたい に 笑っ てる の ?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v12yvf4c": {
+  "episode": "kh-bokor",
+  "lang": "ja",
+  "speaker": "vanna",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 4.39,
+  "text": "ぼく、ヴァンナ。九つ。父ちゃんは漁師なんだ。",
+  "heard": "九つ。父ちゃんは漁師なんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "漁師＝りょうし"
+  ]
+ },
+ "v1wy3gex": {
+  "episode": "kh-bokor",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.42,
+  "text": "ヴァンナは、みんなのまねをして、ほこらに手を合わせた。でも、すぐに顔を上げた。",
+  "heard": "ヴァンナは、みんなのまねをして、ほこらに手を合わせた。でも、すぐに顔を上げた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1rj9qv0": {
+  "episode": "kh-bokor",
+  "lang": "ja",
+  "speaker": "vanna",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 9.620041666666667,
+  "text": "ねえ、マオおばあさんって、だれ？ 父ちゃんに聞いても、「海と道を守ってくださる方だ」としか言わないんだ。",
+  "heard": "ねえ、マオおばあさんって、だれ?父ちゃんに聞いても、「海と道を守ってくださる方だ」としか言わないんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vggz7cy": {
+  "episode": "kh-bokor",
+  "lang": "ja",
+  "speaker": "vanna",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 4.070125,
+  "text": "見たこともないのに、あいさつするの、へんじゃない？",
+  "heard": "見たこともないのに、あいさつするの、へんじゃない?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v2owmgt": {
+  "episode": "kh-bokor",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.86,
+  "text": "カンボジアには、「ネアック・ター」と呼ばれる、土地の守り神がいるんだ。村や山や森ごとに、守ってくれる方がいると考えられているんだよ。",
+  "heard": " カンボジアには、「ネアック・ター」と呼ばれる、土地の守り神がいるんだ。村や山や森ごとに、守ってくれる方がいると考えられているんだよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1wrmp4o": {
+  "episode": "kh-bokor",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.48,
+  "text": "ヴァンナは、山のてっぺんの雲を、じっと見上げた。",
+  "heard": "ヴァンナは、山のてっぺんの雲を、じっと見上げた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vgzcoy7": {
+  "episode": "kh-bokor",
+  "lang": "ja",
+  "speaker": "vanna",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 8.04,
+  "text": "それよりさ、あの雲、どこから来るんだろう。毎日、毎日、山の上にだけ、のっかってるんだ。",
+  "heard": "それよりさ、あの雲、どこから来るんだろう。毎日、毎日、山の上にだけ、のっかってるんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
