@@ -105,5 +105,115 @@
    "兼定＝かねさだ",
    "鍛冶場＝かじば"
   ]
+ },
+ "vnvhud0": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "hachi",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 4.61,
+  "text": "あっ、また来たん？ そこ、火の粉が飛ぶで！ こっちにおいで。",
+  "heard": "あ、また来た。そこひのきが飛ぶで、こっちにおいで。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v4krdyy": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "hachi",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 5.94,
+  "text": "あっ、だめだめ、そこ、火の粉が飛ぶで！ ……あれ、どこかで会うた？",
+  "heard": "あっ、だめだめ、そこ、火の粉が飛ぶで！……あれ、どこかで",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1bjk4hv": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "hachi",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 5.520041666666667,
+  "text": "おれ、八郎。ハチでいいよ。兼定さまの鍛冶場の、見習いや。",
+  "heard": "ハチでいいよ。兼定さまの鍛冶場の、見習いや。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "八郎＝はちろう",
+   "兼定＝かねさだ",
+   "鍛冶場＝かじば"
+  ]
+ },
+ "v1x8ci00": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "hachi",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 9.46,
+  "text": "すわってるのが、兼定さま。小さい鎚で「ここ」ってたたくと、大きい鎚の兄さんが、同じところを打つんや。",
+  "heard": "すわってるのが、兼定さま。小さい鎚で「ここ」ってたたくと、大きい鎚の兄さんが、同じところを打つんや。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "兼定＝かねさだ",
+   "鎚＝つち"
+  ]
+ },
+ "vqwdq4h": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "hachi",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 4.83,
+  "text": "あれを「相槌」っていうんやで。息が合わんと、いい刀にならん。",
+  "heard": "下ろす相槌っていうんやで、息が合わんとうい刀にならん。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "相槌＝あいづち"
+  ]
+ },
+ "v1ciruv7": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.750041666666666,
+  "text": "「相槌を打つ」は、人の話にうなずくことだよね。もとは、刀鍛冶のこの打ち方から生まれた言葉だと言われているんだ。",
+  "heard": "「相槌を打つ」は、人の話にうなずくことだよね。もとは、刀鍛冶のこの打ち方から生まれた言葉だと言われているんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "相槌＝あいづち",
+   "刀鍛冶＝かたなかじ"
+  ]
+ },
+ "v1w119x5": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.44,
+  "text": "ほかにも、「しのぎを削る」や「そりが合わない」も、刀から生まれた言葉なんだって。",
+  "heard": "ほかにも、「しのぎを削る」や「そりが合わない」も、刀から生まれた言葉なんだって。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vq6zk2a": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "hachi",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 4.58,
+  "text": "関にはな、刀鍛冶が、何百人もおるんや。",
+  "heard": " 関にはな、刀鍛冶が、何百人もおるんや。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "刀鍛冶＝かたなかじ"
+  ]
  }
 }
