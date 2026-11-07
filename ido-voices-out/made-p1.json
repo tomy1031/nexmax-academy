@@ -1,0 +1,108 @@
+{
+ "v7oqsng": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7,
+  "text": "明治三十九年、冬。大阪・北浜。",
+  "heard": "明治三十九年、冬。大阪・北浜。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "北浜＝きたはま"
+  ]
+ },
+ "vu96lhr": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.120041666666667,
+  "text": "川の南の通りに、赤れんがの大きな建物が建っている。大阪株式取引所だ。",
+  "heard": "川の南の通りに、赤れんがの大きな建物が建っている。大阪株式",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "株＝かぶ",
+   "取引所＝とりひきじょ"
+  ]
+ },
+ "v12r17aa": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.080041666666666,
+  "text": "入り口のまわりは、黒い洋服の男たちでいっぱいだった。山高帽、着物に羽織、白い息。",
+  "heard": "入り口の周りは 黒い服の男たちでいっぱいだった。 山高帽、 着物に羽織、 白い息。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "山高帽＝やまたかぼう",
+   "羽織＝はおり"
+  ]
+ },
+ "v13y94ip": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "仲買人の声",
+  "voice": "Fenrir",
+  "model": "gemini-3.8-live",
+  "seconds": 2.9,
+  "text": "おい、まだか！ 値段、どないなっとる！",
+  "heard": "おい、まだか！値段、どないなっとる！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v8hqopx": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.500041666666666,
+  "text": "そのとき、人のあいだから、小さな影が飛び出してきて——",
+  "heard": "その 時 人 の 間 から 小さな 影 が 飛び出し て き て 、",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1moer23": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.830041666666667,
+  "text": "どん、と、あなたにぶつかった。",
+  "heard": "ドン と あなたに ぶつかっ た 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v13s5c2a": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "kiyo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 4.14,
+  "text": "いったぁ……！ あっ、か、かんにん！ 前、見てへんかった！",
+  "heard": "いったぁ……！あっ、か、かんにん！前、見てへんかった！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1x0fqqy": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "kiyo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 5.47,
+  "text": "おれ、清吉。みんな、キヨって呼ぶ。十一や。",
+  "heard": "俺 、 正 吉 みんな き お って 呼ぶ 11 や",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "清吉＝せいきち"
+  ]
+ }
+}
