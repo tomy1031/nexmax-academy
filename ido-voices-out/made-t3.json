@@ -268,5 +268,199 @@
   "readings": [
    "公会堂＝こうかいどう"
   ]
+ },
+ "vd5e16f": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.53,
+  "text": "松岡さんの絵がある特別室は、ふだんは入れないけれど、ときどき開かれる、予約のガイドツアーで見られることがあるんだって。",
+  "heard": "松岡さんの絵がある特別室は、ふだんは入れないけれど、ときどき開かれる、予約のガイドツアーで見られることがあるんだって。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v13c6pru": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.65,
+  "text": "岡田さんの手をはなれた設計図は、たくさんの人の手で、百年をこえて、面倒をみてもらっているんだね。",
+  "heard": "岡田さんの手をはなれた設計図は、たくさんの人の手で、百年をこえて、面倒をみてもらっている",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "設計図＝せっけいず"
+  ]
+ },
+ "v1388s5p": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.75,
+  "text": "（小声）……ノボルくんは、あの日のアーチを、いつか見に来たかな。",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "ebd7kw61rj26": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.73,
+  "text": "During the war they were taken down, because metal was being collected. But in the restoration work finished in 2002, they came back.",
+  "heard": " During the war they were taken down, because metal was being collected. But in the restoration work finished in 2002, they came",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1g5r4gu9x4b9": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.63,
+  "text": "Seikichi was made up for our story. But in Kitahama, there really were boys who learned at Iwamoto's school.",
+  "heard": " Seikichi was made up for our story. But in Kitahama, there really were boys who learned at Iwamoto's school.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "emutzgt72swq": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.96,
+  "text": "A building born from one man's wish “for everyone” — and then thirteen thousand of “everyone” stepped up to protect it.",
+  "heard": " A building born from one man's wish “for everyone” — and then thirteen thousand of “everyone” stepped",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e118jbop1yazy": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.78,
+  "text": "(whispering) …If you ever come here on a rainy day, stand by the entrance and remember the story of Iwamoto's canopies.",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v6cahy4": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "kanesada",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 7.77,
+  "text": "ハチ。刷り残りの紙が一枚ある。……おまえも、ひとつ、刷ってみるか。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "esgqqh619pft": {
+  "episode": "sennan-airport",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.82,
+  "text": "It's been 32 years since Kansai International Airport opened. It never sleeps — night and morning, it's still sending planes off all around the world.",
+  "heard": " It never sleeps — night and morning, it's still sending planes off all around the world.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e15bhvr31oap8": {
+  "episode": "sennan-airport",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.64,
+  "text": "In the evening, watch the sun go down into the sea. The sunset at Marble Beach, in the next town to the north, has even been chosen as one of Japan's 100 best sunsets.",
+  "heard": " In the evening, watch the sun go down into the sea. The sunset at Marble Beach, in the next town to the north, has even been chosen as one of Japan's 100 best sunsets.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "eql3xy2cuxng": {
+  "episode": "sennan-airport",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.19,
+  "text": "Katsuzō and Takuya were made up for our story. But fishermen really have always lived here, side by side with a sea that keeps changing.",
+  "heard": " Katsuzō and Takuya were made up for our story. But fishermen really have always lived here, side by side with a sea",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e14k3qgy1w110": {
+  "episode": "sennan-airport",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.38,
+  "text": "(whispering) …I wonder if Takuya made it to the farthest country of all.",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "eryznbtcakk5": {
+  "episode": "sennan-airport",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.62,
+  "text": "(whispering) …I wonder if Takuya went far away, and then came back to this sea, too.",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1ftqrag132mq": {
+  "episode": "sennan-airport",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.12,
+  "text": "(whispering) …I wonder if Takuya went to the airport and picked the place that looked the most fun.",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1v13mvj1w8gw": {
+  "episode": "sennan-airport",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.08,
+  "text": "A sea that was a road for fish became a doorway to the sky — and now, a park where everyone comes to play.",
+  "heard": " A sea that was a road for fish became a doorway to the sky — and now, a park where everyone comes to play.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "eo3qg3m1ukm0": {
+  "episode": "sennan-airport",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.44,
+  "text": "Under your feet, long ago, was the sea. …Think of that as you walk, and even on the grass, you can almost hear the waves.",
+  "heard": " Under your feet, long ago, was the sea. …Think of that as you walk, and even on the grass, you can almost hear the waves.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
