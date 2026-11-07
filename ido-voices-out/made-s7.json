@@ -1,0 +1,262 @@
+{
+ "v2hn0qi": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "kanesada",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.440041666666667,
+  "text": "わしは、刀を打つ。折れず、曲がらず、よく切れる刀をな。",
+  "heard": "わしは、刀を打つ。折れず、曲がらず、よく切れる刀をな。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v10zv36f": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "kanesada",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.99,
+  "text": "だが、願うのは……この刀が、ぬかれずにすむことよ。",
+  "heard": "だが、願うのは……この刀が、ぬかれずにすむことよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vd94xs2": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.310041666666667,
+  "text": "火の音だけが、小屋の中にひびいていた。",
+  "heard": "火 の 音 だけ が 小屋 の 中 に 響い て い た 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vut3j78": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.76,
+  "text": "兼定さんが、なぜこのお経を刷ったのかは、記録に残っていないんだ。いまの言葉は、物語のために考えたものだよ。",
+  "heard": "金定さんがなぜこのお経を擦ったのかは記録に残っていないんだ。今の言葉は物語のために考えたものだよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "兼定＝かねさだ"
+  ]
+ },
+ "vkc28m8": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "hachi",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 3.98,
+  "text": "……ふうん。むずかしいけど、なんか、わかる気がする。",
+  "heard": "難しいけどなんか分かる気がする。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vlg8nto": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "hachi",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 7.2000416666666665,
+  "text": "刀は、おまもりにもなるもんな。おれのじいちゃん、家に一本、大事にしまってるもん。",
+  "heard": "刀は、おまもりにもなるもんな。おれのじいちゃん、家に一本、大事にしまってるもん。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1onde54": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "hachi",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 1.641,
+  "text": "えっ、いいの！？",
+  "heard": "え？いいの？",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1ygjmdo": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 14.11,
+  "text": "兼定さんは、小さな絵を彫った木の板に、墨をのせた。ハチが、その上に紙をのせ、両手で、そっとこする。",
+  "heard": "かねさださんは、小さな絵を彫った木の板に墨をのせた。ハチが、その上に紙をのせ、両手でそっとこする。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "兼定＝かねさだ"
+  ]
+ },
+ "vwpjxim": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.130041666666667,
+  "text": "紙をめくると——観音さまの絵が、半分、にじんでいた。",
+  "heard": "紙をめくると——観音さまの絵が、半分、にじんでいた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "観音＝かんのん"
+  ]
+ },
+ "veauchs": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "hachi",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 2.64,
+  "text": "あああ……。失敗や……。",
+  "heard": "あー、失敗やー",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v73fz5e": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "hachi",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 4.510041666666667,
+  "text": "……ほんまや。にじんだら、なんか、笑ってるみたいや。",
+  "heard": " にじんだら、なんか、笑ってるみたいや。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1bp6zfm": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "hachi",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 3.51,
+  "text": "うん！ 次は、もっと、そうっとこする。",
+  "heard": "ん、次はもっとそっとこする。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vjaxod7": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "kanesada",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.62,
+  "text": "刀も、はじめは、曲がる。わしも、何十本も曲げた。",
+  "heard": "刀も、初めは曲がる。わしも何十本も曲げた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1fm61tc": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "kanesada",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.72,
+  "text": "曲がったら、また打てばええ。……それが、わざというもんじゃ。",
+  "heard": " 曲がったら、また打てばええ。……それが、わざと",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "venrxq8": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.89,
+  "text": "夕方。三人は、鍛冶場の近くの、春日神社にお参りした。",
+  "heard": "夕方。三人は、鍛冶場の近くの、春日神社にお参りした。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "鍛冶場＝かじば",
+   "春日神社＝かすがじんじゃ"
+  ]
+ },
+ "v1dm28jl": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.44,
+  "text": "境内には、木の能舞台がある。",
+  "heard": "境内には木の能舞台がある。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "能舞台＝のうぶたい"
+  ]
+ },
+ "v105y3q8": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "hachi",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 7.19,
+  "text": "正月にはな、ここで、刀鍛冶のみんなが、能を舞うんやで。おれも、大きなったら舞うんや。",
+  "heard": "正月にはな、ここで刀鍛冶のみんなが能を舞うんやで。俺も大きくなったら舞うんや。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "刀鍛冶＝かたなかじ"
+  ]
+ },
+ "v882kdg": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 12.1,
+  "text": "春日神社は、関の刀鍛冶たちの守り神。1288年に、刀鍛冶たちが、奈良の春日の神さまをまつったのが始まりと伝えられているんだ。",
+  "heard": "春日神社は、関の刀鍛冶たちの守り神。1288年に刀鍛冶たちが奈良の春日の神様を祀ったのが始まりと伝えられているんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "春日神社＝かすがじんじゃ",
+   "刀鍛冶＝かたなかじ"
+  ]
+ },
+ "vftwfol": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.000041666666666,
+  "text": "刀鍛冶たちが、正月に能を舞っていたことも、伝えられているよ。",
+  "heard": " 刀鍛冶たちが、正月に能を舞っていたことも、伝えられているよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "刀鍛冶＝かたなかじ"
+  ]
+ },
+ "voroy5u": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.18,
+  "text": "ハチは、にじんだ観音さまの紙を、大事そうに胸に当てて、手を合わせた。",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "観音＝かんのん"
+  ]
+ }
+}
