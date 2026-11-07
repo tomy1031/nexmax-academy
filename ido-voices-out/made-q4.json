@@ -478,5 +478,101 @@
   "heard": " Those who greet, I protect.",
   "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
   "readings": []
+ },
+ "ejk965otwyjz": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "yeaymao",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 5.91,
+  "text": "Those who don’t… well, now and then I teach them a little lesson.",
+  "heard": "Those who don't, well, now and then I teach them a little lesson.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e10rc43116d5z": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.17,
+  "text": "(whispering) …Yeay Mao. It means “Grandmother Mao”.",
+  "heard": "じゃい、まお。 It means grandmother, ma'am.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e1e199tx10jjo": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.28,
+  "text": "(whispering) Around here, people still believe she is the spirit who protects travellers, hunters in the mountains and fishers at sea.",
+  "heard": "around here people still believe she is the spirit who protects travelers hunters in the mountains and fishers at sea",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e1gx8calscxzh": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "vanna",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 5.8,
+  "text": "G-Grandmother, are you… Grandmother… Mao…?",
+  "heard": "Grandmother, are you? Grandmother, Mao?",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "em6jnct11lcx": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "yeaymao",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 4.61,
+  "text": "Who can say? Call me whatever you like.",
+  "heard": " Call me whatever you like.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "eyb0g2r12qqm": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "yeaymao",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 5.08,
+  "text": "Follow me. I’ll show you what you came to see.",
+  "heard": " I’ll show you what you came to see.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "euwwsv612ckd": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.620041666666666,
+  "text": "The top of the mountain was a flat, open plain.",
+  "heard": " The top of the mountain was a flat, open",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ejvreui1i132": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.38,
+  "text": "White sand, low trees and big mossy rocks.",
+  "heard": "white sand, low trees and big mossy rocks",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
