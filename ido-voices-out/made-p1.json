@@ -529,5 +529,92 @@
   "heard": "日がくれたら、店の裏の、二階や。来たかったら、来たらええ。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v1i6lyta": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.7000416666666665,
+  "text": "その夜。取引所の近くの、二階の部屋。",
+  "heard": "取引所の近くの、二階の部屋。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": [
+   "取引所＝とりひきじょ"
+  ]
+ },
+ "vqhnk3w": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 11.92,
+  "text": "ランプの下に、清吉と同じくらいの小僧たちが十人ほど、低い机の前にすわっていた。石盤に、石筆で、ひらがなを書いている。",
+  "heard": "ランプの下に、清吉と同じくらいのこぞうたちが十人ほど低い机の前にすわっていた。石盤に石筆でひらがなを書いている。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": [
+   "清吉＝せいきち",
+   "小僧＝こぞう",
+   "石盤＝せきばん",
+   "石筆＝せきひつ"
+  ]
+ },
+ "v6urdmt": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 11.13,
+  "text": "前に立っているのは、昼間の若い男だった。洋服を着物に着がえて、羽織をはおっている。",
+  "heard": "前に立っているのは、昼間の若い男だった。洋服を着物に着がえて、羽織をはおっている。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": [
+   "羽織＝はおり"
+  ]
+ },
+ "v17mtzhk": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.87,
+  "text": "部屋のすみで、清吉が、「ほんまに来たんや」という顔をして、こっそり手をふった。",
+  "heard": "部屋のすみで、清吉が、「ほんまに来たんや」という顔をして、こっそり手をふった。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": [
+   "清吉＝せいきち"
+  ]
+ },
+ "vqoq0at": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.31,
+  "text": "部屋のすみで、清吉が、ふところを片手で押さえたまま、ちらっとこちらを見た。",
+  "heard": "部屋のすみで、清吉が、ふところを片手で押さえたまま、ちらっとこちらを見た。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": [
+   "清吉＝せいきち"
+  ]
+ },
+ "vwmol1w": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "iwamoto",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 4.26,
+  "text": "おや、見ん顔やな。清吉の知り合いか。",
+  "heard": " おや、見ん顔やな。清吉の知り合いか。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": [
+   "清吉＝せいきち"
+  ]
  }
 }
