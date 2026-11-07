@@ -242,5 +242,251 @@
   "heard": "でもね 私 竹 の 橋 の 音 も 好き な ん だ 。",
   "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
   "readings": []
+ },
+ "v5cprv9": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "mony",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 3.96,
+  "text": "カタカタって鳴ると、「乾季が来たなあ」って思うの。",
+  "heard": "カタカタっ て なる と 換気 が 来 た なっ て 思う の 。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "乾季＝かんき"
+  ]
+ },
+ "vzpwmwg": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "roun",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 4.120041666666666,
+  "text": "かけ直す橋にはな、かけ直す人がおる。",
+  "heard": "かけ直す橋にはな、かけ直す人がおる。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1mfvzkm": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "roun",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 10.91,
+  "text": "毎年、村じゅうの者が集まって、竹を切って、運んで、打ちこむ。けんかもするし、笑いもする。",
+  "heard": "毎年、村じゅうの者が集まって、竹を切って、運んで、打ちこむ。けんかもするし、笑いもする。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "von9d0d": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "roun",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 7.19,
+  "text": "それも、つなぐ、ということなんじゃろう。……わしは、そう思うとる。",
+  "heard": "それ も 繋ぐ と いう こと な ん じゃろ 。 わし は そう 思 とる 。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v13xi27m": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "mony",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 2.56,
+  "text": "あなたは、どっちの橋が好き？",
+  "heard": "あんたはどっちの橋が好き？",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v18u5lqh": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "mony",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 2.05,
+  "text": "やった！ 同じだね！",
+  "heard": "やった！ 同じだね！",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1k29eqn": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "mony",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 4.79,
+  "text": "そっか。速いもんね。雨季でも、渡れるもんね。",
+  "heard": "そっかー 早いもんねー 雨期でも渡れるもんねー",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "雨季＝うき"
+  ]
+ },
+ "vq5ahjz": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "roun",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 4.49,
+  "text": "ほっほ。それがいちばん、ぜいたくな答えじゃ。",
+  "heard": "それがいちばん、ぜいたくな答えじゃ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vexpy83": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "mony",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 7.22,
+  "text": "切れないつながり、かあ。……竹の橋は、毎年ほどくけど、村のみんなは、切れないもんね。",
+  "heard": "切れないつながり、かあ。……竹の橋は、毎年ほどくけど、村のみんなは、切れないもんね。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1jio6xa": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "mony",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 8.8,
+  "text": "はなれていても、つながっている糸、かあ。……竹の橋がない雨季も、島と町は、つながってるんだね。",
+  "heard": "はなれていても、つながっている糸、かあ。……竹の橋がない雨季も、島と町は、つながってるんだね。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "雨季＝うき"
+  ]
+ },
+ "v1ar5p8a": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.920041666666667,
+  "text": "島へ向かう、コンクリートの橋のたもと。",
+  "heard": "島へ向かう、コンクリートの橋のたもと。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vo5m7u": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.36,
+  "text": "バイクのうしろに、野菜のかごを山のように積んだ女の人が、ヘルメットを外して、こちらを見た。",
+  "heard": "バイクの後ろに野菜のカゴを山のように積んだ女の人がヘルメットを外してこちらを見た。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1am60t3": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "mony2",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 4.480041666666667,
+  "text": "……うそ。あなた、あの日の……竹を運んでくれた人？",
+  "heard": "うそ。あなた、あの日の……竹を運んでくれた人？",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vr43i64": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "mony2",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 8.89,
+  "text": "今は、毎朝、島でとれた野菜を、町の市場に運んでるの。この橋を通って、十分もかからないのよ。",
+  "heard": "今は毎朝島で獲れた野菜を街の市場に運んでるの。この橋を通って10分もかからないのよ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1csmdyy": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "mony2",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 5.720041666666667,
+  "text": "あなた、長い竹を、ふらふらしながら運んでたわね。ふふっ。",
+  "heard": "あなた、長い竹を、ふらふらしながら運んでたわね。ふふっ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vzhqjhw": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "mony2",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 5.31,
+  "text": "あなたがならべた竹の板、すきまがなくて、おじいちゃん、ほめてたのよ。",
+  "heard": "あなたが並べた竹の板隙間がなくておじいちゃん褒めてたのよ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v6n0hpe": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "mony2",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 5.54,
+  "text": "おじいちゃんは、もういないけど……竹の打ちかたは、いとこたちが、ちゃんと覚えてる。",
+  "heard": "おじいちゃんは、もういないけど……竹の打ちかたは、いとこたちが、ちゃんと覚えてる。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v10um8l9": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "mony2",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 6.17,
+  "text": "竹の橋が好きって言ってくれたの、覚えてる。……わたしも、今でも好き。",
+  "heard": "竹の箸が好きって言ってくれたの覚えてる。私も今でも好き。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1b8841w": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.87,
+  "text": "この島には、2018年に、コンクリートの橋ができたんだ。",
+  "heard": "この島には2018年にコンクリートの橋ができたんだ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vgnvp2m": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.64,
+  "text": "カンボジアの技術者たちが、国のお金だけで造った、川を渡るはじめての橋だと言われているんだよ。",
+  "heard": "カンボジアの技術者たちが、国の、お金だけで作った、川を渡る、初めての橋だと言われているんだよ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
