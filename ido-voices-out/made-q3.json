@@ -1,0 +1,98 @@
+{
+ "esvyz4vvenh9": {
+  "episode": "seki-sutra",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.4,
+  "text": "Autumn, 1504. Seki, in Mino Province.",
+  "heard": "Autumn, 1504. Seki, in Mino Province.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1gv1yv3ds1x7": {
+  "episode": "seki-sutra",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.520041666666667,
+  "text": "Kan, kan — a high ringing sound echoed out.",
+  "heard": " Kan, kan — a high ringing sound echoed out.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eg34dnl1syhm": {
+  "episode": "seki-sutra",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.760041666666667,
+  "text": "Inside a dim workshop, a red fire was roaring.",
+  "heard": " Inside a dim workshop, a red fire was roaring.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1488oxu1sky3": {
+  "episode": "seki-sutra",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.12,
+  "text": "A man sitting by the fire struck a piece of red-hot iron with a small hammer — kan!",
+  "heard": " A man sitting by the fire struck a piece of red-hot iron with a small hammer — kan!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eimgts11n2g2": {
+  "episode": "seki-sutra",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.690041666666667,
+  "text": "Then a young man standing beside him hit the very same spot with a big hammer — don!",
+  "heard": " Then a young man standing beside him hit the very same spot with a big hammer — don!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1qhse0gey04l": {
+  "episode": "seki-sutra",
+  "lang": "en",
+  "speaker": "hachi",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 4.2400416666666665,
+  "text": "Hey, no, no — sparks fly over there! Come over here.",
+  "heard": " Hey, no, no — sparks fly over there! Come over here.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e19qwqk1wh1a9": {
+  "episode": "seki-sutra",
+  "lang": "en",
+  "speaker": "hachi",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 8.74,
+  "text": "I'm Hachirō. Just call me Hachi. I'm an apprentice at Master Kanesada's forge. I just turned ten.",
+  "heard": " Just call me Hachi. I'm an apprentice at Master Kanesada's forge. I just turned ten.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "envhud01iex8": {
+  "episode": "seki-sutra",
+  "lang": "en",
+  "speaker": "hachi",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 4.960041666666666,
+  "text": "Hey, you came back? Sparks fly over there! Come over here.",
+  "heard": "Hey, you came back? Sparks fly over there. Come over here.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ }
+}
