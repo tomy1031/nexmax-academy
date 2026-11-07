@@ -286,5 +286,101 @@
   "heard": " Kanesada is said to have been one of the finest swordsmiths in Seki in those days. Later on, he'll be given the honorary title “Izumi-no-kami.”",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1hxrzosp19oa": {
+  "episode": "seki-sutra",
+  "lang": "en",
+  "speaker": "hachi",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 3.6900416666666667,
+  "text": "Master Kanesada, show them that thing from yesterday!",
+  "heard": "マスター金澤、 show them that thing from yesterday.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eo5y33g1xz8y": {
+  "episode": "seki-sutra",
+  "lang": "en",
+  "speaker": "kanesada",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 3.84,
+  "text": "…Hachi. You can never keep your mouth shut.",
+  "heard": " You can never keep your mouth shut.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1afssr71fmw7": {
+  "episode": "seki-sutra",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.37,
+  "text": "Kanesada washed his hands, dried them carefully, and took down a long, narrow box from a shelf.",
+  "heard": " Kanesada washed his hands, dried them carefully, and took down a long, narrow",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1rqefr21klmp": {
+  "episode": "seki-sutra",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.160083333333334,
+  "text": "Out of the box came a paper scroll.",
+  "heard": "out of the box came a paper scroll.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eg0pcm313arb": {
+  "episode": "seki-sutra",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.620041666666666,
+  "text": "Little by little, Kanesada unrolled it.",
+  "heard": " Little by little, Kanesada unrolled",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1uh8sqgz2235": {
+  "episode": "seki-sutra",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 13.75,
+  "text": "First came a picture of the Buddha teaching a crowd of people. After that, rows and rows of tiny characters.",
+  "heard": " First came a picture of the Buddha teaching a crowd of people. After that, rows and rows of tiny characters.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ebntuwqq4v61": {
+  "episode": "seki-sutra",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 17.75,
+  "text": "Between the words, little pictures were printed — lots and lots of them. A stormy sea, a fire, a road through the mountains. And in every picture, there was Kannon.",
+  "heard": " Between the words, little pictures were printed — lots and lots of them. A stormy sea, a fire, a road through the mountains. And in every picture, there was Kannon.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "edb9b9h17xnw": {
+  "episode": "seki-sutra",
+  "lang": "en",
+  "speaker": "hachi",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 3.94,
+  "text": "There are forty of 'em altogether! I counted.",
+  "heard": " There are forty of 'em altogether! I counted.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
