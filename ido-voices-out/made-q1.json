@@ -286,5 +286,101 @@
   "heard": " They used hand signals to say \"I want to sell,\" \"I want to buy,\" and how many. With all that noise, voices alone couldn't be heard.",
   "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
   "readings": []
+ },
+ "e6da7731dzdx": {
+  "episode": "osaka-kitahama",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.53,
+  "text": "In a corner of the room, a few pale-faced men had gathered. In the middle of them stood a young man in a bowler hat.",
+  "heard": " In a corner of the room, a few pale-faced men had gathered. In the middle of them stood a young man in",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e1knvvy42hg6i": {
+  "episode": "osaka-kitahama",
+  "lang": "en",
+  "speaker": "kiyo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 10.12,
+  "text": "That's young Master Iwamoto. This year he took over as head of his family's firm and became a broker.",
+  "heard": " That's young Master Iwamoto. This year he took over as head of his family's firm and became a broker.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e19px5ka1j64v": {
+  "episode": "osaka-kitahama",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.04,
+  "text": "The pale-faced men were bowing to the young man again and again.",
+  "heard": "the pale-faced men were bowing to the young man again and again",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "eyyapj82pffx": {
+  "episode": "osaka-kitahama",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 13.35,
+  "text": "Since around May that year, share prices had kept on rising. The brokers who had expected prices to fall soon were about to lose a huge amount of money, and they were in deep trouble.",
+  "heard": " Since around May that year, share prices had kept on rising. The brokers who had expected prices to fall soon were about to lose a huge amount of money, and they were in deep trouble.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "erameddzhfwy": {
+  "episode": "osaka-kitahama",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.640041666666667,
+  "text": "It's said they asked Iwamoto Einosuke to come over to their side and help them.",
+  "heard": " It's said they asked Iwamoto Einosuke to come over to their side and help them.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e13h4hn3i3a7y": {
+  "episode": "osaka-kitahama",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.820083333333334,
+  "text": "The young man was quiet for a while. Then, slowly, he nodded.",
+  "heard": " The young man was quiet for a while. Then, slowly, he nodded.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e1h60wdrblbrt": {
+  "episode": "osaka-kitahama",
+  "lang": "en",
+  "speaker": "若い男の声",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 6.67,
+  "text": "You've all been good to us since my father's day. Let me pay you back — I'll help.",
+  "heard": " You've all been good to us since my father's day. Let me pay you back — I'll help.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "ewwroxo1tlih": {
+  "episode": "osaka-kitahama",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.1,
+  "text": "A little color came back into the men's faces.",
+  "heard": " A little color came back into the men's faces.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
  }
 }
