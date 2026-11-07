@@ -424,5 +424,111 @@
   "readings": [
    "若だんな＝わかだんな"
   ]
+ },
+ "v1g0nbcy": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "iwamoto",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 4.640041666666667,
+  "text": "おお、清吉か。……そちらは？ 旅の人かいな。",
+  "heard": "おお、清吉か。……そちらは？ 旅の人かいな。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "清吉＝せいきち"
+  ]
+ },
+ "v1o23955": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "iwamoto",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 5.18,
+  "text": "岩本栄之助いいます。北浜で、仲買をしとります。",
+  "heard": "岩本栄之助いいます。北浜で、仲買をしとります。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "岩本栄之助＝いわもとえいのすけ",
+   "北浜＝きたはま",
+   "仲買＝なかがい"
+  ]
+ },
+ "v1svyql1": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "iwamoto",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 4.1200833333333335,
+  "text": "おお、清吉か。……そちらは。",
+  "heard": "か。……そちらは。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "清吉＝せいきち"
+  ]
+ },
+ "v1sg2xy8": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "iwamoto",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 7.17,
+  "text": "おお、清吉か。……そちらは？ はじめて会うのに、なんでやろ、なつかしい顔や。",
+  "heard": " おお、せいきちか。……そちらは？ はじめて会うのに、なんでやろ、なつかしい顔や。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "清吉＝せいきち"
+  ]
+ },
+ "vnjomvf": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "kiyo2",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 6.45,
+  "text": "岩本はん、なんで、こんなはしっこに？ 式のまんなかに、おらはったらええのに。",
+  "heard": "岩本はん、なんで、こんなはしっこに？ 式のまんなかに、おらはったらええのに。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vsyjjz": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "iwamoto",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 6.33,
+  "text": "まんなかは、わしの場所やない。建てる人らと、これから使う人らの場所や。",
+  "heard": "真ん中はワシの場所やない。建てる人らとこれから使う人らの場所や。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vl5q22j": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.85,
+  "text": "岩本さんが、この式に出ていたかどうかは、分かっていないんだ。だから、ここでは、式のはしで見ていたことにしているよ。",
+  "heard": "岩本さんが、この式に出ていたかどうかは、分かっていないんだ。だから、ここでは、式のはしで見ていたことにして",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vnpt6q4": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "iwamoto",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 8.71,
+  "text": "アメリカに行ったときにな、見たんや。お金持ちが、町のみんなのために、図書館やらホールやらを建てとるのを。",
+  "heard": "アメリカ に 行っ た 時 に な 、 三 や お 金持ち が 街 の みんな の ため に 図書 館 やら ホール やら を 建て とる の を",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
