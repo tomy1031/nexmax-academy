@@ -382,5 +382,101 @@
   "heard": " Oh! Young master… I mean, Mr. Iwamoto!",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1g0nbcydazou": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "iwamoto",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 5.520041666666667,
+  "text": "Ah, Seikichi. …And who's this? A traveller, is it?",
+  "heard": " Ah, Seikichi. …And who's this? A traveller, is it?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1o2395518wyw": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "iwamoto",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 4.51,
+  "text": "I'm Iwamoto Einosuke. I'm a broker in Kitahama.",
+  "heard": "I'm a broker in Kitahama.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1svyql11cz17": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "iwamoto",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 4.020041666666667,
+  "text": "Ah, Seikichi. …And who's—",
+  "heard": " Ah, Seikichi. …And who's",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1sg2xy81p9le": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "iwamoto",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 9.41,
+  "text": "Ah, Seikichi. …And who's this? We've never met, but somehow — it's a face I feel I've missed.",
+  "heard": " Ah, Seikichi. …And who's this? We've never met, but somehow — it's a face I feel I've missed.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "enjomvf15qbh": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "kiyo2",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 6.45,
+  "text": "Mr. Iwamoto, why are you way out here at the edge? You should be right in the middle of the ceremony.",
+  "heard": " Mr. Iwamoto, why are you way out here at the edge? You should be right in the middle of the ceremony.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "esyjjz1dgjp": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "iwamoto",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 6.35,
+  "text": "The middle's not my place. It belongs to the people building it, and the people who'll use it.",
+  "heard": " The middle's not my place. It belongs to the people building it, and the people who'll use it.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "el5q22j1t2fc": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.77,
+  "text": "Nobody knows for sure whether Iwamoto was at this ceremony. So in our story, he's watching from the edge.",
+  "heard": " Nobody knows for sure whether Iwamoto was at this ceremony. So in our story, he's watching",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "enpt6q41mmnn": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "iwamoto",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 8.85,
+  "text": "When I went to America, I saw it. Rich folk building libraries and halls and such, for everybody in their towns.",
+  "heard": " When I went to America, I saw it. Rich folk building libraries and halls and such, for everybody in their towns.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
