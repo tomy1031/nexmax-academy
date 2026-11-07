@@ -382,5 +382,101 @@
   "heard": " A little color came back into the men's faces.",
   "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
   "readings": []
+ },
+ "ebsx86y3wpy2": {
+  "episode": "osaka-kitahama",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 13.22,
+  "text": "The market is a hard world — when someone gains, someone else loses. Even so, Iwamoto is still remembered as the man who stood by his colleagues when they were in trouble.",
+  "heard": " The market is a hard world — when someone gains, someone else loses. Even so, Iwamoto is still remembered as the man who stood by his colleagues when they were in trouble.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "enltgo31ks65": {
+  "episode": "osaka-kitahama",
+  "lang": "en",
+  "speaker": "kiyo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 6.230083333333333,
+  "text": "Y'know, in the evenings, the young master teaches us errand boys to read and write.",
+  "heard": "You know, in the evenings, the young master teaches us errand boys to read and write.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "epanouj1loqz": {
+  "episode": "osaka-kitahama",
+  "lang": "en",
+  "speaker": "kiyo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 4.670041666666667,
+  "text": "“You've got to learn,” he says. He says it all the time.",
+  "heard": "You've got to learn,\" he says. \"He says it all the time.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e18i1lwya5a3x": {
+  "episode": "osaka-kitahama",
+  "lang": "en",
+  "speaker": "kiyo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 3.160041666666667,
+  "text": "…Wanna come? There's a class tonight.",
+  "heard": " Wanna come? There's a class tonight.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "en9xnta1og44": {
+  "episode": "osaka-kitahama",
+  "lang": "en",
+  "speaker": "kiyo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 6,
+  "text": "Great! After sundown, round the back of the shop. Say my name and they'll let you in.",
+  "heard": "Great. After sundown, round the back of the shop. Say my name and they'll let you in.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1ghbu601agtx": {
+  "episode": "osaka-kitahama",
+  "lang": "en",
+  "speaker": "kiyo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 2.7800416666666665,
+  "text": "…! N-nothing! It's nothing!",
+  "heard": "No, nothing. It's nothing.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e12gou8u1ncww": {
+  "episode": "osaka-kitahama",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.600083333333334,
+  "text": "Seikichi clutched the front of his kimono with both hands and looked away. He'd gone red right up to his ears.",
+  "heard": " Seikichi clutched the front of his kimono with both hands and looked away. He'd gone red right up",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e17930wj4rt0q": {
+  "episode": "osaka-kitahama",
+  "lang": "en",
+  "speaker": "kiyo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 6.2,
+  "text": "…After sundown. Upstairs, round the back of the shop. Come if you want.",
+  "heard": " Upstairs, round the back of the shop. Come if you want.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
