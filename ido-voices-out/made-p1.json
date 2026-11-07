@@ -104,5 +104,113 @@
   "readings": [
    "清吉＝せいきち"
   ]
+ },
+ "v1pencxo": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "kiyo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 8.04,
+  "text": "あそこの仲買の店で、小僧してんねん。紙を持って、店と取引所のあいだを、一日じゅう走るんが仕事や。",
+  "heard": "あそこ の 中外 の 店 で こぞう し てん ねん 。 かみ を 持っ て 店 と 取引 所 の 間 を 1 日 中 走る ん が 仕事 や 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "仲買＝なかがい",
+   "小僧＝こぞう",
+   "取引所＝とりひきじょ"
+  ]
+ },
+ "v1q65yv2": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "kiyo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 6.680041666666667,
+  "text": "いったぁ……！ あっ、また、あんたか！ かんにん、前、見てへんかった！",
+  "heard": "あっ、また、あんたか！かんにん、前、見てへんかった！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vtd7z46": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "kiyo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 6.29,
+  "text": "いったぁ……！ あっ、か、かんにん！ ……あれ？ なんでそんな、なつかしそうな顔してんの？",
+  "heard": " あっ、か、かんにん！……あれ？なんでそんな、なつかしそうな顔してんの？",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v70tpp1": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "kiyo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 5.25,
+  "text": "おれ、清吉。みんな、キヨって呼ぶ。仲買の店の小僧や。",
+  "heard": "おれ、清吉。みんな、キヨって呼ぶ。仲買の店の小僧や。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "清吉＝せいきち",
+   "仲買＝なかがい",
+   "小僧＝こぞう"
+  ]
+ },
+ "vsghknc": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.120041666666667,
+  "text": "（小声）この子が、清吉くん……。1915年に会った、あの清吉さんの、子どものころなんだ。",
+  "heard": "この子が、清吉くん……。1915年に会った、あの清吉さんの、子どものころなんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "清吉＝せいきち"
+  ]
+ },
+ "v1sqmm2f": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.69,
+  "text": "清吉は、地面に落ちた紙を、あわてて拾い集めた。",
+  "heard": "血基地 は 地面 に 落ち た 紙 を 慌て て 拾い 集め た 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "清吉＝せいきち"
+  ]
+ },
+ "v1rc14oi": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.2400416666666665,
+  "text": "紙には、数字と、むずかしい漢字が書いてある。",
+  "heard": "紙 に は 数字 と 難しい 漢字 が 書い て ある 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1r6uqzc": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "kiyo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 5.9,
+  "text": "これな、どの店に持っていくか、紙のかたちと数字で覚えてんねん。",
+  "heard": "これな、どの店に持っていくか、紙のかたちと数字で覚えてんねん。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
