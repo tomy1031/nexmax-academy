@@ -1,0 +1,263 @@
+{
+ "vfrxwwz": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 2.7,
+  "text": "大正元年、秋。",
+  "heard": "大正 元年 秋",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "元年＝がんねん"
+  ]
+ },
+ "vxrxh8n": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.8,
+  "text": "……あれ？ ここ、大阪じゃないね。東京だ。",
+  "heard": "あれ 、 ここ 大阪 じゃ ない ね ? 東京 だ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1h2hast": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.9,
+  "text": "この扉は、公会堂の「場所」じゃなくて、公会堂の「かたち」が生まれた場所に、つながったみたい。",
+  "heard": "この扉は、公会堂の「場所」じゃなくて、公会堂の「かたち」が生まれた場所に、つながった",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "公会堂＝こうかいどう"
+  ]
+ },
+ "vgsza72": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.59,
+  "text": "木の床の、細長い部屋。窓ぎわの大きな机に、図面が広げてある。",
+  "heard": "木の床の、細長い部屋。窓ぎわの大きな机に、図面が広げてある。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "図面＝ずめん"
+  ]
+ },
+ "v1x2x3ye": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.780083333333334,
+  "text": "机のまわりには、外国の建築の雑誌が、山のように積まれていた。",
+  "heard": "机の周りには、外国の建築の雑誌が山のように積まれていた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1snib9": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.75,
+  "text": "部屋のおくから、こん、こん、と、せきの音が聞こえる。",
+  "heard": "部屋のおくから、こん、こん、と、せきの音が聞こえる。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1y12v34": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.500041666666666,
+  "text": "ドアがあいて、丸めた紙をたくさんかかえた若者が、あわてて入ってきた。",
+  "heard": "ドアがあいて、丸めた紙をたくさんかかえた若者が、あわてて入ってきた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v144b4tu": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "noboru",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 4.76,
+  "text": "わっ！ ……あ、すみません、お客さまですか？",
+  "heard": "わっ！……あ、すみません、お客さまですか？",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1beuih8": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "noboru",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 6.080041666666666,
+  "text": "ぼく、ノボルといいます。早稲田の学生で、岡田先生のお手伝いをしています。",
+  "heard": "ぼく、ノボルといいます。早稲田の学生で、岡田先生のお手伝いを",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v7sr3y0": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "noboru",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 10.09,
+  "text": "先生、いま、大阪の公会堂の設計競技の図面を描いているんです。しめきりは今月の末なのに、ちっとも休まなくて。",
+  "heard": "先生、いま、大阪の公会堂の設計競技の図面を描いているんです。しめきりは今月の末なのに、ちっとも休まなくて。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "公会堂＝こうかいどう",
+   "設計競技＝せっけいきょうぎ",
+   "図面＝ずめん"
+  ]
+ },
+ "v1q8an1j": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "noboru",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 9.75,
+  "text": "わっ！ ……あ、またいらしたんですね。先生、今日も休まないんですよ。",
+  "heard": "わあ 。 あ また いらっしゃっ た ん です ね 。 先生 、 今日 も 休ま ない ん です よ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1cqb93n": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "noboru",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 5.73,
+  "text": "わっ！ ……あ、すみません。どこかで、お会いしましたっけ？",
+  "heard": "……あ、すみません。どこかで、お会いしましたっけ？",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "viodcup": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.13,
+  "text": "「設計競技」は、何人かの建築家が設計図を出して、いちばんよいものを選ぶやり方なんだ。いまでいう「コンペ」だね。",
+  "heard": "「設計競技」は、何人かの建築家が設計図を出して、いちばんよいものを選ぶやり方なんだ。いまでいう「コンペ」だね。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "設計競技＝せっけいきょうぎ",
+   "建築家＝けんちくか",
+   "設計図＝せっけいず"
+  ]
+ },
+ "v16dybcy": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.83,
+  "text": "大阪の公会堂の設計競技には、17人の建築家が招かれたんだ。岡田信一郎さんは、その中でも、とても若い建築家だった。このとき28歳だよ。",
+  "heard": "大阪の公会堂の設計競技には、17人の建築家が招かれたんだ。岡田信一郎さんは、その中でも、とても若い建築家だった。このとき28",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "公会堂＝こうかいどう",
+   "設計競技＝せっけいきょうぎ",
+   "建築家＝けんちくか",
+   "岡田信一郎＝おかだしんいちろう"
+  ]
+ },
+ "v1ilgkcz": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "okada",
+  "voice": "Rasalgethi",
+  "model": "gemini-3.8-live",
+  "seconds": 5.38,
+  "text": "……こん、こん。ああ、すまない。お客さんか。",
+  "heard": "こん、こん。ああ、すまない。お客さんか。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1rjl02y": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "okada",
+  "voice": "Rasalgethi",
+  "model": "gemini-3.8-live",
+  "seconds": 5.87,
+  "text": "岡田です。岡田信一郎。散らかっていて、悪いね。",
+  "heard": "岡田信一郎。散らかっていて、悪いね。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "岡田信一郎＝おかだしんいちろう"
+  ]
+ },
+ "v1qd0mm4": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "okada",
+  "voice": "Rasalgethi",
+  "model": "gemini-3.8-live",
+  "seconds": 5.8,
+  "text": "……こん、こん。ああ、きみか。また来てくれたんだね。",
+  "heard": "ゴンゴン ああ、 君 か また き て くれ た ん だ ね",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v19lqce3": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "okada",
+  "voice": "Rasalgethi",
+  "model": "gemini-3.8-live",
+  "seconds": 8.29,
+  "text": "……こん、こん。ああ、すまない。……おや、はじめて会う気がしないな。",
+  "heard": "ああ、すまない。……おや、はじめて会う気がしないな。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1n3y0fw": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "okada",
+  "voice": "Rasalgethi",
+  "model": "gemini-3.8-live",
+  "seconds": 10.25,
+  "text": "大阪の商人が、自分の財産を、町のみんなのために出したそうなんだ。みんなが集まれる、大きな建物を建ててほしい、とね。",
+  "heard": "大阪の商人が、自分の財産を、町のみんなのために出したそうなんだ。皆が集まれる、大きな建物を建ててほしい、とね。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vbc0ipl": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "okada",
+  "voice": "Rasalgethi",
+  "model": "gemini-3.8-live",
+  "seconds": 5.88,
+  "text": "会ったこともない人の、大きな贈りものだ。……下手なものは、描けないよ。",
+  "heard": "会ったこともない人の、大きな贈りものだ。……下手なものは、描けないよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ }
+}
