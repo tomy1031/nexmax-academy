@@ -297,5 +297,106 @@
   "heard": "この橋はな、長さがざっと1kmある。 竹は何万本も使う。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v16f3k8z": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "roun",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 6.3,
+  "text": "村の男たちが何十人も集まって、ひと月ほどかけて、かけるんじゃ。",
+  "heard": "村の男たちが何十人も集まって、ひと月ほどかけて、かけるんじゃ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1rml4gs": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "mony",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 4.43,
+  "text": "それでね、雨季が来る前に、また、みんなでほどくの。",
+  "heard": "それ で ね 、 うき が 来る 前 に また みんな で 解く の 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "雨季＝うき"
+  ]
+ },
+ "v1t4z7e4": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "roun",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 14.94,
+  "text": "雨季になると、川は強くなる。竹の橋なんぞ、ひとのみじゃ。だから、ほどいて、竹をしまっておく。そしてまた、次の乾季にかける。",
+  "heard": "雨季になると、川は強くなる。竹の橋なんぞ、ひとのみじゃ。だから、ほどいて、竹をしまっておく。そしてまた、次の乾季にかける。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "雨季＝うき",
+   "乾季＝かんき"
+  ]
+ },
+ "v3cg6db": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.35,
+  "text": "コッ・ペン島の竹の橋は、1960年代には、もうあったと伝えられているんだ。いつから始まったのかは、わかっていないんだよ。",
+  "heard": "コップ ペン ト の 竹 の 箸 は 1960 年 に は もう あっ た と 伝え られ て いる ん だ 。 いつ から 始まっ た の か は 分かっ て い ない ん だ よ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1l3gqmr": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "mony",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 4.3,
+  "text": "ねえ、おじいちゃん。川上の、あの白い橋のこと、話してあげて。",
+  "heard": "ねえ 、 おじいちゃん 。 川上 の あの 白い 橋 の こと 話し て あげ て 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v3uryqa": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "roun",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 13.07,
+  "text": "ああ。川上ではな、もう何年も、大きな橋を作っておる。町の人は、あれを「スピアン・キズナ」と呼んどる。",
+  "heard": "あ 川上 で は な もう 何 年 も 大きな 橋 を 作っ て おる 。 町 の 人 は あれ を スピアン 絆 と 呼ん だり",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "venerlg": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "roun",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 8.540041666666667,
+  "text": "スピアンは、わしらのことばで「橋」。キズナは、日本のことばなんじゃそうだ。",
+  "heard": "スパイ は わしら の 言葉 で はし 絆 は 日本 の 言葉 な ん じゃ そう だ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1d8jdgc": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "mony",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 3.44,
+  "text": "ねえ、旅の人。キズナって、どういう意味？",
+  "heard": " ねえ、旅の人。キズナって、どういう意味？",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
