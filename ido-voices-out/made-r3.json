@@ -1,0 +1,264 @@
+{
+ "v9j3w00": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.770041666666667,
+  "text": "明治二十四年ごろ、秋。関の町。",
+  "heard": " 明治二十四年ごろ、秋。関の町。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "van0uio": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.34,
+  "text": "通りには、刃物の店が、いくつもならんでいる。",
+  "heard": "通り に は 刃物 の 店 が いく つ も 並ん で いる 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v6zbhmh": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.230041666666667,
+  "text": "一軒の鍛冶場から、とん、とん、と、小さな鎚の音が聞こえてきた。",
+  "heard": "一軒の鍛冶場から、とん、とんと、小さな鎚の音が聞こえてきた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "鍛冶場＝かじば",
+   "鎚＝つち"
+  ]
+ },
+ "v13zcs1f": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.24,
+  "text": "中をのぞくと、白いひげのおじいさんが、細い針のようなものを打っている。",
+  "heard": "横 を 覗く と 白い 髭 の おじさん が 細い 針 の よう な もの を 打っ て いる 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1fjni80": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.26,
+  "text": "壁には、大きな鎚や、刀をとぐ石が、ほこりをかぶって、ならんでいた。",
+  "heard": "壁 に は 大きな 土 や 刀 を とぐ 石 が 誇り を かぶっ て 並ん で い た 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "鎚＝つち"
+  ]
+ },
+ "v1ttlb15": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "mitsu",
+  "voice": "Aoede",
+  "model": "gemini-3.8-live",
+  "seconds": 5.72,
+  "text": "いらっしゃい！ ……あ、お客さんとちがう？ 旅の人？",
+  "heard": "……あ、お客さんとちがう？旅の人？",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v10r70gn": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "mitsu",
+  "voice": "Aoede",
+  "model": "gemini-3.8-live",
+  "seconds": 5.5,
+  "text": "あたし、ミツ。九つ。じいちゃんの鍛冶場の、おてつだいしとるの。",
+  "heard": " あたし、 ミツ。 九つ。じいちゃんの鍛冶場のおてつだいしとるの。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "鍛冶場＝かじば"
+  ]
+ },
+ "vppnrx0": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "mitsu",
+  "voice": "Aoede",
+  "model": "gemini-3.8-live",
+  "seconds": 3.62,
+  "text": "いらっしゃい！ ……あ、また来てくれたんやね！",
+  "heard": "いらっしゃい 。そりゃまた来てくれたんやね 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vjynncr": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "mitsu",
+  "voice": "Aoede",
+  "model": "gemini-3.8-live",
+  "seconds": 4.87,
+  "text": "いらっしゃい！ ……あれ？ 前にも、来たことある？",
+  "heard": " ……あれ？ 前にも、来たことある？",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v186d2xp": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "mitsu",
+  "voice": "Aoede",
+  "model": "gemini-3.8-live",
+  "seconds": 3.74,
+  "text": "じいちゃんはな、むかしは、刀を打っとったんよ。",
+  "heard": "じいちゃんはな 、昔は刀をうっとったんよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vlxqc1q": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "mitsu",
+  "voice": "Aoede",
+  "model": "gemini-3.8-live",
+  "seconds": 7.600041666666667,
+  "text": "でも、あたしが生まれるずっと前に、もう、刀を腰にさしたらあかん、ってことになって。",
+  "heard": "でもあたしが生まれるずっと前に、もう刀を腰に差したらあかんってことになって",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vyo7l9q": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.03,
+  "text": "1876年の「廃刀令」だね。武士の時代が終わって、軍人や警察官のほかは、刀を腰にさして歩けなくなったんだ。",
+  "heard": "1876年の「廃刀令」だね。武士の時代が終わって、軍人や警察官のほかは、刀を腰にさして歩けなくなったんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "廃刀令＝はいとうれい",
+   "武士＝ぶし"
+  ]
+ },
+ "v1f0enxp": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.58,
+  "text": "刀の注文は、ぐんと少なくなった。関の刀鍛冶たちは、包丁や、くらしの小さな道具を作るようになったんだよ。",
+  "heard": "刀の注文は、ぐんと少なくなった。関の刀鍛冶たちは、包丁や、くらしの小さな道具を作る",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "刀鍛冶＝かたなかじ"
+  ]
+ },
+ "v1e5ddbm": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "mitsu",
+  "voice": "Aoede",
+  "model": "gemini-3.8-live",
+  "seconds": 4.74,
+  "text": "いま打っとるのは、千枚通し。紙に穴をあける道具。",
+  "heard": "今売っとるのは洗米通し 神に穴をあける道具。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "千枚通し＝せんまいどおし"
+  ]
+ },
+ "vkwt252": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "mitsu",
+  "voice": "Aoede",
+  "model": "gemini-3.8-live",
+  "seconds": 4.13,
+  "text": "……じいちゃん、ほんとは、さみしいんやと思う。",
+  "heard": "じいちゃん、ほんとは、さみしいんやと思う。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1a32jqd": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "genzo",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 9.81,
+  "text": "ミツ、よけいなことを言うな。……旅の人か。何もない鍛冶場じゃが、すわっていきなされ。",
+  "heard": "みつ 、 余計 な こと を 言う な 。 旅 の 人 か 何 も ない 鍛冶場 じゃ が 座っ て 行き なさい 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "鍛冶場＝かじば"
+  ]
+ },
+ "v1q1tj5e": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "genzo",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 6.82,
+  "text": "ミツ、よけいなことを言うな。……おや、また来なすったか。すわっていきなされ。",
+  "heard": "ミツ、よけいなことを言うな。……おや、また来なすったか。すわっていきなされ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vzcwmkj": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "genzo",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 39.78,
+  "text": "ミツ、よけいなことを言うな。……旅の人か。どこかで会うた顔じゃな。すわっていきなされ。",
+  "heard": "ミツ、よけいなことを言うな。……旅の人か。どこかで会うた顔じゃな。すわっていきなされ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vi5mj48": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.03,
+  "text": "（小声）この壁の大きな鎚、兼定さんの鍛冶場にあったのと、同じ形だね。",
+  "heard": "この壁の大きな槌、金田さださんの火事場にあったのと同じ形だね。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "鎚＝つち",
+   "兼定＝かねさだ",
+   "鍛冶場＝かじば"
+  ]
+ },
+ "v1044g36": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.7000416666666665,
+  "text": "そのとき、のれんをくぐって、羽織を着た男が入ってきた。",
+  "heard": "そのとき、のれんをくぐって、羽織を着た男が入ってきた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "羽織＝はおり"
+  ]
+ }
+}
