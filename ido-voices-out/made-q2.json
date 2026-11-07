@@ -1,0 +1,98 @@
+{
+ "ep4c4ajbcafu": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.79,
+  "text": "8 October 1915. Nakanoshima, Osaka.",
+  "heard": " 8 October 1915. Nakanoshima, Osaka.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "en614gkqemhh": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.000041666666666,
+  "text": "You were standing on a brand-new bridge.",
+  "heard": " You were standing on a brand-new bridge.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1412dl915amx": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.550041666666667,
+  "text": "At the end of the bridge sat big lion statues — one with its mouth open, the other with its mouth closed.",
+  "heard": " At the end of the bridge sat big lion statues — one with its mouth open, the other with its",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1a8xu7h1ft8u": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.76,
+  "text": "This is Naniwa Bridge. It was rebuilt just this May. There are two lions at each end — four in all — so people also call it the “Lion Bridge.”",
+  "heard": " This is Naniwa Bridge. It was rebuilt just this May. There are two lions at each end — four in all — so people also call it the “Lion Bridge.”",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "egp4bru1kukm": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.850041666666666,
+  "text": "In front of the lions, a young man in kimono and hakama trousers was teaching a little boy something.",
+  "heard": "In front of the lions, a young man in kimono and hakama trousers was teaching a little boy something.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e17wp8lp197xx": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "kiyo2",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 12.42,
+  "text": "Listen, Sankichi. The one with its mouth open says “ah,” and the closed one says “un.” The beginning and the end. The two of them make a pair.",
+  "heard": "Listen, Sankichi. The one with its mouth open says, \"ah\", and the closed one says, \"um\". The beginning and the end. The two of them make a pair.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eercjttsx1q3": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "三吉",
+  "voice": "Despina",
+  "model": "gemini-3.8-live",
+  "seconds": 5.5,
+  "text": "Ah… un. Okay, big brother — what about those letters?",
+  "heard": " Okay, big brother what about those letters?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "edctm0xui3au": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "kiyo2",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 5.260041666666667,
+  "text": "Those say “Naniwa-bashi.” Go on, try reading it yourself.",
+  "heard": "Those say Naniwabashi. Go on, try reading it yourself.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ }
+}
