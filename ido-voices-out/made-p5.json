@@ -398,5 +398,104 @@
   "heard": " ねえ、旅の人。キズナって、どういう意味？",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "vwo7jps": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "mony",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 4.18,
+  "text": "切れない、つながり……。へえ、いい名前だね。",
+  "heard": "切れない、つながり……。へえ、いい名前だね。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vnhnkxs": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "mony",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 3.6100416666666666,
+  "text": "はなれていても……。町と島みたいだね。",
+  "heard": "離れていても 町 と しま みたい だ ね 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vsls8lc": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.3800416666666666,
+  "text": "2001年、12月4日。",
+  "heard": "2001 年 12 月 4 日",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "v10d8j09": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.06,
+  "text": "モニーとおじいさんと、あなたは、朝はやく、船でコンポンチャムの町の岸へわたった。",
+  "heard": "モニーとおじいさんと、あなたは、朝はやく、船でコンポンチャムの町の岸へわたった。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "v44buek": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.48,
+  "text": "川上に、白くて長い橋が、川をまたいでいた。川の中に、太い脚が、ずらりとならんでいる。",
+  "heard": "川上に、白くて長い橋が、川をまたいでいた。川の中に、太い脚が、ずらりとならんでいる。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "v1rmadk8": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.54,
+  "text": "岸も、道も、人でうめつくされていた。",
+  "heard": "棋士 も 道 も 人 で 埋め尽くさ れ て い た 。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "v1uk4ohp": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.560041666666667,
+  "text": "きずな橋。カンボジアで初めて、メコン川に架かった橋なんだ。長さは、1,360メートル。",
+  "heard": "きずな橋。カンボジアで初めて、メコン川に架かった橋なんだ。長さは、1,360メートル。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": [
+   "きずな橋＝きずなばし",
+   "メコン川＝めこんがわ"
+  ]
+ },
+ "vlnvou4": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.26,
+  "text": "日本の国が出した、返さなくていいお金と、橋を作るために働いた、たくさんの人たちの仕事で、できたんだよ。",
+  "heard": "日本の国が出した返さなくていいお金と橋を作るために働いたたくさんの人たちの仕事でできたんだよ。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
  }
 }
