@@ -382,5 +382,41 @@
   "heard": " There are forty of 'em altogether! I counted.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e9g9ii11qamk": {
+  "episode": "seki-sutra",
+  "lang": "en",
+  "speaker": "kanesada",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 10.84,
+  "text": "This is the Kannon Sutra. It teaches that Kannon — the Buddhist one of great mercy — comes to save people in trouble.",
+  "heard": " This is the Kannon Sutra. It teaches that Kannon — the Buddhist one of great mercy — comes to save people in trouble.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eutgegn1w99h": {
+  "episode": "seki-sutra",
+  "lang": "en",
+  "speaker": "kanesada",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 7.3,
+  "text": "The pictures follow those in a book from Ming China, the great land across the sea.",
+  "heard": " The pictures follow those in a book from Ming China, the great land across the sea.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "egb7685n5muf": {
+  "episode": "seki-sutra",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.93,
+  "text": "At the very end of the scroll, framed by a lotus leaf above and a lotus-flower stand below, some words were printed.",
+  "heard": " At the very end of the scroll, framed by a lotus leaf above and a lotus-flower stand below, some words were printed.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
