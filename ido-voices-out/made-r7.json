@@ -505,5 +505,183 @@
   "heard": "緑は、とれたての、まだ若いつぶ。これを、さっとゆでて、お日さまで干すと、しわしわの黒になる。",
   "scene": "お祝いの、晴れやかな場面。明るく",
   "readings": []
+ },
+ "v93dd97": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "mei",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 6.23,
+  "text": "赤は、熟したつぶ。赤いのを水につけて、皮をむくと、白になるの。",
+  "heard": "説明しますね。赤は、熟したつぶ。赤いのを水につけて、皮をむくと、白になるの。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "v4bkzcr": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "channa",
+  "voice": "Fenrir",
+  "model": "gemini-3.8-live",
+  "seconds": 6.11,
+  "text": "緑、黒、赤、白！ ……おれが覚えたの、去年だけどな。",
+  "heard": "みどり、黒、赤、白。俺が覚えたの去年のだけどな。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "vvwf8rg": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.73,
+  "text": "あなたは、緑のつぶを、ひとつ、前歯でかじった。",
+  "heard": "あなた は 緑 の 粒 を 1 つ 前歯 で 噛じっ た 。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "v1voe90t": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.140041666666667,
+  "text": "——からい！ でも、そのあとに、さわやかな、いいかおりが、口いっぱいに広がった。",
+  "heard": "でも、そのあとに、さわやかな、いいかおりが、口いっぱいに広がった。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "vjrm8fc": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "channa",
+  "voice": "Fenrir",
+  "model": "gemini-3.8-live",
+  "seconds": 2.77,
+  "text": "あはは！ 顔、まっ赤！",
+  "heard": " あはは！ 顔、まっか！",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "v18e5aly": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.63,
+  "text": "あなたは、赤いつぶを、指でつぶして、においをかいだ。",
+  "heard": "あなたは 赤い 粒 を 指 で 潰し て 匂い を 嗅い だ 。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "vy3a5gn": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.570041666666667,
+  "text": "ぴりっとした中に、くだもののような、あまいかおりがする。",
+  "heard": "ぴりっとした中に果物のような甘い香りがする",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "v13sgbb8": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "mei",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 3.56,
+  "text": "でしょ？ 赤い胡椒は、ちょっと、あまいんだよ。",
+  "heard": "でしょ？赤い胡椒はちょっと甘いんだよ。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": [
+   "胡椒＝こしょう"
+  ]
+ },
+ "v1erpkei": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.54,
+  "text": "（小声）アンコールの都の暮らしを書いた周達観さんの本にも、カンボジアの胡椒が出てくるんだ。七百年も前のことだよ。",
+  "heard": "アンコール の 都 の 暮らし を 描い た 周卓 冠 さん の 本 に も カンボジア の 故障 が 出 て くる ん だ 。 700 年 も 前 の こと だ よ 。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": [
+   "都＝みやこ",
+   "胡椒＝こしょう"
+  ]
+ },
+ "v4ekyek": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.55,
+  "text": "七百年ほど前に、カンボジアの都の暮らしを書いた旅人の記録にも、この国の胡椒が出てくるんだよ。",
+  "heard": "7800 年 ほど 前 に カンボジア の 都 の 暮らし を 書い た 旅人 の 記録 に も この 国 の 故障 が 出 て くる ん だ よ 。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": [
+   "都＝みやこ",
+   "胡椒＝こしょう"
+  ]
+ },
+ "v13et1km": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.080041666666666,
+  "text": "夕方。三人について、あなたは、カンポットの町の川岸まで歩いた。",
+  "heard": "夕方。三人について、あなたは、カンポットの町の川岸まで歩いた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vgx4bpm": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 11.73,
+  "text": "川ぞいには、二階建ての店が、ずらりと並んでいる。下が店で、上が住まい。木のよろい戸が、夕日に赤くそまっていた。",
+  "heard": "川ぞいには、二階建ての店が、ずらりと並んでいる。下が店で、上が住まい。木のよろい戸が、夕日に赤くそまっていた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vlpe7vs": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.74,
+  "text": "船着き場では、胡椒をつめた麻の袋が、次々に、船へ積みこまれていく。",
+  "heard": "船着き場では、胡椒をつめた麻の袋が、次々に、船へ積みこまれて",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "胡椒＝こしょう"
+  ]
+ },
+ "vaz1o7u": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "lim",
+  "voice": "Alnilam",
+  "model": "gemini-3.8-live",
+  "seconds": 10.07,
+  "text": "あの袋は、川を下って、海に出る。それから、ずっと遠くの国の、だれかの台所まで行くんじゃ。",
+  "heard": "あの袋は、川を下って、海に出る。それから、ずっと遠くの国の、だれかの台所まで行くん",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
