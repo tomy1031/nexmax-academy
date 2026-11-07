@@ -190,5 +190,101 @@
   "heard": "Anyway, where does that cloud come from? Every single day, it sits only on top of the mountain.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "ebrlm0iythj2": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "vanna",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 8.24,
+  "text": "Today I’m going to find out! …Hey, come with me. On my own I’m just a tiny bit scared.",
+  "heard": " Today I’m going to find out! …Hey, come with me. On my own I’m just a tiny bit scared.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1c0awy01tp4n": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "vanna",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 4.2800416666666665,
+  "text": "Yes! Then let’s set off before the sun is all the way up!",
+  "heard": "Yes, then let's set off before the sun is all the way up.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eqpynsw16yrl": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "vanna",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 3.22,
+  "text": "Awww… Okay, fine.",
+  "heard": " Awww… Okay, fine.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ezxy8wm1qaiu": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "ヴァンナのお父さん",
+  "voice": "Rasalgethi",
+  "model": "gemini-3.8-live",
+  "seconds": 7.92,
+  "text": "Up the mountain? …I see. Then when you go into the mountain, make sure you greet it properly.",
+  "heard": " …I see. Then when you go into the mountain, make sure you greet it properly.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e8kw1ryzdeep": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.7000416666666665,
+  "text": "The mountain path was much longer than you expected.",
+  "heard": "\nThe mountain path was much longer than you expected.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e1qpwh4c1o8jk": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.15,
+  "text": "You stepped over huge tree roots and climbed mossy rocks. There were birdcalls, and far away, gibbons calling to each other.",
+  "heard": " You stepped over huge tree roots and climbed mossy rocks. There were birdcalls, and far away, gibbons calling to each other.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e1dnvw3u17iq4": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.560041666666667,
+  "text": "The higher you climbed, the whiter everything became. Before you knew it, you couldn’t see three steps ahead.",
+  "heard": " The higher you climbed, the whiter everything became. Before you knew it, you couldn't see three steps ahead.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e1snjy2vfe4kf": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "vanna",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 2.23,
+  "text": "…Which way was the path?",
+  "heard": "Which way was the path?",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
  }
 }
