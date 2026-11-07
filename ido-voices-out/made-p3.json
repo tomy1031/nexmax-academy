@@ -215,5 +215,110 @@
   "readings": [
    "刀鍛冶＝かたなかじ"
   ]
+ },
+ "v2fa63e": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "hachi",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 9.24,
+  "text": "刃につける土と、松の炭と、きれいな川の水。いい刀を打つものが、ここには、ぜんぶそろってるんやって。",
+  "heard": "刃につける土と、松の炭と、きれいな川の水。いい刀を打つものが、ここには、ぜんぶそろってるんやって。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vjbe14s": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.01,
+  "text": "長良川と津保川の、きれいな水だね。鎌倉時代から、関には刀鍛冶が集まったと伝えられているんだ。",
+  "heard": "ながらがわとつぼがわの、きれいな水だね。鎌倉時代から、関にはかたなかじが集まったと伝えられているんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "長良川＝ながらがわ",
+   "津保川＝つぼがわ",
+   "鎌倉＝かまくら",
+   "刀鍛冶＝かたなかじ"
+  ]
+ },
+ "v4d98dn": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.74,
+  "text": "やがて、鎚の音がやんだ。",
+  "heard": "夜あけて 地 の 音 が や ん だ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "鎚＝つち"
+  ]
+ },
+ "vb8oki1": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.46,
+  "text": "男が、まっ赤な鉄を水の中に入れる。じゅうっ、と白い湯気が立ちのぼった。",
+  "heard": "まっ赤な鉄を水の中に入れる。じゅうっ、と白い湯気が立ちのぼった。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v409uyy": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "kanesada",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.22,
+  "text": "……旅の人か。すすで、まっ黒になるぞ。",
+  "heard": "旅 の 人 が すす で 真っ黒 に なる ぞ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vuwcax": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "kanesada",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.33,
+  "text": "兼定じゃ。ここで、刀を打っておる。",
+  "heard": " ここで、刀を打っておる。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "兼定＝かねさだ"
+  ]
+ },
+ "v1jxzgox": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "kanesada",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.26,
+  "text": "……また、来なすったか。すすで、まっ黒になるぞ。",
+  "heard": "また気なすったか 。スス で 真っ黒 に なる ぞ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1lj3xhb": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "kanesada",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.02,
+  "text": "……旅の人か。ふむ、はじめて会うた気がせんな。",
+  "heard": "ふむ、はじめて会うた気がせんな。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
