@@ -190,5 +190,101 @@
   "heard": " See, I remember which shop each one goes to by the shape of the paper and the numbers.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1wxi7jq5u81y": {
+  "episode": "osaka-kitahama",
+  "lang": "en",
+  "speaker": "kiyo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 2.6300416666666666,
+  "text": "…'Cause I can't read the words.",
+  "heard": "Cuz I can't read the words.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ey5ut7n15zye": {
+  "episode": "osaka-kitahama",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.59,
+  "text": "Seikichi pressed a hand gently to the front of his kimono. It looked as if a folded piece of paper was tucked in there, too.",
+  "heard": "Seikichi pressed a hand gently to the front of his kimono. It looked as if a folded piece of paper was tucked in there, too.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1oeo6g2azx7g": {
+  "episode": "osaka-kitahama",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.18,
+  "text": "At the exchange, people buy and sell “shares” in companies. A share is like a small piece of owning a company. The price goes up and down every day.",
+  "heard": " At the exchange, people buy and sell “shares” in companies. A share is like a small piece of owning a company. The price goes up and down every day.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1q1ih881u3hm": {
+  "episode": "osaka-kitahama",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.67,
+  "text": "People who bought and sold shares for their customers were called “brokers.” Seikichi is a boy who works at one of their shops.",
+  "heard": " People who bought and sold shares for their customers were called “brokers.” Seikichi is a boy who works at one of their shops.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1vys77i1x4za": {
+  "episode": "osaka-kitahama",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.08,
+  "text": "Sticking close to Seikichi, you peeked inside the exchange.",
+  "heard": " Sticking close to Seikichi, you peeked inside the exchange.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "ez91kqb1m6nt": {
+  "episode": "osaka-kitahama",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.6,
+  "text": "A huge room was crammed with grown-ups, shouting, holding up fingers and waving their hands.",
+  "heard": " A huge room was crammed with grown-ups, shouting, holding up fingers and waving their hands.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "e1jaergj1dzso": {
+  "episode": "osaka-kitahama",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.110041666666667,
+  "text": "On a big blackboard on the wall, white numbers were written, wiped away, and written again.",
+  "heard": " On a big blackboard on the wall, white numbers were written, wiped away, and written again.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "ecjod6x1l1jg": {
+  "episode": "osaka-kitahama",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.840041666666666,
+  "text": "They used hand signals to say “I want to sell,” “I want to buy,” and how many. With all that noise, voices alone couldn't be heard.",
+  "heard": " They used hand signals to say \"I want to sell,\" \"I want to buy,\" and how many. With all that noise, voices alone couldn't be heard.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
  }
 }
