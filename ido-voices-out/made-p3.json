@@ -320,5 +320,113 @@
   "heard": "ふむ、はじめて会うた気がせんな。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v3p4wy0": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.85,
+  "text": "兼定さんは、このころの関で、いちばんの刀鍛冶のひとりといわれた人なんだ。あとで、「和泉守」という名前をもらうことになるよ。",
+  "heard": "兼定さんは、このころの関で、いちばんの刀鍛冶のひとりといわれた人なんだ。あとで、「和泉守」という名前をもらうことになるよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "兼定＝かねさだ",
+   "刀鍛冶＝かたなかじ",
+   "和泉守＝いずみのかみ"
+  ]
+ },
+ "v1hxrzos": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "hachi",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 3.99,
+  "text": "兼定さま、きのうの、あれ、見せてあげてよ！",
+  "heard": "かねさださま、きのうの、あれ、見せてあげてよ！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "兼定＝かねさだ"
+  ]
+ },
+ "vo5y33g": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "kanesada",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 3.28,
+  "text": "……ハチ。おまえは、すぐしゃべる。",
+  "heard": "ハチ、お前はすぐ喋る。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1afssr7": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.47,
+  "text": "兼定さんは、手を洗い、ていねいにふいてから、棚の上の細長い箱を下ろした。",
+  "heard": "金田 さん は 手 を 洗い 丁寧 に 拭い て から 棚 の 上 の 細長い 箱 を 下ろし た 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "兼定＝かねさだ"
+  ]
+ },
+ "v1rqefr2": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.8200416666666666,
+  "text": "箱から出てきたのは、紙の巻物だった。",
+  "heard": "箱から出てきたのは、紙の",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vg0pcm3": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.420041666666667,
+  "text": "兼定さんが、少しずつ、少しずつ、巻物を広げていく。",
+  "heard": "兼定さんが、少しずつ、少しずつ、巻物を広げていく。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "兼定＝かねさだ"
+  ]
+ },
+ "v1uh8sqg": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.670208333333333,
+  "text": "はじめに、仏さまが、人びとに教えを説いている絵。そのあとに、細かい字が、ずらりとならぶ。",
+  "heard": "はじめに、仏さまが、人びとに教えを説いている絵。そのあとに、細かい字が、ずらりとならぶ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vbntuwq": {
+  "episode": "seki-sutra",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 14.92,
+  "text": "字のあいだに、小さな絵が、いくつも、いくつも刷られていた。嵐の海、火事、山の中の道。そして、どの絵にも、観音さまがいる。",
+  "heard": "字のあいだに、小さな絵が、いくつも、いくつも刷られていた。嵐の海、火事、山の中の道。そして、どの絵にも、観音さまがいる。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "観音＝かんのん"
+  ]
  }
 }
