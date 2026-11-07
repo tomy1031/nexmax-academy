@@ -94,5 +94,101 @@
   "heard": " Oh, you're back! Did you come by boat?",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "erh2mlo1gum1": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "vanna",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 5.7400416666666665,
+  "text": "Coming! …Huh? Why are you smiling like you know me?",
+  "heard": "Coming! …Huh? Why are you smiling like you know me?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e12yvf4c6tyfg": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "vanna",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 4.2000416666666665,
+  "text": "I’m Vanna. I’m nine. My dad’s a fisherman.",
+  "heard": " I’m nine. My dad’s a fisherman.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1wy3gex1urlv": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.92,
+  "text": "Vanna copied the others and pressed his palms together at the shrine. But he looked up again straight away.",
+  "heard": "Vana copied the others and pressed his palms together at the shrine, but he looked up again straight away.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1rj9qv01nx2s": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "vanna",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 8.95,
+  "text": "Hey, who is Grandmother Mao? When I ask Dad, all he says is “She watches over the sea and the roads.”",
+  "heard": "Hey, who is grandmother Ma? When I ask dad, all he says is she watches over the sea and the roads.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eggz7cy16feq": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "vanna",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 3.7500416666666667,
+  "text": "Isn’t it strange to greet someone you’ve never even seen?",
+  "heard": "Isn't it strange to greet someone you've never even seen?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e2owmgt6n6y1": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.54,
+  "text": "In Cambodia there are guardian spirits of the land called neak ta. People believe each village, mountain and forest has someone who looks after it.",
+  "heard": " In Cambodia there are guardian spirits of the land called neak ta. People believe each village, mountain and forest has someone who looks after it.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1wrmp4osuk1s": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.160041666666666,
+  "text": "Vanna stared up at the cloud on top of the mountain.",
+  "heard": "Vana stared up at the cloud on top of the mountain.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "egzcoy71jkex": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "vanna",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 7.61,
+  "text": "Anyway — where does that cloud come from? Every single day, it sits only on top of the mountain.",
+  "heard": "Anyway, where does that cloud come from? Every single day, it sits only on top of the mountain.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
