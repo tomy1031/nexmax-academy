@@ -488,5 +488,45 @@
   "heard": "カンボジアの技術者たちが、国の、お金だけで作った、川を渡る、初めての橋だと言われているんだよ。",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "v1pchg1s": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.010041666666667,
+  "text": "それで、大きな竹の橋は、もう、かけられなくなったんだ。",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v13b4xgt": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.85,
+  "text": "でも、村の人たちは、そのあとも、旅の人が歩ける小さな竹の橋を、自分たちでかけてきたんだ。2024年の乾季にも、かかっていたという記録があるよ。",
+  "heard": "でも、村の人たちは、そのあとも、旅の人が歩ける小さな竹の橋を、自分たちでかけてきたんだ。2024年の乾季にも、かかっていたという記録があるよ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "乾季＝かんき"
+  ]
+ },
+ "v11sb156": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.98,
+  "text": "そして、きずな橋。来月、2026年の12月4日で、開通して25年になるんだ。",
+  "heard": " そして、きずな橋。来月、2026年の12月4日で、開通して25年になるんだ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "きずな橋＝きずなばし"
+  ]
  }
 }
