@@ -246,5 +246,264 @@
   "readings": [
    "胡椒＝こしょう"
   ]
+ },
+ "v5u81u6": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "mei",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 5.75,
+  "text": "あたり！ おじいちゃんも、そう言ってた。胡椒は、お日さまのほうへ、のぼっていくんだって。",
+  "heard": "あたり！おじいちゃんも、そう言ってた。胡椒は、お日さまのほうへ、のぼっていくんだって。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "胡椒＝こしょう"
+  ]
+ },
+ "v1gurhz": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "mei",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 5.150041666666667,
+  "text": "それもあるよ！ 下にじっとしてると、病気になっちゃうんだって。",
+  "heard": "下にじっとしてると、病気になっちゃうんだって。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vnah28n": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "mei",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 9.78,
+  "text": "胡椒は、つるの草なの。木やかべに、からみついて、のぼっていく。だから、柱は、胡椒のはしごなんだよ。",
+  "heard": "故障 は ツル の 草 な の 。 木 や 壁 に 絡みつい て 登っ て いく 。 だ から 柱 は 故障 の はしご な ん だ よ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "胡椒＝こしょう"
+  ]
+ },
+ "v1wnvks2": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.7000416666666665,
+  "text": "畑のおくから、天びん棒に、かごを二つぶら下げたおじいさんが、ゆっくり歩いてきた。",
+  "heard": "畑のおくから、天びん棒に、かごを二つぶら下げたおじいさんが、ゆっくり歩いてきた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v8s8enp": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "lim",
+  "voice": "Alnilam",
+  "model": "gemini-3.8-live",
+  "seconds": 5.44,
+  "text": "ほう、お客さんかね。こんな、くさいところへ、ようこそ。",
+  "heard": "ほう、お客さんかね。こんな、くさいところへ、ようこそ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vytjd7r": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "lim",
+  "voice": "Alnilam",
+  "model": "gemini-3.8-live",
+  "seconds": 5.88,
+  "text": "ほう、また来なすったか。こんな、くさいところへ、ようこそ。",
+  "heard": "ほう、また来なすったか。こんな、くさいところへ、よくぞ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vc7249p": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "lim",
+  "voice": "Alnilam",
+  "model": "gemini-3.8-live",
+  "seconds": 9.480041666666667,
+  "text": "ほう、お客さんかね。……どこかで、会ったことがあるかな。こんな、くさいところへ、ようこそ。",
+  "heard": "ほう、お客さんかね。……どこかで、会ったことがあるかな。こんな、くさいところへ、ようこそ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v3qkhp7": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "lim",
+  "voice": "Alnilam",
+  "model": "gemini-3.8-live",
+  "seconds": 3.37,
+  "text": "わしは、リム。メイのじいさんじゃ。",
+  "heard": "わし は リム メイ の じい さん じゃ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vkt40ht": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.5100416666666665,
+  "text": "かごの中は、牛のふんだった。",
+  "heard": "かごの中は、牛の ふん",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1tiivvs": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "channa",
+  "voice": "Fenrir",
+  "model": "gemini-3.8-live",
+  "seconds": 6.24,
+  "text": "それ、うちの牛のだよ！ うちの牛のふんは、いちばんいい肥料なんだ。",
+  "heard": "それ、うちの牛のだよ！うちの牛のふんは、いちばんいい肥料なんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1vp3bzg": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "lim",
+  "voice": "Alnilam",
+  "model": "gemini-3.8-live",
+  "seconds": 6.13,
+  "text": "そのとおり。チャンナの家の牛がおらんかったら、うちの胡椒は、こんなに太らん。",
+  "heard": "そのとおり。チャンナの家の牛がおらんかったら、うちの胡椒は、こんなに太らん。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "胡椒＝こしょう"
+  ]
+ },
+ "v2ei5o6": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "lim",
+  "voice": "Alnilam",
+  "model": "gemini-3.8-live",
+  "seconds": 9.48,
+  "text": "わしが若いころ、海南島から船で来たときにはな、持ってきたのは、この手と、胡椒の育て方だけじゃった。",
+  "heard": "わしが若いころ、海南島から船で来たときにはな、持ってきたのは、この手と、胡椒の育て方だけじゃった。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "海南島＝かいなんとう",
+   "胡椒＝こしょう"
+  ]
+ },
+ "vwi50tf": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "lim",
+  "voice": "Alnilam",
+  "model": "gemini-3.8-live",
+  "seconds": 12.02,
+  "text": "じゃが、育て方だけでは、胡椒は育たん。この赤い土も、雨も、となりの家の牛も、ぜんぶカンボジアのもんじゃ。",
+  "heard": "じゃあ 、 育て 方 だけ で は 故障 は 育た ん 。 この 赤い 土 も 雨 も 隣 の 家 の 牛 も 全部 カンボジア の もん じゃ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "胡椒＝こしょう"
+  ]
+ },
+ "vk03cfv": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "lim",
+  "voice": "Alnilam",
+  "model": "gemini-3.8-live",
+  "seconds": 3.97,
+  "text": "どれか一つ欠けても、この胡椒はできんのよ。",
+  "heard": "どれか一つ欠けても、この胡椒はできんのよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "胡椒＝こしょう"
+  ]
+ },
+ "vjmle8m": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.82,
+  "text": "カンポットの胡椒は、19世紀の終わりごろから、さかんに作られるようになったんだ。このころは、一年に3,000トンくらいとれたと言われているよ。",
+  "heard": "カンポットの胡椒は、19世紀の終わりごろから、さかんに作られるようになったんだ。このころは、一年に3,000トンくらいとれたと言われているよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "胡椒＝こしょう"
+  ]
+ },
+ "v1wnvv02": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.21,
+  "text": "カンポットの胡椒は、とくに、フランスやヨーロッパで知られていたんだって。",
+  "heard": "カンポットの胡椒は、とくに、フランスやヨーロッパで知られていたんだって。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "胡椒＝こしょう"
+  ]
+ },
+ "v9bvocz": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.9900416666666665,
+  "text": "リムおじいさんが、柱から、ひと房、そっと、つみとった。",
+  "heard": "リムおじいさんが、柱から、ひと房、そっと、つみとった。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "v1csayur": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 11.67,
+  "text": "小さなつぶが、ぶどうのように、ぎっしり、ならんでいる。ほとんどは緑。ところどころ、赤くなったつぶがまじっている。",
+  "heard": "小さなつぶが、ぶどうのように、ぎっしり、ならんでいる。ほとんどは緑。ところどころ、赤くなったつぶがまじっている。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
+ },
+ "v1pbm5q6": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "mei",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 5.09,
+  "text": "あのね、同じ房から、四つの色の胡椒ができるんだよ。",
+  "heard": "あのね、同じ房から、四つの色の胡椒ができるんだよ。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": [
+   "胡椒＝こしょう"
+  ]
+ },
+ "vkhbakt": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "mei",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 9.24,
+  "text": "緑は、とれたての、まだ若いつぶ。これを、さっとゆでて、お日さまで干すと、しわしわの黒になる。",
+  "heard": "緑は、とれたての、まだ若いつぶ。これを、さっとゆでて、お日さまで干すと、しわしわの黒になる。",
+  "scene": "お祝いの、晴れやかな場面。明るく",
+  "readings": []
  }
 }
