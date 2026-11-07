@@ -1,0 +1,252 @@
+{
+ "v177dprt": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "ラジオ",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 4.94,
+  "text": "……きょう、関西国際空港が、開港の日をむかえました……",
+  "heard": "今日、関西国際空港が開港の日を迎えました。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "関西国際空港＝かんさいこくさいくうこう"
+  ]
+ },
+ "v1kwabo": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4,
+  "text": "舟の小さなラジオから、ニュースが流れてきた。",
+  "heard": "船の小さなラジオからニュースが流れてきた",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v3r9l2a": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "takuya",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 2.57,
+  "text": "じいちゃん、来る！ 来るで！",
+  "heard": "じい ちゃん 、 来る ? 来る で ?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v159wta3": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.580125,
+  "text": "海の上の島から、白い飛行機が、ゆっくりと走りだした。",
+  "heard": "海 の 上 の 島 から 白い 飛行 機 が ゆっくり と 走り 出し た",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vb4sjf9": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.7800416666666665,
+  "text": "だんだん速くなって——ふわり、と、浮かぶ。",
+  "heard": "だんだん速くなって——ふわり、と、浮かぶ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1r8byg9": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.13,
+  "text": "朝日の中を、銀色のつばさが、空へ、空へと、のぼっていく。",
+  "heard": "朝日の中を、銀色のつばさが、空へ、空へと、のぼっていく。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1jvtv79": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "takuya",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 3.08,
+  "text": "うわああ……！ 飛んだ！ ほんまに、海から、飛んだ！",
+  "heard": "うわー飛んだ。ほんまに海から飛んだ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vks9rc3": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.94,
+  "text": "拓也は、舟の上で、ちぎれるくらい、手をふった。",
+  "heard": "たくやは船の上でちぎれるくらい手を振った。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "拓也＝たくや"
+  ]
+ },
+ "vuf585h": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.07,
+  "text": "勝三さんは、網を持ったまま、しばらく、空を見上げていた。",
+  "heard": "勝三さんは、網を持ったまま、しばらく、空を見上げていた。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "勝三＝かつぞう"
+  ]
+ },
+ "v18xsaxl": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "katsuzo",
+  "voice": "Alnilam",
+  "model": "gemini-3.8-live",
+  "seconds": 6.56,
+  "text": "……海はな、魚の道や。わしの親父も、そのまた親父も、この海で食うてきた。",
+  "heard": "海 はな 魚 の 道 や わし の 親父 も そのまた 親父 も この 海 で 食う で 来た",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1j77mfo": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "katsuzo",
+  "voice": "Alnilam",
+  "model": "gemini-3.8-live",
+  "seconds": 9.26,
+  "text": "その海が、今日から、空への入り口にもなったんやな。",
+  "heard": "今日から、空への入り口にもなったんやな。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v198081z": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "katsuzo",
+  "voice": "Alnilam",
+  "model": "gemini-3.8-live",
+  "seconds": 3.67,
+  "text": "……拓也。あの飛行機、乗りたいか。",
+  "heard": "たくや、あの飛行機乗りたいか？",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "拓也＝たくや"
+  ]
+ },
+ "v1x99sz": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "takuya",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 4.400041666666667,
+  "text": "うん！ おれ、大きなったら、あれに乗って、世界じゅう行く！",
+  "heard": "うん、俺おっきくなったらあれに乗って世界中行く。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v193e8ub": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "takuya",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 3.5900416666666666,
+  "text": "なあ、あんたは？ 飛行機に乗ったら、どこ行きたい？",
+  "heard": "なあ、あんたは？飛行機に乗ったら、どこ行きたい？",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1ptkhi2": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "takuya",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 4.32,
+  "text": "いちばん遠いとこ！ ええなあ。おれも、そこにする！",
+  "heard": "一番遠いとこ。えーなー。俺もそこにするー。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v12vp6kx": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "takuya",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 7.36,
+  "text": "……帰ってくるん？ ふうん。……でも、それも、ええな。じいちゃんの魚、うまいもんな。",
+  "heard": " ふうん。……でも、それも、ええな。じいちゃんの魚、うまいもんな。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vtk6rzy": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "takuya",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 5.45,
+  "text": "わからんのか。ほな、空港に行って、いちばんおもしろそうなとこ、えらんだらええやん！",
+  "heard": "わからんのか。ほな空港に行って一番面白そうなとこ選んだらええやん。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vi4fh90": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "katsuzo",
+  "voice": "Alnilam",
+  "model": "gemini-3.8-live",
+  "seconds": 8.47,
+  "text": "ははは。どこへ行ってもええ。けどな、腹へったら、帰ってこい。魚、焼いといたる。",
+  "heard": "ハハハ。どこへ行ってもええけどな、腹減ったら帰ってこい。魚焼いといたる。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1ph39z2": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.55,
+  "text": "……戻ってきたよ。いまの泉南ロングパーク。",
+  "heard": "戻ってきたよ。いまの泉南ロングパーク。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "泉南＝せんなん"
+  ]
+ },
+ "v13fx5ci": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.120041666666666,
+  "text": "足もとの芝生を見て。この土地も、もとは海だったんだよ。",
+  "heard": "足もとの芝生を見て。この土地も、もとは海だったんだよ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ }
+}
