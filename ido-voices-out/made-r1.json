@@ -505,5 +505,225 @@
   "readings": [
    "図面＝ずめん"
   ]
+ },
+ "vgvxm1g": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "noboru",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 2.62,
+  "text": "それって……くやしくないんですか？",
+  "heard": "それっ て 悔しく ない ん です か ?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vpnucgb": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.8,
+  "text": "岡田さんは、少しのあいだ、窓の外を見ていた。",
+  "heard": "岡田 さん は 少し の 間 窓 の 外 を 見 て い た 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vk8g7xf": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "okada",
+  "voice": "Rasalgethi",
+  "model": "gemini-3.8-live",
+  "seconds": 5.54,
+  "text": "ひとつのものが、ひとりの力で、完全でなくてもいいと思うんだ。",
+  "heard": "ひとつのものが、ひとりの力で、完全でなくてもいいと思うんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1wbx4is": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "okada",
+  "voice": "Rasalgethi",
+  "model": "gemini-3.8-live",
+  "seconds": 7.5,
+  "text": "みんなが寄りあって、たりないところを補いあって、それで完全になれば、それでいい。",
+  "heard": "みんなが寄りあって、たりないところを補いあって、それで完全になれば、それでいい。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1l6n1c9": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.72,
+  "text": "この言葉は、岡田さんが、のちに語った考えを、やさしく言いかえたものなんだ。",
+  "heard": "この言葉は、岡田さんが、のちに語った考えを、やさしく言いかえたものなんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1qhz8os": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "okada",
+  "voice": "Rasalgethi",
+  "model": "gemini-3.8-live",
+  "seconds": 6.52,
+  "text": "ありがとう。じゃあ、この定規を押さえていてくれるかい。……そう、まっすぐに。",
+  "heard": "ありがとう 。 じゃあ この 定規 を 押さえ て い て くれる か い ? そう 。 まっすぐ に 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v5uqa7z": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 11.09,
+  "text": "あなたが押さえた定規にそって、岡田さんのペンが、すうっと一本の線を引いた。アーチの、いちばん外側の線だった。",
+  "heard": "あなたが抑えた定規に沿って岡田さんのペンがすーっと1本の線を引いた。 アーチの1一番外側の線だった。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1ytiaog": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.18,
+  "text": "ペンの音と、ときどきのせきの音だけが、部屋の中にひびいていた。",
+  "heard": "ペンの 音 と 時々 の 咳 の 音 だけ が 部屋 の 中 に 響い て い た 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "viqsyji": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.19,
+  "text": "大正元年、十一月二十七日。東京の建築学会。",
+  "heard": "十一月二十七日。東京の建築学会。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "元年＝がんねん",
+   "建築学会＝けんちくがっかい"
+  ]
+ },
+ "vzsbtq2": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 13.03,
+  "text": "大きな机の上に、十三の設計図がならべられていた。そのまわりを、黒い服の男たちが、ゆっくり歩いて見てまわる。",
+  "heard": "大きな机の上に、十三の設計図がならべられていた。そのまわりを、黒い服の男たちが、ゆっくり歩いて見てまわる。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "設計図＝せっけいず"
+  ]
+ },
+ "v29gywp": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.62,
+  "text": "この設計競技では、図面を出した13人の建築家みんなが、審査にも加わったんだ。自分たちの図面を、自分たちで見くらべて、選びあう。めずらしいやり方だよ。",
+  "heard": "この設計競技では、図面を出した十三人の建築家みんなが、審査にも加わったんだ。自分たちの図面を、自分たちで見くらべて、選びあう。めずらしいやり方だよ。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "設計競技＝せっけいきょうぎ",
+   "図面＝ずめん",
+   "建築家＝けんちくか"
+  ]
+ },
+ "v1mkbxdf": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.23,
+  "text": "いちばん年上らしい、大きな口ひげの男が、ひとつの図面の前で、足を止めた。",
+  "heard": "いちばん年上らしい、大きな口ひげの男が、ひとりの図面の前で、足を止めた。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "図面＝ずめん"
+  ]
+ },
+ "vmaa0q8": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "tatsuno",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 6.92,
+  "text": "ふむ……。旅の方かな。これを、どう見る。",
+  "heard": "フム 。 旅 の 形 か な 。 これ を どう 見る 。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "vhb757r": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "tatsuno",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 4.92,
+  "text": "ふむ……。また、あなたか。これを、どう見る。",
+  "heard": "またあなたか。これ を どう 見る ?",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "vdk4jv7": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "tatsuno",
+  "voice": "Algieba",
+  "model": "gemini-3.8-live",
+  "seconds": 7.06,
+  "text": "ふむ……。どこかで見た顔だな。まあいい。これを、どう見る。",
+  "heard": "ふむ……。どこかで見た顔だな。まあいい。これを、どう見る。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "vubh4ml": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.440041666666668,
+  "text": "辰野金吾さん。東京駅を設計した、日本の建築の大先生なんだ。この設計競技を取りしきっていたよ。",
+  "heard": "辰野金吾さん。東京駅を設計した、日本の建築の大先生なんだ。この設計競技を取りしきっていた",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "辰野金吾＝たつのきんご",
+   "設計競技＝せっけいきょうぎ"
+  ]
+ },
+ "v5p0hwt": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.34,
+  "text": "辰野さんが見ているのは、まんなかに大きなアーチのある、あの図面だった。",
+  "heard": "だった。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "図面＝ずめん"
+  ]
  }
 }
