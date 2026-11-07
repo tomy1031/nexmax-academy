@@ -267,6 +267,23 @@
   ],
   "s11": [
    "sennan-airport:ja"
+  ],
+  "t1": [
+   "seki-knife:ja",
+   "seki-knife:en"
+  ],
+  "t2": [
+   "kh-pepper:ja",
+   "kh-kizuna:ja",
+   "kh-kizuna:en"
+  ],
+  "t3": [
+   "osaka-okada:ja",
+   "osaka-kitahama:ja",
+   "osaka-kitahama:en",
+   "osaka-iwamoto:en",
+   "sennan-airport:en",
+   "seki-sutra:ja"
   ]
  }
 }
