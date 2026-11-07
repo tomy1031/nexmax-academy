@@ -94,5 +94,101 @@
   "heard": "I'm Seikichi. Everybody calls me Kiyo. I'm 11.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1pencxoqvnk4": {
+  "episode": "osaka-kitahama",
+  "lang": "en",
+  "speaker": "kiyo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 10.29,
+  "text": "I'm the errand boy at that broker's shop over there. My job's running papers back and forth between the shop and the exchange, all day long.",
+  "heard": " I'm the errand boy at that broker's shop over there. My job's running papers back and forth between the shop and the exchange, all day long.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1q65yv2tufwg": {
+  "episode": "osaka-kitahama",
+  "lang": "en",
+  "speaker": "kiyo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 9.27,
+  "text": "Owww…! Oh — it's you again! Sorry, I wasn't looking where I was going!",
+  "heard": " Oh — it's you again! Sorry, I wasn't looking where I was going!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "etd7z46hy0f6": {
+  "episode": "osaka-kitahama",
+  "lang": "en",
+  "speaker": "kiyo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 7.71,
+  "text": "Owww…! Oh — s-sorry! …Huh? Why are you looking at me like you've missed me?",
+  "heard": " Oh — s-sorry! …Huh? Why are you looking at me like you've missed me?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e70tpp1fw0kf": {
+  "episode": "osaka-kitahama",
+  "lang": "en",
+  "speaker": "kiyo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 6.59,
+  "text": "I'm Seikichi. Everybody calls me Kiyo. I'm the errand boy at a broker's shop.",
+  "heard": " Everybody calls me Kiyo. I'm the errand boy at a broker's shop.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "esghknc1jbw1": {
+  "episode": "osaka-kitahama",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.16,
+  "text": "(whispering) So this is Seikichi… The same Seikichi we met in 1915 — as a little boy.",
+  "heard": " So this is Seikichi… The same Seikichi we met in 1915 — as a little boy.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1sqmm2f1qzbt": {
+  "episode": "osaka-kitahama",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.910041666666667,
+  "text": "Seikichi hurried to gather up the papers he'd dropped.",
+  "heard": "Seikichi hurried to gather up the papers he dropped.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1rc14oi8sqgh": {
+  "episode": "osaka-kitahama",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.440041666666667,
+  "text": "They were covered in numbers and difficult kanji.",
+  "heard": " They were covered in numbers and difficult kanji.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1r6uqzcpkcr8": {
+  "episode": "osaka-kitahama",
+  "lang": "en",
+  "speaker": "kiyo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 6.120041666666666,
+  "text": "See, I remember which shop each one goes to by the shape of the paper and the numbers.",
+  "heard": " See, I remember which shop each one goes to by the shape of the paper and the numbers.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
