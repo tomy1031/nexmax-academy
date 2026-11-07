@@ -190,5 +190,101 @@
   "heard": " Clay for coating the blade, pine charcoal, and clean river water. They say everything you need to make a good sword is right here.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "ejbe14s1ad4v": {
+  "episode": "seki-sutra",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.5,
+  "text": "The clean water of the Nagara and Tsubo rivers. It's said swordsmiths began gathering in Seki back in the Kamakura period, more than 700 years ago.",
+  "heard": " The clean water of the Nagara and Tsubo rivers. It's said swordsmiths began gathering in Seki back in the Kamakura period, more than 700 years",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e4d98dnse1ue": {
+  "episode": "seki-sutra",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.53,
+  "text": "At last, the hammering stopped.",
+  "heard": " At last, the hammering",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eb8oki1nnig1": {
+  "episode": "seki-sutra",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.79,
+  "text": "The man plunged the red-hot iron into water. Jsssh! White steam rose up.",
+  "heard": " The man plunged the red-hot iron into water. Jsssh! White steam rose",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e409uyy1f7ft": {
+  "episode": "seki-sutra",
+  "lang": "en",
+  "speaker": "kanesada",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.57,
+  "text": "…A traveller, eh? You'll be black with soot.",
+  "heard": "a traveler? Hey, you'll be black with soot.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "euwcax106hy": {
+  "episode": "seki-sutra",
+  "lang": "en",
+  "speaker": "kanesada",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.500041666666666,
+  "text": "I am Kanesada. I forge swords here.",
+  "heard": "I am Kanesada. I forge swords here.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1jxzgoxwtbms": {
+  "episode": "seki-sutra",
+  "lang": "en",
+  "speaker": "kanesada",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 8.2,
+  "text": "…Come again, have you? You'll be black with soot.",
+  "heard": " Come again, have you? You'll be black with soot.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1lj3xhbpp2m4": {
+  "episode": "seki-sutra",
+  "lang": "en",
+  "speaker": "kanesada",
+  "voice": "Iapetus",
+  "model": "gemini-3.8-live",
+  "seconds": 9.62,
+  "text": "…A traveller, eh? Hm. Feels as if we've met before.",
+  "heard": " Hm. Feels as if we've met before.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e3p4wy0a2ioh": {
+  "episode": "seki-sutra",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.25,
+  "text": "Kanesada is said to have been one of the finest swordsmiths in Seki in those days. Later on, he'll be given the honorary title “Izumi-no-kami.”",
+  "heard": " Kanesada is said to have been one of the finest swordsmiths in Seki in those days. Later on, he'll be given the honorary title “Izumi-no-kami.”",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
