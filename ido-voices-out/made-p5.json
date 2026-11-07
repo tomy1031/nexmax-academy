@@ -201,5 +201,101 @@
   "heard": "おーい、モニー。お客さ",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v1sz82da": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "roun",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 7.48,
+  "text": "ルンじゃ。モニーのじいさんじゃよ。よかったら、手伝っていかんかね。人手は、いくらあってもいい。",
+  "heard": "るんじゃ 、モニー の じい さん じゃ よ 。 よかっ たら 手伝っ て いか ん か ね 。 人手 は いくら あっ て も いい 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vdo5qrw": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "roun",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 7.87,
+  "text": "おーい、モニー。……おお、また来なすったか。よかったら、手伝っていかんかね。",
+  "heard": "……おお、また来なすったか。よかったら、手伝っていかんかね。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1fw2wwb": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "roun",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 9.99,
+  "text": "おーい、モニー。お客さんかい。……ふむ、どこかで会ったような顔じゃな。よかったら、手伝っていかんかね。",
+  "heard": "おーい、モニー。お客さんかい。……ふむ、どこかで会ったような顔じゃな。よかったら、手伝っていかんかね。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v3g3bk3": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 12.000041666666666,
+  "text": "あなたは、モニーといっしょに、長い竹のはしを持った。思ったより軽い。でも、長くて、ふらふらする。",
+  "heard": "あなたは、モニーといっしょに、長い竹のはしを持った。思ったより軽い。でも、長くて、ふらふらする。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v16ru2z6": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "roun",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 3.95,
+  "text": "そうそう。前の人と、息を合わせてな。",
+  "heard": "そうそう 前 の 人 と 息 を 合わせ て な 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vsnniik": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.5,
+  "text": "あなたは、割った竹の板を、柱の上に、一枚ずつ重ねてならべた。",
+  "heard": "割っ た 竹 の 板 を 柱 の 上 に 1 枚 ずつ 重ね て 並べ た 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v18emji8": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "roun",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 6.22,
+  "text": "すきまを作らんようにな。自転車の車輪が、はまってしまうからな。",
+  "heard": "スキマ を 作ら ん よう に な 、 自転車 の 車輪 が はまっ て しまう から な 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vywx81v": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "roun",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 6.27,
+  "text": "この橋はな、長さが、ざっと1キロある。竹は、何万本も使う。",
+  "heard": "この橋はな、長さがざっと1kmある。 竹は何万本も使う。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
