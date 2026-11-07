@@ -510,5 +510,19 @@
   "readings": [
    "源蔵＝げんぞう"
   ]
+ },
+ "voe7de6": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.81,
+  "text": "それから、壁の、ほこりをかぶった大きな鎚を、ゆっくり下ろした。",
+  "heard": " それから、壁の、ほこりをかぶった大きな槌を、ゆっくり下ろした。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "鎚＝つち"
+  ]
  }
 }
