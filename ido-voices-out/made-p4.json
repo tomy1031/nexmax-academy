@@ -196,5 +196,101 @@
   "heard": "それよりさ、あの雲、どこから来るんだろう。毎日、毎日、山の上にだけ、のっかってるんだ。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "vbrlm0i": {
+  "episode": "kh-bokor",
+  "lang": "ja",
+  "speaker": "vanna",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 8.280041666666667,
+  "text": "ぼく、今日こそ、たしかめに行く！ ……ねえ、いっしょに来てよ。ひとりだと、ちょっとだけ、こわいから。",
+  "heard": "ぼく、今日こそ、たしかめに行く！……ねえ、いっしょに来てよ。ひとりだと、ちょっとだけ、こわいから。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1c0awy0": {
+  "episode": "kh-bokor",
+  "lang": "ja",
+  "speaker": "vanna",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 4.1,
+  "text": "やった！ じゃあ、日がのぼりきる前に、出発だ！",
+  "heard": " じゃあ、日がのぼりきる前に、出発だ！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vqpynsw": {
+  "episode": "kh-bokor",
+  "lang": "ja",
+  "speaker": "vanna",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 3.06,
+  "text": "えー……。うん、わかった。",
+  "heard": " えー……。うん、わかった。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vzxy8wm": {
+  "episode": "kh-bokor",
+  "lang": "ja",
+  "speaker": "ヴァンナのお父さん",
+  "voice": "Rasalgethi",
+  "model": "gemini-3.8-live",
+  "seconds": 7.57,
+  "text": "山へ？ ……そうか。なら、山に入るときは、ちゃんとあいさつをするんだぞ。",
+  "heard": " ……そうか。なら、山に入るときは、ちゃんとあいさつをするんだぞ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v8kw1ry": {
+  "episode": "kh-bokor",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.270041666666667,
+  "text": "山の道は、思ったよりも、ずっと長かった。",
+  "heard": "山 の 道 は 思っ た より も ずっと 長かっ た 。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "v1qpwh4c": {
+  "episode": "kh-bokor",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 11.78,
+  "text": "大きな木の根をまたぎ、こけのついた岩をのぼる。鳥の声と、遠くで、テナガザルの呼びあう声がする。",
+  "heard": "大きいな木の根をまたぎ、こけのついた岩をのぼる。鳥の声と、遠くで、テナガザルの呼びあう声がする。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "v1dnvw3u": {
+  "episode": "kh-bokor",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.51,
+  "text": "のぼるにつれて、まわりが白くなっていった。気がつくと、三歩先も見えない。",
+  "heard": "のぼるにつれて、まわりが白くなっていった。気がつくと、三歩先も見えない。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "v1snjy2v": {
+  "episode": "kh-bokor",
+  "lang": "ja",
+  "speaker": "vanna",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 2.160041666666667,
+  "text": "……道、どっちだっけ。",
+  "heard": "道 どっち だっ け ?",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
  }
 }
