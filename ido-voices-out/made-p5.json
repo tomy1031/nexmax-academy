@@ -1,0 +1,100 @@
+{
+ "vee2djj": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.42,
+  "text": "2001年、11月の終わり。カンボジアの東、コンポンチャム。",
+  "heard": " 2001年、11月の終わり。カンボジアの東、コンポンチャム。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vj8k9p6": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.96,
+  "text": "メコン川のまん中に、細長い島がある。コッ・ペン島だ。",
+  "heard": "メコン川のまん中に、細長い島がある。コッ・ペン島だ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "メコン川＝めこんがわ"
+  ]
+ },
+ "v1ixu0qf": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 11.46,
+  "text": "雨の季節が終わって、川の水は、ぐんと低くなっていた。茶色い川に、白い砂の州が、あちこち顔を出している。",
+  "heard": "雨 の 季節 が 終わっ て 川 の 水 は グン と 低く なっ て い た 。 茶色い 川 に 白い 砂 の 州 が あちこち 顔 を 出し て いる 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v6t7kzq": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.640041666666667,
+  "text": "島から町の岸へ向かって、竹の柱が、一本、また一本と、川の中に立っていた。",
+  "heard": "島から町の岸へ向かって、竹の柱が、一本、また一本と、川の中に立っていた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vsdi0zw": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.350041666666667,
+  "text": "とん、とん、と、木づちの音がひびく。",
+  "heard": "とん、とん、と、木づちの音がひびく。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vas0yvd": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "mony",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 3.88,
+  "text": "あっ、あぶない！ そこ、竹がころがってくるよ！",
+  "heard": "あっ、あぶない！そこ、竹がころがってくるよ！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1uo3ndz": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "mony",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 4.52,
+  "text": "わたし、モニー。十歳。この島に住んでるの。",
+  "heard": "わたし、モニー。十歳。この島に住んでるの。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1qdp4zq": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "mony",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 5.85,
+  "text": "いま、村のみんなで、竹の橋をかけてるんだ。おじいちゃんも、あそこにいるよ。",
+  "heard": "いま、村のみんなで竹の橋をかけてるんだ。おじいちゃんもあそこにいるよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ }
+}
