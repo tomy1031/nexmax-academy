@@ -388,5 +388,103 @@
   "heard": "おや? そっちのお前は私を知っているような目をしているね。",
   "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
   "readings": []
+ },
+ "ve39b9d": {
+  "episode": "kh-bokor",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.76,
+  "text": "おばあさんの声は、低くて、きびしかった。でも、こわいのに、なぜか、にげたいとは思わなかった。",
+  "heard": "おばあさんの声は低くって厳しかった。 でも怖いのに、なぜか逃げたいとは思わなかった。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "v1igpzo": {
+  "episode": "kh-bokor",
+  "lang": "ja",
+  "speaker": "yeaymao",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 8.19,
+  "text": "海に出るときは、海にあいさつをする。山に入るときは、山にあいさつをする。",
+  "heard": "海 に 出る 時 は 海 に 挨拶 を する 。 山 に 入る 時 は 山 に 挨拶 を する 。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "vldo8oo": {
+  "episode": "kh-bokor",
+  "lang": "ja",
+  "speaker": "yeaymao",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 6.880041666666667,
+  "text": "ここは、おまえたちの家じゃない。森の生きものたちの家に、おじゃまするんだよ。",
+  "heard": "ここは、おまえたちの家じゃない。森の生きものたちの家に、おじゃまするんだよ。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "v1j1sk3v": {
+  "episode": "kh-bokor",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.16,
+  "text": "あなたは、浜の漁師たちがしていたように、胸の前で手を合わせて、頭を下げた。ヴァンナも、あわてて、まねをする。",
+  "heard": "あなたは、浜の漁師たちがしていたように、胸の前で手を合わせて、頭を下げた。ヴァンナも、あわてて、まねをする。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "漁師＝りょうし"
+  ]
+ },
+ "v1hevlgl": {
+  "episode": "kh-bokor",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 11.87,
+  "text": "あなたは、霧の向こうの山に向かって、「おじゃまします」と言った。ヴァンナも、小さな声で、同じことを言う。",
+  "heard": "あなた は 霧 の 向こう の 山 に 向かっ て お 邪魔 し ます と 言っ た 。 番名 も 小さな 声 で 同じ こと を 言う 。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "v1771aya": {
+  "episode": "kh-bokor",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.81,
+  "text": "すると——霧が、すうっと、うすくなった。",
+  "heard": "すると 霧 が すっ と 薄く なっ た 。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "v2ktmna": {
+  "episode": "kh-bokor",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.66,
+  "text": "目の前に、細い道が、ちゃんと続いているのが見えた。",
+  "heard": "目の前に 細い道が ちゃんと続いているのが見えた。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "v79jlr9": {
+  "episode": "kh-bokor",
+  "lang": "ja",
+  "speaker": "yeaymao",
+  "voice": "Kore",
+  "model": "gemini-3.8-live",
+  "seconds": 5.72,
+  "text": "それでいい。あいさつをする者は、わたしが守る。",
+  "heard": "それ で いい 。 挨拶 を する もの は 私 が 守る 。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
  }
 }
