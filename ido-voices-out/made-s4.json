@@ -1,0 +1,256 @@
+{
+ "v8x9kn": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.92,
+  "text": "あっというまに、雨は強くなった。式の人たちがテントの下にかけこみ、見物の人たちは、骨組みの下で、肩をよせあっている。",
+  "heard": "あっというまに、雨は強くなった。式の人たちがテントの下にかけこみ、見物の人たちは、骨組みの下で、肩をよせあっている。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1itlsc5": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "職人の親方",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.24,
+  "text": "おーい！ 材木に、むしろかけとけ！ ぬらしたら、あかんで！",
+  "heard": "おーい！材木に、 오히려かけとけ！ぬらしたら、あかんで！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v12148j9": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.76,
+  "text": "岩本さんは、ぬれるのもかまわず、骨組みの入り口のあたりを、じっと見ていた。",
+  "heard": "岩本さんは、ぬれるのもかまわず、骨組みの入り口のあたりを、じっと見ていた。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v91n4o8": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.320041666666667,
+  "text": "入り口になるはずの場所で、見物の子どもたちが、雨にぬれながら、身をちぢめている。",
+  "heard": " 入り口になるはずの場所で、見物の子どもたちが、雨にぬれながら、身をちぢめている。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1am3tik": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "iwamoto",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 3.17,
+  "text": "……清吉。ちょっと、書いといてくれるか。",
+  "heard": "聖地 ちょっと 買っ とい て くれる か 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "清吉＝せいきち"
+  ]
+ },
+ "v381n88": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "kiyo2",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 4.93,
+  "text": "へ？ は、はい！",
+  "heard": " へ？ は、はい！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vwc7a85": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.36,
+  "text": "清吉は、ふところから帳面と矢立を出した。",
+  "heard": "景気 地 は 腹 から 調面 と や立て を 出し た 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "清吉＝せいきち",
+   "帳面＝ちょうめん",
+   "矢立＝やたて"
+  ]
+ },
+ "v1i3ozri": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "iwamoto",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 3.38,
+  "text": "入り口にな、ひさしを、つけてもらお。",
+  "heard": "入り口に なあ 、 庇 を つけ て もらお 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1ykt5re": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "iwamoto",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 4.31,
+  "text": "雨の日でも、ここに来たみんなが、ぬれんように。",
+  "heard": "雨の日でもここに来たみんなが濡れないように",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vtw6gmg": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.74,
+  "text": "清吉の筆が、すらすらと動く。九年近く前、自分の名前を、ふるえる手で書いていた手だった。",
+  "heard": "赤字の筆 が スラスラ と 動く 。 9 年 近く 前 自分 の 名前 を 震える 手 で 書い て い た 手 だっ た 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "清吉＝せいきち"
+  ]
+ },
+ "v17v14hs": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.600041666666667,
+  "text": "雨の音の中で、岩本さんが、あなたのほうを向いた。",
+  "heard": "雨 の 音 の 中 で 岩本 さん が あなた の 方 を 向い た 。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "v1grgtdq": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "iwamoto",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 7.44,
+  "text": "なあ、旅の人。百年たっても、みんな、ここを使うてくれてるやろか。",
+  "heard": "なぁ 、 旅 の 人 。 100 年 経っ て も みんな ここ を 使っ て くれ てる やろ か 。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "v14xkcvk": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "iwamoto",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 4.68,
+  "text": "結婚式も……！ そうか。そら、にぎやかやなあ。",
+  "heard": " 「結婚式も……！ そうか。そら、にぎやかやなあ。」",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "v1twrcp3": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "iwamoto",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 6.300041666666667,
+  "text": "だれでも……。そうか。それが、いちばん、うれしいわ。",
+  "heard": "だれでも。 そう か。 それが 一番 嬉しい わ。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "v1w6p7zm": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "iwamoto",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 4.29,
+  "text": "そうか……。ほな、ええ。それで、ええ。",
+  "heard": " そうか……。ほな、ええ。それで、ええ。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "v1gkc2lm": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.55,
+  "text": "岩本さんは、子どものように笑った。そして、傘をひらいて、雨の中を、北浜のほうへ歩いていった。",
+  "heard": "岩本 さん は 子供 の よう に 笑っ た 。 そして 傘 を 開い て 雨 の 中 を 北浜 の 方 へ 歩い て いっ た 。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": [
+   "北浜＝きたはま"
+  ]
+ },
+ "vodwd97": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.24,
+  "text": "一度だけふりかえって、まだ骨組みだけの建物を、見上げていた。",
+  "heard": "一度だけふりかえって、まだ骨組みだけの建物を、見上げていた。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "v1p1d0zz": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.81,
+  "text": "……戻ってきたよ。大阪市中央公会堂。",
+  "heard": "戻ってきたよ。大阪市中央公会堂。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "公会堂＝こうかいどう"
+  ]
+ },
+ "vtnyed0": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.07,
+  "text": "この建物は、3年後の1918年に、できあがったんだ。",
+  "heard": "この建物は、3年後の1918年に、できあがったんだ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v7rwgfj": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 15.84,
+  "text": "岩本さんは、そのあと、仕事でとても大きな失敗をして、深く苦しみました。そして1916年の秋、39歳で亡くなりました。公会堂ができる、2年前のことでした。",
+  "heard": "岩本さんは、そのあと、仕事でとても大きな失敗をして、深く苦しみました。そして1916年の秋、39歳で亡くなりました。公会堂ができる、2年前のことでした。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "公会堂＝こうかいどう"
+  ]
+ }
+}
