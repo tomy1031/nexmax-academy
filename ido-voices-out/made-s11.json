@@ -248,5 +248,169 @@
   "heard": "足もとの芝生を見て。この土地も、もとは海だったんだよ。",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "v1o6cnmc": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.46,
+  "text": "この公園は、2020年7月に開いたんだ。海を見ながらバーベキューをしたり、高いアスレチックで遊んだり、海辺のヴィラにとまったりできるんだよ。",
+  "heard": "この公園は、2020年7月に開いたんだ。海を見ながらバーベキューをしたり、高いアスレチックで遊んだり、海辺のヴィラにとまったりできるんだよ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1k63mu1": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.74,
+  "text": "週末には、岡田浦の漁港といっしょに開く、マルシェ（市場）もあるんだ。",
+  "heard": "週末には、岡田浦の漁港と一緒に開くマルシェ、市場もあるんだ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "岡田浦＝おかだうら"
+  ]
+ },
+ "vrl20wz": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.86,
+  "text": "（小声）あなたが勝三さんと引いた網。……岡田浦の漁師さんたちは、今も、この海で漁をしているんだね。",
+  "heard": "あなたが勝三さんと引いた網。……岡田浦の漁師さんたちは、今も、この海で漁をしているんだね。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "勝三＝かつぞう",
+   "岡田浦＝おかだうら",
+   "漁師＝りょうし"
+  ]
+ },
+ "v1sp79tx": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.51,
+  "text": "（小声）拓也くんが「どこまで行けるん？」って聞いていた飛行機。ほら、今日も、海の向こうの空港から、飛び立っていくよ。",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "拓也＝たくや"
+  ]
+ },
+ "vsgqqh6": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.58,
+  "text": "関西国際空港は、開港から32年。今日も、夜も朝も、ねむらずに、世界じゅうへ飛行機を送り出しているんだ。",
+  "heard": "関西国際空港は、開港から32年。今日も、夜も朝も、ねむらずに、世界じゅうへ飛行機を送出したるんだ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "関西国際空港＝かんさいこくさいくうこう"
+  ]
+ },
+ "v15bhvr3": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.43,
+  "text": "夕方には、海にしずむ夕日も見てみて。北どなりの町の「マーブルビーチ」の夕日は、「日本の夕陽百選」にも選ばれているんだよ。",
+  "heard": "夕方には、海にしずむ夕日も見てみて。北どなりの町の「マーブルビーチ」の夕日は、「日本の夕陽百選」にも選ばれているんだよ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vql3xy2": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.29,
+  "text": "勝三さんと拓也くんは、物語のために作った人たち。でも、この海で、漁師さんたちは、変わっていく海といっしょに、ずっと暮らしてきたんだ。",
+  "heard": "勝三さんと拓也くんは、物語のために作った人たち。でも、この海で、漁師さんたちは、変わっていく海といっしょに、ずっと暮らしてきたんだ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "勝三＝かつぞう",
+   "拓也＝たくや",
+   "漁師＝りょうし"
+  ]
+ },
+ "v14k3qgy": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.73,
+  "text": "（小声）……拓也くんは、いちばん遠い国に、行けたかな。",
+  "heard": "タクヤくんは、一番遠い国に行けたかな？",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "拓也＝たくや"
+  ]
+ },
+ "vryznbt": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.1,
+  "text": "（小声）……拓也くんも、遠くへ行って、また、この海に帰ってきたかな。",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "拓也＝たくや"
+  ]
+ },
+ "v1ftqrag": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.91,
+  "text": "（小声）……拓也くんは、空港で、いちばんおもしろそうなところを、えらんだかな。",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "拓也＝たくや"
+  ]
+ },
+ "v1v13mvj": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.12,
+  "text": "魚の道だった海が、空への入り口になって、いまは、みんなが遊ぶ公園になった。",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vo3qg3m": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.860041666666667,
+  "text": "足もとは、むかし、海。……そう思って歩くと、芝生の上でも、波の音が聞こえる気がするね。",
+  "heard": "足もとは、むかし、海。……そう思って歩くと、芝生の上でも、波の音が聞こえる気がするね。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
