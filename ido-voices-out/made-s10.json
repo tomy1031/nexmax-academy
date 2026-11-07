@@ -1,0 +1,178 @@
+{
+ "e14063b01wy26": {
+  "episode": "miyoshi-finale",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 0.7700416666666666,
+  "text": "…Huh?",
+  "heard": "Huh?",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1q35zbk119ir": {
+  "episode": "genpei-yashima",
+  "lang": "en",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 1.2800416666666667,
+  "text": "Tsuginobu—!",
+  "heard": "TruGenoBio",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": []
+ },
+ "v1xrav8p": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "lim",
+  "voice": "Alnilam",
+  "model": "gemini-3.8-live",
+  "seconds": 9.28,
+  "text": "どこのだれが食べるのかは、わしにも、わからん。じゃが、その人の、晩ごはんの皿の上で、ぴりっと鳴るんじゃ。",
+  "heard": "どこの誰が食べるのかは、わしにも分からん。じゃが、その人の晩ご飯の皿の上で、ピリッとなるんじゃ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v3vh96t": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "channa",
+  "voice": "Fenrir",
+  "model": "gemini-3.8-live",
+  "seconds": 4.43,
+  "text": "へへっ。おれの家の牛のふんも、海をこえて行くってことだな！",
+  "heard": "へへ、俺の家の牛の糞も海を越えていくってことだな。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1xie60q": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "mei",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 2.160041666666667,
+  "text": "チャンナ、それ、言い方！",
+  "heard": "チャンナ、それ、言い方！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1vsdjny": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.2400416666666665,
+  "text": "メイとチャンナは、顔を見あわせて、ふきだした。",
+  "heard": "メイとチャンナは、顔を見あわせて、ふきだした。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vtpw9w7": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "mei",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 8.19,
+  "text": "ねえ、旅の人。あした、新しい柱を立てるの。わたしとチャンナで、さし木をするんだ。",
+  "heard": "ね、旅の人。明日、新しい柱を立てるの。私とチャンナで、刺し木をするんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "さし木＝さしき"
+  ]
+ },
+ "v1t4dmmp": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "mei",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 4.66,
+  "text": "胡椒はね、植えてから、ちゃんと実がなるまで、何年もかかるの。",
+  "heard": "胡椒はね、植えてから、ちゃんと実がなるまで、何年もかかるの。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "胡椒＝こしょう"
+  ]
+ },
+ "vkvccv9": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "channa",
+  "voice": "Fenrir",
+  "model": "gemini-3.8-live",
+  "seconds": 8.390041666666667,
+  "text": "だから、その柱は、「おれたちの柱」。おれたちが大人になるころには、てっぺんまで、つるが登ってるはずなんだ。",
+  "heard": "だから、その柱は、「おれたちの柱」。おれたちが大人になるころには、てっぺんまで、つるが登ってるはずなんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v12mlykx": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "mei",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 2.660041666666667,
+  "text": "うん！ いちばん、からいのにする！",
+  "heard": "",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v157451v": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "channa",
+  "voice": "Fenrir",
+  "model": "gemini-3.8-live",
+  "seconds": 3.67,
+  "text": "……け、けんかしても、柱は一本だからな。",
+  "heard": "け 、 喧嘩 し て も 、 柱 は 1 本 だ から な 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v26468g": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.01,
+  "text": "……戻ってきたよ。2026年の、カンポットの胡椒畑。",
+  "heard": "戻ってきたよ。2026年の、カンポットの胡椒畑。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "胡椒＝こしょう"
+  ]
+ },
+ "vembdjv": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.180041666666667,
+  "text": "ほら。岩山のふもとに、また、胡椒の柱が並んでいるよ。",
+  "heard": "",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "胡椒＝こしょう"
+  ]
+ },
+ "vyk51so": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.41,
+  "text": "……でも、この畑には、長い空白の時間があったんだ。",
+  "heard": "でも、この畑には、長い空白の時間があったんだ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ }
+}
