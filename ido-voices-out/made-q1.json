@@ -1,0 +1,98 @@
+{
+ "e7oqsng1or3c": {
+  "episode": "osaka-kitahama",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.540041666666666,
+  "text": "Winter, 1906. Kitahama, Osaka.",
+  "heard": "Winter 1906, Kitahama, Osaka.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eu96lhr15s56": {
+  "episode": "osaka-kitahama",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.800041666666667,
+  "text": "On a street south of the river stood a big red-brick building: the Osaka Stock Exchange.",
+  "heard": " On a street south of the river stood a big red-brick building: the Osaka Stock Exchange.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e12r17aa1ssoz": {
+  "episode": "osaka-kitahama",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.39,
+  "text": "The entrance was packed with men in dark Western suits. Bowler hats, kimono with haori jackets, puffs of white breath in the cold.",
+  "heard": " The entrance was packed with men in dark Western suits. Bowler hats, kimono with haori jackets, puffs of white breath in the cold.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e13y94ipuxd67": {
+  "episode": "osaka-kitahama",
+  "lang": "en",
+  "speaker": "仲買人の声",
+  "voice": "Fenrir",
+  "model": "gemini-3.8-live",
+  "seconds": 4.34,
+  "text": "Hey, what's taking so long?! What's the price now?!",
+  "heard": " Hey, what's taking so long?! What's the price now?!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e8hqopx6urq6": {
+  "episode": "osaka-kitahama",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.71,
+  "text": "Just then, a small figure shot out from between the people —",
+  "heard": "just then, a small figure shot out from between the people,",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1moer231qi4i": {
+  "episode": "osaka-kitahama",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.91,
+  "text": "and — thud! — ran smack into you.",
+  "heard": "and thud ran smack into you",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e13s5c2ai9ewk": {
+  "episode": "osaka-kitahama",
+  "lang": "en",
+  "speaker": "kiyo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 4.900041666666667,
+  "text": "Owww…! Oh — s-sorry! I wasn't looking where I was going!",
+  "heard": " Oh — s- sorry! I wasn't looking where I was going!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1x0fqqy1o1y3": {
+  "episode": "osaka-kitahama",
+  "lang": "en",
+  "speaker": "kiyo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 5.160041666666666,
+  "text": "I'm Seikichi. Everybody calls me Kiyo. I'm eleven.",
+  "heard": "I'm Seikichi. Everybody calls me Kiyo. I'm 11.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ }
+}
