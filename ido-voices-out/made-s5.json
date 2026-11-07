@@ -238,5 +238,262 @@
   "heard": "I wonder how many times Seikichi wrote his name that night.",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "e56x7sa13dy2": {
+  "episode": "osaka-kitahama",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.81,
+  "text": "You can also see Iwamoto's story in this town in the video “The Man Who Lived in Kitahama: Iwamoto Einosuke,” at IDO's Public Hall spot.",
+  "heard": " You can also see Iwamoto's story in this town in the video “The Man Who Lived in Kitahama: Iwamoto Einosuke,” at IDO's Public Hall spot.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "ezre53sr7k6t": {
+  "episode": "osaka-kitahama",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.04,
+  "text": "If you can read, nobody can trick you. If you understand numbers, you can stand on your own two feet. …A hundred and twenty years later, that's still true.",
+  "heard": " If you can read, nobody can trick you. If you understand numbers, you can stand on your own two feet. …A hundred and twenty years later, that's still true.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vwol1rf": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.4900416666666665,
+  "text": "そう言って、辰野さんは、口ひげの下で、にやりと笑った。",
+  "heard": "そう言って、辰野さんは、口ひげの下で、にやりと笑った。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "v184bg6o": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.95,
+  "text": "辰野さんが、岡田さんの案について、のちに書いた言葉なんだ。ほめ言葉にも、注文にも聞こえるね。",
+  "heard": "辰野さんが岡田さんの案について後に書いた言葉なんだ。褒め言葉にも注文にも聞こえるね。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "v19z3sfu": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.38,
+  "text": "しばらくして、選んだ結果が読みあげられた。",
+  "heard": " しばらくして、選んだ結果が読みあげられた。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "v1w14e8m": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "読みあげる声",
+  "voice": "Schedar",
+  "model": "gemini-3.8-live",
+  "seconds": 3.08,
+  "text": "一等、岡田信一郎。",
+  "heard": "岡田信一郎。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "岡田信一郎＝おかだしんいちろう"
+  ]
+ },
+ "vxf3ctn": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.51,
+  "text": "部屋のすみで、ノボルが、こぶしをにぎりしめた。",
+  "heard": "部屋のすみで、ノボルが、こぶしをにぎりしめた。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "vcbxhml": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "noboru",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 10.1,
+  "text": "先生！ やりました！ ……先生、辰野先生に「ゴツイ」って言われてましたけど、あれ、ほめられたんですか？",
+  "heard": "……先生、辰野先生に「ゴツイ」って言われてましたけど、あれ、ほめられたんですか？",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "vqbi9ub": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "okada",
+  "voice": "Rasalgethi",
+  "model": "gemini-3.8-live",
+  "seconds": 3.81,
+  "text": "さあ、どっちだろうね。……こん、こん。",
+  "heard": "さあ、どっちだろうね。……こん、こん。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "v1lpspun": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "okada",
+  "voice": "Rasalgethi",
+  "model": "gemini-3.8-live",
+  "seconds": 4.17,
+  "text": "でも、「枯れていない」は、うれしかったな。",
+  "heard": "でも、「枯れていない」は、うれしかったな。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "v3fdid5": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "okada",
+  "voice": "Rasalgethi",
+  "model": "gemini-3.8-live",
+  "seconds": 4.48,
+  "text": "きみが押さえてくれた定規の線も、ちゃんと、あそこにあったよ。",
+  "heard": "きみが押さえてくれた定規の線も、ちゃんと、あそこにあったよ。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "v1t766di": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.32,
+  "text": "岡田さんは、このとき29歳。審査の一週間前に、誕生日をむかえたばかりだったんだ。13人の中で、いちばん若かったんだよ。",
+  "heard": "岡田さんは、このとき29歳。審査の一週間前に、誕生日をむかえたばかりだったんだ。13人の中で、いちばん若かったんだよ。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "v1e0a1dd": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.06,
+  "text": "……戻ってきたよ。大阪・中之島。目の前が、大阪市中央公会堂。",
+  "heard": "戻ってきたよ。大阪・中之島。目の前が、大阪市中央公会堂。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "中之島＝なかのしま",
+   "公会堂＝こうかいどう"
+  ]
+ },
+ "v1mq07q0": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.16,
+  "text": "正面の大きなアーチと、柱のならび。これは、岡田さんの最初の絵から生まれたものなんだ。",
+  "heard": "正面の、大きなアーチと、柱の並び。これは、岡田さんの最初の絵から生まれたものなんだ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v7bknor": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.460041666666666,
+  "text": "（小声）あなたが好きだと言った、まんなかのアーチ。ほら、ちゃんとあるよ。",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v16uxzpl": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.71,
+  "text": "（小声）あなたが好きだと言った、太い柱。アーチといっしょに、ちゃんと正面にならんでいるよ。",
+  "heard": "あなたが好きだと言った、太い柱。アーチといっしょに、ちゃんと正面にならんでいるよ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v2vhg3q": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.92,
+  "text": "（小声）あなたが見つけた、小さな丸い屋根。仕上げるときに変わったところも多いから、最初の絵と、いまの建物を、見くらべてみてね。",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vorx5s1": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 13.06,
+  "text": "でも、建物を少し小さくしたり、飾りを平らな形に変えたり、細かいところを決めて仕上げたのは、辰野金吾さんと、大阪の建築家・片岡安さんなんだ。",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "辰野金吾＝たつのきんご",
+   "建築家＝けんちくか",
+   "片岡安＝かたおかやすし"
+  ]
+ },
+ "vci5i3q": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.9,
+  "text": "片岡さんも、じつは、あの設計競技に図面を出していた一人だったんだよ。",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "設計競技＝せっけいきょうぎ",
+   "図面＝ずめん"
+  ]
+ },
+ "v1pfwksj": {
+  "episode": "osaka-okada",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 13.09,
+  "text": "建てたのは、5年でのべ18万4千人の職人さん。特別室の天井の絵を描いたのは、画家の松岡寿さん。そして、お金を出したのは、北浜の仲買人、岩本栄之助さん。",
+  "heard": "建てたのは、5年でのべ18万4千人の職人さん。特別室の天井の絵を描いたのは、画家の松岡寿さん。そして、お金を出したのは、北浜の仲買人、岩本栄之助さん。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "松岡寿＝まつおかひさし",
+   "北浜＝きたはま",
+   "仲買人＝なかがいにん",
+   "岩本栄之助＝いわもとえいのすけ"
+  ]
  }
 }
