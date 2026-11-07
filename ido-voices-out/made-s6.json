@@ -478,5 +478,53 @@
   "heard": " Look at the grass under your feet. This land was once sea,",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "e1o6cnmcqrg6d": {
+  "episode": "sennan-airport",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.68,
+  "text": "This park opened in July 2020. You can have a barbecue looking out to sea, play on a tall adventure course, or stay overnight in a seaside villa.",
+  "heard": " This park opened in July 2020. You can have a barbecue looking out to sea, play on a tall adventure course, or stay overnight in a seaside villa.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1k63mu11sgbm": {
+  "episode": "sennan-airport",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.41,
+  "text": "On weekends there's also a marché — a market — held together with the fishing port of Okadaura.",
+  "heard": " On weekends there's also a marché — a market — held together with the fishing port of Okadaura.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "erl20wz1ftmp": {
+  "episode": "sennan-airport",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.34,
+  "text": "(whispering) The net you pulled in with Katsuzō… The fishermen of Okadaura are still fishing in this sea today.",
+  "heard": " The fishermen of Okadaura are still fishing in this sea today.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1sp79tx185yb": {
+  "episode": "sennan-airport",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.28,
+  "text": "(whispering) The planes Takuya asked about — “How far can they go?” Look, today too, they're taking off from the airport across the water.",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
