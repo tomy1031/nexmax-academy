@@ -215,6 +215,58 @@
    "miyoshi-finale:ja",
    "miyoshi-oboke:en",
    "miyoshi-youkai:en"
+  ],
+  "s1": [
+   "kh-kizuna:ja"
+  ],
+  "s2": [
+   "kh-kizuna:en",
+   "kh-bokor:en",
+   "kh-bokor:ja"
+  ],
+  "s3": [
+   "osaka-kitahama:ja"
+  ],
+  "s4": [
+   "osaka-iwamoto:ja",
+   "osaka-iwamoto:en"
+  ],
+  "s5": [
+   "osaka-okada:ja",
+   "osaka-kitahama:en"
+  ],
+  "s6": [
+   "osaka-okada:en",
+   "sennan-airport:en"
+  ],
+  "s7": [
+   "seki-sutra:ja"
+  ],
+  "s8": [
+   "seki-knife:ja",
+   "seki-sutra:en"
+  ],
+  "s9": [
+   "seki-knife:en",
+   "kh-pepper:en"
+  ],
+  "s10": [
+   "kh-pepper:ja",
+   "genpei-takadachi:en",
+   "genpei-yashima:en",
+   "genpei-yashima:ja",
+   "kh-chroy:en",
+   "kh-finale:en",
+   "kh-finale:ja",
+   "kh-landmine:en",
+   "kh-landmine:ja",
+   "miyoshi-biwa:en",
+   "miyoshi-finale:en",
+   "miyoshi-finale:ja",
+   "miyoshi-oboke:en"
+  ],
+  "s11": [
+   "sennan-airport:ja"
   ]
  }
 }
