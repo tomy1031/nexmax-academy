@@ -94,5 +94,29 @@
   "heard": "done",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e11usqszirlur": {
+  "episode": "kh-taprohm",
+  "lang": "en",
+  "speaker": "sreymom",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 1.02,
+  "text": "Y-yes…!",
+  "heard": "Yes.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e9yvd5oll3mn": {
+  "episode": "kh-bayon",
+  "lang": "en",
+  "speaker": "chanthy",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 1.0800416666666666,
+  "text": "…Yes!",
+  "heard": "Yes.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
