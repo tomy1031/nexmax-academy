@@ -212,5 +212,113 @@
   "heard": "これな、どの店に持っていくか、紙のかたちと数字で覚えてんねん。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v1wxi7jq": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "kiyo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 2.370041666666667,
+  "text": "……字は、読まれへんから。",
+  "heard": "字は、読まれへんから。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vy5ut7n": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.93,
+  "text": "清吉は、着物のふところを、そっと押さえた。そこにも、折りたたんだ紙が一枚、入っているようだった。",
+  "heard": "関池 は 着物 の 裾 を そっ と 抑え た 。 そこ に も 折りたたん だ 紙 が 1 枚 入っ て いる よう だっ た 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "清吉＝せいきち"
+  ]
+ },
+ "v1oeo6g2": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.33,
+  "text": "取引所では、会社の「株」が売り買いされているんだ。株は、会社の持ち主の分け前のようなもの。値段は、毎日、上がったり下がったりするんだよ。",
+  "heard": " 取引所では、会社の「株」が売り買いされているんだ。株は、会社の持ち主の分け前のようなもの。値段は、毎日、上がったり下がったりするんだよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "取引所＝とりひきじょ",
+   "株＝かぶ"
+  ]
+ },
+ "v1q1ih88": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.61,
+  "text": "お客さんにたのまれて、株を売ったり買ったりする人を、「仲買人」と呼んだんだ。清吉くんは、その店で働く子どもなんだね。",
+  "heard": "お客さんに頼まれて株を売ったり買ったりする人を仲買い人って呼んだんだ。 関ちく君はその店で働く子供なんだね。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "株＝かぶ",
+   "仲買人＝なかがいにん",
+   "清吉＝せいきち"
+  ]
+ },
+ "v1vys77i": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.49,
+  "text": "清吉にくっついて、あなたは、取引所の中をのぞいた。",
+  "heard": "けきち に くっつい て あなた は 取引 所 の 中 を 覗い た 。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "清吉＝せいきち",
+   "取引所＝とりひきじょ"
+  ]
+ },
+ "vz91kqb": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.81,
+  "text": "広い部屋に、大人たちがぎっしり集まり、声をはりあげ、指を立てて、手をふっている。",
+  "heard": " 広い部屋に、大人たちがぎっしり集まり、声をはりあげ、指を立てて、手をふっている。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "v1jaergj": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.090041666666667,
+  "text": "壁の大きな黒板に、白い数字が書かれては消され、また書かれる。",
+  "heard": "壁の大きな黒板に、白い数字が書かれては消され、また書かれる。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ "vcjod6x": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.22,
+  "text": "手のかたちで、「売りたい」「買いたい」や、数を伝えあっていたんだ。声だけでは、聞こえないからね。",
+  "heard": "手のかたちで、「売りたい」「買いたい」や、数を伝えあっていたんだ。声だけでは、聞こえないからね。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
  }
 }
