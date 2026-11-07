@@ -260,5 +260,103 @@
   "readings": [
    "きずな橋＝きずなばし"
   ]
+ },
+ "v8spqa1": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.62,
+  "text": "（小声）つばさ橋のヴィチェットくんも、「何かをつなぐ仕事」をしていたね。きずな橋の次に、つばさ橋ができたんだ。",
+  "heard": "つばさ橋のヴィチェットくんも、「何かをつなぐ仕事」をしていたね。きずな橋の次に、つばさ橋ができたんだ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "きずな橋＝きずなばし"
+  ]
+ },
+ "v1ah6it3": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.98,
+  "text": "（小声）川下の「つばさ橋」の物語も、ネアックルンのQRでひらくよ。",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vdtg620": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.2,
+  "text": "（小声）プノンペンの日本の橋で会ったソピアさんは、橋を見回る仕事をしていたね。橋は、かけたあとも、守る人がいるんだ。",
+  "heard": "プノンペンの日本の橋であったソピアさんは、橋を見回る仕事をしていたね。橋は架けた後も、守る人がいるんだ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vprns8b": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.77,
+  "text": "毎年かけ直す橋と、毎年かけ直さなくていい橋。",
+  "heard": "毎年かけ直す橋と、毎年かけ直さなくていい橋。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v15pdial": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.83,
+  "text": "どっちにも、それをかけた人たちと、それを渡る人たちの、きずながあるんだね。",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1pvuko2": {
+  "episode": "kh-kizuna",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.32,
+  "text": "（小声）……カタカタっていう竹の音、あなたも、覚えておいてね。",
+  "heard": "",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "ebc7r501ppm0": {
+  "episode": "kh-kizuna",
+  "lang": "en",
+  "speaker": "mony2",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 3.16,
+  "text": "It’s me, Mony. I’m thirty-five now.",
+  "heard": "\nIt's me, Mony. I'm thirty-five now.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e6n0hpe1srfu": {
+  "episode": "kh-kizuna",
+  "lang": "en",
+  "speaker": "mony2",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 4.9900416666666665,
+  "text": "Grandpa’s gone now… but my cousins still remember how to drive in the bamboo.",
+  "heard": " Grandpa’s gone now… but my cousins still remember how to drive in the bamboo.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
