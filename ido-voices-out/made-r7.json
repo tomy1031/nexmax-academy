@@ -683,5 +683,104 @@
   "heard": "あの袋は、川を下って、海に出る。それから、ずっと遠くの国の、だれかの台所まで行くん",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "vfpvk8e": {
+  "episode": "kh-angkor",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 2.4400416666666667,
+  "text": "（小声）森本右近太夫一房さん……！",
+  "heard": "森本右近太夫一房さん！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "efpvk8e1hjq0": {
+  "episode": "kh-angkor",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.83,
+  "text": "(whispering) Morimoto Ukondayu Kazufusa…!",
+  "heard": " tone.Morimoto Ukondayu Kazufusa!",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vgehmp7": {
+  "episode": "kh-bokor",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.040041666666667,
+  "text": "ヤイ・マオの言い伝えは、ひとつじゃないんだ。いくつもの話があって、どれが本当なのかは、はっきりしていないよ。",
+  "heard": "ヤイ・マオの言い伝えは、ひとつじゃないんだ。いくつもの話があって、どれが本当なのかは、はっきりしていないよ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "egehmp73owmw": {
+  "episode": "kh-bokor",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.64,
+  "text": "There isn’t just one legend of Yeay Mao. There are many stories, and nobody knows for sure which is true.",
+  "heard": "There isn’tjust onelegend of Yeay Mao.Thereare many stories,and nobodyknows for sure which",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vmdzv3y": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.6,
+  "text": "岩本さんは、取引所で働く少年たちのために、自分のお金で塾を作ったんだ。",
+  "heard": "岩本さんは、とりひきじょで働く少年たちのために、自分のお金でじゅくを作ったんだ。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": [
+   "取引所＝とりひきじょ",
+   "塾＝じゅく"
+  ]
+ },
+ "emdzv3yk8agr": {
+  "episode": "osaka-kitahama",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.06,
+  "text": "Iwamoto started a little school with his own money, for the boys who worked at the exchange.",
+  "heard": " Iwamoto started a little school with his own money, for the boys who worked at the exchange.",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "v1k42492": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.2000416666666665,
+  "text": "岩本さんが、いつそう言ったのかは、分かっていないんだ。",
+  "heard": "岩本さんが、いつそう言ったのかは、分かっていないんだ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1k42492ulhqb": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 2.64,
+  "text": "We don’t know when Iwamoto said it.",
+  "heard": "We don't know when Ilmotose the.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
