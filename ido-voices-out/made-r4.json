@@ -622,5 +622,147 @@
   "heard": " Go fetch a persimmon.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v17zi8hr": {
+  "episode": "kh-pepper",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.960041666666666,
+  "text": "あのころの子どもたちは、本当に、その時代を生きなければならなかったんだ。",
+  "heard": "あのころの子どもたちは、本当に、その時代を生きなければならなかったんだ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e17zi8hrezw7b": {
+  "episode": "kh-pepper",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.36,
+  "text": "The children of those days really had to live through that time.",
+  "heard": " The children of those days really had to live through that time.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vleru2": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "kiyo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 0.84,
+  "text": "……せ。",
+  "heard": "せ",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "v18t8ov2": {
+  "episode": "osaka-kitahama",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.88,
+  "text": "北浜には、本当に、岩本さんの塾で学んだ少年たちがいたんだ。",
+  "heard": "北浜 に は 本当に 岩本 さん の 塾 で 学ん だ 少年 たち が い た ん だ 。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "北浜＝きたはま",
+   "塾＝じゅく"
+  ]
+ },
+ "e18t8ov2sr8s9": {
+  "episode": "osaka-kitahama",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.040041666666666,
+  "text": "In Kitahama, there really were boys who learned at Iwamoto’s school.",
+  "heard": " In Kitahama, there really were boys who learned at Iwamoto’s school.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v3qukz8": {
+  "episode": "osaka-iwamoto",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.11,
+  "text": "北浜には、本当に、岩本さんの塾で学んだ少年たちがいたんだ。",
+  "heard": "バック ハマ に は 本当 に 岩本 さん の 塾 で 学ん だ 少年 たち が い た ん だ 。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "北浜＝きたはま",
+   "塾＝じゅく"
+  ]
+ },
+ "e3qukz8sr8s9": {
+  "episode": "osaka-iwamoto",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.48,
+  "text": "In Kitahama, there really were boys who learned at Iwamoto’s school.",
+  "heard": "In Kitahama, they really were boys who learned at Iwamoto school.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1g61g3d": {
+  "episode": "seki-knife",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.3,
+  "text": "刀の技を、くらしの刃物に生かしたのは、本当に、関の鍛冶たちだったんだ。",
+  "heard": " 刀の技を、くらしの刃物に生かしたのは、本当に、関の鍛冶たちだったんだ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "鍛冶＝かじ"
+  ]
+ },
+ "e1g61g3duu01r": {
+  "episode": "seki-knife",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.01,
+  "text": "The people who carried swordmaking skills into everyday blades really were the smiths of Seki.",
+  "heard": " The people who carried swordmaking skills into everyday blades really were the smiths of Seki.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v9awj5u": {
+  "episode": "sennan-airport",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.440041666666667,
+  "text": "この海で、漁師さんたちは、変わっていく海といっしょに、ずっと暮らしてきたんだ。",
+  "heard": "この海で、漁師さんたちは、変わっていく海といっしょに、ずっと暮らしてきたんだ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "漁師＝りょうし"
+  ]
+ },
+ "e9awj5ud7ypb": {
+  "episode": "sennan-airport",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.71,
+  "text": "Fishermen have always lived here, side by side with a sea that keeps changing.",
+  "heard": " Fishermen have always lived here, side by side with a sea that keeps changing.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
  }
 }
