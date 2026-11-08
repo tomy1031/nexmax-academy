@@ -252,5 +252,267 @@
    "北浜＝きたはま",
    "清吉＝せいきち"
   ]
+ },
+ "vhx5qgo": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.99,
+  "text": "夜の塾で、一字ずつ、自分の名前を読んだこと。",
+  "heard": "夜の塾で1時ずつ自分の名前を読んだこと",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "塾＝じゅく"
+  ]
+ },
+ "vzaorsn": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "研修生",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 1.72,
+  "text": "自分の名前から……。",
+  "heard": "自分 の 名前 から",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vhiguom": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 14.36,
+  "text": "あなたは、ソカーさんの話をした。メコン川の向こうのプレイベンから、大学に通って、日本語とITを学んだこと。来年、日本の会社で働くこと。",
+  "heard": "あなたは、ソカーさんの話した。メコン川の向こうのプレイベンから、大学に通って、日本語とITを学んだこと。来年、日本の会社で働くこと。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "メコン川＝めこんがわ"
+  ]
+ },
+ "v1rr8phz": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.560041666666667,
+  "text": "「こわくないって言ったら、うそになります」と、言っていたこと。",
+  "heard": "と、言っていたこと。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1hkasnc": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "研修生",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 3,
+  "text": "その人も、こわかったんですね。",
+  "heard": "その人も、こわかった",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1fy260k": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "sovann2",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 4.57,
+  "text": "こわいのは、大事にしている、ということです。",
+  "heard": "こわいのは、大事にしている、ということです。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1a424on": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "sovann2",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 5.6,
+  "text": "わからないことを、わからないと言える。それも、学ぶということですよ。",
+  "heard": "それも、学ぶということですよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vzv4b9y": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "sovann2",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 4.320041666666667,
+  "text": "……これは、あの日、あなたと話したことでもありますね。",
+  "heard": "これはあの日あなたと話したことでもあるですね。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1una94k": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "sovann2",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 10.080041666666666,
+  "text": "仏さまが、なぜ埋められたのか。ぼくには、まだ、わかりません。でも、わからないまま、大事にすることはできる。",
+  "heard": "仏さまが、なぜ埋められたのか。ぼくには、まだ、わかりません。でも、わからないまま、大事にすることはできる。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vbqd7uq": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.41,
+  "text": "ソワンは、研修生のとなりにしゃがんで、その手に、自分の手をそえた。",
+  "heard": "素案 は 研修 生 の 隣 に しゃがん で その 手 に 自分 の 手 を 添え た 。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "研修生＝けんしゅうせい"
+  ]
+ },
+ "v1dzy0se": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "sovann2",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 4.53,
+  "text": "へらは、ゆっくり。土を、一枚ずつ、はがすみたいに。",
+  "heard": "へらは、ゆっくり。土を、一枚ずつ、はがすみたいに。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vmx2rzc": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 11.080041666666666,
+  "text": "研修生の手のふるえが、少しずつ、おさまっていく。",
+  "heard": "研修生の手のふるえが、少しずつ、おさまっていく。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "研修生＝けんしゅうせい"
+  ]
+ },
+ "vbecg2": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.66,
+  "text": "ねえ。北浜の塾の、岩本さんのことば、覚えてる？",
+  "heard": "ね 、 北浜 の 塾 の 岩本 さん の 言葉 覚え てる ?",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "北浜＝きたはま",
+   "塾＝じゅく"
+  ]
+ },
+ "v1dwr1jf": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.68,
+  "text": "「字が読めたら、だまされへん。数がわかったら、自分の足で立てる」。",
+  "heard": "字が読め たら 騙さ れ へん 。 数 が 分かっ たら 自分 の 足 で 立てる 。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vtdebjt": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 12.3,
+  "text": "九年近くたって、清吉くんは、夜の塾で、小さな子たちに字を教えていた。岩本さんは、その清吉くんに言ったね。「教える人も、まだまだ、学ばなあかん」。",
+  "heard": "九年近くたって、清吉くんは、夜の塾で、小さな子たちに字を教えていた。岩本さんは、その清吉くんに言ったね。「教える人も、まだまだ、学ばなあかん」。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "清吉＝せいきち",
+   "塾＝じゅく"
+  ]
+ },
+ "vlx6avs": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.85,
+  "text": "清吉くんが、そのあとどうなったのか。中之島の公会堂の物語で、会えるかもしれないよ。",
+  "heard": "清吉くんが、そのあとどうなったのか。中之島の公会堂の物語で、会えるかもしれないよ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "清吉＝せいきち",
+   "中之島＝なかのしま",
+   "公会堂＝こうかいどう"
+  ]
+ },
+ "vkh409u": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.190041666666667,
+  "text": "バイヨンの王妃さまも、言っていたね。「学びたい人は、だれでも、ここへ来ていいのよ」。",
+  "heard": "バイヨンの王妃さまも、言っていたね。「学びたい人は、だれでも、ここへ来ていいのよ」。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "王妃＝おうひ"
+  ]
+ },
+ "v14w3skb": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.82,
+  "text": "（小声）あなたに「きっと書けるようになる」と言われたチャンティちゃん。まずは、お母さんの名前からって言ってたね。",
+  "heard": "あなたに「きっと書けるようになる」と言われたチャンティちゃん。まずは、お母さんの名前からって言ってたね。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vesxtx2": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.82,
+  "text": "（小声）あなたといっしょに、壁のかげから教えをのぞいたチャンティちゃん。まずは、お母さんの名前からって言ってたね。",
+  "heard": "あなたといっしょに、壁のかげから教えをのぞいたチャンティちゃん。まずは、お母さんの名前",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vs7bwby": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 17.000041666666668,
+  "text": "（小声）「字が読めると、遠くの人の話も聞けます」。あなたが王妃さまに言ったことば。石に刻んだ字は、八百年先のぼくたちにも、とどいたね。",
+  "heard": "字が読めると遠くの人のはなしも聞けます。 あなたが大日様に言った言葉 石に刻んだ字は800年先の僕たちにも届いたね。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "王妃＝おうひ"
+  ]
  }
 }
