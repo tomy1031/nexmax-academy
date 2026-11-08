@@ -1447,5 +1447,89 @@
   "readings": [
    "殿＝との"
   ]
+ },
+ "vwlh473": {
+  "episode": "mission-royalpalace",
+  "lang": "ja",
+  "speaker": "piseth",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 6.76,
+  "text": "ほらね。王さまだけじゃ、柱は一本も立たない。たくさんの人が、建てたんだ。",
+  "heard": "ほらね。王さまだけじゃ、柱は一本も立たない。たくさんの人が、建てたんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1ox7gw8": {
+  "episode": "mission-independencemonument",
+  "lang": "ja",
+  "speaker": "dara",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 4.96,
+  "text": "見つけた？ ナーガの頭が、塔をぐるっと守ってるんだ。",
+  "heard": "みつけ た 。 ナーガ の 頭 が 塔 を ぐ るっ と 守っ てる ん だ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v167fd99": {
+  "episode": "mission-independencemonument",
+  "lang": "ja",
+  "speaker": "dara",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 7.4,
+  "text": "父ちゃん、言ってた。「おまえが大人になっても、この塔は、ここに立ってる」って。ほんとだったね。",
+  "heard": "父ちゃん、言ってた。「おまえが大人になっても、この塔は、ここに立ってる」って。ほんとだったね。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1kw3jcn": {
+  "episode": "mission-nationalmuseum",
+  "lang": "ja",
+  "speaker": "leakhena2",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 7.760041666666667,
+  "text": "その屋根、わたしは九歳のとき、毎朝見上げてから、となりの教室に入ったのよ。",
+  "heard": " その屋根、わたしは九歳のとき、毎朝見上げてから、となりの教室に入ったのよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v124iiit": {
+  "episode": "mission-nationalmuseum",
+  "lang": "ja",
+  "speaker": "leakhena2",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 6.44,
+  "text": "屋根の下の古い像も、わたしたちの踊りも、ここで、つづいてきたの。",
+  "heard": "屋根の下 の 古い ぞう も 私たち の 踊り も ここ で 続い て き た の 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v4wwlbu": {
+  "episode": "mission-chroychangvar",
+  "lang": "ja",
+  "speaker": "sophea2",
+  "voice": "Erinome",
+  "model": "gemini-3.8-live",
+  "seconds": 3.44,
+  "text": "二本ならぶと、ちょっと兄弟みたいでしょう。",
+  "heard": "二本ならぶと、ちょっと兄弟みたいでしょう。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1fnpu61": {
+  "episode": "mission-chroychangvar",
+  "lang": "ja",
+  "speaker": "sophea2",
+  "voice": "Erinome",
+  "model": "gemini-3.8-live",
+  "seconds": 7.24,
+  "text": "毎日、たくさんの人が、こっちとあっちを渡ってる。わたしは、それを見まもってるの。",
+  "heard": "毎日たくさんの人がこっちとあっちを渡ってる。私はそれを見守ってるの。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
