@@ -254,5 +254,258 @@
   "readings": [
    "国盛＝くにもり"
   ]
+ },
+ "vp14zb5": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.43,
+  "text": "かずら橋は、今も3年ごとに、架け替えられているんだよ。次の架け替えは、2027年の1月に予定されているんだって。",
+  "heard": " かずら橋は、今も3年ごとに、架け替えられているんだよ。次の架け替えは、2027年の1月に予定されているんだって。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "架け替え＝かけかえ"
+  ]
+ },
+ "v142ym4n": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "sophea2",
+  "voice": "Erinome",
+  "model": "gemini-3.8-live",
+  "seconds": 8.36,
+  "text": "3年ごとに、編みなおすの？ ……コンポンチャムの島の、竹の橋みたい。あれも、毎年かけなおしていたのよ。",
+  "heard": "3 年 ごと に 編み直す の ? 根本 チャ ム の 島 の 竹 の 端 みたい 。 あれ も 毎年 かけ直し て い た の よ 。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vyegbzj": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "sophea2",
+  "voice": "Erinome",
+  "model": "gemini-3.8-live",
+  "seconds": 6.890041666666667,
+  "text": "コンクリートの橋は、毎年かけなおさなくていい。でも、だれも見なくていい、ってことじゃないのよ。",
+  "heard": "コンクリートの橋は毎年かけ直さなくていい。でも、誰も見なくていってことじゃないのよ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v4vkn4a": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.040041666666666,
+  "text": "ルンおじいさんも、言ってたね。「かけ直す橋にはな、かけ直す人がおる」。",
+  "heard": " ルンおじいさんも、言ってたね。「かけ直す橋にはな、かけ直す人がおる」。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vy8yuap": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.41,
+  "text": "かけ直さなくていい橋にも、ソピアさんみたいに、見まもる人がいるんだね。",
+  "heard": "かけ直さなくていい橋にも、ソピアさんみたいに、見まもる人がいるんだね。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "voq08jw": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.020041666666666,
+  "text": "ソピアは、次の柱へ歩いていく。あなたも、ハンマーの音を聞きながら、となりを歩いた。",
+  "heard": "ソフィア は 次 の 柱 へ 歩い て いく 。 あなた も ハンマー の 音 を 聞き ながら 隣 を 歩い た 。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v11xtx6g": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "sophea2",
+  "voice": "Erinome",
+  "model": "gemini-3.8-live",
+  "seconds": 5.6,
+  "text": "つばさ橋も、見たんでしょう？ 塔からケーブルでつる、カンボジアで初めての橋。",
+  "heard": "ツバサ橋も見たんでしょ ? 東 から ケーブル で 釣る カンボジア で 初めて の 橋 。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "つばさ橋＝つばさばし"
+  ]
+ },
+ "vtypulk": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.28,
+  "text": "つばさ橋ができる前は、渡し船を、何時間も待ったんだ。ヴィチェットくんのお母さんは、熱を出した小さなヴィチェットくんを抱いて、ひと晩じゅう待ったんだよ。",
+  "heard": "翼橋ができる前は私船を何時間も待ったんだ。ビジェットくんのお母さんは熱を出した小さなビジェットくんを抱いて一晩中待ったんだよ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "つばさ橋＝つばさばし",
+   "渡し船＝わたしぶね"
+  ]
+ },
+ "v1p0ode9": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 29.8,
+  "text": "（小声）あなたに「勉強だね」と言われたヴィチェットくんは、今、村にネットの線をつないでる。橋の次は、線。",
+  "heard": "あなた に 勉強 だ ね と 言わ れ た ビチェット 君 は 今 村 に ネット の 線 を 繋い でる 。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v68hzq7": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.94,
+  "text": "（小声）あなたに「できる」と言われたヴィチェットくんは、今、村にネットの線をつないでる。橋の次は、線。",
+  "heard": "あなたにできると言われたビチェット君は今村にネットの線を繋いでる。橋の次は線。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vvy5p4k": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "sophea2",
+  "voice": "Erinome",
+  "model": "gemini-3.8-live",
+  "seconds": 5.67,
+  "text": "川のこちらと向こうを、つなぐでしょう。それから、昔と今も、つなぐの。",
+  "heard": "川 の こちら と 向こう を つなぐ でしょう ? それ から 昔 と 今 も つなぐ の 。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vrevsyv": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "sophea2",
+  "voice": "Erinome",
+  "model": "gemini-3.8-live",
+  "seconds": 8.1,
+  "text": "おじいちゃんは、言ってた。「橋は、また架けられる。でも、渡れなくなった人は、戻らない」って。",
+  "heard": "おじいちゃんは、言ってた。「橋は、また架けられる。でも、渡れなくなった人は、戻らない」って。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vaem86p": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "sophea2",
+  "voice": "Erinome",
+  "model": "gemini-3.8-live",
+  "seconds": 5.24,
+  "text": "だから、わたしは、橋を見まもるの。今、渡っている人のために。",
+  "heard": "だから私は橋を見守るの今渡っている人のために",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1q0r4y5": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "sophea2",
+  "voice": "Erinome",
+  "model": "gemini-3.8-live",
+  "seconds": 5.51,
+  "text": "……橋の一部、か。ふふ。おじいちゃんに、聞かせたかったな。",
+  "heard": " ふふ。おじいちゃんに、聞かせたかったな。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vbcqbtm": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "sophea2",
+  "voice": "Erinome",
+  "model": "gemini-3.8-live",
+  "seconds": 5.160041666666666,
+  "text": "うん。話してくれる人がいると、橋は、もっと遠くまでつながるわ。",
+  "heard": "話 し て くれる 人 が いる と 、 橋 は もっと 遠く まで 繋がる わ 。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1ds4zh1": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.21,
+  "text": "ねえ、四つの橋を、ふりかえってみて。",
+  "heard": "ねえ、四つの橋を、ふりかえってみて。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1drka8t": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.81,
+  "text": "かずら橋は、だれかを守るために、切れるように作られた。そして、また編みなおされた。",
+  "heard": "かずら橋は、だれかを守るために、切れるように作られた。そして、またあみ直された。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vpowiar": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.94,
+  "text": "プノンペンの日本の橋は、戦で落ちた。二十年あまりたって、日本の協力で、もう一度つながった。",
+  "heard": "プノンペンの日本の橋は、戦で落ちた。20年余り経って日本の協力でもう一度繋がった。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1efoqia": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.95,
+  "text": "コッ・ペン島の竹の橋は、雨季の前にほどかれて、乾季になると、また村の人がかけた。",
+  "heard": " コッ・ペン島の竹の橋は、雨季の前にほどかれて、乾季になると、また村の人がかけた。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "雨季＝うき",
+   "乾季＝かんき"
+  ]
+ },
+ "v4ciue1": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.04,
+  "text": "きずな橋とつばさ橋は、日本の国が出した、返さなくていいお金と、たくさんの人の仕事でできた。もう、だれも、ひと晩じゅう船を待たなくていい。",
+  "heard": "きずな橋とつばさ橋は、日本の国が出した、返さなくていいお金と、たくさんの人の仕事でできた。もう、だれも、ひと晩じゅう船を待たなくていい。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "きずな橋＝きずなばし",
+   "つばさ橋＝つばさばし"
+  ]
  }
 }
