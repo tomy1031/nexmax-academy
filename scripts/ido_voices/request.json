@@ -268,7 +268,14 @@
    "kh-angkor:en"
   ],
   "r8": [
-   "kh-pepper:en"
+   "mission-yashima:ja",
+   "mission-yashima:en",
+   "mission-watphnom:ja",
+   "mission-watphnom:en",
+   "mission-angkorwat:ja",
+   "mission-angkorwat:en",
+   "mission-bayon:ja",
+   "mission-bayon:en"
   ],
   "r9": [
    "kh-kizuna:en"
