@@ -496,5 +496,167 @@
   "heard": "子どもたちと声をそろえて、あなたは数えた。十で、指がふるえた。二十で、みんなが笑った。",
   "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
   "readings": []
+ },
+ "v10zwwba": {
+  "episode": "journey-hands",
+  "lang": "ja",
+  "speaker": "踊りの生徒",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 7.39,
+  "text": "どういたしまして！ ……あのね、わたしも、去年、先生に、こうしてもらったの。",
+  "heard": " ……あのね、わたしも、去年、先生に、こうしてもらったの。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vp2f61f": {
+  "episode": "journey-hands",
+  "lang": "ja",
+  "speaker": "leakhena2",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 8.200041666666667,
+  "text": "わたしの体から、この子たちの体へ。この子たちの体から、あなたの体へ。",
+  "heard": "私 の 体 から 子 たち の 体 へ 子 たち の 体 から あなた の 体 へ",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1wm3e2o": {
+  "episode": "journey-hands",
+  "lang": "ja",
+  "speaker": "leakhena2",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 2.3400416666666666,
+  "text": "ネアリー先生が言ったとおりね。",
+  "heard": "ニヤリ 先生 が 言っ た 通り ね 。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1whdt1l": {
+  "episode": "journey-hands",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.82,
+  "text": "ねえ、四つの物語を、ふりかえってみて。",
+  "heard": "ねえ、四つの物語を、ふりかえってみて。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v16ko78m": {
+  "episode": "journey-hands",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.36,
+  "text": "兼定さんは、刀を打つ手で、やさしい心のお経を刷った。そのお経は、海をわたって、今もロンドンにある。",
+  "heard": "金沢 さん は 刀 を 打つ 手 で 、 優しい 心 の 御 教 を すっ た 。 その 御 教 は 海 を 渡っ て 、 今 も ロンドン に ある 。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "兼定＝かねさだ"
+  ]
+ },
+ "vzns48j": {
+  "episode": "journey-hands",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.57,
+  "text": "吉蔵さんは言ったね。「川はな、木も、人も、歌も運ぶんじゃ。上から下へ。昔から、今へ」。",
+  "heard": " 吉蔵さんは言ったね。「川はな、木も、人も、歌も運ぶんじゃ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "吉蔵＝きちぞう"
+  ]
+ },
+ "v1dcqd7t": {
+  "episode": "journey-hands",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.83,
+  "text": "クロム・ンゴイさんの歌は、紙の上にならんで、本になった。",
+  "heard": "クロム・ンゴイさんの歌は、紙の上にならんで、本になった。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1qn9q8t": {
+  "episode": "journey-hands",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.43,
+  "text": "ネアリー先生の踊りは、紙には残らなかった。そのかわり、指から指へ、写されていった。",
+  "heard": "ねあり先生 の 踊り は 神 に は 残ら なかっ た 。 その 代わり 指 から 指 へ 移さ れ て いっ た 。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vo7w1lg": {
+  "episode": "journey-hands",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.51,
+  "text": "祖谷で、打ち明けたよね。ぼくは、見たものを、覚えておけない。覚えておけるのは、人だけ。",
+  "heard": "そい で 打ち上げ て よ ね 。 僕 は 見 た もの を 覚え て おけ ない 。 覚え て おける の は 人 だけ 。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "祖谷＝いや"
+  ]
+ },
+ "vufjs5a": {
+  "episode": "journey-hands",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.85,
+  "text": "ぼくはね、記録することはできる。でも、手わたすことは、人にしかできないんだ。",
+  "heard": " 記録することはできる。でも、手わたすことは、人にしかできないんだ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1rjrxmh": {
+  "episode": "journey-hands",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.080041666666666,
+  "text": "刷ったお経も、歌も、踊りも。受けとる人がいて、はじめて、生きつづけるんだね。",
+  "heard": "刷ったお経も、歌も、踊りも。受けとる人がいて、はじめて、生きつづけるんだね。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vy00vj4": {
+  "episode": "journey-hands",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.46,
+  "text": "（小声）ほかの「つながりの章」でも、同じだったね。人が、橋になる。",
+  "heard": "他のつながりのそうでも同じだったね。人手橋になる。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v17ubo4x": {
+  "episode": "journey-hands",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.070041666666667,
+  "text": "（小声）……あなたの指、まだ、少し反ってるよ。",
+  "heard": "あなた の 指 まだ 少し 剃っ てる よ 。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
