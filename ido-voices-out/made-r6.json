@@ -694,5 +694,81 @@
   "heard": " You don't know? Then just go to the airport and pick the place that looks the most fun!",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "v4og3n9": {
+  "episode": "kh-independence",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.44,
+  "text": "ヴァン・モリヴァンさん。カンボジアの建築家だよ。パリで建築を学んで、1956年に国へ帰ってきて、国の建物をたくさん設計したんだ。",
+  "heard": "バン・モリバン さん。カンボジアの建築家だよ。パリで建築を学んで1956年に国へ帰ってきて、国の建物をたくさん設計したんだ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "建築家＝けんちくか"
+  ]
+ },
+ "e4og3n94e5y8": {
+  "episode": "kh-independence",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.52,
+  "text": "That’s Vann Molyvann, a Cambodian architect. He studied architecture in Paris, came home in 1956, and designed many of the country’s buildings.",
+  "heard": " That’s Vann Molyvann, a Cambodian architect. He studied architecture in Paris, came home in 1956, and designed many of the country’s buildings.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vd7hbo7": {
+  "episode": "kh-sr-prologue",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.93,
+  "text": "周達観さんのことばは、ぼくが通訳するね。700年前の、旅人の先輩なんだ。",
+  "heard": "周達観さんのことばは、ぼくが通訳するね。700年前の、旅人の先輩なんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ed7hbo716ce5": {
+  "episode": "kh-sr-prologue",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.98,
+  "text": "I’ll translate what Zhou Daguan says for you. A traveler who came here 700 years before us.",
+  "heard": " I’ll translate what Zhou Daguan says for you. A traveler who came here 700 years before us.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1e5g2gg": {
+  "episode": "kh-landmine",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.76,
+  "text": "あの人が、アキ・ラーさん。地雷を取り除く仕事をしている人なんだ。",
+  "heard": "あの 人 が アキラ さん 。 時代 を 取り除く 仕事 を し て いる 人 な ん だ 。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "地雷＝じらい"
+  ]
+ },
+ "e1e5g2gg1qlie": {
+  "episode": "kh-landmine",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.150041666666667,
+  "text": "That’s Aki Ra. His job is clearing landmines.",
+  "heard": " His job is clearing landmines.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
  }
 }
