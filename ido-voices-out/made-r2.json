@@ -610,5 +610,183 @@
   "heard": " In this competition, all thirteen architects who sent in designs also helped to judge. They compared the designs themselves and chose among them together. That was an unusual way to do it.",
   "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
   "readings": []
+ },
+ "v1sfrviv": {
+  "episode": "journey-hands",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 16.02,
+  "text": "関の兼定さんが刷ったといわれる、お経。吉野川で、吉蔵さんが歌った、粉ひき節。ワット・ウナロムで、本になったクロム・ンゴイさんの歌。そして、ネアリー先生の、指先の踊り。",
+  "heard": "関の兼定さんが刷ったといわれる、お経。吉野川で、吉蔵さんが歌った、粉ひき節。ワット・ウナロムで、本になったクロム・ンゴイさんの歌。そして、ネアリー先生の、指先の踊り。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "兼定＝かねさだ",
+   "吉野川＝よしのがわ",
+   "吉蔵＝きちぞう",
+   "粉ひき節＝こひきぶし"
+  ]
+ },
+ "vh6in58": {
+  "episode": "journey-hands",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 11.53,
+  "text": "日本の関という町で、刀鍛冶が刷ったといわれる、観音さまのお経。それが、今は海をわたって、ロンドンの図書館にあること。",
+  "heard": "日本の関という町で、刀鍛冶が刷ったといわれる、観音さまのお経。それが、今は海をわたって、ロンドンの図書館にある",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "刀鍛冶＝かたなかじ",
+   "観音＝かんのん"
+  ]
+ },
+ "v2ytarn": {
+  "episode": "journey-hands",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.43,
+  "text": "兼定さんは、刀を打つ手で、やさしい心のお経を刷った、と考えられているんだ。そのお経は、海をわたって、今もロンドンにある。",
+  "heard": "金田 さん は 刀 を 打つ 手 で 、 優しい 心 の お 教 を すっ た と 考え られ て いる ん だ 。 その お 教 は 海 を 渡っ て 今 も ロンドン に ある 。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "兼定＝かねさだ"
+  ]
+ },
+ "vgvu8um": {
+  "episode": "journey-hands",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.9,
+  "text": "ぼくはね、いろんな時代を、見ることはできる。でも、手わたすことは、人にしかできないんだ。",
+  "heard": "ぼくはね、いろんな時代を、見ることはできる。でも、手わたすことは、人にしかできないんだ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1i6qos8izg0c": {
+  "episode": "journey-hands",
+  "lang": "en",
+  "speaker": "子どもたちの声",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 3.5500416666666665,
+  "text": "…Ninety-eight, ninety-nine, a hundred!",
+  "heard": "\nNinety-eight, ninety-nine, a hundred!",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e1sfrvivrgcoa": {
+  "episode": "journey-hands",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 15.37,
+  "text": "The sutra said to have been printed by Kanesada in Seki. The millstone song Kichizo sang on the Yoshino River. Krom Ngoy’s songs, made into a book at Wat Ounalom. And Teacher Neary’s dance, kept in her fingertips.",
+  "heard": " The sutra said to have been printed by Kanesada in Seki. The millstone song Kichizo sang on the Yoshino River. Krom Ngoy’s songs, made into a book at Wat Ounalom. And Teacher Neary’s dance, kept in her fingertips.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "eh6in58l58hf": {
+  "episode": "journey-hands",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 12.94,
+  "text": "A Kannon sutra, said to have been printed by a swordsmith in a Japanese town called Seki. And how it has crossed the sea and is now in a library in London.",
+  "heard": "A Kannon sutra, said to have been printed by a swordsmith in a Japanese town called Seki. And how it has crossed the sea and is now in a library in London.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "e2ytarny2hr1": {
+  "episode": "journey-hands",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.71,
+  "text": "Kanesada is thought to have printed a sutra of gentle hearts with the hands that made swords. That sutra crossed the sea, and it is still in London today.",
+  "heard": "Kennisada is thought to have printed a sutra of gentle hearts with the hands that made swords. That sutra crossed the sea and it is still in London today.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "egvu8um1hfxu": {
+  "episode": "journey-hands",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.99,
+  "text": "I can see all kinds of times, you know. But only people can hand things on.",
+  "heard": " I can see all kinds of times, you know. But only people can hand things on.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1uv52vh": {
+  "episode": "mission-dannoura",
+  "lang": "ja",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.88,
+  "text": "像になると、話は大きくなるものよ。この速い潮だけは、あのころのままじゃ。",
+  "heard": " 話は大きくなるものよ。この速い潮だけは、あのころのままじゃ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1uwgt1n12uts": {
+  "episode": "mission-royalpalace",
+  "lang": "en",
+  "speaker": "piseth",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 8.08,
+  "text": "Whoa, a golden spire! When I hauled timber for the posts, it was only a temporary wooden palace.",
+  "heard": " Whoa, a golden spire! When I hauled timber for the posts, it was only a temporary wooden palace.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1w4mwuftcs2i": {
+  "episode": "mission-tsubasa",
+  "lang": "en",
+  "speaker": "vichet2",
+  "voice": "Sadachbia",
+  "model": "gemini-3.8-live",
+  "seconds": 4.9500416666666665,
+  "text": "Whenever I see those towers, I remember that long day of waiting for the ferry.",
+  "heard": "Whenever I see those towers, I remember that long day of waiting for the ferry,",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vkn59zr": {
+  "episode": "mission-banteaykdei",
+  "lang": "ja",
+  "speaker": "sovann2",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 7.720041666666667,
+  "text": "仏さまは、シェムリアップの、シハヌーク＝アンコール博物館で、あなたを待っていますよ。",
+  "heard": "布施 様 は 、 シェム リアップ の 史 芳 奥 アンコール 博物館 で あなた を 待っ て い ます よ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ekn59zrsie66": {
+  "episode": "mission-banteaykdei",
+  "lang": "en",
+  "speaker": "sovann2",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 6.71,
+  "text": "The Buddhas themselves are waiting for you at the Sihanouk–Angkor Museum in Siem Reap.",
+  "heard": " The Buddhas themselves are waiting for you at the Sihanouk Angkor Museum in Siem",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
