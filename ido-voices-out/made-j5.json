@@ -514,5 +514,67 @@
   "readings": [
    "王妃＝おうひ"
   ]
+ },
+ "v182qhrj": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.53,
+  "text": "（小声）「今は、子どもはみんな学校で習います」。あなたが王妃さまに言ったことば。王妃さまは、「いつか、この国も、そうなるといい」って言ったね。",
+  "heard": "（小声）「今は、子どもはみんな学校で習います」。あなたが王妃さまに言ったことば。王妃さまは、「いつか、この国も、そうなるといい」って言ったね。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "王妃＝おうひ"
+  ]
+ },
+ "v19h3c6": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.2600416666666665,
+  "text": "それからね。ぼくも、学んでいるんだ。",
+  "heard": "それから ね 。 僕 も 学ん で いる ん だ 。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v16iabs5": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.660041666666666,
+  "text": "AUPPで、学生のみんなと日本語を勉強していると、ぼくも、クメール語や、みんなの好きな食べものを教わるんだよ。教えるほうも、学んでいるんだ。",
+  "heard": " AUPPで、学生のみんなと日本語を勉強していると、ぼくも、クメール語や、みんなの好きな食べものを教わるんだよ。教える",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1erckve": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.810041666666667,
+  "text": "学ぶということは、だれかから受けとって、自分のものにして、また次の人へわたすこと。……なのかもしれないね。",
+  "heard": "学ぶということは、だれかから受けとって、自分のものにして、また次の人へわたすこと。……なのかもしれないね。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1pwmpms": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.31,
+  "text": "もちろん、学べなかった人もいた。字を習えないまま働いた子も、長い戦争で、学ぶ時間をうばわれた人も。",
+  "heard": "もちろん、学べなかった人もいた。 字を習えないまま働いた子も、長い戦争で学ぶ時間を奪われた人も。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
