@@ -976,5 +976,17 @@
   "heard": "箸も歌も踊りも学びも 全部人から人絵だったね。",
   "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
   "readings": []
+ },
+ "ebqd7uq1oxal": {
+  "episode": "journey-learn",
+  "lang": "en",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.830041666666666,
+  "text": "Sovann crouched beside the trainee and placed his hand over the trainee’s.",
+  "heard": "Sovon crouched beside the trainee and placed his hand over the trainee's.",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
