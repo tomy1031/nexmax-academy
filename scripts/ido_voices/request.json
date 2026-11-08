@@ -210,10 +210,19 @@
    "miyoshi-youkai:en"
   ],
   "r1": [
-   "osaka-okada:ja"
+   "journey-bridges:ja",
+   "journey-bridges:en",
+   "journey-learn:ja",
+   "journey-learn:en"
   ],
   "r2": [
-   "osaka-okada:en"
+   "journey-hands:ja",
+   "journey-hands:en",
+   "mission-dannoura:ja",
+   "mission-royalpalace:en",
+   "mission-tsubasa:en",
+   "mission-banteaykdei:ja",
+   "mission-banteaykdei:en"
   ],
   "r3": [
    "seki-knife:ja"
