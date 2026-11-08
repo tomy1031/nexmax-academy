@@ -1150,5 +1150,251 @@
   "heard": "",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "v1w4mwuf": {
+  "episode": "mission-tsubasa",
+  "lang": "ja",
+  "speaker": "vichet2",
+  "voice": "Sadachbia",
+  "model": "gemini-3.8-live",
+  "seconds": 5.07,
+  "text": "あの塔を見ると、渡し船を待った、長い一日を思い出すんだ。",
+  "heard": "あの塔を見ると、私船を待った長い1日を思い出すんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "渡し船＝わたしぶね"
+  ]
+ },
+ "vwuxg9f": {
+  "episode": "mission-tsubasa",
+  "lang": "ja",
+  "speaker": "vichet2",
+  "voice": "Sadachbia",
+  "model": "gemini-3.8-live",
+  "seconds": 4.71,
+  "text": "今は毎日、あの下を通って、村に線をつなぎに行ってる。",
+  "heard": "今は毎日あの下を通って村に線をつなぎに行ってる。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v6m0rau": {
+  "episode": "mission-kizuna",
+  "lang": "ja",
+  "speaker": "mony2",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 4.68,
+  "text": "あの脚、雨季に川が強くなっても、びくともしないのよ。",
+  "heard": "あの脚、雨季に川が強くなっても、びくともしない",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "雨季＝うき"
+  ]
+ },
+ "vl8wchg": {
+  "episode": "mission-kizuna",
+  "lang": "ja",
+  "speaker": "mony2",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 5.42,
+  "text": "竹の橋は毎年ほどいたけど、この橋は、ずっとここにいてくれる。",
+  "heard": "竹の橋は毎年ほどいたけど、この橋は、ずっとここにいてくれる。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1bqd3f9": {
+  "episode": "mission-angkorwat",
+  "lang": "ja",
+  "speaker": "keo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 5.26,
+  "text": "会えた？ ぼくの彫った天女さまは、どれだと思う？",
+  "heard": "会えた? ぼくの彫った天女さまは、どれだと思う?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vfknkbo": {
+  "episode": "mission-angkorwat",
+  "lang": "ja",
+  "speaker": "keo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 4.63,
+  "text": "名前は残らなくても、ほら、ちゃんと、ここにいるでしょ。",
+  "heard": " 名前は残らなくても、ほら、ちゃんと、ここに",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v19tajfl": {
+  "episode": "mission-bayon",
+  "lang": "ja",
+  "speaker": "chanthy",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 4.84,
+  "text": "見つけた？ はかりを持ってるの、お母さんかもしれないよ。",
+  "heard": "みつ つけ た 測り を 持っ てる の お母さん か も しれ ない よ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1n5s7eh": {
+  "episode": "mission-bayon",
+  "lang": "ja",
+  "speaker": "chanthy",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 3.42,
+  "text": "石の中でも、毎日、魚をはかってるんだ。",
+  "heard": "石 の 中 で も 毎日 魚 を 量っ てる ん だ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vr71su6": {
+  "episode": "mission-taprohm",
+  "lang": "ja",
+  "speaker": "sreymom",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 3.69,
+  "text": "わたしが踊った寺に、こんなに大きな木が……！",
+  "heard": "わたしが踊った寺に、こんなに大きな木が！",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1clxy29": {
+  "episode": "mission-taprohm",
+  "lang": "ja",
+  "speaker": "sreymom",
+  "voice": "Achernar",
+  "model": "gemini-3.8-live",
+  "seconds": 6.640041666666667,
+  "text": "八百年あまりって、こういうことなのね。木が、寺を抱きしめてるみたい。",
+  "heard": "八百年あまりって、こういうことなのね。木が、寺を抱きしめてる",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vzrf5v8": {
+  "episode": "mission-banteaykdei",
+  "lang": "ja",
+  "speaker": "sovann2",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 7,
+  "text": "見つけましたか。スラ・スランの水も、この寺の石も、ずっと、ここにありました。",
+  "heard": "スラ・スランの水も、この寺の石も、ずっと、ここにありました。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v17d1ut": {
+  "episode": "mission-banteaykdei",
+  "lang": "ja",
+  "speaker": "sovann2",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 6.470041666666667,
+  "text": "仏さまは、シェムリアップの町の博物館で、あなたを待っていますよ。",
+  "heard": "仏 様 は シェム リアプ の 町 の 博物館 で あなた を 待っ て い ます よ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v3x78v7": {
+  "episode": "mission-bokor",
+  "lang": "ja",
+  "speaker": "vanna",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 7.73,
+  "text": "あれが、マオおばあさんだよ。海の人も、山の人も、旅の人も、見まもってくれるんだ。",
+  "heard": "あれが、マオおばあさんだよ。海の人も、山の人も、旅の人も、見まもってくれるんだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v4pwagm": {
+  "episode": "mission-bokor",
+  "lang": "ja",
+  "speaker": "vanna",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 4.16,
+  "text": "……霧の中で会ったおばあさんと、ちょっと似てる？",
+  "heard": "霧 の 中 で 会っ た お ばあさん と ちょっと 似 てる ?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v141k6pt": {
+  "episode": "mission-pepperfarm",
+  "lang": "ja",
+  "speaker": "mei",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 8.06,
+  "text": "下がお店で、上が住まい。わたしが子どものころも、川ぞいに、ああいう店がならんでたの。",
+  "heard": "さが お 店 で あ が が すまい 。 私 が 子供 の 頃 も 川 沿い に ああ いう 店 が 並ん で た の 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v9gznk4": {
+  "episode": "mission-pepperfarm",
+  "lang": "ja",
+  "speaker": "mei",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 3.8800416666666666,
+  "text": "町のお店で、赤い胡椒も、さがしてみてね。",
+  "heard": "街 の お 店 で 赤い 胡椒 も 探し て み て ね 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "胡椒＝こしょう"
+  ]
+ },
+ "v1mmzish": {
+  "episode": "mission-kokaido-iwamoto",
+  "lang": "ja",
+  "speaker": "kiyo2",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 4.640041666666667,
+  "text": "ええか、口あけてるんが「あ」、とじてるんが「うん」や。",
+  "heard": "ええか、口あけてるんか「あ」、とじてるんか「うん」や。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v172anxd": {
+  "episode": "mission-kokaido-iwamoto",
+  "lang": "ja",
+  "speaker": "kiyo2",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 6.56,
+  "text": "二頭で、ひとそろい。……百年たっても、ちゃんと、ふたりで番してるんやな。",
+  "heard": "二頭で、ひとそろい。……百年たっても、ちゃんと、ふたりで番してるんやな。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1l4mvnc": {
+  "episode": "mission-kokaido-okada",
+  "lang": "ja",
+  "speaker": "okada",
+  "voice": "Rasalgethi",
+  "model": "gemini-3.8-live",
+  "seconds": 8.45,
+  "text": "アーチの上に、神さまがふたり。商いと、ちえか。大阪のみんなの家に、ぴったりの見張り番だね。",
+  "heard": " アーチの上に、神さまがふたり。商いと、ちえか。大阪のみんなの家に、ぴったりの見張り番だね。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1fh2onv": {
+  "episode": "mission-kokaido-okada",
+  "lang": "ja",
+  "speaker": "okada",
+  "voice": "Rasalgethi",
+  "model": "gemini-3.8-live",
+  "seconds": 10.09,
+  "text": "戦争で一度はずされて、また帰ってきたんだって？ 建物は、最後まで面倒をみてもらえると、こうして帰ってくるんだ。",
+  "heard": "戦争 で 一度 外さ れ て また 帰っ て き た ん だって 。 建物 は 最後 まで 面倒 を 見 て もらえる と こう し て 帰っ て くる ん だ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
