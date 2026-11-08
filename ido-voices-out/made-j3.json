@@ -1,0 +1,258 @@
+{
+ "v1ko7a21": {
+  "episode": "journey-hands",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.61,
+  "text": "2026年、11月。プノンペン。赤い屋根の、国立博物館。",
+  "heard": " 2026年、11月。プノンペン。赤い屋根の、国立博物館。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vmoxneo": {
+  "episode": "journey-hands",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 4.390041666666667,
+  "text": "中庭に、子どもたちの声がひびいている。",
+  "heard": "中庭に、子どもたちの声がひびいている。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1i6qos8": {
+  "episode": "journey-hands",
+  "lang": "ja",
+  "speaker": "子どもたちの声",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 4.150041666666667,
+  "text": "……九十八、九十九、百！",
+  "heard": "九十九、百！",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vdx2sxa": {
+  "episode": "journey-hands",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.98,
+  "text": "刷って、手わたす旅の扉、ぜんぶひらいたね。",
+  "heard": " 刷って、手わたす旅の扉、ぜんぶひらいたね。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vvnxeji": {
+  "episode": "journey-hands",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 17.35,
+  "text": "関の兼定さんが刷った、お経。大歩危で、吉蔵さんが歌った、粉ひき節。ワット・ウナロムで、本になったクロム・ンゴイさんの歌。そして、ネアリー先生の、指先の踊り。",
+  "heard": "間 の 金田 さん が 吸っ た おきょ 大惚け で 基地造 さん が 歌っ た 小引き節 。 わっと うなろむ で ホンニ なっ た 黒む声 さん の 歌 。 そして ネアリー 先生 の 指先 の 踊り 。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "兼定＝かねさだ",
+   "大歩危＝おおぼけ",
+   "吉蔵＝きちぞう",
+   "粉ひき節＝こひきぶし"
+  ]
+ },
+ "vssq3wy": {
+  "episode": "journey-hands",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.44,
+  "text": "今日は、時渡りはしないよ。リアクナさんに、聞いてみたいことがあるんだ。",
+  "heard": "今日は、時渡りはしないよ。リアクナさんに、聞いてみたいことがあるんだ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "時渡り＝ときわたり"
+  ]
+ },
+ "vnusx8w": {
+  "episode": "journey-hands",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 6.560041666666667,
+  "text": "子どもたちは、指をうしろへ反らせたまま、百まで数えおわったところだった。",
+  "heard": "子どもたちは 指を後ろへ反らしたまま 100まで数え終わったところだった。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vs5ow1l": {
+  "episode": "journey-hands",
+  "lang": "ja",
+  "speaker": "leakhena2",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 3.88,
+  "text": "はい、休けい。指を、ぶらぶらさせて。",
+  "heard": "はい、休けい。指を、ぶらぶらさせ",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v4o80mi": {
+  "episode": "journey-hands",
+  "lang": "ja",
+  "speaker": "leakhena2",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 4.720041666666667,
+  "text": "……あら。また来てくれたのね。今日は、何を見に来たの？",
+  "heard": "あら。また来てくれたのね。今日は、何を見に来たの?",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v13owqji": {
+  "episode": "journey-hands",
+  "lang": "ja",
+  "speaker": "leakhena2",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 3,
+  "text": "それなら、見ていくのが、いちばんね。",
+  "heard": "それ なら 見 て いく の が 1 番 ね 。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1vxl927": {
+  "episode": "journey-hands",
+  "lang": "ja",
+  "speaker": "leakhena2",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 4.26,
+  "text": "紙に書けないもの……。それなら、ここに、いっぱいあるわ。",
+  "heard": " 紙に書けないもの……。それなら、ここに、いっぱいあるわ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v14x4o3j": {
+  "episode": "journey-hands",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.190041666666667,
+  "text": "あなたは、旅で見てきたものを、リアクナに話した。",
+  "heard": "あなたは、旅で見てきたものを、リアクナ",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1igbd9k": {
+  "episode": "journey-hands",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 13.59,
+  "text": "日本の関という町で、刀鍛冶が刷った、観音さまのお経。それが、今は海をわたって、ロンドンの図書館にあること。",
+  "heard": "日本の関という町で、刀鍛冶が刷った、観音さまのお経。それが、今は海をわたって、ロンドンの図書館にあること。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "刀鍛冶＝かたなかじ",
+   "観音＝かんのん"
+  ]
+ },
+ "v1l9yjup": {
+  "episode": "journey-hands",
+  "lang": "ja",
+  "speaker": "leakhena2",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 3.3,
+  "text": "刀を打つ人が、お経を……。",
+  "heard": "刀 を 打つ 人 が お 経 を",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1ou8osr": {
+  "episode": "journey-hands",
+  "lang": "ja",
+  "speaker": "leakhena2",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 8.34,
+  "text": "紙は、遠くまで旅ができるのね。五百年あまりたっても、刷った人の名前まで、ちゃんと残ってる。",
+  "heard": "髪 は 遠く まで 旅 が できる の ね 。 500 年 余り 経っ て も すっ た 人 の 名前 まで ちゃんと 残っ てる 。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v3j989w": {
+  "episode": "journey-hands",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.35,
+  "text": "それから、祖谷の山の歌のこと。川で丸太を流した筏師が、歌いながら、息子に拍子をとったこと。",
+  "heard": "それから、祖谷の山の歌のこと。川で丸太を流した筏師が、歌いながら、息子に拍子をとったこと。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "祖谷＝いや",
+   "筏師＝いかだし"
+  ]
+ },
+ "v1f5xfwj": {
+  "episode": "journey-hands",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.22,
+  "text": "川からあがった筏師が、使いこんだ鳶口を、息子の手ににぎらせて、「歌も、忘れるなよ」と言ったこと。",
+  "heard": "川からあがった筏師が、使いこんだ鳶口を、息子の手ににぎらせて、「歌も、忘れるなよ」と言ったこと。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "筏師＝いかだし",
+   "鳶口＝とびぐち"
+  ]
+ },
+ "vbvj9wq": {
+  "episode": "journey-hands",
+  "lang": "ja",
+  "speaker": "leakhena2",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 2.24,
+  "text": "「歌も、忘れるなよ」……。",
+  "heard": "歌 も 忘れる な よ",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vau3f0o": {
+  "episode": "journey-hands",
+  "lang": "ja",
+  "speaker": "leakhena2",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 9.070041666666667,
+  "text": "紙に書いて残せるもの。体でしか、わたせないもの。どっちも、あるのね。",
+  "heard": " 紙に書いて残せるもの。体でしか、わたせないもの。どっちも、あるのね。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vk6b0n6": {
+  "episode": "journey-hands",
+  "lang": "ja",
+  "speaker": "leakhena2",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 6.05,
+  "text": "クロム・ンゴイの歌は、本になったでしょう。だから、今の子どもも読めるの。",
+  "heard": " クロム・ンゴイ の歌は、 本になったでしょう。 だから、 今の子どもも読",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ }
+}
