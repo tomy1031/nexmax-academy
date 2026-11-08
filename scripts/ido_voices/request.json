@@ -240,7 +240,12 @@
    "sennan-airport:en"
   ],
   "r5": [
-   "sennan-airport:ja"
+   "kh-bokor:ja",
+   "kh-bokor:en",
+   "osaka-kitahama:ja",
+   "osaka-kitahama:en",
+   "osaka-iwamoto:ja",
+   "osaka-iwamoto:en"
   ],
   "r6": [
    "sennan-airport:en"

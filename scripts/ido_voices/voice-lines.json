@@ -30592,8 +30592,8 @@
   "episode": "kh-bokor",
   "lang": "ja",
   "speaker": "nekmax",
-  "text": "ヤイ・マオの言い伝えは、ひとつじゃないんだ。いくつもの話があって、どれが本当なのかは、はっきりしていないよ。今日のお話は、そのいくつかをもとにした、物語のための話なんだ。",
-  "vid": "vpksw1z",
+  "text": "ヤイ・マオの言い伝えは、ひとつじゃないんだ。いくつもの話があって、どれが本当なのかは、はっきりしていないよ。",
+  "vid": "vgehmp7",
   "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
   "readings": []
  },
@@ -31485,8 +31485,8 @@
   "episode": "kh-bokor",
   "lang": "en",
   "speaker": "nekmax",
-  "text": "There isn’t just one legend of Yeay Mao. There are many stories, and nobody knows for sure which is true. Today’s story was made for this app, based on a few of them.",
-  "vid": "epksw1zmb9m9",
+  "text": "There isn’t just one legend of Yeay Mao. There are many stories, and nobody knows for sure which is true.",
+  "vid": "egehmp73owmw",
   "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
   "readings": []
  },
@@ -35433,8 +35433,8 @@
   "episode": "osaka-kitahama",
   "lang": "ja",
   "speaker": "nekmax",
-  "text": "岩本さんは、取引所で働く少年たちのために、自分のお金で塾を作ったんだ。でも、どこにあって、いつできたのかは分かっていないから、この部屋は物語のための場面だよ。",
-  "vid": "vgxwd3v",
+  "text": "岩本さんは、取引所で働く少年たちのために、自分のお金で塾を作ったんだ。",
+  "vid": "vmdzv3y",
   "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
   "readings": [
    "取引所＝とりひきじょ",
@@ -36371,8 +36371,8 @@
   "episode": "osaka-kitahama",
   "lang": "en",
   "speaker": "nekmax",
-  "text": "Iwamoto started a little school with his own money, for the boys who worked at the exchange. But nobody knows where it was or when it began, so this room is made up for our story.",
-  "vid": "egxwd3v1kamv",
+  "text": "Iwamoto started a little school with his own money, for the boys who worked at the exchange.",
+  "vid": "emdzv3yk8agr",
   "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
   "readings": []
  },
@@ -39213,12 +39213,10 @@
   "episode": "osaka-iwamoto",
   "lang": "ja",
   "speaker": "nekmax",
-  "text": "岩本さんが、いつそう言ったのかは、分かっていないんだ。この日に清吉くんが書きとめた、というのは、物語のための場面だよ。",
-  "vid": "vxpyega",
+  "text": "岩本さんが、いつそう言ったのかは、分かっていないんだ。",
+  "vid": "v1k42492",
   "scene": "今の時代の、明るくおだやかな場面",
-  "readings": [
-   "清吉＝せいきち"
-  ]
+  "readings": []
  },
  {
   "episode": "osaka-iwamoto",
@@ -40073,8 +40071,8 @@
   "episode": "osaka-iwamoto",
   "lang": "en",
   "speaker": "nekmax",
-  "text": "We don't know when Iwamoto said it. Seikichi writing it down on this day is a scene made up for our story.",
-  "vid": "expyegabs7g8",
+  "text": "We don’t know when Iwamoto said it.",
+  "vid": "e1k42492ulhqb",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
  },
