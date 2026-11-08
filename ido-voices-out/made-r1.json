@@ -725,5 +725,256 @@
   "readings": [
    "図面＝ずめん"
   ]
+ },
+ "v5wnffk": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 3.100041666666667,
+  "text": "コン、コン。コン。",
+  "heard": "コン コン コン",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1lazvuc": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.07,
+  "text": "（小声）あなたは、竹の橋が好きって言ったね。カタカタっていう、あの音。",
+  "heard": "あなた は 竹 の はし が 好 きっ て 言っ た ね ? カタ カ タっ て いう あの 音",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vmfdwtu": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.2800416666666665,
+  "text": "（小声）あなたは、きずな橋が好きって言ったね。雨季でも渡れる、白い橋。",
+  "heard": "きずな 橋 が 好 きっ て 言 っ た ね 。 浮き で も 渡 れ る 白 い 橋 。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "きずな橋＝きずなばし",
+   "雨季＝うき"
+  ]
+ },
+ "v1e5u81u": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.18,
+  "text": "（小声）あなたは、どっちの橋も好きって言ったね。ルンおじいさんの言う、いちばんぜいたくな答え。",
+  "heard": "あなたは、どっちの橋も好きって言ったね。ルンおじいさんのいう、いちばんぜいたくな答え。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vhzljmp": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.61,
+  "text": "「きずな」は、人と人の、切れないつながり。あなたが、モニーちゃんに教えたことばだね。",
+  "heard": "絆 は 人 と 人 の 切れ ない 繋がり あなた が も に ちゃん に 教え た 言葉 だ ね",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vuul4db": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.89,
+  "text": "「きずな」は、はなれていても、つながっている糸。あなたが、モニーちゃんに教えたことばだね。",
+  "heard": "絆 は 離れ て い て も 繋がっ て いる 糸 あなた が も に ちゃん に 教え た 言葉 だ ね 。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1d29ti1": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 13.7,
+  "text": "でも、橋のまわりには、失ったものもあった。落ちた橋の向こうに、帰れなかった人もいた。新しい橋ができても、それは、なかったことにはならない。",
+  "heard": "でも、橋の周りには失ったものもあった。落ちた橋の向こうに帰れなかった人もいた。新しい橋ができてもそれはなかったことにはならない。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1ia6861": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.98,
+  "text": "それでも、人は、また橋をかけた。そして、毎日、見まもってきた。",
+  "heard": "それでも、人は、また橋をかけた。そして、毎日、見まもってきた。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1qk3xa7": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.94,
+  "text": "国盛さんは、「いつか、この橋が要らなくなる日が来るとよいな」と言ったね。",
+  "heard": "国盛さんは、「いつか、この橋が要らなくなる日が来るとよいな」と言ったね。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "国盛＝くにもり"
+  ]
+ },
+ "v1l4urts": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.88,
+  "text": "切って守る橋は、もう要らない。今のかずら橋は、旅の人を、向こう岸へ渡すために編まれているんだ。",
+  "heard": "切っ て 守る 橋 は もう いら ない 。 今 の かずら橋 は 旅 の 人 を 無効 義 へ はさす ため に 余っ て いる ん だ 。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1tefesv": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 11.26,
+  "text": "（小声）かずら橋のたもとの、苔むした岩の伝言、覚えてる？ あの橋は、切れても、何度でも、編みなおされてきたんだ。",
+  "heard": "かずら橋 のたもと のこけむし た 岩 の 伝言 覚え てる 。 あの 橋 は 切れ て も 何 度 で も 編み直さ れ て き た ん だ 。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1e2ussj": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.27,
+  "text": "（小声）ほかの「つながりの章」でも、同じだったね。人から人へ、何かがわたされていく。",
+  "heard": "ほかの「つながりの章」でも、同じだったね。人から人へ、何かがわたされていく。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v9joxuc": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.1,
+  "text": "橋は、つるでも、竹でも、コンクリートでも、かけられる。でも、橋をつなぎつづけるのは、いつも、人なんだ。",
+  "heard": "橋 は ツル で も 竹 で も コンクリート で も かけ られる 。 で も 橋 を つなぎ 続ける の は いつも 人 な ん だ 。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "e1tefesv1hdib": {
+  "episode": "journey-bridges",
+  "lang": "en",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 10.15,
+  "text": "(whispering) Remember the message on the mossy rock at the foot of the vine bridge? Even when it was cut, that bridge was woven again, over and over.",
+  "heard": " Remember the message on the mossy rock at the foot of the vine bridge? Even when it was cut, that bridge was woven again, over and over.",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "voe1xfa": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.0100416666666665,
+  "text": "だから、学べる今を、だいじにしたいんだ。",
+  "heard": "だから、学べる今を大事にしたいんだ。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "vioi9m": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "sovann2",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 5.91,
+  "text": "さあ、旅の方も、どうぞ。今日は、あなたも研修生です。",
+  "heard": "さあ、旅の方も、どうぞ。今日は、あなたも研修生です。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "研修生＝けんしゅうせい"
+  ]
+ },
+ "v1f9u2uw": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 13.66,
+  "text": "あなたは、竹のへらをにぎった。乾いた土が、ほろほろとくずれた。となりで、研修生が、小さく笑った。",
+  "heard": "あなたは、竹のへらをにぎった。乾いた土が、ほろほろとくずれた。となりで、研修生が、小さく笑った。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "研修生＝けんしゅうせい"
+  ]
+ },
+ "vz1kequ": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.64,
+  "text": "あなたは、研修生のとなりで、へらの先を見まもった。研修生が、ふりかえって、うなずいた。",
+  "heard": "あなたは、けんしゅうせいのとなりで、へらの先を見まもった。けんしゅうせいが、ふりかえって、うなずいた。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": [
+   "研修生＝けんしゅうせい"
+  ]
+ },
+ "vkji20z": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "sovann2",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 9.65,
+  "text": "いつか、この子が、次の人に教える日が来ます。そのとき、今日のことを、話してくれるでしょう。",
+  "heard": "いつか この 子 が 次 の 人 に 教える 日 が 来 ます 。 その 時 今日 の こと を 話し て くれる でしょう 。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
+ },
+ "v1t0bvr": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.42,
+  "text": "（小声）橋も、歌も、踊りも、学びも。……ぜんぶ、人から人へ、だったね。",
+  "heard": "箸も歌も踊りも学びも 全部人から人絵だったね。",
+  "scene": "苦しさの先に、前を向く場面。静かな力をこめて",
+  "readings": []
  }
 }
