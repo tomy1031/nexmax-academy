@@ -1196,5 +1196,256 @@
   "heard": "",
   "scene": "今の時代の、明るくおだやかな場面",
   "readings": []
+ },
+ "viw5430": {
+  "episode": "mission-kazurabashi",
+  "lang": "ja",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.14,
+  "text": "見つけたか。そのかずらは、もう、切るために編んだものではない。",
+  "heard": "見つけ た か 。 その か は もう 切る ため に 編ん だ もの で は ない 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1aulhrp": {
+  "episode": "mission-kazurabashi",
+  "lang": "ja",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.18,
+  "text": "旅の者を、向こう岸へ渡すためのものよ。",
+  "heard": "旅 の 者 を 向こう 義師 へ 渡す ため の もの よ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "旅の者＝たびのもの"
+  ]
+ },
+ "v11iv4j6": {
+  "episode": "mission-biwanotaki",
+  "lang": "ja",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 4.920041666666667,
+  "text": "滝の音は、あのころと、少しも変わりませんね。",
+  "heard": "滝の音は、あのころと、少しも変わりませんね。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vlww28m": {
+  "episode": "mission-biwanotaki",
+  "lang": "ja",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 5.900041666666667,
+  "text": "わたくしの琵琶も、この音にまぎれて、都の歌をひいていたのです。",
+  "heard": "わたくしの琵琶も、この音にまぎれて、都の歌をひいてい",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "琵琶＝びわ",
+   "都＝みやこ"
+  ]
+ },
+ "vyeo8ei": {
+  "episode": "mission-tsurugisan",
+  "lang": "ja",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 7.46,
+  "text": "この山で、わしは剣を眠らせた。……今は、草が風に鳴るだけでよい。",
+  "heard": "この山で、ワシは剣を眠らせた。 今は、草が風になるだけでよい。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1snpljr": {
+  "episode": "mission-tsurugisan",
+  "lang": "ja",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 4.66,
+  "text": "静かな山じゃろう。それで、よいのじゃ。",
+  "heard": "静か な 山 じゃろう 。 それ で よい の じゃ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vl3h68f": {
+  "episode": "mission-obokekoboke",
+  "lang": "ja",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 6.53,
+  "text": "おう、その岩よ。わしらは、その岩のあいだを、丸太に乗って下ったんじゃ。",
+  "heard": "おおその岩よわしらはその岩の間を丸谷に乗って下ったんじゃ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vauq6c9": {
+  "episode": "mission-obokekoboke",
+  "lang": "ja",
+  "speaker": "kichizo",
+  "voice": "Zubenelgenubi",
+  "model": "gemini-3.8-live",
+  "seconds": 4.71,
+  "text": "今は、船でのんびり見られるんか。ええのう。",
+  "heard": "今は船でのんびり見られるんかええのう",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v87ck7z": {
+  "episode": "mission-youkai-yashiki",
+  "lang": "ja",
+  "speaker": "konaki",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 6.39,
+  "text": "おお、見つけたか。わしの仲間が、たくさんおったじゃろう。",
+  "heard": "おお、見つけたか。わしの仲間が、たくさんおったじゃろう。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vdg17s8": {
+  "episode": "mission-youkai-yashiki",
+  "lang": "ja",
+  "speaker": "konaki",
+  "voice": "Enceladus",
+  "model": "gemini-3.8-live",
+  "seconds": 8.38,
+  "text": "危ない谷や道には、みんな、わしらの話がある。子どもが近づかんようにな。",
+  "heard": "危ない谷や道には、みんな、わしらの話がある。子どもが近づかんようにな。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1g39y4i": {
+  "episode": "mission-kisegawa",
+  "lang": "ja",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 3.2400416666666665,
+  "text": "兄上と、この石に腰かけたのだ。",
+  "heard": "兄上と、この石に腰かけたのだ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vshjhza": {
+  "episode": "mission-kisegawa",
+  "lang": "ja",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 7.390041666666667,
+  "text": "はじめて会うた兄上は、泣いておられた。……あの涙を、わたしは、ずっと覚えている。",
+  "heard": "はじめて会うた兄上は、泣いておられた。……あの涙を、わたしは、ずっと覚えている。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1kdfu2z": {
+  "episode": "mission-yashima",
+  "lang": "ja",
+  "speaker": "yoichi",
+  "voice": "Umbriel",
+  "model": "gemini-3.8-live",
+  "seconds": 5.42,
+  "text": "この岩の前で、目をとじて、祈ったのだ。",
+  "heard": "この 岩 の 前 で 目 を 閉じ て 祈っ た の だ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v15gwckv": {
+  "episode": "mission-yashima",
+  "lang": "ja",
+  "speaker": "yoichi",
+  "voice": "Umbriel",
+  "model": "gemini-3.8-live",
+  "seconds": 5.97,
+  "text": "射たのは矢だが、あの扇を射させてくれたのは、祈りだったのかもしれぬ。",
+  "heard": "言ったのは嫌だが あの王座をおいさしてくれたのは 祈りだったのかも知れぬ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vwagg44": {
+  "episode": "mission-dannoura",
+  "lang": "ja",
+  "speaker": "noritsune",
+  "voice": "Orus",
+  "model": "gemini-3.8-live",
+  "seconds": 5.82,
+  "text": "義経めが、跳んでおるわ。……八艘も跳んではおらなんだがな。",
+  "heard": "義経めが、跳んでおるわ。……八艘も跳んではおらなん",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "義経＝よしつね"
+  ]
+ },
+ "vu0pma9": {
+  "episode": "mission-takadachi",
+  "lang": "ja",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 6,
+  "text": "五百年のちの旅人が、ここで、夏草を見たのか。",
+  "heard": "100 年 の 後 の 旅人 が ここ で 夏草 を 見 た の か 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "夏草＝なつくさ"
+  ]
+ },
+ "v1l13l7u": {
+  "episode": "mission-takadachi",
+  "lang": "ja",
+  "speaker": "yoshitsune",
+  "voice": "Puck",
+  "model": "gemini-3.8-live",
+  "seconds": 8.91,
+  "text": "……勝った話ではなく、生きた話を、残してくれたのだな。",
+  "heard": "勝った話しではなく、生きた話しを、残してくれたのだな。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vaasgkl": {
+  "episode": "mission-watphnom",
+  "lang": "ja",
+  "speaker": "penh",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 3.8600416666666666,
+  "text": "おや、わたしの祠を見つけたのかい。",
+  "heard": "おや、わたしの祠を見つけたのかい。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1dp052b": {
+  "episode": "mission-watphnom",
+  "lang": "ja",
+  "speaker": "penh",
+  "voice": "Gacrux",
+  "model": "gemini-3.8-live",
+  "seconds": 9.41,
+  "text": "一かごずつ土を運んだ丘で、今も、みんなが手を合わせてくれる。ありがたいねえ。",
+  "heard": "一かごずつ土を運んだ丘で、今も、みんなが手を合わせてくれる。ありがたいねえ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1uwgt1n": {
+  "episode": "mission-royalpalace",
+  "lang": "ja",
+  "speaker": "piseth",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 6.95,
+  "text": "うわあ、金の塔！ おれが柱の木を運んだころは、仮の木の宮殿だったのに。",
+  "heard": "うわあ、金の塔！おれが柱の木を運んだころは、仮の木の宮殿だったのに。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "殿＝との"
+  ]
  }
 }
