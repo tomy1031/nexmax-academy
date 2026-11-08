@@ -84,16 +84,68 @@
    "kh-sr-finale:en"
   ],
   "m1": [
-   "kh-songbook:ja"
+   "mission-kazurabashi:ja",
+   "mission-biwanotaki:ja",
+   "mission-tsurugisan:ja",
+   "mission-obokekoboke:ja",
+   "mission-youkai-yashiki:ja",
+   "mission-kisegawa:ja",
+   "mission-yashima:ja",
+   "mission-dannoura:ja",
+   "mission-takadachi:ja",
+   "mission-watphnom:ja",
+   "mission-royalpalace:ja",
+   "mission-independencemonument:ja",
+   "mission-nationalmuseum:ja",
+   "mission-chroychangvar:ja"
   ],
   "m2": [
-   "kh-songbook:en"
+   "mission-tsubasa:ja",
+   "mission-kizuna:ja",
+   "mission-angkorwat:ja",
+   "mission-bayon:ja",
+   "mission-taprohm:ja",
+   "mission-banteaykdei:ja",
+   "mission-bokor:ja",
+   "mission-pepperfarm:ja",
+   "mission-kokaido-iwamoto:ja",
+   "mission-kokaido-okada:ja",
+   "mission-kitahama:ja",
+   "mission-seki-kasuga:ja",
+   "mission-seki-terasu:ja",
+   "mission-sennan-longpark:ja"
   ],
   "m3": [
-   "kh-mouhot:ja"
+   "mission-kazurabashi:en",
+   "mission-biwanotaki:en",
+   "mission-tsurugisan:en",
+   "mission-obokekoboke:en",
+   "mission-youkai-yashiki:en",
+   "mission-kisegawa:en",
+   "mission-yashima:en",
+   "mission-dannoura:en",
+   "mission-takadachi:en",
+   "mission-watphnom:en",
+   "mission-royalpalace:en",
+   "mission-independencemonument:en",
+   "mission-nationalmuseum:en",
+   "mission-chroychangvar:en"
   ],
   "m4": [
-   "kh-mouhot:en"
+   "mission-tsubasa:en",
+   "mission-kizuna:en",
+   "mission-angkorwat:en",
+   "mission-bayon:en",
+   "mission-taprohm:en",
+   "mission-banteaykdei:en",
+   "mission-bokor:en",
+   "mission-pepperfarm:en",
+   "mission-kokaido-iwamoto:en",
+   "mission-kokaido-okada:en",
+   "mission-kitahama:en",
+   "mission-seki-kasuga:en",
+   "mission-seki-terasu:en",
+   "mission-sennan-longpark:en"
   ],
   "f1": [
    "kh-royalpalace:ja",
@@ -284,6 +336,24 @@
    "osaka-iwamoto:en",
    "sennan-airport:en",
    "seki-sutra:ja"
+  ],
+  "j1": [
+   "journey-bridges:ja"
+  ],
+  "j2": [
+   "journey-bridges:en"
+  ],
+  "j3": [
+   "journey-hands:ja"
+  ],
+  "j4": [
+   "journey-hands:en"
+  ],
+  "j5": [
+   "journey-learn:ja"
+  ],
+  "j6": [
+   "journey-learn:en"
   ]
  }
 }
