@@ -248,7 +248,14 @@
    "osaka-iwamoto:en"
   ],
   "r6": [
-   "sennan-airport:en"
+   "kh-sr-prologue:ja",
+   "kh-sr-prologue:en",
+   "kh-angkor:ja",
+   "kh-angkor:en",
+   "kh-landmine:ja",
+   "kh-landmine:en",
+   "kh-independence:ja",
+   "kh-independence:en"
   ],
   "r7": [
    "kh-pepper:ja"
