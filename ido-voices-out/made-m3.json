@@ -1050,5 +1050,101 @@
   "heard": "on this hill built one basket of earth at a time people still put their heads together how kind of them",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "e1uwgt1n17uv5": {
+  "episode": "mission-royalpalace",
+  "lang": "en",
+  "speaker": "piseth",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 7.62,
+  "text": "Whoa, a golden spire! When I hauled timber for the posts, it was just a wooden palace.",
+  "heard": "Whoa, a golden spire! When I haul timber for the posts, it was just a wooden palace.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ewlh473yo5lx": {
+  "episode": "mission-royalpalace",
+  "lang": "en",
+  "speaker": "piseth",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 7.16,
+  "text": "See? A king alone can’t raise a single post. Lots and lots of people built this.",
+  "heard": " See? A king alone can’t raise a single post. Lots and lots of people built this.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1ox7gw81q0mh": {
+  "episode": "mission-independencemonument",
+  "lang": "en",
+  "speaker": "dara",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 4.89,
+  "text": "Found them? The naga heads guard the tower all the way round.",
+  "heard": "Found them, the Nagaheads guard the tower all the way round.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e167fd991wf65": {
+  "episode": "mission-independencemonument",
+  "lang": "en",
+  "speaker": "dara",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 6.720041666666667,
+  "text": "Dad said, “Even when you’re grown up, this tower will still be standing here.” He was right.",
+  "heard": "Dad said, even when you're grown up, this tower will still be standing here. He was right.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1kw3jcn1nd50": {
+  "episode": "mission-nationalmuseum",
+  "lang": "en",
+  "speaker": "leakhena2",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 7.2000416666666665,
+  "text": "When I was nine, I looked up at that roof every morning before going into the classroom next door.",
+  "heard": "When I was nine, I looked up at that roof every morning before going into the classroom next door.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e124iiit1hm1l": {
+  "episode": "mission-nationalmuseum",
+  "lang": "en",
+  "speaker": "leakhena2",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 6.32,
+  "text": "The old statues under that roof, and our dances — they have carried on here.",
+  "heard": " The old statues under that roof, and our dances — they have carried on here.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e4wwlbujdmp0": {
+  "episode": "mission-chroychangvar",
+  "lang": "en",
+  "speaker": "sophea2",
+  "voice": "Erinome",
+  "model": "gemini-3.8-live",
+  "seconds": 4.440041666666667,
+  "text": "Side by side, they look a bit like brothers, don’t they?",
+  "heard": " Side by side, they look a bit like brothers, don’t they?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1fnpu611gd0v": {
+  "episode": "mission-chroychangvar",
+  "lang": "en",
+  "speaker": "sophea2",
+  "voice": "Erinome",
+  "model": "gemini-3.8-live",
+  "seconds": 5.57,
+  "text": "Every day, lots of people cross back and forth. I watch over them.",
+  "heard": "Every day lots of people cross back and forth. I watch over them.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
