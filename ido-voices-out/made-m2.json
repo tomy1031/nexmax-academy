@@ -1396,5 +1396,105 @@
   "heard": "戦争 で 一度 外さ れ て また 帰っ て き た ん だって 。 建物 は 最後 まで 面倒 を 見 て もらえる と こう し て 帰っ て くる ん だ 。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "v9bo2k1": {
+  "episode": "mission-kitahama",
+  "lang": "ja",
+  "speaker": "kiyo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 4.19,
+  "text": "このおっちゃんが、取引所をつくらはった人なんやて。",
+  "heard": "このおっちゃんが、取引所をつくらはった人なんやて。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "取引所＝とりひきじょ"
+  ]
+ },
+ "vesdid4": {
+  "episode": "mission-kitahama",
+  "lang": "ja",
+  "speaker": "kiyo",
+  "voice": "Laomedeia",
+  "model": "gemini-3.8-live",
+  "seconds": 5.16,
+  "text": "おれ、字ぃ読めるようになったら、このおっちゃんのことも、本で読んだるねん。",
+  "heard": "おれ、字ぃ読めるようになったら、このおっちゃんのことも、本で読んだるねん。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v6rtvvl": {
+  "episode": "mission-seki-kasuga",
+  "lang": "ja",
+  "speaker": "hachi",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 6.27,
+  "text": "あった！ 正月には、あの舞台で、刀鍛冶のみんなが能を舞うんやで。",
+  "heard": "あった！正月には、あの舞台で、かたなかじのみんなが能を舞うんやで。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "刀鍛冶＝かたなかじ"
+  ]
+ },
+ "v19i3lqo": {
+  "episode": "mission-seki-kasuga",
+  "lang": "ja",
+  "speaker": "hachi",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 5.8,
+  "text": "おれも、大きなったら舞うんや。……舞台、今も、ちゃんとあるんやな。",
+  "heard": "おれも、大きなったら舞うんや。……舞台、今も、ちゃんとあるんやな。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1ibk7cu": {
+  "episode": "mission-seki-terasu",
+  "lang": "ja",
+  "speaker": "genzo",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 3.33,
+  "text": "ほう、鉄の道か。",
+  "heard": "ほお 鉄 の 道 か 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vqjh28d": {
+  "episode": "mission-seki-terasu",
+  "lang": "ja",
+  "speaker": "genzo",
+  "voice": "Algenib",
+  "model": "gemini-3.8-live",
+  "seconds": 6.04,
+  "text": "鉄は、刀にも、ナイフにも、線路にもなる。……形が変わるだけじゃ。",
+  "heard": "鉄は、刀にも、ナイフにも、線路にもなる。……形が変わるだけじゃ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vsjez9m": {
+  "episode": "mission-sennan-longpark",
+  "lang": "ja",
+  "speaker": "takuya",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 6.38,
+  "text": "見えた？ あの島、おれがじいちゃんの舟から、光を数えた島や。",
+  "heard": "見えた あの 島 。 俺 が じい ちゃん の 船 から 光 を 数え た 島 や 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v99ysky": {
+  "episode": "mission-sennan-longpark",
+  "lang": "ja",
+  "speaker": "takuya",
+  "voice": "Leda",
+  "model": "gemini-3.8-live",
+  "seconds": 3.44,
+  "text": "おれ、いつか、あそこから飛ぶんや。",
+  "heard": "おれ、いつか、あそこから飛ぶんや。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
