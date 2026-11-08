@@ -1,0 +1,256 @@
+{
+ "vusui3o": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 9.29,
+  "text": "2026年、11月。森の中の寺、バンテアイ・クデイ。",
+  "heard": "2026 年 11 月 森 の 中 の 寺 万大 9 だい",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1googcy": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.670041666666667,
+  "text": "朝の光が、くずれた石のあいだに、まだらに落ちている。",
+  "heard": "朝 の 光 が 崩れ た 石 の 間 に まだら に 落ち て いる 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1gc8ygd": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.52,
+  "text": "学ぶ旅の扉、ぜんぶひらいたね。",
+  "heard": "学ぶ 旅の扉 全部開いたね",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vfewchr": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 15.13,
+  "text": "バイヨンで、王妃さまのところへ字を習いに行った、チャンティちゃん。北浜の夜の塾の、清吉くん。この寺で、遺跡を守る研修をしていた、ソワンさん。それから、日本語とITを学んだ、ソカーさん。",
+  "heard": "バイヨンで、王妃さまのところへ字を習いに行った、チャンティちゃん。北浜の夜の塾の、清吉くん。この寺で、遺跡を守る研修をしていた、ソワンさん。それから、日本語とITを学んだ、ソカーさん。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "王妃＝おうひ",
+   "北浜＝きたはま",
+   "塾＝じゅく",
+   "清吉＝せいきち"
+  ]
+ },
+ "v6n3g8z": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.7,
+  "text": "今日は、時渡りはしないよ。……ほら、あそこ。",
+  "heard": "今日は、時渡りはしないよ。……ほら、あそ",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "時渡り＝ときわたり"
+  ]
+ },
+ "v1yn2edl": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 7.71,
+  "text": "寺の入り口のあたりで、ヘルメットの若い人たちが、ひとりの男の人をかこんでいた。",
+  "heard": "寺 の 入り口 の あたり で ヘルメット の 若い 人 たち が 1人 の 男 の 人 を 囲ん で い た 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vasf2l9": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "sovann2",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 4.58,
+  "text": "……あ。また会えましたね。アンコール・ワットの朝、以来だ。",
+  "heard": "あ また会えました ね 。 アンコール ワット の 朝 以来 だ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1w8pot9": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "sovann2",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 4.720041666666667,
+  "text": "……あ。あなたは……2001年の、あの日の……！",
+  "heard": "あなた は 2001 年 の あの 日 の",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v16m5uyd": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "sovann2",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 6.76,
+  "text": "ソワンです。もう四十九ですよ。今は、遺跡を守る仕事をしています。",
+  "heard": "そうあんです。もう49 ですよ。今は遺跡を守る仕事をしています。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v83qblx": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "sovann2",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 7.790041666666666,
+  "text": "今日は、研修生たちを連れてきたんです。ぼくが、はじめて仏さまに会った場所を、見せたくて。",
+  "heard": "今日は研修生たちを連れて来たんです。僕が初めて仏様会った場所を見せたくて。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "研修生＝けんしゅうせい"
+  ]
+ },
+ "v1wwibkx": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "sovann2",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 4.76,
+  "text": "あの日、あなたも、となりで竹のへらを動かしてくれましたね。",
+  "heard": "あの 日 あなた も 隣 で 竹の原 を 動かし て くれ まし た ね 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vvoce41": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "sovann2",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 6.9500416666666665,
+  "text": "あの日、あなたは、土をふるいにかけて、土器のかけらを見つけてくれましたね。",
+  "heard": "あの 日 、 あなた は 土 を 古い に かけ て 、 土器 の かけら を 見つけ て くれ まし た ね 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v16e0w2i": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.210041666666666,
+  "text": "研修生のひとりが、竹のへらをにぎったまま、かたくなっていた。",
+  "heard": "研修 生 の 1人 が 竹の平 を 握っ た まま 硬く なっ て い た 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "研修生＝けんしゅうせい"
+  ]
+ },
+ "v19mnqlx": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "研修生",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 7.34,
+  "text": "ソワン先生。わたし、ちゃんとできるでしょうか。大事な石を、きずつけてしまったら……。",
+  "heard": "ソワン先生。わたし、ちゃんとできるでしょうか。大事な石を、きずつけてしまったら。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1339fan": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "sovann2",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 7.03,
+  "text": "ぼくも、こわかったよ。仏さまが出てきたとき、手が、ふるえて、とまらなかった。",
+  "heard": "仏さまが出てきたとき、手が、ふるえて、とまらなかった。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1pys2ed": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "sovann2",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 9.41,
+  "text": "ぼくに、へらの持ち方を教えてくれたのは、日本の大学の先生たちでした。その先生たちも、だれかに教わったんです。",
+  "heard": "ぼくに、へらの持ち方を教えてくれたのは、日本の大学の先生たちでした。その先生たちも、だれかに教わったんです。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v19r99js": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.620041666666667,
+  "text": "上智大学の調査団は、1990年代のはじめから、カンボジアの若い人たちに、遺跡を守る方法を教えてきたんだ。",
+  "heard": "皇城 大学 の 調査 団 は 1990 年代 の 始め から カンボジア の 若い 人 たち に 遺跡 を 守る 方法 を 教え て き た ん だ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vhbpjpq": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.19,
+  "text": "そこで学んだカンボジアの人たちが、今は、アンコールの修復の中心にいるんだよ。",
+  "heard": "そこで学んだカンボジアの人たちが、今は、アンコールの修復の中心にいるんだよ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1k30qu6": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "sovann2",
+  "voice": "Sadaltager",
+  "model": "gemini-3.8-live",
+  "seconds": 9.82,
+  "text": "旅の方。この子に、何か話してあげてくれませんか。あなたは、旅で、いろんな「学ぶ人」に会ってきたんでしょう？",
+  "heard": "この子に、何か話してあげてくれませんか。あなたは、旅で、いろんな「学ぶ人」に会ってきたんでしょう？",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1k8p57o": {
+  "episode": "journey-learn",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 11.2,
+  "text": "あなたは、北浜の清吉くんの話をした。母さんからの手紙を、ひと月もふところに入れたまま、読めずにいたこと。",
+  "heard": "あなたは、北浜の清吉くんの話をした。母さんからの手紙を、ひと月もふところに入れたまま、読めずに",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "北浜＝きたはま",
+   "清吉＝せいきち"
+  ]
+ }
+}
