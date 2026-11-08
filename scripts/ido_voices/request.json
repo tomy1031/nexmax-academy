@@ -258,7 +258,14 @@
    "kh-independence:en"
   ],
   "r7": [
-   "kh-pepper:ja"
+   "kh-bokor:ja",
+   "kh-bokor:en",
+   "osaka-kitahama:ja",
+   "osaka-kitahama:en",
+   "osaka-iwamoto:ja",
+   "osaka-iwamoto:en",
+   "kh-angkor:ja",
+   "kh-angkor:en"
   ],
   "r8": [
    "kh-pepper:en"
