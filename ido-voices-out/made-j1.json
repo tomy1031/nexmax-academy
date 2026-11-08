@@ -1,0 +1,258 @@
+{
+ "v1fezi5s": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.590041666666667,
+  "text": "2026年、11月。朝のプノンペン。",
+  "heard": "2026年11月 朝 の プノン ペン",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v2a3fxh": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 14.430041666666666,
+  "text": "トンレサップ川に、二本の橋がならんでいる。一本は、日本の協力でつながった、あの橋。となりは、2014年にできた、もう一本の橋だ。",
+  "heard": "トンレサップ川に、二本の橋がならんでいる。一本は、日本の協力でつながった、あの橋。となりは、2014年にできた、もう一本の橋だ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "トンレサップ川＝とんれさっぷがわ"
+  ]
+ },
+ "v1cyxbpy": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.390041666666667,
+  "text": "橋の旅の扉、ぜんぶひらいたね。",
+  "heard": "橋の旅の扉 全部開いたね",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "vym0wlw": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.42,
+  "text": "祖谷のかずら橋。プノンペンの日本の橋。コンポンチャムのきずな橋。ネアックルンのつばさ橋。",
+  "heard": "祖谷のかずら橋。プノンペンの日本の橋。コンポンチャムのきずな橋。ネアックルンのつばさ橋。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "祖谷＝いや",
+   "きずな橋＝きずなばし",
+   "つばさ橋＝つばさばし"
+  ]
+ },
+ "v1hg9le2": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 6.32,
+  "text": "今日は、時渡りはしないよ。2026年のまま、もう一度、ここへ来てみたんだ。",
+  "heard": "今日は時渡りはしないよ。2026年のまま、もう一度ここへ来てみたんだ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "時渡り＝ときわたり"
+  ]
+ },
+ "v121e9ys": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 8.180041666666666,
+  "text": "橋の下の川岸で、ヘルメットの女の人が、小さなハンマーで、橋の柱を軽くたたいていた。",
+  "heard": "橋の下の川岸でヘルメットの女の人が小さなハンマーで橋の柱を軽く叩いていた。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v50wg5x": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "sophea2",
+  "voice": "Erinome",
+  "model": "gemini-3.8-live",
+  "seconds": 3.1900416666666667,
+  "text": "……あら？ また会ったわね。おはよう。",
+  "heard": "あら？ また会ったわね。おはよう。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1hty4ig": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "sophea2",
+  "voice": "Erinome",
+  "model": "gemini-3.8-live",
+  "seconds": 8.1,
+  "text": "今日はね、橋の点検の日なの。たたいた音で、コンクリートの中に、すきまがないかを聞くのよ。",
+  "heard": "今日はね、橋の点検の日なの。たたいた音で、コンクリートの中に、すきまがないかを聞くのよ。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "点検＝てんけん"
+  ]
+ },
+ "v1l3bfvn": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "sophea2",
+  "voice": "Erinome",
+  "model": "gemini-3.8-live",
+  "seconds": 1.06,
+  "text": "やってみる？",
+  "heard": "やってみる ?",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1j8htkk": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 12.11,
+  "text": "あなたは、小さなハンマーで、柱をそっとたたいた。コン、と、かたくて高い音がした。",
+  "heard": "あなた は 小さな ハンマー で 柱 を そっと 叩い た 。 コン と 硬く て 高い 音 が し た 。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v9vuxe2": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "sophea2",
+  "voice": "Erinome",
+  "model": "gemini-3.8-live",
+  "seconds": 3.1,
+  "text": "いい音。……これは、元気な音よ。",
+  "heard": "いい 音 。 これ は 元気 な 音 よ 。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1y28i7w": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "sophea2",
+  "voice": "Erinome",
+  "model": "gemini-3.8-live",
+  "seconds": 8.67,
+  "text": "中にすきまがあると、ボコッて、にぶい音になるの。人の体と同じ。毎日、聞いてあげないとね。",
+  "heard": "中に 隙間が ある と ボコっ て 鈍い 音 に なる の 人 の 体 と 同じ 毎日 聞い て あげ ない と ね 。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1omuk5s": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "sophea2",
+  "voice": "Erinome",
+  "model": "gemini-3.8-live",
+  "seconds": 7.12,
+  "text": "ねえ、覚えてる？ 1994年に、わたしの手をにぎって、三人で渡ってくれたこと。",
+  "heard": "ねえ覚えてる? 1994年に私の手を握って3人で渡ってくれたこと。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1altz32": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "sophea2",
+  "voice": "Erinome",
+  "model": "gemini-3.8-live",
+  "seconds": 6.83,
+  "text": "ねえ、覚えてる？ 1994年に、おじいちゃんと三人で、この橋を渡ったこと。",
+  "heard": "ね、覚えている？　1994年におじいちゃんと3人でこの橋を渡ったこと？",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v14rj5bd": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "sophea2",
+  "voice": "Erinome",
+  "model": "gemini-3.8-live",
+  "seconds": 8.21,
+  "text": "あのとき、おじいちゃんが立ち止まった、つぎ目のところ。わたし、点検のたびに、あそこで、ちょっとだけ止まるの。",
+  "heard": "あのとき、おじいちゃんが立ち止まった、つぎ目のところ。わたし、点検のたびに、あそこで、ちょっとだけ止まるの。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "点検＝てんけん"
+  ]
+ },
+ "v1o7fprp": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "sophea2",
+  "voice": "Erinome",
+  "model": "gemini-3.8-live",
+  "seconds": 3.11,
+  "text": "あなたは、ほかにも、橋を見てきたの？",
+  "heard": "あなた は 他 に も 橋 を 見 て き た の ?",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1k7h1nm": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 5.42,
+  "text": "あなたは、旅で渡ってきた橋のことを、ソピアに話した。",
+  "heard": "あなたは、旅で渡ってきた橋のことを、ソピアに話した。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1dfkcq8": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "narr",
+  "voice": "Charon",
+  "model": "gemini-3.8-live",
+  "seconds": 10.34,
+  "text": "日本の山おくの、かずら（山のつる）で編んだ橋。追手が来たら、切り落とせるように作った、という言い伝えのある橋。",
+  "heard": "日本の山おくの、かずら（山のつる）で編んだ橋。追手が来たら、切り落とせるように作った、という",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "追手＝おって"
+  ]
+ },
+ "v18tpapk": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "sophea2",
+  "voice": "Erinome",
+  "model": "gemini-3.8-live",
+  "seconds": 2.21,
+  "text": "切るために、編む橋……。",
+  "heard": "切る ため に 編む 端",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": []
+ },
+ "v1veizxi": {
+  "episode": "journey-bridges",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 9.03,
+  "text": "でもね、次の朝、国盛さんは言ったんだ。「切れたなら、また編めばよい。今度は、切るためではない」って。",
+  "heard": "でもね、次の朝、国盛さんは言ったんだ。「切れたなら、また編めよい。今度は、切るためではない」って。",
+  "scene": "今の時代の、明るくおだやかな場面",
+  "readings": [
+   "国盛＝くにもり"
+  ]
+ }
+}
