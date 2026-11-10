@@ -35,6 +35,8 @@ describe("深く 聞く たいわ", () => {
     expect(isQuestionLike("お店は 何時から 開きますか")).toBe(true);
     expect(isQuestionLike("給料は どのくらいですか？")).toBe(true);
     expect(isQuestionLike("応募の しかたを 教えて ください")).toBe(true);
+    expect(isQuestionLike("働く 時間を 知りたいです")).toBe(true);
+    expect(isQuestionLike("コンセプトは 何")).toBe(true);
     expect(isQuestionLike("わかりました")).toBe(false);
     expect(isQuestionLike("ありがとうございます。")).toBe(false);
     expect(isQuestionLike("")).toBe(false);

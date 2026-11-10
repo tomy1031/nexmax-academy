@@ -57,7 +57,7 @@ export const OPEN_TALK_STYLE: ReadonlyMap<string, OpenTalkStyle> = new Map([
     "youken_aoba",
     {
       boardNote:
-        "カードは 最低限 聞く ことです。ほかの ことも 自由に 聞こう。答えは カードに 出ません。聞いた ことは 自分で メモしよう。",
+        "カードは かならず 聞く ことです。ほかの ことも 自由に 聞こう。答えは カードに 出ません。聞いた ことは 自分で メモしよう。",
       opinions: false,
       selfMemo: true,
     },
@@ -150,8 +150,34 @@ export function isDeepQuestion(utterance: string): boolean {
  */
 export function isQuestionLike(utterance: string): boolean {
   if (!normalizeReading(utterance)) return false;
-  return looksLikeQuestion(utterance) || isRequest(utterance);
+  if (looksLikeQuestion(utterance) || isRequest(utterance)) return true;
+  /*
+   * 「か」で 終わらない 聞き方も しつもん（「コンセプトは 何」「働く 時間を 知りたいです」）。
+   * `isRequest` には 入れない——「知りたい」は 意見の 答え（「若い 人は いくらか 知りたいです」）にも
+   * 出るので、意見の 答えを しつもんと 取りちがえる（isOpinionAnswer）。
+   */
+  const text = normalizeReading(trimEnd(utterance));
+  return (
+    WANT_TO_KNOW.some((marker) => marker.length > 0 && text.includes(marker)) ||
+    QUESTION_END_WORDS.some((word) => word.length > 0 && text.endsWith(word))
+  );
 }
+
+/** 「知りたい」の 形（isQuestionLike だけで 使う）。 */
+const WANT_TO_KNOW = ["知りたい", "しりたい"].map(normalizeReading);
+
+/** 文の 終わりに 来ると しつもんに なる 語（「コンセプトは 何」）。 */
+const QUESTION_END_WORDS = [
+  "何",
+  "なに",
+  "いつ",
+  "どこ",
+  "だれ",
+  "誰",
+  "いくら",
+  "どのくらい",
+  "どう",
+].map(normalizeReading);
 
 /** お願いの 形の しつもんか。 */
 export function isRequest(utterance: string): boolean {

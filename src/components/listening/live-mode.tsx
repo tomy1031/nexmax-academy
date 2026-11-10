@@ -431,9 +431,14 @@ export function TalkSession({
        * 聞けと 言う ことに なる。しつもんで ない 発言（あいづち・お礼）には 何も 出さない。
        */
       if (openTalk) {
-        setNote(
-          isQuestionLike(utterance) ? (scripted ? "talk.freeAskNoAi" : "talk.freeAsk") : null,
-        );
+        /*
+         * 1語だけ 当たった（close）ときは、札が 開かなかった ことを 正直に 言う。
+         * 「しつもん できたね」だけだと、聞けたと 思うのに 札が 閉じた まま 理由が 分からない
+         *（2026-11-10 の 別の AI の チェック）。「番では ないかも」とは 言わない。
+         */
+        if (outcome.kind === "close") setNote("talk.freeAskClose");
+        else if (isQuestionLike(utterance)) setNote(scripted ? "talk.freeAskNoAi" : "talk.freeAsk");
+        else setNote(null);
         return;
       }
       // 1語だけ当たった＝話題は合っている。「ずれている」ではなく「あと ひとこと」へ

@@ -229,6 +229,12 @@ export const FEEDBACK = {
     title: "しつもん できたね",
     next: "答えを メモしよう",
   },
+  /** 同じ。カードの ことばが 1つだけ 当たって、札は まだ 開いて いない とき。 */
+  "talk.freeAskClose": {
+    tone: "info",
+    title: "しつもん できたね",
+    next: "カードは まだ 開いて いないよ。カードの ことなら、ことばを 1つ たして 聞いて みよう",
+  },
   /** 同じ。AIが つながって いない ときは 相手の 返事が 出ない。 */
   "talk.freeAskNoAi": {
     tone: "info",
@@ -332,6 +338,8 @@ export const FEEDBACK_FURIGANA: FuriganaEntry[] = [
   ["答", "こた"],
   ["伝", "つた"],
   ["考", "かんが"],
+  // オープンな たいわ（talk.freeAskClose）の「開いて いないよ」
+  ["開", "ひら"],
 ];
 
 /** 入力の問題（normalize.ts の InputIssue）を文言キーに写す。 */
