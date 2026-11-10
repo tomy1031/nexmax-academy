@@ -4,9 +4,9 @@
   "speaker": "nekmax",
   "voice": "Zephyr",
   "model": "gemini-3.8-live",
-  "seconds": 2.93,
+  "seconds": 2.71,
   "text": "ようこそ、祖谷の地へ。",
-  "heard": "ようこそ 癒やし の ち へ 。",
+  "heard": "よう こそ 癒や の 知恵 。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": [
    "祖谷＝いや"
@@ -77,9 +77,9 @@
   "speaker": "nekmax",
   "voice": "Zephyr",
   "model": "gemini-3.8-live",
-  "seconds": 7.69,
+  "seconds": 3.3,
   "text": "Held deep among the mountains,",
-  "heard": " Held deep among the mountains,",
+  "heard": "held deep among the mountains",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": [],
   "lang": "en"
@@ -89,9 +89,9 @@
   "speaker": "nekmax",
   "voice": "Zephyr",
   "model": "gemini-3.8-live",
-  "seconds": 3.93,
+  "seconds": 4.05,
   "text": "祖谷川が長い時間をかけて刻んだ渓谷です。",
-  "heard": "嫌 が が 長い 時間 を かけ て 刻ん だ 警告 です 。",
+  "heard": "イヤ川が長い時間をかけて刻んだ警告です。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": [
    "祖谷川＝いやがわ",
@@ -146,10 +146,10 @@
   "episode": "kamishibai-kazurabashi-ep1",
   "speaker": "nekmax",
   "voice": "Zephyr",
-  "model": "gemini-3.1-flash-live-preview",
-  "seconds": 0.71,
+  "model": "gemini-3.8-live",
+  "seconds": 0.76,
   "text": "祖谷。",
-  "heard": "祖谷。",
+  "heard": "いや",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": [
    "祖谷＝いや"
@@ -366,9 +366,9 @@
   "speaker": "nekmax",
   "voice": "Zephyr",
   "model": "gemini-3.1-flash-live-preview",
-  "seconds": 5.29,
+  "seconds": 5.91,
   "text": "一一八五年、春。平氏は、海にやぶれました。",
-  "heard": "一一八五年、春。\n\n平氏は、海にやぶれました。",
+  "heard": "一一八五年、春。平氏は、海にやぶれました。",
   "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
   "readings": [
    "一一八五年＝せんひゃくはちじゅうごねん",
@@ -395,9 +395,9 @@
   "speaker": "nekmax",
   "voice": "Zephyr",
   "model": "gemini-3.8-live",
-  "seconds": 3.52,
+  "seconds": 4.14,
   "text": "けれど祖谷には、こんな言い伝えがあります。",
-  "heard": "けれど祖谷には、こんな言い伝えがあります。",
+  "heard": "けれどいやには、こんな言い伝えがあります。",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": [
    "祖谷＝いや",
@@ -410,9 +410,9 @@
   "speaker": "nekmax",
   "voice": "Zephyr",
   "model": "gemini-3.8-live",
-  "seconds": 3.54,
+  "seconds": 3.52,
   "text": "But in Iya, there is a legend.",
-  "heard": "Butin Iya,there",
+  "heard": "But in Iya, there is a legend.",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": [
    "Iya = \"EE-yah\""
