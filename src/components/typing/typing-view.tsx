@@ -270,7 +270,9 @@ export function TypingView({ typing, embedded }: { typing: TypingViewData; embed
           </p>
           {typing.sentenceAudio?.[index] ? (
             <ModelAudioButton key={index} url={typing.sentenceAudio[index]} />
-          ) : null}
+          ) : (
+            <SpeechModelButton key={index} text={sentence.text} />
+          )}
         </div>
       </section>
 
@@ -412,6 +414,62 @@ export function TypingView({ typing, embedded }: { typing: TypingViewData; embed
  * もう一度 押すと 止まる。文が 変わると 部品ごと 作り直す（呼び出し側の `key`）ので、
  * 前の 文の 音は 鳴り残らない。押しても 入力欄の カーソルを 奪わない（聞いて そのまま 打てる）。
  */
+/** 機械の 読み上げの 速さ（`src/components/speak-button.tsx` と 同じ。理解設計ガイド P10「ゆっくりが 既定」）。 */
+const SPEECH_RATE = 0.85;
+
+/**
+ * 作った 音が 無い 文は、端末の 機械の 読み上げで 聞く（2026-11-10 の 指定「音声データが ない
+ * 場合は 機械の 読み上げを 入れる ことは できますか？」）。連絡の リスニングは 音が 1本の まま で、
+ * 文ごとの 音が 無い。
+ *
+ * 見た目と 押しかたは `ModelAudioButton` と 同じ（もう一度 押すと 止まる・入力欄の カーソルを 奪わない）。
+ * 読み上げが 無い 端末では **ボタンを 出さない**（押しても 鳴らない ボタンは こわれて 見える。
+ * `SpeakButton` と 同じ 考え）。文が 変わると 部品ごと 作り直し（呼び出し側の `key`）、前の 文の
+ * 読み上げは 止める。
+ */
+function SpeechModelButton({ text }: { text: string }) {
+  const canSpeak = useSyncExternalStore(
+    subscribeNever,
+    () => "speechSynthesis" in window,
+    () => false,
+  );
+  const [playing, setPlaying] = useState(false);
+  useEffect(() => () => window.speechSynthesis?.cancel(), []);
+  if (!canSpeak) return null;
+  const toggle = () => {
+    const synth = window.speechSynthesis;
+    // ためこむと 前の 文が 読まれ 続ける ので、いつも 先に 止める
+    synth.cancel();
+    if (playing) {
+      setPlaying(false);
+      return;
+    }
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "ja-JP";
+    utterance.rate = SPEECH_RATE;
+    utterance.onend = () => setPlaying(false);
+    utterance.onerror = () => setPlaying(false);
+    setPlaying(true);
+    synth.speak(utterance);
+  };
+  return (
+    <button
+      type="button"
+      onClick={toggle}
+      onMouseDown={(event) => event.preventDefault()}
+      aria-label="お手本の 文を 聞く"
+      aria-pressed={playing}
+      data-typing="listen"
+      data-voice="speech"
+      className={`grid h-11 w-11 shrink-0 place-items-center rounded-full border-2 text-lg ${
+        playing ? "bg-sky border-sky text-white" : "border-hairline bg-panel text-ink"
+      }`}
+    >
+      {playing ? "■" : "🔊"}
+    </button>
+  );
+}
+
 function ModelAudioButton({ url }: { url: string }) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [playing, setPlaying] = useState(false);
