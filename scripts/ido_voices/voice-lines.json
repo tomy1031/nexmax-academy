@@ -1,0 +1,381 @@
+[
+ {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "text": "ようこそ、祖谷の地へ。",
+  "vid": "kz1op_01",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "祖谷＝いや"
+  ]
+ },
+ {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "lang": "en",
+  "speaker": "nekmax",
+  "text": "Welcome to the land of Iya.",
+  "vid": "kz1op_01_en",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "Iya = \"EE-yah\""
+  ]
+ },
+ {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "text": "ここは徳島県三好市。",
+  "vid": "kz1op_02",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "徳島県＝とくしまけん",
+   "三好市＝みよしし"
+  ]
+ },
+ {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "lang": "en",
+  "speaker": "nekmax",
+  "text": "This is Miyoshi City, in Tokushima Prefecture.",
+  "vid": "kz1op_02_en",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "Miyoshi = \"mee-YOH-shee\"",
+   "Tokushima = \"toh-koo-SHEE-mah\""
+  ]
+ },
+ {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "text": "深い山々に抱かれ、",
+  "vid": "kz1op_03",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "山々＝やまやま",
+   "抱かれ＝いだかれ"
+  ]
+ },
+ {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "lang": "en",
+  "speaker": "nekmax",
+  "text": "Held deep among the mountains,",
+  "vid": "kz1op_03_en",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "text": "祖谷川が長い時間をかけて刻んだ渓谷です。",
+  "vid": "kz1op_04",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "祖谷川＝いやがわ",
+   "時間＝じかん",
+   "渓谷＝けいこく",
+   "刻んだ＝きざんだ",
+   "祖谷＝いや"
+  ]
+ },
+ {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "lang": "en",
+  "speaker": "nekmax",
+  "text": "this gorge was carved by the Iya River over a very long time.",
+  "vid": "kz1op_04_en",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "Iya River = \"EE-yah\" River"
+  ]
+ },
+ {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "text": "日本三大秘境の一つ、",
+  "vid": "kz1op_05",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "日本三大秘境＝にほんさんだいひきょう"
+  ]
+ },
+ {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "lang": "en",
+  "speaker": "nekmax",
+  "text": "One of Japan’s three great hidden regions:",
+  "vid": "kz1op_05_en",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "text": "祖谷。",
+  "style": "big",
+  "vid": "kz1op_06",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "祖谷＝いや"
+  ]
+ },
+ {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "lang": "en",
+  "speaker": "nekmax",
+  "text": "Iya.",
+  "style": "big",
+  "vid": "kz1op_06_en",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "Iya = \"EE-yah\""
+  ]
+ },
+ {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "text": "けれど、",
+  "style": "whisper",
+  "vid": "kz1op_07",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "lang": "en",
+  "speaker": "nekmax",
+  "text": "But…",
+  "style": "whisper",
+  "vid": "kz1op_07_en",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "text": "この場所が秘境と呼ばれる理由は、",
+  "style": "whisper",
+  "vid": "kz1op_08",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "場所＝ばしょ",
+   "秘境＝ひきょう",
+   "理由＝りゆう",
+   "呼ばれる＝よばれる"
+  ]
+ },
+ {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "lang": "en",
+  "speaker": "nekmax",
+  "text": "the reason this place is called a hidden land",
+  "style": "whisper",
+  "vid": "kz1op_08_en",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "text": "ただ山が深いからだけではありません。",
+  "style": "whisper",
+  "vid": "kz1op_09",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "lang": "en",
+  "speaker": "nekmax",
+  "text": "is not only that the mountains are deep.",
+  "style": "whisper",
+  "vid": "kz1op_09_en",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "text": "山に残された記憶。",
+  "vid": "kz1op_10",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "記憶＝きおく",
+   "残された＝のこされた"
+  ]
+ },
+ {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "lang": "en",
+  "speaker": "nekmax",
+  "text": "A memory left in the mountains.",
+  "vid": "kz1op_10_en",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "text": "その物語は、源氏と平氏の戦いから始まります。",
+  "vid": "kz1op_11",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "物語＝ものがたり",
+   "源氏＝げんじ",
+   "平氏＝へいし"
+  ]
+ },
+ {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "lang": "en",
+  "speaker": "nekmax",
+  "text": "Its story begins with the war between the Genji and the Heike.",
+  "vid": "kz1op_11_en",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "Genji = \"GEN-jee\"",
+   "Heike = \"HAY-keh\""
+  ]
+ },
+ {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "text": "およそ八百四十年前。",
+  "vid": "kz1op_12",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "八百四十年前＝はっぴゃくよんじゅうねんまえ"
+  ]
+ },
+ {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "lang": "en",
+  "speaker": "nekmax",
+  "text": "About eight hundred and forty years ago.",
+  "vid": "kz1op_12_en",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": []
+ },
+ {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "text": "白い旗の源氏。赤い旗の平氏。",
+  "vid": "kz1op_13",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": [
+   "源氏＝げんじ",
+   "平氏＝へいし"
+  ]
+ },
+ {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "lang": "en",
+  "speaker": "nekmax",
+  "text": "The Genji under white banners. The Heike under red.",
+  "vid": "kz1op_13_en",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": [
+   "Genji = \"GEN-jee\"",
+   "Heike = \"HAY-keh\""
+  ]
+ },
+ {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "text": "一一八五年、春。平氏は、海にやぶれました。",
+  "vid": "kz1op_14",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": [
+   "一一八五年＝せんひゃくはちじゅうごねん",
+   "平氏＝へいし"
+  ]
+ },
+ {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "lang": "en",
+  "speaker": "nekmax",
+  "text": "Spring, 1185. The Heike were defeated at sea.",
+  "vid": "kz1op_14_en",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": [
+   "Heike = \"HAY-keh\""
+  ]
+ },
+ {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "text": "けれど祖谷には、こんな言い伝えがあります。",
+  "vid": "kz1op_15",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "祖谷＝いや",
+   "言い伝え＝いいつたえ"
+  ]
+ },
+ {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "lang": "en",
+  "speaker": "nekmax",
+  "text": "But in Iya, there is a legend.",
+  "vid": "kz1op_15_en",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "Iya = \"EE-yah\""
+  ]
+ },
+ {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "text": "戦いにやぶれた平家の人びとが、この山へ逃れてきた、と。",
+  "vid": "kz1op_16",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "平家＝へいけ",
+   "逃れて＝のがれて"
+  ]
+ },
+ {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "lang": "en",
+  "speaker": "nekmax",
+  "text": "It says the defeated Heike fled into these mountains.",
+  "vid": "kz1op_16_en",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "Heike = \"HAY-keh\""
+  ]
+ },
+ {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "text": "さあ、時の扉をひらきましょう。",
+  "vid": "kz1op_17",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "lang": "en",
+  "speaker": "nekmax",
+  "text": "Now, let us open the door of time.",
+  "vid": "kz1op_17_en",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ }
+]
