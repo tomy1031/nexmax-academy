@@ -4,6 +4,7 @@
   "lang": "ja",
   "speaker": "nekmax",
   "text": "ようこそ、祖谷の地へ。",
+  "speak": "ようこそ、いやの地へ。",
   "vid": "kz1op_01",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": [
@@ -71,6 +72,7 @@
   "lang": "ja",
   "speaker": "nekmax",
   "text": "祖谷川が長い時間をかけて刻んだ渓谷です。",
+  "speak": "いやがわが長い時間をかけて刻んだ渓谷です。",
   "vid": "kz1op_04",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": [
@@ -117,6 +119,7 @@
   "lang": "ja",
   "speaker": "nekmax",
   "text": "祖谷。",
+  "speak": "いや。",
   "style": "big",
   "vid": "kz1op_06",
   "scene": "おだやかな場面。落ち着いた声で",
@@ -252,6 +255,7 @@
   "lang": "ja",
   "speaker": "nekmax",
   "text": "およそ八百四十年前。",
+  "speak": "およそはっぴゃくよんじゅうねんまえ。",
   "vid": "kz1op_12",
   "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
   "readings": [
@@ -296,6 +300,7 @@
   "lang": "ja",
   "speaker": "nekmax",
   "text": "一一八五年、春。平氏は、海にやぶれました。",
+  "speak": "せんひゃくはちじゅうごねん、春。平氏は、海にやぶれました。",
   "vid": "kz1op_14",
   "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
   "readings": [
@@ -319,6 +324,7 @@
   "lang": "ja",
   "speaker": "nekmax",
   "text": "けれど祖谷には、こんな言い伝えがあります。",
+  "speak": "けれどいやには、こんな言い伝えがあります。",
   "vid": "kz1op_15",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": [

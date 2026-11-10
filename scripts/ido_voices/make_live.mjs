@@ -11,6 +11,7 @@
  * - 台本どおりに 読めたかを 文字起こしで 確かめ、合わない ものは 書かない
  * - 受け取ったら その場で WAV に して、PUSH_EVERY 行ごとに この ブランチへ push する（途中で 止まっても 残る）
  * - すでに ある 行は 飛ばす。持ち時間を 過ぎたら 新しい 行は 始めない
+ * - 行に speak が あれば、読み上げには そちらを 渡す（画面の 字は text のまま。地名を かなで 渡して 読みちがいを 防ぐ）
  * 仕上げ（無音を けずる・MP3）は ido_proto の scripts/import-voices.mjs で やる。
  */
 import { spawnSync } from "node:child_process";
@@ -229,7 +230,7 @@ function judge(l, heard, seconds) {
   if (!h) return lengthOk ? { ok: true, why: "文字起こし無し・長さは合う" } : { ok: false, why: `長さ ${seconds.toFixed(1)}秒` };
   let best = 0;
   let longer = true;
-  for (const s of [norm(l.text), norm(read)]) {
+  for (const s of [norm(l.text), norm(read), norm(l.speak ?? l.text)]) {
     const shared = lcs(s, h);
     best = Math.max(best, shared / Math.max(s.length, h.length, 1));
     if (h.length <= s.length * 1.6 + 2) longer = false;
@@ -287,7 +288,9 @@ for (const l of todo) {
   const notes = [];
   for (let round = 0; round < 2 && !got; round += 1) {
     for (const model of LIVE_TTS_MODELS) {
-      const turn = round > 0 ? (l.lang === "en" ? `"${l.text}"` : `「${l.text}」`) : l.text;
+      // 読み上げに渡す文（speak があれば、地名などを かなに した 文）
+      const say = l.speak ?? l.text;
+      const turn = round > 0 ? (l.lang === "en" ? `"${say}"` : `「${say}」`) : say;
       try {
         const sp = await synthesize(turn, model, voice, instruction, l.lang);
         let heard = sp.transcript;
