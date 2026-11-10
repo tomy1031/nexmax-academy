@@ -33,7 +33,7 @@ import {
   type TalkLine,
 } from "./people";
 import { useLiveSession } from "./use-live-session";
-import { isDeepQuestion, isOpinionAnswer, OPEN_TALK } from "./open-talk";
+import { isDeepQuestion, isOpinionAnswer, isQuestionLike, OPEN_TALK_STYLE } from "./open-talk";
 import { CertificatePanel } from "@/components/certificate/certificate-panel";
 import { useCertificateIssuer } from "@/components/certificate/use-certificate-issuer";
 import { CertificateCorner } from "@/components/certificate/certificate-corner";
@@ -187,7 +187,8 @@ export function TalkSession({
    * カードは 最低限の 要件だけ。カードに 無い くわしい 話を 引き出した しつもんと、
    * 相手に 意見を 聞かれて 答えた 回を 数えて 見せる（決まった 答えを 当てるだけに しない）。
    */
-  const openTalk = OPEN_TALK.has(scenario.id);
+  const openStyle = OPEN_TALK_STYLE.get(scenario.id);
+  const openTalk = openStyle !== undefined;
   const [deepCount, setDeepCount] = useState(0);
   const [opinionCount, setOpinionCount] = useState(0);
   /**
@@ -337,7 +338,7 @@ export function TalkSession({
        *（答えの ことばで 札が 開くと、相手が 言って いない 中身が ボードに 出る）。
        */
       if (
-        openTalk &&
+        openStyle?.opinions &&
         isOpinionAnswer({ history: historyRef.current, utterance, said, targetId: target.id })
       ) {
         setOpinionCount((count) => count + 1);
@@ -423,10 +424,22 @@ export function TalkSession({
         setNote(scripted ? "talk.deepAskNoAi" : "talk.deepAsk");
         return;
       }
+      /*
+       * オープンな たいわでは、カードに 当たらない しつもんも 受けとめる（2026-11-10 の 指定
+       *「もっと自由にいろんな質問ができるように」）。相手は カードの 外の ことも 知って いて
+       * 答える。「番では ないかも／ボードの のこりを 見て」は 言わない——カードに ある ことだけを
+       * 聞けと 言う ことに なる。しつもんで ない 発言（あいづち・お礼）には 何も 出さない。
+       */
+      if (openTalk) {
+        setNote(
+          isQuestionLike(utterance) ? (scripted ? "talk.freeAskNoAi" : "talk.freeAsk") : null,
+        );
+        return;
+      }
       // 1語だけ当たった＝話題は合っている。「ずれている」ではなく「あと ひとこと」へ
       setNote(outcome.kind === "close" ? CLOSE_NOTE : "talk.offTopic");
     },
-    [scenario, target.id, live.status, live.transcript.length, current, openTalk],
+    [scenario, target.id, live.status, live.transcript.length, current, openTalk, openStyle],
   );
 
   /*
@@ -945,7 +958,7 @@ export function TalkSession({
       </>
 
       {/* 要件ボード（？？？フリップ） */}
-      <section className="card-island p-5">
+      <section className="card-island p-5" data-testid="req-board">
         <h3 className="text-ink font-extrabold">
           📋{" "}
           <ruby>
@@ -957,13 +970,10 @@ export function TalkSession({
           </ruby>
           すこと（{open.size} / {scenario.interview.reqs.length}）
         </h3>
-        {openTalk && (
+        {openStyle && (
           <>
-            <p className="text-ink-soft mt-1 text-xs font-bold">
-              <RubyText
-                text="カードは 最低限 聞く ことです。カードに 無い ことは、メモして 議事録に 書こう。"
-                index={uiFurigana}
-              />
+            <p className="text-ink-soft mt-1 text-xs font-bold" data-testid="open-talk-note">
+              <RubyText text={openStyle.boardNote} index={uiFurigana} />
             </p>
             <div className="mt-2 flex flex-wrap gap-2 text-xs font-extrabold">
               <span
@@ -972,12 +982,15 @@ export function TalkSession({
               >
                 🔎 <RubyText text="深く 聞いた しつもん" index={uiFurigana} /> {deepCount}
               </span>
-              <span
-                className="bg-sky-soft text-navy rounded-full px-3 py-1"
-                data-testid="opinion-count"
-              >
-                💡 <RubyText text="伝えた 意見" index={uiFurigana} /> {opinionCount}
-              </span>
+              {/* 意見を 聞かれる 教材だけ（山本社長 1人の 採用ページでは 聞かれない） */}
+              {openStyle.opinions && (
+                <span
+                  className="bg-sky-soft text-navy rounded-full px-3 py-1"
+                  data-testid="opinion-count"
+                >
+                  💡 <RubyText text="伝えた 意見" index={uiFurigana} /> {opinionCount}
+                </span>
+              )}
             </div>
           </>
         )}
@@ -1011,7 +1024,18 @@ export function TalkSession({
                       <RubyText text={req.label} index={furigana} />
                     </p>
                     <p className="text-ink-soft mt-0.5 text-sm font-bold">
-                      {isOpen ? <RubyText text={req.secret} index={furigana} /> : "？？？"}
+                      {/*
+                        自分で メモする 教材（open-talk.ts の selfMemo）は、開いても 答えを 出さない。
+                        答えを 札に 書くと、学習者の かわりに 画面が メモを とって しまう
+                       （2026-11-10 の 指定「聞いたことは各自メモをして欲しい」）。
+                      */}
+                      {!isOpen ? (
+                        "？？？"
+                      ) : openStyle?.selfMemo ? (
+                        <RubyText text="✅ 聞けた（答えは 自分の メモへ）" index={uiFurigana} />
+                      ) : (
+                        <RubyText text={req.secret} index={furigana} />
+                      )}
                     </p>
                     {/* だれから 聞き出したか。開いて はじめて 見える（開く 前は だれに 聞くかを 考える） */}
                     {multi && isOpen && owner && (

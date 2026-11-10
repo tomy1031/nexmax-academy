@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { bareKanjiTexts, seedCompleted, shot } from "./helpers";
+import { bareKanjiTexts, joinCall, seedCompleted, shot } from "./helpers";
 
 /**
  * 要件定義（youken・地図の STEP11）— 旧アプリの 流れ（7.整理 → 8.デザイン・9.ワイヤー → 10.解答）
@@ -90,4 +90,47 @@ test("こたえの ページ: ブランドの 決まり 4枚と ページ構成�
   expect(await bareKanjiTexts(page)).toEqual([]);
   await noOverflow(page);
   await shot(page, "youken-03-kotae");
+});
+
+async function ask(page: Page, text: string) {
+  await page.getByLabel("しつもんを 入力する").fill(text);
+  await page.getByRole("button", { name: "きく" }).click();
+}
+
+/*
+ * 2026-11-10 の 指定「もっと自由にいろんな質問ができるように」「当時はチャットでやっていた
+ * やり取りを、実際に音声でできるように」「聞いたことは各自メモをして欲しい」。
+ * 旧アプリの 6.質問（何でも 聞ける チャット）を 声で する。鍵ゼロ（Live なし）で 見るのは:
+ *  1. カードに 無い しつもんでも「番では ないかも」と 言わない（「しつもん できたね」）
+ *  2. カードの しつもんで 札が 開いても、札には 答えを 出さない（学習者が 自分で メモする）
+ */
+test("要件定義の たいわ: カードに 無い しつもんも 受けとめ、札には 答えを 出さない（鍵ゼロ・390px）", async ({
+  page,
+  context,
+}) => {
+  await seedCompleted(context, BEFORE_DOC.slice(0, 4));
+  await page.goto("/youken/talk");
+  await joinCall(page);
+
+  await expect(page.getByTestId("open-talk-note")).toBeVisible();
+  await expect(page.getByTestId("deep-count")).toContainText("0");
+  // 山本社長は 意見を 聞かない（ウェブサイトの 要件定義とは ちがう）
+  await expect(page.getByTestId("opinion-count")).toHaveCount(0);
+
+  // 1) カードに 無い しつもん
+  await ask(page, "Aobaの コンセプトは 何ですか");
+  await expect(page.getByText("しつもん できたね")).toBeVisible();
+  await expect(page.getByText(/番では ないかも/)).toHaveCount(0);
+
+  // 2) カードの しつもん → 札は 開くが、答え（月給30万円から…）は 札に 出ない。
+  //    札の 字には ルビの 読みが まざるので、ルビの 外に 出る しるし（✅・数字・円）で 見る
+  const board = page.getByTestId("req-board");
+  await ask(page, "給料は どのくらいですか");
+  await expect(board).toContainText("（1 / 10）");
+  await expect(board).toContainText("✅");
+  await expect(board).not.toContainText("円");
+
+  expect(await bareKanjiTexts(page)).toEqual([]);
+  await noOverflow(page);
+  await shot(page, "youken-04-talk");
 });
