@@ -252,3 +252,92 @@ describe("長い 入力でも 固まらない", () => {
     expect(performance.now() - started).toBeLessThan(1000);
   });
 });
+
+/**
+ * 連絡の リスニング（サーバーメンテナンス）の タイピング（2026-11-10 の 指定「連絡の リスニングの
+ * あとに、作業完了の 報告と 同じ 原理で タイピングを」）。報告の 5場面と 同じ 見張りを 当てる。
+ */
+describe("連絡の リスニングの タイピング — 全部の 文", () => {
+  const doc = JSON.parse(
+    readFileSync(join("content", "typing", "renraku_typing.json"), "utf8"),
+  ) as TypingJson;
+  const furigana = buildFuriganaIndex(hydrateTyping(doc, VOCAB).furigana ?? []);
+  const sounds = buildSoundsIndex(soundsLikeOf(doc.listeningRef));
+  const targets = doc.sentences.map((item) => createTypingTarget(item.text, { furigana, sounds }));
+  const at = (needle: string) => {
+    const index = doc.sentences.findIndex((item) => item.text.includes(needle));
+    expect(index, needle).toBeGreaterThanOrEqual(0);
+    return targets[index]!;
+  };
+  let tokenizer: Tokenizer;
+  beforeAll(async () => {
+    tokenizer = await getTokenizer();
+  });
+
+  it("ことばカードの 語は ぜんぶ 単語の 辞書に ある", () => {
+    const ids = new Set(VOCAB.map((word) => word.id));
+    for (const item of doc.sentences) {
+      for (const id of item.wordIds) expect(ids.has(id), `${item.text}: ${id}`).toBe(true);
+    }
+  });
+
+  it("お手本どおり・空白と 句読点なし・かなだけ（解析の 読み）で 当たる", () => {
+    doc.sentences.forEach((item, i) => {
+      const target = targets[i]!;
+      expect(judgeTyping(target, item.text), item.text).toEqual({ ok: true });
+      expect(judgeTyping(target, item.text.replace(/[\s、。]/g, "")), item.text).toEqual({
+        ok: true,
+      });
+      const kana = toHiragana(
+        tokenizer
+          .tokenize(item.text)
+          .map((token) =>
+            token.reading && token.reading !== "*" ? token.reading : token.surface_form,
+          )
+          .join(""),
+      );
+      expect(judgeTyping(target, kana), `${item.text} ← ${kana}`).toEqual({ ok: true });
+    });
+  });
+
+  it("18時・19時・API・3つ は かなでも 漢数字でも 当たる（台帳 src/content/listening-sounds.ts）", () => {
+    expect(
+      judgeTyping(
+        at("アップデート作業"),
+        "あしたの じゅうはちじから じゅうくじまで、けんしょうさーばーの あっぷでーとさぎょうを します。",
+      ),
+    ).toEqual({ ok: true });
+    expect(
+      judgeTyping(
+        at("アップデート作業"),
+        "明日の十八時から十九時まで、検証サーバーのアップデート作業をします。",
+      ),
+    ).toEqual({ ok: true });
+    expect(
+      judgeTyping(
+        at("APIの確認"),
+        "さぎょうちゅうは けんしょうかんきょうが とまるので、がめんや えーぴーあいの かくにんは できません。",
+      ),
+    ).toEqual({ ok: true });
+    expect(judgeTyping(at("お願いが"), "おねがいが みっつ あります。")).toEqual({ ok: true });
+    expect(
+      judgeTyping(
+        at("以降"),
+        "じゅうはちじいこうは、けんしょうかんきょうを つかった かくにんさぎょうは いれないで ください。",
+      ),
+    ).toEqual({ ok: true });
+  });
+
+  it("時刻や 語が ちがう 文は はっきり 外す（規律1）", () => {
+    expect(
+      judgeTyping(
+        at("アップデート作業"),
+        "明日の19時から20時まで、検証サーバーのアップデート作業をします。",
+      ).ok,
+    ).toBe(false);
+    expect(
+      judgeTyping(at("絶対に"), "今作っているデータは、18時になる前に、保存してください。").ok,
+    ).toBe(false);
+    expect(judgeTyping(at("復旧"), "終わったら、メールで復旧の連絡をします。").ok).toBe(false);
+  });
+});

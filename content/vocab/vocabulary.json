@@ -21569,6 +21569,49 @@
           "おくり"
         ]
       ]
+    },
+    {
+      "id": "ikou",
+      "term": "以降",
+      "reading": "いこう",
+      "romaji": "ikou",
+      "meaningJa": "その 時から あとの ことです。",
+      "englishTerm": "From ~ on / After",
+      "example": "明日以降に 確認します。",
+      "furigana": [
+        [
+          "明日以降",
+          "あしたいこう"
+        ]
+      ]
+    },
+    {
+      "id": "zettaini",
+      "term": "絶対に",
+      "reading": "ぜったいに",
+      "romaji": "zettaini",
+      "meaningJa": "何が あっても かならず、と いう 意味です。",
+      "englishTerm": "Absolutely / Without fail",
+      "example": "パスワードは 絶対に 人に 見せないで ください。"
+    },
+    {
+      "id": "bacchishori",
+      "term": "バッチ処理",
+      "reading": "ばっちしょり",
+      "romaji": "bacchishori",
+      "meaningJa": "たくさんの データを まとめて、決まった 時間に 処理する ことです。",
+      "englishTerm": "Batch processing",
+      "example": "夜に バッチ処理を 動かします。",
+      "furigana": [
+        [
+          "処理",
+          "しょり"
+        ],
+        [
+          "夜",
+          "よる"
+        ]
+      ]
     }
   ]
 }

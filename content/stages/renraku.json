@@ -29,6 +29,10 @@
       "type": "listening"
     },
     {
+      "ref": "renraku_typing",
+      "type": "typing"
+    },
+    {
       "ref": "renraku_quiz",
       "type": "quizset"
     },

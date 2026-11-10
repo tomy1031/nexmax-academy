@@ -1,0 +1,216 @@
+{
+  "kind": "typing",
+  "id": "renraku_typing",
+  "title": "タイピング：サーバーメンテナンスの 連絡",
+  "description": "文を 見て、同じように 入力しましょう。入力に 成功すると、英語訳と ことばの 意味が 表示されます。",
+  "listeningRef": "renraku_listening",
+  "sentences": [
+    {
+      "text": "検証環境のサーバーメンテナンスの連絡です。",
+      "en": "This is a notice about server maintenance for the test environment.",
+      "wordIds": [
+        "kenshoukankyou",
+        "saba",
+        "mentenansu",
+        "renraku"
+      ]
+    },
+    {
+      "text": "明日の18時から19時まで、検証サーバーのアップデート作業をします。",
+      "en": "Tomorrow from 18:00 to 19:00, we will update the test server.",
+      "wordIds": [
+        "appude-to",
+        "sagyou"
+      ]
+    },
+    {
+      "text": "作業中は検証環境が止まるので、画面やAPIの確認はできません。",
+      "en": "The test environment will be down during the work, so you cannot check screens or APIs.",
+      "wordIds": [
+        "kenshoukankyou",
+        "gamen",
+        "api",
+        "kakunin"
+      ]
+    },
+    {
+      "text": "お願いが3つあります。",
+      "en": "I have three requests.",
+      "wordIds": [
+        "onegai"
+      ]
+    },
+    {
+      "text": "今作っているデータは、18時になる前に、絶対に保存してください。",
+      "en": "Make absolutely sure to save the data you are working on before 18:00.",
+      "wordIds": [
+        "de-ta",
+        "zettaini",
+        "hozon"
+      ]
+    },
+    {
+      "text": "検証環境で動かすバッチ処理があれば止めてください。",
+      "en": "If you have batch jobs that run in the test environment, please stop them.",
+      "wordIds": [
+        "bacchishori"
+      ]
+    },
+    {
+      "text": "18時以降は、検証環境を使った確認作業は入れないでください。",
+      "en": "From 18:00 on, please do not schedule any checks that use the test environment.",
+      "wordIds": [
+        "ikou",
+        "kakunin",
+        "sagyou"
+      ]
+    },
+    {
+      "text": "終わったら、チャットで復旧の連絡をします。",
+      "en": "When the work is finished, I will post in the chat that it is working again.",
+      "wordIds": [
+        "chatto",
+        "fukkyuu",
+        "renraku"
+      ]
+    }
+  ],
+  "furigana": [
+    [
+      "今作",
+      "いまつく"
+    ],
+    [
+      "検証環境",
+      "けんしょうかんきょう"
+    ],
+    [
+      "確認作業",
+      "かくにんさぎょう"
+    ],
+    [
+      "作業中",
+      "さぎょうちゅう"
+    ],
+    [
+      "英語訳",
+      "えいごやく"
+    ],
+    [
+      "入力",
+      "にゅうりょく"
+    ],
+    [
+      "成功",
+      "せいこう"
+    ],
+    [
+      "意味",
+      "いみ"
+    ],
+    [
+      "表示",
+      "ひょうじ"
+    ],
+    [
+      "同じ",
+      "おなじ"
+    ],
+    [
+      "連絡",
+      "れんらく"
+    ],
+    [
+      "明日",
+      "あした"
+    ],
+    [
+      "検証",
+      "けんしょう"
+    ],
+    [
+      "環境",
+      "かんきょう"
+    ],
+    [
+      "作業",
+      "さぎょう"
+    ],
+    [
+      "画面",
+      "がめん"
+    ],
+    [
+      "確認",
+      "かくにん"
+    ],
+    [
+      "絶対",
+      "ぜったい"
+    ],
+    [
+      "保存",
+      "ほぞん"
+    ],
+    [
+      "処理",
+      "しょり"
+    ],
+    [
+      "以降",
+      "いこう"
+    ],
+    [
+      "復旧",
+      "ふっきゅう"
+    ],
+    [
+      "文",
+      "ぶん"
+    ],
+    [
+      "見",
+      "み"
+    ],
+    [
+      "時",
+      "じ"
+    ],
+    [
+      "止",
+      "と"
+    ],
+    [
+      "願",
+      "ねが"
+    ],
+    [
+      "今",
+      "いま"
+    ],
+    [
+      "作",
+      "つく"
+    ],
+    [
+      "前",
+      "まえ"
+    ],
+    [
+      "動",
+      "うご"
+    ],
+    [
+      "使",
+      "つか"
+    ],
+    [
+      "入",
+      "い"
+    ],
+    [
+      "終",
+      "お"
+    ]
+  ]
+}
