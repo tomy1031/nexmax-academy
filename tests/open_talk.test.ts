@@ -4,8 +4,10 @@ import {
   isDeepQuestion,
   isOpinionAnswer,
   isOpinionAsk,
+  isQuestionLike,
   looksLikeQuestion,
   OPEN_TALK,
+  OPEN_TALK_STYLE,
   partnerLineBefore,
 } from "@/components/listening/open-talk";
 
@@ -15,8 +17,29 @@ import {
  * カードを 開けない。例は 2026-11-04 のコード検収で 実測した ものを そのまま 入れて いる。
  */
 describe("深く 聞く たいわ", () => {
-  it("使う 教材は ウェブサイトの 要件定義の Zoom だけ（ほかの たいわは 変えない）", () => {
-    expect([...OPEN_TALK]).toEqual(["youkenweb_zoom"]);
+  it("使う 教材は ウェブサイトの 要件定義の Zoom と、要件定義（STEP11）の 山本社長だけ（ほかの たいわは 変えない）", () => {
+    // 2026-11-10 に 要件定義（youken_aoba）を 足した（「もっと自由にいろんな質問ができるように」）
+    expect([...OPEN_TALK]).toEqual(["youkenweb_zoom", "youken_aoba"]);
+  });
+
+  it("要件定義（STEP11）は 答えを 札に 出さず 自分で メモする。意見は 聞かれない", () => {
+    expect(OPEN_TALK_STYLE.get("youken_aoba")).toMatchObject({ selfMemo: true, opinions: false });
+    // ウェブサイトの 要件定義は これまでどおり（札に 答え・意見の 数）
+    expect(OPEN_TALK_STYLE.get("youkenweb_zoom")).toMatchObject({
+      selfMemo: false,
+      opinions: true,
+    });
+  });
+
+  it("しつもんの 形なら 深く なくても 受けとめる。あいづち・お礼は しつもんでは ない", () => {
+    expect(isQuestionLike("お店は 何時から 開きますか")).toBe(true);
+    expect(isQuestionLike("給料は どのくらいですか？")).toBe(true);
+    expect(isQuestionLike("応募の しかたを 教えて ください")).toBe(true);
+    expect(isQuestionLike("働く 時間を 知りたいです")).toBe(true);
+    expect(isQuestionLike("コンセプトは 何")).toBe(true);
+    expect(isQuestionLike("わかりました")).toBe(false);
+    expect(isQuestionLike("ありがとうございます。")).toBe(false);
+    expect(isQuestionLike("")).toBe(false);
   });
 
   it("「なぜ」「どんな」「たとえば」の しつもんは 深い しつもん", () => {
