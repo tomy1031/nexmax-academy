@@ -273,5 +273,150 @@
   "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
   "readings": [],
   "lang": "en"
+ },
+ "kz1op_11": {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.72,
+  "text": "その物語は、源氏と平氏の戦いから始まります。",
+  "heard": "その物語は、源氏と平氏の戦いから始まります。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "物語＝ものがたり",
+   "源氏＝げんじ",
+   "平氏＝へいし"
+  ],
+  "lang": "ja"
+ },
+ "kz1op_11_en": {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.92,
+  "text": "Its story begins with the war between the Genji and the Heike.",
+  "heard": "Its story begins with the war between the Genji and the Heike.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "Genji = \"GEN-jee\"",
+   "Heike = \"HAY-keh\""
+  ],
+  "lang": "en"
+ },
+ "kz1op_12": {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 2.27,
+  "text": "およそ八百四十年前。",
+  "heard": "およそ 840 年 前",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "八百四十年前＝はっぴゃくよんじゅうねんまえ"
+  ],
+  "lang": "ja"
+ },
+ "kz1op_12_en": {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-2.5-flash-native-audio-preview-12-2025",
+  "seconds": 4,
+  "text": "About eight hundred and forty years ago.",
+  "heard": "About... eight hundred and forty years ago.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [],
+  "lang": "en"
+ },
+ "kz1op_13": {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.12,
+  "text": "白い旗の源氏。赤い旗の平氏。",
+  "heard": "白い旗の源氏。赤い旗の平氏!",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": [
+   "源氏＝げんじ",
+   "平氏＝へいし"
+  ],
+  "lang": "ja"
+ },
+ "kz1op_13_en": {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.31,
+  "text": "The Genji under white banners. The Heike under red.",
+  "heard": "The Genji under white banners. The Heike under red.",
+  "scene": "激しい戦いのさなか。声を張り、息は荒く",
+  "readings": [
+   "Genji = \"GEN-jee\"",
+   "Heike = \"HAY-keh\""
+  ],
+  "lang": "en"
+ },
+ "kz1op_14": {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.1-flash-live-preview",
+  "seconds": 5.29,
+  "text": "一一八五年、春。平氏は、海にやぶれました。",
+  "heard": "一一八五年、春。\n\n平氏は、海にやぶれました。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": [
+   "一一八五年＝せんひゃくはちじゅうごねん",
+   "平氏＝へいし"
+  ],
+  "lang": "ja"
+ },
+ "kz1op_14_en": {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.1-flash-live-preview",
+  "seconds": 5.47,
+  "text": "Spring, 1185. The Heike were defeated at sea.",
+  "heard": "Spring, 1185. The Heike were defeated at sea.",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": [
+   "Heike = \"HAY-keh\""
+  ],
+  "lang": "en"
+ },
+ "kz1op_15": {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.52,
+  "text": "けれど祖谷には、こんな言い伝えがあります。",
+  "heard": "けれど祖谷には、こんな言い伝えがあります。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "祖谷＝いや",
+   "言い伝え＝いいつたえ"
+  ],
+  "lang": "ja"
+ },
+ "kz1op_15_en": {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.54,
+  "text": "But in Iya, there is a legend.",
+  "heard": "Butin Iya,there",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "Iya = \"EE-yah\""
+  ],
+  "lang": "en"
  }
 }
