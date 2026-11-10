@@ -1,0 +1,145 @@
+{
+ "kz1op_01": {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 2.93,
+  "text": "ようこそ、祖谷の地へ。",
+  "heard": "ようこそ 癒やし の ち へ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "祖谷＝いや"
+  ],
+  "lang": "ja"
+ },
+ "kz1op_01_en": {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 2.55,
+  "text": "Welcome to the land of Iya.",
+  "heard": " Welcome to the land of Iya.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "Iya = \"EE-yah\""
+  ],
+  "lang": "en"
+ },
+ "kz1op_02": {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 2.75,
+  "text": "ここは徳島県三好市。",
+  "heard": "ここは徳島県三好市。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "徳島県＝とくしまけん",
+   "三好市＝みよしし"
+  ],
+  "lang": "ja"
+ },
+ "kz1op_02_en": {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.83,
+  "text": "This is Miyoshi City, in Tokushima Prefecture.",
+  "heard": " This is Miyoshi City, in Tokushima Prefecture.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "Miyoshi = \"mee-YOH-shee\"",
+   "Tokushima = \"toh-koo-SHEE-mah\""
+  ],
+  "lang": "en"
+ },
+ "kz1op_03": {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.59,
+  "text": "深い山々に抱かれ、",
+  "heard": "深いやまやまにいだかれ、",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "山々＝やまやま",
+   "抱かれ＝いだかれ"
+  ],
+  "lang": "ja"
+ },
+ "kz1op_03_en": {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.69,
+  "text": "Held deep among the mountains,",
+  "heard": " Held deep among the mountains,",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [],
+  "lang": "en"
+ },
+ "kz1op_04": {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.93,
+  "text": "祖谷川が長い時間をかけて刻んだ渓谷です。",
+  "heard": "嫌 が が 長い 時間 を かけ て 刻ん だ 警告 です 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "祖谷川＝いやがわ",
+   "時間＝じかん",
+   "渓谷＝けいこく",
+   "刻んだ＝きざんだ",
+   "祖谷＝いや"
+  ],
+  "lang": "ja"
+ },
+ "kz1op_04_en": {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.22,
+  "text": "this gorge was carved by the Iya River over a very long time.",
+  "heard": " This gorge was carved by the EEyah River over a very long time.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "Iya River = \"EE-yah\" River"
+  ],
+  "lang": "en"
+ },
+ "kz1op_05": {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 2.43,
+  "text": "日本三大秘境の一つ、",
+  "heard": "日本三大秘境の1つ",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "日本三大秘境＝にほんさんだいひきょう"
+  ],
+  "lang": "ja"
+ },
+ "kz1op_05_en": {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.31,
+  "text": "One of Japan’s three great hidden regions:",
+  "heard": " One of Japan’s three great hidden regions:",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [],
+  "lang": "en"
+ }
+}
