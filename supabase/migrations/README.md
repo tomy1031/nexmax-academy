@@ -36,6 +36,20 @@ CLI が流した16本を、DBの `supabase_migrations.schema_migrations.statemen
 
 ので採らなかった。いまのリポジトリは **DBが実際に受け取った順番そのもの**である。
 
+### 例外: メールアドレスを取り除いた3本（2026-11-10）
+
+次の3本は、管理者のメールアドレス2つを直書きしていた行だけを書き換えてある
+（このリポジトリは公開なので、管理者のログインIDを置かない）。
+**その行だけ、DBの `statements` とバイト一致しない。** 版（ファイル名）は変えていないので、
+`db push` と `check_migrations.mjs` には影響しない。
+
+- `20260725090000_profiles.sql`
+- `20260821100000_staff_affiliation_and_admin_flag.sql`
+- `20260824050601_staff_affiliation_and_admin_flag.sql`
+
+本番の関数からも直書きを外したのは `20261110120000_admin_flag_db_only.sql`。
+管理者はいま `profiles.is_admin`（先生の画面で切り替える）だけで決まる。
+
 ## これから
 
 - 移行SQLは `integration` に入れれば「デプロイ（DB）」ワークフローが流す
