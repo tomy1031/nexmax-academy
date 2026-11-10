@@ -41,6 +41,10 @@
       "type": "article"
     },
     {
+      "ref": "youken_kotae",
+      "type": "article"
+    },
+    {
       "ref": "youken_recruit_sample",
       "type": "link",
       "gates": true
