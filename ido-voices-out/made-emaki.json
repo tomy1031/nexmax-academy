@@ -1,0 +1,57 @@
+{
+ "emkz_01": {
+  "episode": "emaki-kazurabashi",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 2.61,
+  "text": "静かに見える、この山々。",
+  "heard": "静か に 見える この 山々",
+  "scene": "夕ぐれの山々を、ひらいた絵巻の中に見わたす場面。おだやかに、少しゆっくり、景色に見とれるように",
+  "readings": [
+   "山々＝やまやま"
+  ],
+  "lang": "ja"
+ },
+ "emkz_01_en": {
+  "episode": "emaki-kazurabashi",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.52,
+  "text": "These mountains look so quiet.",
+  "heard": " These mountains look so quiet.",
+  "scene": "夕ぐれの山々を、ひらいた絵巻の中に見わたす場面。おだやかに、少しゆっくり、景色に見とれるように",
+  "readings": [],
+  "lang": "en"
+ },
+ "emkz_02": {
+  "episode": "emaki-kazurabashi",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 7.25,
+  "text": "けれど八百年前、この地は、日本の歴史を大きく揺るがした出来事と深く結びついていきます。",
+  "heard": "けれど、八百年前、この地は、日本の歴史を大きく揺るがした出来事と深く結びついていきます。",
+  "scene": "静かな景色の奥から、むかしの合戦の記憶が雲のように浮かびあがる場面。少し声を落とし、重みをこめて、語りかけるように",
+  "readings": [
+   "八百年前＝はっぴゃくねんまえ",
+   "この地＝このち",
+   "揺るがした＝ゆるがした",
+   "出来事＝できごと"
+  ],
+  "lang": "ja"
+ },
+ "emkz_02_en": {
+  "episode": "emaki-kazurabashi",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 8.8,
+  "text": "But eight hundred years ago, this land was drawn deep into an event that shook the history of Japan.",
+  "heard": " But eight hundred years ago, this land was drawn deep into an event that shook the history",
+  "scene": "静かな景色の奥から、むかしの合戦の記憶が雲のように浮かびあがる場面。少し声を落とし、重みをこめて、語りかけるように",
+  "readings": [],
+  "lang": "en"
+ }
+}
