@@ -17,7 +17,7 @@ import { createClient } from "@/lib/supabase/client";
  * CI と E2E は いまの まま 動く。
  */
 
-export type ClaudeCheckKind = "quiz" | "bug";
+export type ClaudeCheckKind = "quiz" | "bug" | "design";
 
 /** Claude に 渡す 道具（Anthropic の 形）。 */
 export interface ClaudeTool {
@@ -136,11 +136,33 @@ export async function claudeStatus(): Promise<{ open: boolean; reason: string }>
 }
 
 /** Claude に 道具を 1回 呼ばせる。返すのは 道具の 引数（読みとりは 呼ぶ 側）。 */
-export async function requestClaudeTool(
-  kind: ClaudeCheckKind,
+export function requestClaudeTool(
+  kind: Exclude<ClaudeCheckKind, "design">,
   request: { system: string; prompt: string; tool: ClaudeTool },
 ): Promise<ClaudeToolResult> {
-  const result = await invoke({ op: "review", kind, ...request }).catch((): ClaudeToolResult => ({
+  return review({ op: "review", kind, ...request });
+}
+
+/**
+ * 画像の デザイン判定を 1回 頼む（要望 #713）。
+ *
+ * 指示文と 道具は **関数の 側が 持つ**（`supabase/functions/ai-check/design.ts`）——
+ * ブランドの 決まりは 学生に まだ 見せない 答えなので、画面の プログラムに 置かない。
+ * ここから 送るのは 画像・えらんだ 理由・使って よい ことば・言い直しの わけ だけ。
+ */
+export function requestClaudeDesign(request: {
+  /** 判定の 種類（教材の `aiImageCheck.check`）。 */
+  check: string;
+  reason: string;
+  image: { media_type: "image/jpeg" | "image/png" | "image/webp"; data: string };
+  words: readonly string[];
+  retry: { kanji: boolean; white: boolean };
+}): Promise<ClaudeToolResult> {
+  return review({ op: "review", kind: "design", ...request });
+}
+
+async function review(body: Record<string, unknown>): Promise<ClaudeToolResult> {
+  const result = await invoke(body).catch((): ClaudeToolResult => ({
     ok: false,
     reason: "network",
     closed: false,

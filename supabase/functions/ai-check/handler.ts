@@ -9,6 +9,9 @@
  * - `{ op: "status" }` … いま 使えるか だけ 返す（画面が つなぎの したくを 決める）
  * - `{ op: "review", kind, system, prompt, tool }` … 門番を 通ったら Claude に 1回 頼み、
  *   道具の 引数（JSON）を そのまま 返す。読みとり（`parseQuizReview` 等）は 画面の 側
+ * - `{ op: "review", kind: "design", check, reason, image, words, retry }` … 画像の デザイン判定
+ *   （要望 #713）。**指示文と 道具は こちら（`design.ts`）が 持つ**——ブランドの 決まりは
+ *   学生に まだ 見せない 答えなので、画面に 置かない
  *
  * ## 指示文は 画面から 受けとる
  * Gemini の 見かた係と **同じ 指示文・同じ 道具**を 使う（`src/lib/quiz/ai-review.ts`・
@@ -17,6 +20,13 @@
  *（返事は 道具の 引数＝JSON だけ）。ログインと 門番と 1人の 上限が 外の 乱用を 止める。
  */
 
+import {
+  buildDesignPrompt,
+  DESIGN_CHECKS,
+  DESIGN_TOOL,
+  parseDesignRequest,
+  type DesignRequest,
+} from "./design.ts";
 import {
   aiGroupOf,
   decideAiGate,
@@ -32,11 +42,34 @@ import {
 export const AI_CHECK_TOOLS = {
   quiz: "kotae_no_check",
   bug: "bug_houkoku_no_check",
+  design: DESIGN_TOOL.name,
 } as const;
 export type AiCheckKind = keyof typeof AI_CHECK_TOOLS;
 
+/**
+ * 種類ごとの 1人 1日の 上限（全体の `daily_user_limit` とは 別に 置く）。
+ *
+ * 画像の 判定は 何枚でも 試せる（旧アプリ）。ただ 1人が 画像だけで 1日の 枠を 使いきると、
+ * メールや Slack の こたえの チェックが その 日 使えなく なる。だから 画像だけの ふたを 置く。
+ * 全体の 上限の ほうが 低ければ、そちらが 先に 効く。
+ */
+export const AI_CHECK_KIND_DAILY_LIMITS: Partial<Record<AiCheckKind, number>> = { design: 20 };
+
+/** カンボジア時間（UTC+7・夏時間なし）の きょうの はじまり。1日の 回数を 数える 区切り。 */
+export function phnomPenhDayStart(now: Date): Date {
+  const offset = 7 * 60 * 60 * 1000;
+  const day = 24 * 60 * 60 * 1000;
+  return new Date(Math.floor((now.getTime() + offset) / day) * day - offset);
+}
+
 /** 受けとる 文の 上限（字）。指示文・道具の 形・頼みの 本文。 */
 export const AI_CHECK_LIMITS = { system: 2_000, tool: 12_000, prompt: 16_000 } as const;
+
+/**
+ * 頼みの 本文の 上限（バイト）。読む 前に `Content-Length` で 断る（画像の 上限 約 1.1MB ＋ 文）。
+ * 大きな 本文を 送りつけて 関数の メモリと 時間を 使わせない。
+ */
+export const AI_CHECK_MAX_BODY_BYTES = 2_000_000;
 
 /** 返事の 上限（トークン）。道具の 引数だけ なので これで 足りる。 */
 export const AI_CHECK_MAX_TOKENS = 2_048;
@@ -126,7 +159,14 @@ export interface AiCheckDeps {
     prompt: string;
     tool: { name: string; description: string; input_schema: Record<string, unknown> };
     maxTokens: number;
+    /** 画像（`design` の ときだけ）。文の 前に 置いて 渡す。 */
+    image?: DesignRequest["image"];
   }) => Promise<ClaudeCallResult>;
+  /**
+   * この 人が きょう（カンボジア時間）この 種類を 何回 呼んだか（`AI_CHECK_KIND_DAILY_LIMITS` の ある 種類だけ 聞く）。
+   * 読めない ときは 上限に 届いた ものと みなす（費用を 出さない 側）。
+   */
+  readonly kindCallsToday?: (userId: string, kind: AiCheckKind) => Promise<number>;
   readonly recordUsage: (row: {
     user_id: string;
     university: string;
@@ -161,13 +201,32 @@ type ReviewRequest = {
   system: string;
   prompt: string;
   tool: { name: string; description: string; input_schema: Record<string, unknown> };
+  image?: DesignRequest["image"];
 };
+
+/** 画像の デザイン判定の 頼み → Claude に 渡す 形（指示文・道具は こちらが 持つ）。 */
+function designReview(body: unknown): ReviewRequest | null {
+  const design = parseDesignRequest(body);
+  if (!design) return null;
+  return {
+    kind: "design",
+    system: DESIGN_CHECKS[design.check].system,
+    prompt: buildDesignPrompt(design),
+    tool: {
+      name: DESIGN_TOOL.name,
+      description: DESIGN_TOOL.description,
+      input_schema: DESIGN_TOOL.input_schema as unknown as Record<string, unknown>,
+    },
+    image: design.image,
+  };
+}
 
 /** 頼みの 形を 確かめる。だめなら null。 */
 export function parseReviewRequest(body: unknown): ReviewRequest | null {
   if (!body || typeof body !== "object") return null;
   const bag = body as Record<string, unknown>;
   const kind = bag.kind;
+  if (kind === "design") return designReview(body);
   if (kind !== "quiz" && kind !== "bug") return null;
   const { system, prompt, tool } = bag;
   if (typeof system !== "string" || typeof prompt !== "string") return null;
@@ -238,6 +297,9 @@ export async function handleAiCheck(request: Request, deps: AiCheckDeps): Promis
   const userId = jwt === "" ? null : await deps.userIdFromJwt(jwt);
   if (!userId) return json({ ok: false, reason: "noAuth" }, 401);
 
+  const length = Number(request.headers.get("Content-Length") ?? "0");
+  if (length > AI_CHECK_MAX_BODY_BYTES) return json({ ok: false, reason: "badRequest" }, 413);
+
   let body: unknown;
   try {
     body = await request.json();
@@ -265,12 +327,21 @@ export async function handleAiCheck(request: Request, deps: AiCheckDeps): Promis
   const review = parseReviewRequest(body);
   if (!review) return json({ ok: false, reason: "badRequest" }, 400);
 
+  const kindLimit = AI_CHECK_KIND_DAILY_LIMITS[review.kind];
+  if (kindLimit !== undefined) {
+    const used = deps.kindCallsToday
+      ? await deps.kindCallsToday(userId, review.kind).catch(() => Number.POSITIVE_INFINITY)
+      : Number.POSITIVE_INFINITY;
+    if (used >= kindLimit) return json({ ok: false, reason: "userLimit" satisfies AiGateClosed });
+  }
+
   const result = await deps.callClaude({
     model: settings.model,
     system: review.system,
     prompt: review.prompt,
     tool: review.tool,
     maxTokens: AI_CHECK_MAX_TOKENS,
+    ...(review.image ? { image: review.image } : {}),
   });
 
   const usage = result.usage ?? {};

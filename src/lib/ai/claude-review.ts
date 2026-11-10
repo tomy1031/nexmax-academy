@@ -36,7 +36,7 @@ export type ClaudeReviewResult<T> =
   | { readonly ok: false; readonly reason: string; readonly closed: boolean };
 
 async function reviewWith<T>(
-  kind: ClaudeCheckKind,
+  kind: Exclude<ClaudeCheckKind, "design">,
   system: string,
   tool: ReturnType<typeof claudeToolOf>,
   prompt: (kanjiRetry: boolean) => string,

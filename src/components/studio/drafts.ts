@@ -220,6 +220,20 @@ export function emptyArticleBlock(kind: ArticleBlock["kind"]): ArticleBlock {
         title: "ここに 書いて みよう",
         fields: [{ id: "f1", title: "書く こと", template: "わたしは、＿＿＿＿します。" }],
       };
+    /*
+     * 画像の AI判定（要望 #713）。決まり（答え）は AIの 窓口が 持つので、ここで 選ぶのは
+     * 判定の 種類だけ（いまは Aoba の デザインだけ）。
+     */
+    case "aiImageCheck":
+      return {
+        kind: "aiImageCheck",
+        id: "check",
+        check: "aoba_design",
+        title: "山本社長に 見て もらおう",
+        judge: "山本社長",
+        closedNote:
+          "さいごの「先生の こたえと くらべる」で、自分の えらんだ デザインと くらべましょう。",
+      };
   }
 }
 
@@ -418,6 +432,7 @@ export const ARTICLE_BLOCK_OPTIONS: readonly { value: ArticleBlock["kind"]; labe
   { value: "compare", label: "まえと あとの くらべ" },
   { value: "banner", label: "帯（ゴール・大切なこと）" },
   { value: "form", label: "書きこみフォーム（学習の きろくに 残る）" },
+  { value: "aiImageCheck", label: "画像の AI判定（Aobaの デザイン・授業の 時間だけ）" },
 ];
 
 export const CONTENT_TYPE_OPTIONS: readonly { value: ContentRefType; label: string }[] = [

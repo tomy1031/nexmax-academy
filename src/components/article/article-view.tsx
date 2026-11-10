@@ -19,6 +19,7 @@ import {
   type FuriganaIndex,
 } from "@/lib/text/furigana";
 import { BannerBlock, CardsBlock, CompareBlock, HeroBlock, MissionsBlock } from "./rich-blocks";
+import { AiImageCheckBlock } from "./ai-image-check-block";
 import { FormBlock } from "./form-block";
 import {
   collectHeadings,
@@ -493,6 +494,18 @@ function BlockView({
     case "form":
       return (
         <FormBlock
+          block={block}
+          articleId={articleId}
+          furigana={furigana}
+          show={show}
+          preview={preview}
+        />
+      );
+
+    /* 画像の AI判定（要望 #713）。記録は 書きこみフォームと 同じ ところへ。 */
+    case "aiImageCheck":
+      return (
+        <AiImageCheckBlock
           block={block}
           articleId={articleId}
           furigana={furigana}

@@ -41,6 +41,7 @@ import {
   listWordStages,
 } from "@/lib/content";
 import { LINK_ANSWER_PROMPTS } from "@/content/link-answers";
+import { aiImageCheckFields } from "@/lib/answers/ai-image-check";
 import { formPrompt } from "@/lib/answers/form-answers";
 import { resolveGates } from "@/components/stage/stage-progress";
 import { isOnMap, sortStages } from "@/lib/map-data";
@@ -163,8 +164,14 @@ export async function loadUnitIndex(): Promise<UnitIndex> {
    */
   for (const article of articles) {
     for (const block of article.blocks) {
-      if (block.kind !== "form") continue;
-      for (const field of block.fields) prompts[`${article.id}:${field.id}`] = formPrompt(field);
+      // 画像の AI判定も 同じ 形で 残る（サイト・理由・判定・AIの ことば の 4つの 問い）
+      const fields =
+        block.kind === "form"
+          ? block.fields
+          : block.kind === "aiImageCheck"
+            ? aiImageCheckFields(block)
+            : [];
+      for (const field of fields) prompts[`${article.id}:${field.id}`] = formPrompt(field);
     }
   }
 

@@ -13,12 +13,18 @@
  * 門番が「unconfigured」で 閉じる——画面は いまの 動き（Gemini／お手本）の まま。
  *
  * 中身は `handler.ts`（vitest で 見張る）。ここは Deno の 道具を つなぐ だけ。
- * 出しかたは docs/deploy.md §0.18。
+ * 画像の デザイン判定（kind `design`）の 指示文は `design.ts`。
+ * 出しかたは docs/deploy.md §0.18（ファイルは index.ts・handler.ts・claude-gate.ts・design.ts の 4つ）。
  */
 
 import Anthropic from "npm:@anthropic-ai/sdk@0.132.1";
 import { createClient } from "npm:@supabase/supabase-js@2.110.8";
-import { handleAiCheck, type AiCheckFailure, type ClaudeCallResult } from "./handler.ts";
+import {
+  handleAiCheck,
+  phnomPenhDayStart,
+  type AiCheckFailure,
+  type ClaudeCallResult,
+} from "./handler.ts";
 
 const apiKey = Deno.env.get("ANTHROPIC_API_KEY") ?? "";
 const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
@@ -94,9 +100,30 @@ Deno.serve((request) =>
       };
     },
 
-    async callClaude({ model, system, prompt, tool, maxTokens }): Promise<ClaudeCallResult> {
+    async kindCallsToday(userId, kind) {
+      const { count, error } = await admin
+        .from("ai_usage")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", userId)
+        .eq("kind", kind)
+        .gte("created_at", phnomPenhDayStart(new Date()).toISOString());
+      // 数えられない ときは 上限に 届いた ものと みなす（費用を 出さない 側）
+      return error ? Number.POSITIVE_INFINITY : (count ?? 0);
+    },
+
+    async callClaude({ model, system, prompt, tool, maxTokens, image }): Promise<ClaudeCallResult> {
       if (!anthropic) return { ok: false, reason: "upstream" };
       try {
+        // 画像が ある ときは 画像を 先に 置く（Anthropic の すすめる 順）
+        const content: Anthropic.ContentBlockParam[] | string = image
+          ? [
+              {
+                type: "image",
+                source: { type: "base64", media_type: image.media_type, data: image.data },
+              },
+              { type: "text", text: prompt },
+            ]
+          : prompt;
         const message = await anthropic.messages.create({
           model,
           max_tokens: maxTokens,
@@ -104,7 +131,7 @@ Deno.serve((request) =>
           tools: [tool as Anthropic.Tool],
           // 道具を 必ず 呼ばせる（返事は 道具の 引数＝JSON だけ）。Haiku 5.5 は 受けつける
           tool_choice: { type: "tool", name: tool.name },
-          messages: [{ role: "user", content: prompt }],
+          messages: [{ role: "user", content }],
         });
         const call = message.content.find(
           (block): block is Anthropic.ToolUseBlock =>

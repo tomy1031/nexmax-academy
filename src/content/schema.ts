@@ -2254,6 +2254,35 @@ export const articleBlockSchema = z.discriminatedUnion("kind", [
         message: "欄の id が かさなって いる（記録が まざる）",
       }),
   }),
+  /**
+   * 画像の AI判定（aiImageCheck）。学習者が 画像を 上げ、えらんだ 理由を 書くと、
+   * AI（お客様の 役）が 決まりに 合うかを「合う／少し ちがう／合わない」で 判定する。
+   *
+   * 旧アプリ nextmake-onboarding の「8.デザイン」を 戻した もの（要望 #713・2026-11-10）。
+   * 参考サイトの 画面を 上げると、AI の 山本社長が Aoba の ブランドに 合うかを 返す（何枚でも 試せる）。
+   *
+   * - **決まり（答え）と 指示文は ここに 書かない**。AIの 窓口（`supabase/functions/ai-check/design.ts`）
+   *   だけが 持つ——ページに 置くと 書く 前に 答えが 見える（規律6）。ここは `check` で 名前を 指すだけ
+   * - AIは 授業の 時間だけ 使える（`src/lib/ai/claude-gate.ts`）。閉じて いる ときは
+   *   えらんだ サイトと 理由だけ 保存し、`closedNote` で 確かめ方を 案内する（学習者を 止めない）
+   * - **行き先は 書きこみフォームと 同じ `quiz_results`**（問いは `<id>_site` など。
+   *   `src/lib/answers/ai-image-check.ts`）。先生は 学習の きろく で 判定まで 読める
+   */
+  z.object({
+    kind: z.literal("aiImageCheck"),
+    /** 記録の 鍵の 頭（`<id>_site`・`<id>_riyuu`…）。**ページの 中で 1つだけ**。保存の あとで 変えない。 */
+    id: z.string().regex(/^[a-z0-9_-]+$/),
+    /** 何の 決まりで 判定するか（窓口の `DESIGN_CHECKS` の 名前）。 */
+    check: z.enum(["aoba_design"]),
+    /** 見出し（「山本社長に 見て もらおう」など）。省ける。 */
+    title: plainText.optional(),
+    /** 判定する 人（「山本社長」）。ボタン・返事の 見出し・先生の 表の 問いに 出る。 */
+    judge: plainText,
+    /** AIが 使えない とき（授業の 時間の 外など）の 確かめ方の 案内。 */
+    closedNote: plainText,
+    /** 下に 出す「これまでに 見て もらった もの」の 見出し。省くと 決まった ことばが 出る。 */
+    historyTitle: plainText.optional(),
+  }),
 ]);
 
 /** 説明ページ（article / WYSIWYG — 設計07 §5）。保存形式はブロックJSON。 */
