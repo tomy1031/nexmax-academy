@@ -43,7 +43,9 @@ begin
   if u_email is not null then
     new.email := u_email;
   end if;
-  new.is_admin := coalesce(u_email, new.email) in ('tomy1031@gmail.com', 's.tominaga@nextmake.co.jp');
+  -- 管理者の初期指定（メールアドレスの直書き）は 2026-11-10 に取り除いた。
+  -- いまは profiles.is_admin だけで管理する（20261110120000_admin_flag_db_only.sql）。
+  new.is_admin := false;
   new.updated_at := now();
   return new;
 end;
