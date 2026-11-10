@@ -16,15 +16,56 @@
  *    カードの 照合に かけない。答えの ことば（「若い 人は いくらか 知りたいです」）で
  *    カードが 開くと、だれも 言って いない「800,000円」が ボードに 出る（同じ 検収で 実測）。
  *
- * どの 教材で 使うかは `OPEN_TALK`（教材の id）。ほかの たいわの 動きは 変えない——
+ * どの 教材で 使うかは `OPEN_TALK_STYLE`（教材の id）。ほかの たいわの 動きは 変えない——
  * 1人の お客さまの 教材は、相手が くわしい 話を 持って いないので、深く 聞いても
  * 「まだ 決めて いません」しか 返らない。そこで ほめると 学習者を 迷わせる。
+ *
+ * ## 2026-11-10: 要件定義（STEP11）も オープンに する
+ * 指定「オープンにしたいミーティングの質問画面がかなりクローズになっているので、もっと自由に
+ * いろんな質問ができるようにしたい」「当時はチャットでやっていたやり取りを、実際に音声で
+ * できるようにしたい」「聞いたことは各自メモをして欲しい」。旧アプリの 6.質問は
+ * **何でも 聞ける チャット**だった。相手（山本社長）に 旧アプリの 知識を 戻した うえで ここに 足す。
+ * - カードに 当たらない しつもんも「番では ないかも」と 言わない（深く なくても）。
+ *   しつもんの 形なら「しつもん できたね／答えを メモしよう」（`talk.freeAsk`）
+ * - `selfMemo` の 教材は、開いた 札に 答え（secret）を 出さない。札は「聞けた」しるしだけ。
+ *   **答えを 書きとるのは 学習者**（画面が 代わりに メモしない）
  */
 
 import { normalizeReading } from "@/lib/text/normalize";
 
+/** 深く 聞く たいわの 教材ごとの 見せ方。 */
+export interface OpenTalkStyle {
+  /** ボードの 見出しの 下に 出す ひとこと（画面の 読み辞書 `PEOPLE_FURIGANA` で ルビを 付ける）。 */
+  readonly boardNote: string;
+  /** 相手が 学習者に 意見を 聞く 教材か（「伝えた 意見」の 数を 出す）。 */
+  readonly opinions: boolean;
+  /** 開いた 札に 答えを 出さず、学習者に メモさせるか。 */
+  readonly selfMemo: boolean;
+}
+
+/** 深く 聞く たいわに する 教材（scenario の id → 見せ方）。 */
+export const OPEN_TALK_STYLE: ReadonlyMap<string, OpenTalkStyle> = new Map([
+  [
+    "youkenweb_zoom",
+    {
+      boardNote: "カードは 最低限 聞く ことです。カードに 無い ことは、メモして 議事録に 書こう。",
+      opinions: true,
+      selfMemo: false,
+    },
+  ],
+  [
+    "youken_aoba",
+    {
+      boardNote:
+        "カードは かならず 聞く ことです。ほかの ことも 自由に 聞こう。答えは カードに 出ません。聞いた ことは 自分で メモしよう。",
+      opinions: false,
+      selfMemo: true,
+    },
+  ],
+]);
+
 /** 深く 聞く たいわに する 教材（scenario の id）。 */
-export const OPEN_TALK: ReadonlySet<string> = new Set(["youkenweb_zoom"]);
+export const OPEN_TALK: ReadonlySet<string> = new Set(OPEN_TALK_STYLE.keys());
 
 /**
  * 深く 聞いた しるしの ことば。**答えが「はい・いいえ」や 数で 終わらない 聞き方**だけ。
@@ -102,6 +143,41 @@ export function isDeepQuestion(utterance: string): boolean {
    */
   return looksLikeQuestion(utterance) || isRequest(utterance);
 }
+
+/**
+ * しつもんの 形か（「か」「？」で 終わる・お願いの 形）。深く なくても よい。
+ * オープンな たいわでは、カードに 当たらなくても この 形なら 受けとめる（`talk.freeAsk`）。
+ */
+export function isQuestionLike(utterance: string): boolean {
+  if (!normalizeReading(utterance)) return false;
+  if (looksLikeQuestion(utterance) || isRequest(utterance)) return true;
+  /*
+   * 「か」で 終わらない 聞き方も しつもん（「コンセプトは 何」「働く 時間を 知りたいです」）。
+   * `isRequest` には 入れない——「知りたい」は 意見の 答え（「若い 人は いくらか 知りたいです」）にも
+   * 出るので、意見の 答えを しつもんと 取りちがえる（isOpinionAnswer）。
+   */
+  const text = normalizeReading(trimEnd(utterance));
+  return (
+    WANT_TO_KNOW.some((marker) => marker.length > 0 && text.includes(marker)) ||
+    QUESTION_END_WORDS.some((word) => word.length > 0 && text.endsWith(word))
+  );
+}
+
+/** 「知りたい」の 形（isQuestionLike だけで 使う）。 */
+const WANT_TO_KNOW = ["知りたい", "しりたい"].map(normalizeReading);
+
+/** 文の 終わりに 来ると しつもんに なる 語（「コンセプトは 何」）。 */
+const QUESTION_END_WORDS = [
+  "何",
+  "なに",
+  "いつ",
+  "どこ",
+  "だれ",
+  "誰",
+  "いくら",
+  "どのくらい",
+  "どう",
+].map(normalizeReading);
 
 /** お願いの 形の しつもんか。 */
 export function isRequest(utterance: string): boolean {
