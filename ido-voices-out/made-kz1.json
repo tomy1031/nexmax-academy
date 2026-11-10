@@ -141,5 +141,137 @@
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": [],
   "lang": "en"
+ },
+ "kz1op_06": {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.1-flash-live-preview",
+  "seconds": 0.71,
+  "text": "祖谷。",
+  "heard": "祖谷。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "祖谷＝いや"
+  ],
+  "lang": "ja"
+ },
+ "kz1op_06_en": {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.1-flash-live-preview",
+  "seconds": 0.75,
+  "text": "Iya.",
+  "heard": "Iya.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "Iya = \"EE-yah\""
+  ],
+  "lang": "en"
+ },
+ "kz1op_07": {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 1.38,
+  "text": "けれど、",
+  "heard": "ケレド",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [],
+  "lang": "ja"
+ },
+ "kz1op_07_en": {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.1-flash-live-preview",
+  "seconds": 0.92,
+  "text": "But…",
+  "heard": "But…",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [],
+  "lang": "en"
+ },
+ "kz1op_08": {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.32,
+  "text": "この場所が秘境と呼ばれる理由は、",
+  "heard": "この 場所 が 秘教 と 呼ば れる 理由 は",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "場所＝ばしょ",
+   "秘境＝ひきょう",
+   "理由＝りゆう",
+   "呼ばれる＝よばれる"
+  ],
+  "lang": "ja"
+ },
+ "kz1op_08_en": {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 4.14,
+  "text": "the reason this place is called a hidden land",
+  "heard": "The reason this place is called a hidden land.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [],
+  "lang": "en"
+ },
+ "kz1op_09": {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.42,
+  "text": "ただ山が深いからだけではありません。",
+  "heard": "ただ 、 山 が 深い から だけ で は あり ませ ん 。",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [],
+  "lang": "ja"
+ },
+ "kz1op_09_en": {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.47,
+  "text": "is not only that the mountains are deep.",
+  "heard": "is not only that the mountains are deep.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [],
+  "lang": "en"
+ },
+ "kz1op_10": {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 2.08,
+  "text": "山に残された記憶。",
+  "heard": "山 に 残さ れ た 記憶",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [
+   "記憶＝きおく",
+   "残された＝のこされた"
+  ],
+  "lang": "ja"
+ },
+ "kz1op_10_en": {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 2.76,
+  "text": "A memory left in the mountains.",
+  "heard": "a memory left in the mountains.",
+  "scene": "張りつめた、緊迫した場面。声をひそめ気味に、息は浅く速く",
+  "readings": [],
+  "lang": "en"
  }
 }
