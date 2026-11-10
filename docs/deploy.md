@@ -1308,7 +1308,8 @@ curl -s -o /dev/null -D - -H 'Range: bytes=1000-1999' "https://staging-academy.n
 2. `integration` へ マージして 移行SQL（`ai_settings`・`ai_windows`・`ai_usage`）を 先に 流す（§0.8）
 3. 関数を 出す。どちらかで:
    - Supabase の コネクタ（AIの セッション）: `deploy_edge_function`（名前 `ai-check`・入口 `index.ts`・
-     ファイルは `index.ts`／`handler.ts`／`claude-gate.ts` の 3つ・**`verify_jwt` は false**）
+     ファイルは `index.ts`／`handler.ts`／`claude-gate.ts`／`design.ts` の 4つ・**`verify_jwt` は false**。
+     `design.ts` は 画像の デザイン判定〈要望 #713〉の 指示文。2026-11-10 に 足した）
    - CLI: `supabase functions deploy ai-check --no-verify-jwt`
 4. `verify_jwt` を 切るのは、ログインの 確かめを **関数の 中で** する ため（`auth.getUser`）。
    門の 前で 切ると ブラウザの 下見（OPTIONS）が 通らない

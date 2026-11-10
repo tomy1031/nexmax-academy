@@ -1083,6 +1083,13 @@ export function collectLabeledTexts(content: Content): LabeledText[] {
               push(item("none"), field.none);
             });
             break;
+          /* 画像の AI判定。見出し・判定する 人・案内は 画面に 出る（`ai-image-check-block.tsx`）。 */
+          case "aiImageCheck":
+            push(at("title"), block.title);
+            push(at("judge"), block.judge);
+            push(at("closedNote"), block.closedNote);
+            push(at("historyTitle"), block.historyTitle);
+            break;
         }
       });
       break;

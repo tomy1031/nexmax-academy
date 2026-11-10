@@ -1010,5 +1010,49 @@ function BlockEditor({
         </div>
       );
     }
+    /*
+     * 画像の AI判定（要望 #713）。**id は 記録の 鍵**——学習者が 保存した あとに 変えると、
+     * 前の 記録と 新しい 記録が 先生の 表で 別の 問いに 分かれる。
+     * 判定の 決まり（答え）は AIの 窓口（supabase/functions/ai-check/design.ts）が 持つ。
+     */
+    case "aiImageCheck":
+      return (
+        <div className="grid gap-3 sm:grid-cols-2">
+          <TextField
+            label="記録の 鍵（英小文字・数字。保存の あとは 変えない）"
+            value={block.id}
+            onChange={(id) => onChange({ ...block, id })}
+          />
+          <TextField
+            label="判定する 人（「山本社長」）"
+            value={block.judge}
+            onChange={(judge) => onChange({ ...block, judge })}
+          />
+          <TextField
+            label="見出し（なくてもよい）"
+            value={block.title ?? ""}
+            onChange={(title) =>
+              onChange({ ...block, title: title.length > 0 ? title : undefined })
+            }
+          />
+          <TextField
+            label="下の 一覧の 見出し（なくてもよい）"
+            value={block.historyTitle ?? ""}
+            onChange={(historyTitle) =>
+              onChange({
+                ...block,
+                historyTitle: historyTitle.length > 0 ? historyTitle : undefined,
+              })
+            }
+          />
+          <div className="sm:col-span-2">
+            <TextField
+              label="AIが 使えない とき（授業の 時間の 外など）の 案内"
+              value={block.closedNote}
+              onChange={(closedNote) => onChange({ ...block, closedNote })}
+            />
+          </div>
+        </div>
+      );
   }
 }

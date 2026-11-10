@@ -57,7 +57,7 @@ test("要件を 整理する ページ: 書きこむ 欄が 5つ あり、模範
   await shot(page, "youken-01-doc");
 });
 
-test("デザインの ページ: 答えの 絵を 出さず、えらんだ 理由を 書く 欄と ワイヤーの 例が ある", async ({
+test("デザインの ページ: 答えの 絵を 出さず、山本社長（AI）に 見て もらう 部品と ワイヤーの 例が ある", async ({
   page,
   context,
 }) => {
@@ -67,12 +67,52 @@ test("デザインの ページ: 答えの 絵を 出さず、えらんだ 理�
   for (const name of [...ANSWER_IMAGES, "page_component"]) {
     await expect(imagesNamed(page, name)).toHaveCount(0);
   }
-  await expect(page.getByTestId("form-field-d_riyuu")).toBeVisible();
+  await expect(page.getByTestId("ai-image-check")).toBeVisible();
   await expect(imagesNamed(page, "wireflame")).toHaveCount(1);
 
   expect(await bareKanjiTexts(page)).toEqual([]);
   await noOverflow(page);
   await shot(page, "youken-02-design");
+});
+
+/*
+ * 画像の AI判定（要望 #713）は 授業の 時間だけ 開く。鍵ゼロ（デモモード・CI）は 授業の 外と 同じ
+ *「閉じて いる」形に なる——学習者を 止めず、サイトと 理由だけ 保存して、確かめ方を 案内する。
+ */
+test("デザインの ページ: AIが 使えない ときは 止めずに、サイトと 理由を 保存して こたえの ページを 案内する", async ({
+  page,
+  context,
+}) => {
+  await seedCompleted(context, [...BEFORE_DOC, "youken_doc"]);
+  await page.goto("/youken/article-youken_design");
+
+  const check = page.getByTestId("ai-image-check");
+  await expect(check).toHaveAttribute("data-gate", "closed");
+  const closed = page.getByTestId("ai-image-check-closed");
+  await expect(closed).toBeVisible();
+  await expect(closed).toContainText(/授業の\s*時間だけ/);
+  await expect(closed).toContainText(/先生の\s*こたえと\s*くらべる/);
+  // 閉じて いる ときは 画像を 求めない（送る 先が 無い）
+  await expect(check.getByLabel("画像を えらぶ")).toHaveCount(0);
+
+  // 空のまま 押すと、何が 足りないかを はっきり 言う（規律1）
+  await check.getByRole("button", { name: "保存する" }).click();
+  await expect(check.getByRole("alert")).toHaveCount(2);
+
+  await check.getByLabel("サイトの 名前か URL").fill("https://sankoudesign.com/example");
+  await check.getByLabel("えらんだ 理由").fill("しずかで、余白が 広いから です。");
+  await check.getByRole("button", { name: "保存する" }).click();
+
+  const entry = page.getByTestId("ai-image-check-entry").first();
+  await expect(entry).toBeVisible();
+  await expect(entry).toContainText("sankoudesign.com");
+  await expect(entry).toContainText(/AIは\s*見て\s*いません/);
+  await expect(page.getByTestId("ai-image-check-verdict")).toHaveCount(0);
+
+  expect(await bareKanjiTexts(page)).toEqual([]);
+  await noOverflow(page);
+  await check.scrollIntoViewIfNeeded();
+  await shot(page, "youken-02b-design-closed");
 });
 
 test("こたえの ページ: ブランドの 決まり 4枚と ページ構成の 絵が 出て、ふりかえりを 書ける", async ({
