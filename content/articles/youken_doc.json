@@ -11,7 +11,7 @@
       "lead": "聞いた 内容を まとめて、採用ページの 要件を 整理しましょう。",
       "note": "たいわの おわりに 出た まとめも 見ながら、自分たちの ことばで 書きます。",
       "image": {
-        "src": "/img/youken/youken_meeting.webp",
+        "src": "/img/youken/student_interview.webp",
         "refs": [],
         "status": "done"
       }
@@ -24,6 +24,11 @@
       "kind": "callout",
       "tone": "care",
       "text": "聞けなかった ことは「まだ 聞けて いません」を えらびます。決まって いない ことも、決まって いないと 書いて おきます。書いて おかないと、あとで「言った・言わない」に なります。"
+    },
+    {
+      "kind": "callout",
+      "tone": "point",
+      "text": "A③「ページで 表示する コンテンツ」と C④「FAQ（よく ある 質問）に 入れたい こと」は、山本社長に 聞く ことでは ありません。ページを 見る 人の ことを 考えて、自分たちで 書きます。"
     },
     {
       "kind": "form",
@@ -57,40 +62,34 @@
       "fields": [
         {
           "id": "j1_namae",
-          "label": "①",
           "title": "お仕事①の 名前",
           "template": "＿＿＿＿＿＿＿＿"
         },
         {
           "id": "j1_naiyou",
-          "label": "②",
           "title": "お仕事①の 仕事内容",
           "template": "＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿"
         },
         {
           "id": "j1_jouken",
-          "label": "③",
           "title": "お仕事①の 必要な 条件",
           "template": "＿＿＿＿＿＿＿＿＿＿＿＿",
           "none": "まだ 聞けて いません。"
         },
         {
           "id": "j1_basho",
-          "label": "④",
           "title": "お仕事①の 働く 場所",
           "template": "＿＿＿＿＿＿＿＿",
           "none": "まだ 聞けて いません。"
         },
         {
           "id": "j1_kaishi",
-          "label": "⑤",
           "title": "お仕事①の 開始時期",
           "template": "＿＿＿＿＿＿＿＿",
           "none": "まだ 聞けて いません。"
         },
         {
           "id": "j1_kyuuyo",
-          "label": "⑥",
           "title": "お仕事①の 給与",
           "template": "＿＿＿＿＿＿＿＿",
           "none": "まだ 聞けて いません。"
@@ -104,40 +103,34 @@
       "fields": [
         {
           "id": "j2_namae",
-          "label": "①",
           "title": "お仕事②の 名前",
           "template": "＿＿＿＿＿＿＿＿"
         },
         {
           "id": "j2_naiyou",
-          "label": "②",
           "title": "お仕事②の 仕事内容",
           "template": "＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿"
         },
         {
           "id": "j2_jouken",
-          "label": "③",
           "title": "お仕事②の 必要な 条件",
           "template": "＿＿＿＿＿＿＿＿＿＿＿＿",
           "none": "まだ 聞けて いません。"
         },
         {
           "id": "j2_basho",
-          "label": "④",
           "title": "お仕事②の 働く 場所",
           "template": "＿＿＿＿＿＿＿＿",
           "none": "まだ 聞けて いません。"
         },
         {
           "id": "j2_kaishi",
-          "label": "⑤",
           "title": "お仕事②の 開始時期",
           "template": "＿＿＿＿＿＿＿＿",
           "none": "まだ 聞けて いません。"
         },
         {
           "id": "j2_kyuuyo",
-          "label": "⑥",
           "title": "お仕事②の 給与",
           "template": "＿＿＿＿＿＿＿＿",
           "none": "まだ 聞けて いません。"
@@ -425,6 +418,18 @@
     [
       "会議",
       "かいぎ"
+    ],
+    [
+      "質問",
+      "しつもん"
+    ],
+    [
+      "聞く",
+      "きく"
+    ],
+    [
+      "考え",
+      "かんがえ"
     ],
     [
       "他",
