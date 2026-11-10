@@ -76,6 +76,19 @@ if (meetingId === "voices" || meetingId === "voices-takes") {
   );
   process.exit(run.status ?? 1);
 }
+/*
+ * `ido_proto_voices-<組>`（一時ブランチ だけ）… ido_proto（IDO 時渡り）の 物語の 声を 作る。
+ * `scripts/ido_voices/make_live.mjs` へ 回す（上の `voices` と 同じ 形）。
+ */
+if (meetingId.startsWith("ido_proto_voices")) {
+  const group = meetingId.slice("ido_proto_voices".length).replace(/^[-:]/, "");
+  const run = spawnSync(
+    process.execPath,
+    ["--import", "tsx", join("scripts", "ido_voices", "make_live.mjs"), group],
+    { stdio: "inherit" },
+  );
+  process.exit(run.status ?? 1);
+}
 /** 何を 読み上げる つもりか **だけ** 出して 終わる（鍵が 要らない・目で 確かめる ため）。 */
 const listOnly: boolean = process.argv.includes("--list");
 /**

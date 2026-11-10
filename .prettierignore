@@ -38,3 +38,7 @@ public/tools/hourensou/styles.css
 # 中身は ゲームの リポジトリが 正。アプリ側で 足した nexmax-bridge.js だけは 整形する。
 public/tools/kuuki-yomi/js/
 public/tools/kuuki-yomi/css/
+
+# ido_proto の 声づくり（一時ブランチ だけ。マージしない）
+scripts/ido_voices/
+ido-voices-out/

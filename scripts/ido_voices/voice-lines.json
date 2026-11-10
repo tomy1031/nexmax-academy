@@ -1,0 +1,46 @@
+[
+ {
+  "episode": "emaki-kazurabashi",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "text": "静かに見える、この山々。",
+  "vid": "emkz_01",
+  "scene": "夕ぐれの山々を、ひらいた絵巻の中に見わたす場面。おだやかに、少しゆっくり、景色に見とれるように",
+  "readings": [
+   "山々＝やまやま"
+  ]
+ },
+ {
+  "episode": "emaki-kazurabashi",
+  "lang": "en",
+  "speaker": "nekmax",
+  "text": "These mountains look so quiet.",
+  "vid": "emkz_01_en",
+  "scene": "夕ぐれの山々を、ひらいた絵巻の中に見わたす場面。おだやかに、少しゆっくり、景色に見とれるように",
+  "readings": []
+ },
+ {
+  "episode": "emaki-kazurabashi",
+  "lang": "ja",
+  "speaker": "nekmax",
+  "text": "けれど八百年前、この地は、日本の歴史を大きく揺るがした出来事と深く結びついていきます。",
+  "speak": "けれど はっぴゃくねんまえ、このちは、日本の歴史を大きく揺るがした出来事と深く結びついていきます。",
+  "vid": "emkz_02",
+  "scene": "静かな景色の奥から、むかしの合戦の記憶が雲のように浮かびあがる場面。少し声を落とし、重みをこめて、語りかけるように",
+  "readings": [
+   "八百年前＝はっぴゃくねんまえ",
+   "この地＝このち",
+   "揺るがした＝ゆるがした",
+   "出来事＝できごと"
+  ]
+ },
+ {
+  "episode": "emaki-kazurabashi",
+  "lang": "en",
+  "speaker": "nekmax",
+  "text": "But eight hundred years ago, this land was drawn deep into an event that shook the history of Japan.",
+  "vid": "emkz_02_en",
+  "scene": "静かな景色の奥から、むかしの合戦の記憶が雲のように浮かびあがる場面。少し声を落とし、重みをこめて、語りかけるように",
+  "readings": []
+ }
+]
