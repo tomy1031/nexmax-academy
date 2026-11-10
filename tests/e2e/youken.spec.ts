@@ -90,8 +90,9 @@ test("デザインの ページ: AIが 使えない ときは 止めずに、サ
   await expect(check).toHaveAttribute("data-gate", "closed");
   const closed = page.getByTestId("ai-image-check-closed");
   await expect(closed).toBeVisible();
-  await expect(closed).toContainText(/授業の\s*時間だけ/);
-  await expect(closed).toContainText(/先生の\s*こたえと\s*くらべる/);
+  // ルビの 読みが 字の あいだに 入るので、ルビの 付かない 語で 見る
+  await expect(closed).toContainText("もらえません");
+  await expect(closed).toContainText("こたえと くらべる");
   // 閉じて いる ときは 画像を 求めない（送る 先が 無い）
   await expect(check.getByLabel("画像を えらぶ")).toHaveCount(0);
 
@@ -106,7 +107,7 @@ test("デザインの ページ: AIが 使えない ときは 止めずに、サ
   const entry = page.getByTestId("ai-image-check-entry").first();
   await expect(entry).toBeVisible();
   await expect(entry).toContainText("sankoudesign.com");
-  await expect(entry).toContainText(/AIは\s*見て\s*いません/);
+  await expect(entry).toContainText("いません");
   await expect(page.getByTestId("ai-image-check-verdict")).toHaveCount(0);
 
   expect(await bareKanjiTexts(page)).toEqual([]);
