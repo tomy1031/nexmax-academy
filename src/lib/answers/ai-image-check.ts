@@ -3,24 +3,25 @@
  *
  * 保存と 読み返しは **書きこみフォームの しくみを そのまま 使う**（`./form-answers-db.ts`）。
  * 行き先は `quiz_results`（記事の id ＋ 問いの id）。表を 増やさない 理由も フォームと 同じ。
- * 先生は 学習の きろく（`/admin/records`）の「もんだいの こたえ」で 4つの 問いとして 読む
+ * 先生は 学習の きろく（`/admin/records`）の「もんだいの こたえ」で 6つの 問いとして 読む
  *（問いの 文は `src/lib/records/units.ts` が ここから 引く）。
  *
  * - `<id>_site`   … えらんだ サイト（名前か URL）
  * - `<id>_riyuu`  … えらんだ 理由
- * - `<id>_hantei` … AIの 判定（「合う／少し ちがう／合わない」）。AIが 使えなかった 回は 無い
- * - `<id>_kotoba` … AIの ことば（合って いる ところ／ちがう ところ／つぎ）。同じく 無い ことが ある
+ * - `<id>_hantei` … AIの 判定（「合う／少し ちがう／合わない」）。AIが 見なかった 回は 無い
+ * - `<id>_yoi`    … AIが 合って いると 言った ところ（文を「／」で つなぐ）
+ * - `<id>_naosu`  … AIが ちがうと 言った ところ
+ * - `<id>_tsugi`  … AIが すすめた つぎに する こと
+ *
+ * AIの ことばを 1つの 問いに まとめないのは、1行が 300字で 切られる ため
+ *（`MAX_FORM_TEXT`。3＋4＋1 文を つなぐと 超えて、いちばん 大事な「つぎ」が 切れる）。
  *
  * **画像は 残さない**（Storage を 増やさない・教室の 共用 PC に 前の 人の 画面を 残さない）。
  * 先生が どの サイトか 分かる ように、サイトの 名前か URL を 書いて もらう。
  */
 
 import type { ArticleBlock } from "@/content/schema";
-import {
-  DESIGN_VERDICT_LABELS,
-  designReviewSummary,
-  type DesignReview,
-} from "@/lib/ai/design-check";
+import { DESIGN_VERDICT_LABELS, joinForRecord, type DesignReview } from "@/lib/ai/design-check";
 import type { FormField } from "./form-answers";
 
 export type AiImageCheckBlock = Extract<ArticleBlock, { kind: "aiImageCheck" }>;
@@ -31,12 +32,9 @@ export function aiImageCheckFields(block: Pick<AiImageCheckBlock, "id" | "judge"
     { id: `${block.id}_site`, label: "①", title: "えらんだ サイト", template: "＿" },
     { id: `${block.id}_riyuu`, label: "②", title: "えらんだ 理由", template: "＿" },
     { id: `${block.id}_hantei`, label: "③", title: `${block.judge}（AI）の 判定`, template: "＿" },
-    {
-      id: `${block.id}_kotoba`,
-      label: "④",
-      title: `${block.judge}（AI）の ことば`,
-      template: "＿",
-    },
+    { id: `${block.id}_yoi`, label: "④", title: "合って いる ところ（AI）", template: "＿" },
+    { id: `${block.id}_naosu`, label: "⑤", title: "ちがう ところ（AI）", template: "＿" },
+    { id: `${block.id}_tsugi`, label: "⑥", title: "つぎに する こと（AI）", template: "＿" },
   ];
 }
 
@@ -50,9 +48,11 @@ export function aiImageCheckAnswers(
     [`${block.id}_riyuu`]: input.reason.trim(),
   };
   if (input.review) {
-    answers[`${block.id}_hantei`] = DESIGN_VERDICT_LABELS[input.review.verdict];
-    const summary = designReviewSummary(input.review);
-    if (summary !== "") answers[`${block.id}_kotoba`] = summary;
+    const { review } = input;
+    answers[`${block.id}_hantei`] = DESIGN_VERDICT_LABELS[review.verdict];
+    if (review.good.length > 0) answers[`${block.id}_yoi`] = joinForRecord(review.good);
+    if (review.fix.length > 0) answers[`${block.id}_naosu`] = joinForRecord(review.fix);
+    if (review.next !== "") answers[`${block.id}_tsugi`] = joinForRecord([review.next]);
   }
   return answers;
 }

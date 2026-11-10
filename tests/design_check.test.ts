@@ -5,6 +5,7 @@ import type { ClaudeToolResult, requestClaudeDesign } from "@/lib/ai/claude-chec
 import {
   DESIGN_VERDICT_LABELS,
   designPromptWords,
+  joinForRecord,
   designReplyFurigana,
   parseDesignReview,
   runDesignCheck,
@@ -112,7 +113,8 @@ describe("見本で 判定が そのまま 届く（AIは スタブ）", () => {
     );
     expect(answers.design_hantei).toBe(label);
     expect(verdictOfLabel(answers.design_hantei)).toBe(verdict);
-    if (result.review.fix.length > 0) expect(answers.design_kotoba).toContain("ちがう ところ:");
+    expect(answers.design_naosu ?? "").toBe(SAMPLES[name].naosu_tokoro.join("／"));
+    expect(answers.design_tsugi).toBe(SAMPLES[name].tsugi);
   });
 
   it("返事の 文は ぜんぶ ルビが 付く（見本の 文に 裸の 漢字が 無い）", () => {
@@ -125,10 +127,28 @@ describe("見本で 判定が そのまま 届く（AIは スタブ）", () => {
   });
 });
 
-describe("言い直し", () => {
-  it("読めない 漢字が あれば 1回だけ 言い直して もらう", async () => {
+describe("言い直し（回数を 使うので 理由が 1つも 残らない ときだけ）", () => {
+  it("読めない 文が 一部だけ なら、言い直さずに その 文を 落とす", async () => {
+    const request = stub({
+      ...SAMPLES.t5_tech,
+      naosu_tokoro: ["配色が 刺激的です。", ...SAMPLES.t5_tech.naosu_tokoro],
+    });
+    const result = await run(request);
+    expect(request).toHaveBeenCalledTimes(1);
+    expect(result.ok && result.review.fix).toEqual(SAMPLES.t5_tech.naosu_tokoro);
+  });
+
+  it("「つぎ」で 白い 背景を すすめたら、言い直さずに「つぎ」を 出さない", async () => {
+    const request = stub({ ...SAMPLES.t4_near, tsugi: "白い 背景の サイトを 探しましょう。" });
+    const result = await run(request);
+    expect(request).toHaveBeenCalledTimes(1);
+    expect(result.ok && result.review.next).toBe("");
+    expect(result.ok && result.review.fix).toEqual(SAMPLES.t4_near.naosu_tokoro);
+  });
+
+  it("判定の 理由が 1つも 読めない ときだけ 1回 言い直して もらう", async () => {
     const request = stub(
-      { ...SAMPLES.t5_tech, naosu_tokoro: ["配色が 刺激的です。"] },
+      { hantei: "awanai", yoi_tokoro: [], naosu_tokoro: ["配色が 刺激的です。"], tsugi: "" },
       SAMPLES.t5_tech,
     );
     const result = await run(request);
@@ -137,39 +157,29 @@ describe("言い直し", () => {
     expect(result.ok && result.review.fix).toEqual(SAMPLES.t5_tech.naosu_tokoro);
   });
 
-  it("「つぎ」で 白い 背景を すすめたら 言い直して もらう", async () => {
-    const request = stub(
-      { ...SAMPLES.t4_near, tsugi: "白い 背景の サイトを 探しましょう。" },
-      SAMPLES.t4_near,
-    );
-    const result = await run(request);
-    expect(request.mock.calls[1]![0].retry).toEqual({ kanji: false, white: true });
-    expect(result.ok && result.review.next).toBe(SAMPLES.t4_near.tsugi);
-  });
-
-  it("2回目も だめなら、その 文と「つぎ」を 落とす（判定は 残す）", async () => {
+  it("2回目も 読めなければ、理由は 出さずに 判定だけ 残す（ぼかさない）", async () => {
     const bad = {
       hantei: "sukoshi_chigau",
-      yoi_tokoro: ["余白が 広いです。"],
-      naosu_tokoro: ["配色が 刺激的です。", "背景が 真っ白です。"],
+      yoi_tokoro: ["配色は 上品です。"],
+      naosu_tokoro: ["配色が 刺激的です。"],
       tsugi: "真っ白な サイトを 探しましょう。",
     };
     const request = stub(bad, bad);
     const result = await run(request);
     expect(request).toHaveBeenCalledTimes(2);
-    expect(result.ok).toBe(true);
-    if (!result.ok) return;
-    expect(result.review.verdict).toBe("sukoshi_chigau");
-    expect(result.review.fix).toEqual(["背景が 真っ白です。"]);
-    expect(result.review.next).toBe("");
+    expect(request.mock.calls[1]![0].retry).toEqual({ kanji: true, white: true });
+    expect(result).toEqual({
+      ok: true,
+      review: { verdict: "sukoshi_chigau", good: [], fix: [], next: "" },
+    });
   });
 
   it("2回目が 崩れたら 1回目を 使う", async () => {
-    const first = { ...SAMPLES.t1_fit, tsugi: "白い サイトも 見て みましょう。" };
+    const first = { hantei: "au", yoi_tokoro: ["配色が 上品です。"], naosu_tokoro: [], tsugi: "" };
     const request = stub(first, { hantei: "???" });
     const result = await run(request);
+    expect(request).toHaveBeenCalledTimes(2);
     expect(result.ok && result.review.verdict).toBe("au");
-    expect(result.ok && result.review.next).toBe("");
   });
 });
 
@@ -223,13 +233,32 @@ describe("読みとり", () => {
 describe("記録（先生の 学習の きろく）", () => {
   const block = { id: "design", judge: "山本社長" };
 
-  it("4つの 問い（サイト・理由・判定・AIの ことば）", () => {
+  it("6つの 問い（サイト・理由・判定・合って いる ところ・ちがう ところ・つぎ）", () => {
     expect(aiImageCheckFields(block).map((field) => [field.id, field.title])).toEqual([
       ["design_site", "えらんだ サイト"],
       ["design_riyuu", "えらんだ 理由"],
       ["design_hantei", "山本社長（AI）の 判定"],
-      ["design_kotoba", "山本社長（AI）の ことば"],
+      ["design_yoi", "合って いる ところ（AI）"],
+      ["design_naosu", "ちがう ところ（AI）"],
+      ["design_tsugi", "つぎに する こと（AI）"],
     ]);
+  });
+
+  it("AIの ことばは 1つの 問いが 300字で 切られない（文ごと 落とす）", () => {
+    const long = "あ".repeat(39) + "。";
+    const answers = aiImageCheckAnswers(block, {
+      site: "x",
+      reason: "y",
+      review: {
+        verdict: "awanai",
+        good: [long, long, long],
+        fix: [long, long, long, long],
+        next: long,
+      },
+    });
+    for (const value of Object.values(answers)) expect(value.length).toBeLessThanOrEqual(300);
+    expect(answers.design_naosu).toBe([long, long, long, long].join("／"));
+    expect(joinForRecord(Array.from({ length: 9 }, () => long)).split("／")).toHaveLength(7);
   });
 
   it("AIが 見なかった 回は 判定を 残さない（見て いない ものを 合格に しない）", () => {

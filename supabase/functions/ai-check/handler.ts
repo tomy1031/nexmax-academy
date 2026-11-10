@@ -65,6 +65,12 @@ export function phnomPenhDayStart(now: Date): Date {
 /** 受けとる 文の 上限（字）。指示文・道具の 形・頼みの 本文。 */
 export const AI_CHECK_LIMITS = { system: 2_000, tool: 12_000, prompt: 16_000 } as const;
 
+/**
+ * 頼みの 本文の 上限（バイト）。読む 前に `Content-Length` で 断る（画像の 上限 約 1.1MB ＋ 文）。
+ * 大きな 本文を 送りつけて 関数の メモリと 時間を 使わせない。
+ */
+export const AI_CHECK_MAX_BODY_BYTES = 2_000_000;
+
 /** 返事の 上限（トークン）。道具の 引数だけ なので これで 足りる。 */
 export const AI_CHECK_MAX_TOKENS = 2_048;
 
@@ -290,6 +296,9 @@ export async function handleAiCheck(request: Request, deps: AiCheckDeps): Promis
   const jwt = auth.startsWith("Bearer ") ? auth.slice("Bearer ".length).trim() : "";
   const userId = jwt === "" ? null : await deps.userIdFromJwt(jwt);
   if (!userId) return json({ ok: false, reason: "noAuth" }, 401);
+
+  const length = Number(request.headers.get("Content-Length") ?? "0");
+  if (length > AI_CHECK_MAX_BODY_BYTES) return json({ ok: false, reason: "badRequest" }, 413);
 
   let body: unknown;
   try {

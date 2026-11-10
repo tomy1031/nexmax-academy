@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import {
+  AI_CHECK_MAX_BODY_BYTES,
   AI_CHECK_TOOLS,
   aiCostUsd,
   handleAiCheck,
@@ -356,6 +357,22 @@ describe("画像の デザイン判定（kind design・要望 #713）", () => {
     });
     const response = await handleAiCheck(post(DESIGN), all);
     expect(await response.json()).toEqual({ ok: false, reason: "outside" });
+    expect(callClaude).not.toHaveBeenCalled();
+  });
+
+  it("大きすぎる 本文は 読む 前に 断る（413）", async () => {
+    const { all, callClaude } = designDeps();
+    const request = new Request("https://example.test/functions/v1/ai-check", {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer good",
+        "Content-Type": "application/json",
+        "Content-Length": String(AI_CHECK_MAX_BODY_BYTES + 1),
+      },
+      body: JSON.stringify(DESIGN),
+    });
+    const response = await handleAiCheck(request, all);
+    expect(response.status).toBe(413);
     expect(callClaude).not.toHaveBeenCalled();
   });
 

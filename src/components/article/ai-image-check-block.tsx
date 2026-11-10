@@ -26,7 +26,7 @@ import { buildFuriganaIndex, mergeFuriganaEntries, type FuriganaIndex } from "@/
  * 画像の AI判定（記事の `aiImageCheck` ブロック・要望 #713）
  *
  * 旧アプリ nextmake-onboarding の「8.デザイン」: 参考サイトの 画面を 上げ、えらんだ 理由を 書くと、
- * AI の 山本社長が Aoba の ブランドに 合うかを 判定する（何枚でも 試せる）。社長の デザインの
+ * AI の 山本社長が Aoba の ブランドに 合うかを 判定する（何枚でも 試せた）。社長の デザインの
  * 好みは、旧アプリでも この 判定の 中にだけ あった（constraints 2026-11-10）。
  *
  * ## 判定は はっきり 出す（規律1）
@@ -35,6 +35,12 @@ import { buildFuriganaIndex, mergeFuriganaEntries, type FuriganaIndex } from "@/
  * ## AIが 使えない とき（授業の 時間の 外・組の 設定なし・きょうの 回数の 上限）
  * **学習者を 止めない**。サイトと 理由だけ 書いて 保存でき、確かめ方（`closedNote`＝さいごの
  *「先生の こたえと くらべる」）を 案内する。鍵ゼロ（デモモード・CI）も この 形に なる。
+ * - 開いて いるのに 見て もらえなかった（混雑・時間切れ・関数が 古い など）ときも、
+ *  「AIなしで 保存する」で サイトと 理由を 残せる（そこで 止まらない）
+ * - 授業の 前に 開いた ページは、タブに 戻った とき・2分ごとに 確かめ直して、授業が 始まれば 開く
+ * - 判定は 出たのに 保存に 失敗した ときは、もう一度 押すと **保存だけ** やり直す
+ *  （AIを 呼び直すと 回数を 使い、判定も 変わりうる——見た 判定と 記録が ずれる）
+ * - 1人 1日の 回数には 上限が ある（先生の 画面で 決める）ので「何枚でも」とは 言わない
  *
  * ## 記録
  * 書きこみフォームと 同じ 保存・読み返し（`form-answers-db.ts`）。先生は 学習の きろくで 読む。
@@ -50,6 +56,7 @@ const UI_FURIGANA = [
   ["授業", "じゅぎょう"],
   ["時間", "じかん"],
   ["回数", "かいすう"],
+  ["上限", "じょうげん"],
   ["画像", "がぞう"],
   ["判定", "はんてい"],
   ["保存", "ほぞん"],
@@ -92,7 +99,13 @@ const VERDICT_NEXT: Record<DesignVerdict, string> = {
 
 type Gate = "checking" | "open" | "closed";
 type Status = "idle" | "asking" | "saving";
-type Notice = "" | "saved" | "failedAsk" | "failedSave" | "closedNow";
+type Notice = "" | "saved" | "failedAsk" | "failedSave" | "closedNow" | "openNow";
+
+/** 閉じて いても、待てば 開く かもしれない わけ（このときだけ 確かめ直す）。 */
+const REOPENABLE = new Set(["outside", "off"]);
+
+/** 閉じて いる あいだに 確かめ直す 間（`claudeStatus` は 60秒 覚える）。 */
+const RECHECK_MS = 120_000;
 
 type Picked = { previewUrl: string; data: string; mediaType: "image/jpeg" };
 
@@ -167,6 +180,12 @@ export function AiImageCheckBlock({
   const [status, setStatus] = useState<Status>("idle");
   const [notice, setNotice] = useState<Notice>("");
   const [latest, setLatest] = useState<Latest | null>(null);
+  /** 判定は 出たが 保存に 失敗した 1回ぶん（もう一度 押すと 保存だけ やり直す）。 */
+  const [unsaved, setUnsaved] = useState<{
+    site: string;
+    reason: string;
+    review: DesignReview;
+  } | null>(null);
   const [entries, setEntries] = useState<FormEntry[] | null | "error">(preview ? [] : null);
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -183,6 +202,30 @@ export function AiImageCheckBlock({
       alive = false;
     };
   }, [preview]);
+
+  // 授業の 前に 開いた ページ: タブに 戻った とき・2分ごとに 確かめ直す（授業が 始まれば 開く）
+  useEffect(() => {
+    if (preview || gate !== "closed" || !REOPENABLE.has(closedReason)) return;
+    let alive = true;
+    const recheck = () => {
+      if (document.visibilityState !== "visible") return;
+      void claudeStatus().then((result) => {
+        if (!alive || !result.open) return;
+        setGate("open");
+        setClosedReason("");
+        setNotice("openNow");
+      });
+    };
+    const timer = window.setInterval(recheck, RECHECK_MS);
+    document.addEventListener("visibilitychange", recheck);
+    window.addEventListener("focus", recheck);
+    return () => {
+      alive = false;
+      window.clearInterval(timer);
+      document.removeEventListener("visibilitychange", recheck);
+      window.removeEventListener("focus", recheck);
+    };
+  }, [preview, gate, closedReason]);
 
   useEffect(() => {
     if (preview) return;
@@ -219,9 +262,17 @@ export function AiImageCheckBlock({
     setMissing((current) => ({ ...current, image: false }));
   };
 
-  const save = async (review: DesignReview | null) => {
+  /** 書いた ものを 消して、つぎの 1枚に そなえる。 */
+  const clearInputs = () => {
+    setPicked(null);
+    setSite("");
+    setReason("");
+    if (fileRef.current) fileRef.current.value = "";
+  };
+
+  const save = async (entry: { site: string; reason: string; review: DesignReview | null }) => {
     setStatus("saving");
-    const answers = aiImageCheckAnswers(block, { site, reason, review });
+    const answers = aiImageCheckAnswers(block, entry);
     const result = await saveFormAnswers({ articleId, fields, answers });
     setStatus("idle");
     if (!result.ok) {
@@ -229,26 +280,42 @@ export function AiImageCheckBlock({
       return false;
     }
     setEntries((current) => [result.entry, ...(Array.isArray(current) ? current : [])]);
+    setNotice("saved");
+    clearInputs();
     return true;
   };
 
-  const submit = async () => {
-    if (preview || status !== "idle") return;
+  /** サイトと 理由が 書いて あるか（画像は AIに 見て もらう ときだけ 要る）。 */
+  const ready = (needImage: boolean) => {
     const lack = {
-      image: open && picked === null,
+      image: needImage && picked === null,
       site: site.trim() === "",
       reason: reason.trim() === "",
     };
     setMissing(lack);
-    if (lack.image || lack.site || lack.reason) return;
+    return !(lack.image || lack.site || lack.reason);
+  };
+
+  /** AIに 見て もらえなかった ときの 逃げ道。サイトと 理由だけ 残す。 */
+  const saveWithoutAi = async () => {
+    if (preview || status !== "idle" || !ready(false)) return;
+    setNotice("");
+    await save({ site: site.trim(), reason: reason.trim(), review: null });
+  };
+
+  const submit = async () => {
+    if (preview || status !== "idle") return;
+    // 判定は 出たのに 保存に 失敗した 回: 保存だけ やり直す（AIは 呼ばない）
+    if (unsaved) {
+      setNotice("");
+      if (await save(unsaved)) setUnsaved(null);
+      return;
+    }
+    if (!ready(open)) return;
     setNotice("");
 
     if (!open) {
-      if (await save(null)) {
-        setNotice("saved");
-        setSite("");
-        setReason("");
-      }
+      await save({ site: site.trim(), reason: reason.trim(), review: null });
       return;
     }
 
@@ -271,19 +338,9 @@ export function AiImageCheckBlock({
       }
       return;
     }
-    setLatest({
-      previewUrl: picked!.previewUrl,
-      site: site.trim(),
-      reason: reason.trim(),
-      review: checked.review,
-    });
-    if (await save(checked.review)) {
-      setNotice("saved");
-      setPicked(null);
-      setSite("");
-      setReason("");
-      if (fileRef.current) fileRef.current.value = "";
-    }
+    const entry = { site: site.trim(), reason: reason.trim(), review: checked.review };
+    setLatest({ previewUrl: picked!.previewUrl, ...entry });
+    if (!(await save(entry))) setUnsaved(entry);
   };
 
   const closedFirstLine =
@@ -326,7 +383,7 @@ export function AiImageCheckBlock({
       {gate === "open" && !preview && (
         <p className="text-leaf-deep mt-2 text-sm font-extrabold">
           {ui(
-            `いまは 授業の 時間なので、${block.judge}（AI）が 見て くれます。何枚でも 試せます。`,
+            `いまは 授業の 時間なので、${block.judge}（AI）が 見て くれます。きょう 見て もらえる 回数には 上限が あります。`,
           )}
         </p>
       )}
@@ -434,7 +491,7 @@ export function AiImageCheckBlock({
         <button
           type="button"
           // 名前は ルビ前の 字で（ルビが 入ると 読み上げが 読みを 2回 言う）
-          aria-label={open ? `${block.judge}に 見て もらう` : "保存する"}
+          aria-label={open && !unsaved ? `${block.judge}に 見て もらう` : "保存する"}
           onClick={() => void submit()}
           disabled={preview || status !== "idle" || gate === "checking"}
           className="bg-sky rounded-full px-6 py-2.5 font-extrabold text-white disabled:opacity-50"
@@ -444,22 +501,46 @@ export function AiImageCheckBlock({
             ? ui(`${block.judge}が 見て います…`)
             : status === "saving"
               ? ui("保存して います…")
-              : open
+              : open && !unsaved
                 ? ui(`${block.judge}に 見て もらう`)
                 : ui("保存する")}
         </button>
+        {open && notice === "failedAsk" && (
+          <button
+            type="button"
+            aria-label="AIなしで 保存する"
+            onClick={() => void saveWithoutAi()}
+            disabled={preview || status !== "idle"}
+            className="border-sky text-sky rounded-full border-2 bg-white px-5 py-2 font-extrabold disabled:opacity-50"
+          >
+            {ui("AIなしで 保存する")}
+          </button>
+        )}
         <p aria-live="polite" className="text-sm font-extrabold">
           {notice === "saved" && (
             <span className="text-leaf-deep">{ui("✅ 保存しました。下に 出て います。")}</span>
           )}
           {notice === "failedAsk" && (
             <span style={{ color: "var(--color-coral-deep)" }}>
-              {ui("うまく 見て もらえませんでした。もう一度 押して ください。")}
+              {ui(
+                "うまく 見て もらえませんでした。もう一度 押すか、「AIなしで 保存する」で サイトと 理由を 残して ください。",
+              )}
             </span>
           )}
           {notice === "failedSave" && (
             <span style={{ color: "var(--color-coral-deep)" }}>
-              {ui("保存できませんでした。もう一度 押して ください。")}
+              {ui(
+                unsaved
+                  ? "判定は 下に 出て います。保存できなかったので、もう一度「保存する」を 押して ください。"
+                  : "保存できませんでした。もう一度 押して ください。",
+              )}
+            </span>
+          )}
+          {notice === "openNow" && (
+            <span className="text-leaf-deep">
+              {ui(
+                `授業の 時間に なりました。画像を えらんで、${block.judge}に 見て もらいましょう。`,
+              )}
             </span>
           )}
           {notice === "closedNow" && (
@@ -556,9 +637,8 @@ export function AiImageCheckBlock({
         {Array.isArray(entries) && entries.length > 0 && (
           <ol className="mt-3 space-y-3">
             {entries.map((entry) => {
-              const [siteField, reasonField, hanteiField, kotobaField] = fields;
+              const [siteField, reasonField, hanteiField, ...aiFields] = fields;
               const verdict = verdictOfLabel(entry.answers[hanteiField!.id]);
-              const kotoba = entry.answers[kotobaField!.id] ?? "";
               return (
                 <li
                   key={entry.id}
@@ -597,10 +677,22 @@ export function AiImageCheckBlock({
                         </li>
                       ),
                     )}
-                    {kotoba !== "" && (
-                      <li className="text-ink-soft min-w-0 text-sm leading-relaxed font-bold break-words">
-                        <RubyText text={kotoba} index={aiIndex} show={show} />
-                      </li>
+                    {/* AIの ことば（合って いる ところ・ちがう ところ・つぎ） */}
+                    {aiFields.map((field) =>
+                      entry.answers[field.id] === undefined ? null : (
+                        <li
+                          key={field.id}
+                          className="text-ink-soft min-w-0 text-sm leading-relaxed font-bold break-words"
+                        >
+                          <RubyText text={field.title} index={uiIndex} show={show} />
+                          {": "}
+                          <RubyText
+                            text={entry.answers[field.id] ?? ""}
+                            index={aiIndex}
+                            show={show}
+                          />
+                        </li>
+                      ),
                     )}
                   </ul>
                 </li>

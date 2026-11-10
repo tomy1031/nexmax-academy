@@ -12,13 +12,19 @@
  *
  * ## 学習者が 読む 文の 漢字
  * 文字の チェック（`src/lib/quiz/ai-review.ts`）と 同じ 作り。使って よい ことばを こちらから
- * 渡し（`AI_KANJI_WORDS` ＋ デザインの ことば ＋ 教材の 読み辞書）、それ以外が 混ざったら
- * 1回だけ 言い直して もらう。それでも 残る 文は 落とす。検査と 画面の ルビは **同じ 索引**。
+ * 渡し（`AI_KANJI_WORDS` ＋ デザインの ことば ＋ 教材の 読み辞書）、それ以外が 混ざった 文は 落とす。
+ * 検査と 画面の ルビは **同じ 索引**。
+ *
+ * ## 言い直しは「理由が 1つも 残らない」ときだけ
+ * 言い直しも 1回と 数える（1人 1日の 回数・費用）。全体の 上限は 先生が 決める（いまは 5回）ので、
+ * 1枚に 2回 使うと 試せる 枚数が 半分に なる。だから 読めない 文が あっても、**合って いる・
+ * ちがう ところが 1つでも 読めれば** その 文だけ 落として 出す。言い直すのは、落とすと 判定の
+ * わけが 1つも 残らない ときだけ。
  *
  * ## 「白い 背景」を すすめさせない
  * 決まりは「真っ白は NG（和紙の ような オフホワイト）」。試した とき、Haiku 5.5 は「つぎ」で
  *「白い 背景の サイトを さがそう」と 書く ことが あった。指示文で 止めた うえで、ここでも
- * 見張る——書いて きたら 1回 言い直し、それでも なら「つぎ」を 出さない。
+ * 見張る——書いて きたら その「つぎ」は 出さない（判定ごとの 決まった 行動が かわりに 出る）。
  */
 
 import { AI_KANJI_WORDS, aiReplyFurigana } from "@/lib/ai-kanji";
@@ -200,11 +206,7 @@ function readable(value: string, index: FuriganaIndex): boolean {
   return value === "" || uncoveredKanji(value, index).length === 0;
 }
 
-function allReadable(review: DesignReview, index: FuriganaIndex): boolean {
-  return [...review.good, ...review.fix, review.next].every((line) => readable(line, index));
-}
-
-/** 2回目でも 読めない 文・白を すすめる「つぎ」を 落とす。判定は 残す（ぼかさない）。 */
+/** 読めない 文・白を すすめる「つぎ」を 落とす。判定は 残す（ぼかさない）。 */
 function keepReadable(review: DesignReview, index: FuriganaIndex): DesignReview {
   const next = readable(review.next, index) && !suggestsWhite(review.next) ? review.next : "";
   return {
@@ -220,8 +222,8 @@ export type DesignCheckResult =
   | { readonly ok: false; readonly reason: string; readonly closed: boolean };
 
 /**
- * 1枚を 判定して もらう。読めない 漢字・白を すすめる「つぎ」が あれば 1回だけ 言い直して もらう。
- * `request` は テストで AIを 差しかえる ため。
+ * 1枚を 判定して もらう。読めない 文を 落とすと 判定の わけが 1つも 残らない ときだけ、
+ * 1回 言い直して もらう（上の 註）。`request` は テストで AIを 差しかえる ため。
  */
 export async function runDesignCheck(
   input: {
@@ -247,21 +249,31 @@ export async function runDesignCheck(
   let review = parseDesignReview(first.input);
   if (!review) return { ok: false, reason: "badShape", closed: false };
 
-  const retry = { kanji: !allReadable(review, index), white: suggestsWhite(review.next) };
-  if (retry.kanji || retry.white) {
-    const again = await request({ ...base, retry });
-    // 2回目が だめなら 1回目を 使う（読めない 文は 下で 落とす）
+  const kept = keepReadable(review, index);
+  const hadReasons = review.good.length + review.fix.length > 0;
+  if (hadReasons && kept.good.length + kept.fix.length === 0) {
+    const again = await request({
+      ...base,
+      retry: { kanji: true, white: suggestsWhite(review.next) },
+    });
+    // 2回目が だめなら 1回目を 使う（読めない 文は 落とす）
     const parsed = again.ok ? parseDesignReview(again.input) : null;
     if (parsed) review = parsed;
+    return { ok: true, review: keepReadable(review, index) };
   }
-  return { ok: true, review: keepReadable(review, index) };
+  return { ok: true, review: kept };
 }
 
-/** 先生の 表に 残す 1文（「合って いる ところ: …／ちがう ところ: …／つぎ: …」）。 */
-export function designReviewSummary(review: DesignReview): string {
-  const parts: string[] = [];
-  if (review.good.length > 0) parts.push(`合って いる ところ: ${review.good.join("／")}`);
-  if (review.fix.length > 0) parts.push(`ちがう ところ: ${review.fix.join("／")}`);
-  if (review.next !== "") parts.push(`つぎ: ${review.next}`);
-  return parts.join("　");
+/** 1つの 問いに 残す 字数の 上限（`quiz_results.answer_text` を 切る `MAX_FORM_TEXT` と 同じ）。 */
+const RECORD_MAX = 300;
+
+/** 先生の 表に 残す 1行（文を「／」で つなぐ。上限を 超える ぶんは 文ごと 落とす）。 */
+export function joinForRecord(lines: readonly string[]): string {
+  let out = "";
+  for (const line of lines) {
+    const next = out === "" ? line : `${out}／${line}`;
+    if (next.length > RECORD_MAX) break;
+    out = next;
+  }
+  return out;
 }
