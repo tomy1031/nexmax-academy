@@ -1244,6 +1244,7 @@ export const ASSET_VERSIONS: Readonly<Record<string, string>> = {
   "/img/youken/president_online_call.webp": "f0c70486",
   "/img/youken/sado.webp": "aabab3a7",
   "/img/youken/shop_image.webp": "11a5dd3b",
+  "/img/youken/student_interview.webp": "47f3f2ef",
   "/img/youken/talk1.webp": "466bbae9",
   "/img/youken/talk2.webp": "2951cb63",
   "/img/youken/talk3.webp": "6300e9a3",
