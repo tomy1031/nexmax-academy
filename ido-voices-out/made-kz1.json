@@ -418,5 +418,58 @@
    "Iya = \"EE-yah\""
   ],
   "lang": "en"
+ },
+ "kz1op_16": {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 5.34,
+  "text": "戦いにやぶれた平家の人びとが、この山へ逃れてきた、と。",
+  "heard": " 戦いにやぶれた平家の人びとが、この山へ逃れてきた、",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "平家＝へいけ",
+   "逃れて＝のがれて"
+  ],
+  "lang": "ja"
+ },
+ "kz1op_16_en": {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.8,
+  "text": "It says the defeated Heike fled into these mountains.",
+  "heard": "It says the defeated Heike fled into these mountains.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "Heike = \"HAY-keh\""
+  ],
+  "lang": "en"
+ },
+ "kz1op_17": {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.6,
+  "text": "さあ、時の扉をひらきましょう。",
+  "heard": " さあ、時の扉をひらきましょう。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [],
+  "lang": "ja"
+ },
+ "kz1op_17_en": {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 3.27,
+  "text": "Now, let us open the door of time.",
+  "heard": "Now, let us open the door of time.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [],
+  "lang": "en"
  }
 }
