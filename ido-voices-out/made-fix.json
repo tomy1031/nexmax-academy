@@ -1,0 +1,29 @@
+{
+ "kz1op_03": {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 2.13,
+  "text": "深い山々に抱かれ、",
+  "heard": "深い山々に抱かれ",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "山々＝やまやま",
+   "抱かれ＝いだかれ"
+  ],
+  "lang": "ja"
+ },
+ "kz1op_07": {
+  "episode": "kamishibai-kazurabashi-ep1",
+  "speaker": "nekmax",
+  "voice": "Zephyr",
+  "model": "gemini-3.8-live",
+  "seconds": 1.15,
+  "text": "けれど、",
+  "heard": "けれ ど",
+  "scene": "静かな語り。ささやかずに、ふつうの声の大きさで、はっきりと",
+  "readings": [],
+  "lang": "ja"
+ }
+}
