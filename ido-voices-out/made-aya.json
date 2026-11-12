@@ -1,0 +1,182 @@
+{
+ "v11iv4j6_t1": {
+  "episode": "aya-retake",
+  "lang": "ja",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 5.31,
+  "text": "滝の音は、あのころと、少しも変わりませんね。",
+  "heard": "滝の音は、あのころと、少しも変わりませんね。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v11iv4j6_t2": {
+  "episode": "aya-retake",
+  "lang": "ja",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 3.84,
+  "text": "滝の音は、あのころと、少しも変わりませんね。",
+  "heard": "滝の音は、あのころと、少しも変わりませんね。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v11iv4j6_t3": {
+  "episode": "aya-retake",
+  "lang": "ja",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 4.540041666666666,
+  "text": "滝の音は、あのころと、少しも変わりませんね。",
+  "heard": "滝の音は、あのころと、少しも変わりませんね。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v11iv4j6_t4": {
+  "episode": "aya-retake",
+  "lang": "ja",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 4.180041666666667,
+  "text": "滝の音は、あのころと、少しも変わりませんね。",
+  "heard": "滝の音は、あのころと、少しも変わりませんね。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vlww28m_t1": {
+  "episode": "aya-retake",
+  "lang": "ja",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 6.2,
+  "text": "わたくしの琵琶も、この音にまぎれて、都の歌をひいていたのです。",
+  "heard": "わたくしの琵琶も、この音にまぎれて、都の歌をひいていたのです。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "琵琶＝びわ",
+   "都＝みやこ"
+  ]
+ },
+ "vlww28m_t2": {
+  "episode": "aya-retake",
+  "lang": "ja",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 5.74,
+  "text": "わたくしの琵琶も、この音にまぎれて、都の歌をひいていたのです。",
+  "heard": "わたくしの琵琶も、この音にまぎれて、都の歌をひいていたのです。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "琵琶＝びわ",
+   "都＝みやこ"
+  ]
+ },
+ "vlww28m_t3": {
+  "episode": "aya-retake",
+  "lang": "ja",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 5.47,
+  "text": "わたくしの琵琶も、この音にまぎれて、都の歌をひいていたのです。",
+  "heard": "私 の 美 は も この 音 に 紛れ て みやこ の 歌 を 引い て い た の です 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "琵琶＝びわ",
+   "都＝みやこ"
+  ]
+ },
+ "vlww28m_t4": {
+  "episode": "aya-retake",
+  "lang": "ja",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 5.980041666666667,
+  "text": "わたくしの琵琶も、この音にまぎれて、都の歌をひいていたのです。",
+  "heard": "わたくしの琵琶も、この音にまぎれて、都の歌をひいていたのです。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "琵琶＝びわ",
+   "都＝みやこ"
+  ]
+ },
+ "e11iv4j6r1q2g_t1": {
+  "episode": "aya-retake",
+  "lang": "en",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 5.120041666666666,
+  "text": "The sound of the falls hasn’t changed at all since those days.",
+  "heard": "the sound of the falls hasn't changed at all since those days",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e11iv4j6r1q2g_t2": {
+  "episode": "aya-retake",
+  "lang": "en",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 5.4,
+  "text": "The sound of the falls hasn’t changed at all since those days.",
+  "heard": " The sound of the falls hasn’t changed at all since those days.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e11iv4j6r1q2g_t3": {
+  "episode": "aya-retake",
+  "lang": "en",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 5.42,
+  "text": "The sound of the falls hasn’t changed at all since those days.",
+  "heard": " The sound of the falls hasn’t changed at all since those days.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "elww28m139rt_t1": {
+  "episode": "aya-retake",
+  "lang": "en",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 5.11,
+  "text": "My biwa played the songs of the capital here, hidden in this sound.",
+  "heard": " My biwa played the songs of the capital here, hidden in this sound.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "elww28m139rt_t2": {
+  "episode": "aya-retake",
+  "lang": "en",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 12.320041666666667,
+  "text": "My biwa played the songs of the capital here, hidden in this sound.",
+  "heard": " My biwa played the songs of the capital here, hidden in this sound.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "elww28m139rt_t3": {
+  "episode": "aya-retake",
+  "lang": "en",
+  "speaker": "aya",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 6.230041666666667,
+  "text": "My biwa played the songs of the capital here, hidden in this sound.",
+  "heard": " My biwa played the songs of the capital here, hidden in this sound.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ }
+}
