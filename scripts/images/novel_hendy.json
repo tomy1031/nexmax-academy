@@ -1,0 +1,20 @@
+{
+  "refs": [
+    "public/img/characters/hendy/stand_neutral.webp",
+    "public/img/characters/hendy/sheet.webp",
+    "public/img/characters/hendy/reference.png"
+  ],
+  "_comment": "相談の 練習（サウンドノベル・meeting.novel）の ヘンディさんの 立ち絵。正典は 設定シート sheet.webp と 参考写真（docs/skills/codex_image_generation.md §6.5・§6.6）。looks は content/characters/hendy.json から 逐語。白背景で 撮り、scripts/images/cutout_white.mjs で 切りぬいて public/img/novel/hendy/ に 置く。表情は 大げさに（§6.7）。",
+  "style": "Style: clean modern Japanese manga / anime style, soft cel shading, bright friendly palette, rounded shapes, no harsh shadows, warm daylight, contemporary Japan, kid-safe e-learning illustration. EMOTIONS ARE BIG AND OBVIOUS, like a Japanese comedy manga.",
+  "noText": "No text, no letters, no kanji, no kana, no numbers anywhere in the image. No watermark, no signature, no logo, no frame border.",
+  "negative": "Never: realistic photo rendering, harsh gradients, six fingers, extra limbs, readable letters, dark horror tone, angry faces, real sadness or tears, costume changes, a drawn checkerboard pattern.",
+  "scenes": [
+    {
+      "out": "stand_troubled",
+      "dest": "public/img/novel/hendy/stand_troubled.webp",
+      "title": "こまった",
+      "output": "Output: one portrait cut-out illustration, 1024x1536. The character stands ALONE on a plain pure white (#FFFFFF) background: no floor, no wall, no ground shadow, no props, no gradient. Centered horizontally, cropped by the bottom edge at mid-thigh, with a small margin on the left, right and top.",
+      "scene": "Character: 先輩エンジニア（ネクストメイク4年目のプロジェクトマネージャ兼プログラマー。外国から来て日本語をゼロから覚えた当事者で、学習者にとって『先に同じ道を歩いた人』） — Japanese-style anime character, man in his late twenties, slim build, about 175cm, relaxed upright posture. Short black hair, slightly tousled with soft spiky tips and a loose fringe. Dark brown eyes, straight thick eyebrows, clean-shaven, gentle smile. Business suit: navy single-breasted two-button jacket (#2A3550) worn open or buttoned, crisp white dress shirt, solid navy necktie (#233A63), matching navy slacks (#2E3A57), black leather belt, black leather lace-up oxford shoes. No lanyard, no bag, no glasses.\nPose: standing, facing the viewer, one hand scratching the back of the head (exactly five fingers), the other arm relaxed. Clearly troubled and worried: eyebrows raised in a worried slant, wavy uneasy mouth, one big sweat drop beside the head. Not angry, not crying."
+    }
+  ]
+}

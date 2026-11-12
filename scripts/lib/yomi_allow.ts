@@ -262,6 +262,12 @@ export const YOMI_ALLOW: readonly YomiAllowEntry[] = [
     where: "30分",
     note: "「9時30分に」＝さんじゅっぷん（夕礼の 前ばなし）。解析は ふん",
   },
+  {
+    surface: "分後",
+    reading: "ぷんご",
+    where: "30分後",
+    note: "「30分後。」＝さんじゅっぷんご（相談の 練習・木曜の 結果）。解析は ふん（連濁を 落とす）",
+  },
   { surface: "月の", reading: "がつの", where: "4月の", note: "「4月の 新学期」。解析は つき" },
   {
     surface: "行ったら、もう ",

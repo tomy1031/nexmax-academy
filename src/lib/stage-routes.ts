@@ -182,6 +182,16 @@ const REPLACED: readonly {
     from: { type: "link", ref: "renraku_contact" },
     to: { type: "quizset", ref: "renraku_contact_quiz" },
   },
+  /*
+   * 2026-11-12: 相談の 場面クイズ「いま 話しかけて いい？」（quizset `soudan_kehai`）を
+   * 相談の 練習（サウンドノベル・meeting `soudan_novel`）へ 差し替えた（仕様書 v4）。
+   * 元の もんだいは 消さずに ステージから 外した だけ。
+   */
+  {
+    stage: "soudan",
+    from: { type: "quizset", ref: "soudan_kehai" },
+    to: { type: "meeting", ref: "soudan_novel" },
+  },
 ];
 
 /**

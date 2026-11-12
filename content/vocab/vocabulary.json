@@ -1982,6 +1982,18 @@
     [
       "時点",
       "じてん"
+    ],
+    [
+      "並",
+      "なら"
+    ],
+    [
+      "個",
+      "こ"
+    ],
+    [
+      "住所",
+      "じゅうしょ"
     ]
   ],
   "words": [
@@ -21612,6 +21624,69 @@
           "よる"
         ]
       ]
+    },
+    {
+      "id": "shouhin-ichiran",
+      "term": "商品一覧",
+      "reading": "しょうひんいちらん",
+      "romaji": "shouhin ichiran",
+      "meaningJa": "お店の 商品を 並べて 見せる 画面です。",
+      "englishTerm": "Product list",
+      "example": "今日は、商品一覧の 画面を 作ります。"
+    },
+    {
+      "id": "suuryou",
+      "term": "数量",
+      "reading": "すうりょう",
+      "romaji": "suuryou",
+      "meaningJa": "いくつ ほしいか、の 数です。",
+      "englishTerm": "Quantity",
+      "example": "数量は 1〜5個です。"
+    },
+    {
+      "id": "ran",
+      "term": "欄",
+      "reading": "らん",
+      "romaji": "ran",
+      "meaningJa": "画面や 紙の、字を 書く ところです。",
+      "englishTerm": "Field (input box)",
+      "example": "住所の 欄を 入れて ください。"
+    },
+    {
+      "id": "user-id",
+      "term": "ユーザーID",
+      "reading": "ゆーざーあいでぃー",
+      "romaji": "yuuzaa aidii",
+      "meaningJa": "使う 人を 見分ける ための 番号や 名前です。",
+      "englishTerm": "User ID",
+      "example": "APIは ユーザーIDが 必須です。"
+    },
+    {
+      "id": "fairu-mei",
+      "term": "ファイル名",
+      "reading": "ふぁいるめい",
+      "romaji": "fairu mei",
+      "meaningJa": "ファイルに つけた 名前です。",
+      "englishTerm": "File name",
+      "example": "ファイル名が ちがいます。"
+    },
+    {
+      "id": "foruda",
+      "term": "フォルダ",
+      "reading": "ふぉるだ",
+      "romaji": "foruda",
+      "meaningJa": "ファイルを まとめて 入れる 場所です。",
+      "englishTerm": "Folder",
+      "example": "フォルダに light.pngが ありません。"
+    },
+    {
+      "id": "genkin",
+      "term": "現金",
+      "reading": "げんきん",
+      "romaji": "genkin",
+      "meaningJa": "紙の お金や コインです。",
+      "englishTerm": "Cash",
+      "example": "支払いは 現金だけです。"
     }
   ]
 }

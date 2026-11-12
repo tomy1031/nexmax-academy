@@ -16,6 +16,7 @@ import { QuizRunner } from "@/components/quiz/quiz-runner";
 import { SlideDeck } from "@/components/slides/slide-deck";
 import { AsakaiSession } from "@/components/asakai/asakai-session";
 import { TalkGameSession } from "@/components/talk-game/talk-game-session";
+import { NovelSession } from "@/components/novel/novel-session";
 import { ContentFrame, type FrameItem } from "@/components/stage/content-frame";
 import {
   getArticle,
@@ -353,6 +354,13 @@ async function renderContent(ref: StageContentRef) {
        */
       if (meeting.asakai) {
         return <AsakaiSession meeting={meeting} />;
+      }
+      /*
+       * **相談の 練習（サウンドノベル）も 別の 画面**（2026-11-12 の 仕様書 v4）。
+       * セリフを 送って 進む 一本道で、相談の 場面だけ マイクで 話す。
+       */
+      if (meeting.novel) {
+        return <NovelSession meeting={meeting} />;
       }
       return (
         <MeetingSession

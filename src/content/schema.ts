@@ -2978,6 +2978,352 @@ const asakaiSceneSchema = z
     }
   });
 
+/* ------------------------------------------------------------------ *
+ * 相談の 練習（サウンドノベル・`meeting.novel`）
+ *
+ * 2026-11-12 の 仕様書「相談の練習 v4（サウンドノベル版）」。相談が かならず 起きる
+ * 一本道で、毎日「目的 → 気づき → 相談 → 結果」を 同じ 順に くり返す（5日・相談 7件）。
+ *
+ * ## なぜ `meeting` の 中に 置くか
+ * 朝礼・夕礼（`asakai`）・対話ゲーム（`talkGame`）と 同じ 分かれ方。相談の 本体は
+ * **マイクで 話して Gemini が 判定する**ので、ミーティングの 声と 判定の しくみを そのまま 使う。
+ * 進み方が まったく ちがうので、入口（`[content]/page.tsx`）で `NovelSession` に 分ける。
+ *
+ * ## プログラムは「場面の 列」を 先頭から 再生する だけ
+ * 背景・立ち絵・開発中の 画面は **保存しない**。その日の 最初から いまの 場面までを
+ * 読み直して 毎回 計算する（`src/lib/novel/state.ts`）——どこへ 戻っても 表示が ずれない。
+ *
+ * ## 学生に 見せる 文は ぜんぶ ここに 書く
+ * Gemini は 判定（合格か・足りない 要素・失敗の 型）だけを 返し、学生に 見せる 返事は
+ * この データの 文だけを 使う。N4 を こえる 日本語が 画面に 出ない ように する ため。
+ * ------------------------------------------------------------------ */
+
+/** 1日の 4つの ステップ（＋はじめに・おわりに）。画面の 上の ステップバーが 色を 付ける。 */
+export const novelSteps = ["intro", "goal", "notice", "consult", "result", "outro"] as const;
+/** 立ち絵の 表情（ふつう・うれしい・こまった）。 */
+export const novelFaces = ["neutral", "happy", "troubled"] as const;
+/** 失敗の 型（仕様書 6章）。Gemini の `failure_type` と 同じ 名前。 */
+export const novelFailureTypes = [
+  "vague",
+  "no_ask",
+  "blaming",
+  "decided_alone",
+  "hiding",
+  "off_topic",
+  "unclear_audio",
+] as const;
+export type NovelFailureType = (typeof novelFailureTypes)[number];
+
+const novelId = z.string().regex(/^[a-z0-9_-]+$/);
+
+/** 開発中の 画面の 1行（商品・入力欄・予定・テストの 結果）。 */
+const novelScreenRowSchema = z.object({
+  label: plainText,
+  value: plainText.optional(),
+  /** 商品の 絵（`/img/...`）。`state: "broken"` なら 絵の かわりに こわれた 印を 出す。 */
+  image: z.string().min(1).optional(),
+  /** ok=できた・broken=出ない・new=いま 入った・bad=まちがい。色と 印に なる。 */
+  state: z.enum(["ok", "broken", "new", "bad"]).optional(),
+});
+
+/** 開発中の 画面（小さい 窓）。結果の ステップで 前→後を 見せる。 */
+export const novelScreenSchema = z.object({
+  title: plainText,
+  rows: z.array(novelScreenRowSchema).default([]),
+  /** 画面の 下の ボタン（「注文する」）。 */
+  button: plainText.optional(),
+  /** まだ 何も ない ときの 一言（「まだ 作って いません」）。 */
+  note: plainText.optional(),
+});
+
+/** 資料の 1行（短い 1文）。気づきで 学生が 選ぶ 単位。 */
+const novelDocLineSchema = z.object({
+  id: novelId,
+  text: plainText,
+  en: z.string().optional(),
+});
+
+/** 気づきで 並べる 資料 1つ（2〜3行）。 */
+const novelDocSchema = z.object({
+  title: plainText,
+  /** 見た目（ふつうの 資料・お客様の メッセージ・コード・ファイルの 一覧）。 */
+  look: z.enum(["doc", "message", "code", "files"]).default("doc"),
+  lines: z.array(novelDocLineSchema).min(2).max(4),
+});
+
+/**
+ * 気づきカード。①見たもの ②ちがい は 気づいた ときに 入り、③聞きたい ことは 空欄。
+ * 相談の とき、日ごとの 支え（`support`）に よって 文・キーワード・閉じた 状態で 出る。
+ */
+const novelCardSchema = z.object({
+  seen: plainText,
+  diff: plainText,
+  seenKey: plainText,
+  diffKey: plainText,
+});
+
+/** 「もしも」の 場面や 結果で 出す 短い セリフ。 */
+const novelShortLineSchema = z.object({
+  speaker: z.string().min(1),
+  text: plainText,
+  en: z.string().optional(),
+});
+
+/** 失敗の 型ごとの 相手の 反応と ヒント（`◯◯` は 相談の `topic` に 置きかわる）。 */
+const novelReactionSchema = z.object({
+  text: plainText,
+  en: z.string().optional(),
+  hint: plainText,
+  hintEn: z.string().optional(),
+});
+
+const novelSceneBase = {
+  id: novelId,
+  step: z.enum(novelSteps),
+};
+
+const novelLineSceneSchema = z.object({
+  ...novelSceneBase,
+  type: z.literal("line"),
+  /**
+   * 話す 人。`narration`（ナレーション）・`me`（あなた）・`thought`（あなたの 心の 声）、
+   * または `cast` の id。
+   */
+  speaker: z.string().min(1),
+  /** お客様の メッセージなど、立ち絵を 出さずに 吹き出しで 見せる。 */
+  via: z.enum(["message"]).optional(),
+  text: plainText,
+  /** 英語の 訳（「訳」ボタンで 出す）。 */
+  en: z.string().optional(),
+  /** クメール語の 訳（翻訳の 確認が 済んだら 入れる）。 */
+  km: z.string().optional(),
+  face: z.enum(novelFaces).optional(),
+  /** 背景を かえる（`backgrounds` の 鍵）。 */
+  bg: z.string().optional(),
+  /** 効果音（気づいた・合格・もう一度）。 */
+  se: z.enum(["notice", "pass", "retry"]).optional(),
+  /** 画面を 一度 暗く する（時間が たった）。 */
+  dark: z.boolean().optional(),
+});
+
+const novelGoalSceneSchema = z.object({
+  ...novelSceneBase,
+  type: z.literal("goal"),
+  text: plainText,
+  en: z.string().optional(),
+});
+
+const novelNoticeSceneSchema = z.object({
+  ...novelSceneBase,
+  type: z.literal("notice"),
+  left: novelDocSchema,
+  right: novelDocSchema,
+  /** 正しい 組み合わせ（左の 行 id・右の 行 id）。 */
+  answer: z.tuple([novelId, novelId]),
+  /** 1回目に まちがえた ときの「見る 場所」。2回目・3回目は 正しい 行を 光らせる。 */
+  hint: plainText,
+  hintEn: z.string().optional(),
+  /** 気づいた ときの 心の 声は、つぎの line が 持つ。ここは カードの 中身だけ。 */
+  card: novelCardSchema,
+});
+
+const novelSelfFixSceneSchema = z.object({
+  ...novelSceneBase,
+  type: z.literal("self_fix"),
+  /** 何を 直すか（ボタンの 上に 出す）。 */
+  text: plainText,
+  en: z.string().optional(),
+  before: plainText,
+  after: plainText,
+});
+
+const novelChooseSceneSchema = z.object({
+  ...novelSceneBase,
+  type: z.literal("choose_person"),
+  /** 顔を 出す 3人（`cast` の id）。 */
+  options: z.array(novelId).min(2).max(4),
+  answer: novelId,
+  /** ちがう 人を 選んだ ときに、その 人が 言う 文。 */
+  wrong: plainText,
+  wrongEn: z.string().optional(),
+});
+
+const novelConsultSceneSchema = z.object({
+  ...novelSceneBase,
+  type: z.literal("consult"),
+  /** 相談する 相手（`cast` の id）。 */
+  to: novelId,
+  /**
+   * 気づきカードの 出し方（日ごとに 支えを 減らす）。
+   * form=①②を 文で・③は 文の 型 / sentence=①②を 文で・③は 空欄 /
+   * keyword=①②を キーワードだけ / closed=閉じた 状態（タップで 開く）。
+   */
+  support: z.enum(["form", "sentence", "keyword", "closed"]),
+  /** ③の 文の 型（`support: "form"` の 日だけ 出す）。 */
+  askForm: plainText.optional(),
+  /** 声かけの 一言（学生が 言う）と 相手の 返事。 */
+  call: plainText,
+  reply: plainText,
+  replyEn: z.string().optional(),
+  /** 話が ちがう ときの「今は、◯◯の 話を しましょう」の ◯◯。 */
+  topic: plainText,
+  /**
+   * 判定の 基準（Gemini に 渡す）。①見たもの・したこと ②ちがい・問題 ③質問・お願い。
+   * 画面には 出さない。
+   */
+  criteria: z.object({
+    context: plainText,
+    problem: plainText,
+    ask: plainText,
+    /** この 相談で とくに 気を つける 失敗（勝手に 決める・問題を 隠す など）。 */
+    note: plainText.optional(),
+  }),
+  /** お手本（3回目に 見せる。声に 出して 読めば 合格）。 */
+  example: plainText,
+  exampleEn: z.string().optional(),
+  /** 穴あきの 文（2回目に 見せる）。 */
+  cloze: plainText,
+  /** 型ごとの 反応の 差しかえ（無ければ `novel.reactions`）。 */
+  reactions: z.record(z.enum(novelFailureTypes), novelReactionSchema).optional(),
+  /** 「勝手に 決める」「問題を 隠す」の あとに 見せる「もしも」の 場面（1〜2行）。 */
+  whatIf: z
+    .object({
+      decided_alone: z.array(novelShortLineSchema).min(1).max(3).optional(),
+      hiding: z.array(novelShortLineSchema).min(1).max(3).optional(),
+    })
+    .optional(),
+});
+
+const novelScreenSceneSchema = z.object({
+  ...novelSceneBase,
+  type: z.literal("screen"),
+  text: plainText,
+  en: z.string().optional(),
+  before: novelScreenSchema,
+  after: novelScreenSchema,
+});
+
+const novelPointSceneSchema = z.object({
+  ...novelSceneBase,
+  type: z.literal("point"),
+  text: plainText,
+  en: z.string().optional(),
+});
+
+const novelEndingSceneSchema = z.object({
+  ...novelSceneBase,
+  type: z.literal("ending"),
+  text: plainText,
+  en: z.string().optional(),
+});
+
+export const novelSceneSchema = z.discriminatedUnion("type", [
+  novelLineSceneSchema,
+  novelGoalSceneSchema,
+  novelNoticeSceneSchema,
+  novelSelfFixSceneSchema,
+  novelChooseSceneSchema,
+  novelConsultSceneSchema,
+  novelScreenSceneSchema,
+  novelPointSceneSchema,
+  novelEndingSceneSchema,
+]);
+
+const novelDaySchema = z.object({
+  id: novelId,
+  /** 「月曜日」。 */
+  label: plainText,
+  /** その日の はじめの 背景（`backgrounds` の 鍵）。 */
+  bg: z.string().min(1),
+  /** その日の はじめの 開発中の 画面。 */
+  screen: novelScreenSchema,
+  /** その日に 新しく 出す IT・仕事の ことば（1日 7語まで・辞書に ある 語）。 */
+  words: z.array(plainText).max(7).default([]),
+  scenes: z.array(novelSceneSchema).min(1),
+});
+
+export const novelSchema = z
+  .object({
+    /** 出る 人。id は characters の id（立ち絵が 無い 人は メッセージで だけ 出る）。 */
+    cast: z
+      .array(
+        z.object({
+          id: novelId,
+          name: plainText,
+          /** 顔の 下に 出す 役割の 一言（「PM」）。 */
+          role: plainText,
+          /** 相談する 内容（「お客様との 約束・仕様・納品の 日」）。 */
+          duty: plainText.optional(),
+          figures: z
+            .object({
+              neutral: z.string().min(1),
+              happy: z.string().min(1),
+              troubled: z.string().min(1),
+            })
+            .optional(),
+        }),
+      )
+      .min(1),
+    /** 背景の 鍵 → 画像（`/img/...`）。 */
+    backgrounds: z.record(z.string(), z.string().min(1)),
+    /** 失敗の 型ごとの 相手の 反応と ヒント（仕様書 6章の 表）。 */
+    reactions: z.record(z.enum(novelFailureTypes), novelReactionSchema),
+    days: z.array(novelDaySchema).min(1),
+  })
+  .superRefine((novel, ctx) => {
+    const cast = new Set(novel.cast.map((person) => person.id));
+    const speakers = new Set([...cast, "narration", "me", "thought"]);
+    const ids = new Set<string>();
+    novel.days.forEach((day, d) => {
+      if (!(day.bg in novel.backgrounds)) {
+        ctx.addIssue({ code: "custom", path: ["days", d, "bg"], message: `背景「${day.bg}」が backgrounds に ない` });
+      }
+      day.scenes.forEach((scene, s) => {
+        const at = ["days", d, "scenes", s];
+        if (ids.has(scene.id)) {
+          ctx.addIssue({ code: "custom", path: [...at, "id"], message: `場面 id「${scene.id}」が 2つ ある` });
+        }
+        ids.add(scene.id);
+        if (scene.type === "line") {
+          if (!speakers.has(scene.speaker)) {
+            ctx.addIssue({ code: "custom", path: [...at, "speaker"], message: `話す 人「${scene.speaker}」が cast に ない` });
+          }
+          if (scene.bg && !(scene.bg in novel.backgrounds)) {
+            ctx.addIssue({ code: "custom", path: [...at, "bg"], message: `背景「${scene.bg}」が backgrounds に ない` });
+          }
+        }
+        if (scene.type === "notice") {
+          const [left, right] = scene.answer;
+          if (!scene.left.lines.some((line) => line.id === left)) {
+            ctx.addIssue({ code: "custom", path: [...at, "answer", 0], message: `左の 資料に 行「${left}」が ない` });
+          }
+          if (!scene.right.lines.some((line) => line.id === right)) {
+            ctx.addIssue({ code: "custom", path: [...at, "answer", 1], message: `右の 資料に 行「${right}」が ない` });
+          }
+        }
+        if (scene.type === "choose_person") {
+          if (!scene.options.includes(scene.answer)) {
+            ctx.addIssue({ code: "custom", path: [...at, "answer"], message: "正しい 相手が 選択肢に ない" });
+          }
+          for (const option of scene.options) {
+            if (!cast.has(option)) {
+              ctx.addIssue({ code: "custom", path: [...at, "options"], message: `「${option}」が cast に ない` });
+            }
+          }
+        }
+        if (scene.type === "consult" && !cast.has(scene.to)) {
+          ctx.addIssue({ code: "custom", path: [...at, "to"], message: `相手「${scene.to}」が cast に ない` });
+        }
+        if (scene.type === "consult" && scene.support === "form" && !scene.askForm) {
+          ctx.addIssue({ code: "custom", path: [...at, "askForm"], message: "support が form の 日は ③の 文の 型（askForm）が 要る" });
+        }
+      });
+    });
+  });
+export type Novel = z.infer<typeof novelSchema>;
+export type NovelScene = z.infer<typeof novelSceneSchema>;
+export type NovelScreen = z.infer<typeof novelScreenSchema>;
+
 export const meetingSchema = z.object({
   kind: z.literal("meeting"),
   /**
@@ -3215,6 +3561,13 @@ export const meetingSchema = z.object({
     })
     .optional(),
   /**
+   * 相談の 練習（サウンドノベル・2026-11-12 の 仕様書 v4）。
+   *
+   * この 欄が あると、教材は **`NovelSession`** で 開く（`asakai`・`talkGame` と 同じ 分かれ方）。
+   * 中身は 上の `novelSchema` の 覚え書き。
+   */
+  novel: novelSchema.optional(),
+  /**
    * ぜんぶ 答えた あとに「聞き出す」もの（願い #94）。
    *
    * しつもんが 終わった あとの 自由な おしゃべりが、ただの 雑談で 終わって いた。
@@ -3310,6 +3663,11 @@ export const meetingSchema = z.object({
    * ここで 3つ 求めると、使われない しつもんを 埋めさせる ことに なる。
    */
   if (meeting.asakai) return;
+  /*
+   * **相談の 練習も しつもんを 持たない**（2026-11-12）。相談は `novel.days[].scenes` の
+   * `consult` が 持ち、判定の 基準も そこに 書く。
+   */
+  if (meeting.novel) return;
   if (meeting.questions.length < 3) {
     ctx.addIssue({
       code: "custom",

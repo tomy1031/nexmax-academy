@@ -1,0 +1,23 @@
+{
+  "refs": [],
+  "_comment": "相談の 練習（サウンドノベル）の「開発中の 画面」に 出す 商品の 絵 2枚（マウス・USBライト）。水曜の 場面で 画像が 出る／出ないを 見せる。人は 描かない。",
+  "style": "Style: clean flat product illustration in a soft modern anime e-commerce style, soft cel shading, bright friendly palette, rounded shapes.",
+  "noText": "No text, no letters, no numbers, no brand logo anywhere in the image. No watermark, no frame border.",
+  "negative": "Never: people, hands, realistic photo rendering, harsh shadows, busy background.",
+  "scenes": [
+    {
+      "out": "mouse",
+      "dest": "public/img/novel/mouse.webp",
+      "title": "マウス",
+      "output": "Output: one square illustration, 1024x1024, the product centred on a plain very light grey (#F4F6F8) background with a soft shadow.",
+      "scene": "A single wireless computer mouse, sky-blue and white, seen from a three-quarter top view, with a small scroll wheel. Nothing else in the picture."
+    },
+    {
+      "out": "light",
+      "dest": "public/img/novel/light.webp",
+      "title": "USBライト",
+      "output": "Output: one square illustration, 1024x1024, the product centred on a plain very light grey (#F4F6F8) background with a soft shadow.",
+      "scene": "A single small flexible USB LED desk light: a USB plug at the bottom, a bendable silver gooseneck, and a round warm-white glowing LED head at the top. Nothing else in the picture."
+    }
+  ]
+}
