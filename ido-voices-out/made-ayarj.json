@@ -254,5 +254,29 @@
   "readings": [
    "弥平次＝やへいじ"
   ]
+ },
+ "v19mw17d_c1": {
+  "episode": "aya-retake2-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 2.38,
+  "text": "また、戦をなさるのですか。",
+  "heard": "また戦をなさるのですか?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v19mw17d_c2": {
+  "episode": "aya-retake2-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 2.64,
+  "text": "また、戦をなさるのですか。",
+  "heard": "また、戦いをおなさるのですか。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
  }
 }
