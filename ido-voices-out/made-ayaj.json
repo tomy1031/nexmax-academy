@@ -256,5 +256,145 @@
   "heard": "ありがとう",
   "scene": "おだやかな場面。落ち着いた声で",
   "readings": []
+ },
+ "vp9zlae_c": {
+  "episode": "aya-callirrhoe-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 6.59,
+  "text": "旅の方は、黙って聴いてくださるのね。……では、聴いてくださいませ。",
+  "heard": " 黙って聴いてくださるのね。 ……では、聴いてくださいませ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1n47psj_c": {
+  "episode": "aya-callirrhoe-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 6.28,
+  "text": "都の春の歌を、弾きます。帝が、いちばんお好きだった歌。",
+  "heard": "都の春 の 歌 を 引き ます 。 三佳 が 一番 お 好き だっ た 歌 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "都＝みやこ",
+   "帝＝みかど"
+  ]
+ },
+ "vq4yaz0_c": {
+  "episode": "aya-callirrhoe-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 5.16,
+  "text": "国盛さま。……行くのなら、これを聴いてからにしてくださいませ。",
+  "heard": "国森様 行くのなら これを聞いてからにしてくださいませ。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "国盛＝くにもり"
+  ]
+ },
+ "v156yvz7_c": {
+  "episode": "aya-callirrhoe-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 3.29,
+  "text": "そんな言い伝え、聞いたことがございませぬ。",
+  "heard": "そんな言い伝え聞いたことがございせぬ",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vy251qs_c": {
+  "episode": "aya-callirrhoe-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 1.4800416666666667,
+  "text": "では、これを。",
+  "heard": "では これ を",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vuouetv_c": {
+  "episode": "aya-callirrhoe-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 5.31,
+  "text": "預かってくださいませ。……いつか、また弾くときまで。",
+  "heard": "……預かってくださいませ。……いつか、また弾くときまで。",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "v1eyay9r_c": {
+  "episode": "aya-callirrhoe-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 5.5,
+  "text": "旅の方。あなたの時代にも、この歌は残っていますか？",
+  "heard": "あなたの時代にも、この歌は残っていますか？",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1xu2f3w_c": {
+  "episode": "aya-callirrhoe-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 3.680041666666667,
+  "text": "名前が……。それなら、十分です。",
+  "heard": "名前が、それなら十分です。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vu59vsc_c": {
+  "episode": "aya-callirrhoe-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 8.98,
+  "text": "ふふ。やさしい嘘ね。……でも、うれしい。",
+  "heard": "ふふっ 。 優しい 嘘 ね 。 で も うれしい 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v11iv4j6_c": {
+  "episode": "aya-callirrhoe-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 4.540041666666666,
+  "text": "滝の音は、あのころと、少しも変わりませんね。",
+  "heard": "滝の音は、あのころと、少しも変わりませんね。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vlww28m_c": {
+  "episode": "aya-callirrhoe-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 6.31,
+  "text": "わたくしの琵琶も、この音にまぎれて、都の歌をひいていたのです。",
+  "heard": "わたくしの琵琶も、この音にまぎれて、都の歌をひいていたのです。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "琵琶＝びわ",
+   "都＝みやこ"
+  ]
  }
 }
