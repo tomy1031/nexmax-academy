@@ -1,0 +1,258 @@
+{
+ "v1s7l1o_c1": {
+  "episode": "aya-retake2-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 5.27,
+  "text": "私は綾。帝のおそばで、お育てしてきた者です。",
+  "heard": "私は彩 、三門 の おそば で お 育て し て き た もの です 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "綾＝あや",
+   "帝＝みかど"
+  ]
+ },
+ "v1s7l1o_c2": {
+  "episode": "aya-retake2-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 5.59,
+  "text": "私は綾。帝のおそばで、お育てしてきた者です。",
+  "heard": "私 は あや 御門 の お そば で お 育て し て き た もの です 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "綾＝あや",
+   "帝＝みかど"
+  ]
+ },
+ "vzuwocx_c1": {
+  "episode": "aya-retake2-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 3.49,
+  "text": "……国盛さま。その太刀は。",
+  "heard": "その太刀は。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "国盛＝くにもり",
+   "太刀＝たち"
+  ]
+ },
+ "vzuwocx_c2": {
+  "episode": "aya-retake2-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 3.18,
+  "text": "……国盛さま。その太刀は。",
+  "heard": "国 森 さま その 立ち は",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "国盛＝くにもり",
+   "太刀＝たち"
+  ]
+ },
+ "vp9zlae_c1": {
+  "episode": "aya-retake2-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 6.54,
+  "text": "旅の方は、黙って聴いてくださるのね。……では、聴いてくださいませ。",
+  "heard": "旅 の 方 は 黙っ て 聞い て くださる の ね 。 で は 聞い て ください ませ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vp9zlae_c2": {
+  "episode": "aya-retake2-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 5.95,
+  "text": "旅の方は、黙って聴いてくださるのね。……では、聴いてくださいませ。",
+  "heard": "旅 の 方 は 黙っ て 聞い て くださる の ね 。 で は 聞い て ください ませ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1eyay9r_c1": {
+  "episode": "aya-retake2-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 5.35,
+  "text": "旅の方。あなたの時代にも、この歌は残っていますか？",
+  "heard": " 旅の方。 あなたの時代にも、この歌は残っていますか？",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1eyay9r_c2": {
+  "episode": "aya-retake2-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 5.440041666666667,
+  "text": "旅の方。あなたの時代にも、この歌は残っていますか？",
+  "heard": "旅の方。あなたの時代にも、この歌は残っていますか？",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vxe0g1x_c1": {
+  "episode": "aya-retake2-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 5.12,
+  "text": "どうして、そんなことを。……いいえ。聞きません。",
+  "heard": "……いいえ。聞きません。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vxe0g1x_c2": {
+  "episode": "aya-retake2-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 4.75,
+  "text": "どうして、そんなことを。……いいえ。聞きません。",
+  "heard": "どうして そんなことを ? いいえ 聞きません",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v5zcdmt_c1": {
+  "episode": "aya-retake2-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 7.000041666666666,
+  "text": "一年たっても、帰ってこない。……だから今日だけは、悲しい曲を弾くと決めたの。",
+  "heard": "一年たっても、帰ってこない。……だから今日だけは、悲しい曲を弾くと",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v5zcdmt_c2": {
+  "episode": "aya-retake2-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 9.27,
+  "text": "一年たっても、帰ってこない。……だから今日だけは、悲しい曲を弾くと決めたの。",
+  "heard": "1年経っても 帰って来ない。 だから 今日だけは 悲しい曲を弾くと決めたの。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1fcgsg5_c1": {
+  "episode": "aya-retake2-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 3.64,
+  "text": "……どなた？ 今のは、弔いの曲です。",
+  "heard": "どなた？今のは、弔いの",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1fcgsg5_c2": {
+  "episode": "aya-retake2-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 5.400041666666667,
+  "text": "……どなた？ 今のは、弔いの曲です。",
+  "heard": "どなた？ 今のは、館内の曲です。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vu59vsc_c1": {
+  "episode": "aya-retake2-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 5.440041666666667,
+  "text": "ふふ。やさしい嘘ね。……でも、うれしい。",
+  "heard": "ふふ 。 優しい 嘘 ね 。 でも 嬉しい 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vu59vsc_c2": {
+  "episode": "aya-retake2-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 5.1,
+  "text": "ふふ。やさしい嘘ね。……でも、うれしい。",
+  "heard": "ふふ優しい嘘ね でもうれしい",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v156yvz7_c1": {
+  "episode": "aya-retake2-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 3.4800416666666667,
+  "text": "そんな言い伝え、聞いたことがございませぬ。",
+  "heard": "そんな 言い伝え 聞い た こと が ござい ませ ん 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v156yvz7_c2": {
+  "episode": "aya-retake2-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 3.52,
+  "text": "そんな言い伝え、聞いたことがございませぬ。",
+  "heard": "そんな言い伝え聞いたことがございませ ぬ",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1yfpne7_c1": {
+  "episode": "aya-retake2-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 9.99,
+  "text": "去年の秋、私たちを逃がすために、ひとりで山へ消えた人がいたの。弥平次という、口うるさいおじいさん。",
+  "heard": "。去年の秋、私たちを逃がすために、ひとりで山へ消えた人がいたの。弥平次という、口うるさい",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "弥平次＝やへいじ"
+  ]
+ },
+ "v1yfpne7_c2": {
+  "episode": "aya-retake2-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 9.1,
+  "text": "去年の秋、私たちを逃がすために、ひとりで山へ消えた人がいたの。弥平次という、口うるさいおじいさん。",
+  "heard": "去年の秋、私たちを逃がすために1人で山へ消えた人がいたの。野平次という口うるさいおじさん。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "弥平次＝やへいじ"
+  ]
+ }
+}
