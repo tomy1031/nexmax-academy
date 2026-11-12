@@ -4,7 +4,9 @@ import novelMeeting from "../content/meetings/soudan_novel.json";
 import soudanStage from "../content/stages/soudan.json";
 import vocabulary from "../content/vocab/vocabulary.json";
 import { meetingSchema, type Novel } from "@/content/schema";
-import { replacedContent } from "@/lib/stage-routes";
+import { pinnedShortContent, replacedContent } from "@/lib/stage-routes";
+import { annotateRuby, buildFuriganaIndex, mergeFuriganaEntries } from "@/lib/text/furigana";
+import { NOVEL_UI_FURIGANA } from "@/components/novel/ui-furigana";
 import {
   buildNovelJudgePrompt,
   parseNovelJudgment,
@@ -113,6 +115,22 @@ describe("相談の 練習の データ（仕様書 v4 §8）", () => {
       type: "meeting",
       ref: "soudan_novel",
     });
+  });
+
+  it("短い URL（/soudan/meeting）は 前と 同じ ミーティングへ 送る", () => {
+    expect(pinnedShortContent("soudan", "meeting")).toEqual({
+      type: "meeting",
+      ref: "soudan_meeting",
+    });
+    expect(pinnedShortContent("soudan", "meeting-soudan_novel")).toBeNull();
+  });
+
+  it("お手本の 前半（①②）だけ 読んでも 合格に しない（③が いちばん 大事）", () => {
+    for (const consult of allConsults(novel)) {
+      const sentences = consult.example.split("。").filter(Boolean);
+      const firstTwo = `${sentences.slice(0, -1).join("。")}。`;
+      expect(readsExample(firstTwo, consult.example), consult.id).toBe(false);
+    }
   });
 
   it("お手本の 文は 自分の 判定（読めば 合格）でも 合格に なる", () => {
@@ -264,6 +282,31 @@ describe("判定の 決まり（仕様書 v4 §5・§6）", () => {
   });
 });
 
+describe("画面の 字の 読み（UI の 辞書だけでも、教材と 混ぜても 正しい）", () => {
+  const reading = (text: string, entries: readonly (readonly [string, string])[]) =>
+    annotateRuby(text, buildFuriganaIndex(entries as [string, string][]))
+      .map((segment) => segment.reading ?? segment.text)
+      .join("");
+  const merged = mergeFuriganaEntries(NOVEL_UI_FURIGANA, meeting.furigana ?? []);
+  const cases: [string, string][] = [
+    ["話す ▶", "はなす ▶"],
+    ["もう 一度 話す", "もう いちど はなす"],
+    [
+      "お手本（Model）— 声に 出して 読みましょう",
+      "お[てほん]（Model）— こえに だして よみましょう",
+    ],
+    ["後", "あと"],
+    ["これは やり直しの 回数に 入りません。", "これは やりなおしの かいすうに はいりません。"],
+    ["5日間の まとめ", "5かかんの まとめ"],
+    ["今日の 目的", "きょうの もくてき"],
+  ];
+  it.each(cases)("%s", (text, expected) => {
+    const want = expected.replace("[てほん]", "てほん");
+    expect(reading(text, NOVEL_UI_FURIGANA)).toBe(want);
+    expect(reading(text, merged)).toBe(want);
+  });
+});
+
 describe("保存（ブラウザに 1行ごと）", () => {
   it("壊れた 保存は 空に し、教材に 無い 日や 場面は 丸める", () => {
     expect(normalizeSave("broken", novel).day).toBe(0);
@@ -274,5 +317,21 @@ describe("保存（ブラウザに 1行ごと）", () => {
     expect(save.cleared).toEqual(["x"]);
     expect(save.settings.furigana).toBe(true);
     expect(save.settings.translation).toBe(false);
+  });
+
+  it("失敗の 記録・星が 崩れて いても まとめの 画面が 落ちない", () => {
+    const save = normalizeSave(
+      {
+        attempts: { c_mon: 5, c_tue1: { fails: 1 }, c_wed: { fails: 2, types: ["vague", "x"] } },
+        stars: { c_mon: -1, c_tue1: 9, c_wed: "a" },
+      },
+      novel,
+    );
+    expect(save.attempts.c_mon).toBeUndefined();
+    expect(save.attempts.c_tue1).toEqual({ fails: 1, types: [] });
+    expect(save.attempts.c_wed).toEqual({ fails: 2, types: ["vague"] });
+    expect(save.stars).toEqual({ c_mon: 0, c_tue1: 3 });
+    expect(() => mostCommonFailure(save.attempts)).not.toThrow();
+    expect(addFailure(save.attempts, "c_tue1", "no_ask").c_tue1?.fails).toBe(2);
   });
 });

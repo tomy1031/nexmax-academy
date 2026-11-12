@@ -1,10 +1,11 @@
-import type {
-  Novel,
-  NovelFailureType,
-  NovelScene,
-  NovelScreen,
-  novelFaces,
-  novelSteps,
+import {
+  novelFailureTypes,
+  type Novel,
+  type NovelFailureType,
+  type NovelScene,
+  type NovelScreen,
+  type novelFaces,
+  type novelSteps,
 } from "@/content/schema";
 
 /**
@@ -90,8 +91,8 @@ export function normalizeSave(raw: unknown, novel: Novel): NovelSave {
     cleared: Array.isArray(value.cleared)
       ? value.cleared.filter((id): id is string => typeof id === "string")
       : [],
-    attempts: isRecord(value.attempts) ? (value.attempts as Record<string, NovelAttempt>) : {},
-    stars: isRecord(value.stars) ? (value.stars as Record<string, number>) : {},
+    attempts: cleanAttempts(value.attempts),
+    stars: cleanStars(value.stars),
     settings: {
       furigana: typeof settings.furigana === "boolean" ? settings.furigana : true,
       translation: typeof settings.translation === "boolean" ? settings.translation : false,
@@ -102,6 +103,33 @@ export function normalizeSave(raw: unknown, novel: Novel): NovelSave {
     },
     finished: value.finished === true,
   };
+}
+
+/** 失敗の 記録を 1件ずつ 確かめる（崩れた 保存で まとめの 画面が 落ちない ように）。 */
+function cleanAttempts(raw: unknown): Record<string, NovelAttempt> {
+  if (!isRecord(raw)) return {};
+  const out: Record<string, NovelAttempt> = {};
+  for (const [id, one] of Object.entries(raw as Record<string, unknown>)) {
+    if (!isRecord(one)) continue;
+    const value = one as { fails?: unknown; types?: unknown };
+    const types = Array.isArray(value.types)
+      ? value.types.filter((type): type is NovelFailureType =>
+          (novelFailureTypes as readonly string[]).includes(String(type)),
+        )
+      : [];
+    out[id] = { fails: clampInt(value.fails, 0, 99, types.length), types };
+  }
+  return out;
+}
+
+/** 星は 0〜3 の 整数だけ 残す。 */
+function cleanStars(raw: unknown): Record<string, number> {
+  if (!isRecord(raw)) return {};
+  const out: Record<string, number> = {};
+  for (const [id, stars] of Object.entries(raw as Record<string, unknown>)) {
+    if (typeof stars === "number" && Number.isFinite(stars)) out[id] = clampInt(stars, 0, 3, 0);
+  }
+  return out;
 }
 
 function clampInt(value: unknown, min: number, max: number, fallback: number): number {

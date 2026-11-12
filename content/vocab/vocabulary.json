@@ -21654,7 +21654,13 @@
       "romaji": "ran",
       "meaningJa": "画面や 紙の、字を 書く ところです。",
       "englishTerm": "Field (input box)",
-      "example": "住所の 欄を 入れて ください。"
+      "example": "住所の 欄を 入れて ください。",
+      "furigana": [
+        [
+          "入れ",
+          "いれ"
+        ]
+      ]
     },
     {
       "id": "user-id",
@@ -21663,7 +21669,17 @@
       "romaji": "yuuzaa aidii",
       "meaningJa": "使う 人を 見分ける ための 番号や 名前です。",
       "englishTerm": "User ID",
-      "example": "APIは ユーザーIDが 必須です。"
+      "example": "APIは ユーザーIDが 必須です。",
+      "furigana": [
+        [
+          "必須",
+          "ひっす"
+        ],
+        [
+          "番号",
+          "ばんごう"
+        ]
+      ]
     },
     {
       "id": "fairu-mei",
@@ -21672,7 +21688,13 @@
       "romaji": "fairu mei",
       "meaningJa": "ファイルに つけた 名前です。",
       "englishTerm": "File name",
-      "example": "ファイル名が ちがいます。"
+      "example": "ファイル名が ちがいます。",
+      "furigana": [
+        [
+          "名",
+          "めい"
+        ]
+      ]
     },
     {
       "id": "foruda",

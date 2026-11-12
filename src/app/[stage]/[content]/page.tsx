@@ -40,6 +40,7 @@ import { stageStepNumber } from "@/lib/map-data";
 import {
   CONTENT_SEGMENTS,
   NO_STANDALONE_PAGE,
+  pinnedShortContent,
   resolveStageContent,
   replacedContent,
   splitContentSegment,
@@ -142,6 +143,8 @@ async function resolve(
   if (isReserved(stageId)) return null;
   const stage = await getStage(stageId);
   if (!stage) return null;
+  // 短い URL を 前の 教材に とめた もの（下の 古い URL の 転送で 送る）
+  if (pinnedShortContent(stageId, segment)) return null;
   const ref = resolveStageContent(stage.contents, segment);
   if (!ref) return null;
   // 同じ ref が2回入っている壊れたステージでは最初の1つを現在地にする
@@ -252,6 +255,7 @@ export default async function StageContentPage({
      * 行き先）も ここで 本来の URL へ 送る（`standaloneContent`）。
      */
     const moved =
+      pinnedShortContent(stageId, content) ??
       standaloneContent(stageId, content) ??
       replacedContent(stageId, content) ??
       splitContentSegment(content);

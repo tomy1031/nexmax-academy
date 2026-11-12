@@ -1,9 +1,9 @@
 {
   "kind": "meeting",
   "id": "soudan_novel",
-  "title": "相談の 練習（5日間）",
+  "title": "相談の 5日間（ネットショップ）",
   "description": "新人エンジニアの 5日間です。資料を 比べて ちがいに 気づき、マイクで 相談します。",
-  "focus": "相談は ①見たもの ②ちがい ③聞きたい こと の 3つを 入れて 話します。",
+  "focus": "相談では 3つを 話します。①見たもの ②ちがい ③聞きたいこと",
   "persona": "相談の 練習の 判定係です。学生の 相談を 聞いて、判定だけを 返します。学生には 話しかけません。",
   "host": {
     "id": "hendy",
@@ -134,8 +134,17 @@
             "step": "intro",
             "type": "line",
             "speaker": "hendy",
-            "text": "おはよう ございます。PMの ヘンディです。お客様は、お店の 店長の 松本さんです。",
-            "en": "Good morning. I'm Hendy, the PM. Our client is Mr. Matsumoto, the shop manager.",
+            "text": "おはよう ございます。PMの ヘンディです。",
+            "en": "Good morning. I'm Hendy, the PM.",
+            "face": "neutral"
+          },
+          {
+            "id": "m02b",
+            "step": "intro",
+            "type": "line",
+            "speaker": "hendy",
+            "text": "お客様は、お店の 店長の 松本さんです。",
+            "en": "Our client is Mr. Matsumoto, the shop manager.",
             "face": "neutral"
           },
           {
@@ -197,7 +206,7 @@
             "step": "goal",
             "type": "line",
             "speaker": "hendy",
-            "text": "ちがう ところが あったら、作る 前に 私に 聞いて ください。",
+            "text": "ちがいが あったら、作る 前に 私に 聞いて ください。",
             "en": "If something is different, ask me before you build it.",
             "face": "neutral"
           },
@@ -213,8 +222,8 @@
             "step": "notice",
             "type": "line",
             "speaker": "hendy",
-            "text": "2つの 資料を 並べます。ちがう ところを、左と 右から 1つずつ 選んで ください。",
-            "en": "I'll put two documents side by side. Choose one line on the left and one on the right that don't match.",
+            "text": "2つの 資料から、ちがう 行を 1つずつ 選んで ください。",
+            "en": "From the two documents, choose one line from each that doesn't match.",
             "face": "neutral"
           },
           {
@@ -267,8 +276,8 @@
                 },
                 {
                   "id": "d3",
-                  "text": "ノート：在庫 0個",
-                  "en": "Notebook: 0 in stock"
+                  "text": "ノート：在庫 8個",
+                  "en": "Notebook: 8 in stock"
                 }
               ]
             },
@@ -283,7 +292,8 @@
               "diff": "USBライトの 在庫は 2個。",
               "seenKey": "仕様書・1〜5個",
               "diffKey": "USBライト・在庫 2個"
-            }
+            },
+            "prompt": "仕様書と 商品データを 比べて、合わない 行を 1つずつ 選びます。"
           },
           {
             "id": "m13",
@@ -320,8 +330,8 @@
             "step": "consult",
             "type": "line",
             "speaker": "narration",
-            "text": "相談する ときは、①見たもの ②ちがい ③聞きたい こと の 順に 話します。",
-            "en": "When you consult, say ① what you saw, ② what is different, ③ what you want to ask, in that order."
+            "text": "相談では、3つを 順に 話します。①見たもの ②ちがい ③聞きたいこと",
+            "en": "When you consult, say three things in order: ① what you saw, ② what is different, ③ what you want to ask."
           },
           {
             "id": "c_mon",
@@ -341,7 +351,15 @@
             },
             "example": "仕様書では、1〜5個 注文できます。でも、USBライトの 在庫は 2個です。在庫より 多い 注文は、できないように しますか。",
             "exampleEn": "The specification says you can order 1 to 5. But there are only 2 USB lights in stock. Should we block orders larger than the stock?",
-            "cloze": "仕様書では、＿＿。でも、＿＿。＿＿ますか。"
+            "cloze": "仕様書では、＿＿。でも、＿＿。＿＿ますか。",
+            "reactions": {
+              "no_ask": {
+                "text": "わかりました。それで、何を 聞きたいですか？",
+                "en": "I see. So, what do you want to ask?",
+                "hint": "③ 聞きたい ことを 言いましょう。「〜ますか。」",
+                "hintEn": "Say ③ what you want to ask: \"...masu ka?\""
+              }
+            }
           },
           {
             "id": "m18",
@@ -395,7 +413,7 @@
             "step": "result",
             "type": "line",
             "speaker": "hendy",
-            "text": "作る 前に 聞いて くれたので、やり直しが ありませんでした。ありがとう。",
+            "text": "作る 前に 聞いたので、やり直しが ありませんでした。ありがとう。",
             "en": "Because you asked before building, there was no rework. Thank you.",
             "face": "happy"
           },
@@ -449,8 +467,8 @@
             "step": "goal",
             "type": "line",
             "speaker": "hendy",
-            "text": "昨日と 同じです。作る 前に 比べて、ちがいが あったら 担当の 人に 聞いて ください。",
-            "en": "Same as yesterday. Compare before you build, and if something is different, ask the person in charge.",
+            "text": "昨日と 同じです。比べて、ちがいは 担当の 人に 聞いて ください。",
+            "en": "Same as yesterday. Compare them, and ask the person in charge about any difference.",
             "face": "neutral"
           },
           {
@@ -517,7 +535,8 @@
               "diff": "デザインには、住所の 欄が ない。",
               "seenKey": "仕様書・名前・住所・数量",
               "diffKey": "デザイン・住所の 欄が ない"
-            }
+            },
+            "prompt": "仕様書と 画面デザインを 比べて、合わない 行を 1つずつ 選びます。"
           },
           {
             "id": "t06",
@@ -672,14 +691,15 @@
               "t2",
               "a2"
             ],
-            "hint": "ログインと ユーザーIDを 見て ください。",
-            "hintEn": "Look at login and user ID.",
+            "hint": "ログインの ところを 見て ください。",
+            "hintEn": "Look at the part about login.",
             "card": {
               "seen": "仕様書では、ログインしなくても 注文できる。",
               "diff": "APIは、ユーザーIDが 必須。",
               "seenKey": "仕様書・ログインなしで 注文",
               "diffKey": "API・ユーザーIDが 必須"
-            }
+            },
+            "prompt": "仕様書と API資料を 比べて、合わない 行を 1つずつ 選びます。"
           },
           {
             "id": "t14",
@@ -727,7 +747,7 @@
             "step": "result",
             "type": "line",
             "speaker": "nyam",
-            "text": "いい 質問ですね。ユーザーIDが なくても 注文できるように、APIを 直します。",
+            "text": "いい 質問ですね。IDが なくても 注文できるように、APIを 直します。",
             "en": "Good question. I'll fix the API so you can order without a user ID.",
             "face": "happy",
             "se": "pass"
@@ -894,16 +914,25 @@
               "diff": "フォルダの ファイルは mouse.png。",
               "seenKey": "コード・mouse.pmg",
               "diffKey": "フォルダ・mouse.png"
-            }
+            },
+            "prompt": "コードの ファイル名と、フォルダの ファイルを 比べます。"
           },
           {
             "id": "w06",
             "step": "notice",
             "type": "line",
             "speaker": "thought",
-            "text": "ファイル名が ちがう。pmg では なくて png だ。これは 自分で 直せる。",
-            "en": "The file name is wrong. It's png, not pmg. I can fix this myself.",
+            "text": "ファイル名が ちがう。pmgでは なくて pngだ。",
+            "en": "The file name is wrong. It's png, not pmg.",
             "se": "notice"
+          },
+          {
+            "id": "w06b",
+            "step": "notice",
+            "type": "line",
+            "speaker": "thought",
+            "text": "これは 自分で 直せる。",
+            "en": "I can fix this myself."
           },
           {
             "id": "w07",
@@ -995,8 +1024,8 @@
                 },
                 {
                   "id": "f3",
-                  "text": "ファイルは この 2つだけ。",
-                  "en": "Only these two files."
+                  "text": "フォルダの ファイルは この 2つだけ。",
+                  "en": "The folder has only these two files."
                 }
               ]
             },
@@ -1011,7 +1040,8 @@
               "diff": "フォルダに light.pngが ない。",
               "seenKey": "ファイル名を 直した",
               "diffKey": "light.pngが ない"
-            }
+            },
+            "prompt": "コードの ファイルが フォルダに あるか、比べます。"
           },
           {
             "id": "w11",
@@ -1053,7 +1083,15 @@
             },
             "example": "ファイル名を 直したので、マウスの 画像は 出ました。でも、light.pngが フォルダに ありません。light.pngを 入れて もらえますか。",
             "exampleEn": "I fixed the file name, so the mouse image appears. But light.png is not in the folder. Could you put light.png in?",
-            "cloze": "＿＿を 直したので、マウスの 画像は 出ました。でも、＿＿。＿＿もらえますか。"
+            "cloze": "＿＿を 直したので、マウスの 画像は 出ました。でも、＿＿。＿＿もらえますか。",
+            "reactions": {
+              "vague": {
+                "text": "すみません、何の 話ですか？",
+                "en": "Sorry, what are you talking about?",
+                "hint": "した ことと、どう なったかを 言いましょう。",
+                "hintEn": "Say what you did and what happened."
+              }
+            }
           },
           {
             "id": "w14",
@@ -1116,8 +1154,8 @@
             "step": "result",
             "type": "line",
             "speaker": "hendy",
-            "text": "自分で した ことを 先に 言うと、相手は すぐに 答えられますね。",
-            "en": "If you say what you did first, the other person can answer right away.",
+            "text": "した ことを 先に 言うと、すぐに 答えられますね。",
+            "en": "If you say what you did first, I can answer right away.",
             "face": "happy"
           },
           {
@@ -1169,7 +1207,7 @@
             "step": "goal",
             "type": "line",
             "speaker": "hendy",
-            "text": "松本さんから メッセージが 来たら、読んで おいて ください。",
+            "text": "松本さんから メッセージが 来たら、読んで ください。",
             "en": "If a message comes from Mr. Matsumoto, please read it.",
             "face": "neutral"
           },
@@ -1185,8 +1223,8 @@
             "step": "notice",
             "type": "line",
             "speaker": "matsumoto",
-            "text": "こんにちは。お客様が クレジットカードで 払えるように したいです。",
-            "en": "Hello. I want customers to be able to pay by credit card.",
+            "text": "こんにちは。お店の お客さんが クレジットカードで 払えるように したいです。",
+            "en": "Hello. I want my shop's customers to be able to pay by credit card.",
             "via": "message"
           },
           {
@@ -1250,7 +1288,8 @@
               "diff": "仕様書では、支払いは 現金だけ。",
               "seenKey": "松本さん・カード・金曜日まで",
               "diffKey": "仕様書・現金だけ"
-            }
+            },
+            "prompt": "松本さんの メッセージと 仕様書を 比べて、合わない 行を 選びます。"
           },
           {
             "id": "h07",
@@ -1270,14 +1309,6 @@
             "en": "Friday is delivery day. I must not say \"I can do it\" by myself."
           },
           {
-            "id": "h08b",
-            "step": "notice",
-            "type": "line",
-            "speaker": "narration",
-            "text": "ヘンディさんが 会議から 戻りました。",
-            "en": "Hendy came back from the meeting."
-          },
-          {
             "id": "h09",
             "step": "notice",
             "type": "choose_person",
@@ -1289,6 +1320,14 @@
             "answer": "hendy",
             "wrong": "それは ヘンディさんに 聞いて ください。",
             "wrongEn": "Please ask Hendy about that."
+          },
+          {
+            "id": "h08b",
+            "step": "consult",
+            "type": "line",
+            "speaker": "narration",
+            "text": "ヘンディさんが 会議から 戻りました。声を かけましょう。",
+            "en": "Hendy came back from the meeting. Let's talk to him."
           },
           {
             "id": "c_thu",
@@ -1322,6 +1361,14 @@
                   "en": "But you promised..."
                 }
               ]
+            },
+            "reactions": {
+              "no_ask": {
+                "text": "わかりました。それで、何を 聞きたいですか？",
+                "en": "I see. So, what do you want to ask?",
+                "hint": "③ 聞きたい ことを 言いましょう。「〜ますか。」",
+                "hintEn": "Say ③ what you want to ask: \"...masu ka?\""
+              }
             }
           },
           {
@@ -1439,8 +1486,17 @@
             "step": "goal",
             "type": "line",
             "speaker": "hendy",
-            "text": "おはよう ございます。今日は 納品の 日です。16時に 松本さんに 渡します。",
-            "en": "Good morning. Today is delivery day. We hand it to Mr. Matsumoto at 4 p.m.",
+            "text": "おはよう ございます。今日は 納品の 日です。",
+            "en": "Good morning. Today is delivery day.",
+            "face": "neutral"
+          },
+          {
+            "id": "f01b",
+            "step": "goal",
+            "type": "line",
+            "speaker": "hendy",
+            "text": "16時に 松本さんに 渡します。",
+            "en": "We hand it to Mr. Matsumoto at 4 p.m.",
             "face": "neutral"
           },
           {
@@ -1533,7 +1589,8 @@
               "diff": "注文が 2件 できた。1件が 正しい。",
               "seenKey": "ボタンを 2回",
               "diffKey": "注文 2件（1件が 正しい）"
-            }
+            },
+            "prompt": "テストの 予定と 記録を 比べて、合わない 行を 選びます。"
           },
           {
             "id": "f07",
@@ -1589,6 +1646,14 @@
                   "en": "This is a problem."
                 }
               ]
+            },
+            "reactions": {
+              "vague": {
+                "text": "すみません、何の 話ですか？",
+                "en": "Sorry, what are you talking about?",
+                "hint": "した ことと、どう なったかを 言いましょう。",
+                "hintEn": "Say what you did and what happened."
+              }
             }
           },
           {
@@ -1596,7 +1661,7 @@
             "step": "result",
             "type": "line",
             "speaker": "nyam",
-            "text": "わかりました。した ことと 結果が はっきり して いるので、すぐ 調べられます。",
+            "text": "わかりました。した ことと 結果が よく わかるので、すぐ 調べられます。",
             "en": "Got it. What you did and what happened are clear, so I can check right away.",
             "face": "neutral",
             "se": "pass"
@@ -1615,8 +1680,16 @@
             "step": "notice",
             "type": "line",
             "speaker": "thought",
-            "text": "今は 15時。直すのに 1時間。その あと、再テストに 30分 かかる。",
-            "en": "It's 3 p.m. Fixing takes an hour. Then retesting takes 30 minutes."
+            "text": "今は 15時。直すのに 1時間。",
+            "en": "It's 3 p.m. Fixing takes an hour."
+          },
+          {
+            "id": "f12b",
+            "step": "notice",
+            "type": "line",
+            "speaker": "thought",
+            "text": "その あと、再テストに 30分 かかる。",
+            "en": "Then retesting takes 30 minutes."
           },
           {
             "id": "n_fri2",
@@ -1670,15 +1743,16 @@
               "diff": "16時の 納品に まにあわない。",
               "seenKey": "1時間＋30分",
               "diffKey": "16時に まにあわない"
-            }
+            },
+            "prompt": "納品の 予定と 作業の 時間を 比べて、合わない 行を 選びます。"
           },
           {
             "id": "f14",
             "step": "notice",
             "type": "line",
             "speaker": "thought",
-            "text": "16時に まにあわない。早く ヘンディさんに 言わなければ ならない。",
-            "en": "We won't make it by 4. I have to tell Hendy quickly.",
+            "text": "16時に まにあわない。早く 言わなければ ならない。",
+            "en": "We won't make it by 4. I have to tell someone quickly.",
             "se": "notice"
           },
           {
@@ -1710,8 +1784,8 @@
               "ask": "納品の 時間を どう するかを 聞く・相談する。",
               "note": "「たぶん まにあいます」など 悪い 知らせを 言わない ときは hiding。自分で 時間を 決めて 松本さんに 言う ときは decided_alone。"
             },
-            "example": "ニャムさんが 直すのに 1時間、再テストに 30分 かかります。16時の 納品に まにあいません。納品の 時間を どう しますか。",
-            "exampleEn": "Nyam needs one hour to fix it, and the retest takes 30 minutes. We won't make the 4 p.m. delivery. What should we do about the delivery time?",
+            "example": "直すのに 1時間、再テストに 30分 かかります。16時の 納品に まにあいません。納品の 時間を どう しますか。",
+            "exampleEn": "Fixing takes one hour, and the retest takes 30 minutes. We won't make the 4 p.m. delivery. What should we do about the delivery time?",
             "cloze": "直すのに ＿＿、再テストに ＿＿ かかります。＿＿に まにあいません。＿＿どう しますか。",
             "whatIf": {
               "hiding": [
@@ -1726,6 +1800,14 @@
                   "en": "This is a problem."
                 }
               ]
+            },
+            "reactions": {
+              "no_ask": {
+                "text": "わかりました。それで、何を 聞きたいですか？",
+                "en": "I see. So, what do you want to ask?",
+                "hint": "③ 聞きたい ことを 言いましょう。「〜ますか。」",
+                "hintEn": "Say ③ what you want to ask: \"...masu ka?\""
+              }
             }
           },
           {
@@ -1839,6 +1921,10 @@
     [
       "作業時間",
       "さぎょうじかん"
+    ],
+    [
+      "合わない",
+      "あわない"
     ],
     [
       "売り切れ",
@@ -2249,6 +2335,10 @@
       "じ"
     ],
     [
+      "客",
+      "きゃく"
+    ],
+    [
       "小",
       "ちい"
     ],
@@ -2267,10 +2357,6 @@
     [
       "待",
       "ま"
-    ],
-    [
-      "後",
-      "ご"
     ],
     [
       "忘",
@@ -2379,6 +2465,10 @@
     [
       "色",
       "いろ"
+    ],
+    [
+      "行",
+      "ぎょう"
     ],
     [
       "見",

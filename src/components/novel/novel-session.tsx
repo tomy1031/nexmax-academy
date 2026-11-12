@@ -10,7 +10,8 @@ import { RubyText } from "@/components/ruby-text";
 import { dropJudgeSession } from "@/components/meeting/judge-api";
 import { useLiveVoice } from "@/components/meeting/use-live-voice";
 import { getGeminiKey, saveGeminiKey } from "@/lib/profile";
-import { recordContentProgress } from "@/lib/progress/store";
+import { assetUrl } from "@/lib/asset-url";
+import { readContentProgress, recordContentProgress } from "@/lib/progress/store";
 import {
   addFailure,
   allConsults,
@@ -87,7 +88,25 @@ function NovelPlayer({ meeting, novel }: { meeting: Meeting; novel: Novel }) {
 
   useEffect(() => {
     void Promise.resolve().then(() => {
-      setSave(readSave(meeting.id, novel));
+      const local = readSave(meeting.id, novel);
+      /*
+       * **ログアウトで 消えても 日は 戻せる**（2026-11-12 の 検収）。共用の PC では
+       * ログアウトの たびに `nexmax.` の 保存が 消える。進んだ 日は 学習の 記録
+       *（`recordContentProgress` の しおり）にも 残して あるので、そこから 戻す。
+       */
+      const mark = readContentProgress(meeting.id)?.position;
+      const lastDay = novel.days.length - 1;
+      const markDay = Math.min(lastDay, Math.max(0, Math.floor(mark?.maxDay ?? 0)));
+      setSave(
+        markDay > local.maxDay
+          ? {
+              ...local,
+              maxDay: markDay,
+              day: Math.min(lastDay, Math.floor(mark?.day ?? markDay)),
+              index: 0,
+            }
+          : local,
+      );
       setHasKey(Boolean(getGeminiKey()));
       setLoaded(true);
     });
@@ -127,7 +146,10 @@ function NovelPlayer({ meeting, novel }: { meeting: Meeting; novel: Novel }) {
             index: fromSave && now.day === day ? now.index : 0,
             maxDay: Math.max(now.maxDay, day),
           }));
-          recordContentProgress(meeting.id, { status: "started" });
+          recordContentProgress(meeting.id, {
+            status: "started",
+            position: { day, maxDay: Math.max(save.maxDay, day) },
+          });
           setScreen("play");
         }}
       />
@@ -141,6 +163,7 @@ function NovelPlayer({ meeting, novel }: { meeting: Meeting; novel: Novel }) {
       save={save}
       setSave={setSave}
       index={index}
+      hasKey={hasKey}
       onTitle={() => setScreen("title")}
     />
   );
@@ -178,7 +201,7 @@ function TitleScreen({
       data-furigana={show ? "on" : "off"}
     >
       <Image
-        src={novel.backgrounds.morning ?? Object.values(novel.backgrounds)[0] ?? ""}
+        src={assetUrl(novel.backgrounds.morning ?? Object.values(novel.backgrounds)[0]) ?? ""}
         alt=""
         fill
         sizes="100vw"
@@ -196,7 +219,8 @@ function TitleScreen({
           <ol className="grid grid-cols-4 gap-1 text-center text-xs font-black">
             {STEP_BAR.map((step, i) => (
               <li key={step.step} className="text-navy bg-panel-tint rounded-lg px-1 py-1.5">
-                {["①", "②", "③", "④"][i]} <RubyText text={step.label} index={index} show={show} />
+                {i > 0 ? "→ " : ""}
+                <RubyText text={step.label} index={index} show={show} />
               </li>
             ))}
           </ol>
@@ -210,7 +234,7 @@ function TitleScreen({
             <p className="text-navy text-sm font-black">
               🔑{" "}
               <RubyText
-                text="相談は Gemini（AI）が 判定します。Gemini の APIキーを 入れて ください。"
+                text="相談は Gemini（AI）が 聞いて 見ます。Geminiの APIキーを 入れて ください。キーが ない ときは、お手本を 読んで 進みます。"
                 index={index}
                 show={show}
               />
@@ -249,7 +273,6 @@ function TitleScreen({
           {begun ? (
             <button
               type="button"
-              disabled={!hasKey}
               onClick={() => onStart(save.day, true)}
               className="btn-island btn-game w-full px-6 py-3 disabled:opacity-40"
               data-testid="novel-continue"
@@ -263,7 +286,6 @@ function TitleScreen({
           ) : (
             <button
               type="button"
-              disabled={!hasKey}
               onClick={() => onStart(0, false)}
               className="btn-island btn-game w-full px-6 py-3 disabled:opacity-40"
               data-testid="novel-start"
@@ -275,12 +297,15 @@ function TitleScreen({
             <p className="text-ink-soft mb-1 text-xs font-black">
               <RubyText text="日を えらぶ" index={index} show={show} />
             </p>
+            <p className="text-ink-soft mb-1 text-[11px] font-bold">
+              <RubyText text="前の 日を 終えると、次の 日が 開きます。" index={index} show={show} />
+            </p>
             <div className="grid grid-cols-5 gap-1.5">
               {novel.days.map((day, i) => (
                 <button
                   key={day.id}
                   type="button"
-                  disabled={!hasKey || i > save.maxDay}
+                  disabled={i > save.maxDay}
                   onClick={() => onStart(i, false)}
                   className="border-hairline bg-panel text-navy rounded-xl border-2 px-1 py-2 text-xs font-black disabled:opacity-40"
                   data-day={day.id}
@@ -315,6 +340,7 @@ function Player({
   save,
   setSave,
   index,
+  hasKey,
   onTitle,
 }: {
   meeting: Meeting;
@@ -322,9 +348,13 @@ function Player({
   save: NovelSave;
   setSave: React.Dispatch<React.SetStateAction<NovelSave>>;
   index: FuriganaIndex;
+  hasKey: boolean;
   onTitle: () => void;
 }) {
   const voice = useLiveVoice({ listenOnly: true, muted: true });
+  /** 相談の 判定を 待って いる あいだ（もどる・ログ・日を えらぶ を 止める）。 */
+  const [judging, setJudging] = useState(false);
+  const onBusy = useCallback((busy: boolean) => setJudging(busy), []);
   const day = novel.days[save.day] ?? novel.days[0];
   const scene = day?.scenes[save.index];
   const show = save.settings.furigana;
@@ -373,7 +403,8 @@ function Player({
   const atDayEnd = save.index >= lastIndex;
   const isLastDay = save.day >= novel.days.length - 1;
 
-  const next = useCallback(() => {
+  /* つぎへ（手で 覚えさせない——React Compiler に まかせる） */
+  const next = () => {
     if (!scene) return;
     if (!typedAll) {
       setTypedAll(true);
@@ -393,31 +424,43 @@ function Player({
         maxDay: Math.max(now.maxDay, now.day + 1),
       }));
     }
-  }, [scene, typedAll, cleared, atDayEnd, isLastDay, goTo, save.index, setSave]);
+  };
 
-  const back = useCallback(() => {
+  const back = () => {
     if (save.index > 0) goTo(save.index - 1);
-  }, [save.index, goTo]);
+  };
 
   /* キー操作（Enter・Space で つぎへ、← で もどる）。入力欄と ボタンの 上では 何も しない。 */
+  const keys = useRef({ next, back, judging });
+  useEffect(() => {
+    keys.current = { next, back, judging };
+  });
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       const target = event.target as HTMLElement | null;
       if (target?.closest("input, textarea, select, button, [contenteditable='true']")) return;
-      if (logOpen || settingsOpen) return;
+      if (logOpen || settingsOpen || keys.current.judging) return;
       if (event.key === "ArrowLeft") {
         event.preventDefault();
-        back();
+        keys.current.back();
       } else if (event.key === "Enter" || event.key === " ") {
         if (scene && !isInteractive(scene)) {
           event.preventDefault();
-          next();
+          keys.current.next();
         }
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [next, back, scene, logOpen, settingsOpen]);
+  }, [scene, logOpen, settingsOpen]);
+
+  /* 進んだ 日を 学習の 記録にも 残す（ログアウトで ブラウザの 保存が 消えても 日は 戻せる） */
+  useEffect(() => {
+    recordContentProgress(meeting.id, {
+      status: "started",
+      position: { day: save.day, maxDay: save.maxDay },
+    });
+  }, [meeting.id, save.day, save.maxDay]);
 
   /* 5日 ぜんぶ 終えた */
   useEffect(() => {
@@ -468,7 +511,8 @@ function Player({
                   color: on ? "var(--color-on-accent)" : "var(--color-navy)",
                 }}
               >
-                {["①", "②", "③", "④"][i]} <RubyText text={step.label} index={index} show={show} />
+                {i > 0 ? "→ " : ""}
+                <RubyText text={step.label} index={index} show={show} />
               </li>
             );
           })}
@@ -483,6 +527,21 @@ function Player({
           data-testid="novel-goal"
         >
           🎯 <RubyText text={view.goal} index={index} show={show} />
+        </p>
+      ) : null}
+      {day.words.length > 0 ? (
+        <p
+          className="text-navy flex flex-wrap items-center gap-1.5 text-xs font-bold"
+          data-testid="novel-words"
+        >
+          <span className="font-black">
+            📘 <RubyText text="今日の ことば" index={index} show={show} />
+          </span>
+          {day.words.map((word) => (
+            <span key={word} className="rounded-full bg-white px-2 py-0.5">
+              <DictionaryText text={word} index={index} show={show} />
+            </span>
+          ))}
         </p>
       ) : null}
 
@@ -500,7 +559,7 @@ function Player({
       >
         {view.bg ? (
           <Image
-            src={view.bg}
+            src={assetUrl(view.bg) ?? view.bg}
             alt=""
             fill
             priority
@@ -521,7 +580,7 @@ function Player({
               className="pointer-events-none absolute right-0 bottom-0 h-[78%] w-[62%] sm:h-[92%] sm:w-[44%]"
             >
               <Image
-                src={figureSrc}
+                src={assetUrl(figureSrc) ?? figureSrc}
                 alt={figurePerson ? `${figurePerson.name}さん` : ""}
                 fill
                 sizes="50vw"
@@ -532,7 +591,7 @@ function Player({
         </AnimatePresence>
 
         {/* 開発中の 画面（小さい 窓・常に 見える） */}
-        <div className="absolute top-2 left-2 w-[42%] max-w-[230px] sm:w-[30%]">
+        <div className="absolute top-2 left-2 max-h-[48%] w-[42%] max-w-[230px] overflow-hidden sm:w-[30%]">
           <p
             className="mb-0.5 inline-block rounded-full px-2 py-0.5 text-[10px] font-black text-white"
             style={{ background: "rgba(15, 35, 70, 0.75)" }}
@@ -617,12 +676,14 @@ function Player({
           fails={save.attempts[scene.id]?.fails ?? 0}
           cleared={cleared(scene.id)}
           stars={save.stars[scene.id] ?? 0}
+          hasKey={hasKey}
           index={index}
           show={show}
           translation={translation}
           volume={save.settings.volume}
           voice={voice}
           onFace={setFaceOverride}
+          onBusy={onBusy}
           onFail={(type: NovelFailureType) =>
             setSave((now) => ({ ...now, attempts: addFailure(now.attempts, scene.id, type) }))
           }
@@ -653,15 +714,22 @@ function Player({
         </div>
       ) : null}
       {scene.type === "ending" ? (
-        <Ending novel={novel} save={save} index={index} show={show} onTitle={onTitle} />
+        <Ending
+          novel={novel}
+          save={save}
+          text={scene.text}
+          index={index}
+          show={show}
+          onTitle={onTitle}
+        />
       ) : null}
 
       {/* ボタン（もどる・ログ・ふりがな・訳・設定） */}
       <div className="flex flex-wrap items-center gap-1.5">
-        <ToolButton onClick={back} disabled={save.index === 0} testId="novel-back">
+        <ToolButton onClick={back} disabled={save.index === 0 || judging} testId="novel-back">
           ◀ もどる
         </ToolButton>
-        <ToolButton onClick={() => setLogOpen(true)} testId="novel-log-button">
+        <ToolButton onClick={() => setLogOpen(true)} disabled={judging} testId="novel-log-button">
           🗒 ログ
         </ToolButton>
         <ToolButton
@@ -681,7 +749,7 @@ function Player({
         <ToolButton onClick={() => setSettingsOpen(true)} testId="novel-settings">
           ⚙ <RubyText text="設定" index={index} show={show} />
         </ToolButton>
-        <ToolButton onClick={onTitle} testId="novel-to-title">
+        <ToolButton onClick={onTitle} disabled={judging} testId="novel-to-title">
           <RubyText text="日を えらぶ" index={index} show={show} />
         </ToolButton>
       </div>
@@ -775,7 +843,7 @@ function MessageWindow({
     scene.type === "line"
       ? speakerLabel(novel, scene)
       : scene.type === "goal"
-        ? "今日の目的"
+        ? "今日の 目的"
         : scene.type === "point"
           ? "今日の ポイント"
           : "開発中の 画面";
@@ -1040,12 +1108,14 @@ function SettingsModal({
 function Ending({
   novel,
   save,
+  text,
   index,
   show,
   onTitle,
 }: {
   novel: Novel;
   save: NovelSave;
+  text: string;
   index: FuriganaIndex;
   show: boolean;
   onTitle: () => void;
@@ -1067,6 +1137,11 @@ function Ending({
       <p className="text-navy text-lg font-black">
         🎉 <RubyText text="5日間の まとめ" index={index} show={show} />
       </p>
+      {text ? (
+        <p className="text-navy text-sm font-bold">
+          <RubyText text={text} index={index} show={show} />
+        </p>
+      ) : null}
       <ul className="space-y-1">
         {consults.map((consult) => {
           const stars = save.stars[consult.id] ?? 0;
@@ -1089,7 +1164,7 @@ function Ending({
       >
         {worst ? (
           <RubyText
-            text={`いちばん 多かった やり直しは「${FAILURE_LABELS[worst]}」でした。つぎの 相談では、ここに 気を つけましょう。`}
+            text={`やり直しの 理由で いちばん 多かったのは「${FAILURE_LABELS[worst]}」でした。つぎは「${novel.reactions[worst]?.hint ?? ""}」`}
             index={index}
             show={show}
           />

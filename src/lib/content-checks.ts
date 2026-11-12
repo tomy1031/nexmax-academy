@@ -1284,6 +1284,7 @@ export function collectLabeledTexts(content: Content): LabeledText[] {
                     push(`${at}.${side}.lines[${l}].text`, line.text),
                   );
                 }
+                push(`${at}.prompt`, scene.prompt);
                 push(`${at}.hint`, scene.hint);
                 push(`${at}.card.seen`, scene.card.seen);
                 push(`${at}.card.diff`, scene.card.diff);

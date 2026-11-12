@@ -5,6 +5,7 @@ import { useState } from "react";
 import { motion } from "motion/react";
 import type { Novel, NovelScene } from "@/content/schema";
 import { RubyText } from "@/components/ruby-text";
+import { assetUrl } from "@/lib/asset-url";
 import type { FuriganaIndex } from "@/lib/text/furigana";
 
 type NoticeScene = Extract<NovelScene, { type: "notice" }>;
@@ -70,6 +71,18 @@ export function NoticePanel({
 
   return (
     <div className="space-y-3" data-testid="novel-notice">
+      {/* 何を するかを **毎回** 出す（つづきから 始めた 学生は 月曜の 説明を 見て いない） */}
+      <p className="text-navy text-sm font-black" data-testid="novel-notice-prompt">
+        🔍{" "}
+        <RubyText
+          text={scene.prompt ?? "2つの 資料から、合わない 行を 1つずつ 選びます。"}
+          index={index}
+          show={show}
+        />
+        <span className="text-ink-soft block text-xs font-bold">
+          <RubyText text="選んだら「くらべる」を 押します。" index={index} show={show} />
+        </span>
+      </p>
       <div className="grid gap-3 sm:grid-cols-2">
         {(["left", "right"] as const).map((side) => {
           const doc = scene[side];
@@ -142,6 +155,14 @@ export function NoticePanel({
               className="rounded-xl px-3 py-2 text-sm font-black"
               style={{ background: "var(--color-cream)", color: "var(--color-coral-deep)" }}
             >
+              <span className="block">
+                ❌{" "}
+                <RubyText
+                  text="その 2つでは ありません。もう 一度 選んで ください。"
+                  index={index}
+                  show={show}
+                />
+              </span>
               💡 <RubyText text={scene.hint} index={index} show={show} />
               {misses >= 2 ? (
                 <span className="text-ink-soft ml-1 text-xs font-bold">
@@ -192,7 +213,7 @@ function NoticeCard({
       data-testid="novel-notice-card"
     >
       <p className="text-navy mb-1 text-sm font-black">
-        💡 <RubyText text="気づきカードが できました" index={index} show={show} />
+        ⭕ <RubyText text="正解です。気づきカードが できました。" index={index} show={show} />
       </p>
       <ol className="text-navy space-y-0.5 text-sm font-bold">
         <li>
@@ -212,7 +233,7 @@ function NoticeCard({
           onClick={onRetry}
           className="border-hairline bg-panel text-navy rounded-xl border-2 px-3 py-2 text-xs font-black"
         >
-          <RubyText text="もう 一度 練習する" index={index} show={show} />
+          <RubyText text="もう 一度 選ぶ" index={index} show={show} />
         </button>
       </div>
     </motion.div>
@@ -276,7 +297,7 @@ export function ChoosePanel({
               }}
             >
               <Image
-                src={`/img/characters/${person.id}/portrait.webp`}
+                src={assetUrl(`/img/characters/${person.id}/portrait.webp`) ?? ""}
                 alt=""
                 width={80}
                 height={80}

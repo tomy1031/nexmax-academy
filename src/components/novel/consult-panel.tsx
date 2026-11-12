@@ -4,8 +4,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
 import type { Novel, NovelFailureType, NovelScene } from "@/content/schema";
 import { RubyText } from "@/components/ruby-text";
-import { judgeFailNote, requestNovelJudge, warmNovelJudge } from "@/components/meeting/judge-api";
+import { requestNovelJudge, warmNovelJudge } from "@/components/meeting/judge-api";
 import type { LiveVoice } from "@/components/meeting/use-live-voice";
+import { useIsAdmin } from "@/lib/admin-flag";
 import { readsExample, retryLevel, starsForFails, type NovelJudgment } from "@/lib/novel/judge";
 import {
   cardView,
@@ -30,6 +31,15 @@ type NoticeScene = Extract<NovelScene, { type: "notice" }>;
  * 4. 判定。合格なら 結果へ。やり直しなら 相手の 反応 → ヒントを 3段で 強く する
  *
  * Gemini は 判定だけ。**画面の 文は ぜんぶ 教材の データ**（反応・ヒント・穴あき・お手本）。
+ *
+ * ## AI が 使えなくても 止めない（2026-11-12 の 検収）
+ * この 教材は ステージの 関門なので、キーが 無い・使いすぎ・つながらない ときに 止まると、
+ * つぎの ミーティングにも 進めない（注意事項「鍵の 無い 端末でも 関門の 前で 手ぶらに しない」）。
+ * そのときは **お手本を 読めば 合格**（星 1つ）に する——3回 失敗した あとと 同じ 道。
+ *
+ * ## 判定の つなぎは 1回ごとに 新しく する
+ * 鍵に 送った 回数を 入れる。同じ つなぎを 使い回すと、前の 回の 返事（型）を
+ * くり返す ことが ある（judge-api.ts の もんだいの 見かたと 同じ 事故）。
  */
 
 type Phase =
@@ -44,6 +54,27 @@ const LISTEN_ONLY = [
 /** 先生用の「合格に する」を 押しつづける 時間。 */
 const TEACHER_HOLD_MS = 3000;
 
+/** 指を 離してから 聞き取りの 文が 届くまで 待つ 上限（それを 過ぎたら もう一度 押せる）。 */
+const LISTEN_WAIT_MS = 6000;
+
+/**
+ * AI の 判定が 使えない ときの 一言。**この 教材で 本当に 起きる ことだけ 書く**
+ *（「先に 進みます」とは 書かない——進むのは お手本を 読んだ とき）。
+ */
+function failNote(reason: string): string {
+  switch (reason) {
+    case "busy":
+      return "いま ほかの 判定を して います。少し 待ってから、もう 一度 送って ください。";
+    case "noKey":
+      return "Geminiの キーが ないので、AIの 判定は 使えません。下の お手本を 読めば 合格に なります。";
+    case "quota":
+    case "rateLimited":
+      return "今日は AIを 使いすぎました。下の お手本を 読めば 合格に なります。";
+    default:
+      return "AIの 判定が 届きませんでした。もう 一度 送るか、下の お手本を 読めば 合格に なります。";
+  }
+}
+
 export function ConsultPanel({
   scene,
   novel,
@@ -52,12 +83,14 @@ export function ConsultPanel({
   fails,
   cleared,
   stars,
+  hasKey,
   index,
   show,
   translation,
   volume,
   voice,
   onFace,
+  onBusy,
   onFail,
   onPassed,
   onNext,
@@ -70,41 +103,68 @@ export function ConsultPanel({
   fails: number;
   cleared: boolean;
   stars: number;
+  /** Gemini の キーが ある か（無ければ はじめから お手本の 道）。 */
+  hasKey: boolean;
   index: FuriganaIndex;
   show: boolean;
   translation: boolean;
   volume: number;
   voice: LiveVoice;
   onFace: (face: NovelFace | null) => void;
+  /** 判定を 待って いる あいだ（もどる・ログを 止める）。 */
+  onBusy: (busy: boolean) => void;
   onFail: (type: NovelFailureType) => void;
   onPassed: (stars: number) => void;
   onNext: () => void;
 }) {
+  const isAdmin = useIsAdmin();
   const [phase, setPhase] = useState<Phase>(cleared ? "passed" : "call");
+  /** 合格した あとの「もう 一度 練習する」（記録の 失敗回数を 増やさない）。 */
   const [practice, setPractice] = useState(false);
+  const [practiceFails, setPracticeFails] = useState(0);
   const [heard, setHeard] = useState("");
   const [typed, setTyped] = useState("");
   const [last, setLast] = useState<{ judgment: NovelJudgment; type: NovelFailureType } | null>(
     null,
   );
-  const [errorReason, setErrorReason] = useState<string | null>(null);
+  const [errorReason, setErrorReason] = useState<string | null>(hasKey ? null : "noKey");
+  /** AI の 判定が 使えない（キーが 無い・届かなかった）。お手本を 読めば 合格。 */
+  const [aiDown, setAiDown] = useState(!hasKey);
   const [cardOpen, setCardOpen] = useState(scene.support !== "closed");
   const [micErrors, setMicErrors] = useState(0);
   const [earned, setEarned] = useState(stars);
-  const failsRef = useRef(fails);
-  useEffect(() => {
-    failsRef.current = fails;
-  }, [fails]);
+  /** 指を 離して、聞き取りの 文を 待って いる。 */
+  const [listening, setListening] = useState(false);
 
-  const level = retryLevel(fails);
+  const effectiveFails = practice ? practiceFails : fails;
+  const failsRef = useRef(effectiveFails);
+  useEffect(() => {
+    failsRef.current = effectiveFails;
+  }, [effectiveFails]);
+
+  /* 画面から 消えた あと・新しく 送った あとに 届いた 判定は 捨てる */
+  const mounted = useRef(true);
+  const runId = useRef(0);
+  const attemptNo = useRef(0);
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+      runId.current += 1;
+      onBusy(false);
+    };
+  }, [onBusy]);
+
+  const level = retryLevel(effectiveFails);
   const name = `${partnerName}さん`;
+  const judgeKey = (n: number) => `${scene.id}:${n}`;
 
-  /* 相談の つなぎを 先に 張る（声かけを して いる あいだに）。 */
+  /* 相談の つなぎを 先に 張る（声かけを して いる あいだに） */
   useEffect(() => {
-    if (!cleared) void warmNovelJudge(scene.id);
-  }, [scene.id, cleared]);
+    if (!cleared && hasKey) void warmNovelJudge(`${scene.id}:0`);
+  }, [scene.id, cleared, hasKey]);
 
-  /* マイクの つなぎが 失敗した 回数（2回で テキスト入力を 出す）。 */
+  /* マイクの つなぎが 失敗した 回数（2回で テキスト入力を 出す） */
   const prevStatus = useRef(voice.status);
   useEffect(() => {
     if (voice.status === "error" && prevStatus.current !== "error") {
@@ -112,25 +172,66 @@ export function ConsultPanel({
     }
     prevStatus.current = voice.status;
   }, [voice.status]);
-  const textMode = voice.status === "notReady" || micErrors >= 2;
+  /* キーが 無いと 聞き取り（Live）も 使えない ので、はじめから 文を 書く 欄に する */
+  const textMode = !hasKey || voice.status === "notReady" || micErrors >= 2;
+
+  /* 指を 離したら、文が 届くまで「聞き取って います」を 出す */
+  const wasTalking = useRef(false);
+  useEffect(() => {
+    if (wasTalking.current && !voice.talking) {
+      void Promise.resolve().then(() => setListening(true));
+      const timer = window.setTimeout(() => setListening(false), LISTEN_WAIT_MS);
+      wasTalking.current = voice.talking;
+      return () => window.clearTimeout(timer);
+    }
+    wasTalking.current = voice.talking;
+  }, [voice.talking]);
+
+  const pass = useCallback(
+    (failCount: number) => {
+      const got = starsForFails(failCount);
+      setEarned((now) => Math.max(now, got));
+      playNovelSe("pass", volume);
+      onFace("happy");
+      setPhase("passed");
+      setPractice(false);
+      onPassed(got);
+    },
+    [volume, onFace, onPassed],
+  );
 
   const judge = useCallback(
     async (text: string) => {
       const said = text.trim();
       if (!said) return;
       setHeard(said);
-      setPhase("judging");
-      /* 3回目（お手本を 見せた あと）は、読めば 合格（AI が 使えなくても 進める）。 */
-      if (failsRef.current >= 3 && readsExample(said, scene.example)) {
-        pass(failsRef.current);
+      /* お手本を 見せて いる とき（3回 失敗・AI が 使えない）は、読めば 合格 */
+      if ((failsRef.current >= 3 || aiDown) && readsExample(said, scene.example)) {
+        pass(Math.max(failsRef.current, 3));
         return;
       }
-      const result = await requestNovelJudge(scene.id, scene, partnerName, said);
+      if (aiDown && !hasKey) {
+        setErrorReason("noKey");
+        setPhase("error");
+        return;
+      }
+      runId.current += 1;
+      const mine = runId.current;
+      const key = judgeKey(attemptNo.current);
+      attemptNo.current += 1;
+      setPhase("judging");
+      onBusy(true);
+      const result = await requestNovelJudge(key, scene, partnerName, said);
+      if (!mounted.current || runId.current !== mine) return;
+      onBusy(false);
       if (!result.ok) {
+        if (result.reason !== "busy") setAiDown(true);
         setErrorReason(result.reason);
         setPhase("error");
         return;
       }
+      setAiDown(false);
+      void warmNovelJudge(judgeKey(attemptNo.current));
       const { judgment } = result;
       if (judgment.result === "pass") {
         pass(failsRef.current);
@@ -140,39 +241,35 @@ export function ConsultPanel({
       setLast({ judgment, type });
       playNovelSe("retry", volume);
       onFace(reactionFace(type));
-      if (type !== "unclear_audio") onFail(type);
+      if (type !== "unclear_audio") {
+        if (practice) setPracticeFails((n) => n + 1);
+        else onFail(type);
+        /* 1回目の ヒント（足りない 番号を 光らせる）は カードが 開いて いないと 見えない */
+        setCardOpen(true);
+      }
       const whatIf = scene.whatIf?.[type as "decided_alone" | "hiding"];
       setPhase(whatIf && whatIf.length > 0 ? "whatif" : "react");
     },
-    // pass は 下で 定義（同じ 描画の 関数）
+    // judgeKey は scene.id だけで 決まる
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [scene, partnerName, volume, onFace, onFail],
+    [scene, partnerName, volume, onFace, onFail, onBusy, aiDown, hasKey, practice, pass],
   );
 
-  function pass(failCount: number) {
-    const got = starsForFails(failCount);
-    setEarned((now) => Math.max(now, got));
-    playNovelSe("pass", volume);
-    onFace("happy");
-    setPhase("passed");
-    setPractice(false);
-    onPassed(got);
-  }
-
-  /* 声で 話した ぶん（`lastUtterance` は 学生の ことば）。 */
+  /* 声で 話した ぶん（`lastUtterance` は 学生の ことば） */
   const spokenAt = useRef(voice.lastUtterance?.id ?? 0);
   useEffect(() => {
     const said = voice.lastUtterance;
     if (!said || said.id === spokenAt.current) return;
     spokenAt.current = said.id;
     const text = said.text.trim();
-    if (!text) return;
     void Promise.resolve().then(() => {
+      setListening(false);
+      if (!text) return;
       if (phase === "call") {
         setPhase("reply");
         return;
       }
-      if (phase === "talk") {
+      if (phase === "talk" || phase === "error") {
         setHeard(text);
         setPhase("confirm");
       }
@@ -190,18 +287,21 @@ export function ConsultPanel({
     void judge(text);
   };
 
-  /* ---- 先生用: 3秒 押しつづけると 合格に する ---- */
+  /* ---- 先生用: 3秒 押しつづけると 合格に する（先生の 端末だけ） ---- */
   const holdTimer = useRef<number | null>(null);
-  const startTeacherHold = () => {
-    holdTimer.current = window.setTimeout(() => pass(failsRef.current), TEACHER_HOLD_MS);
-  };
   const stopTeacherHold = () => {
     if (holdTimer.current) window.clearTimeout(holdTimer.current);
     holdTimer.current = null;
   };
+  const startTeacherHold = () => {
+    stopTeacherHold();
+    holdTimer.current = window.setTimeout(() => pass(failsRef.current), TEACHER_HOLD_MS);
+  };
+  useEffect(() => () => stopTeacherHold(), []);
 
   const restart = () => {
     setPractice(true);
+    setPracticeFails(0);
     setPhase("call");
     setLast(null);
     onFace(null);
@@ -211,6 +311,8 @@ export function ConsultPanel({
   const glow = level >= 1 && last ? missingParts(last.judgment) : [];
   const reaction = last ? reactionFor(novel, scene, last.type) : null;
   const showPassed = phase === "passed" && !practice;
+  /* お手本を 見せる とき（3回 失敗・AI が 使えない） */
+  const showModel = level >= 3 || aiDown;
 
   return (
     <div className="space-y-3" data-testid="novel-consult" data-phase={phase}>
@@ -218,18 +320,22 @@ export function ConsultPanel({
         <span
           className="text-on-accent rounded-full px-3 py-1 text-xs font-black select-none"
           style={{ background: "var(--color-coral-deep)" }}
-          onPointerDown={startTeacherHold}
-          onPointerUp={stopTeacherHold}
-          onPointerLeave={stopTeacherHold}
-          onPointerCancel={stopTeacherHold}
+          {...(isAdmin
+            ? {
+                onPointerDown: startTeacherHold,
+                onPointerUp: stopTeacherHold,
+                onPointerLeave: stopTeacherHold,
+                onPointerCancel: stopTeacherHold,
+                "data-teacher": "1",
+              }
+            : {})}
           data-testid="novel-teacher-pass"
-          title="先生用：3秒 押しつづけると 合格に なります"
         >
-          ③ <RubyText text={`${name}に 相談`} index={index} show={show} />
+          🗣 <RubyText text={`${name}に 相談`} index={index} show={show} />
         </span>
-        {fails > 0 && !showPassed ? (
+        {effectiveFails > 0 && !showPassed ? (
           <span className="text-ink-soft text-xs font-bold">
-            <RubyText text={`やり直し ${fails}回`} index={index} show={show} />
+            <RubyText text={`やり直し ${effectiveFails}回`} index={index} show={show} />
           </span>
         ) : null}
       </div>
@@ -250,6 +356,7 @@ export function ConsultPanel({
                 type="button"
                 onClick={() => setCardOpen((open) => !open)}
                 className="text-navy text-xs font-black underline"
+                data-testid="novel-card-toggle"
               >
                 {cardOpen ? "とじる" : "ひらく"}
               </button>
@@ -272,6 +379,11 @@ export function ConsultPanel({
               </CardRow>
             </ol>
           ) : null}
+          {view && (scene.support === "form" || scene.support === "sentence") ? (
+            <p className="text-ink-soft mt-1 text-xs font-bold">
+              <RubyText text="③は、あなたが 考えて 言います。" index={index} show={show} />
+            </p>
+          ) : null}
         </section>
       ) : null}
 
@@ -280,6 +392,7 @@ export function ConsultPanel({
           className="rounded-2xl border-2 p-3 text-center"
           style={{ borderColor: "var(--color-leaf)", background: "white" }}
           data-testid="novel-passed"
+          data-stars={earned}
         >
           <p className="text-leaf-deep text-lg font-black">
             ⭕ <RubyText text="合格" index={index} show={show} />
@@ -333,29 +446,37 @@ export function ConsultPanel({
                 className="btn-island btn-game w-full px-6 py-3"
                 data-testid="novel-to-talk"
               >
-                <RubyText text="相談を 話す" index={index} show={show} />
+                <RubyText text="話す ▶" index={index} show={show} />
               </button>
             </div>
           ) : null}
 
           {/* 2. 本題（＋ やり直しの ヒント） */}
-          {phase === "talk" ? (
+          {phase === "talk" || phase === "error" ? (
             <div className="space-y-2">
-              <p className="text-navy text-sm font-black">
-                🗣{" "}
-                <RubyText
-                  text="①見たもの ②ちがい ③聞きたい ことを 話しましょう"
+              {phase === "talk" ? (
+                <p className="text-navy text-sm font-black">
+                  🗣{" "}
+                  <RubyText
+                    text="①見たもの・した こと ②ちがい・問題 ③質問・お願い を 話しましょう。"
+                    index={index}
+                    show={show}
+                  />
+                </p>
+              ) : null}
+              {showModel ? (
+                <HintBox
+                  title="お手本（Model）— 声に 出して 読みましょう"
+                  text={scene.example}
+                  en={scene.exampleEn}
+                  translation={translation}
                   index={index}
                   show={show}
                 />
-              </p>
-              {level >= 2 ? (
+              ) : level >= 2 ? (
                 <HintBox
-                  title={
-                    level >= 3 ? "お手本（声に 出して 読みましょう）" : "ヒント（穴あきの 文）"
-                  }
-                  text={level >= 3 ? scene.example : scene.cloze}
-                  en={level >= 3 ? scene.exampleEn : undefined}
+                  title="ヒント（穴あきの 文 / Fill in the blanks）"
+                  text={scene.cloze}
                   translation={translation}
                   index={index}
                   show={show}
@@ -412,6 +533,11 @@ export function ConsultPanel({
           {/* 4. 相手の 反応 → ヒント */}
           {phase === "react" && last && reaction ? (
             <div className="space-y-2" data-testid="novel-react" data-type={last.type}>
+              {last.type !== "unclear_audio" ? (
+                <p className="text-coral-deep text-sm font-black" data-testid="novel-not-yet">
+                  🔁 <RubyText text="まだ 合格では ありません。" index={index} show={show} />
+                </p>
+              ) : null}
               <Bubble who={name} index={index} show={show}>
                 <RubyText text={reaction.text} index={index} show={show} />
                 {translation && reaction.en ? (
@@ -455,36 +581,30 @@ export function ConsultPanel({
             </div>
           ) : null}
 
-          {phase === "error" ? (
-            <div className="space-y-2" data-testid="novel-error">
+          {phase === "error" || (phase === "talk" && aiDown) ? (
+            <div className="space-y-2" data-testid="novel-error" data-reason={errorReason ?? ""}>
               <p
                 role="status"
                 className="rounded-xl px-3 py-2 text-sm font-bold"
                 style={{ background: "var(--color-cream)", color: "var(--color-navy)" }}
               >
-                {judgeFailNote(errorReason ?? "")}
+                <RubyText text={failNote(errorReason ?? "")} index={index} show={show} />
               </p>
-              <div className="flex gap-2">
+              {phase === "error" && hasKey && heard ? (
                 <button
                   type="button"
                   onClick={() => void judge(heard)}
-                  className="btn-island btn-game flex-1 px-4 py-2.5"
+                  className="btn-island btn-game w-full px-4 py-2.5"
+                  data-testid="novel-resend"
                 >
                   <RubyText text="もう 一度 送る" index={index} show={show} />
                 </button>
-                <button
-                  type="button"
-                  onClick={() => setPhase("talk")}
-                  className="border-hairline bg-panel text-navy rounded-xl border-2 px-3 py-2 text-xs font-black"
-                >
-                  <RubyText text="言い直す" index={index} show={show} />
-                </button>
-              </div>
+              ) : null}
             </div>
           ) : null}
 
           {/* マイク（声かけ・本題）／テキスト入力（マイクが 使えない ときだけ） */}
-          {phase === "call" || phase === "talk" ? (
+          {phase === "call" || phase === "talk" || phase === "error" ? (
             textMode ? (
               <TextInput
                 value={typed}
@@ -494,7 +614,7 @@ export function ConsultPanel({
                 show={show}
               />
             ) : (
-              <HoldMic voice={voice} index={index} show={show} />
+              <HoldMic voice={voice} listening={listening} index={index} show={show} />
             )
           ) : null}
         </>
@@ -640,14 +760,31 @@ function WhatIf({
  */
 function HoldMic({
   voice,
+  listening,
   index,
   show,
 }: {
   voice: LiveVoice;
+  /** 指を 離して、聞き取りの 文を 待って いる。 */
+  listening: boolean;
   index: FuriganaIndex;
   show: boolean;
 }) {
   const down = useRef(false);
+  /* 押した まま 場面が 変わった（ボタンが 消えた）ら、録音を 止める */
+  const stopRef = useRef(voice.stopTalking);
+  useEffect(() => {
+    stopRef.current = voice.stopTalking;
+  }, [voice.stopTalking]);
+  useEffect(
+    () => () => {
+      if (down.current) {
+        down.current = false;
+        stopRef.current();
+      }
+    },
+    [],
+  );
   if (voice.status !== "live") {
     const connecting = voice.status === "connecting";
     return (
@@ -693,6 +830,7 @@ function HoldMic({
         type="button"
         aria-pressed={voice.talking}
         aria-label="押して いる あいだ 話す"
+        disabled={listening && !voice.talking}
         onPointerDown={(event) => {
           event.currentTarget.setPointerCapture?.(event.pointerId);
           start();
@@ -711,7 +849,7 @@ function HoldMic({
             stop();
           }
         }}
-        className="mx-auto grid h-20 w-20 touch-none place-items-center rounded-full text-3xl text-white shadow-lg select-none"
+        className="mx-auto grid h-20 w-20 touch-none place-items-center rounded-full text-3xl text-white shadow-lg select-none disabled:opacity-50"
         style={{
           background: voice.talking ? "#e64a5f" : "#58c273",
           boxShadow: `0 6px 0 ${voice.talking ? "#b93547" : "#3aa458"}`,
@@ -723,6 +861,8 @@ function HoldMic({
       <p className="text-navy mt-2 text-sm font-black">
         {voice.talking ? (
           <RubyText text="話し終わったら 指を 離す" index={index} show={show} />
+        ) : listening ? (
+          <RubyText text="聞き取って います…" index={index} show={show} />
         ) : (
           <RubyText text="押して いる あいだ 話す" index={index} show={show} />
         )}
@@ -762,6 +902,7 @@ function TextInput({
           }}
           className="border-hairline min-w-0 flex-1 rounded-xl border-2 bg-white px-3 py-2 text-sm"
           aria-label="相談の 文"
+          placeholder="ここに かいて ください"
           data-testid="novel-text-input"
         />
         <button

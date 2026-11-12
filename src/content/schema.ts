@@ -3120,6 +3120,11 @@ const novelNoticeSceneSchema = z.object({
   right: novelDocSchema,
   /** 正しい 組み合わせ（左の 行 id・右の 行 id）。 */
   answer: z.tuple([novelId, novelId]),
+  /**
+   * 何と 何を 比べるか（資料の 上に 毎回 出す 設問文）。無ければ 決まった 文
+   *（「2つの 資料から、合わない 行を 1つずつ 選んで…」）を 出す。
+   */
+  prompt: plainText.optional(),
   /** 1回目に まちがえた ときの「見る 場所」。2回目・3回目は 正しい 行を 光らせる。 */
   hint: plainText,
   hintEn: z.string().optional(),
@@ -3184,7 +3189,7 @@ const novelConsultSceneSchema = z.object({
   /** 穴あきの 文（2回目に 見せる）。 */
   cloze: plainText,
   /** 型ごとの 反応の 差しかえ（無ければ `novel.reactions`）。 */
-  reactions: z.record(z.enum(novelFailureTypes), novelReactionSchema).optional(),
+  reactions: z.partialRecord(z.enum(novelFailureTypes), novelReactionSchema).optional(),
   /** 「勝手に 決める」「問題を 隠す」の あとに 見せる「もしも」の 場面（1〜2行）。 */
   whatIf: z
     .object({
@@ -3272,6 +3277,7 @@ export const novelSchema = z
   })
   .superRefine((novel, ctx) => {
     const cast = new Set(novel.cast.map((person) => person.id));
+    const withFigure = new Set(novel.cast.filter((person) => person.figures).map((p) => p.id));
     const speakers = new Set([...cast, "narration", "me", "thought"]);
     const ids = new Set<string>();
     novel.days.forEach((day, d) => {
@@ -3306,6 +3312,13 @@ export const novelSchema = z
             ctx.addIssue({ code: "custom", path: [...at, "answer"], message: "正しい 相手が 選択肢に ない" });
           }
           for (const option of scene.options) {
+            if (!withFigure.has(option)) {
+              ctx.addIssue({
+                code: "custom",
+                path: [...at, "options"],
+                message: `「${option}」は 立ち絵が 無いので 顔を 出せない`,
+              });
+            }
             if (!cast.has(option)) {
               ctx.addIssue({ code: "custom", path: [...at, "options"], message: `「${option}」が cast に ない` });
             }

@@ -2,6 +2,7 @@
 
 import type { NovelScreen } from "@/content/schema";
 import { RubyText } from "@/components/ruby-text";
+import { assetUrl } from "@/lib/asset-url";
 import type { FuriganaIndex } from "@/lib/text/furigana";
 
 /**
@@ -16,7 +17,7 @@ import type { FuriganaIndex } from "@/lib/text/furigana";
 const STATE_MARK: Record<string, { mark: string; color: string; label: string }> = {
   ok: { mark: "○", color: "var(--color-leaf-deep)", label: "できた" },
   broken: { mark: "×", color: "var(--color-coral-deep)", label: "出ない" },
-  new: { mark: "NEW", color: "var(--color-coral-deep)", label: "新しい" },
+  new: { mark: "＋新しい", color: "var(--color-coral-deep)", label: "新しい" },
   bad: { mark: "×", color: "var(--color-coral-deep)", label: "まちがい" },
 };
 
@@ -79,7 +80,7 @@ export function DevScreen({
                 ) : (
                   // eslint-disable-next-line @next/next/no-img-element -- 小さな 商品の 絵（最適化は 使わない設定）
                   <img
-                    src={row.image}
+                    src={assetUrl(row.image)}
                     alt=""
                     className={`shrink-0 rounded object-contain ${large ? "h-12 w-12" : "h-7 w-7"}`}
                   />
@@ -105,7 +106,7 @@ export function DevScreen({
                   style={{ color: state.color }}
                   title={state.label}
                 >
-                  {state.mark}
+                  <RubyText text={state.mark} index={index} show={show} />
                 </span>
               ) : null}
             </div>

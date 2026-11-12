@@ -164,21 +164,36 @@ export function settleJudgment(input: {
  * お手本を 声に 出して 読んだか（3回目の 合格の 条件・仕様書 §6）。
  *
  * 聞き取りは 漢字・かな・句読点が ゆれるので、空白と 記号を 落とし、**2文字の かたまり**が
- * どれだけ 重なるかで 見る。半分 重なれば 読んだ ものと する——一字一句は 求めない。
+ * どれだけ 重なるかで 見る。一字一句は 求めないが、**全体の 6割**と、
+ * **さいごの 文（③ 質問・お願い）の 6割**の 両方を 求める——①②だけ 読んで ③を
+ * 言わない 読み方では 通さない（この 練習で いちばん 教えたいのが ③の ため。2026-11-12 の 検収）。
  */
 export function readsExample(utterance: string, example: string): boolean {
-  const fold = (text: string) => text.replace(/[\s、。，．,.!?！？「」『』（）()・…〜~ー-]/g, "");
-  const pairs = (text: string) => {
-    const out = new Set<string>();
-    for (let i = 0; i + 1 < text.length; i += 1) out.add(text.slice(i, i + 2));
-    return out;
-  };
   const said = pairs(fold(utterance));
-  const model = pairs(fold(example));
-  if (model.size === 0 || said.size === 0) return false;
+  if (said.size === 0) return false;
+  const sentences = example
+    .split("。")
+    .map((one) => one.trim())
+    .filter(Boolean);
+  const last = sentences[sentences.length - 1] ?? example;
+  return overlap(said, pairs(fold(example))) >= 0.6 && overlap(said, pairs(fold(last))) >= 0.6;
+}
+
+function fold(text: string): string {
+  return text.replace(/[\s、。，．,.!?！？「」『』（）()・…〜~ー-]/g, "");
+}
+
+function pairs(text: string): Set<string> {
+  const out = new Set<string>();
+  for (let i = 0; i + 1 < text.length; i += 1) out.add(text.slice(i, i + 2));
+  return out;
+}
+
+function overlap(said: Set<string>, model: Set<string>): number {
+  if (model.size === 0) return 0;
   let hit = 0;
   for (const pair of model) if (said.has(pair)) hit += 1;
-  return hit / model.size >= 0.5;
+  return hit / model.size;
 }
 
 /** 失敗の 回数 → 星（1回で 合格 3つ・ヒントを 見て 2つ・お手本を 読んで 1つ）。 */
