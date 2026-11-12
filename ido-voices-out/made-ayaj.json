@@ -1,0 +1,260 @@
+{
+ "v1sev82n_c": {
+  "episode": "aya-callirrhoe-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 0.9800416666666667,
+  "text": "……どなた？",
+  "heard": "どなた ?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1fay15s_c": {
+  "episode": "aya-callirrhoe-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 4.75,
+  "text": "この滝のことは、里の者しか知らぬはずなのに。",
+  "heard": "この 滝 の こと は 里 の 者 しか 知ら ぬ はず な の に 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vk5gvu3_c": {
+  "episode": "aya-callirrhoe-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 5.47,
+  "text": "きれい……そうかしら。今のは、弔いの曲です。",
+  "heard": "きれい 。 そう かしら 。 今 の は 棚割 の 曲 です 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1fcgsg5_c": {
+  "episode": "aya-callirrhoe-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 3.79,
+  "text": "……どなた？ 今のは、弔いの曲です。",
+  "heard": "どなた？今のは、弔い",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1yfpne7_c": {
+  "episode": "aya-callirrhoe-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 9.27,
+  "text": "去年の秋、私たちを逃がすために、ひとりで山へ消えた人がいたの。弥平次という、口うるさいおじいさん。",
+  "heard": "去年 の 秋 私 たち を 逃がす ため に 1人 で 山 へ 消え た 人 が い た の 野平 じ と いう 口うるさい おじ さん",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "弥平次＝やへいじ"
+  ]
+ },
+ "v5zcdmt_c": {
+  "episode": "aya-callirrhoe-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 6.73,
+  "text": "一年たっても、帰ってこない。……だから今日だけは、悲しい曲を弾くと決めたの。",
+  "heard": "……だから今日だけは、悲しい曲を弾くと決めたの。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1v5421f_c": {
+  "episode": "aya-callirrhoe-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 0.63,
+  "text": "……え？",
+  "heard": "え",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vxe0g1x_c": {
+  "episode": "aya-callirrhoe-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 4.44,
+  "text": "どうして、そんなことを。……いいえ。聞きません。",
+  "heard": "……いいえ。聞きません。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vf95rdj_c": {
+  "episode": "aya-callirrhoe-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 6.3,
+  "text": "でも、ありがとう。今日の曲は、少しだけ、明るく弾けそう。",
+  "heard": "でも 、 ありがとう 。 今日 の 曲 は 、 少し だけ 明るく 引け そう 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1s7l1o_c": {
+  "episode": "aya-callirrhoe-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 4.8,
+  "text": "私は綾。帝のおそばで、お育てしてきた者です。",
+  "heard": "私は綾。帝のおそばで、お育てしてきた",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "綾＝あや",
+   "帝＝みかど"
+  ]
+ },
+ "v1wihdda_c": {
+  "episode": "aya-callirrhoe-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 9.15,
+  "text": "帝は、九つになられました。今は里の子らと川で魚を追って、真っ黒に日焼けしておいでです。",
+  "heard": "みかど は ここ の つ に なり まし た 。 今 は 里 の 子 ら と 川 で 魚 を 追っ て 真っ黒 に 日焼け し て おいれ です 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "帝＝みかど"
+  ]
+ },
+ "v174p4il_c": {
+  "episode": "aya-callirrhoe-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 3.55,
+  "text": "……都では、一度も見たことのない笑顔で。",
+  "heard": "みやこ で は 一度 も 見 た こと の ない 笑顔 で",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "都＝みやこ"
+  ]
+ },
+ "v171tnjm_c": {
+  "episode": "aya-callirrhoe-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 2.52,
+  "text": "旅の方です、国盛さま。",
+  "heard": "旅 の 方 です 。 国 森 さま 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "国盛＝くにもり"
+  ]
+ },
+ "v1chmps_c": {
+  "episode": "aya-callirrhoe-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 3.74,
+  "text": "まあ……国盛さまに、お知り合いが。",
+  "heard": "ま、 国森 様 に お 知り合い が ?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "国盛＝くにもり"
+  ]
+ },
+ "vzuwocx_c": {
+  "episode": "aya-callirrhoe-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 3.16,
+  "text": "……国盛さま。その太刀は。",
+  "heard": "その太刀は。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "国盛＝くにもり",
+   "太刀＝たち"
+  ]
+ },
+ "v19mw17d_c": {
+  "episode": "aya-callirrhoe-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 3.06,
+  "text": "また、戦をなさるのですか。",
+  "heard": "また 戦い を なさる の です か ?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "vqw0zw0_c": {
+  "episode": "aya-callirrhoe-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 6.49,
+  "text": "帝に、もう一度——あの海を、お見せになるおつもりですか。",
+  "heard": "味方 に もう 一度 あの 海 を お 見せ に なる お つもり です か ?",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "帝＝みかど"
+  ]
+ },
+ "vusi02b_c": {
+  "episode": "aya-callirrhoe-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 2.4,
+  "text": "では、覚えてくださいませ！",
+  "heard": "で は 、 覚え て ください ませ 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1u1e8a8_c": {
+  "episode": "aya-callirrhoe-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 1.79,
+  "text": "……生きるということを。",
+  "heard": "生きる と いう こと を",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "v1y3q2bq_c": {
+  "episode": "aya-callirrhoe-ja",
+  "lang": "ja",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 0.9200416666666666,
+  "text": "ありがとう。",
+  "heard": "ありがとう",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ }
+}
