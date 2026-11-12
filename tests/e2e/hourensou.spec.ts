@@ -289,7 +289,16 @@ for (const { id, title, skitId } of STAGES) {
   });
 
   test(`報連相：${title} — ミーティングが 鍵ゼロで ひらく`, async ({ page, context }) => {
-    const meeting = pathsOf(id).find((item) => item.type === "meeting");
+    /*
+     * **しつもんの ある ミーティング**（Zoom の 練習）を 見る。相談の ステージには
+     * 相談の 練習（`meeting.novel`・2026-11-12）も ミーティングの 種別で 入って いて、
+     * こちらは しつもんを 持たない（入室も 無い）ので、この 検査の 相手では ない。
+     */
+    const meeting = pathsOf(id).find(
+      (item) =>
+        item.type === "meeting" &&
+        ((contentOf("meeting", item.ref) as { questions?: unknown[] }).questions?.length ?? 0) > 0,
+    );
     if (!meeting) return;
     const data = contentOf("meeting", meeting.ref) as {
       questions: { ask: string }[];
