@@ -1,0 +1,164 @@
+{
+ "ayas_Erinome_1": {
+  "episode": "aya-voice-sample",
+  "lang": "ja",
+  "speaker": "ayas_Erinome",
+  "voice": "Erinome",
+  "model": "gemini-3.8-live",
+  "seconds": 4.84,
+  "text": "私は綾。帝のおそばで、お育てしてきた者です。",
+  "heard": "私はあやで三門のお蕎麦でお育てしてきたものです。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "綾＝あや",
+   "帝＝みかど"
+  ]
+ },
+ "ayas_Erinome_2": {
+  "episode": "aya-voice-sample",
+  "lang": "ja",
+  "speaker": "ayas_Erinome",
+  "voice": "Erinome",
+  "model": "gemini-3.8-live",
+  "seconds": 4.35,
+  "text": "滝の音は、あのころと、少しも変わりませんね。",
+  "heard": "た 機能 と は あの 頃 と 少し も 変わり ませ ん ね 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ayas_Autonoe_1": {
+  "episode": "aya-voice-sample",
+  "lang": "ja",
+  "speaker": "ayas_Autonoe",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 5.810041666666667,
+  "text": "私は綾。帝のおそばで、お育てしてきた者です。",
+  "heard": "私は綾。帝のおそばで、お育てしてきた者です。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "綾＝あや",
+   "帝＝みかど"
+  ]
+ },
+ "ayas_Autonoe_2": {
+  "episode": "aya-voice-sample",
+  "lang": "ja",
+  "speaker": "ayas_Autonoe",
+  "voice": "Autonoe",
+  "model": "gemini-3.8-live",
+  "seconds": 4.22,
+  "text": "滝の音は、あのころと、少しも変わりませんね。",
+  "heard": "滝の音は、あのころと、少しも変わりませんね。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ayas_Despina_1": {
+  "episode": "aya-voice-sample",
+  "lang": "ja",
+  "speaker": "ayas_Despina",
+  "voice": "Despina",
+  "model": "gemini-3.8-live",
+  "seconds": 5.7800416666666665,
+  "text": "私は綾。帝のおそばで、お育てしてきた者です。",
+  "heard": "私 は あや です 。 三日月 の お そば で お 育ち し て き た もの です 。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "綾＝あや",
+   "帝＝みかど"
+  ]
+ },
+ "ayas_Despina_2": {
+  "episode": "aya-voice-sample",
+  "lang": "ja",
+  "speaker": "ayas_Despina",
+  "voice": "Despina",
+  "model": "gemini-3.8-live",
+  "seconds": 4.31,
+  "text": "滝の音は、あのころと、少しも変わりませんね。",
+  "heard": "滝の音は、あのころと、少しも変わりません",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ayas_Callirrhoe_1": {
+  "episode": "aya-voice-sample",
+  "lang": "ja",
+  "speaker": "ayas_Callirrhoe",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 8.240041666666666,
+  "text": "私は綾。帝のおそばで、お育てしてきた者です。",
+  "heard": "私は綾。帝のおそばで、お育てしてきた者です。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "綾＝あや",
+   "帝＝みかど"
+  ]
+ },
+ "ayas_Callirrhoe_2": {
+  "episode": "aya-voice-sample",
+  "lang": "ja",
+  "speaker": "ayas_Callirrhoe",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 4.81,
+  "text": "滝の音は、あのころと、少しも変わりませんね。",
+  "heard": "滝の音は、あのころと、少しも変わりませんね。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ayas_Pulcherrima_1": {
+  "episode": "aya-voice-sample",
+  "lang": "ja",
+  "speaker": "ayas_Pulcherrima",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 7.25,
+  "text": "私は綾。帝のおそばで、お育てしてきた者です。",
+  "heard": "私は綾。帝のおそばで、お育てしてきた者です。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "綾＝あや",
+   "帝＝みかど"
+  ]
+ },
+ "ayas_Pulcherrima_2": {
+  "episode": "aya-voice-sample",
+  "lang": "ja",
+  "speaker": "ayas_Pulcherrima",
+  "voice": "Pulcherrima",
+  "model": "gemini-3.8-live",
+  "seconds": 5.000041666666666,
+  "text": "滝の音は、あのころと、少しも変わりませんね。",
+  "heard": "滝の音は、あのころと、少しも変わりませんね。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "ayas_Vindemiatrix_1": {
+  "episode": "aya-voice-sample",
+  "lang": "ja",
+  "speaker": "ayas_Vindemiatrix",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 5.41,
+  "text": "私は綾。帝のおそばで、お育てしてきた者です。",
+  "heard": "私は綾。帝のおそばで、お育てしてきた者です。",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": [
+   "綾＝あや",
+   "帝＝みかど"
+  ]
+ },
+ "ayas_Vindemiatrix_2": {
+  "episode": "aya-voice-sample",
+  "lang": "ja",
+  "speaker": "ayas_Vindemiatrix",
+  "voice": "Vindemiatrix",
+  "model": "gemini-3.8-live",
+  "seconds": 4.34,
+  "text": "滝の音は、あのころと、少しも変わりませんね。",
+  "heard": "滝の音は、あのころと、少しも変わりません",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ }
+}
