@@ -1,0 +1,122 @@
+{
+ "e1xu2f3whjpxu_c1": {
+  "episode": "aya-retake2-en",
+  "lang": "en",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 4.470041666666667,
+  "text": "The name… Then that is enough.",
+  "heard": " Then that is enough.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e1xu2f3whjpxu_c2": {
+  "episode": "aya-retake2-en",
+  "lang": "en",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 21.340625,
+  "text": "The name… Then that is enough.",
+  "heard": "The name. Then. That is enough.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e5zcdmt19qln_c1": {
+  "episode": "aya-retake2-en",
+  "lang": "en",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 9.740041666666666,
+  "text": "It's been nearly a year, and he still hasn't come home. …So today, just for today, I decided to play a sad song.",
+  "heard": "It's been nearly a year and he still hasn't come home. So, today, just for today, I decided to play a sad song.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "e5zcdmt19qln_c2": {
+  "episode": "aya-retake2-en",
+  "lang": "en",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 10.37,
+  "text": "It's been nearly a year, and he still hasn't come home. …So today, just for today, I decided to play a sad song.",
+  "heard": " It's been nearly a year, and he still hasn't come home. …So today, just for today, I decided to play a sad song.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eq4yaz014d6n_c1": {
+  "episode": "aya-retake2-en",
+  "lang": "en",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 5.89,
+  "text": "Lord Kunimori. …If you must go, please hear this song first.",
+  "heard": " …If you must go, please hear this song first.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eq4yaz014d6n_c2": {
+  "episode": "aya-retake2-en",
+  "lang": "en",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 5.77,
+  "text": "Lord Kunimori. …If you must go, please hear this song first.",
+  "heard": " …If you must go, please hear this song first.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "euouetvxhnxn_c1": {
+  "episode": "aya-retake2-en",
+  "lang": "en",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 5.2400416666666665,
+  "text": "Please keep it safe for me. …Until the day I play again.",
+  "heard": " Please keep it safe for me. …Until the day I play",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "euouetvxhnxn_c2": {
+  "episode": "aya-retake2-en",
+  "lang": "en",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 4.84,
+  "text": "Please keep it safe for me. …Until the day I play again.",
+  "heard": "Please keep it safe for me until the day I play again.",
+  "scene": "かなしみの場面。静かに、こらえるように。ときどき息がふるえる",
+  "readings": []
+ },
+ "eu59vsc4raun_c1": {
+  "episode": "aya-retake2-en",
+  "lang": "en",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 5.520041666666667,
+  "text": "Hehe. What a kind lie. …But it makes me happy.",
+  "heard": " Hehe. What a kind lie. …But it makes me happy.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ },
+ "eu59vsc4raun_c2": {
+  "episode": "aya-retake2-en",
+  "lang": "en",
+  "speaker": "aya_c",
+  "voice": "Callirrhoe",
+  "model": "gemini-3.8-live",
+  "seconds": 5.5,
+  "text": "Hehe. What a kind lie. …But it makes me happy.",
+  "heard": " Hehe. What a kind lie. …But it makes me happy.",
+  "scene": "おだやかな場面。落ち着いた声で",
+  "readings": []
+ }
+}
