@@ -3002,6 +3002,12 @@ const asakaiSceneSchema = z
 export const novelSteps = ["intro", "goal", "notice", "consult", "result", "outro"] as const;
 /** 立ち絵の 表情（ふつう・うれしい・こまった）。 */
 export const novelFaces = ["neutral", "happy", "troubled"] as const;
+/**
+ * 席の 絵の 4つの 状態（要望 #723「話しかける タイミング」）。
+ * 大丈夫そう（しごとは して いる）・電話中・忙しそう（あせって いる）・ほかの 人と 話して いる。
+ * 話しかけて よいのは `ok` だけ。
+ */
+export const novelDeskStates = ["ok", "phone", "busy", "talking"] as const;
 /** 失敗の 型（仕様書 6章）。Gemini の `failure_type` と 同じ 名前。 */
 export const novelFailureTypes = [
   "vague",
@@ -3264,6 +3270,18 @@ export const novelSchema = z
               neutral: z.string().min(1),
               happy: z.string().min(1),
               troubled: z.string().min(1),
+            })
+            .optional(),
+          /**
+           * 席に すわって いる 絵（4つの 状態・`novelDeskStates`）。あれば 相談の 前に
+           *「今 話しかけて いいか」を 見て、その 人を 押す 練習が 入る（要望 #723）。
+           */
+          desk: z
+            .object({
+              ok: z.string().min(1),
+              phone: z.string().min(1),
+              busy: z.string().min(1),
+              talking: z.string().min(1),
             })
             .optional(),
         }),

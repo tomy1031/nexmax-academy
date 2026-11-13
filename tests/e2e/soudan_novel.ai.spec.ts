@@ -38,6 +38,10 @@ async function toMondayConsult(page: Page): Promise<void> {
     await next.click();
     if (await next.count()) await next.click();
   }
+  // 話しかける タイミング（要望 #723）: 大丈夫そうに なるまで 待って 押す
+  const desk = page.getByTestId("novel-desk");
+  await expect(desk).toHaveAttribute("data-desk-state", "ok", { timeout: 20_000 });
+  await desk.click();
   await page.getByTestId("novel-mic-connect").click();
   await expect(page.getByTestId("novel-text")).toBeVisible({ timeout: 30_000 });
   // 声かけ

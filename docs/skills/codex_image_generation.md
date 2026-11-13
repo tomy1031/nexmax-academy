@@ -165,8 +165,11 @@ codex -i public/img/characters/nexmax/reference.png \
 | `public/img/novel/shirai/stand_{neutral,happy,troubled}.webp` | 白井さんの ふつう・うれしい・こまった（相談の 練習） | 2026-11-12 |
 | `public/img/novel/office_{morning,afternoon}.webp` | 相談の 練習の 背景（オフィスの 朝・午後。人を 描かない・中央と 右を 空ける） | 2026-11-12 |
 | `public/img/novel/{mouse,light}.webp` | 開発中の 画面に 出す 商品の 絵（320px） | 2026-11-12 |
+| `public/img/novel/matsumoto/{sheet,stand_neutral,stand_happy,stand_troubled}.webp` | お客様の 松本さん（架空・30代半ばの 店長）。設定画 → 立ち絵 3枚。台帳 `scripts/images/novel_matsumoto.json`（「もう少し若い方がいい」で 30代に した） | 2026-11-13 |
+| `public/img/novel/{hendy,nyam,shirai}/desk_{ok,phone,busy,talking}.webp` | 席に すわって いる 絵 4枚ずつ（話しかける タイミング・要望 #723）: 大丈夫そう（しごとは して いる）・電話中・忙しそう（あせって 打つ・汗・動きの 線）・ほかの 人と 話して いる（名前の ない 同僚が 横に 立つ）。**1枚目（大丈夫そう）を 先に 撮って 絵柄アンカーに し**、残り 3枚は 机・小物・構図を そろえて 動きと 表情だけ 変えた。背景ごと 撮る（切りぬかない）・1200×800 q84。台帳 `scripts/images/novel_desk_<id>.json`。12枚とも 作り直し ゼロ | 2026-11-13 |
 
-相談の 練習（`meeting.novel`）の 台帳は `scripts/images/novel_*.json`（hendy・nyam・shirai・office・products）。
+相談の 練習（`meeting.novel`）の 台帳は `scripts/images/novel_*.json`（hendy・nyam・shirai・matsumoto・office・products・desk_<id>）。
+`gen_images.mjs` は **1枚目が 出力フォルダに ある ときだけ** それを 絵柄アンカーに 足す。そろえたい 4枚は、1枚目だけの 台帳で 先に 撮って から 本の 台帳を 流す（2回目は 1枚目を 飛ばして アンカー つきで 撮る）。
 立ち絵は **白背景で 撮って `cutout_white.mjs` で 切りぬいた**（7枚とも 1回で 抜けた）。
 置き場は `public/img/characters/` では なく **`public/img/novel/`**（相談の 練習でしか 使わない 立ち絵なので、
 登場人物の 絵の 置き場（勝手に 変えては いけない 場所）に 足さない）。

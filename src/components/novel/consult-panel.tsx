@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
 import type { Novel, NovelFailureType, NovelScene } from "@/content/schema";
 import { RubyText } from "@/components/ruby-text";
@@ -9,13 +9,18 @@ import type { LiveVoice } from "@/components/meeting/use-live-voice";
 import { useIsAdmin } from "@/lib/admin-flag";
 import { readsExample, retryLevel, starsForFails, type NovelJudgment } from "@/lib/novel/judge";
 import {
+  DESK_FEEDBACK,
+  DESK_FEEDBACK_EN,
   cardView,
   missingParts,
   reactionFace,
   reactionFor,
+  showsTiming,
   type NovelFace,
 } from "@/lib/novel/state";
 import type { FuriganaIndex } from "@/lib/text/furigana";
+import { DeskApproach } from "./desk-approach";
+import { FaceIcon } from "./face-icon";
 import { playNovelSe } from "./novel-sound";
 
 type ConsultScene = Extract<NovelScene, { type: "consult" }>;
@@ -25,6 +30,7 @@ type NoticeScene = Extract<NovelScene, { type: "notice" }>;
  * 相談 — マイクで 話して、Gemini が「伝わったか」を 判定する（仕様書 v4 §5・§6）。
  *
  * 流れ:
+ * 0. 話しかける タイミング（相手に 席の 絵が ある とき・要望 #723）。大丈夫そうな ときに 相手を 押す
  * 1. 声かけ（「◯◯さん、今、お時間 よろしいですか」）→ 相手が「はい、どう しましたか」
  * 2. 本題を 話す（ボタンを 押して いる あいだだけ 録音）
  * 3. 聞き取った 文を 見せる（ちがえば「言い直す」。回数に 数えない）
@@ -43,7 +49,16 @@ type NoticeScene = Extract<NovelScene, { type: "notice" }>;
  */
 
 type Phase =
-  "call" | "reply" | "talk" | "confirm" | "judging" | "react" | "whatif" | "error" | "passed";
+  | "approach"
+  | "call"
+  | "reply"
+  | "talk"
+  | "confirm"
+  | "judging"
+  | "react"
+  | "whatif"
+  | "error"
+  | "passed";
 
 const LISTEN_ONLY = [
   "あなたは 相談の 練習の 聞き係です。",
@@ -91,6 +106,7 @@ export function ConsultPanel({
   voice,
   onFace,
   onBusy,
+  onApproach,
   onFail,
   onPassed,
   onNext,
@@ -113,12 +129,22 @@ export function ConsultPanel({
   onFace: (face: NovelFace | null) => void;
   /** 判定を 待って いる あいだ（もどる・ログを 止める）。 */
   onBusy: (busy: boolean) => void;
+  /** 席の 絵を 見て いる あいだ（舞台の 立ち絵を 隠す——相手は まだ 席に いる）。 */
+  onApproach: (on: boolean) => void;
   onFail: (type: NovelFailureType) => void;
   onPassed: (stars: number) => void;
   onNext: () => void;
 }) {
   const isAdmin = useIsAdmin();
-  const [phase, setPhase] = useState<Phase>(cleared ? "passed" : "call");
+  /** 席の 絵（タイミングを 出す 相談だけ。悪い 知らせの 相談は 出さない——`showsTiming`）。 */
+  const desk = showsTiming(novel, scene)
+    ? novel.cast.find((one) => one.id === scene.to)?.desk
+    : undefined;
+  /** はじめの 段（席の 絵が あれば タイミングから）。 */
+  const opening: Phase = desk ? "approach" : "call";
+  const [phase, setPhase] = useState<Phase>(cleared ? "passed" : opening);
+  /** タイミングを 当てて 声かけに 来た（声かけの 上に「いい タイミング」を 出す）。 */
+  const [timed, setTimed] = useState(false);
   /** 合格した あとの「もう 一度 練習する」（記録の 失敗回数を 増やさない）。 */
   const [practice, setPractice] = useState(false);
   const [practiceFails, setPracticeFails] = useState(0);
@@ -154,6 +180,16 @@ export function ConsultPanel({
       onBusy(false);
     };
   }, [onBusy]);
+
+  /*
+   * 席の 絵を 見て いる あいだは 舞台を 隠す。画面から 消える ときは 戻す。
+   * 描く 前に 知らせる（`useLayoutEffect`）——ふつうの effect だと、相談に 入った
+   * 1回目の 描画で 舞台が 一瞬 見える。
+   */
+  useLayoutEffect(() => {
+    onApproach(phase === "approach");
+  }, [phase, onApproach]);
+  useLayoutEffect(() => () => onApproach(false), [onApproach]);
 
   const level = retryLevel(effectiveFails);
   const name = `${partnerName}さん`;
@@ -302,7 +338,8 @@ export function ConsultPanel({
   const restart = () => {
     setPractice(true);
     setPracticeFails(0);
-    setPhase("call");
+    setTimed(false);
+    setPhase(opening);
     setLast(null);
     onFace(null);
   };
@@ -340,8 +377,8 @@ export function ConsultPanel({
         ) : null}
       </div>
 
-      {/* 気づきカード（日ごとに 支えを 減らす） */}
-      {notice ? (
+      {/* 気づきカード（日ごとに 支えを 減らす）。席の 絵を 見て いる ときは 絵を 上に 寄せる */}
+      {notice && phase !== "approach" ? (
         <section
           className="rounded-2xl border-2 p-3"
           style={{ borderColor: "var(--color-sun)", background: "var(--color-cream)" }}
@@ -364,13 +401,13 @@ export function ConsultPanel({
           </div>
           {view ? (
             <ol className="text-navy mt-1 space-y-0.5 text-sm font-bold">
-              <CardRow n={1} glow={glow.includes(1)}>
+              <CardRow n={1} glow={glow.includes(1)} index={index} show={show}>
                 <RubyText text={view.seen} index={index} show={show} />
               </CardRow>
-              <CardRow n={2} glow={glow.includes(2)}>
+              <CardRow n={2} glow={glow.includes(2)} index={index} show={show}>
                 <RubyText text={view.diff} index={index} show={show} />
               </CardRow>
-              <CardRow n={3} glow={glow.includes(3)}>
+              <CardRow n={3} glow={glow.includes(3)} index={index} show={show}>
                 {scene.support === "form" && scene.askForm ? (
                   <RubyText text={scene.askForm} index={index} show={show} />
                 ) : (
@@ -421,6 +458,39 @@ export function ConsultPanel({
         </div>
       ) : (
         <>
+          {/* 0. 話しかける タイミング */}
+          {phase === "approach" && desk ? (
+            <DeskApproach
+              desk={desk}
+              seed={scene.id}
+              name={name}
+              index={index}
+              show={show}
+              translation={translation}
+              onWrong={() => playNovelSe("retry", volume)}
+              onReady={() => {
+                playNovelSe("notice", volume);
+                setTimed(true);
+                setPhase("call");
+              }}
+            />
+          ) : null}
+
+          {phase === "call" && timed ? (
+            <p
+              role="status"
+              className="text-leaf-deep text-sm font-black"
+              data-testid="novel-approach-ok"
+            >
+              ⭕ <RubyText text={DESK_FEEDBACK.ok} index={index} show={show} />
+              {translation ? (
+                <span className="text-ink-soft block text-xs font-medium">
+                  {DESK_FEEDBACK_EN.ok}
+                </span>
+              ) : null}
+            </p>
+          ) : null}
+
           {/* 1. 声かけ */}
           {phase === "call" ? (
             <Bubble who="me" index={index} show={show}>
@@ -458,7 +528,7 @@ export function ConsultPanel({
                 <p className="text-navy text-sm font-black">
                   🗣{" "}
                   <RubyText
-                    text="①見たもの・した こと ②ちがい・問題 ③質問・お願い を 話しましょう。"
+                    text="①調べた こと ②わからない こと ③お願い を 話しましょう。"
                     index={index}
                     show={show}
                   />
@@ -626,19 +696,29 @@ export function ConsultPanel({
 function CardRow({
   n,
   glow,
+  index,
+  show,
   children,
 }: {
   n: 1 | 2 | 3;
   glow: boolean;
+  index: FuriganaIndex;
+  show: boolean;
   children: React.ReactNode;
 }) {
+  /* スキットと 同じ 型の 名前（調べた こと → わからない こと → お願い） */
+  const label = ["調べた こと", "わからない こと", "お願い"][n - 1] ?? "";
   return (
     <li
       className="rounded-lg px-1.5 py-0.5"
       style={glow ? { boxShadow: "0 0 0 3px var(--color-coral)", background: "white" } : undefined}
       data-glow={glow ? "1" : undefined}
     >
-      {["①", "②", "③"][n - 1]} {children}
+      {["①", "②", "③"][n - 1]}{" "}
+      <span className="text-ink-soft text-xs font-black">
+        <RubyText text={label} index={index} show={show} />：
+      </span>{" "}
+      {children}
     </li>
   );
 }
@@ -735,12 +815,17 @@ function WhatIf({
       {lines.map((line, i) => {
         const person = cast.find((one) => one.id === line.speaker);
         const text = person ? `${person.name}さん「${line.text}」` : line.text;
+        /* 困って いる 人の 顔（立ち絵が ある 人だけ） */
+        const face = person?.figures?.troubled;
         return (
-          <p key={i} className="text-sm font-bold text-white">
-            <RubyText text={text} index={index} show={show} />
-            {translation && line.en ? (
-              <span className="block text-xs font-medium text-white/70">{line.en}</span>
-            ) : null}
+          <p key={i} className="flex items-center gap-2 text-sm font-bold text-white">
+            {face ? <FaceIcon src={face} size={44} /> : null}
+            <span>
+              <RubyText text={text} index={index} show={show} />
+              {translation && line.en ? (
+                <span className="block text-xs font-medium text-white/70">{line.en}</span>
+              ) : null}
+            </span>
           </p>
         );
       })}

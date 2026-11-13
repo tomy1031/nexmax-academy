@@ -4,6 +4,7 @@ import {
   type NovelFailureType,
   type NovelScene,
   type NovelScreen,
+  type novelDeskStates,
   type novelFaces,
   type novelSteps,
 } from "@/content/schema";
@@ -19,6 +20,7 @@ import {
 
 export type NovelStep = (typeof novelSteps)[number];
 export type NovelFace = (typeof novelFaces)[number];
+export type NovelDeskState = (typeof novelDeskStates)[number];
 export type NovelDay = Novel["days"][number];
 
 export interface NovelSettings {
@@ -364,10 +366,82 @@ export function allConsults(novel: Novel): Extract<NovelScene, { type: "consult"
 /** 失敗の 型の 日本語の 名前（まとめの 画面）。 */
 export const FAILURE_LABELS: Record<NovelFailureType, string> = {
   vague: "あいまい",
-  no_ask: "質問が ない",
+  no_ask: "お願いが ない",
   blaming: "相手を せめる",
   decided_alone: "勝手に 決める",
   hiding: "問題を 隠す",
   off_topic: "話が ちがう",
   unclear_audio: "聞き取れない",
 };
+
+/* ------------------------------------------------------------------
+ * 話しかける タイミング（要望 #723）
+ * ------------------------------------------------------------------ */
+
+/** 席の 絵が 切りかわる 間（tomy さんの 指定「5秒程度で 切り替わる」）。 */
+export const DESK_SWITCH_MS = 5000;
+
+/**
+ * 席の 絵の 並び（くり返す）。**はじめは かならず 話しかけては いけない 状態**——
+ * 開いた とたんに 押せば 合格、に しない（見て 決める 練習なので）。
+ *
+ * だめな 3つの 順と、大丈夫そうに なる 時刻（5秒後・10秒後・15秒後）は 場面ごとに 変える。
+ * 毎回 同じ だと、絵を 見ないで「10秒 待って 押す」で 通れて しまう（2026-11-13 の 検収）。
+ * まちがえて 押した ときに 待つ 時間が のびるのは 画面の 側（`desk-approach.tsx`）。
+ * 乱数に しないのは、もどって 来ても 同じ 並びに なる ように・テストで 決まる ように。
+ * となり同士（さいごと はじめも）は かならず 別の 状態に する。
+ */
+export function deskCycle(seed: string): NovelDeskState[] {
+  const waits = [
+    ["phone", "busy", "talking"],
+    ["busy", "talking", "phone"],
+    ["talking", "phone", "busy"],
+  ] as const;
+  let hash = 0;
+  for (const char of seed) hash = (hash * 31 + char.charCodeAt(0)) >>> 0;
+  const [a, b, c] = waits[hash % waits.length] ?? waits[0];
+  switch (Math.floor(hash / waits.length) % 3) {
+    case 0:
+      return [a, "ok", b, c, "ok"];
+    case 1:
+      return [a, b, "ok", c, "ok"];
+    default:
+      return [a, b, c, "ok"];
+  }
+}
+
+/**
+ * 押した ときの 判定（規律1: 合否を はっきり 書き、次に する ことを 1つ 添える）。
+ * 画面が 出す 字なので、読みは `ui-furigana.ts` に ある。
+ */
+export const DESK_FEEDBACK: Record<NovelDeskState, string> = {
+  ok: "いい タイミングです。仕事中でも、急いで いない ときは 話しかけて いいです。",
+  phone: "今は 電話中です。大丈夫そうに なるまで 待ちましょう。",
+  busy: "今は とても 忙しそうです。大丈夫そうに なるまで 待ちましょう。",
+  talking: "今は ほかの 人と 話して います。大丈夫そうに なるまで 待ちましょう。",
+};
+
+/** 押した ときの 判定の 英訳（訳を 出す 設定の とき）。 */
+export const DESK_FEEDBACK_EN: Record<NovelDeskState, string> = {
+  ok: "Good timing. Even while someone is working, you can talk to them when they are not in a hurry.",
+  phone: "They are on the phone now. Wait until they look OK.",
+  busy: "They look very busy now. Wait until they look OK.",
+  talking: "They are talking with someone else now. Wait until they look OK.",
+};
+
+/**
+ * その 相談の 前に「話しかける タイミング」を 出すか。
+ *
+ * 出すのは 相手に 席の 絵が ある ときで、**悪い 知らせの 相談は 除く**。悪い 知らせの 相談とは
+ *「もしも 隠したら」の 場面（`whatIf.hiding`）を 持つ 相談の こと（いまは 金曜の 2つ）。
+ * その 日に 教えるのは「悪い 知らせは、早く、そのまま 言う」で、相手が 忙しそうでも
+ * 声を かけて よい 場面。ここで「待ちましょう」と ✖ を 出すと、教材と 逆を 教える
+ *（2026-11-13 の 検収）。
+ */
+export function showsTiming(
+  novel: Novel,
+  consult: Extract<NovelScene, { type: "consult" }>,
+): boolean {
+  if (consult.whatIf?.hiding?.length) return false;
+  return Boolean(novel.cast.find((one) => one.id === consult.to)?.desk);
+}
