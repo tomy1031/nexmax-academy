@@ -79,8 +79,7 @@
     ],
     "backgrounds": {
       "morning": "/img/novel/office_morning.webp",
-      "afternoon": "/img/novel/office_afternoon.webp",
-      "shop": "/img/novel/shop.webp"
+      "afternoon": "/img/novel/office_afternoon.webp"
     },
     "reactions": {
       "vague": {
@@ -1969,8 +1968,7 @@
             "type": "line",
             "speaker": "narration",
             "text": "17時。松本さんに 納品しました。",
-            "en": "5 p.m. You delivered to Mr. Matsumoto.",
-            "bg": "shop"
+            "en": "5 p.m. You delivered to Mr. Matsumoto."
           },
           {
             "id": "f23",
