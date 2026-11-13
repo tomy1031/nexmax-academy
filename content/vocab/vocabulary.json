@@ -21713,6 +21713,26 @@
       "meaningJa": "紙の お金や コインです。",
       "englishTerm": "Cash",
       "example": "支払いは 現金だけです。"
+    },
+    {
+      "id": "awanai",
+      "term": "合わない",
+      "reading": "あわない",
+      "romaji": "awanai",
+      "meaningJa": "同じに ならない ことです。ちがいが あります。",
+      "englishTerm": "Does not match",
+      "example": "仕様書と 商品データが 合わない。",
+      "wrongMeanings": [
+        "Is the same",
+        "Is too expensive",
+        "Is finished"
+      ],
+      "furigana": [
+        [
+          "合",
+          "あ"
+        ]
+      ]
     }
   ]
 }

@@ -79,7 +79,8 @@
     ],
     "backgrounds": {
       "morning": "/img/novel/office_morning.webp",
-      "afternoon": "/img/novel/office_afternoon.webp"
+      "afternoon": "/img/novel/office_afternoon.webp",
+      "shop": "/img/novel/shop.webp"
     },
     "reactions": {
       "vague": {
@@ -277,8 +278,8 @@
               "lines": [
                 {
                   "id": "s1",
-                  "text": "出す 商品は 2つ：マウスと USBライト。",
-                  "en": "Show two products: the mouse and the USB light."
+                  "text": "出す 商品：マウス、USBライト",
+                  "en": "Products to show: the mouse and the USB light"
                 },
                 {
                   "id": "s2",
@@ -324,9 +325,9 @@
             "hint": "商品の 名前を 見て ください。",
             "hintEn": "Look at the product names.",
             "card": {
-              "seen": "仕様書では、出す 商品は 2つ。",
+              "seen": "仕様書では、出す 商品は マウスと USBライト。",
               "diff": "商品データには、キーボードも ある。",
-              "seenKey": "仕様書・商品は 2つ",
+              "seenKey": "仕様書・マウスと USBライト",
               "diffKey": "データ・キーボードも ある"
             },
             "prompt": "仕様書に 書いて ある 商品と、表の 商品を くらべます。合わない 行を 1つずつ 選びます。"
@@ -370,6 +371,30 @@
             "en": "When you consult, say three things in order: ① what you checked, ② what you don't know, ③ your request."
           },
           {
+            "id": "m16b",
+            "step": "consult",
+            "type": "line",
+            "speaker": "narration",
+            "text": "相談する 前に、相手の ようすを 見ます。",
+            "en": "Before you consult, look at how the other person is doing."
+          },
+          {
+            "id": "m16c",
+            "step": "consult",
+            "type": "line",
+            "speaker": "narration",
+            "text": "電話中・だれかと 話して いる・とても 忙しそうな ときは、少し 待ちます。",
+            "en": "If they are on the phone, talking with someone, or very busy, wait a little."
+          },
+          {
+            "id": "m16d",
+            "step": "consult",
+            "type": "line",
+            "speaker": "narration",
+            "text": "大丈夫そうな ときに、「今 お時間 よろしいでしょうか」と 声を かけます。",
+            "en": "When they look OK, say \"Do you have a moment now?\""
+          },
+          {
             "id": "c_mon",
             "step": "consult",
             "type": "consult",
@@ -381,12 +406,12 @@
             "replyEn": "Yes, what is it?",
             "topic": "出す 商品",
             "criteria": {
-              "context": "商品一覧の 仕様書では、出す 商品は 2つ（マウスと USBライト）と 言う。",
+              "context": "商品一覧の 仕様書では、出す 商品は マウスと USBライト（2つ）と 言う。",
               "problem": "商品データには キーボードも ある、と 言う。",
               "ask": "キーボードも 出すか どうかを 聞く。"
             },
-            "example": "仕様書では、出す 商品は 2つです。でも、商品データには キーボードも あります。キーボードも 出しますか。",
-            "exampleEn": "The specification says to show two products. But the product data also has a keyboard. Should we show the keyboard too?",
+            "example": "仕様書では、出す 商品は マウスと USBライトです。でも、商品データには キーボードも あります。キーボードも 出しますか。",
+            "exampleEn": "The specification says to show the mouse and the USB light. But the product data also has a keyboard. Should we show the keyboard too?",
             "cloze": "仕様書では、＿＿。でも、商品データには ＿＿。＿＿ますか。",
             "reactions": {
               "no_ask": {
@@ -1944,7 +1969,8 @@
             "type": "line",
             "speaker": "narration",
             "text": "17時。松本さんに 納品しました。",
-            "en": "5 p.m. You delivered to Mr. Matsumoto."
+            "en": "5 p.m. You delivered to Mr. Matsumoto.",
+            "bg": "shop"
           },
           {
             "id": "f23",
@@ -2642,6 +2668,14 @@
     [
       "商品名",
       "しょうひんめい"
+    ],
+    [
+      "忙し",
+      "いそがし"
+    ],
+    [
+      "大丈夫",
+      "だいじょうぶ"
     ]
   ]
 }

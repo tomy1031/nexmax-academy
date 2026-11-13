@@ -1,0 +1,26 @@
+{
+  "refs": [
+    "public/img/novel/matsumoto/sheet.webp",
+    "public/img/novel/matsumoto/stand_neutral.webp"
+  ],
+  "_comment": "相談の 練習の お客様 松本さんの お店（要望 #740・#741「松本店長の仕事がわかる背景」「松本店長を丸い領域で表示」）。1枚目は 人の いない お店の 背景（松本さんが 出る 場面で 使う）、2枚目は お店の カウンターに 立つ 松本さんの 胸から 上（丸く 切りぬいて 紹介に 使う）。",
+  "style": "Style: clean modern Japanese manga / anime style, soft cel shading, bright friendly palette, rounded shapes, no harsh shadows, warm daylight, contemporary Japan, kid-safe e-learning illustration. EMOTIONS ARE BIG AND OBVIOUS, like a Japanese comedy manga.",
+  "noText": "No text, no letters, no kanji, no kana, no numbers anywhere in the image: price tags and signs are blank colored shapes. No watermark, no signature, no logo, no frame border.",
+  "negative": "Never: realistic photo rendering, harsh gradients, six fingers, extra limbs, readable letters, dark horror tone, angry faces, real sadness or tears, costume changes, a drawn checkerboard pattern, grey hair, an old man.",
+  "scenes": [
+    {
+      "out": "shop_bg",
+      "dest": "public/img/novel/shop.webp",
+      "title": "お店（背景）",
+      "output": "Output: one landscape illustration, 1536x1024.",
+      "scene": "Background only, no people. A small bright shop in Japan that sells computer accessories, seen from inside at eye level from standing height: wooden shelves and wall hooks with computer mice, USB desk lights, keyboards, cables and headphones in neat rows, small blank price tags, a wooden counter with a cash register and a laptop on the left, a glass shop door with warm daylight, potted plants, a dark green shop curtain. Clean, friendly and tidy. Keep the centre and the right third calm and less cluttered (a plain wall and a low shelf) so a standing character can be placed there later."
+    },
+    {
+      "out": "matsumoto_shop",
+      "dest": "public/img/novel/matsumoto/shop_round.webp",
+      "title": "お店の 松本さん（丸い 紹介）",
+      "output": "Output: one square illustration, 1024x1024. The character is centered, chest-up, with a little space above the head, so the picture can be cropped into a circle.",
+      "scene": "Character: お客様（お店の 店長） — Japanese-style anime character, man in his mid thirties, medium build, friendly upright posture. Short neat black hair with a soft side part. Kind dark brown eyes, warm friendly smile, clean-shaven. Outfit: dark green shop apron (#3E6B4F) with one front pocket and no writing on it, worn over a light blue checked button-up shirt with the sleeves rolled to the elbows, khaki chino trousers, brown leather shoes. No glasses, no hat.\nSetting: inside his small computer-accessories shop (shelves with computer mice, USB desk lights and keyboards behind him, blank price tags), warm daylight.\nPose: standing behind the wooden shop counter, chest-up, facing the viewer, a warm welcoming smile, one hand resting on the counter next to a computer mouse on display."
+    }
+  ]
+}

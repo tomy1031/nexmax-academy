@@ -178,7 +178,7 @@ export function DeskApproach({
         <p className="text-navy text-xs font-black sm:text-sm">
           👀{" "}
           <RubyText
-            text={`今 ${name}に 話しかけて いいですか？ よく 見て、いいと 思ったら「${name}に 話しかける」を 押します。`}
+            text={`今 ${name}に 話しかけて いいですか？ よく 見て、いいと 思ったら 下の ボタンで 声を かけます。`}
             index={index}
             show={show}
           />
@@ -234,13 +234,18 @@ export function DeskApproach({
           onClick={tap}
           disabled={!ready}
           className="btn-island btn-game px-6 py-3 text-base disabled:opacity-60"
-          aria-label={`${name}に 話しかける`}
+          aria-label={`${name}、今 お時間 よろしいでしょうか？`}
           data-testid="novel-desk"
           data-desk-state={ready ? state : "loading"}
         >
           {ready ? (
             <>
-              🗣 <RubyText text={`${name}に 話しかける`} index={index} show={show} />
+              🗣{" "}
+              <RubyText
+                text={`${name}、今 お時間 よろしいでしょうか？`}
+                index={index}
+                show={show}
+              />
             </>
           ) : (
             <RubyText text="絵を 読みこんで います…" index={index} show={show} />

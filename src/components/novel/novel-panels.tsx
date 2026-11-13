@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
 import type { Novel, NovelScene } from "@/content/schema";
+import { DictionaryText } from "@/components/dictionary-text";
 import { RubyText } from "@/components/ruby-text";
 import { assetUrl } from "@/lib/asset-url";
 import type { FuriganaIndex } from "@/lib/text/furigana";
@@ -123,7 +124,7 @@ export function NoticePanel({
       {/* 何を するかを **毎回** 出す（つづきから 始めた 学生は 月曜の 説明を 見て いない） */}
       <p className="text-navy text-sm font-black" data-testid="novel-notice-prompt">
         🔍{" "}
-        <RubyText
+        <DictionaryText
           text={scene.prompt ?? "2つの 資料から、合わない 行を 1つずつ 選びます。"}
           index={index}
           show={show}
@@ -186,7 +187,7 @@ export function NoticePanel({
           style={{ background: "var(--color-cream)", color: "var(--color-navy)" }}
           data-testid="novel-notice-step"
         >
-          👉 <RubyText text={step} index={index} show={show} />
+          👉 <DictionaryText text={step} index={index} show={show} />
         </p>
       ) : null}
 
