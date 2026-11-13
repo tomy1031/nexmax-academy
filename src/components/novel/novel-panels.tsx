@@ -234,67 +234,214 @@ export function NoticePanel({
           return (
             <section
               key={side}
-              className="relative rounded-2xl border-2 bg-white p-2.5 transition"
+              className="relative overflow-hidden rounded-xl border bg-white shadow-lg transition"
               style={{
-                borderColor: now ? "var(--color-sun)" : "var(--color-hairline)",
-                boxShadow: now ? "0 0 0 3px var(--color-sun)" : undefined,
-                opacity: active && !now ? 0.7 : 1,
+                borderColor: now ? "var(--color-sun)" : "rgba(0,0,0,0.18)",
+                boxShadow: now
+                  ? "0 0 0 3px var(--color-sun), 0 8px 18px rgba(0,0,0,0.18)"
+                  : "0 8px 18px rgba(0,0,0,0.15)",
+                opacity: active && !now ? 0.75 : 1,
               }}
               data-doc={side}
               data-active={now ? "1" : undefined}
             >
-              {now ? (
-                <span
-                  className="absolute -top-2.5 right-3 rounded-full px-2 py-0.5 text-[10px] font-black"
-                  style={{ background: "var(--color-sun)", color: "var(--color-navy)" }}
-                >
-                  <RubyText text="ここから" index={index} show={show} />
+              {/*
+               * Mac の ウィンドウの ような 枠（2026-11-13 の 指定「Macのウィンドウのような UI」
+               *「それぞれ Word ファイルや Excel のような アプリを 開いて いる デザインに」）。
+               * 仕様書（doc）は 青い 窓の 文書、商品データ（table）は 緑の 窓の 表。
+               */}
+              <h3
+                className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-black text-white"
+                style={{ background: WINDOW[doc.look].bar }}
+              >
+                <span className="flex shrink-0 gap-1" aria-hidden>
+                  <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]" />
+                  <span className="h-2.5 w-2.5 rounded-full bg-[#febc2e]" />
+                  <span className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
                 </span>
-              ) : null}
-              <h3 className="text-navy mb-1.5 flex items-center gap-1.5 text-sm font-black">
-                <span aria-hidden>{LOOK_ICON[doc.look]}</span>
-                <RubyText text={doc.title} index={index} show={show} />
+                <span aria-hidden>{WINDOW[doc.look].icon}</span>
+                <span className="min-w-0">
+                  <RubyText text={doc.title} index={index} show={show} />
+                  <span className="font-medium opacity-80">{WINDOW[doc.look].ext}</span>
+                </span>
+                {now ? (
+                  <span
+                    className="ml-auto shrink-0 rounded-full px-2 py-0.5 text-[10px] font-black"
+                    style={{ background: "var(--color-sun)", color: "var(--color-navy)" }}
+                  >
+                    <RubyText text="ここから" index={index} show={show} />
+                  </span>
+                ) : null}
               </h3>
-              <ul className="space-y-1.5">
-                {doc.lines.map((line) => {
-                  const on = picked === line.id;
-                  const lit = glow && line.id === answer;
-                  return (
-                    <li key={line.id}>
-                      <button
-                        type="button"
-                        aria-pressed={on}
-                        disabled={done}
-                        onClick={() => pick(side, line.id)}
-                        data-line={`${side}:${line.id}`}
-                        className={`w-full rounded-xl border-2 px-3 py-1.5 text-left text-sm font-bold transition ${
-                          doc.look === "code" || doc.look === "files" ? "font-mono" : ""
-                        }`}
-                        style={{
-                          borderColor: on
-                            ? "var(--color-navy)"
-                            : lit
-                              ? "var(--color-sun)"
-                              : "var(--color-hairline)",
-                          background: on
-                            ? "var(--color-sky-soft)"
-                            : lit
-                              ? "var(--color-cream)"
-                              : "var(--color-panel)",
-                          boxShadow: lit ? "0 0 0 3px var(--color-sun)" : undefined,
-                        }}
+              <div
+                className="p-2.5"
+                style={{ background: doc.look === "doc" ? "#eef1f6" : "white" }}
+              >
+                {doc.look === "table" ? (
+                  /* 表（商品データ など）: 見出しの 行 ＋ 1行 ずつ 押せる 行 */
+                  <div
+                    className="overflow-hidden border"
+                    style={{ borderColor: "#c8ccd2" }}
+                    data-look="table"
+                  >
+                    {/* 表計算ソフトの ような 列の 記号（A・B…）と 行の 番号 */}
+                    <div
+                      className="grid text-[10px] font-bold"
+                      style={{
+                        gridTemplateColumns: `1.6rem repeat(${doc.columns?.length ?? 2}, minmax(0, 1fr))`,
+                        background: "#eef0f2",
+                        color: "#5f6b7a",
+                      }}
+                      aria-hidden
+                    >
+                      <span className="border-r px-1 py-0.5" style={{ borderColor: "#c8ccd2" }} />
+                      {(doc.columns ?? []).map((column, c) => (
+                        <span
+                          key={column}
+                          className="border-r px-2 py-0.5 text-center last:border-r-0"
+                          style={{ borderColor: "#c8ccd2" }}
+                        >
+                          {String.fromCharCode(65 + c)}
+                        </span>
+                      ))}
+                    </div>
+                    <div
+                      className="grid border-t text-xs font-black"
+                      style={{
+                        gridTemplateColumns: `1.6rem repeat(${doc.columns?.length ?? 2}, minmax(0, 1fr))`,
+                        borderColor: "#c8ccd2",
+                        background: "#e2efda",
+                        color: "#1e5c36",
+                      }}
+                    >
+                      <span
+                        className="border-r px-1 py-1 text-center text-[10px]"
+                        style={{ borderColor: "#c8ccd2", background: "#eef0f2", color: "#5f6b7a" }}
+                        aria-hidden
                       >
-                        <RubyText text={line.text} index={index} show={show} />
-                        {translation && line.en ? (
-                          <span className="text-ink-soft mt-0.5 block text-xs font-medium">
-                            {line.en}
+                        1
+                      </span>
+                      {(doc.columns ?? []).map((column) => (
+                        <span
+                          key={column}
+                          className="border-r px-2 py-1 last:border-r-0"
+                          style={{ borderColor: "#c8ccd2" }}
+                        >
+                          <RubyText text={column} index={index} show={show} />
+                        </span>
+                      ))}
+                    </div>
+                    {doc.lines.map((line, i) => {
+                      const on = picked === line.id;
+                      const lit = glow && line.id === answer;
+                      return (
+                        <button
+                          key={line.id}
+                          type="button"
+                          aria-pressed={on}
+                          disabled={done}
+                          onClick={() => pick(side, line.id)}
+                          data-line={`${side}:${line.id}`}
+                          className="grid w-full border-t text-left text-sm font-bold transition"
+                          style={{
+                            gridTemplateColumns: `1.6rem repeat(${doc.columns?.length ?? 2}, minmax(0, 1fr))`,
+                            borderColor: "#c8ccd2",
+                            background: on
+                              ? "var(--color-sky-soft)"
+                              : lit
+                                ? "var(--color-cream)"
+                                : "white",
+                            boxShadow: on
+                              ? "inset 0 0 0 2px var(--color-navy)"
+                              : lit
+                                ? "inset 0 0 0 3px var(--color-sun)"
+                                : undefined,
+                          }}
+                        >
+                          <span
+                            className="border-r px-1 py-1.5 text-center text-[10px] font-bold"
+                            style={{
+                              borderColor: "#c8ccd2",
+                              background: "#eef0f2",
+                              color: "#5f6b7a",
+                            }}
+                            aria-hidden
+                          >
+                            {i + 2}
                           </span>
-                        ) : null}
-                      </button>
-                    </li>
-                  );
-                })}
-              </ul>
+                          {line.text.split("：").map((cell, c) => (
+                            <span
+                              key={c}
+                              className="border-r px-2 py-1.5 last:border-r-0"
+                              style={{ borderColor: "#c8ccd2" }}
+                            >
+                              <RubyText text={cell} index={index} show={show} />
+                            </span>
+                          ))}
+                          {translation && line.en ? (
+                            <span className="text-ink-soft col-span-full px-2.5 pb-1 text-xs font-medium">
+                              {line.en}
+                            </span>
+                          ) : null}
+                        </button>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <ul
+                    className={
+                      doc.look === "doc"
+                        ? "space-y-0.5 rounded-sm bg-white px-2 py-2.5 shadow"
+                        : "space-y-1.5"
+                    }
+                    data-look={doc.look}
+                  >
+                    {doc.lines.map((line) => {
+                      const on = picked === line.id;
+                      const lit = glow && line.id === answer;
+                      return (
+                        <li key={line.id}>
+                          <button
+                            type="button"
+                            aria-pressed={on}
+                            disabled={done}
+                            onClick={() => pick(side, line.id)}
+                            data-line={`${side}:${line.id}`}
+                            className={`w-full rounded-xl border-2 px-3 py-1.5 text-left text-sm font-bold transition ${
+                              doc.look === "code" || doc.look === "files" ? "font-mono" : ""
+                            }`}
+                            style={{
+                              borderColor: on
+                                ? "var(--color-navy)"
+                                : lit
+                                  ? "var(--color-sun)"
+                                  : doc.look === "doc"
+                                    ? "transparent"
+                                    : "var(--color-hairline)",
+                              background: on
+                                ? "var(--color-sky-soft)"
+                                : lit
+                                  ? "var(--color-cream)"
+                                  : doc.look === "doc"
+                                    ? "white"
+                                    : "var(--color-panel)",
+                              boxShadow: lit ? "0 0 0 3px var(--color-sun)" : undefined,
+                            }}
+                          >
+                            {doc.look === "doc" ? "・" : null}
+                            <RubyText text={line.text} index={index} show={show} />
+                            {translation && line.en ? (
+                              <span className="text-ink-soft mt-0.5 block text-xs font-medium">
+                                {line.en}
+                              </span>
+                            ) : null}
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+              </div>
             </section>
           );
         })}
@@ -307,7 +454,17 @@ export function NoticePanel({
   );
 }
 
-const LOOK_ICON: Record<string, string> = { doc: "📄", message: "💬", code: "💻", files: "📁" };
+/** 資料の 窓（アプリの 色・小さな 絵・ファイル名の 終わり）。 */
+const WINDOW: Record<
+  "doc" | "table" | "message" | "code" | "files",
+  { bar: string; icon: string; ext: string }
+> = {
+  doc: { bar: "#2b579a", icon: "📝", ext: ".docx" },
+  table: { bar: "#217346", icon: "📊", ext: ".xlsx" },
+  message: { bar: "#3a8f5c", icon: "💬", ext: "" },
+  code: { bar: "#2d3340", icon: "💻", ext: "" },
+  files: { bar: "#5b6b82", icon: "📁", ext: "" },
+};
 
 function NoticeCard({
   scene,

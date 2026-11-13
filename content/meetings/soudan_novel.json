@@ -225,6 +225,15 @@
             "face": "neutral"
           },
           {
+            "id": "m08b",
+            "step": "goal",
+            "type": "line",
+            "speaker": "hendy",
+            "text": "仕様書は、お客様と 決めた ことです。商品データは、お店の 商品の 表です。",
+            "en": "The specification is what we decided with the client. The product data is a table of the shop's products.",
+            "face": "neutral"
+          },
+          {
             "id": "m09",
             "step": "goal",
             "type": "line",
@@ -285,7 +294,11 @@
             },
             "right": {
               "title": "商品データ",
-              "look": "doc",
+              "look": "table",
+              "columns": [
+                "商品名",
+                "値段"
+              ],
               "lines": [
                 {
                   "id": "d1",
@@ -316,7 +329,7 @@
               "seenKey": "仕様書・商品は 2つ",
               "diffKey": "データ・キーボードも ある"
             },
-            "prompt": "仕様書と 商品データを 比べて、合わない 行を 1つずつ 選びます。"
+            "prompt": "仕様書に 書いて ある 商品と、表の 商品を くらべます。合わない 行を 1つずつ 選びます。"
           },
           {
             "id": "m13",
@@ -2617,6 +2630,18 @@
     [
       "出さ",
       "ださ"
+    ],
+    [
+      "表",
+      "ひょう"
+    ],
+    [
+      "書いて",
+      "かいて"
+    ],
+    [
+      "商品名",
+      "しょうひんめい"
     ]
   ]
 }

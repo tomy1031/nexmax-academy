@@ -716,7 +716,7 @@ function Player({
       <div className="pointer-events-none relative z-10 flex h-full flex-col">
         {/* 上の 帯: 日と ステップ */}
         <div
-          className="pointer-events-auto flex shrink-0 items-center gap-1.5 px-2 py-1.5"
+          className="pointer-events-auto mx-2 mt-2 flex shrink-0 items-center gap-1.5 rounded-full px-1.5 py-1 shadow-md"
           style={{ background: "rgba(23, 43, 84, 0.86)" }}
         >
           <span
@@ -749,8 +749,8 @@ function Player({
         {/* 今日の 目的（1行。押すと 全文）と 今日の ことば */}
         {view.goal || day.words.length > 0 ? (
           <div
-            className="pointer-events-auto flex shrink-0 items-start gap-1.5 px-2 py-1"
-            style={{ background: "rgba(230, 242, 255, 0.88)" }}
+            className="pointer-events-auto mx-2 mt-1.5 flex shrink-0 items-start gap-1.5 rounded-2xl px-2.5 py-1 shadow"
+            style={{ background: "rgba(255, 255, 255, 0.9)" }}
           >
             {view.goal ? (
               <button
@@ -804,7 +804,7 @@ function Player({
           {panelMode ? (
             <div
               key="panel"
-              className={`pointer-events-auto overflow-y-auto overscroll-contain rounded-2xl p-2.5 shadow-xl sm:p-3 ${
+              className={`pointer-events-auto overflow-y-auto overscroll-contain rounded-3xl p-2.5 shadow-xl sm:p-3 ${
                 approaching
                   ? "h-full w-full"
                   : fullPanel

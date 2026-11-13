@@ -3050,12 +3050,37 @@ const novelDocLineSchema = z.object({
 });
 
 /** 気づきで 並べる 資料 1つ（2〜3行）。 */
-const novelDocSchema = z.object({
-  title: plainText,
-  /** 見た目（ふつうの 資料・お客様の メッセージ・コード・ファイルの 一覧）。 */
-  look: z.enum(["doc", "message", "code", "files"]).default("doc"),
-  lines: z.array(novelDocLineSchema).min(2).max(4),
-});
+const novelDocSchema = z
+  .object({
+    title: plainText,
+    /**
+     * 見た目（ふつうの 資料・お客様の メッセージ・コード・ファイルの 一覧・表）。
+     * `table` は 行の 文を「：」で 区切って 列に する（「マウス：1,200円」→ マウス｜1,200円）。
+     * 仕様書（ドキュメント）と 商品データ（表）が 見た目で 分かる ように 足した（2026-11-13・
+     * tomy さんの 指定「仕様書と商品データはそれぞれドキュメントと表というのがわかるように」）。
+     */
+    look: z.enum(["doc", "message", "code", "files", "table"]).default("doc"),
+    /** 表の 列の 名前（`look: "table"` の とき。「商品名」「値段」）。 */
+    columns: z.array(plainText).min(2).max(4).optional(),
+    lines: z.array(novelDocLineSchema).min(2).max(4),
+  })
+  .superRefine((doc, ctx) => {
+    if (doc.look !== "table") return;
+    const width = doc.columns?.length;
+    if (!width) {
+      ctx.addIssue({ code: "custom", path: ["columns"], message: "表には 列の 名前（columns）が 要る" });
+      return;
+    }
+    doc.lines.forEach((line, i) => {
+      if (line.text.split("：").length !== width) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["lines", i, "text"],
+          message: `表の 行は「：」で ${width}つに 区切る（列の 数と 同じ）`,
+        });
+      }
+    });
+  });
 
 /**
  * 気づきカード。①見たもの ②ちがい は 気づいた ときに 入り、③聞きたい ことは 空欄。
