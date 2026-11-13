@@ -1280,6 +1280,9 @@ export function collectLabeledTexts(content: Content): LabeledText[] {
               case "notice":
                 for (const side of ["left", "right"] as const) {
                   push(`${at}.${side}.title`, scene[side].title);
+                  (scene[side].columns ?? []).forEach((column, c) =>
+                    push(`${at}.${side}.columns[${c}]`, column),
+                  );
                   scene[side].lines.forEach((line, l) =>
                     push(`${at}.${side}.lines[${l}].text`, line.text),
                   );
