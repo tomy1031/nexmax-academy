@@ -23,9 +23,9 @@ async function toMondayConsult(page: Page): Promise<void> {
   for (let i = 0; i < 120 && !(await page.getByTestId("novel-consult").count()); i += 1) {
     if (await page.getByTestId("novel-notice").count()) {
       if (!(await page.getByTestId("novel-notice-card").count())) {
-        await page.locator('[data-line="left:s2"]').click();
-        await page.locator('[data-line="right:d2"]').click();
-        await page.getByTestId("novel-compare").click();
+        await page.locator('[data-line="left:s1"]').click();
+        await page.locator('[data-line="right:d3"]').click();
+        await expect(page.getByTestId("novel-notice-card")).toBeVisible();
       }
       await page.getByTestId("novel-notice-card").getByRole("button").first().click();
       continue;
@@ -70,7 +70,7 @@ test.describe("相談の 判定（鍵が あるときだけ）", () => {
     await page
       .getByTestId("novel-text-input")
       .fill(
-        "仕様書では、1から5個注文できます。でも、USBライトの在庫は2個です。在庫より多い注文は、できないようにしますか。",
+        "仕様書では、出す商品は2つです。でも、商品データにはキーボードもあります。キーボードも出しますか。",
       );
     await page.getByTestId("novel-text-send").click();
     const consult = page.getByTestId("novel-consult");

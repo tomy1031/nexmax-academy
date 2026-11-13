@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
 import type { Novel, NovelScene } from "@/content/schema";
 import { RubyText } from "@/components/ruby-text";
@@ -13,8 +13,20 @@ type ChooseScene = Extract<NovelScene, { type: "choose_person" }>;
 type SelfFixScene = Extract<NovelScene, { type: "self_fix" }>;
 type Cast = Novel["cast"][number];
 
+/** 2つ 選んでから 答えを 出すまでの 間（選んだ ことが 目で 分かる ように）。 */
+const COMPARE_DELAY_MS = 500;
+
 /**
- * 気づき — 2つの 資料を 横に 並べ（スマホでは 上下）、合わない 行を 1つずつ 選ぶ。
+ * 気づき — 2つの 資料を 並べ、合わない 行を 1つずつ 選ぶ。
+ *
+ * ## 何を するか 一目で 分かる ように（要望 #729・2026-11-13 の Fable の 設計）
+ * - 上に「くらべる 台」（左の 行 ≠ 右の 行）を 置き、選んだ 行が そこに 入る。
+ * - 手順を 1つずつ 出す: ① 左の 資料から 1行 → ② 右の 資料から 合わない 行。いま 押す 側の
+ *   資料が 光り、もう 片方は 少し 薄く する（押しても よい・順は 決めない）。
+ * - 2つ そろったら **自動で** くらべる（「くらべる」ボタンは 無い）。
+ * - 片方だけ 正しい ときは、正しい 側を 残して「もう 片方を 選び直します」と 言う
+ *   （1回目の まちがいで どちらが 正しいかが 分かる。「真ん中の 2つを 選ぶのは 至難の
+ *   わざ」への 答えとして、ここは 易しく 倒した——要望 #729）。
  *
  * 答えは 先に 見せない。まちがえた ときは 3段で 強く する（仕様書 v4 §4）:
  * 1回目 = 見る 場所を 言う／2回目 = 片方の 正しい 行を 光らせる／3回目 = 両方を 光らせる。
@@ -43,6 +55,8 @@ export function NoticePanel({
   const [left, setLeft] = useState<string | null>(cleared ? scene.answer[0] : null);
   const [right, setRight] = useState<string | null>(cleared ? scene.answer[1] : null);
   const [misses, setMisses] = useState(0);
+  /** さいごの 判定（片方だけ 正しい・両方 ちがう）。選び直しを 始めたら 消す。 */
+  const [verdict, setVerdict] = useState<"leftOk" | "rightOk" | "none" | null>(null);
   const [solved, setSolved] = useState(cleared);
   const [practice, setPractice] = useState(false);
   const done = solved && !practice;
@@ -50,27 +64,62 @@ export function NoticePanel({
   const glowLeft = done || misses >= 2;
   const glowRight = done || misses >= 3;
 
-  const compare = () => {
-    if (!left || !right) return;
-    if (left === scene.answer[0] && right === scene.answer[1]) {
-      setSolved(true);
-      setPractice(false);
-      onSolved();
-      return;
-    }
-    setMisses((n) => n + 1);
-    onWrong();
+  /* 親の 描き直しで 待ち時間が 振り出しに 戻らない ように、知らせ先は ref で 持つ */
+  const notify = useRef({ onSolved, onWrong });
+  useEffect(() => {
+    notify.current = { onSolved, onWrong };
+  });
+
+  /* 2つ そろったら、少し 待って 自動で くらべる */
+  useEffect(() => {
+    if (done || !left || !right) return;
+    const timer = window.setTimeout(() => {
+      const leftOk = left === scene.answer[0];
+      const rightOk = right === scene.answer[1];
+      if (leftOk && rightOk) {
+        setVerdict(null);
+        setSolved(true);
+        setPractice(false);
+        notify.current.onSolved();
+        return;
+      }
+      setMisses((n) => n + 1);
+      setVerdict(leftOk ? "leftOk" : rightOk ? "rightOk" : "none");
+      if (!leftOk) setLeft(null);
+      if (!rightOk) setRight(null);
+      notify.current.onWrong();
+    }, COMPARE_DELAY_MS);
+    return () => window.clearTimeout(timer);
+  }, [left, right, done, scene.answer]);
+
+  const pick = (side: "left" | "right", id: string) => {
+    if (done) return;
+    setVerdict(null);
+    if (side === "left") setLeft(id);
+    else setRight(id);
   };
 
   const retry = () => {
     setLeft(null);
     setRight(null);
     setMisses(0);
+    setVerdict(null);
     setPractice(true);
   };
 
+  /* いま 押す 側（左が まだなら 左、左が 済んで いれば 右） */
+  const active: "left" | "right" | null = done ? null : !left ? "left" : !right ? "right" : null;
+  const step =
+    active === "left"
+      ? `① 「${scene.left.title}」から、1行 押します。`
+      : active === "right"
+        ? `② 「${scene.right.title}」から、合わない 行を 1行 押します。`
+        : null;
+  const lineText = (side: "left" | "right", id: string | null) =>
+    id ? (scene[side].lines.find((line) => line.id === id)?.text ?? "") : "";
+
   return (
-    <div className="space-y-3" data-testid="novel-notice">
+    <div className="space-y-2.5" data-testid="novel-notice">
       {/* 何を するかを **毎回** 出す（つづきから 始めた 学生は 月曜の 説明を 見て いない） */}
       <p className="text-navy text-sm font-black" data-testid="novel-notice-prompt">
         🔍{" "}
@@ -79,24 +128,130 @@ export function NoticePanel({
           index={index}
           show={show}
         />
-        <span className="text-ink-soft block text-xs font-bold">
-          <RubyText text="選んだら「くらべる」を 押します。" index={index} show={show} />
-        </span>
       </p>
-      <div className="grid gap-3 sm:grid-cols-2">
+
+      {/* くらべる 台: 選んだ 行が 入る。押すと 選び直せる */}
+      <div className="grid grid-cols-[1fr_auto_1fr] items-stretch gap-1.5" data-testid="novel-tray">
+        {(["left", "right"] as const).map((side, i) => {
+          const id = side === "left" ? left : right;
+          const ok =
+            (side === "left" && verdict === "leftOk") ||
+            (side === "right" && verdict === "rightOk");
+          const slot = (
+            <button
+              key={side}
+              type="button"
+              disabled={done || !id}
+              onClick={() => {
+                setVerdict(null);
+                if (side === "left") setLeft(null);
+                else setRight(null);
+              }}
+              className="min-h-12 rounded-xl border-2 border-dashed px-2 py-1.5 text-left text-xs font-bold"
+              style={{
+                borderColor: active === side ? "var(--color-sun)" : "var(--color-hairline)",
+                borderStyle: id ? "solid" : "dashed",
+                background: id ? "var(--color-sky-soft)" : "white",
+              }}
+              data-slot={side}
+            >
+              {id ? (
+                <>
+                  {ok ? "✔ " : null}
+                  <RubyText text={lineText(side, id)} index={index} show={show} />
+                </>
+              ) : (
+                <span className="text-ink-soft">
+                  <RubyText text={`${scene[side].title}の 行`} index={index} show={show} />
+                </span>
+              )}
+            </button>
+          );
+          return i === 0 ? (
+            slot
+          ) : (
+            <Fragment key={side}>
+              <span className="text-coral-deep self-center text-lg font-black" aria-hidden>
+                ≠
+              </span>
+              {slot}
+            </Fragment>
+          );
+        })}
+      </div>
+
+      {step ? (
+        <p
+          className="rounded-xl px-3 py-1.5 text-sm font-black"
+          style={{ background: "var(--color-cream)", color: "var(--color-navy)" }}
+          data-testid="novel-notice-step"
+        >
+          👉 <RubyText text={step} index={index} show={show} />
+        </p>
+      ) : null}
+
+      {!done && misses >= 1 && verdict ? (
+        <p
+          role="status"
+          className="rounded-xl px-3 py-2 text-sm font-black"
+          style={{ background: "var(--color-cream)", color: "var(--color-coral-deep)" }}
+          data-testid="novel-notice-wrong"
+          data-verdict={verdict}
+        >
+          <span className="block">
+            ✖{" "}
+            <RubyText
+              text={
+                verdict === "leftOk"
+                  ? `不正解です。「${scene.left.title}」の 行は 正しいです。「${scene.right.title}」の 行を 選び直します。`
+                  : verdict === "rightOk"
+                    ? `不正解です。「${scene.right.title}」の 行は 正しいです。「${scene.left.title}」の 行を 選び直します。`
+                    : "不正解です。もう 一度、①から 選びます。"
+              }
+              index={index}
+              show={show}
+            />
+          </span>
+          💡 <RubyText text={scene.hint} index={index} show={show} />
+          {misses >= 2 ? (
+            <span className="text-ink-soft ml-1 text-xs font-bold">
+              （<RubyText text="光って いる 行を 見ましょう" index={index} show={show} />）
+            </span>
+          ) : null}
+          {translation && scene.hintEn ? (
+            <span className="text-ink-soft block text-xs font-medium">{scene.hintEn}</span>
+          ) : null}
+        </p>
+      ) : null}
+
+      <div className="grid gap-2.5 sm:grid-cols-2">
         {(["left", "right"] as const).map((side) => {
           const doc = scene[side];
           const picked = side === "left" ? left : right;
-          const pick = side === "left" ? setLeft : setRight;
           const answer = side === "left" ? scene.answer[0] : scene.answer[1];
           const glow = side === "left" ? glowLeft : glowRight;
+          const now = active === side;
           return (
             <section
               key={side}
-              className="rounded-2xl border-2 bg-white p-3"
-              style={{ borderColor: "var(--color-hairline)" }}
+              className="relative rounded-2xl border-2 bg-white p-2.5 transition"
+              style={{
+                borderColor: now ? "var(--color-sun)" : "var(--color-hairline)",
+                boxShadow: now ? "0 0 0 3px var(--color-sun)" : undefined,
+                opacity: active && !now ? 0.7 : 1,
+              }}
+              data-doc={side}
+              data-active={now ? "1" : undefined}
             >
-              <h3 className="text-navy mb-2 flex items-center gap-1.5 text-sm font-black">
+              {now ? (
+                <span
+                  className="absolute -top-2.5 right-3 rounded-full px-2 py-0.5 text-[10px] font-black"
+                  style={{ background: "var(--color-sun)", color: "var(--color-navy)" }}
+                >
+                  <RubyText text="ここから" index={index} show={show} />
+                </span>
+              ) : null}
+              <h3 className="text-navy mb-1.5 flex items-center gap-1.5 text-sm font-black">
                 <span aria-hidden>{LOOK_ICON[doc.look]}</span>
                 <RubyText text={doc.title} index={index} show={show} />
               </h3>
@@ -110,9 +265,9 @@ export function NoticePanel({
                         type="button"
                         aria-pressed={on}
                         disabled={done}
-                        onClick={() => pick(line.id)}
+                        onClick={() => pick(side, line.id)}
                         data-line={`${side}:${line.id}`}
-                        className={`w-full rounded-xl border-2 px-3 py-2 text-left text-sm font-bold transition ${
+                        className={`w-full rounded-xl border-2 px-3 py-1.5 text-left text-sm font-bold transition ${
                           doc.look === "code" || doc.look === "files" ? "font-mono" : ""
                         }`}
                         style={{
@@ -147,44 +302,7 @@ export function NoticePanel({
 
       {done ? (
         <NoticeCard scene={scene} index={index} show={show} onNext={onNext} onRetry={retry} />
-      ) : (
-        <div className="space-y-2">
-          {misses >= 1 ? (
-            <p
-              role="status"
-              className="rounded-xl px-3 py-2 text-sm font-black"
-              style={{ background: "var(--color-cream)", color: "var(--color-coral-deep)" }}
-            >
-              <span className="block">
-                ❌{" "}
-                <RubyText
-                  text="その 2つでは ありません。もう 一度 選んで ください。"
-                  index={index}
-                  show={show}
-                />
-              </span>
-              💡 <RubyText text={scene.hint} index={index} show={show} />
-              {misses >= 2 ? (
-                <span className="text-ink-soft ml-1 text-xs font-bold">
-                  （<RubyText text="光って いる 行を 見ましょう" index={index} show={show} />）
-                </span>
-              ) : null}
-              {translation && scene.hintEn ? (
-                <span className="text-ink-soft block text-xs font-medium">{scene.hintEn}</span>
-              ) : null}
-            </p>
-          ) : null}
-          <button
-            type="button"
-            onClick={compare}
-            disabled={!left || !right}
-            className="btn-island btn-game w-full px-6 py-3 disabled:opacity-40"
-            data-testid="novel-compare"
-          >
-            くらべる
-          </button>
-        </div>
-      )}
+      ) : null}
     </div>
   );
 }
@@ -204,8 +322,14 @@ function NoticeCard({
   onNext: () => void;
   onRetry: () => void;
 }) {
+  /* 自動で 正解に なった とき、カード（と「つぎへ」）が パネルの 下に 隠れない ように */
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    ref.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }, []);
   return (
     <motion.div
+      ref={ref}
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       className="rounded-2xl border-2 p-3"

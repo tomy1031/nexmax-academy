@@ -47,6 +47,8 @@ async function blockGoogle(page: Page): Promise<void> {
 /** 先生用の「合格に する」（相談の 札を 3秒 押しつづける。先生の 端末だけ）。 */
 async function teacherPass(page: Page): Promise<void> {
   const chip = page.getByTestId("novel-teacher-pass");
+  /* 札は パネルの 中で スクロールして 隠れる ことが ある（枠の 中だけ 動く） */
+  await chip.scrollIntoViewIfNeeded();
   const box = await chip.boundingBox();
   if (!box) throw new Error("③の 札が 見えない");
   await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
@@ -80,7 +82,8 @@ async function step(page: Page): Promise<"ending" | "next"> {
       const [left, right] = (scene?.answer as [string, string] | undefined) ?? ["", ""];
       await page.locator(`[data-line="left:${left}"]`).click();
       await page.locator(`[data-line="right:${right}"]`).click();
-      await page.getByTestId("novel-compare").click();
+      /* 2つ そろうと 自動で くらべる（要望 #729） */
+      await expect(card).toBeVisible();
     }
     await card.getByRole("button").first().click();
     return "next";
@@ -233,7 +236,7 @@ test.describe("相談の 練習（サウンドノベル）", () => {
     await page
       .getByTestId("novel-text-input")
       .fill(
-        "仕様書では、1〜5個注文できます。でも、USBライトの在庫は2個です。在庫より多い注文は、できないようにしますか。",
+        "仕様書では、出す商品は2つです。でも、商品データにはキーボードもあります。キーボードも出しますか。",
       );
     await page.getByTestId("novel-text-send").click();
     await expect(page.getByTestId("novel-passed")).toHaveAttribute("data-stars", "1");
@@ -313,7 +316,7 @@ test.describe("相談の 練習（サウンドノベル）", () => {
     await page.getByTestId("novel-text-input").fill("ヘンディさん、今、お時間よろしいですか。");
     await page.getByTestId("novel-text-send").click();
     await page.getByTestId("novel-to-talk").click();
-    await page.getByTestId("novel-text-input").fill("在庫は2個です。できないようにしますか。");
+    await page.getByTestId("novel-text-input").fill("キーボードも出しますか。");
     await page.getByTestId("novel-text-send").click();
     const react = page.getByTestId("novel-react");
     await expect(react).toHaveAttribute("data-type", "vague", { timeout: 30_000 });
@@ -325,7 +328,7 @@ test.describe("相談の 練習（サウンドノベル）", () => {
     await page.getByTestId("novel-again").click();
     await page
       .getByTestId("novel-text-input")
-      .fill("仕様書では1から5個です。でも在庫は2個です。できないようにしますか。");
+      .fill("仕様書では商品は2つです。でもデータにはキーボードがあります。出しますか。");
     await page.getByTestId("novel-text-send").click();
     await expect(page.getByTestId("novel-passed")).toHaveAttribute("data-stars", "2", {
       timeout: 30_000,
@@ -381,6 +384,73 @@ test.describe("相談の 練習（サウンドノベル）", () => {
     await page.getByTestId("novel-continue").click();
     await expect(page.getByTestId("novel-passed")).toBeVisible();
     await expect(page.getByTestId("novel-approach")).toHaveCount(0);
+  });
+
+  test("くらべる 画面: 片方だけ 正しい・両方 ちがう を はっきり 言い、正解の カードが 見える 所に 出る", async ({
+    page,
+    context,
+  }) => {
+    await seedCompleted(context, BEFORE);
+    await seedGeminiKey(context, "e2e-dummy-key");
+    await blockGoogle(page);
+    await page.goto(PATH);
+    await page.getByTestId("novel-start").click();
+    for (let i = 0; i < 40 && !(await page.getByTestId("novel-notice").count()); i += 1) {
+      await step(page);
+    }
+    const scene = sceneById("n_mon");
+    const [left, right] = scene?.answer as [string, string];
+    const wrongRight = right === "d1" ? "d2" : "d1";
+    const wrongLeft = left === "s2" ? "s3" : "s2";
+    /* はじめは ① 左の 資料が 光る */
+    await expect(page.locator('[data-doc="left"]')).toHaveAttribute("data-active", "1");
+    /* 左は 正しい・右が ちがう → 左を 残して 右を 選び直す */
+    await page.locator(`[data-line="left:${left}"]`).click();
+    await expect(page.locator('[data-doc="right"]')).toHaveAttribute("data-active", "1");
+    await page.locator(`[data-line="right:${wrongRight}"]`).click();
+    const wrong = page.getByTestId("novel-notice-wrong");
+    /* 文は ルビで 割れるので、判定の 種類で 見る */
+    await expect(wrong).toHaveAttribute("data-verdict", "leftOk");
+    await expect(page.locator('[data-slot="left"]')).toContainText("✔");
+    expect(await bareKanjiTexts(page)).toEqual([]);
+    await shot(page, "novel-notice-partial");
+    /* 両方 ちがう → ①から */
+    await page.locator('[data-slot="left"]').click();
+    await page.locator(`[data-line="left:${wrongLeft}"]`).click();
+    await page.locator(`[data-line="right:${wrongRight}"]`).click();
+    await expect(wrong).toHaveAttribute("data-verdict", "none");
+    /* 正解 → カードと「つぎへ」が パネルの 中で 見える */
+    await page.locator(`[data-line="left:${left}"]`).click();
+    await page.locator(`[data-line="right:${right}"]`).click();
+    const card = page.getByTestId("novel-notice-card");
+    await expect(card.getByRole("button").first()).toBeInViewport();
+  });
+
+  test("全画面: 入ると 枠が 画面いっぱい・横長の 並べ方に なり、出ると 元に 戻る", async ({
+    page,
+    context,
+  }) => {
+    await page.setViewportSize({ width: 1100, height: 700 });
+    await seedCompleted(context, BEFORE);
+    await seedGeminiKey(context, "e2e-dummy-key");
+    await blockGoogle(page);
+    await page.goto(PATH);
+    const frame = page.getByTestId("novel-frame");
+    await page.getByTestId("novel-full-title").click();
+    await expect(frame).toHaveAttribute("data-full", "1");
+    await expect(frame).toHaveAttribute("data-layout", "wide");
+    expect(await page.evaluate(() => document.documentElement.style.overflow)).toBe("hidden");
+    await page.getByTestId("novel-start").click();
+    for (let i = 0; i < 40 && !(await page.getByTestId("novel-notice").count()); i += 1) {
+      await step(page);
+    }
+    /* 横長では 絵が 左の 列に なる */
+    await expect(page.getByTestId("novel-stage")).toHaveAttribute("data-kind", "side");
+    expect(await bareKanjiTexts(page)).toEqual([]);
+    await shot(page, "novel-full-wide");
+    await page.getByTestId("novel-full").click();
+    await expect(frame).not.toHaveAttribute("data-full", "1");
+    expect(await page.evaluate(() => document.documentElement.style.overflow)).toBe("");
   });
 
   test("短い URL（/soudan/meeting）は 前と 同じ ミーティングを 開く", async ({ page }) => {

@@ -32,7 +32,7 @@ type NoticeScene = Extract<NovelScene, { type: "notice" }>;
  * 流れ:
  * 0. 話しかける タイミング（相手に 席の 絵が ある とき・要望 #723）。大丈夫そうな ときに 相手を 押す
  * 1. 声かけ（「◯◯さん、今、お時間 よろしいですか」）→ 相手が「はい、どう しましたか」
- * 2. 本題を 話す（ボタンを 押して いる あいだだけ 録音）
+ * 2. 本題を 話す（マイクを 1回 押して 話しはじめ、もう 1回 押して 終わる）
  * 3. 聞き取った 文を 見せる（ちがえば「言い直す」。回数に 数えない）
  * 4. 判定。合格なら 結果へ。やり直しなら 相手の 反応 → ヒントを 3段で 強く する
  *
@@ -69,7 +69,7 @@ const LISTEN_ONLY = [
 /** 先生用の「合格に する」を 押しつづける 時間。 */
 const TEACHER_HOLD_MS = 3000;
 
-/** 指を 離してから 聞き取りの 文が 届くまで 待つ 上限（それを 過ぎたら もう一度 押せる）。 */
+/** 話し終えてから 聞き取りの 文が 届くまで 待つ 上限（それを 過ぎたら もう一度 押せる）。 */
 const LISTEN_WAIT_MS = 6000;
 
 /**
@@ -159,7 +159,7 @@ export function ConsultPanel({
   const [cardOpen, setCardOpen] = useState(scene.support !== "closed");
   const [micErrors, setMicErrors] = useState(0);
   const [earned, setEarned] = useState(stars);
-  /** 指を 離して、聞き取りの 文を 待って いる。 */
+  /** 話し終えて、聞き取りの 文を 待って いる。 */
   const [listening, setListening] = useState(false);
 
   const effectiveFails = practice ? practiceFails : fails;
@@ -211,7 +211,7 @@ export function ConsultPanel({
   /* キーが 無いと 聞き取り（Live）も 使えない ので、はじめから 文を 書く 欄に する */
   const textMode = !hasKey || voice.status === "notReady" || micErrors >= 2;
 
-  /* 指を 離したら、文が 届くまで「聞き取って います」を 出す */
+  /* 話し終えたら、文が 届くまで「聞き取って います」を 出す */
   const wasTalking = useRef(false);
   useEffect(() => {
     if (wasTalking.current && !voice.talking) {
@@ -392,7 +392,7 @@ export function ConsultPanel({
               <button
                 type="button"
                 onClick={() => setCardOpen((open) => !open)}
-                className="text-navy text-xs font-black underline"
+                className="text-navy -my-1 rounded-full px-3 py-1.5 text-xs font-black underline"
                 data-testid="novel-card-toggle"
               >
                 {cardOpen ? "とじる" : "ひらく"}
@@ -673,19 +673,29 @@ export function ConsultPanel({
             </div>
           ) : null}
 
-          {/* マイク（声かけ・本題）／テキスト入力（マイクが 使えない ときだけ） */}
+          {/*
+           * マイク（声かけ・本題）／テキスト入力（マイクが 使えない ときだけ）。
+           * パネルの 下に はりつける——ヒントや お手本で 長く なっても、マイクは 見えた まま
+           *（要望 #731「画面の 中に マイクなど 諸々の UI が 入るように」）。
+           */}
           {phase === "call" || phase === "talk" || phase === "error" ? (
-            textMode ? (
-              <TextInput
-                value={typed}
-                onChange={setTyped}
-                onSend={sendTyped}
-                index={index}
-                show={show}
-              />
-            ) : (
-              <HoldMic voice={voice} listening={listening} index={index} show={show} />
-            )
+            <div
+              className="sticky -bottom-3 z-10 -mx-2.5 border-t px-2.5 pt-2 pb-3 sm:-mx-3 sm:px-3"
+              style={{ borderColor: "var(--color-hairline)", background: "var(--color-panel)" }}
+              data-testid="novel-mic-dock"
+            >
+              {textMode ? (
+                <TextInput
+                  value={typed}
+                  onChange={setTyped}
+                  onSend={sendTyped}
+                  index={index}
+                  show={show}
+                />
+              ) : (
+                <ToggleMic voice={voice} listening={listening} index={index} show={show} />
+              )}
+            </div>
           ) : null}
         </>
       )}
@@ -839,24 +849,31 @@ function WhatIf({
   );
 }
 
+/** 録音の 上限。押し忘れて 録音が つづかない ように、ここで 止めて 送る。 */
+const TALK_LIMIT_MS = 60_000;
+/** 押してから この 間は つぎの 押しを 無視する（二度押しで すぐ 切れない ように）。 */
+const TAP_GUARD_MS = 300;
+
 /**
- * マイクの ボタン — **押して いる あいだだけ 録音**（となりの 声を 拾いにくく する）。
- * 指を 離すと 送る。キーボードでは スペースを 押して いる あいだ。
+ * マイクの ボタン — **1回 押して 話しはじめ、もう 1回 押して 終わる**（要望 #730）。
+ * 以前は 押して いる あいだだけ 録音だったが、「押している間ではなく、一回クリックで
+ * マイクON、もう一度クリックでマイクOFF」（tomy さん・2026-11-13）に した。
+ * 押し忘れても {@link TALK_LIMIT_MS} で 止まる。
  */
-function HoldMic({
+function ToggleMic({
   voice,
   listening,
   index,
   show,
 }: {
   voice: LiveVoice;
-  /** 指を 離して、聞き取りの 文を 待って いる。 */
+  /** 話し終えて、聞き取りの 文を 待って いる。 */
   listening: boolean;
   index: FuriganaIndex;
   show: boolean;
 }) {
   const down = useRef(false);
-  /* 押した まま 場面が 変わった（ボタンが 消えた）ら、録音を 止める */
+  /* 録音した まま 場面が 変わった（ボタンが 消えた）ら、録音を 止める */
   const stopRef = useRef(voice.stopTalking);
   useEffect(() => {
     stopRef.current = voice.stopTalking;
@@ -870,6 +887,38 @@ function HoldMic({
     },
     [],
   );
+  const lastTap = useRef(0);
+  /*
+   * 録音が 外から 止まった（つなぎの 張り直し・30分の 期限）ら、こちらの 印も 戻す。
+   * 戻さないと、つぎに 押しても `start` が 何も しなく なる（2026-11-13 の 検収）。
+   */
+  useEffect(() => {
+    if (!voice.talking) down.current = false;
+  }, [voice.talking]);
+  /* 話して いる 秒数（止めたら 0 に 戻す——つぎの 話しはじめに 前の 秒数を 見せない） */
+  const [seconds, setSeconds] = useState(0);
+  useEffect(() => {
+    if (!voice.talking) return;
+    const began = Date.now();
+    const timer = window.setInterval(
+      () => setSeconds(Math.floor((Date.now() - began) / 1000)),
+      500,
+    );
+    return () => {
+      window.clearInterval(timer);
+      setSeconds(0);
+    };
+  }, [voice.talking]);
+  /* 押し忘れ: 上限で 止めて 送る */
+  useEffect(() => {
+    if (!voice.talking) return;
+    const timer = window.setTimeout(() => {
+      if (!down.current) return;
+      down.current = false;
+      stopRef.current();
+    }, TALK_LIMIT_MS);
+    return () => window.clearTimeout(timer);
+  }, [voice.talking]);
   if (voice.status !== "live") {
     const connecting = voice.status === "connecting";
     return (
@@ -909,47 +958,72 @@ function HoldMic({
     down.current = false;
     voice.stopTalking();
   };
+  const toggle = () => {
+    /* すぐ 2回 押して、話す 前に 切れて しまうのを 防ぐ */
+    const now = Date.now();
+    if (now - lastTap.current < TAP_GUARD_MS) return;
+    lastTap.current = now;
+    if (voice.talking) stop();
+    else start();
+  };
+  const left = Math.max(0, Math.ceil(TALK_LIMIT_MS / 1000) - seconds);
   return (
-    <div className="text-center">
+    <div className="flex items-center justify-center gap-3">
       <button
         type="button"
         aria-pressed={voice.talking}
-        aria-label="押して いる あいだ 話す"
+        aria-label={voice.talking ? "話し終わった" : "話す"}
         disabled={listening && !voice.talking}
-        onPointerDown={(event) => {
-          event.currentTarget.setPointerCapture?.(event.pointerId);
-          start();
-        }}
-        onPointerUp={stop}
-        onPointerCancel={stop}
+        onClick={toggle}
         onKeyDown={(event) => {
-          if (event.key === " " || event.key === "Enter") {
-            event.preventDefault();
-            start();
-          }
+          /* Enter を 押しっぱなしに した くり返しで、すぐ 切れない ように */
+          if (event.repeat && (event.key === "Enter" || event.key === " ")) event.preventDefault();
         }}
-        onKeyUp={(event) => {
-          if (event.key === " " || event.key === "Enter") {
-            event.preventDefault();
-            stop();
-          }
-        }}
-        className="mx-auto grid h-20 w-20 touch-none place-items-center rounded-full text-3xl text-white shadow-lg select-none disabled:opacity-50"
+        className="relative grid h-16 w-16 shrink-0 place-items-center rounded-full text-white shadow-lg select-none disabled:opacity-50"
         style={{
-          background: voice.talking ? "#e64a5f" : "#58c273",
-          boxShadow: `0 6px 0 ${voice.talking ? "#b93547" : "#3aa458"}`,
+          background: voice.talking ? "#e64a5f" : "var(--color-coral)",
+          boxShadow: `0 5px 0 ${voice.talking ? "#b93547" : "var(--color-coral-deep)"}`,
         }}
         data-testid="novel-mic"
       >
-        {voice.talking ? "🔴" : "🎤"}
-      </button>
-      <p className="text-navy mt-2 text-sm font-black">
         {voice.talking ? (
-          <RubyText text="話し終わったら 指を 離す" index={index} show={show} />
+          <motion.span
+            className="absolute inset-0 rounded-full"
+            style={{ boxShadow: "0 0 0 4px rgba(230,74,95,0.45)" }}
+            animate={{ scale: [1, 1.18, 1], opacity: [0.9, 0.2, 0.9] }}
+            transition={{ duration: 1.2, repeat: Infinity }}
+            aria-hidden
+          />
+        ) : null}
+        <span className="text-2xl leading-none" aria-hidden>
+          {voice.talking ? "■" : "🎤"}
+        </span>
+      </button>
+      <p className="text-navy min-w-0 text-left text-sm font-black" aria-live="polite">
+        {voice.talking ? (
+          <>
+            <span className="text-coral-deep">
+              ● <RubyText text="聞いて います…" index={index} show={show} />{" "}
+              <span className="tabular-nums">
+                {Math.floor(seconds / 60)}:{String(seconds % 60).padStart(2, "0")}
+              </span>
+            </span>
+            <span className="block text-xs">
+              <RubyText
+                text={
+                  left <= 10
+                    ? `あと ${left}秒。話し終わったら、もう 一度 押します。`
+                    : "話し終わったら、もう 一度 押します。"
+                }
+                index={index}
+                show={show}
+              />
+            </span>
+          </>
         ) : listening ? (
           <RubyText text="聞き取って います…" index={index} show={show} />
         ) : (
-          <RubyText text="押して いる あいだ 話す" index={index} show={show} />
+          <RubyText text="押すと マイクが 入ります。" index={index} show={show} />
         )}
       </p>
     </div>

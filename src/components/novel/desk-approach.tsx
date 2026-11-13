@@ -116,7 +116,7 @@ export function DeskApproach({
   const shownWrong = wrong && wrong.at === at ? wrong.state : null;
 
   return (
-    <div className="space-y-2" data-testid="novel-approach">
+    <div className="flex min-h-full flex-col justify-center space-y-2" data-testid="novel-approach">
       <p className="text-navy text-sm font-black">
         👀{" "}
         <RubyText
@@ -130,12 +130,36 @@ export function DeskApproach({
           </span>
         ) : null}
       </p>
+      {/* 見分け方を 先に 言う（ヒントを 開かなくても 決められる ように・規律10） */}
+      <ul
+        className="text-navy grid gap-1 text-xs font-bold sm:grid-cols-2"
+        data-testid="novel-approach-rule"
+      >
+        <li className="rounded-lg px-2 py-1" style={{ background: "var(--color-cream)" }}>
+          ✋{" "}
+          <RubyText
+            text="待つ：電話中・とても 忙しそう・ほかの 人と 話して いる"
+            index={index}
+            show={show}
+          />
+        </li>
+        <li className="rounded-lg px-2 py-1" style={{ background: "var(--color-sky-soft)" }}>
+          👆{" "}
+          <RubyText text="押す：大丈夫そう（仕事は して いても いい）" index={index} show={show} />
+        </li>
+      </ul>
+      {translation ? (
+        <p className="text-ink-soft text-xs font-medium">
+          Wait: on the phone, very busy, talking with someone. Tap: they look OK (even while
+          working).
+        </p>
+      ) : null}
 
       <button
         type="button"
         onClick={tap}
-        className="relative block aspect-[3/2] w-full overflow-hidden rounded-2xl border-2"
-        style={{ borderColor: "var(--color-hairline)", background: "var(--color-ink)" }}
+        className="relative mx-auto block aspect-[3/2] w-full max-w-[720px] cursor-pointer overflow-hidden rounded-2xl border-4 shadow-lg transition hover:scale-[1.01]"
+        style={{ borderColor: "var(--color-sky)", background: "var(--color-ink)" }}
         aria-label={`${name}に 話しかける`}
         data-testid="novel-desk"
         data-desk-state={ready ? state : "loading"}
@@ -173,6 +197,15 @@ export function DeskApproach({
             />
           ))}
         </motion.div>
+        {ready ? (
+          <span
+            className="absolute top-2 left-2 rounded-full px-2.5 py-1 text-xs font-black text-white shadow"
+            style={{ background: "rgba(15, 35, 70, 0.8)" }}
+            aria-hidden
+          >
+            👆 <RubyText text={`${name}を 押す`} index={index} show={show} />
+          </span>
+        ) : null}
         {!ready ? (
           <span
             className="absolute inset-x-0 bottom-2 mx-auto w-fit rounded-full px-3 py-1 text-xs font-black text-white"

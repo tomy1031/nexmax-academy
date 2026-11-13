@@ -133,9 +133,9 @@
         "words": [
           "仕様書",
           "商品一覧",
-          "在庫",
+          "商品",
+          "値段",
           "注文",
-          "数量",
           "相談"
         ],
         "screen": {
@@ -245,7 +245,7 @@
             "step": "notice",
             "type": "line",
             "speaker": "hendy",
-            "text": "2つの 資料から、ちがう 行を 1つずつ 選んで ください。",
+            "text": "2つの 資料から、合わない 行を 1つずつ 選んで ください。",
             "en": "From the two documents, choose one line from each that doesn't match.",
             "face": "neutral"
           },
@@ -254,8 +254,8 @@
             "step": "notice",
             "type": "line",
             "speaker": "hendy",
-            "text": "選んだら、「くらべる」を 押して ください。",
-            "en": "When you have chosen, press \"Compare\".",
+            "text": "2つ 選ぶと、すぐに 答えが 出ます。",
+            "en": "When you pick two, you see the answer right away.",
             "face": "neutral"
           },
           {
@@ -268,18 +268,18 @@
               "lines": [
                 {
                   "id": "s1",
+                  "text": "出す 商品は 2つ：マウスと USBライト。",
+                  "en": "Show two products: the mouse and the USB light."
+                },
+                {
+                  "id": "s2",
                   "text": "商品の 名前と 値段を 出す。",
                   "en": "Show each product's name and price."
                 },
                 {
-                  "id": "s2",
-                  "text": "1つの 商品を 1〜5個 注文できる。",
-                  "en": "You can order 1 to 5 of one product."
-                },
-                {
                   "id": "s3",
-                  "text": "在庫が 0の 商品は「売り切れ」。",
-                  "en": "Products with 0 stock show \"Sold out\"."
+                  "text": "商品を 押すと、注文画面に 進む。",
+                  "en": "Tapping a product opens the order screen."
                 }
               ]
             },
@@ -289,32 +289,32 @@
               "lines": [
                 {
                   "id": "d1",
-                  "text": "マウス：在庫 10個",
-                  "en": "Mouse: 10 in stock"
+                  "text": "マウス：1,200円",
+                  "en": "Mouse: 1,200 yen"
                 },
                 {
                   "id": "d2",
-                  "text": "USBライト：在庫 2個",
-                  "en": "USB light: 2 in stock"
+                  "text": "USBライト：800円",
+                  "en": "USB light: 800 yen"
                 },
                 {
                   "id": "d3",
-                  "text": "ノート：在庫 8個",
-                  "en": "Notebook: 8 in stock"
+                  "text": "キーボード：2,500円",
+                  "en": "Keyboard: 2,500 yen"
                 }
               ]
             },
             "answer": [
-              "s2",
-              "d2"
+              "s1",
+              "d3"
             ],
-            "hint": "数字を 見て ください。",
-            "hintEn": "Look at the numbers.",
+            "hint": "商品の 名前を 見て ください。",
+            "hintEn": "Look at the product names.",
             "card": {
-              "seen": "仕様書では、1〜5個 注文できる。",
-              "diff": "USBライトの 在庫は 2個。",
-              "seenKey": "仕様書・1〜5個",
-              "diffKey": "USBライト・在庫 2個"
+              "seen": "仕様書では、出す 商品は 2つ。",
+              "diff": "商品データには、キーボードも ある。",
+              "seenKey": "仕様書・商品は 2つ",
+              "diffKey": "データ・キーボードも ある"
             },
             "prompt": "仕様書と 商品データを 比べて、合わない 行を 1つずつ 選びます。"
           },
@@ -323,8 +323,8 @@
             "step": "notice",
             "type": "line",
             "speaker": "thought",
-            "text": "あれ？ 5個 注文できるのに、USBライトの 在庫は 2個だ。",
-            "en": "Huh? You can order five, but there are only two USB lights in stock.",
+            "text": "あれ？ 仕様書に キーボードは ない。でも、商品データには ある。",
+            "en": "Huh? The keyboard isn't in the specification, but it is in the product data.",
             "se": "notice"
           },
           {
@@ -332,8 +332,8 @@
             "step": "notice",
             "type": "line",
             "speaker": "thought",
-            "text": "これは 仕様の 話だ。だれに 聞けば いいかな。",
-            "en": "This is about the specification. Who should I ask?"
+            "text": "何を 出すかは、仕様の 話だ。だれに 聞けば いいかな。",
+            "en": "What to show is about the specification. Who should I ask?"
           },
           {
             "id": "m15",
@@ -366,15 +366,15 @@
             "call": "ヘンディさん、今、お時間 よろしいですか。",
             "reply": "はい、どう しましたか。",
             "replyEn": "Yes, what is it?",
-            "topic": "在庫の 数",
+            "topic": "出す 商品",
             "criteria": {
-              "context": "商品一覧の 仕様書では 1〜5個 注文できる、と 言う。",
-              "problem": "USBライトの 在庫は 2個しか ない、と 言う。",
-              "ask": "在庫より 多い 注文を どう するか（できないように するか）を 聞く。"
+              "context": "商品一覧の 仕様書では、出す 商品は 2つ（マウスと USBライト）と 言う。",
+              "problem": "商品データには キーボードも ある、と 言う。",
+              "ask": "キーボードも 出すか どうかを 聞く。"
             },
-            "example": "仕様書では、1〜5個 注文できます。でも、USBライトの 在庫は 2個です。在庫より 多い 注文は、できないように しますか。",
-            "exampleEn": "The specification says you can order 1 to 5. But there are only 2 USB lights in stock. Should we block orders larger than the stock?",
-            "cloze": "仕様書では、＿＿。でも、＿＿。＿＿ますか。",
+            "example": "仕様書では、出す 商品は 2つです。でも、商品データには キーボードも あります。キーボードも 出しますか。",
+            "exampleEn": "The specification says to show two products. But the product data also has a keyboard. Should we show the keyboard too?",
+            "cloze": "仕様書では、＿＿。でも、商品データには ＿＿。＿＿ますか。",
             "reactions": {
               "no_ask": {
                 "text": "わかりました。それで、何を お願いしたいですか？",
@@ -389,8 +389,8 @@
             "step": "result",
             "type": "line",
             "speaker": "hendy",
-            "text": "よく 見つけましたね。在庫より 多い 注文は、できないように して ください。",
-            "en": "Good catch. Please make it impossible to order more than the stock.",
+            "text": "よく 見つけましたね。キーボードは 来月から 売る 商品です。今は 出さないで ください。",
+            "en": "Good catch. The keyboard is a product we start selling next month. Please do not show it yet.",
             "face": "happy",
             "se": "pass"
           },
@@ -406,8 +406,8 @@
             "id": "m20",
             "step": "result",
             "type": "screen",
-            "text": "商品一覧が できました。数量は、USBライトが 1〜2個、マウスが 1〜5個です。",
-            "en": "The product list is done. You can order 1–2 USB lights and 1–5 mice.",
+            "text": "商品一覧が できました。マウスと USBライトの 2つです。",
+            "en": "The product list is done: the mouse and the USB light.",
             "before": {
               "title": "商品一覧",
               "rows": [],
@@ -418,13 +418,13 @@
               "rows": [
                 {
                   "label": "マウス",
-                  "value": "数量 1〜5個",
+                  "value": "1,200円",
                   "image": "/img/novel/mouse.webp",
-                  "state": "ok"
+                  "state": "new"
                 },
                 {
                   "label": "USBライト",
-                  "value": "数量 1〜2個",
+                  "value": "800円",
                   "image": "/img/novel/light.webp",
                   "state": "new"
                 }
@@ -1324,8 +1324,8 @@
                 },
                 {
                   "id": "p3",
-                  "text": "1〜5個まで 注文できる。",
-                  "en": "You can order 1 to 5."
+                  "text": "出す 商品は マウスと USBライトの 2つ。",
+                  "en": "Products to show: the mouse and the USB light."
                 }
               ]
             },
@@ -1604,8 +1604,8 @@
                 },
                 {
                   "id": "e3",
-                  "text": "数量 6個 → エラーが 出る",
-                  "en": "Quantity 6 → an error appears"
+                  "text": "数量 0個 → エラーが 出る",
+                  "en": "Quantity 0 → an error appears"
                 }
               ]
             },
@@ -1625,8 +1625,8 @@
                 },
                 {
                   "id": "r3",
-                  "text": "数量 6個 → エラーが 出た",
-                  "en": "Quantity 6 → an error appeared"
+                  "text": "数量 0個 → エラーが 出た",
+                  "en": "Quantity 0 → an error appeared"
                 }
               ]
             },
@@ -2593,6 +2593,30 @@
     [
       "願",
       "ねが"
+    ],
+    [
+      "円",
+      "えん"
+    ],
+    [
+      "進む",
+      "すすむ"
+    ],
+    [
+      "来月",
+      "らいげつ"
+    ],
+    [
+      "売る",
+      "うる"
+    ],
+    [
+      "出し",
+      "だし"
+    ],
+    [
+      "出さ",
+      "ださ"
     ]
   ]
 }
