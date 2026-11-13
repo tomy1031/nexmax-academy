@@ -39,6 +39,7 @@ import { ConsultPanel } from "./consult-panel";
 import { DevScreen } from "./dev-screen";
 import { ChoosePanel, NoticePanel, SelfFixPanel } from "./novel-panels";
 import { playNovelSe } from "./novel-sound";
+import { FaceIcon } from "./face-icon";
 import { NOVEL_UI_FURIGANA } from "./ui-furigana";
 
 /**
@@ -355,6 +356,9 @@ function Player({
   /** 相談の 判定を 待って いる あいだ（もどる・ログ・日を えらぶ を 止める）。 */
   const [judging, setJudging] = useState(false);
   const onBusy = useCallback((busy: boolean) => setJudging(busy), []);
+  /** 相談の 前に 相手の 席の 絵を 見て いる（舞台を 隠す——絵が 舞台の かわりに なる）。 */
+  const [approaching, setApproaching] = useState(false);
+  const onApproach = useCallback((on: boolean) => setApproaching(on), []);
   const day = novel.days[save.day] ?? novel.days[0];
   const scene = day?.scenes[save.index];
   const show = save.settings.furigana;
@@ -547,6 +551,7 @@ function Player({
 
       {/* 舞台（背景・立ち絵・開発中の 画面・セリフ枠） */}
       <div
+        hidden={approaching}
         className={`relative w-full overflow-hidden rounded-2xl ${
           readable ? "aspect-[4/3] sm:aspect-[16/9]" : "aspect-[16/9] sm:aspect-[21/9]"
         }`}
@@ -684,6 +689,7 @@ function Player({
           voice={voice}
           onFace={setFaceOverride}
           onBusy={onBusy}
+          onApproach={onApproach}
           onFail={(type: NovelFailureType) =>
             setSave((now) => ({ ...now, attempts: addFailure(now.attempts, scene.id, type) }))
           }
@@ -849,6 +855,11 @@ function MessageWindow({
           : "開発中の 画面";
   const message = scene.type === "line" && scene.via === "message";
   const thought = scene.type === "line" && scene.speaker === "thought";
+  /* メッセージは 立ち絵を 出さず、送った 人の 顔を 小さく 添える（だれの メッセージか 分かる ように） */
+  const avatar =
+    message && scene.type === "line"
+      ? novel.cast.find((one) => one.id === scene.speaker)?.figures?.[scene.face ?? "neutral"]
+      : undefined;
   const big = scene.type === "point" || scene.type === "goal";
   return (
     <div className="absolute inset-x-2 bottom-2 sm:inset-x-4 sm:bottom-3">
@@ -866,7 +877,8 @@ function MessageWindow({
         data-scene={scene.id}
       >
         {label ? (
-          <p className="text-coral-deep mb-0.5 text-xs font-black">
+          <p className="text-coral-deep mb-0.5 flex items-center gap-1.5 text-xs font-black">
+            {avatar ? <FaceIcon src={avatar} /> : null}
             {message ? "💬 " : big ? "⭐ " : ""}
             <RubyText text={label} index={index} show={show} />
           </p>

@@ -1,0 +1,37 @@
+{
+  "refs": [],
+  "_comment": "相談の 練習（サウンドノベル・meeting.novel）の お客様 松本さん（お店の 店長・架空の 人）。1枚目の 設定画が 絵柄アンカーに なり、立ち絵 3枚は それを 参照に 撮る（gen_images.mjs）。looks は content/characters/matsumoto.json から 逐語。tomy さんの 指定「もう少し若い方がいい」で 30代半ば（2026-11-13）。白背景で 撮り、scripts/images/cutout_white.mjs で 切りぬいて public/img/novel/matsumoto/ に 置く。表情は 大げさに（docs/skills/codex_image_generation.md §6.7）。",
+  "style": "Style: clean modern Japanese manga / anime style, soft cel shading, bright friendly palette, rounded shapes, no harsh shadows, warm daylight, contemporary Japan, kid-safe e-learning illustration. EMOTIONS ARE BIG AND OBVIOUS, like a Japanese comedy manga.",
+  "noText": "No text, no letters, no kanji, no kana, no numbers anywhere in the image. No watermark, no signature, no logo, no frame border.",
+  "negative": "Never: realistic photo rendering, harsh gradients, six fingers, extra limbs, readable letters, dark horror tone, angry faces, real sadness or tears, costume changes, a drawn checkerboard pattern, grey hair, an old man.",
+  "scenes": [
+    {
+      "out": "sheet",
+      "dest": "public/img/novel/matsumoto/sheet.webp",
+      "title": "設定画",
+      "output": "Output: one landscape character model sheet, 1536x1024.",
+      "scene": "A character model sheet for a Japanese language-learning manga.\nLayout: front view (full body, T-pose) on the left, right side view and back view next to it,\nand a column of 6 bust-up facial expressions on the right\n(neutral, smiling, worried, surprised, thinking, apologetic).\nWhite background. Light grid lines overlay to keep eye level consistent across views.\nCharacter: お客様（お店の 店長） — Japanese-style anime character, man in his mid thirties, medium build, friendly upright posture. Short neat black hair with a soft side part. Kind dark brown eyes, warm friendly smile, clean-shaven. Outfit: dark green shop apron (#3E6B4F) with one front pocket and no writing on it, worn over a light blue checked button-up shirt with the sleeves rolled to the elbows, khaki chino trousers, brown leather shoes. No glasses, no hat.\nPersonality (affects posture and expression): パソコンの 小物を 売る お店の 店長です。ネットショップを 作りたいと 思って います。ていねいで、約束を 大切に します。\nStyle: clean modern Japanese manga / anime style, soft cel shading, bright friendly palette, rounded shapes, no harsh shadows, office and school settings, contemporary Japan.\nAvoid: no text, no letters, no kanji, no kana, no numbers anywhere in the image, speech balloons must be completely EMPTY (white inside, no writing), no watermark, no signature, no logo, no frame border, no six fingers, no extra limbs, no costume changes between panels, no duplicate faces of the same character in one panel.\nDo NOT write the character's name or any label on the sheet."
+    },
+    {
+      "out": "stand_neutral",
+      "dest": "public/img/novel/matsumoto/stand_neutral.webp",
+      "title": "ふつう",
+      "output": "Output: one portrait cut-out illustration, 1024x1536. The character stands ALONE on a plain pure white (#FFFFFF) background: no floor, no wall, no ground shadow, no props, no gradient. Centered horizontally, cropped by the bottom edge at mid-thigh, with a small margin on the left, right and top.",
+      "scene": "Character: お客様（お店の 店長） — Japanese-style anime character, man in his mid thirties, medium build, friendly upright posture. Short neat black hair with a soft side part. Kind dark brown eyes, warm friendly smile, clean-shaven. Outfit: dark green shop apron (#3E6B4F) with one front pocket and no writing on it, worn over a light blue checked button-up shirt with the sleeves rolled to the elbows, khaki chino trousers, brown leather shoes. No glasses, no hat.\nPose: standing straight, facing the viewer, both arms relaxed at the sides, calm attentive expression with a gentle closed-lip smile, listening to the person in front."
+    },
+    {
+      "out": "stand_happy",
+      "dest": "public/img/novel/matsumoto/stand_happy.webp",
+      "title": "うれしい",
+      "output": "Output: one portrait cut-out illustration, 1024x1536. The character stands ALONE on a plain pure white (#FFFFFF) background: no floor, no wall, no ground shadow, no props, no gradient. Centered horizontally, cropped by the bottom edge at mid-thigh, with a small margin on the left, right and top.",
+      "scene": "Character: お客様（お店の 店長） — Japanese-style anime character, man in his mid thirties, medium build, friendly upright posture. Short neat black hair with a soft side part. Kind dark brown eyes, warm friendly smile, clean-shaven. Outfit: dark green shop apron (#3E6B4F) with one front pocket and no writing on it, worn over a light blue checked button-up shirt with the sleeves rolled to the elbows, khaki chino trousers, brown leather shoes. No glasses, no hat.\nPose: standing, facing the viewer, leaning slightly forward, one hand raised in a small cheerful thumbs-up at chest height (exactly five fingers), the other arm relaxed. Big open-mouth smile, sparkling happy eyes, small sparkle marks around the head. Clearly delighted and relieved."
+    },
+    {
+      "out": "stand_troubled",
+      "dest": "public/img/novel/matsumoto/stand_troubled.webp",
+      "title": "こまった",
+      "output": "Output: one portrait cut-out illustration, 1024x1536. The character stands ALONE on a plain pure white (#FFFFFF) background: no floor, no wall, no ground shadow, no props, no gradient. Centered horizontally, cropped by the bottom edge at mid-thigh, with a small margin on the left, right and top.",
+      "scene": "Character: お客様（お店の 店長） — Japanese-style anime character, man in his mid thirties, medium build, friendly upright posture. Short neat black hair with a soft side part. Kind dark brown eyes, warm friendly smile, clean-shaven. Outfit: dark green shop apron (#3E6B4F) with one front pocket and no writing on it, worn over a light blue checked button-up shirt with the sleeves rolled to the elbows, khaki chino trousers, brown leather shoes. No glasses, no hat.\nPose: standing, facing the viewer, one hand scratching the back of the head (exactly five fingers), the other arm relaxed. Clearly troubled and worried: eyebrows raised in a worried slant, wavy uneasy mouth, one big sweat drop beside the head. Not angry, not crying."
+    }
+  ]
+}

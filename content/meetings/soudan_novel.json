@@ -3,7 +3,7 @@
   "id": "soudan_novel",
   "title": "相談の 5日間（ネットショップ）",
   "description": "新人エンジニアの 5日間です。資料を 比べて ちがいに 気づき、マイクで 相談します。",
-  "focus": "相談では 3つを 話します。①見たもの ②ちがい ③聞きたいこと",
+  "focus": "相談では 3つを 話します。①調べた こと ②わからない こと ③お願い",
   "persona": "相談の 練習の 判定係です。学生の 相談を 聞いて、判定だけを 返します。学生には 話しかけません。",
   "host": {
     "id": "hendy",
@@ -24,6 +24,12 @@
           "neutral": "/img/characters/hendy/stand_neutral.webp",
           "happy": "/img/characters/hendy/stand_smile.webp",
           "troubled": "/img/novel/hendy/stand_troubled.webp"
+        },
+        "desk": {
+          "ok": "/img/novel/hendy/desk_ok.webp",
+          "phone": "/img/novel/hendy/desk_phone.webp",
+          "busy": "/img/novel/hendy/desk_busy.webp",
+          "talking": "/img/novel/hendy/desk_talking.webp"
         }
       },
       {
@@ -35,6 +41,12 @@
           "neutral": "/img/novel/nyam/stand_neutral.webp",
           "happy": "/img/novel/nyam/stand_happy.webp",
           "troubled": "/img/novel/nyam/stand_troubled.webp"
+        },
+        "desk": {
+          "ok": "/img/novel/nyam/desk_ok.webp",
+          "phone": "/img/novel/nyam/desk_phone.webp",
+          "busy": "/img/novel/nyam/desk_busy.webp",
+          "talking": "/img/novel/nyam/desk_talking.webp"
         }
       },
       {
@@ -46,12 +58,23 @@
           "neutral": "/img/novel/shirai/stand_neutral.webp",
           "happy": "/img/novel/shirai/stand_happy.webp",
           "troubled": "/img/novel/shirai/stand_troubled.webp"
+        },
+        "desk": {
+          "ok": "/img/novel/shirai/desk_ok.webp",
+          "phone": "/img/novel/shirai/desk_phone.webp",
+          "busy": "/img/novel/shirai/desk_busy.webp",
+          "talking": "/img/novel/shirai/desk_talking.webp"
         }
       },
       {
         "id": "matsumoto",
         "name": "松本",
-        "role": "お客様（お店の 店長）"
+        "role": "お客様（お店の 店長）",
+        "figures": {
+          "neutral": "/img/novel/matsumoto/stand_neutral.webp",
+          "happy": "/img/novel/matsumoto/stand_happy.webp",
+          "troubled": "/img/novel/matsumoto/stand_troubled.webp"
+        }
       }
     ],
     "backgrounds": {
@@ -330,8 +353,8 @@
             "step": "consult",
             "type": "line",
             "speaker": "narration",
-            "text": "相談では、3つを 順に 話します。①見たもの ②ちがい ③聞きたいこと",
-            "en": "When you consult, say three things in order: ① what you saw, ② what is different, ③ what you want to ask."
+            "text": "相談では、3つを 順に 話します。①調べた こと ②わからない こと ③お願い",
+            "en": "When you consult, say three things in order: ① what you checked, ② what you don't know, ③ your request."
           },
           {
             "id": "c_mon",
@@ -356,8 +379,8 @@
               "no_ask": {
                 "text": "わかりました。それで、何を 聞きたいですか？",
                 "en": "I see. So, what do you want to ask?",
-                "hint": "③ 聞きたい ことを 言いましょう。「〜ますか。」",
-                "hintEn": "Say ③ what you want to ask: \"...masu ka?\""
+                "hint": "③ お願いを 言いましょう。「〜ますか。」",
+                "hintEn": "Say ③ your request: \"...masu ka?\""
               }
             }
           },
@@ -584,10 +607,19 @@
             "step": "result",
             "type": "line",
             "speaker": "shirai",
-            "text": "本当ですね。すみません、すぐに 住所の 欄を 入れます。",
-            "en": "You're right. Sorry, I'll add the address field right away.",
+            "text": "本当ですね。仕様書が 変わって いたんですね。",
+            "en": "You're right. So the specification changed.",
             "face": "troubled",
             "se": "pass"
+          },
+          {
+            "id": "t09b",
+            "step": "result",
+            "type": "line",
+            "speaker": "shirai",
+            "text": "すぐに 住所の 欄を 入れます。",
+            "en": "I'll add the address field right away.",
+            "face": "neutral"
           },
           {
             "id": "t10",
@@ -747,10 +779,19 @@
             "step": "result",
             "type": "line",
             "speaker": "nyam",
-            "text": "いい 質問ですね。IDが なくても 注文できるように、APIを 直します。",
-            "en": "Good question. I'll fix the API so you can order without a user ID.",
+            "text": "いい 質問ですね。APIは、会員の 注文を 先に 作って いました。",
+            "en": "Good question. I built orders for members first.",
             "face": "happy",
             "se": "pass"
+          },
+          {
+            "id": "t17b",
+            "step": "result",
+            "type": "line",
+            "speaker": "nyam",
+            "text": "IDが なくても 注文できるように、直します。",
+            "en": "I'll fix it so you can order without an ID.",
+            "face": "happy"
           },
           {
             "id": "t18",
@@ -1108,9 +1149,18 @@
             "step": "result",
             "type": "line",
             "speaker": "shirai",
-            "text": "light.pngを 入れるのを 忘れて いました。今、フォルダに 入れます。",
-            "en": "I forgot to put in light.png. I'll put it in the folder now.",
+            "text": "light.pngは、まだ 作って いる 途中でした。",
+            "en": "I was still making light.png.",
             "face": "troubled"
+          },
+          {
+            "id": "w15b",
+            "step": "result",
+            "type": "line",
+            "speaker": "shirai",
+            "text": "画面に 先に 要るんですね。今 できたので、入れます。",
+            "en": "So the screen needs it first. It's done now, so I'll put it in.",
+            "face": "happy"
           },
           {
             "id": "w16",
@@ -1225,7 +1275,8 @@
             "speaker": "matsumoto",
             "text": "こんにちは。お店の お客さんが クレジットカードで 払えるように したいです。",
             "en": "Hello. I want my shop's customers to be able to pay by credit card.",
-            "via": "message"
+            "via": "message",
+            "face": "neutral"
           },
           {
             "id": "h05",
@@ -1234,7 +1285,8 @@
             "speaker": "matsumoto",
             "text": "金曜日までに できますか？",
             "en": "Can you do it by Friday?",
-            "via": "message"
+            "via": "message",
+            "face": "neutral"
           },
           {
             "id": "n_thu",
@@ -1343,11 +1395,11 @@
               "context": "松本さんから メッセージが 来た（カードで 払いたい・金曜日までに）と 言う。",
               "problem": "仕様書では 支払いは 現金だけ（カードは 新しい お願い）と 言う。",
               "ask": "どう 返事を するか・どう するかを 聞く。自分で 決めない。",
-              "note": "「できます」「金曜日までに 作ります」など、自分で 決めた・約束した ときは decided_alone。"
+              "note": "「できます」「金曜日までに 作ります」など、自分で 決めた・約束した ときは decided_alone。「〜と 思います」と 自分の 意見を 言って から 聞くのは よい（decided_alone に しない）。意見が 無くても ③が あれば 合格。"
             },
-            "example": "松本さんから、カードで 払いたいと メッセージが 来ました。でも、仕様書では 支払いは 現金だけです。どう 返事を したら いいですか。",
-            "exampleEn": "Mr. Matsumoto sent a message saying he wants card payments. But the specification says cash only. How should I reply?",
-            "cloze": "松本さんから、＿＿と メッセージが 来ました。でも、仕様書では ＿＿。どう ＿＿いいですか。",
+            "example": "松本さんから、カードで 払いたいと メッセージが 来ました。でも、仕様書では 支払いは 現金だけです。私は、カードは 来週が いいと 思います。どう 返事を したら いいですか。",
+            "exampleEn": "Mr. Matsumoto sent a message saying he wants card payments. But the specification says cash only. I think card payment should be next week. How should I reply?",
+            "cloze": "松本さんから、＿＿と メッセージが 来ました。でも、仕様書では ＿＿。私は、＿＿と 思います。どう ＿＿いいですか。",
             "whatIf": {
               "decided_alone": [
                 {
@@ -1366,8 +1418,8 @@
               "no_ask": {
                 "text": "わかりました。それで、何を 聞きたいですか？",
                 "en": "I see. So, what do you want to ask?",
-                "hint": "③ 聞きたい ことを 言いましょう。「〜ますか。」",
-                "hintEn": "Say ③ what you want to ask: \"...masu ka?\""
+                "hint": "③ お願いを 言いましょう。「〜ますか。」",
+                "hintEn": "Say ③ your request: \"...masu ka?\""
               }
             }
           },
@@ -1451,8 +1503,8 @@
             "id": "h17",
             "step": "result",
             "type": "point",
-            "text": "新しい お願いは、自分で 決めないで 聞く。",
-            "en": "For a new request, don't decide by yourself. Ask."
+            "text": "新しい お願いは、自分で 決めないで 聞く。自分の 意見は「〜と 思います」で 言う。",
+            "en": "For a new request, don't decide by yourself. Ask. Give your own opinion with \"...to omoimasu\"."
           }
         ]
       },
@@ -1782,11 +1834,11 @@
               "context": "直すのに 1時間、再テストに 30分 かかる と 言う（注文が 2件 登録される 問題が ある、でも よい）。",
               "problem": "16時の 納品に まにあわない（16時30分に なる）と 言う。",
               "ask": "納品の 時間を どう するかを 聞く・相談する。",
-              "note": "「たぶん まにあいます」など 悪い 知らせを 言わない ときは hiding。自分で 時間を 決めて 松本さんに 言う ときは decided_alone。"
+              "note": "「たぶん まにあいます」など 悪い 知らせを 言わない ときは hiding。自分で 時間を 決めて 松本さんに 言う ときは decided_alone。「〜と 思います」と 自分の 意見を 言って から 聞くのは よい（decided_alone に しない）。意見が 無くても ③が あれば 合格。"
             },
-            "example": "直すのに 1時間、再テストに 30分 かかります。16時の 納品に まにあいません。納品の 時間を どう しますか。",
-            "exampleEn": "Fixing takes one hour, and the retest takes 30 minutes. We won't make the 4 p.m. delivery. What should we do about the delivery time?",
-            "cloze": "直すのに ＿＿、再テストに ＿＿ かかります。＿＿に まにあいません。＿＿どう しますか。",
+            "example": "直すのに 1時間、再テストに 30分 かかります。16時の 納品に まにあいません。私は、17時に して もらうのが いいと 思います。納品の 時間を どう しますか。",
+            "exampleEn": "Fixing takes one hour, and the retest takes 30 minutes. We won't make the 4 p.m. delivery. I think we should ask to make it 5 p.m. What should we do about the delivery time?",
+            "cloze": "直すのに ＿＿、再テストに ＿＿ かかります。＿＿に まにあいません。私は、＿＿と 思います。＿＿どう しますか。",
             "whatIf": {
               "hiding": [
                 {
@@ -1805,8 +1857,8 @@
               "no_ask": {
                 "text": "わかりました。それで、何を 聞きたいですか？",
                 "en": "I see. So, what do you want to ask?",
-                "hint": "③ 聞きたい ことを 言いましょう。「〜ますか。」",
-                "hintEn": "Say ③ what you want to ask: \"...masu ka?\""
+                "hint": "③ お願いを 言いましょう。「〜ますか。」",
+                "hintEn": "Say ③ your request: \"...masu ka?\""
               }
             }
           },
@@ -1888,7 +1940,7 @@
             "speaker": "matsumoto",
             "text": "ありがとう ございます。問題を 先に 教えて くれたので、安心しました。",
             "en": "Thank you. You told me about the problem first, so I felt relieved.",
-            "via": "message"
+            "face": "happy"
           },
           {
             "id": "f24",
@@ -2005,6 +2057,14 @@
     [
       "仕様",
       "しよう"
+    ],
+    [
+      "会員",
+      "かいいん"
+    ],
+    [
+      "意見",
+      "いけん"
     ],
     [
       "会議",
@@ -2223,6 +2283,10 @@
       "へんじ"
     ],
     [
+      "途中",
+      "とちゅう"
+    ],
+    [
       "開発",
       "かいはつ"
     ],
@@ -2363,6 +2427,10 @@
       "わす"
     ],
     [
+      "思",
+      "おも"
+    ],
+    [
       "悪",
       "わる"
     ],
@@ -2469,6 +2537,10 @@
     [
       "行",
       "ぎょう"
+    ],
+    [
+      "要",
+      "い"
     ],
     [
       "見",

@@ -4,6 +4,7 @@ import {
   type NovelFailureType,
   type NovelScene,
   type NovelScreen,
+  type novelDeskStates,
   type novelFaces,
   type novelSteps,
 } from "@/content/schema";
@@ -19,6 +20,7 @@ import {
 
 export type NovelStep = (typeof novelSteps)[number];
 export type NovelFace = (typeof novelFaces)[number];
+export type NovelDeskState = (typeof novelDeskStates)[number];
 export type NovelDay = Novel["days"][number];
 
 export interface NovelSettings {
@@ -364,10 +366,56 @@ export function allConsults(novel: Novel): Extract<NovelScene, { type: "consult"
 /** 失敗の 型の 日本語の 名前（まとめの 画面）。 */
 export const FAILURE_LABELS: Record<NovelFailureType, string> = {
   vague: "あいまい",
-  no_ask: "質問が ない",
+  no_ask: "お願いが ない",
   blaming: "相手を せめる",
   decided_alone: "勝手に 決める",
   hiding: "問題を 隠す",
   off_topic: "話が ちがう",
   unclear_audio: "聞き取れない",
+};
+
+/* ------------------------------------------------------------------
+ * 話しかける タイミング（要望 #723）
+ * ------------------------------------------------------------------ */
+
+/** 席の 絵が 切りかわる 間（tomy さんの 指定「5秒程度で 切り替わる」）。 */
+export const DESK_SWITCH_MS = 5000;
+
+/**
+ * 席の 絵の 並び（くり返す）。**はじめは かならず 話しかけては いけない 状態**——
+ * 開いた とたんに 押せば 合格、に しない（見て 決める 練習なので）。
+ * 話しかけて いいのは 10秒後（3つ目）と 20秒後（5つ目）。待たせすぎない。
+ *
+ * だめな 3つの 順は 場面ごとに 変える（毎回 同じ だと、見ないで 時間で 押せて しまう）。
+ * 乱数に しないのは、もどって 来ても 同じ 並びに なる ように・テストで 決まる ように。
+ */
+export function deskCycle(seed: string): NovelDeskState[] {
+  const waits = [
+    ["phone", "busy", "talking"],
+    ["busy", "talking", "phone"],
+    ["talking", "phone", "busy"],
+  ] as const;
+  let hash = 0;
+  for (const char of seed) hash = (hash * 31 + char.charCodeAt(0)) >>> 0;
+  const [a, b, c] = waits[hash % waits.length] ?? waits[0];
+  return [a, b, "ok", c, "ok"];
+}
+
+/**
+ * 押した ときの 判定（規律1: 合否を はっきり 書き、次に する ことを 1つ 添える）。
+ * 画面が 出す 字なので、読みは `ui-furigana.ts` に ある。
+ */
+export const DESK_FEEDBACK: Record<NovelDeskState, string> = {
+  ok: "いい タイミングです。仕事中でも、急いで いない ときは 話しかけて いいです。",
+  phone: "今は 電話中です。電話が 終わるまで 待ちましょう。",
+  busy: "今は とても 忙しそうです。少し 待ちましょう。",
+  talking: "今は ほかの 人と 話して います。話が 終わるまで 待ちましょう。",
+};
+
+/** 押した ときの 判定の 英訳（訳を 出す 設定の とき）。 */
+export const DESK_FEEDBACK_EN: Record<NovelDeskState, string> = {
+  ok: "Good timing. Even while someone is working, you can talk to them when they are not in a hurry.",
+  phone: "They are on the phone now. Wait until the call is over.",
+  busy: "They look very busy now. Wait a little.",
+  talking: "They are talking with someone else now. Wait until they finish.",
 };

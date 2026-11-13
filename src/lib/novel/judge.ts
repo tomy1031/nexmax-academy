@@ -65,9 +65,18 @@ export const NOVEL_TOOL = {
             enum: ["pass", "retry"],
             description: "①②③が 全部 あり、失敗の 型に 当たらなければ pass。それ以外は retry。",
           },
-          has_context: { type: "BOOLEAN", description: "① 見たもの・した ことが 入って いるか。" },
-          has_problem: { type: "BOOLEAN", description: "② ちがい・問題が 入って いるか。" },
-          has_ask: { type: "BOOLEAN", description: "③ 質問・お願いが 入って いるか。" },
+          has_context: {
+            type: "BOOLEAN",
+            description: "① 調べた こと（見た 資料・した こと）が 入って いるか。",
+          },
+          has_problem: {
+            type: "BOOLEAN",
+            description: "② わからない こと（ちがい・問題）が 入って いるか。",
+          },
+          has_ask: {
+            type: "BOOLEAN",
+            description: "③ お願い（質問・して ほしい こと）が 入って いるか。",
+          },
           failure_type: {
             type: "STRING",
             enum: ["none", ...novelFailureTypes],
@@ -93,9 +102,9 @@ export function buildNovelJudgePrompt(
   return [
     `場面: 学生は ${partnerName}さんに 相談して います（話題: ${consult.topic}）。`,
     "この 相談の 判定の 基準:",
-    `① 見たもの・した こと: ${consult.criteria.context}`,
-    `② ちがい・問題: ${consult.criteria.problem}`,
-    `③ 質問・お願い: ${consult.criteria.ask}`,
+    `① 調べた こと（見た 資料・した こと）: ${consult.criteria.context}`,
+    `② わからない こと（ちがい・問題）: ${consult.criteria.problem}`,
+    `③ お願い（質問・して ほしい こと）: ${consult.criteria.ask}`,
     consult.criteria.note ? `気を つける こと: ${consult.criteria.note}` : null,
     "失敗の 型:",
     types,

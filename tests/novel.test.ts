@@ -16,9 +16,11 @@ import {
   starsForFails,
 } from "@/lib/novel/judge";
 import {
+  DESK_FEEDBACK,
   addFailure,
   allConsults,
   cardView,
+  deskCycle,
   logUpTo,
   mostCommonFailure,
   normalizeSave,
@@ -171,6 +173,17 @@ describe("表示は その日の 最初から 計算し直す（戻っても ず
     expect(viewAt(novel, 4, at - 1).bg).toBe(novel.backgrounds.morning);
   });
 
+  it("お客様の 松本さんは 金曜の 納品で 立ち絵（うれしい）で 出る。木曜は メッセージ（立ち絵を 出さない）", () => {
+    const fri = novel.days[4];
+    const at = fri?.scenes.findIndex((scene) => scene.id === "f23") ?? -1;
+    const view = viewAt(novel, 4, at);
+    expect(view.figure).toBe("matsumoto");
+    expect(view.face).toBe("happy");
+    const thu = novel.days[3];
+    const msg = thu?.scenes.findIndex((scene) => scene.id === "h04") ?? -1;
+    expect(viewAt(novel, 3, msg).figure).not.toBe("matsumoto");
+  });
+
   it("ログは その 場面までの 文だけ", () => {
     const mon = novel.days[0];
     if (!mon) throw new Error("月曜が ない");
@@ -299,6 +312,27 @@ describe("画面の 字の 読み（UI の 辞書だけでも、教材と 混ぜ
     ["これは やり直しの 回数に 入りません。", "これは やりなおしの かいすうに はいりません。"],
     ["5日間の まとめ", "5かかんの まとめ"],
     ["今日の 目的", "きょうの もくてき"],
+    /* 話しかける タイミング（要望 #723） */
+    [
+      "今は 電話中です。電話が 終わるまで 待ちましょう。",
+      "いまは でんわちゅうです。でんわが おわるまで まちましょう。",
+    ],
+    [
+      "今は とても 忙しそうです。少し 待ちましょう。",
+      "いまは とても いそがしそうです。すこし まちましょう。",
+    ],
+    [
+      "今は ほかの 人と 話して います。話が 終わるまで 待ちましょう。",
+      "いまは ほかの ひとと はなして います。はなしが おわるまで まちましょう。",
+    ],
+    [
+      "いい タイミングです。仕事中でも、急いで いない ときは 話しかけて いいです。",
+      "いい タイミングです。しごとちゅうでも、いそいで いない ときは はなしかけて いいです。",
+    ],
+    [
+      "今 ヘンディさんに 話しかけて いいですか？ よく 見て、いいと 思ったら ヘンディさんを 押しましょう。",
+      "いま ヘンディさんに はなしかけて いいですか？ よく みて、いいと おもったら ヘンディさんを おしましょう。",
+    ],
   ];
   it.each(cases)("%s", (text, expected) => {
     const want = expected.replace("[てほん]", "てほん");
@@ -333,5 +367,36 @@ describe("保存（ブラウザに 1行ごと）", () => {
     expect(save.stars).toEqual({ c_mon: 0, c_tue1: 3 });
     expect(() => mostCommonFailure(save.attempts)).not.toThrow();
     expect(addFailure(save.attempts, "c_tue1", "no_ask").c_tue1?.fails).toBe(2);
+  });
+});
+
+describe("話しかける タイミング（要望 #723）", () => {
+  it("はじめは かならず 話しかけては いけない 状態で、10秒後と 20秒後に 大丈夫そうに なる", () => {
+    for (const consult of allConsults(novel)) {
+      const cycle = deskCycle(consult.id);
+      expect(cycle).toHaveLength(5);
+      expect(cycle[0]).not.toBe("ok");
+      expect(cycle[1]).not.toBe("ok");
+      expect(cycle[2]).toBe("ok");
+      expect(cycle[4]).toBe("ok");
+      /* だめな 3つ（電話・忙しそう・話して いる）が 1回ずつ 出る */
+      expect(new Set([cycle[0], cycle[1], cycle[3]])).toEqual(
+        new Set(["phone", "busy", "talking"]),
+      );
+      expect(deskCycle(consult.id)).toEqual(cycle);
+    }
+  });
+
+  it("場面ごとに だめな 状態の 順が 変わる（時間だけで 押せない）", () => {
+    const firsts = new Set(allConsults(novel).map((consult) => deskCycle(consult.id)[0]));
+    expect(firsts.size).toBeGreaterThan(1);
+  });
+
+  it("相談の 相手は みんな 席の 絵（4枚）を 持つ", () => {
+    for (const consult of allConsults(novel)) {
+      const desk = novel.cast.find((one) => one.id === consult.to)?.desk;
+      expect(desk, consult.id).toBeTruthy();
+    }
+    expect(Object.keys(DESK_FEEDBACK).sort()).toEqual(["busy", "ok", "phone", "talking"]);
   });
 });
