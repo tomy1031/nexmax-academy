@@ -352,7 +352,11 @@ export function ConsultPanel({
   const showModel = level >= 3 || aiDown;
 
   return (
-    <div className="space-y-3" data-testid="novel-consult" data-phase={phase}>
+    <div
+      className={phase === "approach" ? "flex h-full flex-col gap-2" : "space-y-3"}
+      data-testid="novel-consult"
+      data-phase={phase}
+    >
       <div className="flex items-center justify-between gap-2">
         <span
           className="text-on-accent rounded-full px-3 py-1 text-xs font-black select-none"
@@ -460,20 +464,22 @@ export function ConsultPanel({
         <>
           {/* 0. 話しかける タイミング */}
           {phase === "approach" && desk ? (
-            <DeskApproach
-              desk={desk}
-              seed={scene.id}
-              name={name}
-              index={index}
-              show={show}
-              translation={translation}
-              onWrong={() => playNovelSe("retry", volume)}
-              onReady={() => {
-                playNovelSe("notice", volume);
-                setTimed(true);
-                setPhase("call");
-              }}
-            />
+            <div className="min-h-0 flex-1">
+              <DeskApproach
+                desk={desk}
+                seed={scene.id}
+                name={name}
+                index={index}
+                show={show}
+                translation={translation}
+                onWrong={() => playNovelSe("retry", volume)}
+                onReady={() => {
+                  playNovelSe("notice", volume);
+                  setTimed(true);
+                  setPhase("call");
+                }}
+              />
+            </div>
           ) : null}
 
           {phase === "call" && timed ? (

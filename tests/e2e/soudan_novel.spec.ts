@@ -348,9 +348,9 @@ test.describe("相談の 練習（サウンドノベル）", () => {
     for (let i = 0; i < 80 && !(await page.getByTestId("novel-consult").count()); i += 1) {
       await step(page);
     }
-    /* 席の 絵を 見て いる あいだは 舞台（立ち絵）を 隠す */
+    /* 席の 絵が ゲームの 画面に 出て、真ん中に「◯◯さんに 話しかける」が ある */
     await expect(page.getByTestId("novel-approach")).toBeVisible();
-    await expect(page.getByTestId("novel-stage")).toBeHidden();
+    await expect(page.getByTestId("novel-approach-rule")).toBeVisible();
     /* はじめは かならず 話しかけては いけない 状態（絵が 読みこめて から 動く） */
     const desk = page.getByTestId("novel-desk");
     await expect(desk).toHaveAttribute("data-desk-state", /^(phone|busy|talking)$/u, {

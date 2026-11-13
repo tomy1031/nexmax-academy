@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { motion } from "motion/react";
+import { motion, useAnimate } from "motion/react";
 import type { Novel } from "@/content/schema";
 import { RubyText } from "@/components/ruby-text";
 import { assetUrl } from "@/lib/asset-url";
@@ -14,6 +14,7 @@ import {
   type NovelDeskState,
 } from "@/lib/novel/state";
 import type { FuriganaIndex } from "@/lib/text/furigana";
+import { useGameFrame } from "./game-frame";
 
 type Desk = NonNullable<Novel["cast"][number]["desk"]>;
 
@@ -34,9 +35,11 @@ const LOAD_TIMEOUT_MS = 15_000;
  * 話しかける タイミング（要望 #723）— 相手の 席の 絵を 見て、今 話しかけて いいかを 決める。
  *
  * 絵は 5秒ごとに 電話中・忙しそう・ほかの 人と 話して いる・大丈夫そう を 切りかわる
- *（並びは `deskCycle`）。大丈夫そうな ときに 相手を 押せば、声かけ（相談の はじめ）へ 進む。
- * ちがう ときに 押すと、なぜ 待つのかを 出し、**その 絵を もう 5秒 のばす**（相手の じゃまを
- * した ぶん、待つ 時間が のびる）。押しつづけても 通れない ので、見て 待つ ことに なる。
+ *（並びは `deskCycle`）。絵は ゲームの 画面 いっぱいに 出し、**真ん中の「◯◯さんに 話しかける」**
+ * を 大丈夫そうな ときに 押せば、声かけ（相談の はじめ）へ 進む（2026-11-13 の 指定）。
+ * ちがう ときに 押すと、**絵を 横に ゆらし、絵の 中に**「✖ 今は 電話中です。…」を 出す
+ *（同日の 指定）。その 絵は もう 5秒 のびる（相手の じゃまを した ぶん、待つ 時間が のびる）。
+ * 押しつづけても 通れない ので、見て 待つ ことに なる。
  * 切りかえは 4枚が 読みこめて から 始める。
  *
  * ここで まちがえても 相談の 星は 減らさない——星は「相談の 中身が 伝わったか」の 目印なので、
@@ -83,6 +86,9 @@ export function DeskApproach({
   const [wrong, setWrong] = useState<{ state: NovelDeskState; at: number } | null>(null);
   const state: NovelDeskState = cycle[at % cycle.length] ?? "ok";
   const changedAt = useRef(0);
+  const frame = useGameFrame();
+  /* まちがえた ときに 絵を 横に ゆらす */
+  const [scope, animate] = useAnimate<HTMLDivElement>();
 
   useEffect(() => {
     const timer = window.setTimeout(() => setTimedOut(true), LOAD_TIMEOUT_MS);
@@ -111,59 +117,24 @@ export function DeskApproach({
     }
     setWrong({ state, at });
     setRound((now) => now + 1);
+    if (scope.current) {
+      void animate(scope.current, { x: [0, -16, 16, -12, 12, -6, 6, 0] }, { duration: 0.5 });
+    }
     onWrong();
   };
   const shownWrong = wrong && wrong.at === at ? wrong.state : null;
 
-  return (
-    <div className="flex min-h-full flex-col justify-center space-y-2" data-testid="novel-approach">
-      <p className="text-navy text-sm font-black">
-        👀{" "}
-        <RubyText
-          text={`今 ${name}に 話しかけて いいですか？ よく 見て、いいと 思ったら ${name}を 押しましょう。`}
-          index={index}
-          show={show}
-        />
-        {translation ? (
-          <span className="text-ink-soft block text-xs font-medium">
-            Is it OK to talk to {name} now? Look carefully, and tap them when it is a good time.
-          </span>
-        ) : null}
-      </p>
-      {/* 見分け方を 先に 言う（ヒントを 開かなくても 決められる ように・規律10） */}
-      <ul
-        className="text-navy grid gap-1 text-xs font-bold sm:grid-cols-2"
-        data-testid="novel-approach-rule"
-      >
-        <li className="rounded-lg px-2 py-1" style={{ background: "var(--color-cream)" }}>
-          ✋{" "}
-          <RubyText
-            text="待つ：電話中・とても 忙しそう・ほかの 人と 話して いる"
-            index={index}
-            show={show}
-          />
-        </li>
-        <li className="rounded-lg px-2 py-1" style={{ background: "var(--color-sky-soft)" }}>
-          👆{" "}
-          <RubyText text="押す：大丈夫そう（仕事は して いても いい）" index={index} show={show} />
-        </li>
-      </ul>
-      {translation ? (
-        <p className="text-ink-soft text-xs font-medium">
-          Wait: on the phone, very busy, talking with someone. Tap: they look OK (even while
-          working).
-        </p>
-      ) : null}
+  /* 縦長（スマホ）は 絵を 切らずに 入れる（ほかの 人と 話して いる 絵の 右の 人が 切れない）。横長は いっぱいに */
+  const fit = frame.layout === "wide" ? "object-cover" : "object-contain";
 
-      <button
-        type="button"
-        onClick={tap}
-        className="relative mx-auto block aspect-[3/2] w-full max-w-[720px] cursor-pointer overflow-hidden rounded-2xl border-4 shadow-lg transition hover:scale-[1.01]"
-        style={{ borderColor: "var(--color-sky)", background: "var(--color-ink)" }}
-        aria-label={`${name}に 話しかける`}
-        data-testid="novel-desk"
-        data-desk-state={ready ? state : "loading"}
-      >
+  return (
+    <div
+      className="relative h-full min-h-[320px] overflow-hidden rounded-2xl"
+      style={{ background: "var(--color-ink)" }}
+      data-testid="novel-approach"
+    >
+      {/* 絵（画面いっぱい）。まちがえたら 横に ゆれる */}
+      <div ref={scope} className="absolute inset-0">
         <motion.div
           className="absolute inset-0"
           animate={
@@ -188,49 +159,94 @@ export function DeskApproach({
               alt=""
               fill
               loading="eager"
-              sizes="(min-width: 640px) 640px, 100vw"
+              sizes="100vw"
               onLoad={() => markLoaded(key)}
               onError={() => markLoaded(key)}
-              className="object-cover transition-opacity duration-300"
+              className={`${fit} transition-opacity duration-300`}
               style={{ opacity: key === state ? 1 : 0 }}
               aria-hidden
             />
           ))}
         </motion.div>
-        {ready ? (
-          <span
-            className="absolute top-2 left-2 rounded-full px-2.5 py-1 text-xs font-black text-white shadow"
-            style={{ background: "rgba(15, 35, 70, 0.8)" }}
-            aria-hidden
-          >
-            👆 <RubyText text={`${name}を 押す`} index={index} show={show} />
-          </span>
-        ) : null}
-        {!ready ? (
-          <span
-            className="absolute inset-x-0 bottom-2 mx-auto w-fit rounded-full px-3 py-1 text-xs font-black text-white"
-            style={{ background: "rgba(15, 35, 70, 0.75)" }}
-          >
-            <RubyText text="絵を 読みこんで います…" index={index} show={show} />
-          </span>
-        ) : null}
-      </button>
+      </div>
 
-      {shownWrong ? (
-        <p
-          role="status"
-          className="rounded-xl px-3 py-2 text-sm font-black"
-          style={{ background: "var(--color-cream)", color: "var(--color-navy)" }}
-          data-testid="novel-approach-wrong"
-        >
-          ✖ <RubyText text={DESK_FEEDBACK[shownWrong]} index={index} show={show} />
-          {translation ? (
-            <span className="text-ink-soft block text-xs font-medium">
-              {DESK_FEEDBACK_EN[shownWrong]}
-            </span>
-          ) : null}
+      {/* 上: 何を するかと 見分け方（ヒントを 開かなくても 決められる ように・規律10） */}
+      <div
+        className="absolute inset-x-2 top-2 space-y-1 rounded-xl px-2.5 py-1.5 shadow"
+        style={{ background: "rgba(255,255,255,0.9)" }}
+      >
+        <p className="text-navy text-xs font-black sm:text-sm">
+          👀{" "}
+          <RubyText
+            text={`今 ${name}に 話しかけて いいですか？ よく 見て、いいと 思ったら「${name}に 話しかける」を 押します。`}
+            index={index}
+            show={show}
+          />
         </p>
-      ) : null}
+        <p
+          className="text-navy flex flex-wrap gap-x-2 text-[11px] font-bold"
+          data-testid="novel-approach-rule"
+        >
+          <span>
+            ✋{" "}
+            <RubyText
+              text="待つ：電話中・とても 忙しそう・ほかの 人と 話して いる"
+              index={index}
+              show={show}
+            />
+          </span>
+          <span>
+            👆{" "}
+            <RubyText
+              text="押す：大丈夫そう（仕事は して いても いい）"
+              index={index}
+              show={show}
+            />
+          </span>
+        </p>
+        {translation ? (
+          <p className="text-ink-soft text-[11px] font-medium">
+            Is it OK to talk to {name} now? Wait if they are on the phone, very busy, or talking
+            with someone. Tap the button when they look OK (even while working).
+          </p>
+        ) : null}
+      </div>
+
+      {/* 真ん中より 下: 判定（絵の 中）と「◯◯さんに 話しかける」 */}
+      <div className="absolute inset-x-3 bottom-4 flex flex-col items-center gap-2">
+        {shownWrong ? (
+          <p
+            role="status"
+            className="w-full max-w-md rounded-xl px-3 py-2 text-center text-sm font-black shadow-lg"
+            style={{ background: "rgba(255,255,255,0.95)", color: "var(--color-coral-deep)" }}
+            data-testid="novel-approach-wrong"
+          >
+            ✖ <RubyText text={DESK_FEEDBACK[shownWrong]} index={index} show={show} />
+            {translation ? (
+              <span className="text-ink-soft block text-xs font-medium">
+                {DESK_FEEDBACK_EN[shownWrong]}
+              </span>
+            ) : null}
+          </p>
+        ) : null}
+        <button
+          type="button"
+          onClick={tap}
+          disabled={!ready}
+          className="btn-island btn-game px-6 py-3 text-base disabled:opacity-60"
+          aria-label={`${name}に 話しかける`}
+          data-testid="novel-desk"
+          data-desk-state={ready ? state : "loading"}
+        >
+          {ready ? (
+            <>
+              🗣 <RubyText text={`${name}に 話しかける`} index={index} show={show} />
+            </>
+          ) : (
+            <RubyText text="絵を 読みこんで います…" index={index} show={show} />
+          )}
+        </button>
+      </div>
     </div>
   );
 }

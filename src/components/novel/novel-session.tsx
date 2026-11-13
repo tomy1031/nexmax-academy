@@ -502,105 +502,82 @@ function Player({
     setSave((now) => ({ ...now, settings: { ...now.settings, ...patch } }));
 
   /*
-   * 枠の 中の 並べ方（要望 #731・2026-11-13 の Fable の 設計）:
-   * - 文を 読む 場面 … 絵が 全面。セリフ枠を 絵の 下に 重ねる
-   * - 操作の 要る 場面・結果の 前後 … 縦長は 絵を 上の 細い 帯に 縮め、下に パネル。
-   *   横長は 左に 絵・右に パネル
-   * - 席の 絵（タイミング）・まとめ … パネルが 全面
+   * 枠の 中の 並べ方（要望 #731・#735）:
+   * **絵が いつも 枠 ぜんたい**。上の 帯・セリフ・相談の 枠・マイク・下の ボタンは、
+   * ぜんぶ 絵の 上に 重ねる（「マイクやその他のボタンは画像エリアの中に入れてください」
+   * 2026-11-13）。
+   * - 文を 読む 場面 … セリフ枠を 絵の 下に 重ねる
+   * - 操作の 要る 場面 … 縦長は 絵の 下の 方に パネルを 重ねる（相手の 顔は 上に 見える）。
+   *   横長は 右に パネル・左に 相手
+   * - 席の 絵（タイミング）・まとめ … パネルを 大きく 重ね、絵を 少し 暗く する
    */
   const isScreen = scene.type === "screen";
   const panelMode = !readable || isScreen;
   const fullPanel = scene.type === "ending" || approaching;
   const wide = frame.layout === "wide";
 
-  /** 絵の 出し方: 全面（文を 読む）・細い 帯（縦長の 操作）・左の 列（横長の 操作）。 */
-  const stage = (kind: "full" | "strip" | "side") => {
-    const strip = kind === "strip";
-    return (
-      <div
-        className="relative h-full w-full overflow-hidden"
-        style={{ background: "var(--color-ink)" }}
-        onClick={(event) => {
-          if (kind !== "full" || !readable) return;
-          if ((event.target as HTMLElement).closest("button, a, input")) return;
-          next();
-        }}
-        data-testid="novel-stage"
-        data-kind={kind}
-      >
-        {view.bg ? (
-          <Image
-            src={assetUrl(view.bg) ?? view.bg}
-            alt=""
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover"
-            aria-hidden
-          />
-        ) : null}
+  const stage = (
+    <div
+      className="absolute inset-0 overflow-hidden"
+      style={{ background: "var(--color-ink)" }}
+      onClick={(event) => {
+        if (panelMode) return;
+        if ((event.target as HTMLElement).closest("button, a, input")) return;
+        next();
+      }}
+      data-testid="novel-stage"
+      data-kind={panelMode ? (wide ? "side" : "under-panel") : "full"}
+    >
+      {view.bg ? (
+        <Image
+          src={assetUrl(view.bg) ?? view.bg}
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
+          aria-hidden
+        />
+      ) : null}
 
-        <AnimatePresence mode="wait">
-          {figureSrc ? (
-            <motion.div
-              key={figureSrc}
-              initial={{ opacity: 0, x: 16 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
+      <AnimatePresence mode="wait">
+        {figureSrc ? (
+          <motion.div
+            key={figureSrc}
+            initial={{ opacity: 0, x: 16 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className={
+              panelMode && wide
+                ? /* 横長の 操作: パネルは 右、相手は 左 */
+                  "pointer-events-none absolute bottom-0 left-[2%] h-[88%] w-[40%]"
+                : wide
+                  ? "pointer-events-none absolute right-0 bottom-0 h-[92%] w-[44%]"
+                  : "pointer-events-none absolute right-0 bottom-0 h-[86%] w-[70%]"
+            }
+          >
+            <Image
+              src={assetUrl(figureSrc) ?? figureSrc}
+              alt={figurePerson ? `${figurePerson.name}さん` : ""}
+              fill
+              sizes="50vw"
               className={
-                strip
-                  ? /* 細い 帯では 胸から 上（顔と 表情）だけ 見せる */
-                    "pointer-events-none absolute top-1 right-2 h-[230%] w-[44%]"
-                  : kind === "side"
-                    ? "pointer-events-none absolute right-0 bottom-0 h-[80%] w-[85%]"
-                    : wide
-                      ? "pointer-events-none absolute right-0 bottom-0 h-[92%] w-[44%]"
-                      : "pointer-events-none absolute right-0 bottom-0 h-[86%] w-[70%]"
+                panelMode && !wide ? "object-contain object-top" : "object-contain object-bottom"
               }
-            >
-              <Image
-                src={assetUrl(figureSrc) ?? figureSrc}
-                alt={figurePerson ? `${figurePerson.name}さん` : ""}
-                fill
-                sizes="50vw"
-                className={strip ? "object-contain object-top" : "object-contain object-bottom"}
-              />
-            </motion.div>
-          ) : null}
-        </AnimatePresence>
-
-        {/* 開発中の 画面（小さい 窓）。細い 帯では 場所が ないので 出さない */}
-        {!strip ? (
-          <div className="absolute top-2 left-2 max-h-[48%] w-[42%] max-w-[230px] overflow-hidden sm:w-[30%]">
-            <p
-              className="mb-0.5 inline-block rounded-full px-2 py-0.5 text-[10px] font-black text-white"
-              style={{ background: "rgba(15, 35, 70, 0.75)" }}
-            >
-              💻 <RubyText text="開発中の 画面" index={index} show={show} />
-            </p>
-            <DevScreen screen={view.screen} index={index} show={show} testId="novel-devscreen" />
-          </div>
+            />
+          </motion.div>
         ) : null}
+      </AnimatePresence>
 
-        {view.dark ? <div className="absolute inset-0 bg-black/60" aria-hidden /> : null}
-
-        {kind === "full" && readable && !isScreen ? (
-          <MessageWindow
-            novel={novel}
-            scene={scene}
-            index={index}
-            show={show}
-            translation={translation}
-            typedAll={typedAll}
-            onTyped={setTypedAll}
-            onNext={next}
-            dayEnd={atDayEnd && !isLastDay}
-          />
-        ) : null}
-      </div>
-    );
-  };
+      {view.dark || fullPanel ? (
+        <div
+          className={`absolute inset-0 ${view.dark ? "bg-black/60" : "bg-black/35"}`}
+          aria-hidden
+        />
+      ) : null}
+    </div>
+  );
 
   /* 操作の 要る 場面の 中身 */
   const panelBody =
@@ -719,189 +696,219 @@ function Player({
       />
     ) : null;
 
-  const panel = (
-    <div
-      key={`${save.day}:${save.index}`}
-      className="h-full overflow-y-auto overscroll-contain p-2.5 sm:p-3"
-      style={{ background: "var(--color-panel)" }}
-      data-testid="novel-panel"
-    >
-      {panelBody}
-    </div>
-  );
+  /* 絵の 上に 重ねる 半とうめいの 地（読める こと を 先に・後ろの 絵も 少し 見える） */
+  const glass = {
+    background: "rgba(255,255,255,0.93)",
+    backdropFilter: "blur(6px)",
+    WebkitBackdropFilter: "blur(6px)",
+  } as const;
 
   return (
     <div
-      className="flex h-full flex-col"
+      className="relative h-full overflow-hidden"
       data-testid="novel-player"
       data-scene={scene.id}
       data-furigana={show ? "on" : "off"}
     >
-      {/* 上の 帯: 日と ステップ */}
-      <div
-        className="flex shrink-0 items-center gap-1.5 px-2 py-1.5"
-        style={{ background: "var(--color-navy)" }}
-      >
-        <span
-          className="shrink-0 rounded-full bg-white px-2.5 py-0.5 text-xs font-black"
-          style={{ color: "var(--color-navy)" }}
-          data-testid="novel-day"
+      {stage}
+
+      {/* 絵の 上に 重ねる もの（クリックは すき間から 絵へ 通す） */}
+      <div className="pointer-events-none relative z-10 flex h-full flex-col">
+        {/* 上の 帯: 日と ステップ */}
+        <div
+          className="pointer-events-auto flex shrink-0 items-center gap-1.5 px-2 py-1.5"
+          style={{ background: "rgba(23, 43, 84, 0.86)" }}
         >
-          <RubyText text={day.label} index={index} show={show} />
-        </span>
-        <ol className="grid flex-1 grid-cols-4 gap-1" aria-label="今日の ステップ">
-          {STEP_BAR.map((step) => {
-            const on = view.step === step.step;
-            return (
-              <li
-                key={step.step}
-                aria-current={on ? "step" : undefined}
-                className="rounded-md px-0.5 py-0.5 text-center text-[11px] font-black sm:text-xs"
-                style={{
-                  background: on ? "var(--color-coral)" : "rgba(255,255,255,0.14)",
-                  color: on ? "var(--color-on-accent)" : "rgba(255,255,255,0.85)",
-                }}
+          <span
+            className="shrink-0 rounded-full bg-white px-2.5 py-0.5 text-xs font-black"
+            style={{ color: "var(--color-navy)" }}
+            data-testid="novel-day"
+          >
+            <RubyText text={day.label} index={index} show={show} />
+          </span>
+          <ol className="grid flex-1 grid-cols-4 gap-1" aria-label="今日の ステップ">
+            {STEP_BAR.map((step) => {
+              const on = view.step === step.step;
+              return (
+                <li
+                  key={step.step}
+                  aria-current={on ? "step" : undefined}
+                  className="rounded-md px-0.5 py-0.5 text-center text-[11px] font-black sm:text-xs"
+                  style={{
+                    background: on ? "var(--color-coral)" : "rgba(255,255,255,0.14)",
+                    color: on ? "var(--color-on-accent)" : "rgba(255,255,255,0.85)",
+                  }}
+                >
+                  <RubyText text={step.label} index={index} show={show} />
+                </li>
+              );
+            })}
+          </ol>
+        </div>
+
+        {/* 今日の 目的（1行。押すと 全文）と 今日の ことば */}
+        {view.goal || day.words.length > 0 ? (
+          <div
+            className="pointer-events-auto flex shrink-0 items-start gap-1.5 px-2 py-1"
+            style={{ background: "rgba(230, 242, 255, 0.88)" }}
+          >
+            {view.goal ? (
+              <button
+                type="button"
+                onClick={() => setGoalOpen((open) => !open)}
+                className={`text-navy min-w-0 flex-1 text-left text-xs font-black ${goalOpen ? "" : "line-clamp-1"}`}
+                aria-expanded={goalOpen}
+                data-testid="novel-goal"
               >
-                <RubyText text={step.label} index={index} show={show} />
-              </li>
-            );
-          })}
-        </ol>
+                🎯 <RubyText text={view.goal} index={index} show={show} />
+              </button>
+            ) : (
+              <span className="flex-1" />
+            )}
+            {day.words.length > 0 ? (
+              <button
+                type="button"
+                onClick={() => setWordsOpen((open) => !open)}
+                aria-expanded={wordsOpen}
+                className="text-navy min-h-7 shrink-0 rounded-full bg-white px-2.5 py-1 text-xs font-black"
+                data-testid="novel-words-button"
+              >
+                📘 <RubyText text="ことば" index={index} show={show} />
+              </button>
+            ) : null}
+          </div>
+        ) : null}
+
+        {/*
+         * まん中: 開発中の 画面（小窓）と、セリフ枠 または 操作の パネル。
+         * **パネルの 木の 位置は 変えない**——並べ方が 変わる たびに 親が 変わると、相談の
+         * パネルが 作り直されて、席の 絵を 押した 直後に タイミングの 段へ 戻る（2026-11-13）。
+         */}
+        <div
+          className={`relative flex min-h-0 flex-1 flex-col justify-end px-2 pt-2 ${
+            panelMode && wide && !fullPanel ? "items-end" : ""
+          }`}
+        >
+          {!panelMode || (wide && !fullPanel) ? (
+            <div className="absolute top-2 left-2 max-h-[40%] w-[42%] max-w-[230px] overflow-hidden sm:w-[30%]">
+              <p
+                className="mb-0.5 inline-block rounded-full px-2 py-0.5 text-[10px] font-black text-white"
+                style={{ background: "rgba(15, 35, 70, 0.75)" }}
+              >
+                💻 <RubyText text="開発中の 画面" index={index} show={show} />
+              </p>
+              <DevScreen screen={view.screen} index={index} show={show} testId="novel-devscreen" />
+            </div>
+          ) : null}
+
+          {panelMode ? (
+            <div
+              key="panel"
+              className={`pointer-events-auto overflow-y-auto overscroll-contain rounded-2xl p-2.5 shadow-xl sm:p-3 ${
+                approaching
+                  ? "h-full w-full"
+                  : fullPanel
+                    ? "max-h-full w-full"
+                    : wide
+                      ? "h-full w-[58%]"
+                      : "max-h-[66%] w-full"
+              }`}
+              style={glass}
+              data-testid="novel-panel"
+            >
+              {panelBody}
+            </div>
+          ) : (
+            <div key="message" className="pointer-events-auto">
+              <MessageWindow
+                novel={novel}
+                scene={scene}
+                index={index}
+                show={show}
+                translation={translation}
+                typedAll={typedAll}
+                onTyped={setTypedAll}
+                onNext={next}
+                dayEnd={atDayEnd && !isLastDay}
+                inline
+              />
+            </div>
+          )}
+        </div>
+
+        {/* 下の 帯: もどる・ログ・ふりがな・訳・メニュー・全画面（絵の 上） */}
+        <div className="pointer-events-auto shrink-0 px-2 pt-1.5 pb-2">
+          <div className="flex items-center gap-1 rounded-full px-1.5 py-1 shadow-md" style={glass}>
+            <ToolButton onClick={back} disabled={save.index === 0 || judging} testId="novel-back">
+              ◀ もどる
+            </ToolButton>
+            <ToolButton
+              onClick={() => setLogOpen(true)}
+              disabled={judging}
+              testId="novel-log-button"
+            >
+              🗒 ログ
+            </ToolButton>
+            <ToolButton
+              onClick={() => setSettings({ furigana: !show })}
+              pressed={show}
+              testId="novel-furigana"
+            >
+              ふりがな
+            </ToolButton>
+            <ToolButton
+              onClick={() => setSettings({ translation: !translation })}
+              pressed={translation}
+              testId="novel-translation"
+            >
+              EN
+            </ToolButton>
+            <span className="flex-1" />
+            <ToolButton
+              onClick={() => setMenuOpen((open) => !open)}
+              pressed={menuOpen}
+              testId="novel-menu"
+              label="メニュー"
+            >
+              ☰
+            </ToolButton>
+            <FullButton index={index} show={show} />
+          </div>
+        </div>
       </div>
 
-      {/* 今日の 目的（1行。押すと 全文）と 今日の ことば */}
-      {view.goal || day.words.length > 0 ? (
+      {wordsOpen && day.words.length > 0 ? (
         <div
-          className="flex shrink-0 items-start gap-1.5 border-b px-2 py-1"
-          style={{ borderColor: "var(--color-hairline)", background: "var(--color-sky-soft)" }}
+          className="absolute inset-x-2 top-20 z-20 rounded-2xl border-2 bg-white p-3 shadow-lg"
+          style={{ borderColor: "var(--color-sky)" }}
+          data-testid="novel-words"
         >
-          {view.goal ? (
+          <div className="mb-1.5 flex items-center justify-between">
+            <p className="text-navy text-sm font-black">
+              📘 <RubyText text="今日の ことば" index={index} show={show} />
+            </p>
             <button
               type="button"
-              onClick={() => setGoalOpen((open) => !open)}
-              className={`text-navy min-w-0 flex-1 text-left text-xs font-black ${goalOpen ? "" : "line-clamp-1"}`}
-              aria-expanded={goalOpen}
-              data-testid="novel-goal"
+              onClick={() => setWordsOpen(false)}
+              className="text-navy px-2 text-sm font-black"
+              aria-label="とじる"
             >
-              🎯 <RubyText text={view.goal} index={index} show={show} />
+              ✕
             </button>
-          ) : (
-            <span className="flex-1" />
-          )}
-          {day.words.length > 0 ? (
-            <button
-              type="button"
-              onClick={() => setWordsOpen((open) => !open)}
-              aria-expanded={wordsOpen}
-              className="text-navy min-h-7 shrink-0 rounded-full bg-white px-2.5 py-1 text-xs font-black"
-              data-testid="novel-words-button"
-            >
-              📘 <RubyText text="ことば" index={index} show={show} />
-            </button>
-          ) : null}
+          </div>
+          <p className="text-navy flex flex-wrap gap-1.5 text-sm font-bold">
+            {day.words.map((word) => (
+              <span key={word} className="bg-panel-tint rounded-full px-2 py-0.5">
+                <DictionaryText text={word} index={index} show={show} />
+              </span>
+            ))}
+          </p>
         </div>
       ) : null}
 
-      {/*
-       * 絵と パネル。**パネルの 木の 位置は 変えない**——並べ方（全面・細い 帯・左右）が
-       * 変わる たびに 親の 要素が 変わると、相談の パネルが 作り直されて、
-       * 席の 絵を 押した 直後に タイミングの 段へ 戻って しまう（2026-11-13 に 実際に 起きた）。
-       */}
-      <div
-        className={`relative min-h-0 flex-1 ${
-          panelMode && !fullPanel && wide ? "grid grid-cols-[42%_58%]" : "flex flex-col"
-        }`}
-      >
-        {!panelMode || !fullPanel ? (
-          <div
-            key="stage"
-            className={
-              !panelMode
-                ? "h-full w-full"
-                : wide
-                  ? "h-full min-h-0"
-                  : "h-[24%] max-h-[190px] min-h-[110px] shrink-0"
-            }
-          >
-            {stage(!panelMode ? "full" : wide ? "side" : "strip")}
-          </div>
-        ) : null}
-        {panelMode ? (
-          <div key="panel" className={wide && !fullPanel ? "h-full min-h-0" : "min-h-0 flex-1"}>
-            {panel}
-          </div>
-        ) : null}
-
-        {wordsOpen && day.words.length > 0 ? (
-          <div
-            className="absolute inset-x-2 top-2 z-20 rounded-2xl border-2 bg-white p-3 shadow-lg"
-            style={{ borderColor: "var(--color-sky)" }}
-            data-testid="novel-words"
-          >
-            <div className="mb-1.5 flex items-center justify-between">
-              <p className="text-navy text-sm font-black">
-                📘 <RubyText text="今日の ことば" index={index} show={show} />
-              </p>
-              <button
-                type="button"
-                onClick={() => setWordsOpen(false)}
-                className="text-navy text-sm font-black"
-                aria-label="とじる"
-              >
-                ✕
-              </button>
-            </div>
-            <p className="text-navy flex flex-wrap gap-1.5 text-sm font-bold">
-              {day.words.map((word) => (
-                <span key={word} className="bg-panel-tint rounded-full px-2 py-0.5">
-                  <DictionaryText text={word} index={index} show={show} />
-                </span>
-              ))}
-            </p>
-          </div>
-        ) : null}
-      </div>
-
-      {/* 下の 帯: もどる・ログ・ふりがな・訳・メニュー・全画面 */}
-      <div
-        className="flex shrink-0 items-center gap-1 border-t px-1.5 py-1.5"
-        style={{ borderColor: "var(--color-hairline)", background: "white" }}
-      >
-        <ToolButton onClick={back} disabled={save.index === 0 || judging} testId="novel-back">
-          ◀ もどる
-        </ToolButton>
-        <ToolButton onClick={() => setLogOpen(true)} disabled={judging} testId="novel-log-button">
-          🗒 ログ
-        </ToolButton>
-        <ToolButton
-          onClick={() => setSettings({ furigana: !show })}
-          pressed={show}
-          testId="novel-furigana"
-        >
-          ふりがな
-        </ToolButton>
-        <ToolButton
-          onClick={() => setSettings({ translation: !translation })}
-          pressed={translation}
-          testId="novel-translation"
-        >
-          EN
-        </ToolButton>
-        <span className="flex-1" />
-        <ToolButton
-          onClick={() => setMenuOpen((open) => !open)}
-          pressed={menuOpen}
-          testId="novel-menu"
-          label="メニュー"
-        >
-          ☰
-        </ToolButton>
-        <FullButton index={index} show={show} />
-      </div>
-
       {menuOpen ? (
         <div
-          className="absolute right-2 bottom-12 z-30 w-48 space-y-1.5 rounded-2xl border-2 bg-white p-2 shadow-xl"
+          className="absolute right-2 bottom-14 z-30 w-52 space-y-1.5 rounded-2xl border-2 bg-white p-2 shadow-xl"
           style={{ borderColor: "var(--color-hairline)" }}
           data-testid="novel-menu-sheet"
         >
