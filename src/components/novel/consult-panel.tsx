@@ -392,7 +392,7 @@ export function ConsultPanel({
               <button
                 type="button"
                 onClick={() => setCardOpen((open) => !open)}
-                className="text-navy text-xs font-black underline"
+                className="text-navy -my-1 rounded-full px-3 py-1.5 text-xs font-black underline"
                 data-testid="novel-card-toggle"
               >
                 {cardOpen ? "とじる" : "ひらく"}

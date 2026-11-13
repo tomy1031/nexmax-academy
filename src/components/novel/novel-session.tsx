@@ -793,7 +793,7 @@ function Player({
               type="button"
               onClick={() => setWordsOpen((open) => !open)}
               aria-expanded={wordsOpen}
-              className="text-navy shrink-0 rounded-full bg-white px-2 py-0.5 text-xs font-black"
+              className="text-navy min-h-7 shrink-0 rounded-full bg-white px-2.5 py-1 text-xs font-black"
               data-testid="novel-words-button"
             >
               📘 <RubyText text="ことば" index={index} show={show} />
@@ -1128,7 +1128,7 @@ function MessageWindow({
           <button
             type="button"
             onClick={onNext}
-            className="text-navy rounded-full px-2 text-xs font-black"
+            className="text-navy min-h-8 min-w-10 rounded-full px-3 py-1 text-xs font-black"
             data-testid="novel-next"
             aria-label="つぎへ"
           >

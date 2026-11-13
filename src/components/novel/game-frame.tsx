@@ -184,7 +184,11 @@ export function GameFrame({ children }: { children: ReactNode }) {
         background: "var(--color-ink)",
         ...(full
           ? { height: "100dvh" }
-          : { height: "min(calc(100svh - 16px), 820px)", minHeight: 560 }),
+          : {
+              height: "min(calc(100svh - 16px), 820px)",
+              /* スマホの 横向き（高さ 390px 前後）でも 枠が 画面に 収まる ように */
+              minHeight: "min(560px, 100svh)",
+            }),
       }}
       data-testid="novel-frame"
       data-layout={layout}
