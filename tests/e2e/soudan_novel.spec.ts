@@ -474,9 +474,13 @@ test.describe("相談の 練習（サウンドノベル）", () => {
     expect(await page.evaluate(() => document.documentElement.style.overflow)).toBe("");
   });
 
-  test("短い URL（/soudan/meeting）は 前と 同じ ミーティングを 開く", async ({ page }) => {
+  test("短い URL（/soudan/meeting）は 相談の 練習を 開く（ミーティング：相談は 非表示・2026-11-13）", async ({
+    page,
+    context,
+  }) => {
+    await seedCompleted(context, BEFORE);
     await page.goto("/soudan/meeting");
-    await expect(page).toHaveURL(/\/soudan\/meeting-soudan_meeting$/u);
+    await expect(page.getByTestId("novel-title")).toBeVisible();
   });
 
   test("読み込み直しても「つづきから」で 同じ 場面に もどる", async ({ page, context }) => {

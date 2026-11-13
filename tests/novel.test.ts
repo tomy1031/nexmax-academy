@@ -120,12 +120,9 @@ describe("相談の 練習の データ（仕様書 v4 §8）", () => {
     });
   });
 
-  it("短い URL（/soudan/meeting）は 前と 同じ ミーティングへ 送る", () => {
-    expect(pinnedShortContent("soudan", "meeting")).toEqual({
-      type: "meeting",
-      ref: "soudan_meeting",
-    });
-    expect(pinnedShortContent("soudan", "meeting-soudan_novel")).toBeNull();
+  it("相談の ミーティングは 非表示に した ので、短い URL を とめて おかない（2026-11-13）", () => {
+    expect(pinnedShortContent("soudan", "meeting")).toBeNull();
+    expect(soudanStage.contents.map((item) => item.ref)).not.toContain("soudan_meeting");
   });
 
   it("お手本の 前半（①②）だけ 読んでも 合格に しない（③が いちばん 大事）", () => {
