@@ -167,6 +167,8 @@ codex -i public/img/characters/nexmax/reference.png \
 | `public/img/novel/{mouse,light}.webp` | 開発中の 画面に 出す 商品の 絵（320px） | 2026-11-12 |
 | `public/img/novel/matsumoto/{sheet,stand_neutral,stand_happy,stand_troubled}.webp` | お客様の 松本さん（架空・30代半ばの 店長）。設定画 → 立ち絵 3枚。台帳 `scripts/images/novel_matsumoto.json`（「もう少し若い方がいい」で 30代に した） | 2026-11-13 |
 | `public/img/novel/{hendy,nyam,shirai}/desk_{ok,phone,busy,talking}.webp` | 席に すわって いる 絵 4枚ずつ（話しかける タイミング・要望 #723）: 大丈夫そう（しごとは して いる）・電話中・忙しそう（あせって 打つ・汗・動きの 線）・ほかの 人と 話して いる（名前の ない 同僚が 横に 立つ）。**1枚目（大丈夫そう）を 先に 撮って 絵柄アンカーに し**、残り 3枚は 机・小物・構図を そろえて 動きと 表情だけ 変えた。背景ごと 撮る（切りぬかない）・1200×800 q84。台帳 `scripts/images/novel_desk_<id>.json`。12枚とも 作り直し ゼロ | 2026-11-13 |
+| `public/img/novel/shirai/{stand_*,desk_*}.webp`（作り直し） | 白井さんの トレーナーの 左胸に ネクマックスの 絵（tomy さんの 指定・参考 `scripts/images/refs/nexmax_shirt_print.png`）。台帳の looks と refs に 足して 7枚 作り直した。ヘンディさんの 電話中の 絵も 手が 2つに なって いたので 作り直した（左手で 電話・右手で 書く と 明記） | 2026-11-13 |
+| `public/img/novel/shop.webp`・`public/img/novel/matsumoto/shop_round.webp` | 松本店長の お店（パソコンの 小物の 店・人の いない 背景）と、お店の カウンターに 立つ 松本店長（丸く 切りぬいて 紹介に 使う）。台帳 `scripts/images/novel_shop.json` | 2026-11-13 |
 
 相談の 練習（`meeting.novel`）の 台帳は `scripts/images/novel_*.json`（hendy・nyam・shirai・matsumoto・office・products・desk_<id>）。
 `gen_images.mjs` は **1枚目が 出力フォルダに ある ときだけ** それを 絵柄アンカーに 足す。そろえたい 4枚は、1枚目だけの 台帳で 先に 撮って から 本の 台帳を 流す（2回目は 1枚目を 飛ばして アンカー つきで 撮る）。
