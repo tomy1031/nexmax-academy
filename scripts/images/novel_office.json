@@ -1,0 +1,21 @@
+{
+  "refs": ["public/img/scenes/office_president.webp"],
+  "_comment": "相談の 練習（サウンドノベル）の 背景 2枚（朝・午後）。人を 描かない。立ち絵が 中央〜右に 立つので、そこは 散らかさない。絵柄は 対話ゲームの 社長室（office_president.webp）に そろえる。",
+  "style": "Style: clean modern Japanese manga / anime background art, soft cel shading, bright friendly palette, rounded shapes, no harsh shadows, contemporary Japan, kid-safe e-learning illustration.",
+  "noText": "No text, no letters, no kanji, no kana, no numbers anywhere in the image (monitors show only abstract coloured blocks and lines). No watermark, no signature, no logo, no frame border.",
+  "negative": "Never: people or silhouettes, realistic photo rendering, harsh gradients, dark horror tone, clutter in the centre.",
+  "scenes": [
+    {
+      "out": "office_morning",
+      "dest": "public/img/novel/office_morning.webp",
+      "title": "オフィスの 朝",
+      "scene": "Background only, no people. A small bright software development team office in Japan in the MORNING: four desks pushed together with laptops and external monitors, office chairs, a whiteboard with abstract coloured sticky notes, potted plants, a coffee mug, large windows on the left with soft cool morning sunlight streaming in and a clear blue sky. Eye level view from standing height. Keep the centre and the right third calm and uncluttered (a plain wall and a tall plant) so a standing character can be placed there later."
+    },
+    {
+      "out": "office_afternoon",
+      "dest": "public/img/novel/office_afternoon.webp",
+      "title": "オフィスの 午後",
+      "scene": "Background only, no people. The SAME office from the same viewpoint as the first image, but in the late AFTERNOON: warm orange-gold sunlight slanting low through the windows, longer soft shadows, a wall clock shape without numbers, monitors on. Keep the centre and the right third calm and uncluttered so a standing character can be placed there later."
+    }
+  ]
+}

@@ -160,6 +160,21 @@ codex -i public/img/characters/nexmax/reference.png \
 | `public/img/characters/hendy/stand_neutral.webp` | 立って 正面。腕は 下ろす。おだやかに 聞いて いる | 2026-08-28 |
 | `public/img/characters/hendy/stand_smile.webp` | 少し 前へ。胸の 高さで 小さく サムズアップし、うれしそうに 笑う | 2026-08-28 |
 | `public/img/characters/hendy/stand_think.webp` | 手を あごに 当てて、少し 首を かしげて 考える | 2026-08-28 |
+| `public/img/novel/hendy/stand_troubled.webp` | 頭を かいて、汗を かいて こまる（相談の 練習。ふつう・うれしいは 上の 2枚を 使う） | 2026-11-12 |
+| `public/img/novel/nyam/stand_{neutral,happy,troubled}.webp` | ニャムさんの ふつう・うれしい（サムズアップ）・こまった（相談の 練習） | 2026-11-12 |
+| `public/img/novel/shirai/stand_{neutral,happy,troubled}.webp` | 白井さんの ふつう・うれしい・こまった（相談の 練習） | 2026-11-12 |
+| `public/img/novel/office_{morning,afternoon}.webp` | 相談の 練習の 背景（オフィスの 朝・午後。人を 描かない・中央と 右を 空ける） | 2026-11-12 |
+| `public/img/novel/{mouse,light}.webp` | 開発中の 画面に 出す 商品の 絵（320px） | 2026-11-12 |
+
+相談の 練習（`meeting.novel`）の 台帳は `scripts/images/novel_*.json`（hendy・nyam・shirai・office・products）。
+立ち絵は **白背景で 撮って `cutout_white.mjs` で 切りぬいた**（7枚とも 1回で 抜けた）。
+置き場は `public/img/characters/` では なく **`public/img/novel/`**（相談の 練習でしか 使わない 立ち絵なので、
+登場人物の 絵の 置き場（勝手に 変えては いけない 場所）に 足さない）。
+
+**クラウドの セッションでも Codex で 作れる**（2026-11-12）。`npm i -g @openai/codex` の あと
+`codex login --device-auth` を 走らせ、出た URL と コードを tomy さんに 渡して ChatGPT で 入れて もらう
+（15分で 切れる）。ログインが 済めば `npm run codex:bridge` → `gen_images.mjs` が ローカルと 同じに 動く。
+Codex の 接続が 要る 作業は **いちばん 最初に** これを 済ませる（注意事項 2026-11-12）。
 
 ヘンディの 3枚は 台帳 `scripts/images/hendy_talkgame.json`。**絵は あるが、画面に 出す
 配線は まだ 無い**——ふつうの ミーティング（`talkGame` の 無い 教材）は 背景と 立ち絵を

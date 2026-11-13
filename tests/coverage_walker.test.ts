@@ -92,6 +92,19 @@ const NOT_LEARNER_TEXT: readonly { key: RegExp; why: string }[] = [
   { key: /(^|\.)looks$/, why: "絵を 作る ための 英語の 指示" },
   { key: /(^|\.)speaker$/, why: "だれが 言うかの id" },
   /*
+   * 相談の 練習（サウンドノベル・2026-11-12）。`criteria` は Gemini に 渡す 判定の 基準、
+   * `words` は 1日 7語までの 管理と 辞書の 対応を 見る ための 一覧で、**どちらも 画面に 出ない**
+   *（`src/components/novel/` を 見て 確かめた。セリフの ことばの 下線は 辞書が 引く）。
+   */
+  {
+    key: /^novel\.days\[\d+\]\.scenes\[\d+\]\.criteria\./,
+    why: "AIに 渡す 判定の 基準（画面に 出ない）",
+  },
+  {
+    key: /^novel\.days\[\d+\]\.words\[\d+\]$/,
+    why: "その日の ことばの 一覧（数の 管理だけ・画面に 出ない）",
+  },
+  /*
    * クエストの 場面の おぼえがき。`phases` を 持つ 教材は クエストだけ なので、
    * この 形で クエストにだけ 効く。2026-09-11 に `src/components/quest/` を
    * 全部 見て、**どの 画面も 引いて いない**ことを 確かめた

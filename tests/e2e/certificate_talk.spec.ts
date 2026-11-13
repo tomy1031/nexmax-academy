@@ -38,7 +38,7 @@ test("ミーティング: 話しきった 瞬間に 修了証が 出る。飛ば
     readFileSync(join("content", "meetings", "soudan_meeting.json"), "utf8"),
   );
   await seedBefore(context, "soudan", "soudan_meeting");
-  await page.goto("/soudan/meeting");
+  await page.goto("/soudan/meeting-soudan_meeting");
   await joinCall(page);
   for (let i = 0; i < meeting.questions.length; i += 1) {
     await skipAsk(page);

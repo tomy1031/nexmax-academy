@@ -20,6 +20,7 @@
 import {
   FORBIDDEN_LEARNER_WORDS,
   type Content,
+  type NovelScreen,
   type Scenario,
   type Stage,
 } from "../content/schema";
@@ -1234,6 +1235,93 @@ export function collectLabeledTexts(content: Content): LabeledText[] {
         game.listenHints.forEach((one, i) => push(`talkGame.listenHints[${i}]`, one));
         if (game.listenExample) push("talkGame.listenExample", game.listenExample);
         push("talkGame.reward", game.reward);
+      }
+      /*
+       * 相談の 練習（サウンドノベル・2026-11-12）。**セリフも 資料も カードも お手本も
+       * ぜんぶ 学習者が 読む**。漏らすと 資料の 1行（気づきで 選ぶ 行）だけ 裸の 漢字に なり、
+       * 読めない 行は 比べようが ない。
+       *
+       * `criteria`（判定の 基準）は Gemini に 渡す 材料で、画面には 出ない。
+       * `en`・`km` は 訳で、ふりがなは 要らない。
+       */
+      if (content.novel) {
+        const novel = content.novel;
+        novel.cast.forEach((person, i) => {
+          push(`novel.cast[${i}].name`, person.name);
+          push(`novel.cast[${i}].role`, person.role);
+          push(`novel.cast[${i}].duty`, person.duty);
+        });
+        for (const [type, reaction] of Object.entries(novel.reactions)) {
+          push(`novel.reactions.${type}.text`, reaction.text);
+          push(`novel.reactions.${type}.hint`, reaction.hint);
+        }
+        const pushScreen = (at: string, screen: NovelScreen) => {
+          push(`${at}.title`, screen.title);
+          push(`${at}.button`, screen.button);
+          push(`${at}.note`, screen.note);
+          screen.rows.forEach((row, r) => {
+            push(`${at}.rows[${r}].label`, row.label);
+            push(`${at}.rows[${r}].value`, row.value);
+          });
+        };
+        novel.days.forEach((day, d) => {
+          const dayAt = `novel.days[${d}]`;
+          push(`${dayAt}.label`, day.label);
+          pushScreen(`${dayAt}.screen`, day.screen);
+          day.scenes.forEach((scene, s) => {
+            const at = `${dayAt}.scenes[${s}]`;
+            switch (scene.type) {
+              case "line":
+              case "goal":
+              case "point":
+              case "ending":
+                push(`${at}.text`, scene.text);
+                break;
+              case "notice":
+                for (const side of ["left", "right"] as const) {
+                  push(`${at}.${side}.title`, scene[side].title);
+                  scene[side].lines.forEach((line, l) =>
+                    push(`${at}.${side}.lines[${l}].text`, line.text),
+                  );
+                }
+                push(`${at}.prompt`, scene.prompt);
+                push(`${at}.hint`, scene.hint);
+                push(`${at}.card.seen`, scene.card.seen);
+                push(`${at}.card.diff`, scene.card.diff);
+                push(`${at}.card.seenKey`, scene.card.seenKey);
+                push(`${at}.card.diffKey`, scene.card.diffKey);
+                break;
+              case "self_fix":
+                push(`${at}.text`, scene.text);
+                break;
+              case "choose_person":
+                push(`${at}.wrong`, scene.wrong);
+                break;
+              case "consult":
+                push(`${at}.askForm`, scene.askForm);
+                push(`${at}.call`, scene.call);
+                push(`${at}.reply`, scene.reply);
+                push(`${at}.topic`, scene.topic);
+                push(`${at}.example`, scene.example);
+                push(`${at}.cloze`, scene.cloze);
+                for (const [type, reaction] of Object.entries(scene.reactions ?? {})) {
+                  push(`${at}.reactions.${type}.text`, reaction.text);
+                  push(`${at}.reactions.${type}.hint`, reaction.hint);
+                }
+                for (const [type, lines] of Object.entries(scene.whatIf ?? {})) {
+                  (lines ?? []).forEach((line, l) =>
+                    push(`${at}.whatIf.${type}[${l}].text`, line.text),
+                  );
+                }
+                break;
+              case "screen":
+                push(`${at}.text`, scene.text);
+                pushScreen(`${at}.before`, scene.before);
+                pushScreen(`${at}.after`, scene.after);
+                break;
+            }
+          });
+        });
       }
       /*
        * 朝礼・夕礼（台帳 #366）。**ここも ぜんぶ 学習者が 読む**——

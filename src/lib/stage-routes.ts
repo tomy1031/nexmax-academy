@@ -182,7 +182,41 @@ const REPLACED: readonly {
     from: { type: "link", ref: "renraku_contact" },
     to: { type: "quizset", ref: "renraku_contact_quiz" },
   },
+  /*
+   * 2026-11-12: 相談の 場面クイズ「いま 話しかけて いい？」（quizset `soudan_kehai`）を
+   * 相談の 練習（サウンドノベル・meeting `soudan_novel`）へ 差し替えた（仕様書 v4）。
+   * 元の もんだいは 消さずに ステージから 外した だけ。
+   */
+  {
+    stage: "soudan",
+    from: { type: "quizset", ref: "soudan_kehai" },
+    to: { type: "meeting", ref: "soudan_novel" },
+  },
 ];
+
+/**
+ * **種別だけの 短い URL を、前と 同じ 教材に とめて おく**（2026-11-12）。
+ *
+ * 短い 形（`/soudan/meeting`）は そのステージの **いちばん 前の** その種別を 指す
+ *（`resolveStageContent`）。相談の 練習（meeting `soudan_novel`）を ミーティングの
+ * 前に 入れた ので、何も しないと 先生が 配った `/soudan/meeting` が **黙って 別の
+ * 教材（相談の 練習）を 開く**——404 に ならないので 気づきにくい。ここに 書いた ものは
+ * 前の 教材の 長い URL へ 送る。
+ */
+const PINNED_SHORT: readonly {
+  readonly stage: string;
+  readonly segment: string;
+  readonly to: { readonly type: ContentRefType; readonly ref: string };
+}[] = [{ stage: "soudan", segment: "meeting", to: { type: "meeting", ref: "soudan_meeting" } }];
+
+/** 短い URL を 前と 同じ 教材に とめて あるなら、その 種別と ID。ちがえば null。 */
+export function pinnedShortContent(
+  stageId: string,
+  segment: string,
+): { type: ContentRefType; ref: string } | null {
+  const hit = PINNED_SHORT.find((one) => one.stage === stageId && one.segment === segment);
+  return hit ? { ...hit.to } : null;
+}
 
 /**
  * 差し替えた 教材の **古い 2段目**なら、いまの 種別と ID。ちがえば null。

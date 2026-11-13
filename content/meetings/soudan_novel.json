@@ -1,0 +1,2526 @@
+{
+  "kind": "meeting",
+  "id": "soudan_novel",
+  "title": "相談の 5日間（ネットショップ）",
+  "description": "新人エンジニアの 5日間です。資料を 比べて ちがいに 気づき、マイクで 相談します。",
+  "focus": "相談では 3つを 話します。①見たもの ②ちがい ③聞きたいこと",
+  "persona": "相談の 練習の 判定係です。学生の 相談を 聞いて、判定だけを 返します。学生には 話しかけません。",
+  "host": {
+    "id": "hendy",
+    "name": "ヘンディ",
+    "role": "PM",
+    "accent": "sky"
+  },
+  "questions": [],
+  "closing": "5日間、おつかれさまでした。",
+  "novel": {
+    "cast": [
+      {
+        "id": "hendy",
+        "name": "ヘンディ",
+        "role": "PM",
+        "duty": "お客様との 約束・仕様・納品の 日",
+        "figures": {
+          "neutral": "/img/characters/hendy/stand_neutral.webp",
+          "happy": "/img/characters/hendy/stand_smile.webp",
+          "troubled": "/img/novel/hendy/stand_troubled.webp"
+        }
+      },
+      {
+        "id": "nyam",
+        "name": "ニャム",
+        "role": "バックエンド",
+        "duty": "API・データの 登録",
+        "figures": {
+          "neutral": "/img/novel/nyam/stand_neutral.webp",
+          "happy": "/img/novel/nyam/stand_happy.webp",
+          "troubled": "/img/novel/nyam/stand_troubled.webp"
+        }
+      },
+      {
+        "id": "shirai",
+        "name": "白井",
+        "role": "デザイナー",
+        "duty": "画面の デザイン・画像",
+        "figures": {
+          "neutral": "/img/novel/shirai/stand_neutral.webp",
+          "happy": "/img/novel/shirai/stand_happy.webp",
+          "troubled": "/img/novel/shirai/stand_troubled.webp"
+        }
+      },
+      {
+        "id": "matsumoto",
+        "name": "松本",
+        "role": "お客様（お店の 店長）"
+      }
+    ],
+    "backgrounds": {
+      "morning": "/img/novel/office_morning.webp",
+      "afternoon": "/img/novel/office_afternoon.webp"
+    },
+    "reactions": {
+      "vague": {
+        "text": "すみません、何の 話ですか？",
+        "en": "Sorry, what are you talking about?",
+        "hint": "どの 資料の、どこですか。",
+        "hintEn": "Which document, and where?"
+      },
+      "no_ask": {
+        "text": "わかりました。それで、私は 何を しますか？",
+        "en": "I see. So, what should I do?",
+        "hint": "して ほしい ことを 言いましょう。",
+        "hintEn": "Say what you want them to do."
+      },
+      "blaming": {
+        "text": "えっ…どこが おかしいですか？",
+        "en": "Huh... what is wrong?",
+        "hint": "人では なく、資料の 話を しましょう。",
+        "hintEn": "Talk about the documents, not the person."
+      },
+      "decided_alone": {
+        "text": "待って ください。それを 決めるのは 私の 仕事です。",
+        "en": "Wait. Deciding that is my job.",
+        "hint": "決める 前に、聞きましょう。",
+        "hintEn": "Ask before you decide."
+      },
+      "hiding": {
+        "text": "本当ですか？ テストの 結果を 見せて ください。",
+        "en": "Really? Show me the test results.",
+        "hint": "悪い ことも、そのまま 言いましょう。",
+        "hintEn": "Say bad things as they are, too."
+      },
+      "off_topic": {
+        "text": "今は、◯◯の 話を しましょう。",
+        "en": "Let's talk about ◯◯ now.",
+        "hint": "気づきカードを 見ましょう。",
+        "hintEn": "Look at your notice card."
+      },
+      "unclear_audio": {
+        "text": "もう 一度 お願いします。",
+        "en": "Once more, please.",
+        "hint": "マイクに 近づいて、もう 少し 大きい 声で 話しましょう。",
+        "hintEn": "Move closer to the mic and speak a little louder."
+      }
+    },
+    "days": [
+      {
+        "id": "mon",
+        "label": "月曜日",
+        "bg": "morning",
+        "words": [
+          "仕様書",
+          "商品一覧",
+          "在庫",
+          "注文",
+          "数量",
+          "相談"
+        ],
+        "screen": {
+          "title": "商品一覧",
+          "rows": [],
+          "note": "まだ 作って いません。"
+        },
+        "scenes": [
+          {
+            "id": "m01",
+            "step": "intro",
+            "type": "line",
+            "speaker": "narration",
+            "text": "あなたは 新人エンジニアです。今週、小さな ネットショップを 作ります。",
+            "en": "You are a new engineer. This week, you will build a small online shop."
+          },
+          {
+            "id": "m02",
+            "step": "intro",
+            "type": "line",
+            "speaker": "hendy",
+            "text": "おはよう ございます。PMの ヘンディです。",
+            "en": "Good morning. I'm Hendy, the PM.",
+            "face": "neutral"
+          },
+          {
+            "id": "m02b",
+            "step": "intro",
+            "type": "line",
+            "speaker": "hendy",
+            "text": "お客様は、お店の 店長の 松本さんです。",
+            "en": "Our client is Mr. Matsumoto, the shop manager.",
+            "face": "neutral"
+          },
+          {
+            "id": "m03",
+            "step": "intro",
+            "type": "line",
+            "speaker": "hendy",
+            "text": "金曜日の 16時に、松本さんに 納品します。5日間、よろしく お願いします。",
+            "en": "We deliver to Mr. Matsumoto on Friday at 4 p.m. Let's work well together for five days.",
+            "face": "neutral"
+          },
+          {
+            "id": "m04",
+            "step": "intro",
+            "type": "line",
+            "speaker": "hendy",
+            "text": "チームには、ニャムさんと 白井さんが います。",
+            "en": "Our team also has Nyam and Shirai.",
+            "face": "neutral"
+          },
+          {
+            "id": "m05",
+            "step": "intro",
+            "type": "line",
+            "speaker": "nyam",
+            "text": "ニャムです。APIと データの 仕事を して います。",
+            "en": "I'm Nyam. I work on the API and data.",
+            "face": "happy"
+          },
+          {
+            "id": "m06",
+            "step": "intro",
+            "type": "line",
+            "speaker": "shirai",
+            "text": "白井です。画面の デザインと 画像を 作って います。",
+            "en": "I'm Shirai. I make the screen designs and images.",
+            "face": "happy"
+          },
+          {
+            "id": "m07",
+            "step": "goal",
+            "type": "line",
+            "speaker": "hendy",
+            "text": "今日は、商品一覧の 画面を 作ります。",
+            "en": "Today, you will make the product list screen.",
+            "face": "neutral"
+          },
+          {
+            "id": "m08",
+            "step": "goal",
+            "type": "line",
+            "speaker": "hendy",
+            "text": "作る 前に、仕様書と 商品データを 比べて ください。",
+            "en": "Before you build it, compare the specification and the product data.",
+            "face": "neutral"
+          },
+          {
+            "id": "m09",
+            "step": "goal",
+            "type": "line",
+            "speaker": "hendy",
+            "text": "ちがいが あったら、作る 前に 私に 聞いて ください。",
+            "en": "If something is different, ask me before you build it.",
+            "face": "neutral"
+          },
+          {
+            "id": "m10",
+            "step": "goal",
+            "type": "goal",
+            "text": "今日の 目的：商品一覧を 作る。その 前に、仕様書と 商品データを 比べる。",
+            "en": "Today's goal: make the product list. Before that, compare the specification and the product data."
+          },
+          {
+            "id": "m11",
+            "step": "notice",
+            "type": "line",
+            "speaker": "hendy",
+            "text": "2つの 資料から、ちがう 行を 1つずつ 選んで ください。",
+            "en": "From the two documents, choose one line from each that doesn't match.",
+            "face": "neutral"
+          },
+          {
+            "id": "m11b",
+            "step": "notice",
+            "type": "line",
+            "speaker": "hendy",
+            "text": "選んだら、「くらべる」を 押して ください。",
+            "en": "When you have chosen, press \"Compare\".",
+            "face": "neutral"
+          },
+          {
+            "id": "n_mon",
+            "step": "notice",
+            "type": "notice",
+            "left": {
+              "title": "商品一覧の 仕様書",
+              "look": "doc",
+              "lines": [
+                {
+                  "id": "s1",
+                  "text": "商品の 名前と 値段を 出す。",
+                  "en": "Show each product's name and price."
+                },
+                {
+                  "id": "s2",
+                  "text": "1つの 商品を 1〜5個 注文できる。",
+                  "en": "You can order 1 to 5 of one product."
+                },
+                {
+                  "id": "s3",
+                  "text": "在庫が 0の 商品は「売り切れ」。",
+                  "en": "Products with 0 stock show \"Sold out\"."
+                }
+              ]
+            },
+            "right": {
+              "title": "商品データ",
+              "look": "doc",
+              "lines": [
+                {
+                  "id": "d1",
+                  "text": "マウス：在庫 10個",
+                  "en": "Mouse: 10 in stock"
+                },
+                {
+                  "id": "d2",
+                  "text": "USBライト：在庫 2個",
+                  "en": "USB light: 2 in stock"
+                },
+                {
+                  "id": "d3",
+                  "text": "ノート：在庫 8個",
+                  "en": "Notebook: 8 in stock"
+                }
+              ]
+            },
+            "answer": [
+              "s2",
+              "d2"
+            ],
+            "hint": "数字を 見て ください。",
+            "hintEn": "Look at the numbers.",
+            "card": {
+              "seen": "仕様書では、1〜5個 注文できる。",
+              "diff": "USBライトの 在庫は 2個。",
+              "seenKey": "仕様書・1〜5個",
+              "diffKey": "USBライト・在庫 2個"
+            },
+            "prompt": "仕様書と 商品データを 比べて、合わない 行を 1つずつ 選びます。"
+          },
+          {
+            "id": "m13",
+            "step": "notice",
+            "type": "line",
+            "speaker": "thought",
+            "text": "あれ？ 5個 注文できるのに、USBライトの 在庫は 2個だ。",
+            "en": "Huh? You can order five, but there are only two USB lights in stock.",
+            "se": "notice"
+          },
+          {
+            "id": "m14",
+            "step": "notice",
+            "type": "line",
+            "speaker": "thought",
+            "text": "これは 仕様の 話だ。だれに 聞けば いいかな。",
+            "en": "This is about the specification. Who should I ask?"
+          },
+          {
+            "id": "m15",
+            "step": "notice",
+            "type": "choose_person",
+            "options": [
+              "hendy",
+              "nyam",
+              "shirai"
+            ],
+            "answer": "hendy",
+            "wrong": "それは ヘンディさんに 聞いて ください。",
+            "wrongEn": "Please ask Hendy about that."
+          },
+          {
+            "id": "m16",
+            "step": "consult",
+            "type": "line",
+            "speaker": "narration",
+            "text": "相談では、3つを 順に 話します。①見たもの ②ちがい ③聞きたいこと",
+            "en": "When you consult, say three things in order: ① what you saw, ② what is different, ③ what you want to ask."
+          },
+          {
+            "id": "c_mon",
+            "step": "consult",
+            "type": "consult",
+            "to": "hendy",
+            "support": "form",
+            "askForm": "＿＿ますか。",
+            "call": "ヘンディさん、今、お時間 よろしいですか。",
+            "reply": "はい、どう しましたか。",
+            "replyEn": "Yes, what is it?",
+            "topic": "在庫の 数",
+            "criteria": {
+              "context": "商品一覧の 仕様書では 1〜5個 注文できる、と 言う。",
+              "problem": "USBライトの 在庫は 2個しか ない、と 言う。",
+              "ask": "在庫より 多い 注文を どう するか（できないように するか）を 聞く。"
+            },
+            "example": "仕様書では、1〜5個 注文できます。でも、USBライトの 在庫は 2個です。在庫より 多い 注文は、できないように しますか。",
+            "exampleEn": "The specification says you can order 1 to 5. But there are only 2 USB lights in stock. Should we block orders larger than the stock?",
+            "cloze": "仕様書では、＿＿。でも、＿＿。＿＿ますか。",
+            "reactions": {
+              "no_ask": {
+                "text": "わかりました。それで、何を 聞きたいですか？",
+                "en": "I see. So, what do you want to ask?",
+                "hint": "③ 聞きたい ことを 言いましょう。「〜ますか。」",
+                "hintEn": "Say ③ what you want to ask: \"...masu ka?\""
+              }
+            }
+          },
+          {
+            "id": "m18",
+            "step": "result",
+            "type": "line",
+            "speaker": "hendy",
+            "text": "よく 見つけましたね。在庫より 多い 注文は、できないように して ください。",
+            "en": "Good catch. Please make it impossible to order more than the stock.",
+            "face": "happy",
+            "se": "pass"
+          },
+          {
+            "id": "m19",
+            "step": "result",
+            "type": "line",
+            "speaker": "me",
+            "text": "わかりました。その ように 作ります。",
+            "en": "Understood. I'll build it that way."
+          },
+          {
+            "id": "m20",
+            "step": "result",
+            "type": "screen",
+            "text": "商品一覧が できました。数量は、USBライトが 1〜2個、マウスが 1〜5個です。",
+            "en": "The product list is done. You can order 1–2 USB lights and 1–5 mice.",
+            "before": {
+              "title": "商品一覧",
+              "rows": [],
+              "note": "まだ 作って いません。"
+            },
+            "after": {
+              "title": "商品一覧",
+              "rows": [
+                {
+                  "label": "マウス",
+                  "value": "数量 1〜5個",
+                  "image": "/img/novel/mouse.webp",
+                  "state": "ok"
+                },
+                {
+                  "label": "USBライト",
+                  "value": "数量 1〜2個",
+                  "image": "/img/novel/light.webp",
+                  "state": "new"
+                }
+              ]
+            }
+          },
+          {
+            "id": "m21",
+            "step": "result",
+            "type": "line",
+            "speaker": "hendy",
+            "text": "作る 前に 聞いたので、やり直しが ありませんでした。ありがとう。",
+            "en": "Because you asked before building, there was no rework. Thank you.",
+            "face": "happy"
+          },
+          {
+            "id": "m22",
+            "step": "result",
+            "type": "point",
+            "text": "作る 前に、資料と 資料を 比べる。",
+            "en": "Before you build, compare one document with another."
+          }
+        ]
+      },
+      {
+        "id": "tue",
+        "label": "火曜日",
+        "bg": "morning",
+        "words": [
+          "欄",
+          "API",
+          "ログイン",
+          "ユーザーID",
+          "必須",
+          "担当"
+        ],
+        "screen": {
+          "title": "注文画面",
+          "rows": [],
+          "note": "まだ 作って いません。"
+        },
+        "scenes": [
+          {
+            "id": "t01",
+            "step": "goal",
+            "type": "line",
+            "speaker": "hendy",
+            "text": "おはよう ございます。今日は、注文画面を 作ります。",
+            "en": "Good morning. Today you will make the order screen.",
+            "face": "neutral"
+          },
+          {
+            "id": "t02",
+            "step": "goal",
+            "type": "line",
+            "speaker": "hendy",
+            "text": "資料は 3つ あります。仕様書、画面デザイン、API資料です。",
+            "en": "There are three documents: the specification, the screen design, and the API document.",
+            "face": "neutral"
+          },
+          {
+            "id": "t03",
+            "step": "goal",
+            "type": "line",
+            "speaker": "hendy",
+            "text": "昨日と 同じです。比べて、ちがいは 担当の 人に 聞いて ください。",
+            "en": "Same as yesterday. Compare them, and ask the person in charge about any difference.",
+            "face": "neutral"
+          },
+          {
+            "id": "t04",
+            "step": "goal",
+            "type": "goal",
+            "text": "今日の 目的：注文画面を 作る。その 前に、3つの 資料を 比べる。",
+            "en": "Today's goal: make the order screen. Before that, compare the three documents."
+          },
+          {
+            "id": "n_tue1",
+            "step": "notice",
+            "type": "notice",
+            "left": {
+              "title": "注文画面の 仕様書",
+              "look": "doc",
+              "lines": [
+                {
+                  "id": "t1",
+                  "text": "入れる もの：名前・住所・数量",
+                  "en": "Fields: name, address, quantity"
+                },
+                {
+                  "id": "t2",
+                  "text": "ログインしなくても 注文できる。",
+                  "en": "You can order without logging in."
+                },
+                {
+                  "id": "t3",
+                  "text": "ボタンを 押すと、注文が 1件 できる。",
+                  "en": "Pressing the button makes one order."
+                }
+              ]
+            },
+            "right": {
+              "title": "画面デザイン",
+              "look": "doc",
+              "lines": [
+                {
+                  "id": "g1",
+                  "text": "入力欄は 名前と 数量の 2つ。",
+                  "en": "Two input fields: name and quantity."
+                },
+                {
+                  "id": "g2",
+                  "text": "ボタンは「注文する」。",
+                  "en": "The button says \"Order\"."
+                },
+                {
+                  "id": "g3",
+                  "text": "色は 青と 白。",
+                  "en": "Colors: blue and white."
+                }
+              ]
+            },
+            "answer": [
+              "t1",
+              "g1"
+            ],
+            "hint": "入力欄の 数を 見て ください。",
+            "hintEn": "Look at the number of input fields.",
+            "card": {
+              "seen": "仕様書には、名前・住所・数量が ある。",
+              "diff": "デザインには、住所の 欄が ない。",
+              "seenKey": "仕様書・名前・住所・数量",
+              "diffKey": "デザイン・住所の 欄が ない"
+            },
+            "prompt": "仕様書と 画面デザインを 比べて、合わない 行を 1つずつ 選びます。"
+          },
+          {
+            "id": "t06",
+            "step": "notice",
+            "type": "line",
+            "speaker": "thought",
+            "text": "仕様書には 住所が ある。でも、デザインには 住所の 欄が ない。",
+            "en": "The specification has an address. But the design has no address field.",
+            "se": "notice"
+          },
+          {
+            "id": "t07",
+            "step": "notice",
+            "type": "choose_person",
+            "options": [
+              "hendy",
+              "nyam",
+              "shirai"
+            ],
+            "answer": "shirai",
+            "wrong": "それは 白井さんに 聞いて ください。",
+            "wrongEn": "Please ask Shirai about that."
+          },
+          {
+            "id": "c_tue1",
+            "step": "consult",
+            "type": "consult",
+            "to": "shirai",
+            "support": "sentence",
+            "call": "白井さん、今、お時間 よろしいですか。",
+            "reply": "はい、どう しましたか。",
+            "replyEn": "Yes, what is it?",
+            "topic": "住所の 欄",
+            "criteria": {
+              "context": "注文画面の 仕様書には 名前・住所・数量が ある、と 言う。",
+              "problem": "画面デザインに 住所の 欄が ない、と 言う。",
+              "ask": "住所の 欄を 入れて ほしい と お願いする、または どう するかを 聞く。"
+            },
+            "example": "仕様書には、名前と 住所と 数量が あります。でも、デザインには 住所の 欄が ありません。住所の 欄を 入れて もらえますか。",
+            "exampleEn": "The specification has name, address, and quantity. But the design has no address field. Could you add an address field?",
+            "cloze": "仕様書には、＿＿。でも、デザインには ＿＿。＿＿もらえますか。"
+          },
+          {
+            "id": "t09",
+            "step": "result",
+            "type": "line",
+            "speaker": "shirai",
+            "text": "本当ですね。すみません、すぐに 住所の 欄を 入れます。",
+            "en": "You're right. Sorry, I'll add the address field right away.",
+            "face": "troubled",
+            "se": "pass"
+          },
+          {
+            "id": "t10",
+            "step": "result",
+            "type": "screen",
+            "text": "画面デザインに 住所の 欄が 入りました。",
+            "en": "An address field was added to the screen design.",
+            "before": {
+              "title": "画面デザイン（注文）",
+              "rows": [
+                {
+                  "label": "名前"
+                },
+                {
+                  "label": "数量"
+                }
+              ],
+              "button": "注文する"
+            },
+            "after": {
+              "title": "画面デザイン（注文）",
+              "rows": [
+                {
+                  "label": "名前"
+                },
+                {
+                  "label": "住所",
+                  "state": "new"
+                },
+                {
+                  "label": "数量"
+                }
+              ],
+              "button": "注文する"
+            }
+          },
+          {
+            "id": "t11",
+            "step": "result",
+            "type": "line",
+            "speaker": "shirai",
+            "text": "教えて くれて ありがとう。助かりました。",
+            "en": "Thanks for telling me. That helped a lot.",
+            "face": "happy"
+          },
+          {
+            "id": "t12",
+            "step": "notice",
+            "type": "line",
+            "speaker": "thought",
+            "text": "次は、仕様書と API資料を 比べよう。",
+            "en": "Next, I'll compare the specification and the API document."
+          },
+          {
+            "id": "n_tue2",
+            "step": "notice",
+            "type": "notice",
+            "left": {
+              "title": "注文画面の 仕様書",
+              "look": "doc",
+              "lines": [
+                {
+                  "id": "t1",
+                  "text": "入れる もの：名前・住所・数量",
+                  "en": "Fields: name, address, quantity"
+                },
+                {
+                  "id": "t2",
+                  "text": "ログインしなくても 注文できる。",
+                  "en": "You can order without logging in."
+                },
+                {
+                  "id": "t3",
+                  "text": "ボタンを 押すと、注文が 1件 できる。",
+                  "en": "Pressing the button makes one order."
+                }
+              ]
+            },
+            "right": {
+              "title": "注文APIの 資料",
+              "look": "doc",
+              "lines": [
+                {
+                  "id": "a1",
+                  "text": "送る データ：商品・数量・住所",
+                  "en": "Data to send: product, quantity, address"
+                },
+                {
+                  "id": "a2",
+                  "text": "ユーザーIDは 必須。",
+                  "en": "User ID is required."
+                },
+                {
+                  "id": "a3",
+                  "text": "注文が できたら、番号を 返す。",
+                  "en": "When the order is made, it returns a number."
+                }
+              ]
+            },
+            "answer": [
+              "t2",
+              "a2"
+            ],
+            "hint": "ログインの ところを 見て ください。",
+            "hintEn": "Look at the part about login.",
+            "card": {
+              "seen": "仕様書では、ログインしなくても 注文できる。",
+              "diff": "APIは、ユーザーIDが 必須。",
+              "seenKey": "仕様書・ログインなしで 注文",
+              "diffKey": "API・ユーザーIDが 必須"
+            },
+            "prompt": "仕様書と API資料を 比べて、合わない 行を 1つずつ 選びます。"
+          },
+          {
+            "id": "t14",
+            "step": "notice",
+            "type": "line",
+            "speaker": "thought",
+            "text": "ログインしない 人は、ユーザーIDが ない。これでは 注文できない。",
+            "en": "People who don't log in have no user ID. Then they can't order.",
+            "se": "notice"
+          },
+          {
+            "id": "t15",
+            "step": "notice",
+            "type": "choose_person",
+            "options": [
+              "hendy",
+              "nyam",
+              "shirai"
+            ],
+            "answer": "nyam",
+            "wrong": "それは ニャムさんに 聞いて ください。",
+            "wrongEn": "Please ask Nyam about that."
+          },
+          {
+            "id": "c_tue2",
+            "step": "consult",
+            "type": "consult",
+            "to": "nyam",
+            "support": "sentence",
+            "call": "ニャムさん、今、お時間 よろしいですか。",
+            "reply": "はい、どう しましたか。",
+            "replyEn": "Yes, what is it?",
+            "topic": "ユーザーID",
+            "criteria": {
+              "context": "注文画面の 仕様書では ログインしなくても 注文できる、と 言う。",
+              "problem": "注文の APIは ユーザーIDが 必須に なって いる、と 言う。",
+              "ask": "ユーザーIDが なくても 注文できるように して ほしい と お願いする、または どう するかを 聞く。"
+            },
+            "example": "仕様書では、ログインしなくても 注文できます。でも、APIは ユーザーIDが 必須です。IDが なくても 注文できるように して もらえますか。",
+            "exampleEn": "The specification says you can order without logging in. But the API requires a user ID. Could you make it possible to order without an ID?",
+            "cloze": "仕様書では、＿＿。でも、APIは ＿＿。＿＿もらえますか。"
+          },
+          {
+            "id": "t17",
+            "step": "result",
+            "type": "line",
+            "speaker": "nyam",
+            "text": "いい 質問ですね。IDが なくても 注文できるように、APIを 直します。",
+            "en": "Good question. I'll fix the API so you can order without a user ID.",
+            "face": "happy",
+            "se": "pass"
+          },
+          {
+            "id": "t18",
+            "step": "result",
+            "type": "line",
+            "speaker": "nyam",
+            "text": "30分ぐらいで できます。終わったら 言いますね。",
+            "en": "It will take about 30 minutes. I'll tell you when it's done.",
+            "face": "neutral"
+          },
+          {
+            "id": "t19",
+            "step": "result",
+            "type": "screen",
+            "text": "注文画面が できました。名前・住所・数量と「注文する」ボタンが あります。",
+            "en": "The order screen is done: name, address, quantity, and an \"Order\" button.",
+            "before": {
+              "title": "注文画面",
+              "rows": [],
+              "note": "まだ 作って いません。"
+            },
+            "after": {
+              "title": "注文画面",
+              "rows": [
+                {
+                  "label": "名前"
+                },
+                {
+                  "label": "住所",
+                  "state": "new"
+                },
+                {
+                  "label": "数量"
+                }
+              ],
+              "button": "注文する",
+              "note": "ログインしなくても 注文できます。"
+            }
+          },
+          {
+            "id": "t20",
+            "step": "result",
+            "type": "line",
+            "speaker": "hendy",
+            "text": "今日は 二人に 相談できましたね。聞く 相手も 正しかったです。",
+            "en": "You consulted two people today. You also asked the right people.",
+            "face": "happy"
+          },
+          {
+            "id": "t21",
+            "step": "result",
+            "type": "point",
+            "text": "ちがいを 見つけたら、その 仕事の 担当の 人に 聞く。",
+            "en": "When you find a difference, ask the person in charge of that work."
+          }
+        ]
+      },
+      {
+        "id": "wed",
+        "label": "水曜日",
+        "bg": "morning",
+        "words": [
+          "ファイル名",
+          "フォルダ",
+          "画像"
+        ],
+        "screen": {
+          "title": "商品一覧",
+          "rows": [
+            {
+              "label": "マウス",
+              "image": "/img/novel/mouse.webp",
+              "state": "broken"
+            },
+            {
+              "label": "USBライト",
+              "image": "/img/novel/light.webp",
+              "state": "broken"
+            }
+          ]
+        },
+        "scenes": [
+          {
+            "id": "w01",
+            "step": "goal",
+            "type": "line",
+            "speaker": "hendy",
+            "text": "おはよう ございます。昨日、松本さんに 画面を 見せました。",
+            "en": "Good morning. Yesterday I showed the screens to Mr. Matsumoto.",
+            "face": "neutral"
+          },
+          {
+            "id": "w02",
+            "step": "goal",
+            "type": "line",
+            "speaker": "hendy",
+            "text": "でも、商品の 画像が 出て いません。今日は 画像を 直して ください。",
+            "en": "But the product images don't appear. Please fix the images today.",
+            "face": "troubled"
+          },
+          {
+            "id": "w03",
+            "step": "goal",
+            "type": "line",
+            "speaker": "hendy",
+            "text": "まず 自分で 調べて ください。自分で できない ことは、相談して ください。",
+            "en": "First, check it yourself. If you can't do something yourself, consult someone.",
+            "face": "neutral"
+          },
+          {
+            "id": "w04",
+            "step": "goal",
+            "type": "goal",
+            "text": "今日の 目的：商品の 画像を 出す。まず 自分で 調べる。",
+            "en": "Today's goal: show the product images. First, check it yourself."
+          },
+          {
+            "id": "n_wed1",
+            "step": "notice",
+            "type": "notice",
+            "left": {
+              "title": "画面の コード（マウス）",
+              "look": "code",
+              "lines": [
+                {
+                  "id": "c1",
+                  "text": "src = \"mouse.pmg\"",
+                  "en": "Image file: mouse.pmg"
+                },
+                {
+                  "id": "c2",
+                  "text": "name = \"マウス\"",
+                  "en": "Text: Mouse"
+                }
+              ]
+            },
+            "right": {
+              "title": "images フォルダ",
+              "look": "files",
+              "lines": [
+                {
+                  "id": "f1",
+                  "text": "mouse.png",
+                  "en": "mouse.png"
+                },
+                {
+                  "id": "f2",
+                  "text": "keyboard.png",
+                  "en": "keyboard.png"
+                }
+              ]
+            },
+            "answer": [
+              "c1",
+              "f1"
+            ],
+            "hint": "ファイル名を 1字ずつ 見て ください。",
+            "hintEn": "Look at the file names letter by letter.",
+            "card": {
+              "seen": "コードは mouse.pmg。",
+              "diff": "フォルダの ファイルは mouse.png。",
+              "seenKey": "コード・mouse.pmg",
+              "diffKey": "フォルダ・mouse.png"
+            },
+            "prompt": "コードの ファイル名と、フォルダの ファイルを 比べます。"
+          },
+          {
+            "id": "w06",
+            "step": "notice",
+            "type": "line",
+            "speaker": "thought",
+            "text": "ファイル名が ちがう。pmgでは なくて pngだ。",
+            "en": "The file name is wrong. It's png, not pmg.",
+            "se": "notice"
+          },
+          {
+            "id": "w06b",
+            "step": "notice",
+            "type": "line",
+            "speaker": "thought",
+            "text": "これは 自分で 直せる。",
+            "en": "I can fix this myself."
+          },
+          {
+            "id": "w07",
+            "step": "notice",
+            "type": "self_fix",
+            "text": "コードの ファイル名を 直します。",
+            "en": "Fix the file name in the code.",
+            "before": "mouse.pmg",
+            "after": "mouse.png"
+          },
+          {
+            "id": "w08",
+            "step": "notice",
+            "type": "screen",
+            "text": "マウスの 画像が 出ました。USBライトの 画像は、まだ 出ません。",
+            "en": "The mouse image appears. The USB light image still doesn't.",
+            "before": {
+              "title": "商品一覧",
+              "rows": [
+                {
+                  "label": "マウス",
+                  "image": "/img/novel/mouse.webp",
+                  "state": "broken"
+                },
+                {
+                  "label": "USBライト",
+                  "image": "/img/novel/light.webp",
+                  "state": "broken"
+                }
+              ]
+            },
+            "after": {
+              "title": "商品一覧",
+              "rows": [
+                {
+                  "label": "マウス",
+                  "image": "/img/novel/mouse.webp",
+                  "state": "ok"
+                },
+                {
+                  "label": "USBライト",
+                  "image": "/img/novel/light.webp",
+                  "state": "broken"
+                }
+              ]
+            }
+          },
+          {
+            "id": "w09",
+            "step": "notice",
+            "type": "line",
+            "speaker": "thought",
+            "text": "マウスは 直った。でも、USBライトの 画像が まだ 出ない。",
+            "en": "The mouse is fixed. But the USB light image still doesn't appear."
+          },
+          {
+            "id": "n_wed2",
+            "step": "notice",
+            "type": "notice",
+            "left": {
+              "title": "画面の コード（USBライト）",
+              "look": "code",
+              "lines": [
+                {
+                  "id": "c1",
+                  "text": "src = \"light.png\"",
+                  "en": "Image file: light.png"
+                },
+                {
+                  "id": "c2",
+                  "text": "name = \"USBライト\"",
+                  "en": "Text: USB light"
+                }
+              ]
+            },
+            "right": {
+              "title": "images フォルダ",
+              "look": "files",
+              "lines": [
+                {
+                  "id": "f1",
+                  "text": "mouse.png",
+                  "en": "mouse.png"
+                },
+                {
+                  "id": "f2",
+                  "text": "keyboard.png",
+                  "en": "keyboard.png"
+                },
+                {
+                  "id": "f3",
+                  "text": "フォルダの ファイルは この 2つだけ。",
+                  "en": "The folder has only these two files."
+                }
+              ]
+            },
+            "answer": [
+              "c1",
+              "f3"
+            ],
+            "hint": "フォルダに ある ファイルを 数えて ください。",
+            "hintEn": "Count the files in the folder.",
+            "card": {
+              "seen": "マウスの ファイル名を 直した。",
+              "diff": "フォルダに light.pngが ない。",
+              "seenKey": "ファイル名を 直した",
+              "diffKey": "light.pngが ない"
+            },
+            "prompt": "コードの ファイルが フォルダに あるか、比べます。"
+          },
+          {
+            "id": "w11",
+            "step": "notice",
+            "type": "line",
+            "speaker": "thought",
+            "text": "フォルダに light.pngが ない。これは 自分では 作れない。",
+            "en": "There is no light.png in the folder. I can't make it myself.",
+            "se": "notice"
+          },
+          {
+            "id": "w12",
+            "step": "notice",
+            "type": "choose_person",
+            "options": [
+              "hendy",
+              "nyam",
+              "shirai"
+            ],
+            "answer": "shirai",
+            "wrong": "それは 白井さんに 聞いて ください。",
+            "wrongEn": "Please ask Shirai about that."
+          },
+          {
+            "id": "c_wed",
+            "step": "consult",
+            "type": "consult",
+            "to": "shirai",
+            "support": "keyword",
+            "call": "白井さん、今、お時間 よろしいですか。",
+            "reply": "はい、どう しましたか。",
+            "replyEn": "Yes, what is it?",
+            "topic": "light.pngの ファイル",
+            "criteria": {
+              "context": "自分で 調べて した こと（mouse.pmg を mouse.png に 直して、マウスの 画像は 出た）を 言う。",
+              "problem": "light.png が フォルダに ない（USBライトの 画像が 出ない）、と 言う。",
+              "ask": "light.png を フォルダに 入れて ほしい と お願いする。",
+              "note": "自分で した ことを 先に 言うのが この 日の ポイント。した ことが 無ければ has_context は false。"
+            },
+            "example": "ファイル名を 直したので、マウスの 画像は 出ました。でも、light.pngが フォルダに ありません。light.pngを 入れて もらえますか。",
+            "exampleEn": "I fixed the file name, so the mouse image appears. But light.png is not in the folder. Could you put light.png in?",
+            "cloze": "＿＿を 直したので、マウスの 画像は 出ました。でも、＿＿。＿＿もらえますか。",
+            "reactions": {
+              "vague": {
+                "text": "すみません、何の 話ですか？",
+                "en": "Sorry, what are you talking about?",
+                "hint": "した ことと、どう なったかを 言いましょう。",
+                "hintEn": "Say what you did and what happened."
+              }
+            }
+          },
+          {
+            "id": "w14",
+            "step": "result",
+            "type": "line",
+            "speaker": "shirai",
+            "text": "自分で 調べて くれたんですね。よく わかりました。",
+            "en": "You checked it yourself. That's very clear.",
+            "face": "happy",
+            "se": "pass"
+          },
+          {
+            "id": "w15",
+            "step": "result",
+            "type": "line",
+            "speaker": "shirai",
+            "text": "light.pngを 入れるのを 忘れて いました。今、フォルダに 入れます。",
+            "en": "I forgot to put in light.png. I'll put it in the folder now.",
+            "face": "troubled"
+          },
+          {
+            "id": "w16",
+            "step": "result",
+            "type": "screen",
+            "text": "画像が 2つとも 出ました。",
+            "en": "Both images appear now.",
+            "before": {
+              "title": "商品一覧",
+              "rows": [
+                {
+                  "label": "マウス",
+                  "image": "/img/novel/mouse.webp",
+                  "state": "ok"
+                },
+                {
+                  "label": "USBライト",
+                  "image": "/img/novel/light.webp",
+                  "state": "broken"
+                }
+              ]
+            },
+            "after": {
+              "title": "商品一覧",
+              "rows": [
+                {
+                  "label": "マウス",
+                  "image": "/img/novel/mouse.webp",
+                  "state": "ok"
+                },
+                {
+                  "label": "USBライト",
+                  "image": "/img/novel/light.webp",
+                  "state": "ok"
+                }
+              ]
+            }
+          },
+          {
+            "id": "w17",
+            "step": "result",
+            "type": "line",
+            "speaker": "hendy",
+            "text": "した ことを 先に 言うと、すぐに 答えられますね。",
+            "en": "If you say what you did first, I can answer right away.",
+            "face": "happy"
+          },
+          {
+            "id": "w18",
+            "step": "result",
+            "type": "point",
+            "text": "自分で 調べてから、できない ことを お願いする。",
+            "en": "Check by yourself first, then ask for what you can't do."
+          }
+        ]
+      },
+      {
+        "id": "thu",
+        "label": "木曜日",
+        "bg": "morning",
+        "words": [
+          "支払い",
+          "現金",
+          "納品",
+          "機能"
+        ],
+        "screen": {
+          "title": "商品一覧",
+          "rows": [
+            {
+              "label": "マウス",
+              "image": "/img/novel/mouse.webp",
+              "state": "ok"
+            },
+            {
+              "label": "USBライト",
+              "image": "/img/novel/light.webp",
+              "state": "ok"
+            }
+          ]
+        },
+        "scenes": [
+          {
+            "id": "h01",
+            "step": "goal",
+            "type": "line",
+            "speaker": "hendy",
+            "text": "おはよう ございます。今日、私は 午前中、会議です。",
+            "en": "Good morning. I have a meeting this morning.",
+            "face": "neutral"
+          },
+          {
+            "id": "h02",
+            "step": "goal",
+            "type": "line",
+            "speaker": "hendy",
+            "text": "松本さんから メッセージが 来たら、読んで ください。",
+            "en": "If a message comes from Mr. Matsumoto, please read it.",
+            "face": "neutral"
+          },
+          {
+            "id": "h03",
+            "step": "goal",
+            "type": "goal",
+            "text": "今日の 目的：お客様の メッセージを 読む。仕様書と 比べる。",
+            "en": "Today's goal: read the client's message. Compare it with the specification."
+          },
+          {
+            "id": "h04",
+            "step": "notice",
+            "type": "line",
+            "speaker": "matsumoto",
+            "text": "こんにちは。お店の お客さんが クレジットカードで 払えるように したいです。",
+            "en": "Hello. I want my shop's customers to be able to pay by credit card.",
+            "via": "message"
+          },
+          {
+            "id": "h05",
+            "step": "notice",
+            "type": "line",
+            "speaker": "matsumoto",
+            "text": "金曜日までに できますか？",
+            "en": "Can you do it by Friday?",
+            "via": "message"
+          },
+          {
+            "id": "n_thu",
+            "step": "notice",
+            "type": "notice",
+            "left": {
+              "title": "松本さんの メッセージ",
+              "look": "message",
+              "lines": [
+                {
+                  "id": "m1",
+                  "text": "クレジットカードで 払えるように したい。",
+                  "en": "I want card payments."
+                },
+                {
+                  "id": "m2",
+                  "text": "金曜日までに できますか？",
+                  "en": "Can you do it by Friday?"
+                }
+              ]
+            },
+            "right": {
+              "title": "開発の 仕様書",
+              "look": "doc",
+              "lines": [
+                {
+                  "id": "p1",
+                  "text": "支払いは 現金だけ。",
+                  "en": "Payment: cash only."
+                },
+                {
+                  "id": "p2",
+                  "text": "納品は 金曜日の 16時。",
+                  "en": "Delivery: Friday, 4 p.m."
+                },
+                {
+                  "id": "p3",
+                  "text": "1〜5個まで 注文できる。",
+                  "en": "You can order 1 to 5."
+                }
+              ]
+            },
+            "answer": [
+              "m1",
+              "p1"
+            ],
+            "hint": "支払いの しかたを 見て ください。",
+            "hintEn": "Look at how people pay.",
+            "card": {
+              "seen": "松本さんは、カードで 払いたい。",
+              "diff": "仕様書では、支払いは 現金だけ。",
+              "seenKey": "松本さん・カード・金曜日まで",
+              "diffKey": "仕様書・現金だけ"
+            },
+            "prompt": "松本さんの メッセージと 仕様書を 比べて、合わない 行を 選びます。"
+          },
+          {
+            "id": "h07",
+            "step": "notice",
+            "type": "line",
+            "speaker": "thought",
+            "text": "仕様書では、支払いは 現金だけだ。カードは 新しい お願いだ。",
+            "en": "In the specification, payment is cash only. Cards are a new request.",
+            "se": "notice"
+          },
+          {
+            "id": "h08",
+            "step": "notice",
+            "type": "line",
+            "speaker": "thought",
+            "text": "金曜日は 納品の 日だ。自分で「できます」と 言っては いけない。",
+            "en": "Friday is delivery day. I must not say \"I can do it\" by myself."
+          },
+          {
+            "id": "h09",
+            "step": "notice",
+            "type": "choose_person",
+            "options": [
+              "hendy",
+              "nyam",
+              "shirai"
+            ],
+            "answer": "hendy",
+            "wrong": "それは ヘンディさんに 聞いて ください。",
+            "wrongEn": "Please ask Hendy about that."
+          },
+          {
+            "id": "h08b",
+            "step": "consult",
+            "type": "line",
+            "speaker": "narration",
+            "text": "ヘンディさんが 会議から 戻りました。声を かけましょう。",
+            "en": "Hendy came back from the meeting. Let's talk to him."
+          },
+          {
+            "id": "c_thu",
+            "step": "consult",
+            "type": "consult",
+            "to": "hendy",
+            "support": "keyword",
+            "call": "ヘンディさん、今、お時間 よろしいですか。",
+            "reply": "はい、どう しましたか。",
+            "replyEn": "Yes, what is it?",
+            "topic": "松本さんの メッセージ",
+            "criteria": {
+              "context": "松本さんから メッセージが 来た（カードで 払いたい・金曜日までに）と 言う。",
+              "problem": "仕様書では 支払いは 現金だけ（カードは 新しい お願い）と 言う。",
+              "ask": "どう 返事を するか・どう するかを 聞く。自分で 決めない。",
+              "note": "「できます」「金曜日までに 作ります」など、自分で 決めた・約束した ときは decided_alone。"
+            },
+            "example": "松本さんから、カードで 払いたいと メッセージが 来ました。でも、仕様書では 支払いは 現金だけです。どう 返事を したら いいですか。",
+            "exampleEn": "Mr. Matsumoto sent a message saying he wants card payments. But the specification says cash only. How should I reply?",
+            "cloze": "松本さんから、＿＿と メッセージが 来ました。でも、仕様書では ＿＿。どう ＿＿いいですか。",
+            "whatIf": {
+              "decided_alone": [
+                {
+                  "speaker": "narration",
+                  "text": "金曜日。カードの 支払いは、まだ できて いません。",
+                  "en": "Friday. Card payment is still not ready."
+                },
+                {
+                  "speaker": "matsumoto",
+                  "text": "約束したのに…。",
+                  "en": "But you promised..."
+                }
+              ]
+            },
+            "reactions": {
+              "no_ask": {
+                "text": "わかりました。それで、何を 聞きたいですか？",
+                "en": "I see. So, what do you want to ask?",
+                "hint": "③ 聞きたい ことを 言いましょう。「〜ますか。」",
+                "hintEn": "Say ③ what you want to ask: \"...masu ka?\""
+              }
+            }
+          },
+          {
+            "id": "h11",
+            "step": "result",
+            "type": "line",
+            "speaker": "hendy",
+            "text": "まだ 返事を しないで くれて、ありがとう。",
+            "en": "Thank you for not replying yet.",
+            "face": "happy",
+            "se": "pass"
+          },
+          {
+            "id": "h12",
+            "step": "result",
+            "type": "line",
+            "speaker": "hendy",
+            "text": "新しい 機能は、お金と 時間が かかります。私が 松本さんと 話します。",
+            "en": "A new feature costs money and time. I'll talk with Mr. Matsumoto.",
+            "face": "neutral"
+          },
+          {
+            "id": "h13",
+            "step": "result",
+            "type": "line",
+            "speaker": "narration",
+            "text": "30分後。",
+            "en": "30 minutes later.",
+            "dark": true
+          },
+          {
+            "id": "h14",
+            "step": "result",
+            "type": "line",
+            "speaker": "hendy",
+            "text": "松本さんと 話しました。カードの 支払いは、来週 作ります。",
+            "en": "I talked with Mr. Matsumoto. We'll make card payment next week.",
+            "face": "neutral"
+          },
+          {
+            "id": "h15",
+            "step": "result",
+            "type": "line",
+            "speaker": "hendy",
+            "text": "金曜日は、今の 仕様の まま 納品します。",
+            "en": "On Friday, we deliver with the current specification.",
+            "face": "neutral"
+          },
+          {
+            "id": "h16",
+            "step": "result",
+            "type": "screen",
+            "text": "開発中の 画面は 変わりません（支払いは 現金）。予定に「来週：カードの 支払い」が 入りました。",
+            "en": "The screen stays the same (cash payment). \"Next week: card payment\" was added to the schedule.",
+            "before": {
+              "title": "予定",
+              "rows": [
+                {
+                  "label": "金曜日",
+                  "value": "納品（支払いは 現金）"
+                }
+              ]
+            },
+            "after": {
+              "title": "予定",
+              "rows": [
+                {
+                  "label": "金曜日",
+                  "value": "納品（支払いは 現金）"
+                },
+                {
+                  "label": "来週",
+                  "value": "カードの 支払いを 作る",
+                  "state": "new"
+                }
+              ]
+            }
+          },
+          {
+            "id": "h17",
+            "step": "result",
+            "type": "point",
+            "text": "新しい お願いは、自分で 決めないで 聞く。",
+            "en": "For a new request, don't decide by yourself. Ask."
+          }
+        ]
+      },
+      {
+        "id": "fri",
+        "label": "金曜日",
+        "bg": "morning",
+        "words": [
+          "テスト",
+          "登録",
+          "再テスト"
+        ],
+        "screen": {
+          "title": "注文画面",
+          "rows": [
+            {
+              "label": "名前"
+            },
+            {
+              "label": "住所"
+            },
+            {
+              "label": "数量"
+            }
+          ],
+          "button": "注文する"
+        },
+        "scenes": [
+          {
+            "id": "f01",
+            "step": "goal",
+            "type": "line",
+            "speaker": "hendy",
+            "text": "おはよう ございます。今日は 納品の 日です。",
+            "en": "Good morning. Today is delivery day.",
+            "face": "neutral"
+          },
+          {
+            "id": "f01b",
+            "step": "goal",
+            "type": "line",
+            "speaker": "hendy",
+            "text": "16時に 松本さんに 渡します。",
+            "en": "We hand it to Mr. Matsumoto at 4 p.m.",
+            "face": "neutral"
+          },
+          {
+            "id": "f02",
+            "step": "goal",
+            "type": "line",
+            "speaker": "hendy",
+            "text": "午後に 注文の テストを して ください。問題が あったら、すぐに 言って ください。",
+            "en": "Please test ordering in the afternoon. If there is a problem, tell me right away.",
+            "face": "neutral"
+          },
+          {
+            "id": "f03",
+            "step": "goal",
+            "type": "goal",
+            "text": "今日の 目的：注文の テストを する。16時に 納品する。",
+            "en": "Today's goal: test ordering. Deliver at 4 p.m."
+          },
+          {
+            "id": "f04",
+            "step": "notice",
+            "type": "line",
+            "speaker": "narration",
+            "text": "15時。注文の テストを 始めます。",
+            "en": "3 p.m. You start testing orders.",
+            "bg": "afternoon"
+          },
+          {
+            "id": "f05",
+            "step": "notice",
+            "type": "line",
+            "speaker": "narration",
+            "text": "「注文する」ボタンを、2回 つづけて 押しました。",
+            "en": "You pressed the \"Order\" button twice in a row."
+          },
+          {
+            "id": "n_fri1",
+            "step": "notice",
+            "type": "notice",
+            "left": {
+              "title": "テストの 予定（正しい 結果）",
+              "look": "doc",
+              "lines": [
+                {
+                  "id": "e1",
+                  "text": "1回 押す → 注文 1件",
+                  "en": "Press once → 1 order"
+                },
+                {
+                  "id": "e2",
+                  "text": "2回 つづけて 押す → 注文 1件",
+                  "en": "Press twice in a row → 1 order"
+                },
+                {
+                  "id": "e3",
+                  "text": "数量 6個 → エラーが 出る",
+                  "en": "Quantity 6 → an error appears"
+                }
+              ]
+            },
+            "right": {
+              "title": "テストの 記録（実際の 結果）",
+              "look": "doc",
+              "lines": [
+                {
+                  "id": "r1",
+                  "text": "1回 押した → 注文 1件",
+                  "en": "Pressed once → 1 order"
+                },
+                {
+                  "id": "r2",
+                  "text": "2回 つづけて 押した → 注文 2件",
+                  "en": "Pressed twice in a row → 2 orders"
+                },
+                {
+                  "id": "r3",
+                  "text": "数量 6個 → エラーが 出た",
+                  "en": "Quantity 6 → an error appeared"
+                }
+              ]
+            },
+            "answer": [
+              "e2",
+              "r2"
+            ],
+            "hint": "注文の 数を 見て ください。",
+            "hintEn": "Look at the number of orders.",
+            "card": {
+              "seen": "ボタンを 2回 つづけて 押した。",
+              "diff": "注文が 2件 できた。1件が 正しい。",
+              "seenKey": "ボタンを 2回",
+              "diffKey": "注文 2件（1件が 正しい）"
+            },
+            "prompt": "テストの 予定と 記録を 比べて、合わない 行を 選びます。"
+          },
+          {
+            "id": "f07",
+            "step": "notice",
+            "type": "line",
+            "speaker": "thought",
+            "text": "同じ 注文が 2件に なった。データの 登録の 問題だ。",
+            "en": "The same order became two. It's a data registration problem.",
+            "se": "notice"
+          },
+          {
+            "id": "f08",
+            "step": "notice",
+            "type": "choose_person",
+            "options": [
+              "hendy",
+              "nyam",
+              "shirai"
+            ],
+            "answer": "nyam",
+            "wrong": "それは ニャムさんに 聞いて ください。",
+            "wrongEn": "Please ask Nyam about that."
+          },
+          {
+            "id": "c_fri1",
+            "step": "consult",
+            "type": "consult",
+            "to": "nyam",
+            "support": "closed",
+            "call": "ニャムさん、今、お時間 よろしいですか。",
+            "reply": "はい、どう しましたか。",
+            "replyEn": "Yes, what is it?",
+            "topic": "注文の テスト",
+            "criteria": {
+              "context": "した こと（「注文する」ボタンを 2回 つづけて 押した）を 言う。",
+              "problem": "同じ 注文が 2件 登録された（正しくは 1件）と 言う。",
+              "ask": "調べて ほしい・直して ほしい と お願いする。",
+              "note": "「たぶん 大丈夫」など、問題を そのまま 言わない ときは hiding。"
+            },
+            "example": "「注文する」ボタンを 2回 つづけて 押しました。すると、同じ 注文が 2件 登録されました。調べて もらえますか。",
+            "exampleEn": "I pressed the \"Order\" button twice in a row. Then the same order was registered twice. Could you check it?",
+            "cloze": "＿＿を 2回 つづけて 押しました。すると、＿＿。＿＿もらえますか。",
+            "whatIf": {
+              "hiding": [
+                {
+                  "speaker": "narration",
+                  "text": "16時。松本さんが 注文すると、2件 登録されました。",
+                  "en": "4 p.m. When Mr. Matsumoto ordered, it was registered twice."
+                },
+                {
+                  "speaker": "matsumoto",
+                  "text": "これは 困ります。",
+                  "en": "This is a problem."
+                }
+              ]
+            },
+            "reactions": {
+              "vague": {
+                "text": "すみません、何の 話ですか？",
+                "en": "Sorry, what are you talking about?",
+                "hint": "した ことと、どう なったかを 言いましょう。",
+                "hintEn": "Say what you did and what happened."
+              }
+            }
+          },
+          {
+            "id": "f10",
+            "step": "result",
+            "type": "line",
+            "speaker": "nyam",
+            "text": "わかりました。した ことと 結果が よく わかるので、すぐ 調べられます。",
+            "en": "Got it. What you did and what happened are clear, so I can check right away.",
+            "face": "neutral",
+            "se": "pass"
+          },
+          {
+            "id": "f11",
+            "step": "result",
+            "type": "line",
+            "speaker": "nyam",
+            "text": "API側の 問題です。直すのに 1時間 かかります。",
+            "en": "It's a problem on the API side. It will take one hour to fix.",
+            "face": "troubled"
+          },
+          {
+            "id": "f12",
+            "step": "notice",
+            "type": "line",
+            "speaker": "thought",
+            "text": "今は 15時。直すのに 1時間。",
+            "en": "It's 3 p.m. Fixing takes an hour."
+          },
+          {
+            "id": "f12b",
+            "step": "notice",
+            "type": "line",
+            "speaker": "thought",
+            "text": "その あと、再テストに 30分 かかる。",
+            "en": "Then retesting takes 30 minutes."
+          },
+          {
+            "id": "n_fri2",
+            "step": "notice",
+            "type": "notice",
+            "left": {
+              "title": "納品の 予定",
+              "look": "doc",
+              "lines": [
+                {
+                  "id": "k1",
+                  "text": "15時：テスト",
+                  "en": "3 p.m.: test"
+                },
+                {
+                  "id": "k2",
+                  "text": "16時：松本さんに 納品",
+                  "en": "4 p.m.: deliver to Mr. Matsumoto"
+                }
+              ]
+            },
+            "right": {
+              "title": "これからの 作業時間",
+              "look": "doc",
+              "lines": [
+                {
+                  "id": "w1",
+                  "text": "ニャムさんが 直す：1時間",
+                  "en": "Nyam fixes it: 1 hour"
+                },
+                {
+                  "id": "w2",
+                  "text": "再テスト：30分",
+                  "en": "Retest: 30 minutes"
+                },
+                {
+                  "id": "w3",
+                  "text": "全部 終わるのは 16時30分",
+                  "en": "Everything ends at 4:30 p.m."
+                }
+              ]
+            },
+            "answer": [
+              "k2",
+              "w3"
+            ],
+            "hint": "時間を 見て ください。",
+            "hintEn": "Look at the times.",
+            "card": {
+              "seen": "直すのに 1時間、再テストに 30分。",
+              "diff": "16時の 納品に まにあわない。",
+              "seenKey": "1時間＋30分",
+              "diffKey": "16時に まにあわない"
+            },
+            "prompt": "納品の 予定と 作業の 時間を 比べて、合わない 行を 選びます。"
+          },
+          {
+            "id": "f14",
+            "step": "notice",
+            "type": "line",
+            "speaker": "thought",
+            "text": "16時に まにあわない。早く 言わなければ ならない。",
+            "en": "We won't make it by 4. I have to tell someone quickly.",
+            "se": "notice"
+          },
+          {
+            "id": "f15",
+            "step": "notice",
+            "type": "choose_person",
+            "options": [
+              "hendy",
+              "nyam",
+              "shirai"
+            ],
+            "answer": "hendy",
+            "wrong": "それは ヘンディさんに 聞いて ください。",
+            "wrongEn": "Please ask Hendy about that."
+          },
+          {
+            "id": "c_fri2",
+            "step": "consult",
+            "type": "consult",
+            "to": "hendy",
+            "support": "closed",
+            "call": "ヘンディさん、今、お時間 よろしいですか。",
+            "reply": "はい、どう しましたか。",
+            "replyEn": "Yes, what is it?",
+            "topic": "納品の 時間",
+            "criteria": {
+              "context": "直すのに 1時間、再テストに 30分 かかる と 言う（注文が 2件 登録される 問題が ある、でも よい）。",
+              "problem": "16時の 納品に まにあわない（16時30分に なる）と 言う。",
+              "ask": "納品の 時間を どう するかを 聞く・相談する。",
+              "note": "「たぶん まにあいます」など 悪い 知らせを 言わない ときは hiding。自分で 時間を 決めて 松本さんに 言う ときは decided_alone。"
+            },
+            "example": "直すのに 1時間、再テストに 30分 かかります。16時の 納品に まにあいません。納品の 時間を どう しますか。",
+            "exampleEn": "Fixing takes one hour, and the retest takes 30 minutes. We won't make the 4 p.m. delivery. What should we do about the delivery time?",
+            "cloze": "直すのに ＿＿、再テストに ＿＿ かかります。＿＿に まにあいません。＿＿どう しますか。",
+            "whatIf": {
+              "hiding": [
+                {
+                  "speaker": "narration",
+                  "text": "16時。テストが 終わらない まま、納品の 時間に なりました。",
+                  "en": "4 p.m. Delivery time came before the test was done."
+                },
+                {
+                  "speaker": "matsumoto",
+                  "text": "これは 困ります。",
+                  "en": "This is a problem."
+                }
+              ]
+            },
+            "reactions": {
+              "no_ask": {
+                "text": "わかりました。それで、何を 聞きたいですか？",
+                "en": "I see. So, what do you want to ask?",
+                "hint": "③ 聞きたい ことを 言いましょう。「〜ますか。」",
+                "hintEn": "Say ③ what you want to ask: \"...masu ka?\""
+              }
+            }
+          },
+          {
+            "id": "f17",
+            "step": "result",
+            "type": "line",
+            "speaker": "hendy",
+            "text": "早く 教えて くれて ありがとう。今なら、松本さんに 相談できます。",
+            "en": "Thank you for telling me early. Now we can still talk with Mr. Matsumoto.",
+            "face": "neutral",
+            "se": "pass"
+          },
+          {
+            "id": "f18",
+            "step": "result",
+            "type": "line",
+            "speaker": "narration",
+            "text": "ヘンディさんが 松本さんに 電話を しました。",
+            "en": "Hendy called Mr. Matsumoto."
+          },
+          {
+            "id": "f19",
+            "step": "result",
+            "type": "line",
+            "speaker": "hendy",
+            "text": "納品は 17時に なりました。直ったら、もう 一度 テストを お願いします。",
+            "en": "Delivery is now at 5 p.m. When it's fixed, please test again.",
+            "face": "happy"
+          },
+          {
+            "id": "f20",
+            "step": "result",
+            "type": "line",
+            "speaker": "nyam",
+            "text": "直りました。テストを お願いします。",
+            "en": "It's fixed. Please test it.",
+            "face": "happy"
+          },
+          {
+            "id": "f21",
+            "step": "result",
+            "type": "screen",
+            "text": "再テスト：ボタンを 2回 押しても、注文は 1件です。",
+            "en": "Retest: even if you press the button twice, there is only one order.",
+            "before": {
+              "title": "テストの 記録",
+              "rows": [
+                {
+                  "label": "2回 押した",
+                  "value": "注文 2件",
+                  "state": "bad"
+                }
+              ]
+            },
+            "after": {
+              "title": "テストの 記録",
+              "rows": [
+                {
+                  "label": "2回 押した",
+                  "value": "注文 1件",
+                  "state": "ok"
+                }
+              ]
+            }
+          },
+          {
+            "id": "f22",
+            "step": "result",
+            "type": "line",
+            "speaker": "narration",
+            "text": "17時。松本さんに 納品しました。",
+            "en": "5 p.m. You delivered to Mr. Matsumoto."
+          },
+          {
+            "id": "f23",
+            "step": "result",
+            "type": "line",
+            "speaker": "matsumoto",
+            "text": "ありがとう ございます。問題を 先に 教えて くれたので、安心しました。",
+            "en": "Thank you. You told me about the problem first, so I felt relieved.",
+            "via": "message"
+          },
+          {
+            "id": "f24",
+            "step": "result",
+            "type": "line",
+            "speaker": "hendy",
+            "text": "5日間、おつかれさまでした。よく 相談して くれました。",
+            "en": "Great work for five days. You consulted well.",
+            "face": "happy"
+          },
+          {
+            "id": "f25",
+            "step": "result",
+            "type": "point",
+            "text": "悪い 知らせは、早く、そのまま 言う。",
+            "en": "Tell bad news early and as it is."
+          },
+          {
+            "id": "f26",
+            "step": "outro",
+            "type": "ending",
+            "text": "5日間で、7回 相談しました。",
+            "en": "You consulted 7 times in 5 days."
+          }
+        ]
+      }
+    ]
+  },
+  "furigana": [
+    [
+      "作業時間",
+      "さぎょうじかん"
+    ],
+    [
+      "合わない",
+      "あわない"
+    ],
+    [
+      "売り切れ",
+      "うりきれ"
+    ],
+    [
+      "注文画面",
+      "ちゅうもんがめん"
+    ],
+    [
+      "仕様書",
+      "しようしょ"
+    ],
+    [
+      "入力欄",
+      "にゅうりょくらん"
+    ],
+    [
+      "午前中",
+      "ごぜんちゅう"
+    ],
+    [
+      "支払い",
+      "しはらい"
+    ],
+    [
+      "月曜日",
+      "げつようび"
+    ],
+    [
+      "木曜日",
+      "もくようび"
+    ],
+    [
+      "水曜日",
+      "すいようび"
+    ],
+    [
+      "火曜日",
+      "かようび"
+    ],
+    [
+      "金曜日",
+      "きんようび"
+    ],
+    [
+      "開発中",
+      "かいはつちゅう"
+    ],
+    [
+      "一度",
+      "いちど"
+    ],
+    [
+      "一覧",
+      "いちらん"
+    ],
+    [
+      "予定",
+      "よてい"
+    ],
+    [
+      "二人",
+      "ふたり"
+    ],
+    [
+      "今日",
+      "きょう"
+    ],
+    [
+      "今週",
+      "こんしゅう"
+    ],
+    [
+      "仕事",
+      "しごと"
+    ],
+    [
+      "仕様",
+      "しよう"
+    ],
+    [
+      "会議",
+      "かいぎ"
+    ],
+    [
+      "住所",
+      "じゅうしょ"
+    ],
+    [
+      "何の",
+      "なんの"
+    ],
+    [
+      "作業",
+      "さぎょう"
+    ],
+    [
+      "値段",
+      "ねだん"
+    ],
+    [
+      "入り",
+      "はいり"
+    ],
+    [
+      "入れ",
+      "いれ"
+    ],
+    [
+      "入力",
+      "にゅうりょく"
+    ],
+    [
+      "全部",
+      "ぜんぶ"
+    ],
+    [
+      "出す",
+      "だす"
+    ],
+    [
+      "分後",
+      "ぷんご"
+    ],
+    [
+      "午前",
+      "ごぜん"
+    ],
+    [
+      "午後",
+      "ごご"
+    ],
+    [
+      "名前",
+      "なまえ"
+    ],
+    [
+      "商品",
+      "しょうひん"
+    ],
+    [
+      "問題",
+      "もんだい"
+    ],
+    [
+      "在庫",
+      "ざいこ"
+    ],
+    [
+      "安心",
+      "あんしん"
+    ],
+    [
+      "実際",
+      "じっさい"
+    ],
+    [
+      "客様",
+      "きゃくさま"
+    ],
+    [
+      "店長",
+      "てんちょう"
+    ],
+    [
+      "必須",
+      "ひっす"
+    ],
+    [
+      "担当",
+      "たんとう"
+    ],
+    [
+      "数え",
+      "かぞえ"
+    ],
+    [
+      "数字",
+      "すうじ"
+    ],
+    [
+      "数量",
+      "すうりょう"
+    ],
+    [
+      "新人",
+      "しんじん"
+    ],
+    [
+      "日間",
+      "かかん"
+    ],
+    [
+      "昨日",
+      "きのう"
+    ],
+    [
+      "時間",
+      "じかん"
+    ],
+    [
+      "本当",
+      "ほんとう"
+    ],
+    [
+      "来週",
+      "らいしゅう"
+    ],
+    [
+      "松本",
+      "まつもと"
+    ],
+    [
+      "機能",
+      "きのう"
+    ],
+    [
+      "注文",
+      "ちゅうもん"
+    ],
+    [
+      "現金",
+      "げんきん"
+    ],
+    [
+      "画像",
+      "がぞう"
+    ],
+    [
+      "画面",
+      "がめん"
+    ],
+    [
+      "番号",
+      "ばんごう"
+    ],
+    [
+      "登録",
+      "とうろく"
+    ],
+    [
+      "白井",
+      "しらい"
+    ],
+    [
+      "目的",
+      "もくてき"
+    ],
+    [
+      "相手",
+      "あいて"
+    ],
+    [
+      "相談",
+      "そうだん"
+    ],
+    [
+      "約束",
+      "やくそく"
+    ],
+    [
+      "納品",
+      "のうひん"
+    ],
+    [
+      "結果",
+      "けっか"
+    ],
+    [
+      "練習",
+      "れんしゅう"
+    ],
+    [
+      "自分",
+      "じぶん"
+    ],
+    [
+      "記録",
+      "きろく"
+    ],
+    [
+      "話し",
+      "はなし"
+    ],
+    [
+      "資料",
+      "しりょう"
+    ],
+    [
+      "質問",
+      "しつもん"
+    ],
+    [
+      "返事",
+      "へんじ"
+    ],
+    [
+      "開発",
+      "かいはつ"
+    ],
+    [
+      "電話",
+      "でんわ"
+    ],
+    [
+      "並",
+      "なら"
+    ],
+    [
+      "中",
+      "ちゅう"
+    ],
+    [
+      "人",
+      "ひと"
+    ],
+    [
+      "今",
+      "いま"
+    ],
+    [
+      "件",
+      "けん"
+    ],
+    [
+      "何",
+      "なに"
+    ],
+    [
+      "作",
+      "つく"
+    ],
+    [
+      "個",
+      "こ"
+    ],
+    [
+      "側",
+      "がわ"
+    ],
+    [
+      "先",
+      "さき"
+    ],
+    [
+      "再",
+      "さい"
+    ],
+    [
+      "出",
+      "で"
+    ],
+    [
+      "分",
+      "ぷん"
+    ],
+    [
+      "前",
+      "まえ"
+    ],
+    [
+      "助",
+      "たす"
+    ],
+    [
+      "右",
+      "みぎ"
+    ],
+    [
+      "同",
+      "おな"
+    ],
+    [
+      "名",
+      "めい"
+    ],
+    [
+      "回",
+      "かい"
+    ],
+    [
+      "困",
+      "こま"
+    ],
+    [
+      "声",
+      "こえ"
+    ],
+    [
+      "変",
+      "か"
+    ],
+    [
+      "多",
+      "おお"
+    ],
+    [
+      "大",
+      "おお"
+    ],
+    [
+      "始",
+      "はじ"
+    ],
+    [
+      "字",
+      "じ"
+    ],
+    [
+      "客",
+      "きゃく"
+    ],
+    [
+      "小",
+      "ちい"
+    ],
+    [
+      "少",
+      "すこ"
+    ],
+    [
+      "左",
+      "ひだり"
+    ],
+    [
+      "店",
+      "みせ"
+    ],
+    [
+      "待",
+      "ま"
+    ],
+    [
+      "忘",
+      "わす"
+    ],
+    [
+      "悪",
+      "わる"
+    ],
+    [
+      "戻",
+      "もど"
+    ],
+    [
+      "払",
+      "はら"
+    ],
+    [
+      "押",
+      "お"
+    ],
+    [
+      "教",
+      "おし"
+    ],
+    [
+      "数",
+      "かず"
+    ],
+    [
+      "新",
+      "あたら"
+    ],
+    [
+      "日",
+      "ひ"
+    ],
+    [
+      "早",
+      "はや"
+    ],
+    [
+      "時",
+      "じ"
+    ],
+    [
+      "来",
+      "き"
+    ],
+    [
+      "欄",
+      "らん"
+    ],
+    [
+      "次",
+      "つぎ"
+    ],
+    [
+      "正",
+      "ただ"
+    ],
+    [
+      "比",
+      "くら"
+    ],
+    [
+      "気",
+      "き"
+    ],
+    [
+      "決",
+      "き"
+    ],
+    [
+      "渡",
+      "わた"
+    ],
+    [
+      "白",
+      "しろ"
+    ],
+    [
+      "直",
+      "なお"
+    ],
+    [
+      "知",
+      "し"
+    ],
+    [
+      "私",
+      "わたし"
+    ],
+    [
+      "答",
+      "こた"
+    ],
+    [
+      "終",
+      "お"
+    ],
+    [
+      "聞",
+      "き"
+    ],
+    [
+      "色",
+      "いろ"
+    ],
+    [
+      "行",
+      "ぎょう"
+    ],
+    [
+      "見",
+      "み"
+    ],
+    [
+      "言",
+      "い"
+    ],
+    [
+      "話",
+      "はなし"
+    ],
+    [
+      "読",
+      "よ"
+    ],
+    [
+      "調",
+      "しら"
+    ],
+    [
+      "近",
+      "ちか"
+    ],
+    [
+      "返",
+      "かえ"
+    ],
+    [
+      "送",
+      "おく"
+    ],
+    [
+      "選",
+      "えら"
+    ],
+    [
+      "金",
+      "かね"
+    ],
+    [
+      "青",
+      "あお"
+    ],
+    [
+      "順",
+      "じゅん"
+    ],
+    [
+      "願",
+      "ねが"
+    ]
+  ]
+}

@@ -26,6 +26,14 @@ import {
   type AsakaiJudgeContext,
   type AsakaiJudgeResult,
 } from "@/lib/meeting/asakai-judge";
+import {
+  NOVEL_JUDGE_SYSTEM,
+  NOVEL_TOOL,
+  buildNovelJudgePrompt,
+  parseNovelJudgment,
+  type NovelConsult,
+  type NovelJudgment,
+} from "@/lib/novel/judge";
 import { getGeminiKey } from "@/lib/profile";
 import {
   BUG_REVIEW_SYSTEM,
@@ -576,6 +584,84 @@ async function askBugReview(
   }
 }
 
+export type NovelJudgeApiResult =
+  { ok: true; judgment: NovelJudgment; model: string } | { ok: false; reason: string };
+
+/** 相談の 判定の 上限（つなぎの したく＋往復。1回 張り直す ぶんを 見込む）。 */
+const NOVEL_TIMEOUT_MS = 30_000;
+
+/**
+ * 相談の 練習の 判定を 先に 張って おく（学生が 声かけを して いる あいだ）。
+ * 失敗は 画面に 出さない（話し終えた ときに もう いちど 張る）。
+ */
+export async function warmNovelJudge(key: string): Promise<boolean> {
+  const apiKey = getGeminiKey();
+  if (!apiKey || SLOTS.novel.busy) return false;
+  if (SLOTS.novel.key === key && (SLOTS.novel.session?.alive() || SLOTS.novel.opening)) {
+    return true;
+  }
+  const opened = await openJudge(apiKey, "novel", key).catch(() => null);
+  return opened?.ok === true;
+}
+
+/**
+ * 相談の 練習の 判定（`report_judgment`）。
+ *
+ * - `key` は 相談の id。**変わると つなぎを 張り直す**（相談 1件ごとに 新しい つなぎ）
+ * - 1本ずつ しか 頼まない（`busy`）。重なると 前の 返事が つぎの 答えに なる
+ * - 遅い・切れた・崩れた ときは **新しい つなぎで 1回だけ やり直す**（バグ報告と 同じ）
+ */
+export async function requestNovelJudge(
+  key: string,
+  consult: NovelConsult,
+  partnerName: string,
+  utterance: string,
+): Promise<NovelJudgeApiResult> {
+  const apiKey = getGeminiKey();
+  if (!apiKey) return { ok: false, reason: "noKey" };
+  if (SLOTS.novel.busy) return { ok: false, reason: "busy" };
+  SLOTS.novel.busy = true;
+  let gaveUp = false;
+  const prompt = buildNovelJudgePrompt(consult, partnerName, utterance);
+  const ask = async (slotKey: string): Promise<NovelJudgeApiResult> => {
+    let mine: JudgeSession | null = null;
+    try {
+      const opened = await openJudge(apiKey, "novel", slotKey);
+      if (!opened.ok) return { ok: false, reason: opened.reason };
+      if (gaveUp) return { ok: false, reason: "timeout" };
+      mine = opened.session;
+      const judgment = parseNovelJudgment(await mine.ask(prompt), utterance);
+      return judgment
+        ? { ok: true, judgment, model: mine.model }
+        : { ok: false, reason: "badShape" };
+    } catch (error) {
+      if (mine && SLOTS.novel.session === mine) dropSlot(SLOTS.novel);
+      return { ok: false, reason: error instanceof JudgeError ? error.reason : "network" };
+    }
+  };
+  const work = (async (): Promise<NovelJudgeApiResult> => {
+    const first = await ask(key);
+    if (first.ok || gaveUp) return first;
+    if (!["timeout", "network", "upstream", "badShape"].includes(first.reason)) return first;
+    liveDebug("judge.novel", `retry after ${first.reason}`, true);
+    dropSlot(SLOTS.novel);
+    return ask(`${key}:retry`);
+  })().finally(() => {
+    SLOTS.novel.busy = false;
+  });
+  const result = await Promise.race([
+    work,
+    new Promise<NovelJudgeApiResult>((resolve) =>
+      setTimeout(() => {
+        gaveUp = true;
+        resolve({ ok: false, reason: "timeout" });
+      }, NOVEL_TIMEOUT_MS),
+    ),
+  ]);
+  liveDebug("judge.novel", result.ok ? `ok ${result.model}` : result.reason, !result.ok);
+  return result;
+}
+
 export type TalkApiResult =
   { ok: true; judgement: TalkJudgement; model: string } | { ok: false; reason: string };
 
@@ -706,7 +792,7 @@ interface JudgeSession {
  * 問題が 変わるまでは 同じ つなぎを 使い回して いた。
  */
 /** つなぎの 役（役ごとに 別の つなぎを 張る）。 */
-type SlotKind = "judge" | "cards" | "talk" | "asakai" | "review" | "bug";
+type SlotKind = "judge" | "cards" | "talk" | "asakai" | "review" | "bug" | "novel";
 
 interface Slot {
   /** つなぎの 中身（相手に 渡す 決まりと 道具）。 */
@@ -795,6 +881,19 @@ const SLOTS: Record<SlotKind, Slot> = {
     system: BUG_REVIEW_SYSTEM,
     tool: BUG_REVIEW_TOOL,
     temperature: 0.2,
+    session: null,
+    key: "",
+    opening: null,
+  },
+  /*
+   * 相談の 練習（サウンドノベル）の 判定。**合否が 日に よって 動かない ように 0**。
+   * 相談 1件ごとに 鍵を 変えて **新しい つなぎ**に する（仕様書 v4 §5「相談1件ごとに
+   * 新しいセッションを開きます」）——前の 相談の 発話を 引きずらない。
+   */
+  novel: {
+    system: NOVEL_JUDGE_SYSTEM,
+    tool: NOVEL_TOOL,
+    temperature: 0,
     session: null,
     key: "",
     opening: null,

@@ -1,0 +1,30 @@
+{
+  "refs": ["public/img/characters/shirai/sheet.webp", "public/img/characters/shirai/reference.jpg"],
+  "_comment": "相談の 練習（サウンドノベル・meeting.novel）の 白井さんの 立ち絵。正典は 設定シート sheet.webp と 参考写真（docs/skills/codex_image_generation.md §6.5・§6.6）。looks は content/characters/shirai.json から 逐語。白背景で 撮り、scripts/images/cutout_white.mjs で 切りぬいて public/img/novel/shirai/ に 置く。表情は 大げさに（§6.7）。",
+  "style": "Style: clean modern Japanese manga / anime style, soft cel shading, bright friendly palette, rounded shapes, no harsh shadows, warm daylight, contemporary Japan, kid-safe e-learning illustration. EMOTIONS ARE BIG AND OBVIOUS, like a Japanese comedy manga.",
+  "noText": "No text, no letters, no kanji, no kana, no numbers anywhere in the image. No watermark, no signature, no logo, no frame border.",
+  "negative": "Never: realistic photo rendering, harsh gradients, six fingers, extra limbs, readable letters, dark horror tone, angry faces, real sadness or tears, costume changes, a drawn checkerboard pattern.",
+  "scenes": [
+    {
+      "out": "stand_neutral",
+      "dest": "public/img/novel/shirai/stand_neutral.webp",
+      "title": "ふつう",
+      "output": "Output: one portrait cut-out illustration, 1024x1536. The character stands ALONE on a plain pure white (#FFFFFF) background: no floor, no wall, no ground shadow, no props, no gradient. Centered horizontally, cropped by the bottom edge at mid-thigh, with a small margin on the left, right and top.",
+      "scene": "Character: デザイナー（Webデザインを 担当） — Japanese-style anime character, man in his mid thirties, medium build, relaxed cheerful posture. His face, hair and glasses are taken from the reference photograph — keep the same face shape, eyes and smile, drawn in anime style. Short black hair kept neat and low: the sides and back are cut short, the top is only slightly longer and lightly brushed up and back at the front with a little texture. The hair stays close to the head — NOT spiky, NOT fluffy or voluminous, NOT messy. Round dark-brown tortoiseshell glasses with thin rims (boston shape). Fair skin, dark brown eyes that crinkle when he smiles, a wide bright smile showing his upper teeth, clean-shaven. Outfit: plain off-white crew-neck sweatshirt (#F3F1EA) with long sleeves and ribbed cuffs, no writing or logo on it; beige chino trousers (#CDBB9A); white low-top sneakers. Carries a slim silver tablet and a white stylus pen (he draws on it). No lanyard.\nPose: standing straight, facing the viewer, both arms relaxed at the sides, calm attentive expression with a gentle closed-lip smile, listening to the person in front."
+    },
+    {
+      "out": "stand_happy",
+      "dest": "public/img/novel/shirai/stand_happy.webp",
+      "title": "うれしい",
+      "output": "Output: one portrait cut-out illustration, 1024x1536. The character stands ALONE on a plain pure white (#FFFFFF) background: no floor, no wall, no ground shadow, no props, no gradient. Centered horizontally, cropped by the bottom edge at mid-thigh, with a small margin on the left, right and top.",
+      "scene": "Character: デザイナー（Webデザインを 担当） — Japanese-style anime character, man in his mid thirties, medium build, relaxed cheerful posture. His face, hair and glasses are taken from the reference photograph — keep the same face shape, eyes and smile, drawn in anime style. Short black hair kept neat and low: the sides and back are cut short, the top is only slightly longer and lightly brushed up and back at the front with a little texture. The hair stays close to the head — NOT spiky, NOT fluffy or voluminous, NOT messy. Round dark-brown tortoiseshell glasses with thin rims (boston shape). Fair skin, dark brown eyes that crinkle when he smiles, a wide bright smile showing his upper teeth, clean-shaven. Outfit: plain off-white crew-neck sweatshirt (#F3F1EA) with long sleeves and ribbed cuffs, no writing or logo on it; beige chino trousers (#CDBB9A); white low-top sneakers. Carries a slim silver tablet and a white stylus pen (he draws on it). No lanyard.\nPose: standing, facing the viewer, leaning slightly forward, one hand raised in a small cheerful thumbs-up at chest height (exactly five fingers), the other arm relaxed. Big open-mouth smile, sparkling happy eyes, small sparkle marks around the head. Clearly delighted."
+    },
+    {
+      "out": "stand_troubled",
+      "dest": "public/img/novel/shirai/stand_troubled.webp",
+      "title": "こまった",
+      "output": "Output: one portrait cut-out illustration, 1024x1536. The character stands ALONE on a plain pure white (#FFFFFF) background: no floor, no wall, no ground shadow, no props, no gradient. Centered horizontally, cropped by the bottom edge at mid-thigh, with a small margin on the left, right and top.",
+      "scene": "Character: デザイナー（Webデザインを 担当） — Japanese-style anime character, man in his mid thirties, medium build, relaxed cheerful posture. His face, hair and glasses are taken from the reference photograph — keep the same face shape, eyes and smile, drawn in anime style. Short black hair kept neat and low: the sides and back are cut short, the top is only slightly longer and lightly brushed up and back at the front with a little texture. The hair stays close to the head — NOT spiky, NOT fluffy or voluminous, NOT messy. Round dark-brown tortoiseshell glasses with thin rims (boston shape). Fair skin, dark brown eyes that crinkle when he smiles, a wide bright smile showing his upper teeth, clean-shaven. Outfit: plain off-white crew-neck sweatshirt (#F3F1EA) with long sleeves and ribbed cuffs, no writing or logo on it; beige chino trousers (#CDBB9A); white low-top sneakers. Carries a slim silver tablet and a white stylus pen (he draws on it). No lanyard.\nPose: standing, facing the viewer, one hand scratching the back of the head (exactly five fingers), the other arm relaxed. Clearly troubled and worried: eyebrows raised in a worried slant, wavy uneasy mouth, one big sweat drop beside the head. Not angry, not crying."
+    }
+  ]
+}

@@ -16,6 +16,7 @@ import { QuizRunner } from "@/components/quiz/quiz-runner";
 import { SlideDeck } from "@/components/slides/slide-deck";
 import { AsakaiSession } from "@/components/asakai/asakai-session";
 import { TalkGameSession } from "@/components/talk-game/talk-game-session";
+import { NovelSession } from "@/components/novel/novel-session";
 import { ContentFrame, type FrameItem } from "@/components/stage/content-frame";
 import {
   getArticle,
@@ -39,6 +40,7 @@ import { stageStepNumber } from "@/lib/map-data";
 import {
   CONTENT_SEGMENTS,
   NO_STANDALONE_PAGE,
+  pinnedShortContent,
   resolveStageContent,
   replacedContent,
   splitContentSegment,
@@ -141,6 +143,8 @@ async function resolve(
   if (isReserved(stageId)) return null;
   const stage = await getStage(stageId);
   if (!stage) return null;
+  // 短い URL を 前の 教材に とめた もの（下の 古い URL の 転送で 送る）
+  if (pinnedShortContent(stageId, segment)) return null;
   const ref = resolveStageContent(stage.contents, segment);
   if (!ref) return null;
   // 同じ ref が2回入っている壊れたステージでは最初の1つを現在地にする
@@ -251,6 +255,7 @@ export default async function StageContentPage({
      * 行き先）も ここで 本来の URL へ 送る（`standaloneContent`）。
      */
     const moved =
+      pinnedShortContent(stageId, content) ??
       standaloneContent(stageId, content) ??
       replacedContent(stageId, content) ??
       splitContentSegment(content);
@@ -353,6 +358,13 @@ async function renderContent(ref: StageContentRef) {
        */
       if (meeting.asakai) {
         return <AsakaiSession meeting={meeting} />;
+      }
+      /*
+       * **相談の 練習（サウンドノベル）も 別の 画面**（2026-11-12 の 仕様書 v4）。
+       * セリフを 送って 進む 一本道で、相談の 場面だけ マイクで 話す。
+       */
+      if (meeting.novel) {
+        return <NovelSession meeting={meeting} />;
       }
       return (
         <MeetingSession
