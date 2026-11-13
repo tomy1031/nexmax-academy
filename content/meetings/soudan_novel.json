@@ -377,8 +377,8 @@
             "cloze": "仕様書では、＿＿。でも、＿＿。＿＿ますか。",
             "reactions": {
               "no_ask": {
-                "text": "わかりました。それで、何を 聞きたいですか？",
-                "en": "I see. So, what do you want to ask?",
+                "text": "わかりました。それで、何を お願いしたいですか？",
+                "en": "I see. So, what would you like to ask me to do?",
                 "hint": "③ お願いを 言いましょう。「〜ますか。」",
                 "hintEn": "Say ③ your request: \"...masu ka?\""
               }
@@ -1378,8 +1378,8 @@
             "step": "consult",
             "type": "line",
             "speaker": "narration",
-            "text": "ヘンディさんが 会議から 戻りました。声を かけましょう。",
-            "en": "Hendy came back from the meeting. Let's talk to him."
+            "text": "ヘンディさんが 会議から 戻りました。",
+            "en": "Hendy came back from the meeting."
           },
           {
             "id": "c_thu",
@@ -1416,8 +1416,8 @@
             },
             "reactions": {
               "no_ask": {
-                "text": "わかりました。それで、何を 聞きたいですか？",
-                "en": "I see. So, what do you want to ask?",
+                "text": "わかりました。それで、何を お願いしたいですか？",
+                "en": "I see. So, what would you like to ask me to do?",
                 "hint": "③ お願いを 言いましょう。「〜ますか。」",
                 "hintEn": "Say ③ your request: \"...masu ka?\""
               }
@@ -1855,8 +1855,8 @@
             },
             "reactions": {
               "no_ask": {
-                "text": "わかりました。それで、何を 聞きたいですか？",
-                "en": "I see. So, what do you want to ask?",
+                "text": "わかりました。それで、何を お願いしたいですか？",
+                "en": "I see. So, what would you like to ask me to do?",
                 "hint": "③ お願いを 言いましょう。「〜ますか。」",
                 "hintEn": "Say ③ your request: \"...masu ka?\""
               }

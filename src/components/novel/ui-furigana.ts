@@ -105,4 +105,6 @@ export const NOVEL_UI_FURIGANA: readonly FuriganaEntry[] = [
   ["忙し", "いそがし"],
   ["急い", "いそい"],
   ["思っ", "おもっ"],
+  ["絵", "え"],
+  ["大丈夫", "だいじょうぶ"],
 ];

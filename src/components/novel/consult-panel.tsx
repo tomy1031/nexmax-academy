@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
 import type { Novel, NovelFailureType, NovelScene } from "@/content/schema";
 import { RubyText } from "@/components/ruby-text";
@@ -15,6 +15,7 @@ import {
   missingParts,
   reactionFace,
   reactionFor,
+  showsTiming,
   type NovelFace,
 } from "@/lib/novel/state";
 import type { FuriganaIndex } from "@/lib/text/furigana";
@@ -135,7 +136,10 @@ export function ConsultPanel({
   onNext: () => void;
 }) {
   const isAdmin = useIsAdmin();
-  const desk = novel.cast.find((one) => one.id === scene.to)?.desk;
+  /** 席の 絵（タイミングを 出す 相談だけ。悪い 知らせの 相談は 出さない——`showsTiming`）。 */
+  const desk = showsTiming(novel, scene)
+    ? novel.cast.find((one) => one.id === scene.to)?.desk
+    : undefined;
   /** はじめの 段（席の 絵が あれば タイミングから）。 */
   const opening: Phase = desk ? "approach" : "call";
   const [phase, setPhase] = useState<Phase>(cleared ? "passed" : opening);
@@ -177,11 +181,15 @@ export function ConsultPanel({
     };
   }, [onBusy]);
 
-  /* 席の 絵を 見て いる あいだは 舞台を 隠す。画面から 消える ときは 戻す */
-  useEffect(() => {
+  /*
+   * 席の 絵を 見て いる あいだは 舞台を 隠す。画面から 消える ときは 戻す。
+   * 描く 前に 知らせる（`useLayoutEffect`）——ふつうの effect だと、相談に 入った
+   * 1回目の 描画で 舞台が 一瞬 見える。
+   */
+  useLayoutEffect(() => {
     onApproach(phase === "approach");
   }, [phase, onApproach]);
-  useEffect(() => () => onApproach(false), [onApproach]);
+  useLayoutEffect(() => () => onApproach(false), [onApproach]);
 
   const level = retryLevel(effectiveFails);
   const name = `${partnerName}さん`;

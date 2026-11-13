@@ -58,11 +58,11 @@ async function teacherPass(page: Page): Promise<void> {
 
 /**
  * 話しかける タイミング（要望 #723）: 席の 絵が「大丈夫そう」に なるのを 待って 押す。
- * 絵は 5秒ごとに 切りかわり、大丈夫そうに なるのは 10秒後（`deskCycle`）。
+ * 絵は 4枚 読みこめて から 5秒ごとに 切りかわり、大丈夫そうに なるのは 5〜15秒後（`deskCycle`）。
  */
 async function approach(page: Page): Promise<void> {
   const desk = page.getByTestId("novel-desk");
-  await expect(desk).toHaveAttribute("data-desk-state", "ok", { timeout: 20_000 });
+  await expect(desk).toHaveAttribute("data-desk-state", "ok", { timeout: 30_000 });
   await desk.click();
   await expect(page.getByTestId("novel-approach-ok")).toBeVisible();
 }
@@ -138,6 +138,8 @@ test.describe("相談の 練習（サウンドノベル）", () => {
         seen.add(id);
         /* 代表の 場面で ルビの 漏れを 数える（気づき・相談・結果の 画面・ポイント） */
         if (["n_mon", "c_mon", "m20", "m22", "c_thu", "f21"].includes(id)) {
+          /* 相談は 合格の 画面で 見る（タイミングの 段では 気づきカードを 隠す ため） */
+          if (id.startsWith("c_")) await teacherPass(page);
           await page.waitForTimeout(400);
           expect(await bareKanjiTexts(page), `場面 ${id}`).toEqual([]);
           await shot(page, `novel-${id}`);
@@ -346,22 +348,39 @@ test.describe("相談の 練習（サウンドノベル）", () => {
     /* 席の 絵を 見て いる あいだは 舞台（立ち絵）を 隠す */
     await expect(page.getByTestId("novel-approach")).toBeVisible();
     await expect(page.getByTestId("novel-stage")).toBeHidden();
-    /* はじめは かならず 話しかけては いけない 状態 */
+    /* はじめは かならず 話しかけては いけない 状態（絵が 読みこめて から 動く） */
     const desk = page.getByTestId("novel-desk");
-    await expect(desk).not.toHaveAttribute("data-desk-state", "ok");
+    await expect(desk).toHaveAttribute("data-desk-state", /^(phone|busy|talking)$/u, {
+      timeout: 15_000,
+    });
+    const first = await desk.getAttribute("data-desk-state");
     await desk.click();
-    await expect(page.getByTestId("novel-approach-wrong")).toBeVisible();
+    const wrong = page.getByTestId("novel-approach-wrong");
+    await expect(wrong).toBeVisible();
     await expect(page.getByTestId("novel-consult")).toHaveAttribute("data-phase", "approach");
     expect(await bareKanjiTexts(page)).toEqual([]);
     await shot(page, "novel-approach-wrong");
-    /* 5秒で 絵が 切りかわる */
-    const first = await desk.getAttribute("data-desk-state");
+    /* 押した あと 5秒で 絵が 切りかわり、✖ の 文も 消える（今の 絵と 食い違わない） */
     await expect(desk).not.toHaveAttribute("data-desk-state", first ?? "", { timeout: 7_000 });
+    await expect(wrong).toHaveCount(0);
     await approach(page);
     await expect(page.getByTestId("novel-consult")).toHaveAttribute("data-phase", "call");
     await expect(page.getByTestId("novel-stage")).toBeVisible();
     expect(await bareKanjiTexts(page)).toEqual([]);
     await shot(page, "novel-approach-ok");
+
+    /* 合格の あとの「もう 一度 練習する」は タイミングから */
+    await seedAdmin(context);
+    await page.reload();
+    await page.getByTestId("novel-continue").click();
+    await teacherPass(page);
+    await page.getByTestId("novel-passed").getByRole("button").nth(1).click();
+    await expect(page.getByTestId("novel-approach")).toBeVisible();
+    /* 合格した 相談に もどって 来た ときは タイミングを 出さない */
+    await page.reload();
+    await page.getByTestId("novel-continue").click();
+    await expect(page.getByTestId("novel-passed")).toBeVisible();
+    await expect(page.getByTestId("novel-approach")).toHaveCount(0);
   });
 
   test("短い URL（/soudan/meeting）は 前と 同じ ミーティングを 開く", async ({ page }) => {

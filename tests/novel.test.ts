@@ -26,6 +26,7 @@ import {
   normalizeSave,
   noticeBefore,
   reactionFor,
+  showsTiming,
   viewAt,
 } from "@/lib/novel/state";
 
@@ -320,16 +321,17 @@ describe("画面の 字の 読み（UI の 辞書だけでも、教材と 混ぜ
     ["お願いが ない", "おねがいが ない"],
     /* 話しかける タイミング（要望 #723） */
     [
-      "今は 電話中です。電話が 終わるまで 待ちましょう。",
-      "いまは でんわちゅうです。でんわが おわるまで まちましょう。",
+      "今は 電話中です。大丈夫そうに なるまで 待ちましょう。",
+      "いまは でんわちゅうです。だいじょうぶそうに なるまで まちましょう。",
     ],
     [
-      "今は とても 忙しそうです。少し 待ちましょう。",
-      "いまは とても いそがしそうです。すこし まちましょう。",
+      "今は とても 忙しそうです。大丈夫そうに なるまで 待ちましょう。",
+      "いまは とても いそがしそうです。だいじょうぶそうに なるまで まちましょう。",
     ],
+    ["絵を 読みこんで います…", "えを よみこんで います…"],
     [
-      "今は ほかの 人と 話して います。話が 終わるまで 待ちましょう。",
-      "いまは ほかの ひとと はなして います。はなしが おわるまで まちましょう。",
+      "今は ほかの 人と 話して います。大丈夫そうに なるまで 待ちましょう。",
+      "いまは ほかの ひとと はなして います。だいじょうぶそうに なるまで まちましょう。",
     ],
     [
       "いい タイミングです。仕事中でも、急いで いない ときは 話しかけて いいです。",
@@ -377,25 +379,39 @@ describe("保存（ブラウザに 1行ごと）", () => {
 });
 
 describe("話しかける タイミング（要望 #723）", () => {
-  it("はじめは かならず 話しかけては いけない 状態で、10秒後と 20秒後に 大丈夫そうに なる", () => {
+  const timed = allConsults(novel).filter((consult) => showsTiming(novel, consult));
+
+  it("はじめは かならず 話しかけては いけない 状態で、15秒 以内に 大丈夫そうに なる", () => {
     for (const consult of allConsults(novel)) {
       const cycle = deskCycle(consult.id);
-      expect(cycle).toHaveLength(5);
       expect(cycle[0]).not.toBe("ok");
-      expect(cycle[1]).not.toBe("ok");
-      expect(cycle[2]).toBe("ok");
-      expect(cycle[4]).toBe("ok");
+      const firstOk = cycle.indexOf("ok");
+      expect(firstOk).toBeGreaterThanOrEqual(1);
+      expect(firstOk).toBeLessThanOrEqual(3);
       /* だめな 3つ（電話・忙しそう・話して いる）が 1回ずつ 出る */
-      expect(new Set([cycle[0], cycle[1], cycle[3]])).toEqual(
-        new Set(["phone", "busy", "talking"]),
-      );
+      const waits = cycle.filter((state) => state !== "ok");
+      expect(waits.slice().sort()).toEqual(["busy", "phone", "talking"]);
+      /* となり同士（さいごと はじめも）は 別の 状態（切りかわりが 目で 分かる） */
+      cycle.forEach((state, i) => expect(cycle[(i + 1) % cycle.length]).not.toBe(state));
       expect(deskCycle(consult.id)).toEqual(cycle);
     }
   });
 
-  it("場面ごとに だめな 状態の 順が 変わる（時間だけで 押せない）", () => {
-    const firsts = new Set(allConsults(novel).map((consult) => deskCycle(consult.id)[0]));
+  it("場面ごとに はじめの 状態も 大丈夫そうに なる 時刻も 変わる（時間だけで 押せない）", () => {
+    const firsts = new Set(timed.map((consult) => deskCycle(consult.id)[0]));
+    const okAt = new Set(timed.map((consult) => deskCycle(consult.id).indexOf("ok")));
     expect(firsts.size).toBeGreaterThan(1);
+    expect(okAt.size).toBeGreaterThan(1);
+  });
+
+  it("悪い 知らせの 相談（金曜）では 出さない——その 日は「早く 言う」を 教える", () => {
+    expect(timed.map((consult) => consult.id)).toEqual([
+      "c_mon",
+      "c_tue1",
+      "c_tue2",
+      "c_wed",
+      "c_thu",
+    ]);
   });
 
   it("相談の 相手は みんな 席の 絵（4枚）を 持つ", () => {

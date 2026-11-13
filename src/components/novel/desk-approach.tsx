@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { motion } from "motion/react";
 import type { Novel } from "@/content/schema";
@@ -18,11 +18,26 @@ import type { FuriganaIndex } from "@/lib/text/furigana";
 type Desk = NonNullable<Novel["cast"][number]["desk"]>;
 
 /**
+ * 絵が 切りかわった 直後の 猶予。絵は 0.3秒 かけて 入れかわるので、「大丈夫そう」が まだ
+ * 見えて いる あいだに 押した ぶんは 合格に する（判定は 学生に 有利に 倒す・P8）。
+ */
+const SWITCH_GRACE_MS = 600;
+
+/**
+ * 絵が 読みこめない ときに 待つ 上限。4枚が そろうまで 切りかえを 始めない（細い 回線で、
+ * 見えない まま 時間が 進んで「待って 押せば 通る」に ならない ように）が、1枚が 落ちた
+ * だけで 先へ 進めなく なるのも 困るので、ここで 打ち切る。
+ */
+const LOAD_TIMEOUT_MS = 15_000;
+
+/**
  * 話しかける タイミング（要望 #723）— 相手の 席の 絵を 見て、今 話しかけて いいかを 決める。
  *
  * 絵は 5秒ごとに 電話中・忙しそう・ほかの 人と 話して いる・大丈夫そう を 切りかわる
  *（並びは `deskCycle`）。大丈夫そうな ときに 相手を 押せば、声かけ（相談の はじめ）へ 進む。
- * ちがう ときに 押すと、なぜ 待つのかを 出して、絵は そのまま 動きつづける。
+ * ちがう ときに 押すと、なぜ 待つのかを 出し、**その 絵を もう 5秒 のばす**（相手の じゃまを
+ * した ぶん、待つ 時間が のびる）。押しつづけても 通れない ので、見て 待つ ことに なる。
+ * 切りかえは 4枚が 読みこめて から 始める。
  *
  * ここで まちがえても 相談の 星は 減らさない——星は「相談の 中身が 伝わったか」の 目印なので、
  * 別の ことを 混ぜない。
@@ -55,22 +70,50 @@ export function DeskApproach({
 }) {
   const cycle = deskCycle(seed);
   const [at, setAt] = useState(0);
-  const [wrong, setWrong] = useState<NovelDeskState | null>(null);
+  /** まちがえて 押すたびに 1 ふえ、今の 絵の 5秒を 数え直す。 */
+  const [round, setRound] = useState(0);
+  const [loaded, setLoaded] = useState<readonly NovelDeskState[]>([]);
+  const [timedOut, setTimedOut] = useState(false);
+  const ready = timedOut || loaded.length >= Object.keys(desk).length;
+  /**
+   * まちがえて 押した ときの 状態と、その ときの 絵の 番号。**絵が 変わったら 出さない**——
+   * 「今は 電話中です」が、絵が 大丈夫そうに 変わった あとも 残ると、押して よい ときに
+   * 押さなく なる（2026-11-13 の 検収）。
+   */
+  const [wrong, setWrong] = useState<{ state: NovelDeskState; at: number } | null>(null);
   const state: NovelDeskState = cycle[at % cycle.length] ?? "ok";
+  const changedAt = useRef(0);
 
   useEffect(() => {
-    const timer = window.setInterval(() => setAt((now) => now + 1), DESK_SWITCH_MS);
-    return () => window.clearInterval(timer);
+    const timer = window.setTimeout(() => setTimedOut(true), LOAD_TIMEOUT_MS);
+    return () => window.clearTimeout(timer);
   }, []);
 
+  useEffect(() => {
+    if (!ready) return;
+    const timer = window.setInterval(() => {
+      changedAt.current = Date.now();
+      setAt((now) => now + 1);
+    }, DESK_SWITCH_MS);
+    return () => window.clearInterval(timer);
+  }, [ready, round]);
+
+  const markLoaded = (key: NovelDeskState) =>
+    setLoaded((now) => (now.includes(key) ? now : [...now, key]));
+
   const tap = () => {
-    if (state === "ok") {
+    if (!ready) return;
+    const before = at > 0 ? cycle[(at - 1) % cycle.length] : undefined;
+    const justLeftOk = before === "ok" && Date.now() - changedAt.current < SWITCH_GRACE_MS;
+    if (state === "ok" || justLeftOk) {
       onReady();
       return;
     }
-    setWrong(state);
+    setWrong({ state, at });
+    setRound((now) => now + 1);
     onWrong();
   };
+  const shownWrong = wrong && wrong.at === at ? wrong.state : null;
 
   return (
     <div className="space-y-2" data-testid="novel-approach">
@@ -95,7 +138,7 @@ export function DeskApproach({
         style={{ borderColor: "var(--color-hairline)", background: "var(--color-ink)" }}
         aria-label={`${name}に 話しかける`}
         data-testid="novel-desk"
-        data-desk-state={state}
+        data-desk-state={ready ? state : "loading"}
       >
         <motion.div
           className="absolute inset-0"
@@ -120,27 +163,37 @@ export function DeskApproach({
               src={assetUrl(desk[key]) ?? desk[key]}
               alt=""
               fill
-              priority
+              loading="eager"
               sizes="(min-width: 640px) 640px, 100vw"
+              onLoad={() => markLoaded(key)}
+              onError={() => markLoaded(key)}
               className="object-cover transition-opacity duration-300"
               style={{ opacity: key === state ? 1 : 0 }}
               aria-hidden
             />
           ))}
         </motion.div>
+        {!ready ? (
+          <span
+            className="absolute inset-x-0 bottom-2 mx-auto w-fit rounded-full px-3 py-1 text-xs font-black text-white"
+            style={{ background: "rgba(15, 35, 70, 0.75)" }}
+          >
+            <RubyText text="絵を 読みこんで います…" index={index} show={show} />
+          </span>
+        ) : null}
       </button>
 
-      {wrong ? (
+      {shownWrong ? (
         <p
           role="status"
           className="rounded-xl px-3 py-2 text-sm font-black"
           style={{ background: "var(--color-cream)", color: "var(--color-navy)" }}
           data-testid="novel-approach-wrong"
         >
-          ✖ <RubyText text={DESK_FEEDBACK[wrong]} index={index} show={show} />
+          ✖ <RubyText text={DESK_FEEDBACK[shownWrong]} index={index} show={show} />
           {translation ? (
             <span className="text-ink-soft block text-xs font-medium">
-              {DESK_FEEDBACK_EN[wrong]}
+              {DESK_FEEDBACK_EN[shownWrong]}
             </span>
           ) : null}
         </p>
