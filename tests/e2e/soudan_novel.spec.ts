@@ -62,7 +62,18 @@ async function teacherPass(page: Page): Promise<void> {
  * 話しかける タイミング（要望 #723）: 席の 絵が「大丈夫そう」に なるのを 待って 押す。
  * 絵は 4枚 読みこめて から 5秒ごとに 切りかわり、大丈夫そうに なるのは 5〜15秒後（`deskCycle`）。
  */
+async function fillMemo(page: Page): Promise<void> {
+  if (!(await page.getByTestId("novel-memo").count())) return;
+  await page.getByTestId("novel-memo-pick-1").locator("[data-word]").first().click();
+  await page.getByTestId("novel-memo-pick-2").locator("[data-word]").nth(1).click();
+  await page.locator("[data-stance]").first().click();
+  await page.getByTestId("novel-memo-input").fill("キーボードも 出しますか");
+  await page.getByTestId("novel-memo-done").click();
+}
+
 async function approach(page: Page): Promise<void> {
+  /* 月曜は 話しかける 前に 相談メモを 作る（要望 #746） */
+  await fillMemo(page);
   const desk = page.getByTestId("novel-desk");
   await expect(desk).toHaveAttribute("data-desk-state", "ok", { timeout: 30_000 });
   await desk.click();
@@ -322,7 +333,8 @@ test.describe("相談の 練習（サウンドノベル）", () => {
     await expect(react).toHaveAttribute("data-type", "vague", { timeout: 30_000 });
     await expect(page.getByTestId("novel-not-yet")).toBeVisible();
     /* 足りない ①が 光る */
-    await expect(page.getByTestId("novel-card").locator("[data-glow='1']")).toHaveCount(1);
+    /* 月曜は 気づきカードの かわりに 相談メモ（要望 #746） */
+    await expect(page.getByTestId("novel-memo-card").locator("[data-glow='1']")).toHaveCount(1);
     expect(await bareKanjiTexts(page)).toEqual([]);
     await shot(page, "novel-react");
     await page.getByTestId("novel-again").click();
@@ -348,7 +360,13 @@ test.describe("相談の 練習（サウンドノベル）", () => {
     for (let i = 0; i < 80 && !(await page.getByTestId("novel-consult").count()); i += 1) {
       await step(page);
     }
-    /* 席の 絵が ゲームの 画面に 出て、真ん中に「◯◯さんに 話しかける」が ある */
+    /* 相談メモ: ①②は 押して 拾い、③は 自分の 考えを 選んでから 書く（それまで「できた」は 押せない） */
+    await expect(page.getByTestId("novel-memo")).toBeVisible();
+    await expect(page.getByTestId("novel-memo-done")).toBeDisabled();
+    expect(await bareKanjiTexts(page)).toEqual([]);
+    await shot(page, "novel-memo");
+    await fillMemo(page);
+    /* 席の 絵が ゲームの 画面に 出て、真ん中に「◯◯さん、今 お時間 よろしいでしょうか？」が ある */
     await expect(page.getByTestId("novel-approach")).toBeVisible();
     await expect(page.getByTestId("novel-approach-rule")).toBeVisible();
     /* はじめは かならず 話しかけては いけない 状態（絵が 読みこめて から 動く） */
@@ -372,12 +390,15 @@ test.describe("相談の 練習（サウンドノベル）", () => {
     expect(await bareKanjiTexts(page)).toEqual([]);
     await shot(page, "novel-approach-ok");
 
-    /* 合格の あとの「もう 一度 練習する」は タイミングから */
+    /* 合格の あとの「もう 一度 練習する」は メモ（無ければ）→ タイミングから */
     await seedAdmin(context);
     await page.reload();
     await page.getByTestId("novel-continue").click();
     await teacherPass(page);
     await page.getByTestId("novel-passed").getByRole("button").nth(1).click();
+    /* 読み込み直した あとは メモが 無いので、メモから 作り直す → そのあと タイミング */
+    await expect(page.getByTestId("novel-memo")).toBeVisible();
+    await fillMemo(page);
     await expect(page.getByTestId("novel-approach")).toBeVisible();
     /* 合格した 相談に もどって 来た ときは タイミングを 出さない */
     await page.reload();

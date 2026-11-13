@@ -169,7 +169,11 @@
             "speaker": "hendy",
             "text": "お客様は、お店の 店長の 松本さんです。",
             "en": "Our client is Mr. Matsumoto, the shop manager.",
-            "face": "neutral"
+            "face": "neutral",
+            "inset": {
+              "src": "/img/novel/matsumoto/shop_round.webp",
+              "label": "お客様：松本店長"
+            }
           },
           {
             "id": "m03",
@@ -395,6 +399,14 @@
             "en": "When they look OK, say \"Do you have a moment now?\""
           },
           {
+            "id": "m16e",
+            "step": "consult",
+            "type": "line",
+            "speaker": "narration",
+            "text": "話しかける 前に、相談メモを 作ります。①と ②は 資料の ことばを 選び、③は 自分で 考えます。",
+            "en": "Before you talk to them, make a consultation memo. For ① and ②, pick words from the documents. For ③, think by yourself."
+          },
+          {
             "id": "c_mon",
             "step": "consult",
             "type": "consult",
@@ -408,7 +420,7 @@
             "criteria": {
               "context": "商品一覧の 仕様書では、出す 商品は マウスと USBライト（2つ）と 言う。",
               "problem": "商品データには キーボードも ある、と 言う。",
-              "ask": "キーボードも 出すか どうかを 聞く。"
+              "ask": "キーボードを どう するかを ヘンディさんに 聞く・確かめる（出すか、出さないか、いつ 出すか など。聞き方は 1つで なくて よい）。自分だけで 決めて 終わらない。"
             },
             "example": "仕様書では、出す 商品は マウスと USBライトです。でも、商品データには キーボードも あります。キーボードも 出しますか。",
             "exampleEn": "The specification says to show the mouse and the USB light. But the product data also has a keyboard. Should we show the keyboard too?",
@@ -420,6 +432,44 @@
                 "hint": "③ お願いを 言いましょう。「〜ますか。」",
                 "hintEn": "Say ③ your request: \"...masu ka?\""
               }
+            },
+            "memo": {
+              "seenWords": [
+                "仕様書",
+                "出す 商品",
+                "マウス",
+                "USBライト"
+              ],
+              "diffWords": [
+                "商品データ",
+                "キーボード",
+                "2,500円"
+              ],
+              "stance": {
+                "question": "あなたは、どう したら いいと 思いますか。",
+                "options": [
+                  "キーボードも 出す",
+                  "キーボードは 出さない",
+                  "まだ わからない"
+                ]
+              },
+              "ask": "でも、決めるのは ヘンディさんです。ヘンディさんに 何と 言いますか。短く 書きます。",
+              "hints": [
+                "この まま 作ると、どう なりますか。",
+                "ヘンディさんは 何が できますか。（決める・教える）",
+                "聞かないで 作ったら、あとで 何が こまりますか。"
+              ],
+              "frame": "＿＿では、＿＿。でも、＿＿には ＿＿。＿＿ますか。",
+              "others": [
+                {
+                  "text": "キーボードは 出さなくて いいですか。",
+                  "en": "Is it OK not to show the keyboard?"
+                },
+                {
+                  "text": "キーボードは いつから 出しますか。",
+                  "en": "When do we start showing the keyboard?"
+                }
+              ]
             }
           },
           {
@@ -2676,6 +2726,30 @@
     [
       "大丈夫",
       "だいじょうぶ"
+    ],
+    [
+      "考え",
+      "かんがえ"
+    ],
+    [
+      "短く",
+      "みじかく"
+    ],
+    [
+      "書き",
+      "かき"
+    ],
+    [
+      "何と",
+      "なんと"
+    ],
+    [
+      "松本店長",
+      "まつもとてんちょう"
+    ],
+    [
+      "電話中",
+      "でんわちゅう"
     ]
   ]
 }
