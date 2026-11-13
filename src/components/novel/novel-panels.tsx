@@ -24,7 +24,9 @@ const COMPARE_DELAY_MS = 500;
  * - 手順を 1つずつ 出す: ① 左の 資料から 1行 → ② 右の 資料から 合わない 行。いま 押す 側の
  *   資料が 光り、もう 片方は 少し 薄く する（押しても よい・順は 決めない）。
  * - 2つ そろったら **自動で** くらべる（「くらべる」ボタンは 無い）。
- * - 片方だけ 正しい ときは、正しい 側を 残して「もう 片方を 選び直します」と 言う。
+ * - 片方だけ 正しい ときは、正しい 側を 残して「もう 片方を 選び直します」と 言う
+ *   （1回目の まちがいで どちらが 正しいかが 分かる。「真ん中の 2つを 選ぶのは 至難の
+ *   わざ」への 答えとして、ここは 易しく 倒した——要望 #729）。
  *
  * 答えは 先に 見せない。まちがえた ときは 3段で 強く する（仕様書 v4 §4）:
  * 1回目 = 見る 場所を 言う／2回目 = 片方の 正しい 行を 光らせる／3回目 = 両方を 光らせる。
@@ -140,7 +142,11 @@ export function NoticePanel({
               key={side}
               type="button"
               disabled={done || !id}
-              onClick={() => (side === "left" ? setLeft(null) : setRight(null))}
+              onClick={() => {
+                setVerdict(null);
+                if (side === "left") setLeft(null);
+                else setRight(null);
+              }}
               className="min-h-12 rounded-xl border-2 border-dashed px-2 py-1.5 text-left text-xs font-bold"
               style={{
                 borderColor: active === side ? "var(--color-sun)" : "var(--color-hairline)",
@@ -190,6 +196,7 @@ export function NoticePanel({
           className="rounded-xl px-3 py-2 text-sm font-black"
           style={{ background: "var(--color-cream)", color: "var(--color-coral-deep)" }}
           data-testid="novel-notice-wrong"
+          data-verdict={verdict}
         >
           <span className="block">
             ✖{" "}
@@ -315,8 +322,14 @@ function NoticeCard({
   onNext: () => void;
   onRetry: () => void;
 }) {
+  /* 自動で 正解に なった とき、カード（と「つぎへ」）が パネルの 下に 隠れない ように */
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    ref.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }, []);
   return (
     <motion.div
+      ref={ref}
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       className="rounded-2xl border-2 p-3"

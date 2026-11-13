@@ -888,17 +888,26 @@ function ToggleMic({
     [],
   );
   const lastTap = useRef(0);
-  /* 話して いる 秒数（話しはじめで 0 に 戻す） */
+  /*
+   * 録音が 外から 止まった（つなぎの 張り直し・30分の 期限）ら、こちらの 印も 戻す。
+   * 戻さないと、つぎに 押しても `start` が 何も しなく なる（2026-11-13 の 検収）。
+   */
+  useEffect(() => {
+    if (!voice.talking) down.current = false;
+  }, [voice.talking]);
+  /* 話して いる 秒数（止めたら 0 に 戻す——つぎの 話しはじめに 前の 秒数を 見せない） */
   const [seconds, setSeconds] = useState(0);
   useEffect(() => {
     if (!voice.talking) return;
     const began = Date.now();
-    void Promise.resolve().then(() => setSeconds(0));
     const timer = window.setInterval(
       () => setSeconds(Math.floor((Date.now() - began) / 1000)),
       500,
     );
-    return () => window.clearInterval(timer);
+    return () => {
+      window.clearInterval(timer);
+      setSeconds(0);
+    };
   }, [voice.talking]);
   /* 押し忘れ: 上限で 止めて 送る */
   useEffect(() => {
@@ -966,6 +975,10 @@ function ToggleMic({
         aria-label={voice.talking ? "話し終わった" : "話す"}
         disabled={listening && !voice.talking}
         onClick={toggle}
+        onKeyDown={(event) => {
+          /* Enter を 押しっぱなしに した くり返しで、すぐ 切れない ように */
+          if (event.repeat && (event.key === "Enter" || event.key === " ")) event.preventDefault();
+        }}
         className="relative grid h-16 w-16 shrink-0 place-items-center rounded-full text-white shadow-lg select-none disabled:opacity-50"
         style={{
           background: voice.talking ? "#e64a5f" : "var(--color-coral)",

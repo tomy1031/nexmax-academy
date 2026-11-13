@@ -62,7 +62,9 @@ function fullscreenElement(): Element | null {
  *
  * ## 全画面（2段がまえ）
  * 1. どの 端末でも: 枠を `fixed inset-0`・高さ `100dvh` に し、ページの スクロールを 止める。
- * 2. 使える 端末だけ: さらに `requestFullscreen()`（iPad・Android・PC は 本当の 全画面）。
+ * 2. 使える 端末だけ: さらに **ページ全体**に `requestFullscreen()`（iPad・Android・PC は
+ *    本当の 全画面）。枠では なく ページに 向けるのは、辞書の 吹き出しなど body に 出す
+ *    部品が 全画面の 下に 隠れない ように（2026-11-13 の 検収）。
  *    iPhone の Safari は 要素の 全画面を 受け付けないので 1 だけ（アドレスバーは 残る）。
  * Esc や 端末の 操作で 本当の 全画面を 抜けたら、1 も 解く。枠の DOM は 作り直さない
  *（録音中に 出入りしても 止まらない）。
@@ -76,6 +78,8 @@ export function GameFrame({ children }: { children: ReactNode }) {
   const [full, setFull] = useState(false);
   /** 本当の 全画面に 入れた か（抜けた ことを 知る ため）。 */
   const native = useRef(false);
+  /** いま 全画面に したいか（すばやく 2回 押された ときに、遅れて 入った 全画面を 抜ける）。 */
+  const want = useRef(false);
 
   useEffect(() => {
     const el = ref.current;
@@ -116,15 +120,32 @@ export function GameFrame({ children }: { children: ReactNode }) {
     };
   }, [full]);
 
+  const leaveNative = useCallback(() => {
+    if (!fullscreenElement()) return;
+    const doc = document as WebkitDocument;
+    const leave = doc.exitFullscreen ?? doc.webkitExitFullscreen;
+    try {
+      void Promise.resolve(leave?.call(doc)).catch(() => {});
+    } catch {
+      // 抜けられなくても 枠は 元に 戻って いる
+    }
+  }, []);
+
   const enter = useCallback(() => {
+    want.current = true;
     setFull(true);
-    const el = ref.current as WebkitElement | null;
-    const request = el?.requestFullscreen ?? el?.webkitRequestFullscreen;
-    if (!el || !request) return;
+    const el = document.documentElement as WebkitElement;
+    const request = el.requestFullscreen ?? el.webkitRequestFullscreen;
+    if (!request) return;
     try {
       void Promise.resolve(request.call(el))
         .then(() => {
           native.current = true;
+          /* 入る 前に もう「やめる」が 押されて いた */
+          if (!want.current) {
+            native.current = false;
+            leaveNative();
+          }
         })
         .catch(() => {
           // 断られても 1段目（枠を 画面いっぱい）の まま 遊べる
@@ -132,21 +153,14 @@ export function GameFrame({ children }: { children: ReactNode }) {
     } catch {
       // 同上
     }
-  }, []);
+  }, [leaveNative]);
 
   const exit = useCallback(() => {
+    want.current = false;
     setFull(false);
-    if (fullscreenElement()) {
-      const doc = document as WebkitDocument;
-      const leave = doc.exitFullscreen ?? doc.webkitExitFullscreen;
-      try {
-        void Promise.resolve(leave?.call(doc)).catch(() => {});
-      } catch {
-        // 抜けられなくても 枠は 元に 戻って いる
-      }
-    }
+    leaveNative();
     native.current = false;
-  }, []);
+  }, [leaveNative]);
 
   const bringIntoView = useCallback(() => {
     ref.current?.scrollIntoView({ block: "start", behavior: "smooth" });
@@ -163,7 +177,8 @@ export function GameFrame({ children }: { children: ReactNode }) {
       className={
         full
           ? "fixed inset-0 z-[60] w-screen overflow-hidden"
-          : "relative w-full overflow-hidden rounded-2xl"
+          : /* h-[560px] は `svh` を 知らない ブラウザの 逃げ道（下の style が 捨てられた とき） */
+            "relative h-[560px] w-full overflow-hidden rounded-2xl"
       }
       style={{
         background: "var(--color-ink)",
