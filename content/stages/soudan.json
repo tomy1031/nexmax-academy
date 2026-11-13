@@ -33,10 +33,6 @@
     {
       "ref": "soudan_novel",
       "type": "meeting"
-    },
-    {
-      "ref": "soudan_meeting",
-      "type": "meeting"
     }
   ],
   "wordStageIds": [

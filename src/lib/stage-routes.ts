@@ -207,7 +207,7 @@ const PINNED_SHORT: readonly {
   readonly stage: string;
   readonly segment: string;
   readonly to: { readonly type: ContentRefType; readonly ref: string };
-}[] = [{ stage: "soudan", segment: "meeting", to: { type: "meeting", ref: "soudan_meeting" } }];
+}[] = [];
 
 /** 短い URL を 前と 同じ 教材に とめて あるなら、その 種別と ID。ちがえば null。 */
 export function pinnedShortContent(

@@ -34,11 +34,12 @@ test("ミーティング: 話しきった 瞬間に 修了証が 出る。飛ば
   page,
   context,
 }) => {
+  /* 相談の ミーティングは 非表示に した（2026-11-13）ので、会社の ステージの 報告の ミーティングで 見る */
   const meeting: { questions: unknown[] } = JSON.parse(
-    readFileSync(join("content", "meetings", "soudan_meeting.json"), "utf8"),
+    readFileSync(join("content", "meetings", "kaisha_houkoku_meeting.json"), "utf8"),
   );
-  await seedBefore(context, "soudan", "soudan_meeting");
-  await page.goto("/soudan/meeting-soudan_meeting");
+  await seedBefore(context, "kaisha", "kaisha_houkoku_meeting");
+  await page.goto("/kaisha/meeting-kaisha_houkoku_meeting");
   await joinCall(page);
   for (let i = 0; i < meeting.questions.length; i += 1) {
     await skipAsk(page);
