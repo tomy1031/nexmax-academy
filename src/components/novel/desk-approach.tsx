@@ -134,7 +134,7 @@ export function DeskApproach({
       <button
         type="button"
         onClick={tap}
-        className="relative block aspect-[3/2] w-full overflow-hidden rounded-2xl border-2"
+        className="relative mx-auto block aspect-[3/2] w-full max-w-[720px] overflow-hidden rounded-2xl border-2"
         style={{ borderColor: "var(--color-hairline)", background: "var(--color-ink)" }}
         aria-label={`${name}に 話しかける`}
         data-testid="novel-desk"

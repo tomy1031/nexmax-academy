@@ -47,6 +47,8 @@ async function blockGoogle(page: Page): Promise<void> {
 /** 先生用の「合格に する」（相談の 札を 3秒 押しつづける。先生の 端末だけ）。 */
 async function teacherPass(page: Page): Promise<void> {
   const chip = page.getByTestId("novel-teacher-pass");
+  /* 札は パネルの 中で スクロールして 隠れる ことが ある（枠の 中だけ 動く） */
+  await chip.scrollIntoViewIfNeeded();
   const box = await chip.boundingBox();
   if (!box) throw new Error("③の 札が 見えない");
   await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
@@ -80,7 +82,8 @@ async function step(page: Page): Promise<"ending" | "next"> {
       const [left, right] = (scene?.answer as [string, string] | undefined) ?? ["", ""];
       await page.locator(`[data-line="left:${left}"]`).click();
       await page.locator(`[data-line="right:${right}"]`).click();
-      await page.getByTestId("novel-compare").click();
+      /* 2つ そろうと 自動で くらべる（要望 #729） */
+      await expect(card).toBeVisible();
     }
     await card.getByRole("button").first().click();
     return "next";
@@ -233,7 +236,7 @@ test.describe("相談の 練習（サウンドノベル）", () => {
     await page
       .getByTestId("novel-text-input")
       .fill(
-        "仕様書では、1〜5個注文できます。でも、USBライトの在庫は2個です。在庫より多い注文は、できないようにしますか。",
+        "仕様書では、出す商品は2つです。でも、商品データにはキーボードもあります。キーボードも出しますか。",
       );
     await page.getByTestId("novel-text-send").click();
     await expect(page.getByTestId("novel-passed")).toHaveAttribute("data-stars", "1");
@@ -313,7 +316,7 @@ test.describe("相談の 練習（サウンドノベル）", () => {
     await page.getByTestId("novel-text-input").fill("ヘンディさん、今、お時間よろしいですか。");
     await page.getByTestId("novel-text-send").click();
     await page.getByTestId("novel-to-talk").click();
-    await page.getByTestId("novel-text-input").fill("在庫は2個です。できないようにしますか。");
+    await page.getByTestId("novel-text-input").fill("キーボードも出しますか。");
     await page.getByTestId("novel-text-send").click();
     const react = page.getByTestId("novel-react");
     await expect(react).toHaveAttribute("data-type", "vague", { timeout: 30_000 });
@@ -325,7 +328,7 @@ test.describe("相談の 練習（サウンドノベル）", () => {
     await page.getByTestId("novel-again").click();
     await page
       .getByTestId("novel-text-input")
-      .fill("仕様書では1から5個です。でも在庫は2個です。できないようにしますか。");
+      .fill("仕様書では商品は2つです。でもデータにはキーボードがあります。出しますか。");
     await page.getByTestId("novel-text-send").click();
     await expect(page.getByTestId("novel-passed")).toHaveAttribute("data-stars", "2", {
       timeout: 30_000,
