@@ -79,7 +79,8 @@
     ],
     "backgrounds": {
       "morning": "/img/novel/office_morning.webp",
-      "afternoon": "/img/novel/office_afternoon.webp"
+      "afternoon": "/img/novel/office_afternoon.webp",
+      "shop": "/img/novel/shop.webp"
     },
     "reactions": {
       "vague": {
@@ -168,7 +169,11 @@
             "speaker": "hendy",
             "text": "お客様は、お店の 店長の 松本さんです。",
             "en": "Our client is Mr. Matsumoto, the shop manager.",
-            "face": "neutral"
+            "face": "neutral",
+            "inset": {
+              "src": "/img/novel/matsumoto/shop_round.webp",
+              "label": "お客様：松本店長"
+            }
           },
           {
             "id": "m03",
@@ -277,8 +282,8 @@
               "lines": [
                 {
                   "id": "s1",
-                  "text": "出す 商品は 2つ：マウスと USBライト。",
-                  "en": "Show two products: the mouse and the USB light."
+                  "text": "出す 商品：マウス、USBライト",
+                  "en": "Products to show: the mouse and the USB light"
                 },
                 {
                   "id": "s2",
@@ -324,9 +329,9 @@
             "hint": "商品の 名前を 見て ください。",
             "hintEn": "Look at the product names.",
             "card": {
-              "seen": "仕様書では、出す 商品は 2つ。",
+              "seen": "仕様書では、出す 商品は マウスと USBライト。",
               "diff": "商品データには、キーボードも ある。",
-              "seenKey": "仕様書・商品は 2つ",
+              "seenKey": "仕様書・マウスと USBライト",
               "diffKey": "データ・キーボードも ある"
             },
             "prompt": "仕様書に 書いて ある 商品と、表の 商品を くらべます。合わない 行を 1つずつ 選びます。"
@@ -370,6 +375,38 @@
             "en": "When you consult, say three things in order: ① what you checked, ② what you don't know, ③ your request."
           },
           {
+            "id": "m16b",
+            "step": "consult",
+            "type": "line",
+            "speaker": "narration",
+            "text": "相談する 前に、相手の ようすを 見ます。",
+            "en": "Before you consult, look at how the other person is doing."
+          },
+          {
+            "id": "m16c",
+            "step": "consult",
+            "type": "line",
+            "speaker": "narration",
+            "text": "電話中・だれかと 話して いる・とても 忙しそうな ときは、少し 待ちます。",
+            "en": "If they are on the phone, talking with someone, or very busy, wait a little."
+          },
+          {
+            "id": "m16d",
+            "step": "consult",
+            "type": "line",
+            "speaker": "narration",
+            "text": "大丈夫そうな ときに、「今 お時間 よろしいでしょうか」と 声を かけます。",
+            "en": "When they look OK, say \"Do you have a moment now?\""
+          },
+          {
+            "id": "m16e",
+            "step": "consult",
+            "type": "line",
+            "speaker": "narration",
+            "text": "話しかける 前に、相談メモを 作ります。①と ②は 資料の ことばを 選び、③は 自分で 考えます。",
+            "en": "Before you talk to them, make a consultation memo. For ① and ②, pick words from the documents. For ③, think by yourself."
+          },
+          {
             "id": "c_mon",
             "step": "consult",
             "type": "consult",
@@ -381,12 +418,12 @@
             "replyEn": "Yes, what is it?",
             "topic": "出す 商品",
             "criteria": {
-              "context": "商品一覧の 仕様書では、出す 商品は 2つ（マウスと USBライト）と 言う。",
+              "context": "商品一覧の 仕様書では、出す 商品は マウスと USBライト（2つ）と 言う。",
               "problem": "商品データには キーボードも ある、と 言う。",
-              "ask": "キーボードも 出すか どうかを 聞く。"
+              "ask": "キーボードを どう するかを ヘンディさんに 聞く・確かめる（出すか、出さないか、いつ 出すか など。聞き方は 1つで なくて よい）。自分だけで 決めて 終わらない。"
             },
-            "example": "仕様書では、出す 商品は 2つです。でも、商品データには キーボードも あります。キーボードも 出しますか。",
-            "exampleEn": "The specification says to show two products. But the product data also has a keyboard. Should we show the keyboard too?",
+            "example": "仕様書では、出す 商品は マウスと USBライトです。でも、商品データには キーボードも あります。キーボードも 出しますか。",
+            "exampleEn": "The specification says to show the mouse and the USB light. But the product data also has a keyboard. Should we show the keyboard too?",
             "cloze": "仕様書では、＿＿。でも、商品データには ＿＿。＿＿ますか。",
             "reactions": {
               "no_ask": {
@@ -395,6 +432,44 @@
                 "hint": "③ お願いを 言いましょう。「〜ますか。」",
                 "hintEn": "Say ③ your request: \"...masu ka?\""
               }
+            },
+            "memo": {
+              "seenWords": [
+                "仕様書",
+                "出す 商品",
+                "マウス",
+                "USBライト"
+              ],
+              "diffWords": [
+                "商品データ",
+                "キーボード",
+                "2,500円"
+              ],
+              "stance": {
+                "question": "あなたは、どう したら いいと 思いますか。",
+                "options": [
+                  "キーボードも 出す",
+                  "キーボードは 出さない",
+                  "まだ わからない"
+                ]
+              },
+              "ask": "でも、決めるのは ヘンディさんです。ヘンディさんに 何と 言いますか。短く 書きます。",
+              "hints": [
+                "この まま 作ると、どう なりますか。",
+                "ヘンディさんは 何が できますか。（決める・教える）",
+                "聞かないで 作ったら、あとで 何が こまりますか。"
+              ],
+              "frame": "＿＿では、＿＿。でも、＿＿には ＿＿。＿＿ますか。",
+              "others": [
+                {
+                  "text": "キーボードは 出さなくて いいですか。",
+                  "en": "Is it OK not to show the keyboard?"
+                },
+                {
+                  "text": "キーボードは いつから 出しますか。",
+                  "en": "When do we start showing the keyboard?"
+                }
+              ]
             }
           },
           {
@@ -1944,7 +2019,8 @@
             "type": "line",
             "speaker": "narration",
             "text": "17時。松本さんに 納品しました。",
-            "en": "5 p.m. You delivered to Mr. Matsumoto."
+            "en": "5 p.m. You delivered to Mr. Matsumoto.",
+            "bg": "shop"
           },
           {
             "id": "f23",
@@ -2642,6 +2718,38 @@
     [
       "商品名",
       "しょうひんめい"
+    ],
+    [
+      "忙し",
+      "いそがし"
+    ],
+    [
+      "大丈夫",
+      "だいじょうぶ"
+    ],
+    [
+      "考え",
+      "かんがえ"
+    ],
+    [
+      "短く",
+      "みじかく"
+    ],
+    [
+      "書き",
+      "かき"
+    ],
+    [
+      "何と",
+      "なんと"
+    ],
+    [
+      "松本店長",
+      "まつもとてんちょう"
+    ],
+    [
+      "電話中",
+      "でんわちゅう"
     ]
   ]
 }

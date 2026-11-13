@@ -1276,6 +1276,7 @@ export function collectLabeledTexts(content: Content): LabeledText[] {
               case "point":
               case "ending":
                 push(`${at}.text`, scene.text);
+                if (scene.type === "line") push(`${at}.inset.label`, scene.inset?.label);
                 break;
               case "notice":
                 for (const side of ["left", "right"] as const) {
@@ -1314,6 +1315,21 @@ export function collectLabeledTexts(content: Content): LabeledText[] {
                 for (const [type, lines] of Object.entries(scene.whatIf ?? {})) {
                   (lines ?? []).forEach((line, l) =>
                     push(`${at}.whatIf.${type}[${l}].text`, line.text),
+                  );
+                }
+                if (scene.memo) {
+                  const memo = scene.memo;
+                  memo.seenWords.forEach((word, w) => push(`${at}.memo.seenWords[${w}]`, word));
+                  memo.diffWords.forEach((word, w) => push(`${at}.memo.diffWords[${w}]`, word));
+                  push(`${at}.memo.stance.question`, memo.stance?.question);
+                  (memo.stance?.options ?? []).forEach((option, o) =>
+                    push(`${at}.memo.stance.options[${o}]`, option),
+                  );
+                  push(`${at}.memo.ask`, memo.ask);
+                  memo.hints.forEach((hint, h) => push(`${at}.memo.hints[${h}]`, hint));
+                  push(`${at}.memo.frame`, memo.frame);
+                  memo.others.forEach((other, o) =>
+                    push(`${at}.memo.others[${o}].text`, other.text),
                   );
                 }
                 break;

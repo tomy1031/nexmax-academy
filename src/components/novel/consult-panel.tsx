@@ -21,6 +21,7 @@ import {
 import type { FuriganaIndex } from "@/lib/text/furigana";
 import { DeskApproach } from "./desk-approach";
 import { FaceIcon } from "./face-icon";
+import { MemoCard, MemoMaker, MemoOthers, type NovelMemo } from "./memo-panel";
 import { playNovelSe } from "./novel-sound";
 
 type ConsultScene = Extract<NovelScene, { type: "consult" }>;
@@ -49,6 +50,7 @@ type NoticeScene = Extract<NovelScene, { type: "notice" }>;
  */
 
 type Phase =
+  | "memo"
   | "approach"
   | "call"
   | "reply"
@@ -140,9 +142,11 @@ export function ConsultPanel({
   const desk = showsTiming(novel, scene)
     ? novel.cast.find((one) => one.id === scene.to)?.desk
     : undefined;
-  /** はじめの 段（席の 絵が あれば タイミングから）。 */
+  /** 席の 絵の あとの 段（席の 絵が あれば タイミングから）。 */
   const opening: Phase = desk ? "approach" : "call";
-  const [phase, setPhase] = useState<Phase>(cleared ? "passed" : opening);
+  /** 相談メモ（要望 #746）。あれば 話しかける 前に 作る。 */
+  const [memo, setMemo] = useState<NovelMemo | null>(null);
+  const [phase, setPhase] = useState<Phase>(cleared ? "passed" : scene.memo ? "memo" : opening);
   /** タイミングを 当てて 声かけに 来た（声かけの 上に「いい タイミング」を 出す）。 */
   const [timed, setTimed] = useState(false);
   /** 合格した あとの「もう 一度 練習する」（記録の 失敗回数を 増やさない）。 */
@@ -339,7 +343,8 @@ export function ConsultPanel({
     setPractice(true);
     setPracticeFails(0);
     setTimed(false);
-    setPhase(opening);
+    /* メモが まだ 無ければ メモから（合格して 戻って きた ときは メモを 作って いない） */
+    setPhase(scene.memo && !memo ? "memo" : opening);
     setLast(null);
     onFace(null);
   };
@@ -381,8 +386,15 @@ export function ConsultPanel({
         ) : null}
       </div>
 
-      {/* 気づきカード（日ごとに 支えを 減らす）。席の 絵を 見て いる ときは 絵を 上に 寄せる */}
-      {notice && phase !== "approach" ? (
+      {/*
+       * 相談メモ（あれば 気づきカードの かわり）。完成した 文は 出さず、ことばと 文の 枠だけ。
+       */}
+      {memo && phase !== "approach" && phase !== "memo" ? (
+        <MemoCard memo={memo} frame={scene.memo?.frame} glow={glow} index={index} show={show} />
+      ) : null}
+
+      {/* 気づきカード（日ごとに 支えを 減らす）。席の 絵・メモを 作って いる ときは 出さない */}
+      {notice && !memo && phase !== "approach" && phase !== "memo" ? (
         <section
           className="rounded-2xl border-2 p-3"
           style={{ borderColor: "var(--color-sun)", background: "var(--color-cream)" }}
@@ -443,6 +455,17 @@ export function ConsultPanel({
             <span className="text-ink-faint">{"★".repeat(Math.max(0, 3 - earned))}</span>
           </p>
           {heard ? <p className="text-ink-soft mt-1 text-xs font-bold">「{heard}」</p> : null}
+          {scene.memo ? (
+            <div className="mt-2">
+              <MemoOthers
+                others={scene.memo.others}
+                mine={memo?.ask ?? null}
+                index={index}
+                show={show}
+                translation={translation}
+              />
+            </div>
+          ) : null}
           <div className="mt-3 flex gap-2">
             <button
               type="button"
@@ -462,6 +485,21 @@ export function ConsultPanel({
         </div>
       ) : (
         <>
+          {/* 0. 相談メモ（話しかける 前に 作る） */}
+          {phase === "memo" && scene.memo ? (
+            <MemoMaker
+              spec={scene.memo}
+              askForm={scene.askForm}
+              index={index}
+              show={show}
+              translation={translation}
+              onDone={(made) => {
+                setMemo(made);
+                setPhase(opening);
+              }}
+            />
+          ) : null}
+
           {/* 0. 話しかける タイミング */}
           {phase === "approach" && desk ? (
             <div className="min-h-0 flex-1">
@@ -542,7 +580,7 @@ export function ConsultPanel({
               ) : null}
               {showModel ? (
                 <HintBox
-                  title="お手本（Model）— 声に 出して 読みましょう"
+                  title="お手本（1つの 例です）— 声に 出して 読みましょう"
                   text={scene.example}
                   en={scene.exampleEn}
                   translation={translation}

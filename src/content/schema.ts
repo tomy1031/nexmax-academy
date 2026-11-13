@@ -3135,6 +3135,48 @@ const novelLineSceneSchema = z.object({
   se: z.enum(["notice", "pass", "retry"]).optional(),
   /** 画面を 一度 暗く する（時間が たった）。 */
   dark: z.boolean().optional(),
+  /**
+   * 話に 出て きた 人を、絵の 上に **丸い 枠**で 見せる（「お客様は、お店の 店長の
+   * 松本さんです」で 松本店長の 顔を 出す・2026-11-13 の 指定）。
+   */
+  inset: z
+    .object({
+      src: z.string().min(1),
+      /** 丸の 下に 出す 名札（「お客様：松本店長」）。 */
+      label: plainText.optional(),
+    })
+    .optional(),
+});
+
+/**
+ * 相談メモ（話す 前に 自分で 作る・2026-11-13 の 指定「気づきカードの 棒読みを 防ぎ、
+ * 話す 前に メモに 記入させる」「何をしてほしいかは自分なりのアイデアなので、アイデアを促す工夫」）。
+ *
+ * ①②は 資料から 大事な ことばを 押して 拾う（事実）。③は 自分の 案——答えを 見せず、
+ * 先に 自分の 考え（立場）を 聞き、「決めるのは 相手」と 伝えてから 短く 書かせる。
+ * 話す 画面では 完成した 文を 出さず、メモの ことばと 文の 枠だけを 見て 話す。
+ * 正解・不正解は 付けない（星は 話した 結果だけ）。
+ */
+const novelMemoSchema = z.object({
+  /** ①で 押して 拾える ことば（資料の 名前を 先頭に）。 */
+  seenWords: z.array(plainText).min(2).max(6),
+  /** ②で 押して 拾える ことば。 */
+  diffWords: z.array(plainText).min(2).max(6),
+  /** ③の 前に 自分の 考えを 聞く 問いと 選ぶ ことば（正解は 付けない）。 */
+  stance: z
+    .object({ question: plainText, options: z.array(plainText).min(2).max(4) })
+    .optional(),
+  /** ③を 書かせる 問い（「でも、決めるのは ◯◯さんです。何と 言いますか。」）。 */
+  ask: plainText,
+  /** 書けない ときに 1つずつ 出す 問い（答えは 出さない）。 */
+  hints: z.array(plainText).max(4).default([]),
+  /** 話す ときに 見せる 文の 枠（ことばは 入れない）。 */
+  frame: plainText.optional(),
+  /** 合格の あとに 見せる「ほかの 聞き方」。 */
+  others: z
+    .array(z.object({ text: plainText, en: z.string().optional() }))
+    .max(3)
+    .default([]),
 });
 
 const novelGoalSceneSchema = z.object({
@@ -3221,6 +3263,8 @@ const novelConsultSceneSchema = z.object({
   cloze: plainText,
   /** 型ごとの 反応の 差しかえ（無ければ `novel.reactions`）。 */
   reactions: z.partialRecord(z.enum(novelFailureTypes), novelReactionSchema).optional(),
+  /** 相談メモ（あれば 話す 前に 作る。話す 画面では 気づきカードの かわりに 出す）。 */
+  memo: novelMemoSchema.optional(),
   /** 「勝手に 決める」「問題を 隠す」の あとに 見せる「もしも」の 場面（1〜2行）。 */
   whatIf: z
     .object({

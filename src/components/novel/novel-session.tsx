@@ -789,7 +789,39 @@ function Player({
             panelMode && wide && !fullPanel ? "items-end" : ""
           }`}
         >
-          {!panelMode || (wide && !fullPanel) ? (
+          {/* 話に 出て きた 人を 丸い 枠で（「お客様は、お店の 店長の 松本さんです」・要望 #740） */}
+          {scene.type === "line" && scene.inset ? (
+            <motion.figure
+              key={scene.inset.src}
+              initial={{ opacity: 0, scale: 0.85 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="absolute top-3 left-1/2 flex -translate-x-1/2 flex-col items-center gap-1"
+              data-testid="novel-inset"
+            >
+              <span
+                className="relative block h-36 w-36 overflow-hidden rounded-full border-4 bg-white shadow-xl sm:h-44 sm:w-44"
+                style={{ borderColor: "white" }}
+              >
+                <Image
+                  src={assetUrl(scene.inset.src) ?? scene.inset.src}
+                  alt={scene.inset.label ?? ""}
+                  fill
+                  sizes="176px"
+                  className="object-cover"
+                />
+              </span>
+              {scene.inset.label ? (
+                <figcaption
+                  className="rounded-full px-3 py-0.5 text-xs font-black text-white shadow"
+                  style={{ background: "rgba(23, 43, 84, 0.86)" }}
+                >
+                  <RubyText text={scene.inset.label} index={index} show={show} />
+                </figcaption>
+              ) : null}
+            </motion.figure>
+          ) : null}
+
+          {(!panelMode || (wide && !fullPanel)) && !(scene.type === "line" && scene.inset) ? (
             <div className="absolute top-2 left-2 max-h-[40%] w-[42%] max-w-[230px] overflow-hidden sm:w-[30%]">
               <p
                 className="mb-0.5 inline-block rounded-full px-2 py-0.5 text-[10px] font-black text-white"
