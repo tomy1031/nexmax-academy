@@ -209,12 +209,6 @@
   "model": "gemini-3.8-live",
   "transcript": "そう です か 。"
  },
- "_cast/minh_again": {
-  "hash": "f9c9d75b25",
-  "seconds": 7.538417,
-  "model": "gemini-3.8-live",
-  "transcript": "\nすみません、もういちどおねがいします。"
- },
  "_cast/minh_slow": {
   "hash": "9f22e612fd",
   "seconds": 1.639083,
@@ -1036,12 +1030,6 @@
   "seconds": 2.613375,
   "model": "gemini-3.8-live",
   "transcript": "はい 、 コーヒー です 。 どうぞ 。"
- },
- "l03b/n8_tea_0": {
-  "hash": "1213bb1fb4",
-  "seconds": 19.490083,
-  "model": "gemini-3.8-live",
-  "transcript": "はい 、 お 茶 です 。"
  },
  "l03b/n8_none_0": {
   "hash": "d930a79747",

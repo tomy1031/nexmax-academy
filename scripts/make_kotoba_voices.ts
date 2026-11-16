@@ -80,13 +80,22 @@ for (const line of todo) {
     break;
   }
   try {
-    const spoken = await synthesizeWithFallback(line.text, {
-      apiKey,
-      voice: line.voice,
-      instruction: `\n話し方の 指示（読み上げる 文には 入れない）: ${line.style}`,
-      quoteOnRetry: true,
-      transcribeWhenEmpty: true,
-    });
+    // 長すぎる 音は 捨てる（途中で 10 秒 以上 だまった 例が あった・l03b/n8_tea_0）
+    const maxSeconds = Math.max(3, [...line.text].length * 0.32 + 1.5);
+    const spoken = await synthesizeWithFallback(
+      line.text,
+      {
+        apiKey,
+        voice: line.voice,
+        instruction: `\n話し方の 指示（読み上げる 文には 入れない）: ${line.style}`,
+        quoteOnRetry: true,
+        transcribeWhenEmpty: true,
+      },
+      (s) => {
+        const sec = s.pcm.byteLength / 2 / 24_000;
+        return sec <= maxSeconds ? { ok: true, why: "" } : { ok: false, why: `長すぎる（${sec.toFixed(1)}秒／上限 ${maxSeconds.toFixed(1)}秒）` };
+      },
+    );
     const wav = join(tmpdir(), `kt-${process.pid}.wav`);
     writeFileSync(wav, toWav(spoken.pcm));
     const seconds = encode(wav, join(OUT, "voice", `${line.id}.mp3`));
