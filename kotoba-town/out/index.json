@@ -856,5 +856,449 @@
   "seconds": 5.4435,
   "model": "gemini-3.8-live",
   "transcript": "あれは緑デザインのロゴ です 私 の デザイン です"
+ },
+ "l02c/n4b_0": {
+  "hash": "0912f4229d",
+  "seconds": 3.889958,
+  "model": "gemini-3.8-live",
+  "transcript": "その コンピューター です か 緑 デザイン の です 。"
+ },
+ "l02c/n5_0": {
+  "hash": "b5e231ea0e",
+  "seconds": 4.385583,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "これはわたしの名刺です。どうぞ。"
+ },
+ "l02c/n6a_0": {
+  "hash": "8b95e8cb17",
+  "seconds": 2.773958,
+  "model": "gemini-3.8-live",
+  "transcript": "わあ、どうもありがとうございます！"
+ },
+ "l02c/n6b_0": {
+  "hash": "9eae1011ed",
+  "seconds": 1.146667,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "いいえ、いいえ。"
+ },
+ "l02c/end_0": {
+  "hash": "e6514719a1",
+  "seconds": 2.991417,
+  "model": "gemini-3.8-live",
+  "transcript": "これからどうぞよろしくお願いします。"
+ },
+ "l02c/free_open": {
+  "hash": "87e2ad3a79",
+  "seconds": 3.613333,
+  "model": "gemini-3.8-live",
+  "transcript": "これ は 私 の 机 です 。 どうぞ どうぞ 。"
+ },
+ "l03a/n1_0": {
+  "hash": "f090a7f191",
+  "seconds": 1.300125,
+  "model": "gemini-3.8-live",
+  "transcript": "いらっしゃい ませ 。"
+ },
+ "l03a/n2_show_0": {
+  "hash": "fa06139403",
+  "seconds": 1.32,
+  "model": "gemini-3.8-live",
+  "transcript": "はい 、 どうぞ 。"
+ },
+ "l03a/n2_0": {
+  "hash": "986d2d11e5",
+  "seconds": 2.329958,
+  "model": "gemini-3.8-live",
+  "transcript": "これ は フランス の ワイン です 。"
+ },
+ "l03a/n2_1": {
+  "hash": "ee08432a8a",
+  "seconds": 2.551958,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "これは イタリアのワインです。"
+ },
+ "l03a/n2_2": {
+  "hash": "b52ceee2fe",
+  "seconds": 2.423958,
+  "model": "gemini-3.8-live",
+  "transcript": "これ が 日本 の ワイン です 。"
+ },
+ "l03a/n3_fr_0": {
+  "hash": "b970352dae",
+  "seconds": 3.751208,
+  "model": "gemini-3.8-live",
+  "transcript": "フランス の ワイン は 4800 円 で ござい ます 。"
+ },
+ "l03a/n3_it_0": {
+  "hash": "dec44427b4",
+  "seconds": 3.694625,
+  "model": "gemini-3.8-live",
+  "transcript": " イタリアの ワインは 2500円で ございます。"
+ },
+ "l03a/n3_jp_0": {
+  "hash": "bf47edceda",
+  "seconds": 4.925417,
+  "model": "gemini-3.8-live",
+  "transcript": "にほんのワインはせんきゅうひゃくえんです。やまなしのワインです。"
+ },
+ "l03a/n5_0": {
+  "hash": "5b9db846f0",
+  "seconds": 2.747208,
+  "model": "gemini-3.8-live",
+  "transcript": "はい 、 ありがとう ござい ます 。 どうぞ 。"
+ },
+ "l03a/n6_wc_0": {
+  "hash": "5b610f65b2",
+  "seconds": 2.318792,
+  "model": "gemini-3.8-live",
+  "transcript": "お 手洗い は こちら で ござい ます 。"
+ },
+ "l03a/n6_ev_0": {
+  "hash": "5d5cdcf076",
+  "seconds": 2.663667,
+  "model": "gemini-3.8-live",
+  "transcript": "エレベーターは、あちらでございます。"
+ },
+ "l03a/n6_floor_0": {
+  "hash": "7a4310d50d",
+  "seconds": 5.162,
+  "model": "gemini-3.8-live",
+  "transcript": "靴 売り場 は 4 階 です 。 エスカレーター は あちら です 。"
+ },
+ "l03a/end_0": {
+  "hash": "eb3ec59a1b",
+  "seconds": 2.268708,
+  "model": "gemini-3.8-live",
+  "transcript": "ありがとう ござい まし た 。 また どうぞ 。"
+ },
+ "l03b/n1_0": {
+  "hash": "01a39792c3",
+  "seconds": 3.158333,
+  "model": "gemini-3.8-live",
+  "transcript": "おはよう ござい ます 。 こちら へ どうぞ 。"
+ },
+ "l03b/n1_1": {
+  "hash": "9ce88829d1",
+  "seconds": 2.234,
+  "model": "gemini-3.8-live",
+  "transcript": "机 は ここ です 。"
+ },
+ "l03b/n2_far_0": {
+  "hash": "76e87b1ed8",
+  "seconds": 2.627583,
+  "model": "gemini-3.8-live",
+  "transcript": "あそこは会議室です。"
+ },
+ "l03b/n2_npc_0": {
+  "hash": "c8e1f60f30",
+  "seconds": 3.412458,
+  "model": "gemini-3.8-live",
+  "transcript": "ここ は 小川 さん の 机 です 。"
+ },
+ "l03b/n4_wc_0": {
+  "hash": "2439231a7e",
+  "seconds": 2.800125,
+  "model": "gemini-3.8-live",
+  "transcript": "トイレ は ロビー です 。 あちら です 。"
+ },
+ "l03b/n4_ev_0": {
+  "hash": "efe00fb8c2",
+  "seconds": 2.062708,
+  "model": "gemini-3.8-live",
+  "transcript": "エレベーター は あちら です 。"
+ },
+ "l03b/n4_shoku_0": {
+  "hash": "a3ed0b943a",
+  "seconds": 3.083458,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "しょくどうはちか いっかいです。"
+ },
+ "l03b/n5_0": {
+  "hash": "749e28309c",
+  "seconds": 1.746708,
+  "model": "gemini-3.8-live",
+  "transcript": "内 は どちら です か ?"
+ },
+ "l03b/n6_0": {
+  "hash": "6212866751",
+  "seconds": 3.021167,
+  "model": "gemini-3.8-live",
+  "transcript": "私 の うち は 横浜 です 。"
+ },
+ "l03b/n7_0": {
+  "hash": "1ed668bf1c",
+  "seconds": 2.573625,
+  "model": "gemini-3.8-live",
+  "transcript": "コーヒー です か お 茶 です か"
+ },
+ "l03b/n8_coffee_0": {
+  "hash": "e7e487ca02",
+  "seconds": 2.613375,
+  "model": "gemini-3.8-live",
+  "transcript": "はい 、 コーヒー です 。 どうぞ 。"
+ },
+ "l03b/n8_tea_0": {
+  "hash": "1213bb1fb4",
+  "seconds": 19.490083,
+  "model": "gemini-3.8-live",
+  "transcript": "はい 、 お 茶 です 。"
+ },
+ "l03b/n8_none_0": {
+  "hash": "d930a79747",
+  "seconds": 2.504583,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か わかり まし た"
+ },
+ "l03b/end_0": {
+  "hash": "7ec81172fc",
+  "seconds": 2.953958,
+  "model": "gemini-3.8-live",
+  "transcript": "じゃあ 、 これ から よろしく お 願い し ます 。"
+ },
+ "l03c/n1_0": {
+  "hash": "32939ed6c5",
+  "seconds": 1.690125,
+  "model": "gemini-3.8-live",
+  "transcript": "いらっしゃい ませ 。"
+ },
+ "l03c/n1_1": {
+  "hash": "14eec3bf1f",
+  "seconds": 1.233125,
+  "model": "gemini-3.8-live",
+  "transcript": "こちら へ どうぞ 。"
+ },
+ "l03c/p_coffee_0": {
+  "hash": "b2252177cb",
+  "seconds": 3.524,
+  "model": "gemini-3.8-live",
+  "transcript": "コーヒー は 480円 です 。"
+ },
+ "l03c/p_tea_0": {
+  "hash": "05c94f7129",
+  "seconds": 3.548833,
+  "model": "gemini-3.8-live",
+  "transcript": "紅茶 は 450 円 です 。"
+ },
+ "l03c/p_cake_0": {
+  "hash": "8b7d37ca0b",
+  "seconds": 3.5345,
+  "model": "gemini-3.8-live",
+  "transcript": "ケーキ は 520円 です 。"
+ },
+ "l03c/o_coffee_0": {
+  "hash": "c78298c33a",
+  "seconds": 2.25,
+  "model": "gemini-3.8-live",
+  "transcript": "ブラジル の コーヒー です 。"
+ },
+ "l03c/o_coffee_0_a0": {
+  "hash": "582ce537ae",
+  "seconds": 2.329958,
+  "model": "gemini-3.8-live",
+  "transcript": "コロンビア の コーヒー です 。"
+ },
+ "l03c/o_tea_0": {
+  "hash": "dd2ac0aed7",
+  "seconds": 1.792042,
+  "model": "gemini-3.8-live",
+  "transcript": "インド の 紅茶 です 。"
+ },
+ "l03c/s_coffee_0": {
+  "hash": "4cb27c3a2b",
+  "seconds": 2.365333,
+  "model": "gemini-3.8-live",
+  "transcript": "はい 、 コーヒー です 。 どうぞ 。"
+ },
+ "l03c/s_tea_0": {
+  "hash": "103963fcc0",
+  "seconds": 2.638167,
+  "model": "gemini-3.8-live",
+  "transcript": "はい 、 紅茶 です 。 どうぞ 。"
+ },
+ "l03c/s_cake_0": {
+  "hash": "6ec224b3ad",
+  "seconds": 2.742875,
+  "model": "gemini-3.8-live",
+  "transcript": "はい 。 ケーキ です 。 どうぞ 。"
+ },
+ "l03c/n7_0": {
+  "hash": "79f081a2ad",
+  "seconds": 3.682833,
+  "model": "gemini-3.8-live",
+  "transcript": "失礼 です が お 国 は どちら です か ?"
+ },
+ "l03c/r_coffee_0": {
+  "hash": "77b56fa7ef",
+  "seconds": 2.90925,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か 。 コーヒー の 国 です 。"
+ },
+ "l03c/r_other_0": {
+  "hash": "78e49dac67",
+  "seconds": 3.001958,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か 。 どう ぞ よ ろ し く 。"
+ },
+ "l03c/end_0": {
+  "hash": "480c2b6cf8",
+  "seconds": 5.809958,
+  "model": "gemini-3.8-live",
+  "transcript": "これはチョコレートです。どうぞ。"
+ },
+ "l04a/n1_0": {
+  "hash": "b0fd119add",
+  "seconds": 2.650083,
+  "model": "gemini-3.8-live",
+  "transcript": "ございます。"
+ },
+ "l04a/n2_0": {
+  "hash": "e77d64372a",
+  "seconds": 2.545958,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "くじ"
+ },
+ "l04a/n2_until_0": {
+  "hash": "36afe49afd",
+  "seconds": 7.979292,
+  "model": "gemini-3.8-live",
+  "transcript": "お伝えします。ごごごじまでです。あさは くじはんからです。"
+ },
+ "l04a/n2_from_0": {
+  "hash": "3bedefe0fd",
+  "seconds": 3.722208,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "あさ ９時半からです。午後 ５時までです。"
+ },
+ "l04a/n4_0": {
+  "hash": "1b4e749084",
+  "seconds": 2.594542,
+  "model": "gemini-3.8-live",
+  "transcript": "はい 、 休み は 月曜日 です 。"
+ },
+ "l04a/n4_no_0": {
+  "hash": "8bc1ba96fa",
+  "seconds": 3.464917,
+  "model": "gemini-3.8-live",
+  "transcript": "いえ 、 休 み は 月 曜 日 で す 。"
+ },
+ "l04a/n5_0": {
+  "hash": "fe55714776",
+  "seconds": 3.77975,
+  "model": "gemini-2.5-flash-native-audio-preview-12-2025",
+  "transcript": "どようびと にちようびは よる はちじまでです。"
+ },
+ "l04a/n6_0": {
+  "hash": "b18b54da75",
+  "seconds": 1.390292,
+  "model": "gemini-3.8-live",
+  "transcript": "はい 、 そう です 。"
+ },
+ "l04a/n6_sat_0": {
+  "hash": "4305875261",
+  "seconds": 4.6885,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "あしたは どようびです。よる はちじまでです。"
+ },
+ "l04a/n8_hours_0": {
+  "hash": "2b6d5ae7c9",
+  "seconds": 4.300125,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "カフェは じゅういちじから よじはんまでです。"
+ },
+ "l04a/n8_number_0": {
+  "hash": "aa63d54540",
+  "seconds": 5.3725,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "カフェ"
+ },
+ "l04a/end_0": {
+  "hash": "8404c267e7",
+  "seconds": 1.971042,
+  "model": "gemini-3.8-live",
+  "transcript": "お 電話 は ありがとう ござい まし た 。"
+ },
+ "l04b/n1_0": {
+  "hash": "87547709f6",
+  "seconds": 1.114375,
+  "model": "gemini-3.8-live",
+  "transcript": "いらっしゃい ませ 。"
+ },
+ "l04b/n1_0_a0": {
+  "hash": "0312028574",
+  "seconds": 2.200125,
+  "model": "gemini-3.8-live",
+  "transcript": "こんにちは 、 いらっしゃい ませ 。"
+ },
+ "l04b/n2_now_0": {
+  "hash": "5c38f614a0",
+  "seconds": 5.449958,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "いま"
+ },
+ "l04b/n2_close_0": {
+  "hash": "723a8ded1f",
+  "seconds": 5.191958,
+  "model": "gemini-3.8-live",
+  "transcript": "きょう は ごじ まで です 。 いま よじ よん じゅう ぷん です 。"
+ },
+ "l04b/n4_tomorrow_0": {
+  "hash": "51c2bc3269",
+  "seconds": 3.526375,
+  "model": "gemini-3.8-live",
+  "transcript": "あしたはくじはんからごじまでです。"
+ },
+ "l04b/n4_weekend_0": {
+  "hash": "fe55714776",
+  "seconds": 4.242625,
+  "model": "gemini-2.5-flash-native-audio-preview-12-2025",
+  "transcript": "どようびと にちようびは よる はちじまでです。"
+ },
+ "l04b/n6_cafe_0": {
+  "hash": "2b6d5ae7c9",
+  "seconds": 3.692333,
+  "model": "gemini-2.5-flash-native-audio-preview-12-2025",
+  "transcript": "カフェは じゅういちじから よじはんまでです。"
+ },
+ "l04b/n6_cafe_1": {
+  "hash": "b8a3485d18",
+  "seconds": 4.101292,
+  "model": "gemini-3.8-live",
+  "transcript": "すみません、きょうはよじはんにおわりました。"
+ },
+ "l04b/n6_closed_0": {
+  "hash": "dfa3da9b62",
+  "seconds": 2.151,
+  "model": "gemini-3.8-live",
+  "transcript": "休み は 月曜日 です 。"
+ },
+ "l04b/n7_0": {
+  "hash": "af6b4395cd",
+  "seconds": 1.684,
+  "model": "gemini-3.8-live",
+  "transcript": "今日 の チケット です か ?"
+ },
+ "l04b/end_today_0": {
+  "hash": "79330b0da3",
+  "seconds": 4.21925,
+  "model": "gemini-3.8-live",
+  "transcript": " はい、せんにひゃくえんです。ごじまでですね。どうぞ。"
+ },
+ "l04b/end_later_0": {
+  "hash": "5bf56d072b",
+  "seconds": 2.302125,
+  "model": "gemini-3.8-live",
+  "transcript": "わかり まし た 。 じゃ 、 また どうぞ 。"
+ },
+ "l04c/n1_0": {
+  "hash": "02896bb73b",
+  "seconds": 1.345958,
+  "model": "gemini-3.8-live",
+  "transcript": "おはよう ござい ます 。"
+ },
+ "l04c/n1_1": {
+  "hash": "e43a230b63",
+  "seconds": 4.618292,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "わたしは きのう よる じゅういちじまではたらきました。"
  }
 }
