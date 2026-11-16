@@ -1,0 +1,6 @@
+{
+  "note": "Cases for the 'Kotoba Town e2e' workflow: the learner's voice (fake mic, repeated) and how long to let the scenario run.",
+  "cases": [
+    { "variant": "l01a", "say": "はじめまして。リンです。ベトナムから きました。どうぞ よろしく おねがいします。", "seconds": 170 }
+  ]
+}

@@ -174,11 +174,11 @@ export const SCENES = {
   },
   park: {
     nameEn: 'Park', slots: ['npc1', 'npc2', 'phone'],
-    props: { sakura: 'npc', bench: 'near', pond: 'far', castle: 'far', vending_machine: 'far', food_stall: 'far', picnic_sheet: 'near', bento: 'near', camera: 'near', bicycle: 'far' },
+    props: { sakura: 'npc', bench: 'near', pond: 'far', castle: 'far', vending_machine: 'far', food_stall: 'far', picnic_sheet: 'near', bento: 'near', camera: 'near', bicycle: 'far', drinks: 'near' },
   },
   home: {
     nameEn: 'Japanese home', slots: ['host', 'host2', 'phone'],
-    props: { genkan: 'near', slippers: 'near', gift: 'near', sofa: 'npc', table: 'near', tea: 'near', cake: 'near', spoon: 'near', tv: 'far', photo: 'npc', clock: 'far', garden: 'far', kitchen: 'far', piano: 'far' },
+    props: { genkan: 'near', slippers: 'near', gift: 'near', sofa: 'npc', table: 'near', tea: 'near', cake: 'near', spoon: 'near', tv: 'far', photo: 'npc', clock: 'far', garden: 'far', kitchen: 'far', piano: 'far', shoes: 'npc' },
   },
   konbini: {
     nameEn: 'Convenience store', slots: ['clerk', 'npc1', 'phone'],

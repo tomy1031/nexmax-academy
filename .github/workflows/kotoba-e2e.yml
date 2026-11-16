@@ -1,0 +1,79 @@
+name: Kotoba Town e2e (browser + Gemini Live)
+
+# tomy1031/lab の「ことばタウン」を 本物の ブラウザ（Playwright の Chromium）で 開き、
+# Live TTS で 作った 学習者の 声を 偽マイクに 流して、Gemini Live の 判定で 会話が 進むかを 確かめる。
+# あわせて 判定の self-check（scripts/kotoba_selfcheck.ts）も 走らせる。
+# 鍵は Environment「Preview」の GEMINI_API_KEY。結果は このブランチの kotoba-town/out/e2e.* に コミットする。
+# このブランチ（claude/kotoba-town-voices）専用。声づくり（kotoba-voices.yml）と 並んで 走れる。
+
+on:
+  push:
+    branches:
+      - claude/kotoba-town-voices
+    paths:
+      - kotoba-town/e2e.json
+      - kotoba-town/game/**
+      - kotoba-town/js/**
+      - scripts/kotoba_e2e.mjs
+      - scripts/kotoba_selfcheck.ts
+      - .github/workflows/kotoba-e2e.yml
+
+concurrency:
+  group: kotoba-e2e
+  cancel-in-progress: true
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    environment: Preview
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: claude/kotoba-town-voices
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - name: self-check（判定と 返事の 声）
+        continue-on-error: true
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          mkdir -p kotoba-town/out
+          timeout 12m node --import tsx scripts/kotoba_selfcheck.ts > kotoba-town/out/selfcheck.log 2>&1 || echo "selfcheck exit $?" >> kotoba-town/out/selfcheck.log
+          tail -5 kotoba-town/out/selfcheck.log
+      - name: 通し試験
+        continue-on-error: true
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          set -o pipefail
+          LOG=kotoba-town/out/e2e.log
+          : > "$LOG"
+          {
+            echo "== playwright"; npx playwright install --with-deps chromium 2>&1 | tail -3
+            CASES=$(node -p "JSON.stringify(require('./kotoba-town/e2e.json').cases)")
+            node -e "for (const c of JSON.parse(process.argv[1])) console.log(c.variant + '\t' + c.say + '\t' + (c.seconds || 170))" "$CASES" | while IFS=$'\t' read -r V SAY SEC; do
+              echo "== case $V: $SAY"
+              node --import tsx scripts/kotoba_learner_wav.ts "$SAY" 2>&1 | tail -2
+              timeout 9m node scripts/kotoba_e2e.mjs "$V" "$SEC" 2>&1 | tail -40
+              [ -f kotoba-town/out/e2e.json ] && mv kotoba-town/out/e2e.json "kotoba-town/out/e2e-$V.json"
+              [ -f kotoba-town/out/e2e.png ] && mv kotoba-town/out/e2e.png "kotoba-town/out/e2e-$V.png"
+            done
+          } 2>&1 | tee -a "$LOG"
+      - name: 結果を コミット
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add kotoba-town/out/e2e* kotoba-town/out/selfcheck* || true
+          git diff --cached --quiet && exit 0
+          git commit --no-verify -q -m "kotoba-town: e2e results [run ${GITHUB_RUN_ID}]"
+          for try in 1 2 3 4; do
+            git pull --rebase --no-verify -q origin claude/kotoba-town-voices && git push -q origin HEAD:claude/kotoba-town-voices && exit 0
+            sleep 7
+          done

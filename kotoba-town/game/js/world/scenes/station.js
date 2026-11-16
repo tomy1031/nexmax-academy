@@ -45,7 +45,10 @@ export default function build({ setup }) {
   const ballast = K.mat('#ffffff', { map: K.noiseTex('#8d887e', 0.35, [1, 1], 'ballast'), rough: 1 });
   g.add(K.mesh(uvPlane(130, 7.0, 130 / 2, 7 / 2), ballast, { x: 10, y: -1.25, z: -9.65, rx: -Math.PI / 2, cast: false }));
   const asphalt = K.mat('#ffffff', { map: K.noiseTex('#6f7276', 0.14, [1, 1], 'asph'), rough: rain ? 0.18 : 0.9, metal: rain ? 0.15 : 0 });
-  g.add(K.mesh(uvPlane(40, 40, 10, 10), asphalt, { x: 24, y: -0.02, z: 8, rx: -Math.PI / 2, cast: false }));
+  g.add(K.mesh(uvPlane(76, 64, 19, 16), asphalt, { x: 42, y: -0.02, z: 28.75, rx: -Math.PI / 2, cast: false }));   // square + streets
+  const ground = K.mat('#ffffff', { map: K.noiseTex('#8f8a7c', 0.18, [1, 1], 'ground'), rough: 1 });
+  g.add(K.mesh(uvPlane(160, 84, 40, 21), ground, { x: 0, y: -0.03, z: -58.4, rx: -Math.PI / 2, cast: false }));  // behind platform 2
+  g.add(K.mesh(uvPlane(76, 62, 19, 16), ground, { x: -34, y: -0.03, z: 29, rx: -Math.PI / 2, cast: false }));    // behind the station
   const pave = K.mat('#ffffff', { map: K.tileTex('#c9c3b8', '#bdb6aa', 4, [1, 1], '#a39b8e'), rough: rain ? 0.22 : 0.75 });
   g.add(K.mesh(uvPlane(4, 16, 4 / 1.6, 16 / 1.6), pave, { x: 6, y: 0.002, z: 4.8, rx: -Math.PI / 2, cast: false }));   // station-front sidewalk
   g.add(K.mesh(uvPlane(3, 22, 3 / 1.6, 22 / 1.6), pave, { x: 15.5, y: 0.002, z: 2.5, rx: -Math.PI / 2, cast: false })); // shop-side sidewalk
@@ -89,7 +92,7 @@ export default function build({ setup }) {
   // ------------------------------------------------------------------ tracks + overhead line
   for (const tz of [-7.65, -11.65]) {
     for (const s of [-0.53, 0.53]) g.add(P.box(130, 0.15, 0.07, '#7d7770', { x: 10, y: -1.25, z: tz + s }, 'metal'));
-    for (let x = -54; x < 74; x += 0.62) g.add(P.box(0.22, 0.08, 2.0, '#a39f97', { x, y: -1.27, z: tz }));
+    for (let x = -40; x < 66; x += 0.75) g.add(P.box(0.22, 0.08, 2.0, '#a39f97', { x, y: -1.27, z: tz }));
   }
   for (const x of [-16, 16, 48]) {
     g.add(P.box(0.25, 6.0, 0.25, '#8f9497', { x, y: -1.25, z: -9.65 }, 'metal'));
@@ -206,11 +209,11 @@ export default function build({ setup }) {
     autumn: [['もみじまつり', '#c4541c'], ['11/3〜11/23  みどりの山', '#6a4a2a'], ['みどりの駅から バス', '#555']],
     winter: [['イルミネーション', '#2d3f7a'], ['12/1〜12/25  うみの駅前', '#3a3a5a'], ['急行で 25分', '#555']],
   }[season] || [];
-  put(S.draw(0.73, 1.03, 300, (c, w, h) => drawPoster(c, w, h, season, seasonPoster)), 1.05, 1.5, 3.385, Math.PI);
-  put(S.draw(0.73, 1.03, 300, (c, w, h) => drawMuseumPoster(c, w, h)), 1.95, 1.5, 3.385, Math.PI);
+  put(S.draw(0.73, 1.03, 300, (c, w, h) => drawPoster(c, w, h, season, seasonPoster)), 1.05, 1.5, 3.36, Math.PI);
+  put(S.draw(0.73, 1.03, 300, (c, w, h) => drawMuseumPoster(c, w, h)), 1.95, 1.5, 3.36, Math.PI);
   g.add(P.box(1.9, 1.15, 0.03, '#8b7356', { x: 1.5, y: 0.94, z: 3.395 }, 'satin'));
   const areaMap = S.draw(1.15, 0.95, 300, drawAreaMap);
-  put(areaMap, 3.2, 1.55, 3.385, Math.PI);
+  put(areaMap, 3.2, 1.55, 3.37, Math.PI);
   g.add(P.box(1.25, 1.05, 0.04, '#5a5f66', { x: 3.2, y: 1.03, z: 3.4 }, 'metal'));
   // a small newsstand counter (売店) by the lockers
   g.add(P.box(0.9, 1.0, 0.45, '#c86b3c', { x: -0.8, z: 2.45 }, 'satin'));
@@ -397,7 +400,7 @@ export default function build({ setup }) {
   // ------------------------------------------------------------------ the passing train (通過列車) on track 2
   const passDest = destinationTex('特急', 'うみの', 'Ltd. Exp.', 'Umino', '#ffd34a');
   const pass = new THREE.Group();
-  for (let c = 0; c < 4; c++) put(trainCar(P, { len: 20, cab: c === 0, livery: '#c43a3a', accent: '#e8c86a', body: '#f1ede4', dest: passDest, open: false }), c * 20.3, 0, 0, 0, pass);
+  for (let c = 0; c < 4; c++) put(trainCar(P, { len: 20, cab: c === 0, livery: '#c43a3a', accent: '#e8c86a', body: '#f1ede4', dest: passDest, open: false, lite: true }), c * 20.3, 0, 0, 0, pass);
   put(pass, 200, 0, -11.65);
   pass.visible = false;
 
@@ -405,7 +408,7 @@ export default function build({ setup }) {
   mergeDynamic(pass);
 
   // ------------------------------------------------------------------ animation
-  const PASS_PERIOD = 46; const PASS_START = 9; const PASS_SPEED = 26;
+  const PASS_PERIOD = 46; const PASS_START = -4.3; const PASS_SPEED = 26;
   let flip = 0;
   return K.finalize({
     group: g,
@@ -437,7 +440,7 @@ export default function build({ setup }) {
 }
 
 // ====================================================================== station pieces
-function trainCar(P, { len = 20, cab = false, livery = LINE, accent = '#f08c2e', body = '#c9cdd2', dest, open = false, leaves = null }) {
+function trainCar(P, { len = 20, cab = false, livery = LINE, accent = '#f08c2e', body = '#c9cdd2', dest, open = false, leaves = null, lite = false }) {
   const c = new THREE.Group();
   const half = 1.4;
   const metal = (w, h, d, o, col = body) => c.add(P.box(w, h, d, col, o, 'metal'));
@@ -453,7 +456,7 @@ function trainCar(P, { len = 20, cab = false, livery = LINE, accent = '#f08c2e',
   c.add(P.box(len - 1.0, 0.5, 2.3, '#3d4146', { x: len / 2, y: -1.05 }));
   for (const bx of [2.6, len - 2.6]) {
     c.add(P.box(2.4, 0.4, 2.2, '#2c2f33', { x: bx, y: -1.1 }));
-    for (const dx of [-0.9, 0.9]) for (const s of [-1, 1]) c.add(P.cyl(0.42, 0.42, 0.12, '#3a3a3a', { x: bx + dx, y: -1.1 + 0.42 - 0.06, z: s * 0.6, rx: Math.PI / 2 }, 'metal', 14));
+    if (!lite) for (const dx of [-0.9, 0.9]) for (const s of [-1, 1]) c.add(P.cyl(0.42, 0.42, 0.12, '#3a3a3a', { x: bx + dx, y: -1.1 + 0.42 - 0.06, z: s * 0.6, rx: Math.PI / 2 }, 'metal', 9));
   }
   // sides
   for (const side of [1, -1]) {
@@ -480,7 +483,7 @@ function trainCar(P, { len = 20, cab = false, livery = LINE, accent = '#f08c2e',
         c.add(P.box(wl, 0.06, 0.08, '#2f3338', { x: cx, y: 1.88, z }, 'satin'));
       }
       // seats inside
-      if (L > 2) {
+      if (L > 2 && !lite) {
         c.add(P.box(L - 0.4, 0.42, 0.5, '#3f6fb0', { x: cx, y: 0.05, z: side * (half - 0.35) }, 'satin'));
         c.add(P.box(L - 0.4, 0.45, 0.1, '#365f98', { x: cx, y: 0.47, z: side * (half - 0.14) }, 'satin'));
         c.add(P.box(L - 0.4, 0.03, 0.3, '#b0b4b8', { x: cx, y: 1.78, z: side * (half - 0.2) }, 'metal'));
@@ -571,8 +574,8 @@ function tickerStrip(w, h, H) {
   g.fillStyle = '#0c0d0f'; g.fillRect(0, 0, 1024, 48);
   g.font = `700 26px ${K.JP_FONT}`; g.textBaseline = 'middle';
   const parts = [
-    ['1番線の 急行 うみの行きは みどりのに 止まりません。', '#ffb23a'],
-    [`みどりの 方面は 2番線 普通 ${H}:40発を ご利用ください。`, '#5fe07a'],
+    ['急行は みどりのに 止まりません', '#ffb23a'],
+    [`みどりの方面は 2番線 普通 ${H}:40発`, '#5fe07a'],
   ];
   let x = 12;
   for (const [t, col] of parts) { g.fillStyle = col; g.fillText(t, x, 25); x += g.measureText(t).width + 40; }
@@ -586,19 +589,21 @@ function tickerStrip(w, h, H) {
 }
 
 function ticketMachine(P, L, i) {
-  const m = new THREE.Group(); // faces +z (rotated into the wall by the caller)
+  const m = new THREE.Group(); // faces +z (rotated into the wall by the caller); front face at z = 0.425
   m.add(P.box(0.8, 1.75, 0.45, '#e8e6e0', { z: 0.2 }, 'satin'));
-  m.add(P.box(0.78, 0.9, 0.12, '#d6d3cb', { y: 0.82, z: 0.45, rx: 0 }, 'satin'));
-  m.add(P.box(0.82, 0.08, 0.5, '#2f9a62', { y: 1.72, z: 0.2 }, 'satin'));
+  m.add(P.box(0.82, 0.08, 0.5, LINE, { y: 1.72, z: 0.2 }, 'satin'));
+  m.add(P.box(0.78, 0.3, 0.22, '#d6d3cb', { y: 0.78, z: 0.53 }, 'satin'));          // console
+  m.add(P.box(0.56, 0.42, 0.04, '#2a2d31', { y: 0.98, z: 0.5, rx: -0.55 }, 'satin')); // screen bezel
   const scr = L.draw(0.5, 0.36, 400, (c, w, h) => drawTicketScreen(c, w, h, i));
-  scr.position.set(0, 1.16, 0.505); scr.rotation.x = -0.35;
+  scr.position.set(0, 1.19, 0.535); scr.rotation.x = -0.55;
   m.add(scr);
-  m.add(P.box(0.56, 0.42, 0.04, '#2a2d31', { y: 0.94, z: 0.48, rx: -0.35 }, 'satin'));
-  m.add(P.box(0.12, 0.04, 0.03, '#888', { x: 0.28, y: 1.32, z: 0.52 }, 'metal'));  // coin slot
-  m.add(P.box(0.16, 0.04, 0.03, '#555', { x: 0.27, y: 1.22, z: 0.52 }, 'metal'));  // bill slot
-  m.add(P.box(0.5, 0.12, 0.06, '#2a2d31', { y: 0.45, z: 0.52 }, 'satin'));        // ticket outlet
-  m.add(P.box(0.12, 0.12, 0.03, '#2f6db3', { x: -0.3, y: 1.3, z: 0.52 }, 'satin')); // IC card slot
-  put2(m, L.sign([{ t: i === 0 ? 'きっぷ・IC チャージ' : i === 1 ? 'きっぷ  Tickets' : 'IC カード', scale: 0.85 }], 0.7, 0.13, { bg: '#2c3e5c', fg: '#fff' }), 0, 1.55, 0.415);
+  m.add(P.box(0.1, 0.03, 0.02, '#8c9196', { x: 0.3, y: 1.38, z: 0.435 }, 'metal'));  // coin slot
+  m.add(P.box(0.16, 0.035, 0.02, '#4a4d52', { x: 0.29, y: 1.3, z: 0.435 }, 'metal')); // bill slot
+  m.add(P.box(0.11, 0.11, 0.02, '#2f6db3', { x: -0.3, y: 1.34, z: 0.435 }, 'satin')); // IC card slot
+  m.add(P.box(0.5, 0.12, 0.05, '#2a2d31', { y: 0.42, z: 0.45 }, 'satin'));          // ticket / change outlet
+  m.add(P.box(0.2, 0.08, 0.05, '#c9ccd0', { x: 0.25, y: 0.62, z: 0.45 }, 'metal'));
+  put2(m, L.sign([{ t: i === 0 ? 'きっぷ・IC チャージ' : i === 1 ? 'きっぷ  Tickets' : 'IC カード  チャージ', scale: 0.85 }], 0.72, 0.14, { bg: '#2c3e5c', fg: '#fff' }), 0, 1.58, 0.43);
+  put2(m, L.sign([{ t: '1000円札', scale: 0.8 }], 0.16, 0.05, { bg: '#ffffff', fg: '#333' }), 0.29, 1.44, 0.43);
   return m;
 }
 function put2(parent, o, x, y, z, ry = 0) { o.position.set(x, y, z); o.rotation.y = ry; parent.add(o); return o; }
@@ -1104,6 +1109,7 @@ function paletteKit() {
     glow: new THREE.MeshBasicMaterial({ map: tex, toneMapped: false }),
     glass: std({ roughness: 0.05, metalness: 0.1, transparent: true, opacity: 0.3, depthWrite: false }),
   };
+  for (const [k, m] of Object.entries(mats)) m.name = `palette:${k}`;
   const paintGeo = (geo, color) => {
     const [u, v] = uvOf(color);
     const n = geo.attributes.position.count;
@@ -1121,7 +1127,7 @@ function paletteKit() {
       return m;
     },
     box: (w, h, d, color, o = {}, kind) => P.mesh(new THREE.BoxGeometry(w, h, d), color, { ...o, y: (o.y ?? 0) + h / 2 }, kind),
-    rbox: (w, h, d, r, color, o = {}, kind) => P.mesh(new RoundedBoxGeometry(w, h, d, 2, Math.min(r, w / 2, h / 2, d / 2)), color, { ...o, y: (o.y ?? 0) + h / 2 }, kind),
+    rbox: (w, h, d, r, color, o = {}, kind, seg = 1) => P.mesh(new RoundedBoxGeometry(w, h, d, seg, Math.min(r, w / 2, h / 2, d / 2)), color, { ...o, y: (o.y ?? 0) + h / 2 }, kind),
     cyl: (rt, rb, h, color, o = {}, kind, seg = 16) => P.mesh(new THREE.CylinderGeometry(rt, rb, h, seg), color, { ...o, y: (o.y ?? 0) + h / 2 }, kind),
     /** Move meshes built with the kit helpers (K.plant, K.chair …) onto the palette. */
     adopt(obj) {
@@ -1166,6 +1172,7 @@ function signKit(lit) {
         tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 4;
         const mat = lit ? new THREE.MeshBasicMaterial({ map: tex, toneMapped: false, alphaTest: 0.5 })
           : new THREE.MeshStandardMaterial({ map: tex, roughness: 0.6, alphaTest: 0.5 });
+        mat.name = `atlas:${lit ? 'lit' : 'std'}`;
         page = { g: c.getContext('2d'), tex, mat };
         x = PAD; y = PAD; rowH = 0;
       };
