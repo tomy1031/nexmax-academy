@@ -334,5 +334,527 @@
   "seconds": 3.277833,
   "model": "gemini-3.8-live",
   "transcript": "すみ ませ ん もう 一度 お 願い し ます"
+ },
+ "l01a/n1_0": {
+  "hash": "2eadd0caf6",
+  "seconds": 3.519708,
+  "model": "gemini-3.8-live",
+  "transcript": "おはようございます みどりデザイン の 青木 です"
+ },
+ "l01a/n1_1": {
+  "hash": "3512f47774",
+  "seconds": 2.614083,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "しつれいですが、おなまえは？"
+ },
+ "l01a/n2_0": {
+  "hash": "a0e8b7acf9",
+  "seconds": 3.226042,
+  "model": "gemini-3.8-live",
+  "transcript": "えっ と アメリカ の 方 です か ?"
+ },
+ "l01a/n2c_0": {
+  "hash": "926113e720",
+  "seconds": 1.72725,
+  "model": "gemini-3.8-live",
+  "transcript": "あ すみ ませ ん"
+ },
+ "l01a/n3_0": {
+  "hash": "4b4b75ec44",
+  "seconds": 2.3415,
+  "model": "gemini-3.8-live",
+  "transcript": "どうぞよろしくお願いします。"
+ },
+ "l01a/n3_1": {
+  "hash": "46d5a9de28",
+  "seconds": 2.500125,
+  "model": "gemini-3.8-live",
+  "transcript": "失礼 です が エンジニア です か ?"
+ },
+ "l01a/n3a_0": {
+  "hash": "fd3dddd385",
+  "seconds": 3.640125,
+  "model": "gemini-3.8-live",
+  "transcript": "エンジニア です か ? 藤田 さん も エンジニア です 。"
+ },
+ "l01a/n3b_0": {
+  "hash": "f6076b01b3",
+  "seconds": 2.359917,
+  "model": "gemini-3.8-live",
+  "transcript": "わあ、わたしもデザイナーです！"
+ },
+ "l01a/n4_0": {
+  "hash": "cef4692d99",
+  "seconds": 2.338083,
+  "model": "gemini-3.8-live",
+  "transcript": "皆さん おはよう ござい ます 。"
+ },
+ "l01a/n5a_0": {
+  "hash": "8778b645a9",
+  "seconds": 5.567125,
+  "model": "gemini-3.8-live",
+  "transcript": "あの 方 は 小川 さん です 。 みどり デザイン の 部長 です 。"
+ },
+ "l01a/n5b_0": {
+  "hash": "3912ca6fc9",
+  "seconds": 7.720125,
+  "model": "gemini-3.8-live",
+  "transcript": "はい。あのかたはぶちょうの小川さんです。"
+ },
+ "l01a/n6_0": {
+  "hash": "84c167e132",
+  "seconds": 2.381042,
+  "model": "gemini-3.8-live",
+  "transcript": "はじめまして 小川 です"
+ },
+ "l01a/n7a_0": {
+  "hash": "575290ddf2",
+  "seconds": 2.443542,
+  "model": "gemini-3.8-live",
+  "transcript": "こちらこそ 、どうぞ よろしく 。"
+ },
+ "l01a/n7b_0": {
+  "hash": "84fae71b9b",
+  "seconds": 3.241958,
+  "model": "gemini-3.8-live",
+  "transcript": "はい。どうぞよろしくおねがいします。"
+ },
+ "l01a/end_0": {
+  "hash": "fc2896623c",
+  "seconds": 3.435708,
+  "model": "gemini-3.8-live",
+  "transcript": "私 も どうぞ よろしく お 願い し ます 。"
+ },
+ "l01a/free_open": {
+  "hash": "ca29dae997",
+  "seconds": 5.838542,
+  "model": "gemini-3.8-live",
+  "transcript": "えっと 私 は 26 歳 です 。 お いくつ です か ?"
+ },
+ "l01b/n1_0": {
+  "hash": "37a915f3f7",
+  "seconds": 3.804167,
+  "model": "gemini-3.8-live",
+  "transcript": "みなさん、はじめまして。教務の早川です。"
+ },
+ "l01b/n1_1": {
+  "hash": "7e044b3992",
+  "seconds": 2.436458,
+  "model": "gemini-3.8-live",
+  "transcript": "アナ シーラ です 。 ブラジル から 来 まし た 。"
+ },
+ "l01b/n1_2": {
+  "hash": "df4feaffad",
+  "seconds": 1.342125,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "はい、どうぞ。"
+ },
+ "l01b/n1_ask_0": {
+  "hash": "86bb80d9c3",
+  "seconds": 0.85325,
+  "model": "gemini-3.8-live",
+  "transcript": "お 国 に は"
+ },
+ "l01b/n1_br_0": {
+  "hash": "dae275c8d4",
+  "seconds": 2.368958,
+  "model": "gemini-3.8-live",
+  "transcript": "え 、 私 も ブラジル 人 です 。"
+ },
+ "l01b/n1_vn_0": {
+  "hash": "964e8f6d10",
+  "seconds": 2.484833,
+  "model": "gemini-3.8-live",
+  "transcript": "あ 、 私 も ベトナム 人 です 。"
+ },
+ "l01b/n2_0": {
+  "hash": "52248c3fad",
+  "seconds": 1.133583,
+  "model": "gemini-3.8-live",
+  "transcript": "か く せ い で す か ?"
+ },
+ "l01b/n2a_0": {
+  "hash": "124ff6f15d",
+  "seconds": 4.103167,
+  "model": "gemini-3.8-live",
+  "transcript": "私も 学生 です。 湊 大学 の 学生 です。"
+ },
+ "l01b/n2b_0": {
+  "hash": "356360537a",
+  "seconds": 4.350083,
+  "model": "gemini-3.8-live",
+  "transcript": "私は 学生 です。 港 大学 の 学生 です。"
+ },
+ "l01b/n3a_0": {
+  "hash": "992b155821",
+  "seconds": 2.449958,
+  "model": "gemini-3.8-live",
+  "transcript": "はい 。 私 も 学生 です 。"
+ },
+ "l01b/n3b_0": {
+  "hash": "174369d472",
+  "seconds": 4.30375,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "わたしは グエン・ミンです。学生です。"
+ },
+ "l01b/n4_0": {
+  "hash": "0c0c5b93cf",
+  "seconds": 4.428458,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "わたしは 23さいです。なんさいですか？"
+ },
+ "l01b/n4a_0": {
+  "hash": "43deeb8d26",
+  "seconds": 3.125458,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "わたしは 25さいです。"
+ },
+ "l01b/n4b_0": {
+  "hash": "99b8a65a6d",
+  "seconds": 3.829417,
+  "model": "gemini-3.8-live",
+  "transcript": "のアナさん、「なんさい」じゃありません。「おいくつ」です。"
+ },
+ "l01b/n5a_0": {
+  "hash": "7be8a345a3",
+  "seconds": 4.060208,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "わたし"
+ },
+ "l01b/n5b_0": {
+  "hash": "f2c356028e",
+  "seconds": 3.085417,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "いいえ。"
+ },
+ "l01b/end_0": {
+  "hash": "673c002a3a",
+  "seconds": 1.908125,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "えっ、はたちですか！"
+ },
+ "l01b/end_1": {
+  "hash": "790197206b",
+  "seconds": 3.462292,
+  "model": "gemini-3.8-live",
+  "transcript": "はい。みなさん、どうぞよろしくおねがいします。"
+ },
+ "l01c/n1_0": {
+  "hash": "25ae69573b",
+  "seconds": 0.770083,
+  "model": "gemini-3.8-live",
+  "transcript": "すみ ませ ん"
+ },
+ "l01c/n1_1": {
+  "hash": "76cbbfa855",
+  "seconds": 3.656292,
+  "model": "gemini-3.8-live",
+  "transcript": "失礼 です が 緑 デザイン の 藤田 さん です か ?"
+ },
+ "l01c/n2_0": {
+  "hash": "02b55af281",
+  "seconds": 5.181583,
+  "model": "gemini-3.8-live",
+  "transcript": "えっ、すみません。しつれいですが、おなまえは？"
+ },
+ "l01c/n3_0": {
+  "hash": "d7f5d56050",
+  "seconds": 3.37325,
+  "model": "gemini-3.8-live",
+  "transcript": "すみ ませ ん 私 は 竹内 です 。"
+ },
+ "l01c/n3_1": {
+  "hash": "74e90c8f91",
+  "seconds": 3.008417,
+  "model": "gemini-3.8-live",
+  "transcript": "失礼 です が 学生 です か"
+ },
+ "l01c/n4a_0": {
+  "hash": "02420a21fb",
+  "seconds": 3.721958,
+  "model": "gemini-3.8-live",
+  "transcript": "え ? 緑 デザイン の 方 です か ? 藤田 さん も ?"
+ },
+ "l01c/n4b_0": {
+  "hash": "34319ba332",
+  "seconds": 5.043667,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か 藤田 さん は みどり デザイン の エンジニア です 。"
+ },
+ "l01c/n5a_0": {
+  "hash": "4c0ec73855",
+  "seconds": 2.100042,
+  "model": "gemini-3.8-live",
+  "transcript": "はい 。 会社 員 です 。"
+ },
+ "l01c/n5b_0": {
+  "hash": "7e9dc34a81",
+  "seconds": 3.07875,
+  "model": "gemini-3.8-live",
+  "transcript": "いえ 、 私 は 会社 員 です 。"
+ },
+ "l01c/n6_0": {
+  "hash": "8a12170ae3",
+  "seconds": 1.7955,
+  "model": "gemini-3.8-live",
+  "transcript": "すみません、すみません。"
+ },
+ "l01c/n6_1": {
+  "hash": "6828f67d10",
+  "seconds": 2.251958,
+  "model": "gemini-3.8-live",
+  "transcript": "あのお方は どなたですか？"
+ },
+ "l01c/n6a_0": {
+  "hash": "90fba697f2",
+  "seconds": 2.069208,
+  "model": "gemini-3.8-live",
+  "transcript": "え 藤田 さん です か ?"
+ },
+ "l01c/n7_0": {
+  "hash": "0c565f6d00",
+  "seconds": 4.079708,
+  "model": "gemini-3.8-live",
+  "transcript": " 竹内さんですか。始めまして。"
+ },
+ "l01c/n7_1": {
+  "hash": "75e5ef772b",
+  "seconds": 2.329958,
+  "model": "gemini-3.8-live",
+  "transcript": "はじめまして竹内です。"
+ },
+ "l01c/n7_2": {
+  "hash": "09244990d1",
+  "seconds": 3.272333,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "こちらも みどりデザインの社員です。"
+ },
+ "l01c/end_0": {
+  "hash": "ce96f4921a",
+  "seconds": 2.622458,
+  "model": "gemini-3.8-live",
+  "transcript": "はい 。 どうぞ よろしく お 願い し ます 。"
+ },
+ "l02a/n1_0": {
+  "hash": "767561e74d",
+  "seconds": 2.203417,
+  "model": "gemini-3.8-live",
+  "transcript": "はい どなた です か ?"
+ },
+ "l02a/n1a_0": {
+  "hash": "70cdb90f77",
+  "seconds": 3.74275,
+  "model": "gemini-3.8-live",
+  "transcript": "森 です 。 こちら こそ どうぞ よろしく 。"
+ },
+ "l02a/n1b_0": {
+  "hash": "2804fb38be",
+  "seconds": 6.414,
+  "model": "gemini-3.8-live",
+  "transcript": "あ、 201 の 方 です か ? 森 です 。 どうぞ よろしく 。"
+ },
+ "l02a/n3_0": {
+  "hash": "51c544aaa8",
+  "seconds": 2.571875,
+  "model": "gemini-3.8-live",
+  "transcript": "どうも ありがとう ございます"
+ },
+ "l02a/n3_1": {
+  "hash": "baf4ce9ee9",
+  "seconds": 1.602667,
+  "model": "gemini-3.8-live",
+  "transcript": "これ は なん です か ?"
+ },
+ "l02a/n4a_0": {
+  "hash": "ef8847f29c",
+  "seconds": 3.800625,
+  "model": "gemini-3.8-live",
+  "transcript": "わあ、チョコレートですか。どうもありがとうございます。"
+ },
+ "l02a/n4b_0": {
+  "hash": "52d947a8cc",
+  "seconds": 3.690708,
+  "model": "gemini-3.8-live",
+  "transcript": "まあ 、 そう です か 。 どう も ありがとう ござい ます 。"
+ },
+ "l02a/n5a_0": {
+  "hash": "a1514b4679",
+  "seconds": 3.014833,
+  "model": "gemini-3.8-live",
+  "transcript": "あれ です か あれ は 夫 の です"
+ },
+ "l02a/n5b_0": {
+  "hash": "c280523edd",
+  "seconds": 3.34075,
+  "model": "gemini-3.8-live",
+  "transcript": "いや 、 私 の じゃ あり ませ ん 。 夫 の です 。"
+ },
+ "l02a/n6_0": {
+  "hash": "c1fd29e082",
+  "seconds": 5.137958,
+  "model": "gemini-3.8-live",
+  "transcript": "こんばんは。森しゅんです。銀行員です。"
+ },
+ "l02a/n6_1": {
+  "hash": "5e8d7e0060",
+  "seconds": 4.570542,
+  "model": "gemini-3.8-live",
+  "transcript": "失礼 です が 学生 です か 会社 員 です か"
+ },
+ "l02a/n6a_0": {
+  "hash": "4bd7ff9311",
+  "seconds": 3.650083,
+  "model": "gemini-3.8-live",
+  "transcript": " わたしも 会社員です。どうぞ"
+ },
+ "l02a/n6b_0": {
+  "hash": "d4177c1a66",
+  "seconds": 4.108417,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か ? どうぞ よろしく お 願い し ます 。"
+ },
+ "l02a/end_0": {
+  "hash": "2b1f98c144",
+  "seconds": 6.7565,
+  "model": "gemini-3.8-live",
+  "transcript": " これから どうぞ よろしくおねがいします。"
+ },
+ "l02b/n1_0": {
+  "hash": "fd7e078c8e",
+  "seconds": 4.228833,
+  "model": "gemini-3.8-live",
+  "transcript": "皆さん、この 傘 は 誰 の です か ?"
+ },
+ "l02b/n1a_0": {
+  "hash": "5357c7bb8b",
+  "seconds": 3.077333,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か ? はい 。 どうぞ 。"
+ },
+ "l02b/n1b_0": {
+  "hash": "7cf6494432",
+  "seconds": 2.693583,
+  "model": "gemini-3.8-live",
+  "transcript": "あ 、 それ は 私 の です 。 すみ ませ ん 。"
+ },
+ "l02b/n2b_0": {
+  "hash": "831636037c",
+  "seconds": 4.20975,
+  "model": "gemini-3.8-live",
+  "transcript": "いいえ、わたしのじゃありません。ミンさんのです。"
+ },
+ "l02b/n2a_0": {
+  "hash": "fc1a9c83d4",
+  "seconds": 3.605,
+  "model": "gemini-3.8-live",
+  "transcript": "あ、それは私ののです。どうも。"
+ },
+ "l02b/n2a_1": {
+  "hash": "a35556c596",
+  "seconds": 2.926375,
+  "model": "gemini-3.8-live",
+  "transcript": "それは日本語の本ですか?"
+ },
+ "l02b/n3a_0": {
+  "hash": "a6b546febe",
+  "seconds": 2.938125,
+  "model": "gemini-3.8-live",
+  "transcript": "私 の も 日本 語 の 本 です 。"
+ },
+ "l02b/n3b_0": {
+  "hash": "2e7fdc00b0",
+  "seconds": 3.557083,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か 私 の は 日本 語 の 本 です 。"
+ },
+ "l02b/n4_0": {
+  "hash": "4ca816cf99",
+  "seconds": 4.454333,
+  "model": "gemini-3.8-live",
+  "transcript": "その 辞書 は 英語 の 辞書 です か ? 日本 語 の 辞書 です か ?"
+ },
+ "l02b/n4a_0": {
+  "hash": "7ab83bd6b3",
+  "seconds": 4.099583,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か 。 私 の は ポルトガル 語 の 辞書 です 。"
+ },
+ "l02b/n4b_0": {
+  "hash": "028a40da7c",
+  "seconds": 2.577917,
+  "model": "gemini-3.8-live",
+  "transcript": "わあ、 日本 語 の 辞書 です か ?"
+ },
+ "l02b/n5a_0": {
+  "hash": "7e92425157",
+  "seconds": 2.729333,
+  "model": "gemini-3.8-live",
+  "transcript": "これ です か カメラ の 雑誌 です"
+ },
+ "l02b/n5b_0": {
+  "hash": "2cb70a80c8",
+  "seconds": 3.334417,
+  "model": "gemini-3.8-live",
+  "transcript": "これ は 雑誌 です 。 カメラ の 雑誌 です 。"
+ },
+ "l02b/n6_0": {
+  "hash": "3568f87a14",
+  "seconds": 4.326875,
+  "model": "gemini-3.8-live",
+  "transcript": "あら この 時計 は 誰 の です か ?"
+ },
+ "l02b/n6b_0": {
+  "hash": "fe4b49c3c9",
+  "seconds": 3.489833,
+  "model": "gemini-3.8-live",
+  "transcript": "先生 それ は 先生 の です 。"
+ },
+ "l02b/n6a_0": {
+  "hash": "c7e140c59f",
+  "seconds": 4.48,
+  "model": "gemini-3.8-live",
+  "transcript": "あ 、 そう です 。 私 の です 。 すみ ませ ん 。"
+ },
+ "l02c/n1_0": {
+  "hash": "919eef1144",
+  "seconds": 2.3945,
+  "model": "gemini-3.8-live",
+  "transcript": "おはよう ござい ます 。 どうぞ 。"
+ },
+ "l02c/n2a_0": {
+  "hash": "bb5f894ed2",
+  "seconds": 3.513833,
+  "model": "gemini-3.8-live",
+  "transcript": "それ です か ? それ は 名詞 です 。"
+ },
+ "l02c/n2b_0": {
+  "hash": "1419fcee10",
+  "seconds": 2.751458,
+  "model": "gemini-3.8-live",
+  "transcript": "はい 、 そう です 。 名刺 です 。"
+ },
+ "l02c/n2c_0": {
+  "hash": "17ee1099b4",
+  "seconds": 3.315583,
+  "model": "gemini-3.8-live",
+  "transcript": "いえ 、 そう じゃ あり ませ ん 。 名刺 です 。"
+ },
+ "l02c/n3_tease_0": {
+  "hash": "efbba02c55",
+  "seconds": 3.709875,
+  "model": "gemini-3.8-live",
+  "transcript": "私 の じゃ あり ませ ん 。 小川 さん の じゃ あり ませ ん 。"
+ },
+ "l02c/n3_yes_0": {
+  "hash": "067fc008c3",
+  "seconds": 2.33325,
+  "model": "gemini-3.8-live",
+  "transcript": "はい、そうです！どうぞ。"
+ },
+ "l02c/n4a_0": {
+  "hash": "158c1f0212",
+  "seconds": 5.4435,
+  "model": "gemini-3.8-live",
+  "transcript": "あれは緑デザインのロゴ です 私 の デザイン です"
  }
 }
