@@ -21733,6 +21733,26 @@
           "あ"
         ]
       ]
+    },
+    {
+      "id": "kuraberu",
+      "term": "比べる",
+      "reading": "くらべる",
+      "romaji": "kuraberu",
+      "meaningJa": "2つの ものを 見て、同じ ところと ちがう ところを さがす ことです。",
+      "englishTerm": "Compare",
+      "example": "仕様書と 商品データを 比べます。",
+      "wrongMeanings": [
+        "Copy",
+        "Delete",
+        "Send"
+      ],
+      "furigana": [
+        [
+          "比",
+          "くら"
+        ]
+      ]
     }
   ]
 }

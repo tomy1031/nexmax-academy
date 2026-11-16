@@ -372,7 +372,11 @@ function Player({
   const day = novel.days[save.day] ?? novel.days[0];
   const scene = day?.scenes[save.index];
   const show = save.settings.furigana;
-  const translation = save.settings.translation;
+  /*
+   * 英語の 訳は 使わせない（2026-11-13「ENは非表示にして」「使わせない」）。
+   * 前に 訳を オンに した 保存が 残って いても 出さない。
+   */
+  const translation = false;
   const view = viewAt(novel, save.day, save.index);
   const [faceOverride, setFaceOverride] = useState<NovelFace | null>(null);
   const [typedAll, setTypedAll] = useState(true);
@@ -726,7 +730,10 @@ function Player({
           >
             <RubyText text={day.label} index={index} show={show} />
           </span>
-          <ol className="grid flex-1 grid-cols-4 gap-1" aria-label="今日の ステップ">
+          <ol
+            className="grid flex-1 grid-cols-4 gap-1 [&_rt]:text-white"
+            aria-label="今日の ステップ"
+          >
             {STEP_BAR.map((step) => {
               const on = view.step === step.step;
               return (
@@ -812,7 +819,7 @@ function Player({
               </span>
               {scene.inset.label ? (
                 <figcaption
-                  className="rounded-full px-3 py-0.5 text-xs font-black text-white shadow"
+                  className="rounded-full px-3 py-0.5 text-xs font-black text-white shadow [&_rt]:text-white"
                   style={{ background: "rgba(23, 43, 84, 0.86)" }}
                 >
                   <RubyText text={scene.inset.label} index={index} show={show} />
@@ -824,7 +831,7 @@ function Player({
           {(!panelMode || (wide && !fullPanel)) && !(scene.type === "line" && scene.inset) ? (
             <div className="absolute top-2 left-2 max-h-[40%] w-[42%] max-w-[230px] overflow-hidden sm:w-[30%]">
               <p
-                className="mb-0.5 inline-block rounded-full px-2 py-0.5 text-[10px] font-black text-white"
+                className="mb-0.5 inline-block rounded-full px-2 py-0.5 text-[10px] font-black text-white [&_rt]:text-white"
                 style={{ background: "rgba(15, 35, 70, 0.75)" }}
               >
                 💻 <RubyText text="開発中の 画面" index={index} show={show} />
@@ -888,13 +895,6 @@ function Player({
             >
               ふりがな
             </ToolButton>
-            <ToolButton
-              onClick={() => setSettings({ translation: !translation })}
-              pressed={translation}
-              testId="novel-translation"
-            >
-              EN
-            </ToolButton>
             <span className="flex-1" />
             <ToolButton
               onClick={() => setMenuOpen((open) => !open)}
@@ -955,6 +955,7 @@ function Player({
           >
             ⚙ <RubyText text="設定（音の 大きさ）" index={index} show={show} />
           </button>
+
           <button
             type="button"
             disabled={judging}

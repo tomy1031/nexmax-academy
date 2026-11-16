@@ -167,8 +167,21 @@
             "step": "intro",
             "type": "line",
             "speaker": "hendy",
-            "text": "お客様は、お店の 店長の 松本さんです。",
-            "en": "Our client is Mr. Matsumoto, the shop manager.",
+            "text": "お客様は、「PCショップ まつもと」の 店長、松本さんです。",
+            "en": "The client is Mr. Matsumoto, the manager of \"PC Shop Matsumoto\".",
+            "face": "neutral",
+            "inset": {
+              "src": "/img/novel/matsumoto/shop_round.webp",
+              "label": "お客様：松本店長"
+            }
+          },
+          {
+            "id": "m02c",
+            "step": "intro",
+            "type": "line",
+            "speaker": "hendy",
+            "text": "マウスや USBライトなど、パソコンの 小物を 売る お店です。",
+            "en": "It is a shop that sells small computer items, like mice and USB lights.",
             "face": "neutral",
             "inset": {
               "src": "/img/novel/matsumoto/shop_round.webp",
@@ -2750,6 +2763,10 @@
     [
       "電話中",
       "でんわちゅう"
+    ],
+    [
+      "小物",
+      "こもの"
     ]
   ]
 }
