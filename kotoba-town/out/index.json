@@ -3304,5 +3304,41 @@
   "seconds": 0.487583,
   "model": "gemini-3.8-live",
   "transcript": "はい"
+ },
+ "_cast/hara_sodesuka": {
+  "hash": "5a2dc8a98f",
+  "seconds": 1.423625,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か"
+ },
+ "_cast/noguchi_again": {
+  "hash": "cc823ae5f0",
+  "seconds": 2.701125,
+  "model": "gemini-3.8-live",
+  "transcript": "すみません もう 一度 お 願い し ます"
+ },
+ "_cast/noguchi_slow": {
+  "hash": "acfcb1b54e",
+  "seconds": 1.321958,
+  "model": "gemini-3.8-live",
+  "transcript": "ゆっくり で いい です よ 。"
+ },
+ "_cast/noguchi_hmm": {
+  "hash": "824d1c7b89",
+  "seconds": 1.062,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "ええと……。"
+ },
+ "_cast/noguchi_ok": {
+  "hash": "37ffc2c9b1",
+  "seconds": 0.407542,
+  "model": "gemini-3.8-live",
+  "transcript": "はい"
+ },
+ "_cast/noguchi_sodesuka": {
+  "hash": "2536169630",
+  "seconds": 1.038125,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か 。"
  }
 }
