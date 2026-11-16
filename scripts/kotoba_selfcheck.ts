@@ -40,8 +40,10 @@ async function main(): Promise<void> {
     let npcText = "";
     let status = "";
     let npcDone = false;
+    const trace: string[] = [];
     const brain = new LiveBrain({
       apiKey,
+      trace,
       lesson: fixture.lesson,
       variant: fixture.variant,
       character: fixture.character,
@@ -109,6 +111,7 @@ async function main(): Promise<void> {
       npcSpeechSeconds: Math.round((npcAudioBytes / 2 / 24_000) * 10) / 10,
       npcText,
       report,
+      trace,
       ms: Date.now() - started,
     };
     brain.close();

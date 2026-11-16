@@ -64,18 +64,23 @@ export class LiveBrain {
 
   handlers() {
     return {
-      onAudio: (b64) => { if (this.gate === 'play') this.on.npcAudio(b64); },
-      onOutputText: (t) => { if (this.gate === 'play') this.on.npcText(t); },
+      onAudio: (b64) => {
+        this.trace('audio');
+        if (this.gate === 'armed') { this.gate = 'play'; clearTimeout(this.armTimer); }
+        if (this.gate === 'play') this.on.npcAudio(b64);
+      },
+      onOutputText: (t) => { this.trace(`out:${t}`); if (this.gate === 'play' || this.gate === 'armed') this.on.npcText(t); },
       onInputText: (t) => {
         // Transcript fragments that trail in right after a verdict belong to the judged utterance.
         if (Date.now() - this.judgeAt < 2500) return;
+        this.trace(`in:${t}`);
         this.heardText += t;
         this.awaitingJudge = true;
         this.on.heard(this.heardText);
       },
       onToolCall: (calls) => this.toolCalls(calls),
       onTurnComplete: () => this.turnComplete(),
-      onInterrupted: () => { if (this.gate === 'play') this.on.npcDone(true); this.gate = 'drop'; },
+      onInterrupted: () => { this.trace('interrupted'); if (this.gate === 'play') this.on.npcDone(true); this.gate = 'drop'; },
       onResumption: (h) => { this.resumeHandle = h; },
       onGoAway: () => { this.reconnect('goAway'); },
       onClose: (reason) => { if (!this.closed) this.reconnect(reason); },
@@ -130,6 +135,7 @@ export class LiveBrain {
   micPause() { this.session?.sendAudioStreamEnd(); }
 
   toolCalls(calls) {
+    this.trace(`toolCall:${calls.map((c) => c.name).join(',')}`);
     const responses = [];
     for (const call of calls) {
       if (call.name === 'judge_reply') {
@@ -140,7 +146,12 @@ export class LiveBrain {
         this.judgeAt = Date.now();
         let say = 'nothing';
         try { say = this.on.judge(result) || 'nothing'; } catch (e) { console.error(e); }
-        this.gate = say === 'nothing' ? 'drop' : 'play';
+        this.trace(`judge:${result.branch}/${result.score} → ${say}`);
+        // 'armed': the reply has not started yet. A turnComplete that closes the function-call turn
+        // can arrive before the reply audio, so only audio switches the gate to 'play'.
+        this.gate = say === 'nothing' ? 'drop' : 'armed';
+        clearTimeout(this.armTimer);
+        if (this.gate === 'armed') this.armTimer = setTimeout(() => { if (this.gate === 'armed') { this.gate = 'drop'; this.on.npcDone(false); } }, 7000);
         responses.push({ id: call.id, name: call.name, response: { ok: true, say } });
         this.heardText = '';
       } else if (call.name === 'final_report') {
@@ -157,6 +168,8 @@ export class LiveBrain {
   }
 
   turnComplete() {
+    this.trace(`turnComplete(${this.gate})`);
+    if (this.gate === 'armed') return; // the reply is still to come
     if (this.gate === 'play') this.on.npcDone(false);
     this.gate = 'drop';
     // The model finished a turn without judging although the learner spoke: judge from the transcript.
@@ -179,8 +192,11 @@ export class LiveBrain {
     });
   }
 
+  trace(ev) { if (this.o.trace) this.o.trace.push(`${Date.now() % 100000} ${ev}`.slice(0, 120)); }
+
   close() {
     this.closed = true;
+    clearTimeout(this.armTimer);
     try { this.session?.close(); } catch { /* ignore */ }
     this.session = null;
   }
