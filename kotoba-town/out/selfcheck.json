@@ -1,78 +1,6 @@
 {
- "at": "2026-11-16T18:36:06.055Z",
+ "at": "2026-11-16T19:45:35.371Z",
  "results": [
-  {
-   "say": "はじめまして。わたしは リンです。ベトナムじんです。どうぞ よろしく おねがいします。",
-   "model": "gemini-3.8-live",
-   "status": "connecting live(gemini-3.8-live)",
-   "verdict": {
-    "heard": "はじめまして私はリンですベトナム人ですどうぞよろしくお願いします",
-    "branch": "full",
-    "score": 3,
-    "grammarUsed": [
-     "g1"
-    ],
-    "correction": "はじめまして。わたしはリンです。ベトナムじんです。どうぞよろしくお願いします。",
-    "tipEn": "Great introduction! You used the grammar perfectly.",
-    "source": "live"
-   },
-   "pass": true,
-   "expect": [
-    "full"
-   ],
-   "npcSpeechSeconds": 0,
-   "npcText": "",
-   "report": null,
-   "ms": 16834
-  },
-  {
-   "say": "リンです。よろしく おねがいします。",
-   "model": "gemini-3.8-live",
-   "status": "connecting live(gemini-3.8-live)",
-   "verdict": {
-    "heard": "リンですよろしくお願いします",
-    "branch": "name_only",
-    "score": 2,
-    "grammarUsed": [
-     "g1"
-    ],
-    "correction": "はじめまして。わたしは リンです。どうぞ よろしく おねがいします。",
-    "tipEn": "Great! Next time, you can also add your country, like 'ベトナムじんです'.",
-    "source": "live"
-   },
-   "pass": true,
-   "expect": [
-    "name_only"
-   ],
-   "npcSpeechSeconds": 0,
-   "npcText": "",
-   "report": null,
-   "ms": 10428
-  },
-  {
-   "say": "すみません、もう いちど おねがいします。",
-   "model": "gemini-3.8-live",
-   "status": "connecting live(gemini-3.8-live)",
-   "verdict": {
-    "heard": "すみません、もう一度お願いします。",
-    "branch": "repeat",
-    "score": 1,
-    "grammarUsed": [
-     "g1"
-    ],
-    "correction": "はじめまして。わたしはリンです。アメリカじんです。",
-    "tipEn": "Please state your name and country using \"Watashi wa [Name] desu.\"",
-    "source": "live"
-   },
-   "pass": true,
-   "expect": [
-    "repeat"
-   ],
-   "npcSpeechSeconds": 0,
-   "npcText": "",
-   "report": null,
-   "ms": 16051
-  },
   {
    "say": "あおきさんは デザイナーですか。",
    "model": "gemini-3.8-live",
@@ -82,7 +10,7 @@
     "branch": "asks_npc",
     "score": 1,
     "grammarUsed": [],
-    "correction": "はじめまして。わたしはリンです。アメリカじんです。どうぞよろしくお願いします。",
+    "correction": "はじめまして。わたしはリンです。アメリカじんです。",
     "tipEn": "Please introduce yourself with your name and country first.",
     "source": "live"
    },
@@ -91,17 +19,148 @@
     "asks_npc",
     "off_topic"
    ],
+   "npcSpeechSeconds": 19.8,
+   "npcText": "はい、そうです。はじめまして。どうぞよろしくおねがいします。",
+   "report": null,
+   "trace": [
+    "85451 in:青木さんはデザイナーですか?",
+    "85452 toolCall:judge_reply",
+    "85452 judge:asks_npc/1 → react",
+    "85452 turnComplete(armed)",
+    "86272 audio",
+    "86272 out:はい、そうです。はじめまして。",
+    "86287 audio",
+    "86293 audio",
+    "86337 audio",
+    "86342 audio",
+    "86344 audio",
+    "86999 audio",
+    "86999 out:どうぞ",
+    "87003 audio",
+    "87169 audio",
+    "87169 out:よろしく",
+    "87172 audio",
+    "87202 audio",
+    "87202 out:おねがいします。",
+    "87205 audio",
+    "87210 audio",
+    "87213 audio",
+    "87216 audio",
+    "87219 audio",
+    "87221 audio",
+    "87223 audio",
+    "87225 audio",
+    "87233 audio",
+    "87283 audio",
+    "87334 audio",
+    "87385 audio",
+    "87448 audio",
+    "87514 audio",
+    "87564 audio",
+    "87632 audio",
+    "87697 audio",
+    "87746 audio",
+    "87813 audio",
+    "87880 audio",
+    "87946 audio",
+    "88000 audio",
+    "88065 audio",
+    "88129 audio",
+    "88207 audio",
+    "88262 audio",
+    "88312 audio",
+    "88360 audio",
+    "88428 audio",
+    "88494 audio",
+    "88543 audio",
+    "88592 audio",
+    "88659 audio",
+    "88726 audio",
+    "88793 audio",
+    "88824 audio",
+    "88845 audio"
+   ],
+   "ms": 22489
+  },
+  {
+   "say": "すみません、トイレは どこですか。",
+   "model": "gemini-3.8-live",
+   "status": "connecting live(gemini-3.8-live)",
+   "verdict": {
+    "heard": "すみません、トイレはどこですか",
+    "branch": "off_topic",
+    "score": 0,
+    "grammarUsed": [],
+    "correction": "はじめまして。わたしはリンです。アメリカじんです。",
+    "tipEn": "Please introduce yourself with your name and country first.",
+    "source": "live"
+   },
+   "pass": true,
+   "expect": [
+    "asks_npc",
+    "off_topic"
+   ],
+   "npcSpeechSeconds": 3.9,
+   "npcText": "はじめまして。リンさん、どうぞ よろしくおねがいします。",
+   "report": null,
+   "trace": [
+    "10999 in:すみません、トイレはどこですか?",
+    "10999 toolCall:judge_reply",
+    "10999 judge:off_topic/0 → react",
+    "10999 turnComplete(armed)",
+    "12138 audio",
+    "12138 out:はじめまして。リンさん、",
+    "12149 audio",
+    "12155 audio",
+    "12264 audio",
+    "12267 audio",
+    "12273 audio",
+    "12445 audio",
+    "12445 out:どうぞ よろしく",
+    "12447 audio",
+    "12593 audio",
+    "12593 out:おねがいします。",
+    "12594 audio",
+    "12595 audio",
+    "16048 turnComplete(play)"
+   ],
+   "ms": 14611
+  },
+  {
+   "say": "I am Lin from Vietnam.",
+   "model": "gemini-3.8-live",
+   "status": "connecting live(gemini-3.8-live)",
+   "verdict": {
+    "heard": "I am Linh from Vietnam.",
+    "branch": "english",
+    "score": 0,
+    "grammarUsed": [],
+    "correction": "はじめまして。わたしはリンです。ベトナムじんです。どうぞよろしくお願いします。",
+    "tipEn": "Please introduce yourself in Japanese. Try saying \"Watashi wa [Name] desu\" and your nationality.",
+    "source": "live"
+   },
+   "pass": true,
+   "expect": [
+    "english"
+   ],
    "npcSpeechSeconds": 0,
    "npcText": "",
    "report": {
     "stars": 1,
-    "summaryEn": "The learner needs more practice with basic self-introductions, specifically stating their name and country.",
-    "strengthsEn": "Good attempt at asking a question in Japanese.",
-    "improveEn": "Practice introducing yourself by stating your name and country using \"わたしは [name] です。\" and \"[country] です。\"",
-    "pronunciationEn": "Clear pronunciation, but remember to answer the question asked.",
+    "summaryEn": "The learner did not introduce themselves in Japanese. Please review basic self-introductions.",
+    "strengthsEn": "N/A",
+    "improveEn": "Practice introducing yourself in Japanese using \"Watashi wa [Name] desu\" and your nationality.",
+    "pronunciationEn": "N/A",
     "source": "live"
    },
-   "ms": 11784
+   "trace": [
+    "30508 in:I am Linh from Vietnam.",
+    "30509 toolCall:judge_reply",
+    "30509 judge:english/0 → nothing",
+    "30509 turnComplete(drop)",
+    "31366 toolCall:final_report"
+   ],
+   "ms": 11221
   }
  ]
 }
