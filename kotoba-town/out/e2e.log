@@ -3,15 +3,12 @@
 |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 104.3 MiB
 Chromium Headless Shell 141.0.7390.37 (playwright build v1194) downloaded to /home/runner/.cache/ms-playwright/chromium_headless_shell-1194
 == case l01a: はじめまして。リンです。ベトナムから きました。どうぞ よろしく おねがいします。
-learner.wav: 11.3s (gemini-3.8-live) 「」
+learner.wav: 10.9s (gemini-3.8-live) 「」
 node:internal/modules/run_main:123
     triggerUncaughtException(
     ^
 
-page.evaluate: TypeError: window.KT.start is not a function
-    at eval (eval at evaluate (:290:30), <anonymous>:1:17)
-    at UtilityScript.evaluate (<anonymous>:292:16)
-    at UtilityScript.<anonymous> (<anonymous>:1:44)
+page.evaluate: Target page, context or browser has been closed
     at /home/runner/work/nexmax-academy/nexmax-academy/scripts/kotoba_e2e.mjs:54:12
 
 Node.js v22.23.4
