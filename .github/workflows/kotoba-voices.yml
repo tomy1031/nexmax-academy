@@ -23,6 +23,8 @@ on:
       - kotoba-town/js/**
       - scripts/make_kotoba_voices.ts
       - scripts/kotoba_selfcheck.ts
+      - scripts/kotoba_e2e.mjs
+      - kotoba-town/game/**
       - .github/workflows/kotoba-voices.yml
 
 concurrency:
@@ -64,6 +66,18 @@ jobs:
             echo "selfcheck は 今回 なし（run.json）"
           fi
 
+      - name: 通し試験（本物の ブラウザ ＋ Gemini Live）
+        continue-on-error: true
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          E2E=$(node -p "require('./kotoba-town/run.json').e2e || ''")
+          if [ -z "$E2E" ] || [ ! -d kotoba-town/game ]; then echo "e2e は 今回 なし"; exit 0; fi
+          npx playwright install --with-deps chromium > /dev/null
+          SAY=$(node -p "require('./kotoba-town/run.json').e2eSay || ''")
+          node --import tsx scripts/kotoba_learner_wav.ts "$SAY"
+          timeout 8m node scripts/kotoba_e2e.mjs "$E2E" 170
+
       - name: 声を 作る（区切りごとに コミット）
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -85,7 +99,7 @@ jobs:
             done
             echo "::warning::push に 失敗しました"
           }
-          commit selfcheck
+          commit "selfcheck + e2e"
           if [ "$GENERATE" != "true" ]; then echo "generate は 今回 なし"; exit 0; fi
           for round in $(seq 1 "$ROUNDS"); do
             node --import tsx scripts/make_kotoba_voices.ts --budget-min "$MINUTES" --only "$ONLY" 2>&1 | tee /tmp/round.log

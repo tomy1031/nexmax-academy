@@ -4,5 +4,7 @@
   "generate": true,
   "only": "",
   "rounds": 6,
-  "roundMinutes": 22
+  "roundMinutes": 22,
+  "e2e": "l01a",
+  "e2eSay": "はじめまして。リンです。ベトナムから きました。どうぞ よろしく おねがいします。"
 }

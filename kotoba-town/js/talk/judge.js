@@ -63,7 +63,9 @@ export function turnNote({ k, character, npcLines, listen, grammar }) {
   const g = (listen.grammar || []).map((id) => grammar.find((x) => x.id === id)).filter(Boolean);
   const lines = [
     `[TURN ${k}] Mode: script.`,
-    npcLines.length ? `You (${character.nameJa}) just said: ${npcLines.map((l) => `${quote(l.ja)} (${l.en})`).join(' ')}` : '',
+    npcLines.length
+      ? `Just said: ${npcLines.map((l) => `${l.name && l.name !== character.nameJa ? `${l.name}` : `You (${character.nameJa})`}: ${quote(l.ja)} (${l.en})`).join(' ')}`
+      : 'Nobody spoke just before this turn; the learner starts.',
     `The learner should: ${listen.promptEn}`,
     g.length ? `Target grammar: ${g.map((x) => `${x.id} ${quote(x.pattern)} = ${x.meaningEn}`).join('; ')}` : '',
     listen.modelAnswers?.length ? `Good answers look like: ${listen.modelAnswers.map(quote).join(' / ')}` : '',
