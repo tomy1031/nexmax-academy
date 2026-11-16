@@ -1,0 +1,107 @@
+{
+ "at": "2026-11-16T18:36:06.055Z",
+ "results": [
+  {
+   "say": "はじめまして。わたしは リンです。ベトナムじんです。どうぞ よろしく おねがいします。",
+   "model": "gemini-3.8-live",
+   "status": "connecting live(gemini-3.8-live)",
+   "verdict": {
+    "heard": "はじめまして私はリンですベトナム人ですどうぞよろしくお願いします",
+    "branch": "full",
+    "score": 3,
+    "grammarUsed": [
+     "g1"
+    ],
+    "correction": "はじめまして。わたしはリンです。ベトナムじんです。どうぞよろしくお願いします。",
+    "tipEn": "Great introduction! You used the grammar perfectly.",
+    "source": "live"
+   },
+   "pass": true,
+   "expect": [
+    "full"
+   ],
+   "npcSpeechSeconds": 0,
+   "npcText": "",
+   "report": null,
+   "ms": 16834
+  },
+  {
+   "say": "リンです。よろしく おねがいします。",
+   "model": "gemini-3.8-live",
+   "status": "connecting live(gemini-3.8-live)",
+   "verdict": {
+    "heard": "リンですよろしくお願いします",
+    "branch": "name_only",
+    "score": 2,
+    "grammarUsed": [
+     "g1"
+    ],
+    "correction": "はじめまして。わたしは リンです。どうぞ よろしく おねがいします。",
+    "tipEn": "Great! Next time, you can also add your country, like 'ベトナムじんです'.",
+    "source": "live"
+   },
+   "pass": true,
+   "expect": [
+    "name_only"
+   ],
+   "npcSpeechSeconds": 0,
+   "npcText": "",
+   "report": null,
+   "ms": 10428
+  },
+  {
+   "say": "すみません、もう いちど おねがいします。",
+   "model": "gemini-3.8-live",
+   "status": "connecting live(gemini-3.8-live)",
+   "verdict": {
+    "heard": "すみません、もう一度お願いします。",
+    "branch": "repeat",
+    "score": 1,
+    "grammarUsed": [
+     "g1"
+    ],
+    "correction": "はじめまして。わたしはリンです。アメリカじんです。",
+    "tipEn": "Please state your name and country using \"Watashi wa [Name] desu.\"",
+    "source": "live"
+   },
+   "pass": true,
+   "expect": [
+    "repeat"
+   ],
+   "npcSpeechSeconds": 0,
+   "npcText": "",
+   "report": null,
+   "ms": 16051
+  },
+  {
+   "say": "あおきさんは デザイナーですか。",
+   "model": "gemini-3.8-live",
+   "status": "connecting live(gemini-3.8-live)",
+   "verdict": {
+    "heard": "青木さんはデザイナーですか",
+    "branch": "asks_npc",
+    "score": 1,
+    "grammarUsed": [],
+    "correction": "はじめまして。わたしはリンです。アメリカじんです。どうぞよろしくお願いします。",
+    "tipEn": "Please introduce yourself with your name and country first.",
+    "source": "live"
+   },
+   "pass": true,
+   "expect": [
+    "asks_npc",
+    "off_topic"
+   ],
+   "npcSpeechSeconds": 0,
+   "npcText": "",
+   "report": {
+    "stars": 1,
+    "summaryEn": "The learner needs more practice with basic self-introductions, specifically stating their name and country.",
+    "strengthsEn": "Good attempt at asking a question in Japanese.",
+    "improveEn": "Practice introducing yourself by stating your name and country using \"わたしは [name] です。\" and \"[country] です。\"",
+    "pronunciationEn": "Clear pronunciation, but remember to answer the question asked.",
+    "source": "live"
+   },
+   "ms": 11784
+  }
+ ]
+}
