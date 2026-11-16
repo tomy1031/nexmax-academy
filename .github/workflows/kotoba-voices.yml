@@ -1,0 +1,96 @@
+name: Kotoba Town voices (Gemini Live)
+
+# tomy1031/lab の VR 日本語練習アプリ「Kotoba Town」の 作り置きの 声を、教材の 音声づくりと
+# 同じ 道（scripts/lib/live_tts.ts・Gemini Live）で 作る。鍵は Environment「Preview」の
+# GEMINI_API_KEY（教材の 音声づくりと 同じ 置き場）。
+#
+# このブランチ（claude/kotoba-town-voices）専用。main / integration には 入れない。
+# 走らせかた: kotoba-town/manifest.json か kotoba-town/run.json を 変えて このブランチへ push。
+# 結果は 同じ ブランチの kotoba-town/out/ に コミットされる（区切りごとに 途中も 入る）。
+#   - out/voice/<id>.mp3   声（前後の 無音を 切った 24kHz モノラル mp3）
+#   - out/index.json       id → hash・秒・モデル・文字起こし
+#   - out/failures.json    作れなかった 行と 理由
+#   - out/selfcheck.json   判定（judge_reply）を 本物の API で 確かめた 結果
+
+on:
+  push:
+    branches:
+      - claude/kotoba-town-voices
+    paths:
+      - kotoba-town/manifest.json
+      - kotoba-town/run.json
+      - kotoba-town/selfcheck.json
+      - kotoba-town/js/**
+      - scripts/make_kotoba_voices.ts
+      - scripts/kotoba_selfcheck.ts
+      - .github/workflows/kotoba-voices.yml
+
+concurrency:
+  group: kotoba-voices
+  cancel-in-progress: false
+
+jobs:
+  voices:
+    runs-on: ubuntu-latest
+    environment: Preview
+    timeout-minutes: 175
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: claude/kotoba-town-voices
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      # husky（prepare）は 要らない
+      - run: npm ci --ignore-scripts
+
+      - name: ffmpeg
+        run: command -v ffmpeg || (sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg)
+
+      - name: 判定の 確かめ（self-check）
+        if: ${{ hashFiles('kotoba-town/selfcheck.json') != '' }}
+        continue-on-error: true
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          if [ "$(node -p "require('./kotoba-town/run.json').selfcheck === true")" = "true" ]; then
+            timeout 15m node --import tsx scripts/kotoba_selfcheck.ts
+          else
+            echo "selfcheck は 今回 なし（run.json）"
+          fi
+
+      - name: 声を 作る（区切りごとに コミット）
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          set -uo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          ROUNDS=$(node -p "require('./kotoba-town/run.json').rounds ?? 6")
+          MINUTES=$(node -p "require('./kotoba-town/run.json').roundMinutes ?? 22")
+          ONLY=$(node -p "require('./kotoba-town/run.json').only ?? ''")
+          GENERATE=$(node -p "require('./kotoba-town/run.json').generate !== false")
+          commit() {
+            git add kotoba-town/out
+            if git diff --cached --quiet; then return 0; fi
+            git commit --no-verify -q -m "kotoba-town: voices ($1) [run ${GITHUB_RUN_ID}]"
+            for try in 1 2 3; do
+              git pull --rebase --no-verify -q origin claude/kotoba-town-voices && git push -q origin HEAD:claude/kotoba-town-voices && return 0
+              sleep 5
+            done
+            echo "::warning::push に 失敗しました"
+          }
+          commit selfcheck
+          if [ "$GENERATE" != "true" ]; then echo "generate は 今回 なし"; exit 0; fi
+          for round in $(seq 1 "$ROUNDS"); do
+            node --import tsx scripts/make_kotoba_voices.ts --budget-min "$MINUTES" --only "$ONLY" 2>&1 | tee /tmp/round.log
+            commit "round $round"
+            if grep -q "^REMAINING=0" /tmp/round.log; then echo "ぜんぶ できました"; break; fi
+            if grep -q "^MADE=0" /tmp/round.log; then echo "この 区切りで 1本も できなかったので やめます"; break; fi
+          done
+          node -e "const i=require('./kotoba-town/out/index.json'),m=require('./kotoba-town/manifest.json');const ok=m.lines.filter(l=>i[l.id]&&i[l.id].hash===l.hash).length;console.log('できた',ok,'/',m.lines.length)"
