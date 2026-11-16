@@ -3328,5 +3328,17 @@
   "seconds": 1.038125,
   "model": "gemini-3.8-live",
   "transcript": "そう です か 。"
+ },
+ "l03b/n8_tea_0": {
+  "hash": "1213bb1fb4",
+  "seconds": 2.022792,
+  "model": "gemini-3.8-live",
+  "transcript": "はい 。 お 茶 です 。 どうぞ 。"
+ },
+ "_cast/minh_again": {
+  "hash": "f9c9d75b25",
+  "seconds": 3.139125,
+  "model": "gemini-3.8-live",
+  "transcript": "すみ ませ ん もう 一度 お 願い し ます"
  }
 }
