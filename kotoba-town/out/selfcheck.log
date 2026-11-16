@@ -7,8 +7,8 @@
   "branch": "asks_npc",
   "score": 1,
   "grammarUsed": [],
-  "correction": "はい、そうです。わたしはデザイナーです。リンさんは？",
-  "tipEn": "Please introduce yourself with your name and country first.",
+  "correction": "はい、デザイナーです。はじめまして。おなまえは？",
+  "tipEn": "Please introduce yourself first with your name and country.",
   "source": "live"
  },
  "pass": true,
@@ -16,32 +16,32 @@
   "asks_npc",
   "off_topic"
  ],
- "npcSpeechSeconds": 3.2,
- "npcText": "はい、そうです。わたしはデザイナーです。",
+ "npcSpeechSeconds": 3.1,
+ "npcText": "はい、そうです。デザイナーです。",
  "report": null,
  "trace": [
-  "8391 in:青木さんはデザイナーですか?",
-  "8392 toolCall:judge_reply",
-  "8392 judge:asks_npc/1 → react",
-  "8395 turnComplete(armed)",
-  "8954 audio",
-  "8954 out:はい、そうです。わたし",
-  "8959 audio",
-  "8961 audio",
-  "8964 audio",
-  "8965 audio",
-  "9089 audio",
-  "9090 audio",
-  "9093 audio",
-  "9097 audio",
-  "9265 audio",
-  "9265 out:はデザイナーです。",
-  "9268 audio",
-  "9271 audio",
-  "9274 audio",
-  "12199 turnComplete(play)"
+  "2441 in:青木さんはデザイナーですか?",
+  "2441 toolCall:judge_reply",
+  "2442 judge:asks_npc/1 → react",
+  "2442 turnComplete(armed)",
+  "2926 audio",
+  "2926 out:はい、そうです。デザイナー",
+  "2926 audio",
+  "2927 audio",
+  "2928 audio",
+  "2945 audio",
+  "3083 audio",
+  "3083 audio",
+  "3083 audio",
+  "3083 audio",
+  "3227 audio",
+  "3227 out:です。",
+  "3227 audio",
+  "3228 audio",
+  "3278 audio",
+  "6062 turnComplete(play)"
  ],
- "ms": 14366
+ "ms": 12533
 }
 {
  "say": "すみません、トイレは どこですか。",
@@ -50,10 +50,10 @@
  "verdict": {
   "heard": "すみませんトイレはどこですか",
   "branch": "off_topic",
-  "score": 0,
+  "score": 1,
   "grammarUsed": [],
-  "correction": "はじめまして。わたしはリンです。どうぞよろしくおねがいします。",
-  "tipEn": "Please introduce yourself with your name and country first.",
+  "correction": "はじめまして。わたしはリンです。アメリカじんです。どうぞよろしくおねがいします。",
+  "tipEn": "Please introduce yourself with your name and country, as asked.",
   "source": "live"
  },
  "pass": true,
@@ -61,27 +61,29 @@
   "asks_npc",
   "off_topic"
  ],
- "npcSpeechSeconds": 1.9,
+ "npcSpeechSeconds": 1.8,
  "npcText": "トイレは あちらです。",
  "report": null,
  "trace": [
-  "27370 in:すみません、トイレはどこですか?",
-  "27370 toolCall:judge_reply",
-  "27370 judge:off_topic/0 → react",
-  "27373 turnComplete(armed)",
-  "27955 audio",
-  "27955 out:トイレは ",
-  "27956 audio",
-  "27959 audio",
-  "27962 audio",
-  "27976 audio",
-  "28112 audio",
-  "28112 out:あちらです。",
-  "28112 audio",
-  "28145 audio",
-  "29831 turnComplete(play)"
+  "21006 in:すみません、トイレはどこですか?",
+  "21008 toolCall:judge_reply",
+  "21009 judge:off_topic/1 → react",
+  "21009 turnComplete(armed)",
+  "21538 audio",
+  "21538 out:トイレは ",
+  "21539 audio",
+  "21549 audio",
+  "21550 audio",
+  "21581 audio",
+  "21713 audio",
+  "21713 out:あちらです。",
+  "21713 audio",
+  "21714 audio",
+  "21730 audio",
+  "21745 audio",
+  "23383 turnComplete(play)"
  ],
- "ms": 13657
+ "ms": 13387
 }
 {
  "say": "I am Lin from Vietnam.",
@@ -92,8 +94,8 @@
   "branch": "english",
   "score": 0,
   "grammarUsed": [],
-  "correction": "はじめまして。わたしはリンです。ベトナム人です。",
-  "tipEn": "Please introduce yourself in Japanese. Say your name and country using 「は...です」.",
+  "correction": "はじめまして。わたしはリンです。ベトナムじんです。どうぞよろしくお願いします。",
+  "tipEn": "Please introduce yourself in Japanese using \"わたしは [name] です。\" and \"[country] じん です。\"",
   "source": "live"
  },
  "pass": true,
@@ -104,19 +106,19 @@
  "npcText": "",
  "report": {
   "stars": 1,
-  "summaryEn": "The learner responded in English during the self-introduction. Please try to use Japanese phrases for your name and country next time.",
+  "summaryEn": "The learner responded in English instead of Japanese. They need to practice basic self-introductions using the target grammar.",
   "strengthsEn": "N/A",
-  "improveEn": "Please practice introducing yourself in Japanese using the 「わたしは [name] です」 and 「[country] 人です」 patterns.",
+  "improveEn": "Practice introducing yourself in Japanese using \"わたしは [name] です\" and \"[country] じん です\".",
   "pronunciationEn": "N/A",
   "source": "live"
  },
  "trace": [
-  "53477 in:I am Linh from Vietnam.",
-  "53477 toolCall:judge_reply",
-  "53477 judge:english/0 → nothing",
-  "53488 turnComplete(drop)",
-  "54303 toolCall:final_report"
+  "38408 in:I am Linh from Vietnam.",
+  "38408 toolCall:judge_reply",
+  "38408 judge:english/0 → nothing",
+  "38408 turnComplete(drop)",
+  "39186 toolCall:final_report"
  ],
- "ms": 20400
+ "ms": 11707
 }
 SELFCHECK 3/3
