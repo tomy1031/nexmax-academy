@@ -1,16 +1,16 @@
 {
- "at": "2026-11-16T19:56:02.585Z",
+ "at": "2026-11-16T20:15:36.298Z",
  "results": [
   {
    "say": "あおきさんは デザイナーですか。",
    "model": "gemini-3.8-live",
    "status": "connecting live(gemini-3.8-live)",
    "verdict": {
-    "heard": "青木さんはデザイナーですか",
+    "heard": "あおきさんはデザイナーですか",
     "branch": "asks_npc",
-    "score": 1,
+    "score": 0,
     "grammarUsed": [],
-    "correction": "はじめまして。わたしはリンです。アメリカじんです。どうぞよろしくおねがいします。",
+    "correction": "はじめまして。わたしはリンです。どうぞよろしくおねがいします。",
     "tipEn": "Please introduce yourself with your name and country first.",
     "source": "live"
    },
@@ -19,30 +19,29 @@
     "asks_npc",
     "off_topic"
    ],
-   "npcSpeechSeconds": 2.6,
+   "npcSpeechSeconds": 2.4,
    "npcText": "はい、わたしはデザイナーです。",
    "report": null,
    "trace": [
-    "22354 in:青木さんはデザイナーですか?",
-    "22355 toolCall:judge_reply",
-    "22355 judge:asks_npc/1 → react",
-    "22355 turnComplete(armed)",
-    "22912 audio",
-    "22912 out:はい、わたしはデザイナー",
-    "22913 audio",
-    "22914 audio",
-    "22915 audio",
-    "22918 audio",
-    "23046 audio",
-    "23046 audio",
-    "23046 audio",
-    "23264 audio",
-    "23264 out:です。",
-    "23265 audio",
-    "23266 audio",
-    "25594 turnComplete(play)"
+    "88417 in:青木さんはデザイナーですか?",
+    "88418 toolCall:judge_reply",
+    "88418 judge:asks_npc/0 → react",
+    "88418 turnComplete(armed)",
+    "89085 audio",
+    "89085 out:はい、わたしはデザイナーです。",
+    "89093 audio",
+    "89095 audio",
+    "89098 audio",
+    "89101 audio",
+    "89125 audio",
+    "89130 audio",
+    "89131 audio",
+    "89144 audio",
+    "89199 audio",
+    "89212 audio",
+    "91459 turnComplete(play)"
    ],
-   "ms": 14383
+   "ms": 13987
   },
   {
    "say": "すみません、トイレは どこですか。",
@@ -53,8 +52,8 @@
     "branch": "off_topic",
     "score": 0,
     "grammarUsed": [],
-    "correction": "はじめまして。わたしはリンです。アメリカじんです。どうぞよろしくおねがいします。",
-    "tipEn": "Please introduce yourself with your name and country first.",
+    "correction": "はじめまして。わたしはリンです。アメリカじんです。",
+    "tipEn": "Please introduce yourself first, stating your name and country.",
     "source": "live"
    },
    "pass": true,
@@ -62,40 +61,38 @@
     "asks_npc",
     "off_topic"
    ],
-   "npcSpeechSeconds": 2,
-   "npcText": "トイレは、あちらです。",
+   "npcSpeechSeconds": 1.6,
+   "npcText": "トイレは あちらです。",
    "report": null,
    "trace": [
-    "40685 in:すみません。トイレはどこですか?",
-    "40685 toolCall:judge_reply",
-    "40685 judge:off_topic/0 → react",
-    "40686 turnComplete(armed)",
-    "41191 audio",
-    "41191 out:トイレは、あちらです。",
-    "41192 audio",
-    "41192 audio",
-    "41193 audio",
-    "41193 audio",
-    "41232 audio",
-    "41266 audio",
-    "41298 audio",
-    "41348 audio",
-    "41398 audio",
-    "43162 turnComplete(play)"
+    "6544 in:すみません、トイレはどこですか?",
+    "6544 toolCall:judge_reply",
+    "6544 judge:off_topic/0 → react",
+    "6545 turnComplete(armed)",
+    "7111 audio",
+    "7111 out:トイレは ",
+    "7115 audio",
+    "7129 audio",
+    "7163 audio",
+    "7179 audio",
+    "7403 audio",
+    "7403 out:あちらです。",
+    "7426 audio",
+    "8691 turnComplete(play)"
    ],
-   "ms": 13544
+   "ms": 13170
   },
   {
    "say": "I am Lin from Vietnam.",
    "model": "gemini-3.8-live",
    "status": "connecting live(gemini-3.8-live)",
    "verdict": {
-    "heard": "I am Lynn from Vietnam.",
+    "heard": "I am Linh from Vietnam.",
     "branch": "english",
     "score": 0,
     "grammarUsed": [],
-    "correction": "はじめまして。わたしはリンです。ベトナムじんです。どうぞよろしくお願いします。",
-    "tipEn": "Please introduce yourself in Japanese. Say your name and country, like \"わたしはリンです。ベトナムじんです。\"",
+    "correction": "はじめまして。わたしはリンです。ベトナムじんです。",
+    "tipEn": "Please introduce yourself in Japanese.",
     "source": "live"
    },
    "pass": true,
@@ -106,20 +103,20 @@
    "npcText": "",
    "report": {
     "stars": 1,
-    "summaryEn": "The learner did not use Japanese during the introduction. They need to practice basic self-introductions in Japanese.",
+    "summaryEn": "The learner did not speak Japanese during the session. Please practice introducing yourself in Japanese to prepare for future conversations.",
     "strengthsEn": "N/A",
-    "improveEn": "Practice introducing yourself in Japanese, focusing on stating your name and country using \"わたしは [name] です。\" and \"[country] じんです。\"",
+    "improveEn": "Practice basic Japanese self-introductions, including your name and nationality using \"N1 wa N2 desu\".",
     "pronunciationEn": "N/A",
     "source": "live"
    },
    "trace": [
-    "57634 in:I am Lynn from Vietnam.",
-    "57634 toolCall:judge_reply",
-    "57634 judge:english/0 → nothing",
-    "57635 turnComplete(drop)",
-    "58581 toolCall:final_report"
+    "31448 in:I am Linh from Vietnam.",
+    "31448 toolCall:judge_reply",
+    "31448 judge:english/0 → nothing",
+    "31449 turnComplete(drop)",
+    "32294 toolCall:final_report"
    ],
-   "ms": 11389
+   "ms": 19565
   }
  ]
 }

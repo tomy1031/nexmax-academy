@@ -1,0 +1,46 @@
+{
+ "where": "talk",
+ "log": [
+  "live connecting ",
+  "live live gemini-3.8-live",
+  "judge name_only 1 どうぞよろしくお願いします",
+  "judge not_american 2 ベトナムから来ましたどうぞよろしくお願いします",
+  "judge off_topic 1 はじめましてリンですベトナムから来ましたどうぞよろしくお願いします",
+  "judge off_topic 1 ベトナムから来ました。どうぞよろしくお願いします。"
+ ],
+ "turns": [
+  {
+   "nodeId": "n1",
+   "promptEn": "Greet her and tell her your name. Add where you are from if you can.",
+   "heard": "どうぞよろしくお願いします",
+   "score": 1,
+   "correction": "はじめまして。リンです。どうぞよろしくおねがいします。",
+   "tipEn": "Please start with a greeting and tell me your name!",
+   "branch": "name_only",
+   "grammar": [
+    "g1",
+    "g8"
+   ],
+   "grammarUsed": []
+  },
+  {
+   "nodeId": "n2",
+   "promptEn": "She is guessing your country. Answer yes or no. If it's no, tell her your nationality.",
+   "heard": "ベトナムから来ましたどうぞよろしくお願いします",
+   "score": 2,
+   "correction": "ベトナムから来ました。どうぞよろしくお願いします。",
+   "tipEn": "Great! You corrected my guess politely.",
+   "branch": "not_american",
+   "grammar": [
+    "g2",
+    "g3"
+   ],
+   "grammarUsed": []
+  }
+ ],
+ "report": null,
+ "errors": [],
+ "pageErrors": [],
+ "variant": "l01a",
+ "at": "2026-11-16T20:19:22.393Z"
+}
