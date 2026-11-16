@@ -1,0 +1,338 @@
+{
+ "_cast/mori_aya_again": {
+  "hash": "cf46df6521",
+  "seconds": 2.677333,
+  "model": "gemini-3.8-live",
+  "transcript": "すみ ませ ん もう 一度 お 願い し ます"
+ },
+ "_cast/mori_aya_slow": {
+  "hash": "e35dee8389",
+  "seconds": 1.571958,
+  "model": "gemini-3.8-live",
+  "transcript": "ゆっくり で いい です よ 。"
+ },
+ "_cast/mori_aya_hmm": {
+  "hash": "dfb2eabf6f",
+  "seconds": 0.906333,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "ええ"
+ },
+ "_cast/mori_aya_ok": {
+  "hash": "9b9a1b1132",
+  "seconds": 0.421125,
+  "model": "gemini-3.8-live",
+  "transcript": "はい 。"
+ },
+ "_cast/mori_aya_sodesuka": {
+  "hash": "3b4179163c",
+  "seconds": 0.924667,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か"
+ },
+ "_cast/mori_shun_again": {
+  "hash": "79b2cebb02",
+  "seconds": 3.273958,
+  "model": "gemini-3.8-live",
+  "transcript": "すみません、もう いちど おねがいします。"
+ },
+ "_cast/mori_shun_slow": {
+  "hash": "6acf3e9d53",
+  "seconds": 1.802708,
+  "model": "gemini-3.8-live",
+  "transcript": "ゆっくり で いい です よ 。"
+ },
+ "_cast/mori_shun_hmm": {
+  "hash": "37e25e0a28",
+  "seconds": 1.107958,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "ええと……。"
+ },
+ "_cast/mori_shun_ok": {
+  "hash": "a8b8c72d1c",
+  "seconds": 0.46625,
+  "model": "gemini-3.8-live",
+  "transcript": "はい"
+ },
+ "_cast/mori_shun_sodesuka": {
+  "hash": "e56b7e2395",
+  "seconds": 1.227792,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か 。"
+ },
+ "_cast/aoki_again": {
+  "hash": "c5086b473e",
+  "seconds": 3.042708,
+  "model": "gemini-3.8-live",
+  "transcript": "すみ ませ ん 。 もう 一度 お 願い し ます 。"
+ },
+ "_cast/aoki_slow": {
+  "hash": "cc53d5f724",
+  "seconds": 1.699208,
+  "model": "gemini-3.8-live",
+  "transcript": "ゆっくり で いい です よ 。"
+ },
+ "_cast/aoki_hmm": {
+  "hash": "2f31403133",
+  "seconds": 1.0675,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "ええと……。"
+ },
+ "_cast/aoki_ok": {
+  "hash": "584300a47e",
+  "seconds": 0.446292,
+  "model": "gemini-3.8-live",
+  "transcript": "はい"
+ },
+ "_cast/aoki_sodesuka": {
+  "hash": "3463c32e07",
+  "seconds": 1.331,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か 。"
+ },
+ "_cast/ogawa_again": {
+  "hash": "9fa3c91c91",
+  "seconds": 3.270042,
+  "model": "gemini-3.8-live",
+  "transcript": "すみ ませ ん もう 一度 お 願い し ます"
+ },
+ "_cast/ogawa_slow": {
+  "hash": "72d4006ba3",
+  "seconds": 1.51075,
+  "model": "gemini-3.8-live",
+  "transcript": "ゆっくり で いい です よ 。"
+ },
+ "_cast/ogawa_hmm": {
+  "hash": "8509325b0d",
+  "seconds": 1.551083,
+  "model": "gemini-3.8-live",
+  "transcript": "ええと"
+ },
+ "_cast/ogawa_ok": {
+  "hash": "765601854c",
+  "seconds": 0.446958,
+  "model": "gemini-3.8-live",
+  "transcript": "はい。"
+ },
+ "_cast/ogawa_sodesuka": {
+  "hash": "69aae548a1",
+  "seconds": 0.970167,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か 。"
+ },
+ "_cast/fujita_again": {
+  "hash": "2c348ff4f8",
+  "seconds": 3.180792,
+  "model": "gemini-3.8-live",
+  "transcript": "すみません、もういちどおねがいします。"
+ },
+ "_cast/fujita_slow": {
+  "hash": "1aa4066013",
+  "seconds": 1.647417,
+  "model": "gemini-3.8-live",
+  "transcript": "ゆっくり で いい です よ 。"
+ },
+ "_cast/fujita_hmm": {
+  "hash": "82fb1d53d7",
+  "seconds": 1.499833,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "ええと……。"
+ },
+ "_cast/fujita_ok": {
+  "hash": "6c3d402511",
+  "seconds": 0.467375,
+  "model": "gemini-3.8-live",
+  "transcript": "はい"
+ },
+ "_cast/fujita_sodesuka": {
+  "hash": "7cd4a8bb00",
+  "seconds": 1.129958,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か 。"
+ },
+ "_cast/hayakawa_again": {
+  "hash": "0915e53486",
+  "seconds": 3.125833,
+  "model": "gemini-3.8-live",
+  "transcript": "すみません、もういちど おねがいします。"
+ },
+ "_cast/hayakawa_slow": {
+  "hash": "cf7120afc3",
+  "seconds": 1.587875,
+  "model": "gemini-3.8-live",
+  "transcript": "ゆ っ く り で い い で す よ 。"
+ },
+ "_cast/hayakawa_hmm": {
+  "hash": "43c341be6d",
+  "seconds": 1.191917,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "ええと……。"
+ },
+ "_cast/hayakawa_ok": {
+  "hash": "f643b1bbbc",
+  "seconds": 0.458917,
+  "model": "gemini-3.8-live",
+  "transcript": "はい"
+ },
+ "_cast/hayakawa_sodesuka": {
+  "hash": "0eba730120",
+  "seconds": 1.537958,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か 。"
+ },
+ "_cast/ana_again": {
+  "hash": "78eebff017",
+  "seconds": 3.108833,
+  "model": "gemini-3.8-live",
+  "transcript": "すみ ませ ん もう 一度 お 願い し ます"
+ },
+ "_cast/ana_slow": {
+  "hash": "f6d55d93b9",
+  "seconds": 1.413792,
+  "model": "gemini-3.8-live",
+  "transcript": "ゆっくり で いい です よ 。"
+ },
+ "_cast/ana_hmm": {
+  "hash": "9993996c7e",
+  "seconds": 1.387792,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "ええと……。"
+ },
+ "_cast/ana_ok": {
+  "hash": "48b62165f9",
+  "seconds": 0.595333,
+  "model": "gemini-3.8-live",
+  "transcript": "はい"
+ },
+ "_cast/ana_sodesuka": {
+  "hash": "1589bb1572",
+  "seconds": 0.923,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か 。"
+ },
+ "_cast/minh_again": {
+  "hash": "f9c9d75b25",
+  "seconds": 7.538417,
+  "model": "gemini-3.8-live",
+  "transcript": "\nすみません、もういちどおねがいします。"
+ },
+ "_cast/minh_slow": {
+  "hash": "9f22e612fd",
+  "seconds": 1.639083,
+  "model": "gemini-3.8-live",
+  "transcript": "ゆっくり で いい です よ 。"
+ },
+ "_cast/minh_hmm": {
+  "hash": "52922a2da2",
+  "seconds": 1.381125,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "ええと……。"
+ },
+ "_cast/minh_ok": {
+  "hash": "0c5b56a47a",
+  "seconds": 0.46225,
+  "model": "gemini-3.8-live",
+  "transcript": "はい"
+ },
+ "_cast/minh_sodesuka": {
+  "hash": "e02c954d69",
+  "seconds": 1.053583,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か 。"
+ },
+ "_cast/nishimura_again": {
+  "hash": "542a714bf0",
+  "seconds": 3.169958,
+  "model": "gemini-3.8-live",
+  "transcript": "すみません。もう 一度 お願い し ます。"
+ },
+ "_cast/nishimura_slow": {
+  "hash": "f6183605da",
+  "seconds": 1.723917,
+  "model": "gemini-3.8-live",
+  "transcript": "ゆっくり で いい です よ 。"
+ },
+ "_cast/nishimura_hmm": {
+  "hash": "f60d4890f9",
+  "seconds": 1.197708,
+  "model": "gemini-3.8-live",
+  "transcript": "えー と"
+ },
+ "_cast/nishimura_ok": {
+  "hash": "7ee5a92e60",
+  "seconds": 0.475667,
+  "model": "gemini-3.8-live",
+  "transcript": "はい"
+ },
+ "_cast/nishimura_sodesuka": {
+  "hash": "bd332f7b30",
+  "seconds": 1.034167,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か"
+ },
+ "_cast/okada_again": {
+  "hash": "f2d2e39b60",
+  "seconds": 2.942292,
+  "model": "gemini-3.8-live",
+  "transcript": "すみません、もう いちど おねがいします。"
+ },
+ "_cast/okada_slow": {
+  "hash": "7886e4df0a",
+  "seconds": 1.786042,
+  "model": "gemini-3.8-live",
+  "transcript": "ゆっくり で いい です よ 。"
+ },
+ "_cast/okada_hmm": {
+  "hash": "817beef40a",
+  "seconds": 0.684542,
+  "model": "gemini-3.8-live",
+  "transcript": "え"
+ },
+ "_cast/okada_ok": {
+  "hash": "8e131c8d6d",
+  "seconds": 0.406417,
+  "model": "gemini-3.8-live",
+  "transcript": "はい"
+ },
+ "_cast/okada_sodesuka": {
+  "hash": "08747f2aad",
+  "seconds": 0.996375,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か 。"
+ },
+ "_cast/ueda_again": {
+  "hash": "229bb9b14b",
+  "seconds": 2.71,
+  "model": "gemini-3.8-live",
+  "transcript": "すみ ませ ん 、 もう 一度 お 願い し ます 。"
+ },
+ "_cast/ueda_slow": {
+  "hash": "7ca593822f",
+  "seconds": 1.601875,
+  "model": "gemini-3.8-live",
+  "transcript": "ゆっ く り で い い で す よ 。"
+ },
+ "_cast/ueda_hmm": {
+  "hash": "6066198de5",
+  "seconds": 3.440083,
+  "model": "gemini-2.5-flash-native-audio-preview-12-2025",
+  "transcript": "ええと……。"
+ },
+ "_cast/ueda_ok": {
+  "hash": "6b93887b76",
+  "seconds": 0.42625,
+  "model": "gemini-3.8-live",
+  "transcript": "はい"
+ },
+ "_cast/ueda_sodesuka": {
+  "hash": "de13dccd3b",
+  "seconds": 1.124,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か"
+ },
+ "_cast/sakamoto_again": {
+  "hash": "9ecab251a1",
+  "seconds": 3.277833,
+  "model": "gemini-3.8-live",
+  "transcript": "すみ ませ ん もう 一度 お 願い し ます"
+ }
+}
