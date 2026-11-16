@@ -51,7 +51,7 @@ const errors = [];
 page.on("pageerror", (e) => errors.push(String(e).slice(0, 300)));
 await page.goto(`http://127.0.0.1:${port}/?play=${variant}&debug=1`);
 await page.waitForFunction("window.KT && window.KT.ready && window.KT.state.where === 'brief'", null, { timeout: 120000 });
-await page.evaluate(() => window.KT.start());
+await page.evaluate(() => { window.KT.start(); }); // fire and forget: start() resolves only when the conversation ends
 const t0 = Date.now();
 let last = "";
 while (Date.now() - t0 < seconds * 1000) {
