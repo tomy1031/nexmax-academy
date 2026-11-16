@@ -1300,5 +1300,419 @@
   "seconds": 4.618292,
   "model": "gemini-3.1-flash-live-preview",
   "transcript": "わたしは きのう よる じゅういちじまではたらきました。"
+ },
+ "l04c/n2_worked_0": {
+  "hash": "014e130946",
+  "seconds": 3.086958,
+  "model": "gemini-3.8-live",
+  "transcript": "え 、 そう です か ? 大変 です ね 。"
+ },
+ "l04c/n2_rested_0": {
+  "hash": "c0dda9613b",
+  "seconds": 3.951583,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か 私 は 土曜日 も 働き まし た 。"
+ },
+ "l04c/n3_wake_0": {
+  "hash": "a22371d65d",
+  "seconds": 2.5515,
+  "model": "gemini-3.8-live",
+  "transcript": "毎朝 、 何時 に 起き ます か ?"
+ },
+ "l04c/n4_wake_early_0": {
+  "hash": "704318f0f2",
+  "seconds": 6.001958,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "えっ、たいへんですね。わたしはまいあさはちじにおきます。"
+ },
+ "l04c/n4_wake_late_0": {
+  "hash": "f9948dd14e",
+  "seconds": 5.543625,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "そう"
+ },
+ "l04c/n3_sleep_0": {
+  "hash": "4305859a5d",
+  "seconds": 2.45525,
+  "model": "gemini-3.8-live",
+  "transcript": "毎晩 何時 に 寝 ます か ?"
+ },
+ "l04c/n4_sleep_early_0": {
+  "hash": "877df74486",
+  "seconds": 4.541542,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "そう"
+ },
+ "l04c/n4_sleep_late_0": {
+  "hash": "8369a439ae",
+  "seconds": 3.73375,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "えっ、"
+ },
+ "l04c/n5_0": {
+  "hash": "4acd583d82",
+  "seconds": 2.383833,
+  "model": "gemini-3.8-live",
+  "transcript": "土曜日 は 働き ます か ?"
+ },
+ "l04c/n6_yes_0": {
+  "hash": "89c14918a9",
+  "seconds": 3.283208,
+  "model": "gemini-3.8-live",
+  "transcript": "私 も です 。 土曜日 も 働き ます 。"
+ },
+ "l04c/n6_no_0": {
+  "hash": "ac70d8f1b7",
+  "seconds": 3.799167,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か 。 土曜日 と 日曜日 は 休み です ね 。"
+ },
+ "l04c/n8_lunch_0": {
+  "hash": "277d4d2155",
+  "seconds": 3.67175,
+  "model": "gemini-2.5-flash-native-audio-preview-12-2025",
+  "transcript": "ひるやすみは じゅうにじから いちじまでです。"
+ },
+ "l04c/n8_finish_0": {
+  "hash": "e02aa0879e",
+  "seconds": 3.029542,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "かいしゃはろくじにおわります。"
+ },
+ "l04c/end_0": {
+  "hash": "1f0d344b18",
+  "seconds": 4.987333,
+  "model": "gemini-2.5-flash-native-audio-preview-12-2025",
+  "transcript": "あ、いま はちじ ごじゅうごふんです。 じゃ、 また ひるやすみに。"
+ },
+ "l05a/n1_0": {
+  "hash": "c2006f8b9d",
+  "seconds": 1.2895,
+  "model": "gemini-3.8-live",
+  "transcript": "おはようございます"
+ },
+ "l05a/n2_no_0": {
+  "hash": "aef86d8ea1",
+  "seconds": 3.503875,
+  "model": "gemini-3.8-live",
+  "transcript": "い え , 行き ませ ん . あれ は 急行 です ."
+ },
+ "l05a/n2_no_1": {
+  "hash": "097ce3eae0",
+  "seconds": 3.064083,
+  "model": "gemini-3.8-live",
+  "transcript": "みどりのは にばんせんのふつうですよ。"
+ },
+ "l05a/n2_plat_0": {
+  "hash": "bfd27bc213",
+  "seconds": 4.472083,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "みどりのですか。にばんせんのふつうですよ。"
+ },
+ "l05a/n2_plat_1": {
+  "hash": "744d415c09",
+  "seconds": 2.107083,
+  "model": "gemini-3.8-live",
+  "transcript": "あの 旧行 は 行き ませ ん 。"
+ },
+ "l05a/n3_0": {
+  "hash": "d85df63493",
+  "seconds": 3.217958,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "つぎは くじ よんじゅっぷんです。"
+ },
+ "l05a/n4_bus_0": {
+  "hash": "9b6d656f36",
+  "seconds": 3.981125,
+  "model": "gemini-3.8-live",
+  "transcript": "さくらこうえんですか。駅からバスでいきます。"
+ },
+ "l05a/n4_bus_1": {
+  "hash": "8c0ae8c0e3",
+  "seconds": 1.737792,
+  "model": "gemini-3.8-live",
+  "transcript": "3 番 の バス です よ 。"
+ },
+ "l05a/n4_walk_0": {
+  "hash": "185a84d581",
+  "seconds": 5.2515,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "あるいて よんじゅっぷんですよ。 さんばんのバスで行きます。"
+ },
+ "l05a/n5_0": {
+  "hash": "61c5ebf8bc",
+  "seconds": 4.791542,
+  "model": "gemini-3.8-live",
+  "transcript": "すみません 。 あの 電車 は 緑 の へ 行き ます か ?"
+ },
+ "l05a/n6_right_0": {
+  "hash": "b20222e47b",
+  "seconds": 3.015333,
+  "model": "gemini-3.8-live",
+  "transcript": "2 番線 です ね 。 ありがとう ござい ます 。"
+ },
+ "l05a/n6_wrong_0": {
+  "hash": "4288d50379",
+  "seconds": 4.5055,
+  "model": "gemini-2.5-flash-native-audio-preview-12-2025",
+  "transcript": "おきゃくさん、あれはきゅうこうですよ。にばんせんです。"
+ },
+ "l05a/n7_0": {
+  "hash": "2ed70c09a9",
+  "seconds": 3.415792,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "わたしもさくらこうえんへ行きます。"
+ },
+ "l05a/n7_1": {
+  "hash": "59e1a65bc9",
+  "seconds": 1.6705,
+  "model": "gemini-3.8-live",
+  "transcript": "1 人 で 行き ます か ?"
+ },
+ "l05a/n8_with_0": {
+  "hash": "7e09f3e4fb",
+  "seconds": 3.337958,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か 私 は 1人 で 行き ます 。"
+ },
+ "l05a/n8_alone_0": {
+  "hash": "abde5d0e3b",
+  "seconds": 1.959792,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "わたしも一人です。"
+ },
+ "l05a/n9_0": {
+  "hash": "8f8d1ba537",
+  "seconds": 3.841958,
+  "model": "gemini-2.5-flash-native-audio-preview-12-2025",
+  "transcript": "くじ よんじゅっぷんの ふつうです。 にばんせんへどうぞ。"
+ },
+ "l05b/n1_0": {
+  "hash": "011749b32f",
+  "seconds": 1.993958,
+  "model": "gemini-3.8-live",
+  "transcript": "おはよう ござい ます 。"
+ },
+ "l05b/n1_1": {
+  "hash": "35fccd2826",
+  "seconds": 2.992792,
+  "model": "gemini-3.8-live",
+  "transcript": "いつ日本へ来ましたか?"
+ },
+ "l05b/n1b_0": {
+  "hash": "6f794a376c",
+  "seconds": 2.6875,
+  "model": "gemini-3.8-live",
+  "transcript": "去年 です か 今年 です か"
+ },
+ "l05b/n2_0": {
+  "hash": "a6f2153f0b",
+  "seconds": 3.387542,
+  "model": "gemini-3.8-live",
+  "transcript": "そうですか。誰と来ましたか？"
+ },
+ "l05b/n3_alone_0": {
+  "hash": "8d1688a85f",
+  "seconds": 4.010833,
+  "model": "gemini-3.8-live",
+  "transcript": "1人 で です か 大変 です ね"
+ },
+ "l05b/n3_with_0": {
+  "hash": "17c40594d7",
+  "seconds": 3.257042,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か 1人 じゃ あり ませ ん ね 。"
+ },
+ "l05b/n4_0": {
+  "hash": "b1fe9aa6d1",
+  "seconds": 3.892292,
+  "model": "gemini-3.8-live",
+  "transcript": "今日 は ここ へ 何 で 来 まし た か ?"
+ },
+ "l05b/n5_walk_0": {
+  "hash": "04066bcd18",
+  "seconds": 4.73325,
+  "model": "gemini-3.8-live",
+  "transcript": "歩い て です か ? 私 も 毎日 歩い て 来 ます よ 。"
+ },
+ "l05b/n5_vehicle_0": {
+  "hash": "0cf3897f47",
+  "seconds": 4.556583,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か 。 私 は 毎日 歩い て き ます よ 。"
+ },
+ "l05b/n7_who_0": {
+  "hash": "08108d1e37",
+  "seconds": 4.856167,
+  "model": "gemini-3.8-live",
+  "transcript": "1 人 で き ます 。 日曜日 は 家族 と 来 ます よ 。"
+ },
+ "l05b/n7_time_0": {
+  "hash": "7d9e4c8be4",
+  "seconds": 3.782792,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "まいあさろくじはんにきますよ。"
+ },
+ "l05b/n8_0": {
+  "hash": "2ad34ad9e1",
+  "seconds": 4.299125,
+  "model": "gemini-3.8-live",
+  "transcript": "明日 は 日曜日 です ね 。 どこ へ 行き ます か ?"
+ },
+ "l05b/n9_go_0": {
+  "hash": "23065df8b5",
+  "seconds": 4.430667,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か 私 は どこ も いき ませ ん 。"
+ },
+ "l05b/n9_stay_0": {
+  "hash": "9b487cf224",
+  "seconds": 2.882833,
+  "model": "gemini-3.8-live",
+  "transcript": "私 も どこ も 行き ませ ん 。"
+ },
+ "l05b/n10_0": {
+  "hash": "e5b65e5f0a",
+  "seconds": 4.703792,
+  "model": "gemini-3.8-live",
+  "transcript": "明日 も ここ へ 来 ます よ 。 じゃあ また 。"
+ },
+ "l05b/free_open": {
+  "hash": "5be1b3f353",
+  "seconds": 2.189208,
+  "model": "gemini-3.8-live",
+  "transcript": "国 は どちら です か ?"
+ },
+ "l05c/n1_0": {
+  "hash": "0b85077ccd",
+  "seconds": 1.371125,
+  "model": "gemini-3.8-live",
+  "transcript": "おはよう ござい ます 。"
+ },
+ "l05c/n1_1": {
+  "hash": "bd832282ed",
+  "seconds": 3.164625,
+  "model": "gemini-3.8-live",
+  "transcript": " 行きましたか。"
+ },
+ "l05c/n2_went_0": {
+  "hash": "a41083c804",
+  "seconds": 2.871667,
+  "model": "gemini-3.8-live",
+  "transcript": "そうですか 。 誰 と 行き まし た か ?"
+ },
+ "l05c/n3_alone_0": {
+  "hash": "f3740c851d",
+  "seconds": 4.995917,
+  "model": "gemini-3.8-live",
+  "transcript": "1人 で です か ? 私 は 友達 と 横浜 へ 行き まし た 。"
+ },
+ "l05c/n3_with_0": {
+  "hash": "112c32c94e",
+  "seconds": 5.026833,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か 。 私 も 友達 と 行き まし た 。 横浜 です 。"
+ },
+ "l05c/n2_home_0": {
+  "hash": "a33029e4f7",
+  "seconds": 4.603042,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か 私 は 友達 と 横浜 へ 行き まし た 。"
+ },
+ "l05c/n2h_how_0": {
+  "hash": "80ac10f467",
+  "seconds": 1.850458,
+  "model": "gemini-3.8-live",
+  "transcript": "電車 で 行き まし た よ 。"
+ },
+ "l05c/n2h_when_0": {
+  "hash": "cf659ef398",
+  "seconds": 3.745958,
+  "model": "gemini-3.8-live",
+  "transcript": "日曜日 に 行き まし た 。 電車 で 行き まし た よ 。"
+ },
+ "l05c/n4_0": {
+  "hash": "84fab736c9",
+  "seconds": 5.519458,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "あ、ごがつじゅうごにちは、わたしのたんじょうびですよ。"
+ },
+ "l05c/n4_1": {
+  "hash": "572fed98f0",
+  "seconds": 2.541208,
+  "model": "gemini-3.8-live",
+  "transcript": "誕生日 は いつ です か ?"
+ },
+ "l05c/n5_may_0": {
+  "hash": "2b6e6cb8cc",
+  "seconds": 4.0895,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "え、ごがつですか。わたしもごがつです!"
+ },
+ "l05c/n6_0": {
+  "hash": "389eea9468",
+  "seconds": 4.269875,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "はちがつのやすみはくにへかえりますか。"
+ },
+ "l05c/n7y_0": {
+  "hash": "e097b7a56b",
+  "seconds": 3.004,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か 何 で 帰り ます か ?"
+ },
+ "l05c/n7n_0": {
+  "hash": "cf08f2f5a0",
+  "seconds": 4.220792,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か じゃあ 休み は どこ へ 行き ます か"
+ },
+ "l05c/e_plane_0": {
+  "hash": "79cd0bfa38",
+  "seconds": 4.943958,
+  "model": "gemini-3.8-live",
+  "transcript": "飛行 機 で です か ? 私 も 飛行 機 で 帰り ます 。 北海道 です 。"
+ },
+ "l05c/e_other_0": {
+  "hash": "d7d0f12050",
+  "seconds": 5.081583,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か 。 私 は 飛行機 で 北海道 へ 帰り ます 。"
+ },
+ "l05c/e_nowhere_0": {
+  "hash": "82ea576594",
+  "seconds": 4.814042,
+  "model": "gemini-3.8-live",
+  "transcript": "どこも行きませんか。わたしはほっかいどうへ帰ります。"
+ },
+ "l05c/n9_0": {
+  "hash": "cded586bd8",
+  "seconds": 4.267875,
+  "model": "gemini-3.8-live",
+  "transcript": "あ , 9 時 です よ 。 じゃあ 会議 室 へ 行き ます 。"
+ },
+ "l06a/n1_0": {
+  "hash": "02896bb73b",
+  "seconds": 1.366708,
+  "model": "gemini-3.8-live",
+  "transcript": "おはようございます。"
+ },
+ "l06a/n1_1": {
+  "hash": "1a6d550f00",
+  "seconds": 3.450292,
+  "model": "gemini-3.8-live",
+  "transcript": "今日 の 昼 一緒 に ラーメン を 食べ ませ ん か ?"
+ },
+ "l06a/n2_yes_0": {
+  "hash": "3beec55fd0",
+  "seconds": 2.021875,
+  "model": "gemini-3.8-live",
+  "transcript": "じゃ、 一緒 に 行き ましょ 。"
+ },
+ "l06a/n3_ask_0": {
+  "hash": "0981d3875d",
+  "seconds": 3.203958,
+  "model": "gemini-3.8-live",
+  "transcript": "駅 の 丸 服 で 食べ ましょ う 。"
  }
 }
