@@ -51,6 +51,7 @@ async function main(): Promise<void> {
     silenceMs: 1600,
     models: [THINKING_MODEL, ...LIVE_MODELS],
     thinkingLevel: level,
+    traceRaw: true,
     on: {
       status: (s: string, d: string) => { status += `${s}${d ? `(${d})` : ""} `; },
       heard: (t: string) => { asr = t; },
@@ -120,6 +121,8 @@ async function main(): Promise<void> {
   mkdirSync(join(ROOT, "out"), { recursive: true });
   writeFileSync(join(ROOT, "out", "interview_check.json"), JSON.stringify(out, null, 1) + "\n");
   const okTurns = rows.filter((r) => (r as { branchOk: boolean }).branchOk).length;
+  console.log(`status: ${out.status}`);
+  for (const line of out.trace) console.log(`trace ${line}`);
   console.log(`INTERVIEW model=${model} level=${level} branches ${okTurns}/${rows.length} report=${report ? "yes" : "no"} (${reportMs} ms)`);
 }
 

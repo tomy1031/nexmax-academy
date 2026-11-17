@@ -16,6 +16,8 @@ on:
       - kotoba-town/js/**
       - scripts/kotoba_e2e.mjs
       - scripts/kotoba_selfcheck.ts
+      - scripts/kotoba_interview_check.ts
+      - kotoba-town/interview_check.json
       - .github/workflows/kotoba-e2e.yml
 
 concurrency:
@@ -38,12 +40,27 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci --ignore-scripts
-      - name: self-check（判定と 返事の 声）
+      - name: 面接の 判定の 確かめ（Extended Thinking）
         continue-on-error: true
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           mkdir -p kotoba-town/out
+          LEVELS=$(node -p "(require('./kotoba-town/e2e.json').interviewCheck || []).join(' ')")
+          if [ -z "$LEVELS" ]; then echo "interviewCheck は 今回 なし（e2e.json）"; exit 0; fi
+          for L in $LEVELS; do
+            timeout 12m node --import tsx scripts/kotoba_interview_check.ts "$L" > "kotoba-town/out/interview_check_${L}.log" 2>&1 || true
+            [ -f kotoba-town/out/interview_check.json ] && mv kotoba-town/out/interview_check.json "kotoba-town/out/interview_check_${L}.json"
+            tail -60 "kotoba-town/out/interview_check_${L}.log"
+          done
+      - name: self-check（判定と 返事の 声）
+        if: ${{ hashFiles('kotoba-town/e2e.json') != '' }}
+        continue-on-error: true
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          mkdir -p kotoba-town/out
+          if [ "$(node -p "require('./kotoba-town/e2e.json').selfcheck !== false")" != "true" ]; then echo "selfcheck は 今回 なし（e2e.json）"; exit 0; fi
           timeout 12m node --import tsx scripts/kotoba_selfcheck.ts > kotoba-town/out/selfcheck.log 2>&1 || echo "selfcheck exit $?" >> kotoba-town/out/selfcheck.log
           tail -5 kotoba-town/out/selfcheck.log
       - name: 通し試験
@@ -70,10 +87,10 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add kotoba-town/out/e2e* kotoba-town/out/selfcheck* || true
+          git add kotoba-town/out/e2e* kotoba-town/out/selfcheck* kotoba-town/out/interview_check* || true
           git diff --cached --quiet && exit 0
           git commit -q -m "kotoba-town: e2e results [run ${GITHUB_RUN_ID}]"
           for try in 1 2 3 4; do
-            git pull --rebase -q origin claude/kotoba-town-voices && git push -q origin HEAD:claude/kotoba-town-voices && exit 0
+            git pull --rebase -X theirs -q origin claude/kotoba-town-voices && git push -q origin HEAD:claude/kotoba-town-voices && exit 0
             sleep 7
           done
