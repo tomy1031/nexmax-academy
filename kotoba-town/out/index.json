@@ -5987,5 +5987,239 @@
   "seconds": 4.703292,
   "model": "gemini-3.1-flash-live-preview",
   "transcript": "人事の 白石です。こちらは開発部長の黒岩です。"
+ },
+ "b12b/n3_1": {
+  "hash": "4552de492c",
+  "seconds": 1.204417,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b12b/n4_0": {
+  "hash": "db7ad41468",
+  "seconds": 11.212917,
+  "model": "gemini-3.8-live",
+  "transcript": "じむてき.じこしょうかいとしぼうどうきを、あわせていっぷんでおねがいします。"
+ },
+ "b12b/n5a_0": {
+  "hash": "2db8b0719c",
+  "seconds": 2.740083,
+  "model": "gemini-3.8-live",
+  "transcript": "そこまでで結構"
+ },
+ "b12b/n5b_0": {
+  "hash": "7205fb6534",
+  "seconds": 3.555125,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b12b/n6_0": {
+  "hash": "89d7937392",
+  "seconds": 2.000208,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b12b/n7a_0": {
+  "hash": "666a7622a9",
+  "seconds": 4.153958,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b12b/n7b_0": {
+  "hash": "6495330749",
+  "seconds": 4.762208,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b12b/n8_0": {
+  "hash": "f7d3e58bf5",
+  "seconds": 4.86125,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b12b/n9a_0": {
+  "hash": "f0867335aa",
+  "seconds": 1.988125,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b12b/n9b_0": {
+  "hash": "d4c4a1d235",
+  "seconds": 4.237792,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b12b/n9c_0": {
+  "hash": "5a50ec49c4",
+  "seconds": 3.477292,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b12b/n10_0": {
+  "hash": "75d799bd3d",
+  "seconds": 3.93075,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b12b/n10_1": {
+  "hash": "2eae8b4032",
+  "seconds": 3.513833,
+  "model": "gemini-2.5-flash-native-audio-preview-12-2025",
+  "transcript": "あなたは、二、三年でやめるのではありませんか。"
+ },
+ "b12b/n11a_0": {
+  "hash": "d885444bb0",
+  "seconds": 3.754583,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b12b/n11b_0": {
+  "hash": "d1c47a9f64",
+  "seconds": 5.051542,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "計画がありませんね。それでは、こちらも決められません。"
+ },
+ "b12b/n12_0": {
+  "hash": "07a4f93673",
+  "seconds": 3.340083,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b12b/n12_1": {
+  "hash": "9cb7498765",
+  "seconds": 4.761083,
+  "model": "gemini-3.8-live",
+  "transcript": "その前に、一つ。あなたを採用するメリットは何ですか。"
+ },
+ "b12b/n13a_0": {
+  "hash": "d8404ffabc",
+  "seconds": 2.939417,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b12b/n13b_0": {
+  "hash": "2ac5da76f9",
+  "seconds": 4.664542,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b12b/n13c_0": {
+  "hash": "eea9a3837c",
+  "seconds": 4.69,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b12b/n14_0": {
+  "hash": "cafa033099",
+  "seconds": 3.520917,
+  "model": "gemini-3.8-live",
+  "transcript": "あとにふんです。なにかしつもんはありますか。"
+ },
+ "b12b/n15a_0": {
+  "hash": "69d3b4f20c",
+  "seconds": 5.387,
+  "model": "gemini-3.8-live",
+  "transcript": "入社後は、まずテストを 担当します。そこで製品を"
+ },
+ "b12b/n15b_0": {
+  "hash": "70578f8f01",
+  "seconds": 2.378417,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b12b/n16_0": {
+  "hash": "30cc031639",
+  "seconds": 1.545708,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b12b/n16_1": {
+  "hash": "c9bd6f787b",
+  "seconds": 3.515167,
+  "model": "gemini-3.8-live",
+  "transcript": " 実は、今日は わざと厳しく質問しました。"
+ },
+ "b12b/n17_0": {
+  "hash": "67b75539af",
+  "seconds": 5.57525,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b12b/n17_1": {
+  "hash": "c373db9113",
+  "seconds": 6.553958,
+  "model": "gemini-3.8-live",
+  "transcript": " 困る質問にも、落ち着いて短く答える。それができれば"
+ },
+ "b12b/n18a_0": {
+  "hash": "6306086e9f",
+  "seconds": 5.666292,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b12b/n18b_0": {
+  "hash": "575019a5e9",
+  "seconds": 6.841958,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "_cast/kuroiwa_again": {
+  "hash": "ca54dc1b52",
+  "seconds": 2.843125,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "_cast/kuroiwa_slow": {
+  "hash": "2be38b3838",
+  "seconds": 2.811125,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "_cast/kuroiwa_hmm": {
+  "hash": "142fa7e3d7",
+  "seconds": 1.211083,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "_cast/kuroiwa_ok": {
+  "hash": "683ab33fc8",
+  "seconds": 0.613667,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "_cast/kuroiwa_sodesuka": {
+  "hash": "9ee3b9b379",
+  "seconds": 1.181583,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "_cast/shiraishi_again": {
+  "hash": "a8573352b7",
+  "seconds": 3.014083,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "_cast/shiraishi_slow": {
+  "hash": "c9d89c6c33",
+  "seconds": 2.048708,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "_cast/shiraishi_hmm": {
+  "hash": "2da3b3953c",
+  "seconds": 1.049833,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "ええと……。"
+ },
+ "_cast/shiraishi_ok": {
+  "hash": "1a6b3f47d0",
+  "seconds": 0.4635,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "_cast/shiraishi_sodesuka": {
+  "hash": "3d5537cb25",
+  "seconds": 1.099375,
+  "model": "gemini-3.8-live",
+  "transcript": ""
  }
 }
