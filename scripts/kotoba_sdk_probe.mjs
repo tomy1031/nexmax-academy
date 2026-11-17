@@ -4,12 +4,12 @@
  * 使い方: GENAI_DIR=<@google/genai を 入れた フォルダ> GEMINI_API_KEY=… node scripts/kotoba_sdk_probe.mjs
  */
 import { createRequire } from "node:module";
-import { writeFileSync, mkdirSync } from "node:fs";
+import { writeFileSync, mkdirSync, readFileSync } from "node:fs";
 
 const req = createRequire(`${process.env.GENAI_DIR}/`);
 const genai = req("@google/genai");
 const { GoogleGenAI, Modality, Behavior, Type } = genai;
-const version = req("@google/genai/package.json").version;
+const version = JSON.parse(readFileSync(`${process.env.GENAI_DIR}/node_modules/@google/genai/package.json`, "utf8")).version;
 const apiKey = process.env.GEMINI_API_KEY;
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const out = { version, results: [] };

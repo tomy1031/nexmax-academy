@@ -1,9 +1,7 @@
 {
   "note": "Cases for the 'Kotoba Town e2e' workflow: the learner's voice (fake mic, repeated), how long to run, and the mode (practice = れんしゅう, real = ほんばん).",
   "cases": [],
-  "interviewCheck": [
-    "FAST"
-  ],
+  "interviewCheck": [],
   "selfcheck": false,
   "savedCases": [
     {
