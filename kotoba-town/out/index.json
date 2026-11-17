@@ -8310,12 +8310,6 @@
   "model": "gemini-3.8-live",
   "transcript": "あそこ は 入り口 です から おか ない で ください 。"
  },
- "l17c/end_bike_0": {
-  "hash": "51fdf60b0b",
-  "seconds": 8.989917,
-  "model": "gemini-3.8-live",
-  "transcript": "いっかいのかいだんのうしろに おいて ください。おねがいしますね。"
- },
  "l17c/end_notmine_0": {
   "hash": "38f6ecce4f",
   "seconds": 4.035542,
