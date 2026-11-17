@@ -1,17 +1,17 @@
 {
- "at": "2026-11-17T00:48:21.071Z",
+ "at": "2026-11-17T00:56:01.038Z",
  "results": [
   {
    "say": "あおきさんは デザイナーですか。",
    "model": "gemini-3.8-live",
    "status": "connecting live(gemini-3.8-live)",
    "verdict": {
-    "heard": "青木さんはデザイナーですか",
+    "heard": "あおきさんはデザイナーですか",
     "branch": "asks_npc",
     "score": 1,
     "grammarUsed": [],
-    "correction": "はじめまして。わたしはリンです。アメリカじんです。どうぞよろしくおねがいします。",
-    "tipEn": "Please introduce yourself with your name and country first!",
+    "correction": "はじめまして。わたしはリンです。アメリカじんです。どうぞよろしく。",
+    "tipEn": "Please introduce yourself first! Tell me your name and your country.",
     "source": "live",
     "asr": "青木さんはデザイナーですか?"
    },
@@ -20,19 +20,19 @@
     "asks_npc",
     "off_topic"
    ],
-   "npcSpeechSeconds": 2.5,
+   "npcSpeechSeconds": 2.4,
    "npcText": "はい、わたしはデザイナーです。",
    "report": null,
    "trace": [
-    "50053 in:青木さんはデザイナーですか?",
-    "50053 toolCall:judge_reply",
-    "50054 judge:asks_npc/1 → react",
-    "50055 turnComplete(armed)",
-    "50843 out:はい、わたしはデザイナーです。",
-    "53352 turnComplete(play)",
-    "53402 close 1000 "
+    "8743 in:青木さんはデザイナーですか?",
+    "8743 toolCall:judge_reply",
+    "8744 judge:asks_npc/1 → react",
+    "8745 turnComplete(armed)",
+    "9307 out:はい、わたしはデザイナーです。",
+    "11696 turnComplete(play)",
+    "11764 close 1000 "
    ],
-   "ms": 13516
+   "ms": 14468
   },
   {
    "say": "すみません、トイレは どこですか。",
@@ -43,8 +43,8 @@
     "branch": "off_topic",
     "score": 0,
     "grammarUsed": [],
-    "correction": "はじめまして。わたしはリンです。アメリカじんです。",
-    "tipEn": "Please introduce yourself with your name and country first.",
+    "correction": "はじめまして。わたしはリンです。アメリカじんです。どうぞよろしくお願いします。",
+    "tipEn": "Please introduce yourself with your name and country.",
     "source": "live",
     "asr": "すみません、トイレはどこですか?"
    },
@@ -53,20 +53,20 @@
     "asks_npc",
     "off_topic"
    ],
-   "npcSpeechSeconds": 1.8,
+   "npcSpeechSeconds": 1.7,
    "npcText": "トイレは あちらです。",
    "report": null,
    "trace": [
-    "69376 in:すみません、トイレはどこですか?",
-    "69376 toolCall:judge_reply",
-    "69377 judge:off_topic/0 → react",
-    "69379 turnComplete(armed)",
-    "70123 out:トイレは ",
-    "70251 out:あちらです。",
-    "71902 turnComplete(play)",
-    "72047 close 1000 "
+    "27179 in:すみません、トイレはどこですか?",
+    "27192 toolCall:judge_reply",
+    "27193 judge:off_topic/0 → react",
+    "27193 turnComplete(armed)",
+    "28311 out:トイレは ",
+    "28415 out:あちらです。",
+    "29966 turnComplete(play)",
+    "30056 close 1000 "
    ],
-   "ms": 14635
+   "ms": 14272
   },
   {
    "say": "I am Lin from Vietnam.",
@@ -77,8 +77,8 @@
     "branch": "english",
     "score": 0,
     "grammarUsed": [],
-    "correction": "はじめまして。わたしはリンです。ベトナム人です。どうぞよろしくお願いします。",
-    "tipEn": "Please introduce yourself in Japanese. Say your name and country using 'わたしは [name] です。 [country] です。'",
+    "correction": "はじめまして。わたしはリンです。ベトナムじんです。",
+    "tipEn": "Please introduce yourself in Japanese. Try saying your name and country.",
     "source": "live",
     "asr": "I am Linh from Vietnam."
    },
@@ -90,21 +90,21 @@
    "npcText": "",
    "report": {
     "stars": 1,
-    "summaryEn": "The learner did not complete the self-introduction task in Japanese. Please review the basic sentence structures for introducing your name and nationality.",
-    "strengthsEn": "N/A",
-    "improveEn": "Practice introducing yourself in Japanese using 'Watashi wa [Name] desu' and '[Country] jin desu'.",
+    "summaryEn": "The learner spoke in English instead of Japanese.",
+    "strengthsEn": "None demonstrated.",
+    "improveEn": "Practice introducing yourself in Japanese using \"わたしは [name] です\" and \"[country] です/じんです\".",
     "pronunciationEn": "N/A",
     "source": "live"
    },
    "trace": [
-    "96203 in:I am Linh from Vietnam.",
-    "96203 toolCall:judge_reply",
-    "96204 judge:english/0 → nothing",
-    "96205 turnComplete(drop)",
-    "97066 toolCall:final_report",
-    "97136 close 1000 "
+    "55626 in:I am Linh from Vietnam.",
+    "55626 toolCall:judge_reply",
+    "55626 judge:english/0 → nothing",
+    "55628 turnComplete(drop)",
+    "57035 toolCall:final_report",
+    "57056 close 1000 "
    ],
-   "ms": 21064
+   "ms": 23015
   }
  ]
 }
