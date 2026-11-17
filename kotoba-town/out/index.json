@@ -3994,5 +3994,269 @@
   "seconds": 4.949625,
   "model": "gemini-3.8-live",
   "transcript": "変わるかもしれないのはキャンセルだけです。他は進めましょう。"
+ },
+ "b03b/n8b_0": {
+  "hash": "cae0f41668",
+  "seconds": 5.351083,
+  "model": "gemini-3.8-live",
+  "transcript": "キャンセルの画面は確認の後にしましょう。他は進めてください。"
+ },
+ "b03b/end_0": {
+  "hash": "c4b9987a6a",
+  "seconds": 3.841958,
+  "model": "gemini-3.8-live",
+  "transcript": "分かりました。キャンセル以外の画面から始めますね。"
+ },
+ "b03b/end_good_0": {
+  "hash": "ace38f8cd5",
+  "seconds": 3.533625,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b04a/n1_0": {
+  "hash": "7122f44ae1",
+  "seconds": 3.056917,
+  "model": "gemini-3.8-live",
+  "transcript": "ふぅー、やっとレビューが終わりました。"
+ },
+ "b04a/n2a_0": {
+  "hash": "789881f737",
+  "seconds": 3.857167,
+  "model": "gemini-3.8-live",
+  "transcript": "いいですよ。予約フォームですね？どうしました？"
+ },
+ "b04a/n2b_0": {
+  "hash": "2a9e82b00c",
+  "seconds": 2.305958,
+  "model": "gemini-3.8-live",
+  "transcript": "いいですよ。何の件ですか？"
+ },
+ "b04a/n2c_0": {
+  "hash": "3f7844dd9d",
+  "seconds": 5.265667,
+  "model": "gemini-3.8-live",
+  "transcript": "おっと、エラーですか。いいですよ、くわしく聞かせてください。"
+ },
+ "b04a/n3v_0": {
+  "hash": "49d7089491",
+  "seconds": 3.223958,
+  "model": "gemini-3.8-live",
+  "transcript": "どの画面で何をすると出ますか？"
+ },
+ "b04a/n4_0": {
+  "hash": "1f77509f5a",
+  "seconds": 4.563042,
+  "model": "gemini-3.8-live",
+  "transcript": "なるほど、保存のときですね。自分では何を試しましたか。"
+ },
+ "b04a/n4m_0": {
+  "hash": "12265a793a",
+  "seconds": 5.315625,
+  "model": "gemini-3.8-live",
+  "transcript": " 「日付 の 形式」ですか。いい 手がかりですね。何を 試しました"
+ },
+ "b04a/n6_0": {
+  "hash": "35e527b068",
+  "seconds": 5.425958,
+  "model": "gemini-3.8-live",
+  "transcript": "そこまで調べたんですね。それで、聞きたいことは何ですか。"
+ },
+ "b04a/n6n_0": {
+  "hash": "470d9c1484",
+  "seconds": 4.521042,
+  "model": "gemini-3.8-live",
+  "transcript": "大丈夫 です よ 。 次 は 試せ た こと を 1 つ 持っ て き て ください ね 。"
+ },
+ "b04a/n6f_0": {
+  "hash": "c9792ebbd1",
+  "seconds": 4.306292,
+  "model": "gemini-3.8-live",
+  "transcript": "一緒に見ましょう。自分で直すと力になりますから。"
+ },
+ "b04a/n7_0": {
+  "hash": "0ce1748179",
+  "seconds": 4.873958,
+  "model": "gemini-3.8-live",
+  "transcript": "たぶんカレンダーのライブラリが返す日付の形式が違いますね。"
+ },
+ "b04a/n7_1": {
+  "hash": "391a2e2d70",
+  "seconds": 3.972125,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b04a/n8a_0": {
+  "hash": "6f80bdd0f3",
+  "seconds": 2.492458,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b04a/n8b_0": {
+  "hash": "f7482c2098",
+  "seconds": 3.230125,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b04a/n9_0": {
+  "hash": "39acc8e0fe",
+  "seconds": 2.746458,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b04b/n1_0": {
+  "hash": "c5a8b31908",
+  "seconds": 4.387833,
+  "model": "gemini-3.8-live",
+  "transcript": "ええと、次は本番の設定を確認して……。"
+ },
+ "b04b/n2_0": {
+  "hash": "f9c758fa0c",
+  "seconds": 4.024375,
+  "model": "gemini-3.8-live",
+  "transcript": "すみません。今リリース作業中で手が離せないんです。"
+ },
+ "b04b/n2x_0": {
+  "hash": "50521fd256",
+  "seconds": 3.942542,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b04b/n4_0": {
+  "hash": "3e922ae7ab",
+  "seconds": 3.317125,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b04b/n4u_0": {
+  "hash": "3dba0d4dac",
+  "seconds": 3.567208,
+  "model": "gemini-3.8-live",
+  "transcript": "急ぎですか？今日中でよければ３時に見ますよ。"
+ },
+ "b04b/n4g_0": {
+  "hash": "1ec4206a12",
+  "seconds": 4.590875,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b04b/n6a_0": {
+  "hash": "da57b314cf",
+  "seconds": 2.658125,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b04b/n6b_0": {
+  "hash": "959302f4e6",
+  "seconds": 4.873958,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b04b/n7_0": {
+  "hash": "e9795e9d72",
+  "seconds": 3.793958,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b04b/n7_1": {
+  "hash": "cc6423dae2",
+  "seconds": 3.238917,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b04b/n8a_0": {
+  "hash": "649175c15e",
+  "seconds": 4.49025,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b04b/n8b_0": {
+  "hash": "80241cebf5",
+  "seconds": 4.457833,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b04b/n10a_0": {
+  "hash": "9cdef5fd5c",
+  "seconds": 4.270083,
+  "model": "gemini-3.8-live",
+  "transcript": "多分ライブラリーが返す日付の形式が違うんです。"
+ },
+ "b04b/n10b_0": {
+  "hash": "36555558af",
+  "seconds": 3.161208,
+  "model": "gemini-3.8-live",
+  "transcript": "いい考えですね。ぼくもそう思います。"
+ },
+ "b04b/n11_0": {
+  "hash": "391a2e2d70",
+  "seconds": 3.818958,
+  "model": "gemini-3.8-live",
+  "transcript": "保存の前に日付の形式を揃えてみてください。"
+ },
+ "b04b/n12a_0": {
+  "hash": "25d7e2895e",
+  "seconds": 4.469875,
+  "model": "gemini-3.8-live",
+  "transcript": "その 通り です 。 先 に 送っ て くれ た の で すぐ わかり まし た 。"
+ },
+ "b04b/n12b_0": {
+  "hash": "e4a5c9b1f9",
+  "seconds": 4.270583,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b05a/n1_0": {
+  "hash": "1e9a104718",
+  "seconds": 4.220708,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b05a/n2a_0": {
+  "hash": "dbe826eb5f",
+  "seconds": 3.626708,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b05a/n2b_0": {
+  "hash": "aa7b4dc5f1",
+  "seconds": 4.478708,
+  "model": "gemini-3.8-live",
+  "transcript": "まず、結論から教えてください。何が、どのくらい遅れます"
+ },
+ "b05a/n2c_0": {
+  "hash": "f2309346b3",
+  "seconds": 3.119042,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b05a/n2d_0": {
+  "hash": "4f5590cd7c",
+  "seconds": 5.536042,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b05a/n3_0": {
+  "hash": "e1eeed552f",
+  "seconds": 1.838042,
+  "model": "gemini-3.8-live",
+  "transcript": "理由 を 教え て ください 。"
+ },
+ "b05a/n4a_0": {
+  "hash": "c1ea505b81",
+  "seconds": 3.68525,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b05a/n4b_0": {
+  "hash": "841e382f9b",
+  "seconds": 4.201958,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b05a/n5_0": {
+  "hash": "8b92d28810",
+  "seconds": 3.341,
+  "model": "gemini-3.8-live",
+  "transcript": "それで対策はどう考えていますか？"
  }
 }
