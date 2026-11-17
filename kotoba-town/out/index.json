@@ -8063,5 +8063,425 @@
   "seconds": 4.661083,
   "model": "gemini-3.8-live",
   "transcript": "わかり まし た 。 じゃあ ここ に 名前 と 住所 を 書い て ください 。"
+ },
+ "l17a/n3_phone_0": {
+  "hash": "343e773d66",
+  "seconds": 3.553958,
+  "model": "gemini-3.8-live",
+  "transcript": "はい 電話 番号 は 書か なけれ ば なり ませ ん 。"
+ },
+ "l17a/n3_other_0": {
+  "hash": "26db355988",
+  "seconds": 3.179042,
+  "model": "gemini-3.8-live",
+  "transcript": "いいえ、それは書かなくてもいいです。"
+ },
+ "l17a/n4_0": {
+  "hash": "7a94c68ff4",
+  "seconds": 4.210583,
+  "model": "gemini-3.8-live",
+  "transcript": "ありがとう ござい ます 。 じゃあ 、 中 へ 入っ て ください 。"
+ },
+ "l17a/n5_0": {
+  "hash": "e433f283f3",
+  "seconds": 4.441958,
+  "model": "gemini-3.8-live",
+  "transcript": "こんにちは。石田です。どうぞ、すわってください。"
+ },
+ "l17a/n6_0": {
+  "hash": "773fcf9a1e",
+  "seconds": 6.535333,
+  "model": "gemini-3.8-live",
+  "transcript": "口 を あけ て ください 。 喉 が 赤い です ね 。 風邪 です 。"
+ },
+ "l17a/n6_1": {
+  "hash": "099e224e49",
+  "seconds": 2.949583,
+  "model": "gemini-3.8-live",
+  "transcript": "明日 は 仕事 が あり ます か ?"
+ },
+ "l17a/n7_work_0": {
+  "hash": "db430b03df",
+  "seconds": 5.914458,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か ? でも 残業 は し ない で ください 。 早く 帰っ て ください 。"
+ },
+ "l17a/n7_free_0": {
+  "hash": "15a93a0ed7",
+  "seconds": 6.468625,
+  "model": "gemini-3.8-live",
+  "transcript": "よかったです。あしたは 出かけないで ください。うちで 休んでください。"
+ },
+ "l17a/n8_0": {
+  "hash": "72e5701ded",
+  "seconds": 5.189125,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "薬を出します。朝と晩、食べてから飲んでください。"
+ },
+ "l17a/n8_1": {
+  "hash": "712f8f6589",
+  "seconds": 3.897917,
+  "model": "gemini-3.8-live",
+  "transcript": "それ から 今日 は お 風呂 に 入ら ない で ください 。"
+ },
+ "l17a/n9_come_0": {
+  "hash": "1076561dce",
+  "seconds": 4.719125,
+  "model": "gemini-3.8-live",
+  "transcript": "いいえ、もう こなくても いいですよ。しんぱいしないでください。"
+ },
+ "l17a/n9_med_0": {
+  "hash": "7ea2590d24",
+  "seconds": 4.855292,
+  "model": "gemini-3.8-live",
+  "transcript": "はい 、 金曜日 まで 毎日 飲ま なけれ ば なり ませ ん 。"
+ },
+ "l17a/n9_bath_0": {
+  "hash": "f54cfc828c",
+  "seconds": 5.289417,
+  "model": "gemini-3.8-live",
+  "transcript": "あさっては入ってもいいですよ。"
+ },
+ "l17a/end_0": {
+  "hash": "f58c120fd7",
+  "seconds": 1.850875,
+  "model": "gemini-3.8-live",
+  "transcript": "じゃあ お 大事 に 。"
+ },
+ "l17b/n1_0": {
+  "hash": "3e95055226",
+  "seconds": 3.985958,
+  "model": "gemini-3.8-live",
+  "transcript": "ちょっと いい です か ? 今週 は 忙しい です か ?"
+ },
+ "l17b/n2_busy_0": {
+  "hash": "cc4447dde2",
+  "seconds": 4.960417,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か 。 すみ ませ ん が 、 もう 1 つ お 願い し ます 。"
+ },
+ "l17b/n2_free_0": {
+  "hash": "ab02a6d29a",
+  "seconds": 4.302042,
+  "model": "gemini-3.8-live",
+  "transcript": "それ は よかっ た です 。 じゃ 、 1 つ お 願い し ます 。"
+ },
+ "l17b/n3_0": {
+  "hash": "3eb1622eab",
+  "seconds": 6.427333,
+  "model": "gemini-3.8-live",
+  "transcript": "この資料を英語で書いてください。金曜日の会議"
+ },
+ "l17b/n4_thu_0": {
+  "hash": "c357c0bb15",
+  "seconds": 4.13075,
+  "model": "gemini-3.8-live",
+  "transcript": "木曜日 の 5 時 まで に 出し て ください 。"
+ },
+ "l17b/n4_fri_0": {
+  "hash": "d708bf7e66",
+  "seconds": 5.521958,
+  "model": "gemini-3.8-live",
+  "transcript": "金曜日はちょっと……。木曜日の5時までにおねがいします。"
+ },
+ "l17b/n5_0": {
+  "hash": "16e3922747",
+  "seconds": 3.121958,
+  "model": "gemini-3.8-live",
+  "transcript": "じゅっページありますが、だいじょうぶですか。"
+ },
+ "l17b/n6_all_0": {
+  "hash": "458a905c2a",
+  "seconds": 5.11125,
+  "model": "gemini-3.8-live",
+  "transcript": "いえ 、 全部 書か なく て も いい です 。 5 ページ まで お 願い し ます 。"
+ },
+ "l17b/n6_copy_0": {
+  "hash": "86b8cd597c",
+  "seconds": 4.424208,
+  "model": "gemini-3.8-live",
+  "transcript": "いえ、コピーはしなくてもいいです。 メールで送ってください。"
+ },
+ "l17b/n7_0": {
+  "hash": "6b53b421a7",
+  "seconds": 2.199458,
+  "model": "gemini-3.8-live",
+  "transcript": "じゃ、よろしくおねがいします。"
+ },
+ "l17b/n7_1": {
+  "hash": "d5ffb80373",
+  "seconds": 4.095542,
+  "model": "gemini-3.8-live",
+  "transcript": "私 は もう 帰り ます 。 電気 を 消し て も いい です か ?"
+ },
+ "l17b/n8_stay_0": {
+  "hash": "67409de80c",
+  "seconds": 4.734292,
+  "model": "gemini-3.8-live",
+  "transcript": " あ、すみません。 残業ですか。手伝いましょうか。"
+ },
+ "l17b/end_help_0": {
+  "hash": "2a40585dfd",
+  "seconds": 2.997542,
+  "model": "gemini-3.8-live",
+  "transcript": "はい 、 じゃあ コーヒー を 持っ て き ます ね 。"
+ },
+ "l17b/end_alone_0": {
+  "hash": "87ab71d98a",
+  "seconds": 5.294875,
+  "model": "gemini-3.8-live",
+  "transcript": "そうですか。 じゃあ失礼します。 早く帰ってくださいね。"
+ },
+ "l17b/end_home_0": {
+  "hash": "311c4e7244",
+  "seconds": 5.419167,
+  "model": "gemini-3.8-live",
+  "transcript": "じゃあ 一緒 に 帰り ましょう 。 あ 、 傘 を 忘れ ない で ください 。"
+ },
+ "l17c/n1_0": {
+  "hash": "e7e8483aae",
+  "seconds": 3.833208,
+  "model": "gemini-3.8-live",
+  "transcript": " あ、それはごみですか。"
+ },
+ "l17c/n1_1": {
+  "hash": "49dcd6a7ed",
+  "seconds": 3.353917,
+  "model": "gemini-3.8-live",
+  "transcript": "すみません、夜はごみを 出さないで ください。"
+ },
+ "l17c/n2_when_0": {
+  "hash": "8006604579",
+  "seconds": 6.046667,
+  "model": "gemini-3.8-live",
+  "transcript": "燃えるゴミ は 月曜日 と 木曜日 です 。 朝 8 時 まで に 出し て ください 。"
+ },
+ "l17c/n2_sorry_0": {
+  "hash": "a56b68c49f",
+  "seconds": 6.289958,
+  "model": "gemini-3.8-live",
+  "transcript": "いえ 、 燃える ゴミ は 月曜日 と 木曜日 の 朝 8 時 まで です よ 。"
+ },
+ "l17c/n3_0": {
+  "hash": "f7a0c3695a",
+  "seconds": 2.545958,
+  "model": "gemini-3.8-live",
+  "transcript": "他に質問はありますか？"
+ },
+ "l17c/n4_name_0": {
+  "hash": "f9e811b4ec",
+  "seconds": 3.370083,
+  "model": "gemini-3.8-live",
+  "transcript": "いえ、名前は書かなくてもいいですよ。"
+ },
+ "l17c/n4_bag_0": {
+  "hash": "d69c2b59ce",
+  "seconds": 5.774917,
+  "model": "gemini-3.8-live",
+  "transcript": "はいこの街の袋を買わなければなりません。コンビニにあります。"
+ },
+ "l17c/n5_0": {
+  "hash": "18270d2f5d",
+  "seconds": 6.765417,
+  "model": "gemini-3.8-live",
+  "transcript": "朝 8 時 は 早い です ね 。 毎朝 早く 起き ます か ?"
+ },
+ "l17c/n6_early_0": {
+  "hash": "2e6be6f01b",
+  "seconds": 4.655667,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "たい"
+ },
+ "l17c/n6_late_0": {
+  "hash": "71b204c97c",
+  "seconds": 4.52075,
+  "model": "gemini-3.8-live",
+  "transcript": "いい です ね 。 でも 、 木曜日 は 早く 起き なけれ ば なり ませ ん よ 。"
+ },
+ "l17c/n7_0": {
+  "hash": "ed8e56f35a",
+  "seconds": 3.577958,
+  "model": "gemini-3.8-live",
+  "transcript": "それ から あの 自転車 は あなた の です か ?"
+ },
+ "l17c/n7_1": {
+  "hash": "c3cf742735",
+  "seconds": 3.926042,
+  "model": "gemini-3.8-live",
+  "transcript": "あそこ は 入り口 です から おか ない で ください 。"
+ },
+ "l17c/end_bike_0": {
+  "hash": "51fdf60b0b",
+  "seconds": 8.989917,
+  "model": "gemini-3.8-live",
+  "transcript": "いっかいのかいだんのうしろに おいて ください。おねがいしますね。"
+ },
+ "l17c/end_notmine_0": {
+  "hash": "38f6ecce4f",
+  "seconds": 4.035542,
+  "model": "gemini-3.8-live",
+  "transcript": "あ、そうですか。すみません。だれのですか……。"
+ },
+ "l17c/free_open": {
+  "hash": "f5402665a6",
+  "seconds": 3.28225,
+  "model": "gemini-3.8-live",
+  "transcript": "お国 で は ゴミ を いつ 出し ます か ?"
+ },
+ "l18a/n1_0": {
+  "hash": "bf140c9126",
+  "seconds": 4.199708,
+  "model": "gemini-3.8-live",
+  "transcript": "いらっしゃいませ。 今日 は 雨 です から 暇 です よ。"
+ },
+ "l18a/n1_1": {
+  "hash": "9075214a2a",
+  "seconds": 5.725792,
+  "model": "gemini-3.8-live",
+  "transcript": "休み の 日 は 何 を し ます か ? 趣味 は 何 です か ?"
+ },
+ "l18a/n2_music_0": {
+  "hash": "f960e1abb3",
+  "seconds": 3.774458,
+  "model": "gemini-3.8-live",
+  "transcript": "へえ 音楽 です か いい です ね"
+ },
+ "l18a/n2_other_0": {
+  "hash": "98322e1469",
+  "seconds": 2.785958,
+  "model": "gemini-3.8-live",
+  "transcript": "へえ、それは面白いですね。"
+ },
+ "l18a/n3_0": {
+  "hash": "01b759df5b",
+  "seconds": 4.009958,
+  "model": "gemini-3.8-live",
+  "transcript": "私 の 趣味 は 古い ジャズ を 聞く こと です 。"
+ },
+ "l18a/n3_1": {
+  "hash": "edfa49129f",
+  "seconds": 3.593625,
+  "model": "gemini-3.8-live",
+  "transcript": "ピアノ や ギター を 引く こと が でき ます か ?"
+ },
+ "l18a/n4_yes_0": {
+  "hash": "35686c72c7",
+  "seconds": 3.239625,
+  "model": "gemini-3.8-live",
+  "transcript": "本当 です か ? すごい です ね 。"
+ },
+ "l18a/n4_no_0": {
+  "hash": "bf544c5458",
+  "seconds": 4.064667,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か 私 も 全然 でき ませ ん"
+ },
+ "l18a/n5_0": {
+  "hash": "8862ce721b",
+  "seconds": 4.587625,
+  "model": "gemini-3.8-live",
+  "transcript": "します。)\n\n"
+ },
+ "l18a/n5_1": {
+  "hash": "780d7e9326",
+  "seconds": 4.333167,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "わたしが ギターをひきます。ぜひ来てください。"
+ },
+ "l18a/n6_yes_0": {
+  "hash": "d6a4cfeeb0",
+  "seconds": 4.491625,
+  "model": "gemini-3.8-live",
+  "transcript": "ありがとう ございます。何か質問"
+ },
+ "l18a/n6_no_0": {
+  "hash": "33ce8fc727",
+  "seconds": 6.318542,
+  "model": "gemini-3.8-live",
+  "transcript": "そうですか。残念ですね。じゃ、また今度お願いします。"
+ },
+ "l18a/n7_res_0": {
+  "hash": "bf5622b8e0",
+  "seconds": 7.672833,
+  "model": "gemini-3.8-live",
+  "transcript": "はい 、 予約 する こと が でき ます 。 お 金 は コンサート の 前 に 払っ て ください 。"
+ },
+ "l18a/n7_pay_0": {
+  "hash": "5574270eed",
+  "seconds": 6.037125,
+  "model": "gemini-3.8-live",
+  "transcript": "すみません 。 カード で 払う こと が でき ませ ん 。 現金 で お 願い し ます 。"
+ },
+ "l18a/n8_0": {
+  "hash": "9870c9a3d0",
+  "seconds": 6.298292,
+  "model": "gemini-3.8-live",
+  "transcript": "わたしは寝るまえに、ギターをひきます。寝るまえに、"
+ },
+ "l18a/end_music_0": {
+  "hash": "cd22d92e81",
+  "seconds": 5.180458,
+  "model": "gemini-3.8-live",
+  "transcript": "いいですね。 じゃあ、今度私のギターも聴いてくださいね。"
+ },
+ "l18a/end_other_0": {
+  "hash": "7c4d4a06f0",
+  "seconds": 5.041958,
+  "model": "gemini-3.8-live",
+  "transcript": "へえ 、 いい です ね 。 じゃあ また 明日 会社 で 会い ましょう 。"
+ },
+ "l18b/n1_0": {
+  "hash": "c7e1919e10",
+  "seconds": 3.820333,
+  "model": "gemini-3.8-live",
+  "transcript": " 来月、学校で国際パーティーがあります。"
+ },
+ "l18b/n1_1": {
+  "hash": "d3fd50907f",
+  "seconds": 3.011208,
+  "model": "gemini-3.8-live",
+  "transcript": "私 は ブラジル の 歌 を 歌う こと が でき ます 。"
+ },
+ "l18b/n1_2": {
+  "hash": "bec04cbdd2",
+  "seconds": 4.310583,
+  "model": "gemini-3.8-live",
+  "transcript": "いいですね。あなたは何ができますか。"
+ },
+ "l18b/n2_cook_0": {
+  "hash": "74d2ab13ea",
+  "seconds": 4.3075,
+  "model": "gemini-3.8-live",
+  "transcript": "いいですね。じゃ、料理をおねがいします。"
+ },
+ "l18b/n2_music_0": {
+  "hash": "d6c36e1dab",
+  "seconds": 4.834458,
+  "model": "gemini-3.8-live",
+  "transcript": "いい です ね 。 じゃあ 、 あな さん と 一緒 に お 願い し ます 。"
+ },
+ "l18b/n2_other_0": {
+  "hash": "b0b46370c2",
+  "seconds": 3.973583,
+  "model": "gemini-3.8-live",
+  "transcript": "へえ 、 いい です ね 。 じゃあ 、 それ を お 願い し ます 。"
+ },
+ "l18b/n3_0": {
+  "hash": "55f0b2673d",
+  "seconds": 4.428333,
+  "model": "gemini-3.8-live",
+  "transcript": "わたしはポスターを作ります。でも、漢字"
+ },
+ "l18b/n3_1": {
+  "hash": "1613a7b143",
+  "seconds": 2.930125,
+  "model": "gemini-3.8-live",
+  "transcript": "漢字 を 書く こと が でき ます か ?"
+ },
+ "l18b/n4_yes_0": {
+  "hash": "92b624df7b",
+  "seconds": 3.050958,
+  "model": "gemini-3.8-live",
+  "transcript": "よかった です じゃあ 一緒 に 書い て ください"
  }
 }
