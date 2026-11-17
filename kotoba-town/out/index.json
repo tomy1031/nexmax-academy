@@ -5459,5 +5459,533 @@
   "model": "gemini-3.8-live",
   "transcript": "",
   "note": "re-take (run 44006779216) repeated the sentence; kept this take, which only drops the leading はい"
+ },
+ "b11a/a1_0": {
+  "hash": "35075df656",
+  "seconds": 1.625208,
+  "model": "gemini-3.8-live",
+  "transcript": "どう ぞ お 入り ください 。"
+ },
+ "b11a/a2_0": {
+  "hash": "8da48fe965",
+  "seconds": 3.245333,
+  "model": "gemini-3.8-live",
+  "transcript": "おはようございます。どうぞ、こちらへ。"
+ },
+ "b11a/a3_0": {
+  "hash": "36105dda30",
+  "seconds": 4.051833,
+  "model": "gemini-3.8-live",
+  "transcript": "開発チームの村上です。 よろしく お 願い し ます。"
+ },
+ "b11a/a3_1": {
+  "hash": "b7f8976037",
+  "seconds": 3.252125,
+  "model": "gemini-3.8-live",
+  "transcript": "エンジニアの藤田です。よろしくお願いします。"
+ },
+ "b11a/a3_2": {
+  "hash": "ca5dc19e81",
+  "seconds": 1.498875,
+  "model": "gemini-3.8-live",
+  "transcript": "どうぞ お かけ ください 。"
+ },
+ "b11a/a4_0": {
+  "hash": "278ceee324",
+  "seconds": 3.661708,
+  "model": "gemini-3.8-live",
+  "transcript": "ありがとう ございます。"
+ },
+ "b11a/a4_1": {
+  "hash": "f586460a34",
+  "seconds": 3.631958,
+  "model": "gemini-3.8-live",
+  "transcript": "では 、 まず 自己 紹介 を お 願い し ます 。"
+ },
+ "b11a/a4b_0": {
+  "hash": "ab5d57b671",
+  "seconds": 4.246792,
+  "model": "gemini-3.8-live",
+  "transcript": "ありがとうございます。大学では何を勉強しましたか？"
+ },
+ "b11a/a5_0": {
+  "hash": "a0956fc195",
+  "seconds": 4.342792,
+  "model": "gemini-3.8-live",
+  "transcript": " ありがとうございます。次に、志望動機を聞かせてください。"
+ },
+ "b11a/a6a_0": {
+  "hash": "881ff5e0a4",
+  "seconds": 4.269875,
+  "model": "gemini-3.8-live",
+  "transcript": "うれしいです。"
+ },
+ "b11a/a6b_0": {
+  "hash": "dd9e37cf9b",
+  "seconds": 4.807542,
+  "model": "gemini-3.8-live",
+  "transcript": "そうですか。うちは町のお店のサイトやアプリを多く作っています。"
+ },
+ "b11a/a7_0": {
+  "hash": "140bebbbbf",
+  "seconds": 3.419625,
+  "model": "gemini-3.8-live",
+  "transcript": "ここからは私が技術のことを聞きますね"
+ },
+ "b11a/a7_1": {
+  "hash": "cb975bfc6d",
+  "seconds": 3.778042,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b11a/a8a_0": {
+  "hash": "6594908b88",
+  "seconds": 3.260083,
+  "model": "gemini-3.8-live",
+  "transcript": "担当がよくわかりました。ありがとうございます。"
+ },
+ "b11a/a8a_1": {
+  "hash": "7d9d236046",
+  "seconds": 2.753542,
+  "model": "gemini-3.8-live",
+  "transcript": "今はどんな技術を勉強していますか？"
+ },
+ "b11a/a8b_0": {
+  "hash": "76d9d874d6",
+  "seconds": 4.433625,
+  "model": "gemini-3.8-live",
+  "transcript": "なるほどその中であなたは何を担当しましたか？"
+ },
+ "b11a/a9a_0": {
+  "hash": "bb7d8ef3f0",
+  "seconds": 5.5155,
+  "model": "gemini-3.8-live",
+  "transcript": "具体 的 で 分かり やすい です 。 自分 で 学ぶ 人 は チーム で も 助かり ます 。"
+ },
+ "b11a/a9b_0": {
+  "hash": "f1c00f8ae6",
+  "seconds": 4.681958,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b11a/a9c_0": {
+  "hash": "3890bc6506",
+  "seconds": 2.769083,
+  "model": "gemini-3.8-live",
+  "transcript": "ありがとうございます。よく分かりました。"
+ },
+ "b11a/a10_0": {
+  "hash": "b1c89b2437",
+  "seconds": 5.187833,
+  "model": "gemini-3.8-live",
+  "transcript": " 藤田からは 以上ですね。最後に、何か 質問はありますか。"
+ },
+ "b11a/a11a_0": {
+  "hash": "727c359988",
+  "seconds": 6.35575,
+  "model": "gemini-3.8-live",
+  "transcript": "入社後は、先輩と 一緒に小さなサイトから始めます。Reactをよく使います"
+ },
+ "b11a/a11b_0": {
+  "hash": "6b1a647e06",
+  "seconds": 3.971083,
+  "model": "gemini-3.8-live",
+  "transcript": "ので、分からないことはすぐ聞けますよ。"
+ },
+ "b11a/a11c_0": {
+  "hash": "f016f01dd0",
+  "seconds": 4.236708,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b11a/a11d_0": {
+  "hash": "8e42dfdbb5",
+  "seconds": 4.299917,
+  "model": "gemini-3.8-live",
+  "transcript": " 気に なる ことが あれば、後でメールでどうぞ。"
+ },
+ "b11a/a12_0": {
+  "hash": "b68c8836ee",
+  "seconds": 6.937958,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b11a/a13_0": {
+  "hash": "0f212b679a",
+  "seconds": 2.143833,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b11a/a13_1": {
+  "hash": "a93ebe34fa",
+  "seconds": 1.79925,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b11b/b1_0": {
+  "hash": "b2c596de58",
+  "seconds": 1.830667,
+  "model": "gemini-3.8-live",
+  "transcript": "どうぞ、お入りください。"
+ },
+ "b11b/b2_0": {
+  "hash": "28d684d465",
+  "seconds": 2.826333,
+  "model": "gemini-3.8-live",
+  "transcript": "おはようございます。どうぞこちらへ。"
+ },
+ "b11b/b3_0": {
+  "hash": "e9b409e428",
+  "seconds": 3.769958,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b11b/b3_1": {
+  "hash": "ea470fe8ef",
+  "seconds": 3.051875,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b11b/b3_2": {
+  "hash": "324b6dc581",
+  "seconds": 1.661542,
+  "model": "gemini-3.8-live",
+  "transcript": "どうぞ おかけください"
+ },
+ "b11b/b4_0": {
+  "hash": "d033826ff3",
+  "seconds": 3.38875,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b11b/b4_1": {
+  "hash": "fca80707d0",
+  "seconds": 3.979667,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b11b/b5a_0": {
+  "hash": "7cf79b5cb4",
+  "seconds": 4.769708,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b11b/b5b_0": {
+  "hash": "14434ec822",
+  "seconds": 3.767333,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b11b/b5c_0": {
+  "hash": "82745adbf6",
+  "seconds": 2.857958,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b11b/b5d_0": {
+  "hash": "65dee5892e",
+  "seconds": 4.893875,
+  "model": "gemini-3.8-live",
+  "transcript": "当社が作ったものも、ぜひサイトで見てください。"
+ },
+ "b11b/b6_0": {
+  "hash": "9e6915a408",
+  "seconds": 3.922208,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b11b/b7a_0": {
+  "hash": "c24b161b40",
+  "seconds": 5.151958,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b11b/b7b_0": {
+  "hash": "1fe2cb27b6",
+  "seconds": 5.122542,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b11b/b7d_0": {
+  "hash": "c9533b0bf3",
+  "seconds": 5.99375,
+  "model": "gemini-3.8-live",
+  "transcript": "誰にでも苦手なことはありますよ。仕事や勉強で苦手なことはなんですか？"
+ },
+ "b11b/b7c_0": {
+  "hash": "a8344ca32e",
+  "seconds": 2.431333,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b11b/b8_0": {
+  "hash": "ec5a39569b",
+  "seconds": 5.5565,
+  "model": "gemini-3.8-live",
+  "transcript": "。当社では、長く働いてほしいと考えています。"
+ },
+ "b11b/b8_1": {
+  "hash": "40b245592b",
+  "seconds": 2.762042,
+  "model": "gemini-3.8-live",
+  "transcript": "どうなっていたいですか。"
+ },
+ "b11b/b9a_0": {
+  "hash": "056672bc10",
+  "seconds": 3.270208,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b11b/b9b_0": {
+  "hash": "d658d2660e",
+  "seconds": 4.897958,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b11b/b9c_0": {
+  "hash": "140df848aa",
+  "seconds": 4.724667,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b11b/b10_0": {
+  "hash": "1a14774495",
+  "seconds": 3.545792,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "最後に、何か質問はありますか。"
+ },
+ "b11b/b11a_0": {
+  "hash": "fe8e550738",
+  "seconds": 5.945042,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "これからは、町のお店のアプリをもっと増やしたいと考えています。"
+ },
+ "b11b/b11b_0": {
+  "hash": "05261c5d6f",
+  "seconds": 5.717208,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b11b/b11c_0": {
+  "hash": "bd84915a76",
+  "seconds": 5.206042,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b11b/b11d_0": {
+  "hash": "3ddbc7d1af",
+  "seconds": 5.263792,
+  "model": "gemini-3.8-live",
+  "transcript": " 後で気になることがあれば、村上に聞いてください。"
+ },
+ "b11b/b12_0": {
+  "hash": "91d5aef2c0",
+  "seconds": 4.741125,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b11b/b13_0": {
+  "hash": "de80f5aa1f",
+  "seconds": 2.378167,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b11b/b13_1": {
+  "hash": "427f312184",
+  "seconds": 2.079583,
+  "model": "gemini-3.8-live",
+  "transcript": "気をつけてお帰りください。"
+ },
+ "b12a/n1_0": {
+  "hash": "e788cc387d",
+  "seconds": 0.735292,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b12a/n2_0": {
+  "hash": "da4d275c7a",
+  "seconds": 0.966792,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b12a/n3_0": {
+  "hash": "4cfa4fe389",
+  "seconds": 4.984417,
+  "model": "gemini-3.8-live",
+  "transcript": "おかけください。"
+ },
+ "b12a/n4_0": {
+  "hash": "b04fe9c750",
+  "seconds": 3.282958,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b12a/n4_1": {
+  "hash": "7d68f4ca1a",
+  "seconds": 2.382,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b12a/n5a_0": {
+  "hash": "70e5cab3ec",
+  "seconds": 4.274292,
+  "model": "gemini-3.8-live",
+  "transcript": " …そうですか。でも、それはほかの会社でもでき"
+ },
+ "b12a/n5b_0": {
+  "hash": "17aa540c87",
+  "seconds": 4.97775,
+  "model": "gemini-3.8-live",
+  "transcript": " 日本で働きたい人は多いです。"
+ },
+ "b12a/n5q_0": {
+  "hash": "3aae6c16db",
+  "seconds": 1.754833,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b12a/n6a_0": {
+  "hash": "3e78704b88",
+  "seconds": 2.750125,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b12a/n6b_0": {
+  "hash": "b22c1750c3",
+  "seconds": 5.073875,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b12a/n6c_0": {
+  "hash": "3a33baaad4",
+  "seconds": 2.473958,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b12a/n7_0": {
+  "hash": "7d3be2644d",
+  "seconds": 3.333542,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b12a/n8a_0": {
+  "hash": "23ecdb196e",
+  "seconds": 5.839208,
+  "model": "gemini-3.8-live",
+  "transcript": "…なるほど。では、うまくいかなかったことは。どうしましたか。"
+ },
+ "b12a/n8b_0": {
+  "hash": "2ba51e6e84",
+  "seconds": 3.263875,
+  "model": "gemini-3.8-live",
+  "transcript": "具体的には。あなたは何をしましたか。"
+ },
+ "b12a/n9a_0": {
+  "hash": "c68b5bc8b7",
+  "seconds": 1.139292,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b12a/n9b_0": {
+  "hash": "fe4a2567a3",
+  "seconds": 5.361458,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b12a/n10_0": {
+  "hash": "a4a865484d",
+  "seconds": 5.777667,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b12a/n11a_0": {
+  "hash": "153bcf960b",
+  "seconds": 2.444417,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b12a/n11b_0": {
+  "hash": "f88bab463a",
+  "seconds": 3.956208,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b12a/n11c_0": {
+  "hash": "b4a0ecd73d",
+  "seconds": 3.598292,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b12a/n12_0": {
+  "hash": "cbcaa8f3c6",
+  "seconds": 2.75975,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b12a/n13a_0": {
+  "hash": "67b453e561",
+  "seconds": 6.577958,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b12a/n13b_0": {
+  "hash": "644327d4da",
+  "seconds": 4.230125,
+  "model": "gemini-3.8-live",
+  "transcript": "ありませんか。当社に興味がないように見えますよ。"
+ },
+ "b12a/n13c_0": {
+  "hash": "b5d169375a",
+  "seconds": 4.620958,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b12a/n14_0": {
+  "hash": "023688b9d7",
+  "seconds": 6.118208,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b12a/n14_1": {
+  "hash": "bd2c733fca",
+  "seconds": 4.06925,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b12a/n14_2": {
+  "hash": "11cd001d2f",
+  "seconds": 5.700083,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b12a/n15a_0": {
+  "hash": "9373197a3a",
+  "seconds": 4.269125,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b12a/n15b_0": {
+  "hash": "d3dd38b8a7",
+  "seconds": 4.216708,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b12b/n1_0": {
+  "hash": "e5d58d1705",
+  "seconds": 1.76225,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b12b/n2_0": {
+  "hash": "e05aaebd5c",
+  "seconds": 1.970083,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b12b/n3_0": {
+  "hash": "949e7b63d8",
+  "seconds": 4.703292,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "人事の 白石です。こちらは開発部長の黒岩です。"
  }
 }
