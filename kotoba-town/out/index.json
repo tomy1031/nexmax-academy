@@ -5809,10 +5809,10 @@
   "transcript": ""
  },
  "b12a/n3_0": {
-  "hash": "4cfa4fe389",
-  "seconds": 4.984417,
+  "hash": "4161b238de",
+  "seconds": 3.444583,
   "model": "gemini-3.8-live",
-  "transcript": "おかけください。"
+  "transcript": ""
  },
  "b12a/n4_0": {
   "hash": "b04fe9c750",
@@ -5827,10 +5827,10 @@
   "transcript": ""
  },
  "b12a/n5a_0": {
-  "hash": "70e5cab3ec",
-  "seconds": 4.274292,
+  "hash": "c315d1b65b",
+  "seconds": 3.776208,
   "model": "gemini-3.8-live",
-  "transcript": " …そうですか。でも、それはほかの会社でもでき"
+  "transcript": ""
  },
  "b12a/n5b_0": {
   "hash": "17aa540c87",
@@ -5845,10 +5845,10 @@
   "transcript": ""
  },
  "b12a/n6a_0": {
-  "hash": "3e78704b88",
-  "seconds": 2.750125,
-  "model": "gemini-3.8-live",
-  "transcript": ""
+  "hash": "6658c6bb5e",
+  "seconds": 1.960083,
+  "model": "gemini-2.5-flash-native-audio-preview-12-2025",
+  "transcript": "分かりました。次。"
  },
  "b12a/n6b_0": {
   "hash": "b22c1750c3",
@@ -5857,10 +5857,10 @@
   "transcript": ""
  },
  "b12a/n6c_0": {
-  "hash": "3a33baaad4",
-  "seconds": 2.473958,
+  "hash": "da5ad69b4c",
+  "seconds": 2.761958,
   "model": "gemini-3.8-live",
-  "transcript": ""
+  "transcript": "次に行きます。"
  },
  "b12a/n7_0": {
   "hash": "7d3be2644d",
@@ -5869,10 +5869,10 @@
   "transcript": ""
  },
  "b12a/n8a_0": {
-  "hash": "23ecdb196e",
-  "seconds": 5.839208,
+  "hash": "8661cf45e3",
+  "seconds": 5.4345,
   "model": "gemini-3.8-live",
-  "transcript": "…なるほど。では、うまくいかなかったことは。どうしましたか。"
+  "transcript": ""
  },
  "b12a/n8b_0": {
   "hash": "2ba51e6e84",
@@ -5881,8 +5881,8 @@
   "transcript": "具体的には。あなたは何をしましたか。"
  },
  "b12a/n9a_0": {
-  "hash": "c68b5bc8b7",
-  "seconds": 1.139292,
+  "hash": "08ed512a6c",
+  "seconds": 1.061,
   "model": "gemini-3.8-live",
   "transcript": ""
  },
@@ -5899,8 +5899,8 @@
   "transcript": ""
  },
  "b12a/n11a_0": {
-  "hash": "153bcf960b",
-  "seconds": 2.444417,
+  "hash": "1ca6e29d63",
+  "seconds": 2.578167,
   "model": "gemini-3.8-live",
   "transcript": ""
  },
@@ -5911,10 +5911,10 @@
   "transcript": ""
  },
  "b12a/n11c_0": {
-  "hash": "b4a0ecd73d",
-  "seconds": 3.598292,
+  "hash": "fcc9106eb1",
+  "seconds": 3.079833,
   "model": "gemini-3.8-live",
-  "transcript": ""
+  "transcript": " 根拠が ありませんね。まあ、いいです。"
  },
  "b12a/n12_0": {
   "hash": "cbcaa8f3c6",
@@ -5965,10 +5965,10 @@
   "transcript": ""
  },
  "b12a/n15b_0": {
-  "hash": "d3dd38b8a7",
-  "seconds": 4.216708,
+  "hash": "82ec7a065a",
+  "seconds": 3.822333,
   "model": "gemini-3.8-live",
-  "transcript": ""
+  "transcript": "最後のあいさつまでが面接です。お疲れさまでした。"
  },
  "b12b/n1_0": {
   "hash": "e5d58d1705",
@@ -5995,10 +5995,10 @@
   "transcript": ""
  },
  "b12b/n4_0": {
-  "hash": "db7ad41468",
-  "seconds": 11.212917,
+  "hash": "6a71e1d080",
+  "seconds": 4.522583,
   "model": "gemini-3.8-live",
-  "transcript": "じむてき.じこしょうかいとしぼうどうきを、あわせていっぷんでおねがいします。"
+  "transcript": ""
  },
  "b12b/n5a_0": {
   "hash": "2db8b0719c",
@@ -6019,10 +6019,10 @@
   "transcript": ""
  },
  "b12b/n7a_0": {
-  "hash": "666a7622a9",
-  "seconds": 4.153958,
+  "hash": "209ccabada",
+  "seconds": 3.843792,
   "model": "gemini-3.8-live",
-  "transcript": ""
+  "transcript": "直している途中、ということですね。わかりました。"
  },
  "b12b/n7b_0": {
   "hash": "6495330749",
@@ -6043,14 +6043,14 @@
   "transcript": ""
  },
  "b12b/n9b_0": {
-  "hash": "d4c4a1d235",
-  "seconds": 4.237792,
+  "hash": "9a0af2769e",
+  "seconds": 2.846542,
   "model": "gemini-3.8-live",
   "transcript": ""
  },
  "b12b/n9c_0": {
-  "hash": "5a50ec49c4",
-  "seconds": 3.477292,
+  "hash": "1a11deabcf",
+  "seconds": 2.619958,
   "model": "gemini-3.8-live",
   "transcript": ""
  },
@@ -6067,10 +6067,10 @@
   "transcript": "あなたは、二、三年でやめるのではありませんか。"
  },
  "b12b/n11a_0": {
-  "hash": "d885444bb0",
-  "seconds": 3.754583,
+  "hash": "2bc60402b6",
+  "seconds": 3.894542,
   "model": "gemini-3.8-live",
-  "transcript": ""
+  "transcript": " 口で言うのは簡単です。でも、覚えておきます。"
  },
  "b12b/n11b_0": {
   "hash": "d1c47a9f64",
@@ -6091,8 +6091,8 @@
   "transcript": "その前に、一つ。あなたを採用するメリットは何ですか。"
  },
  "b12b/n13a_0": {
-  "hash": "d8404ffabc",
-  "seconds": 2.939417,
+  "hash": "a08d398345",
+  "seconds": 2.935792,
   "model": "gemini-3.8-live",
   "transcript": ""
  },
@@ -6157,8 +6157,8 @@
   "transcript": ""
  },
  "b12b/n18b_0": {
-  "hash": "575019a5e9",
-  "seconds": 6.841958,
+  "hash": "40d275f363",
+  "seconds": 4.990167,
   "model": "gemini-3.8-live",
   "transcript": ""
  },
