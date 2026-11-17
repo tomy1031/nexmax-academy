@@ -13,5 +13,6 @@
       "seconds": 170
     }
   ],
-  "thinkingProbe": false
+  "thinkingProbe": false,
+  "sdkProbe": true
 }

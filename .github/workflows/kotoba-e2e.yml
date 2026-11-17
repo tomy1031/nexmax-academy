@@ -18,6 +18,7 @@ on:
       - scripts/kotoba_selfcheck.ts
       - scripts/kotoba_interview_check.ts
       - scripts/kotoba_thinking_probe.ts
+      - scripts/kotoba_sdk_probe.mjs
       - kotoba-town/interview_check.json
       - .github/workflows/kotoba-e2e.yml
 
@@ -50,6 +51,16 @@ jobs:
           if [ "$(node -p "require('./kotoba-town/e2e.json').thinkingProbe === true")" != "true" ]; then echo "probe は 今回 なし"; exit 0; fi
           timeout 8m node --import tsx scripts/kotoba_thinking_probe.ts > kotoba-town/out/thinking_probe.log 2>&1 || true
           cat kotoba-town/out/thinking_probe.log | head -150
+      - name: 最新の google-genai で Extended Thinking の 関数呼び出しを 試す
+        continue-on-error: true
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          mkdir -p kotoba-town/out
+          if [ "$(node -p "require('./kotoba-town/e2e.json').sdkProbe === true")" != "true" ]; then echo "sdk probe は 今回 なし"; exit 0; fi
+          mkdir -p /tmp/genai-latest && (cd /tmp/genai-latest && npm init -y >/dev/null && npm i --silent @google/genai@latest)
+          GENAI_DIR=/tmp/genai-latest timeout 6m node scripts/kotoba_sdk_probe.mjs > kotoba-town/out/sdk_probe.log 2>&1 || true
+          cat kotoba-town/out/sdk_probe.log | head -80
       - name: 面接の 判定の 確かめ（Extended Thinking）
         continue-on-error: true
         env:
@@ -97,7 +108,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add kotoba-town/out/e2e* kotoba-town/out/selfcheck* kotoba-town/out/interview_check* kotoba-town/out/thinking_probe* || true
+          git add kotoba-town/out/e2e* kotoba-town/out/selfcheck* kotoba-town/out/interview_check* kotoba-town/out/thinking_probe* kotoba-town/out/sdk_probe* || true
           git diff --cached --quiet && exit 0
           git commit -q -m "kotoba-town: e2e results [run ${GITHUB_RUN_ID}]"
           for try in 1 2 3 4; do
