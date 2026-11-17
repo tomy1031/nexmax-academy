@@ -57,7 +57,7 @@ export function NoticePanel({
   const [right, setRight] = useState<string | null>(cleared ? scene.answer[1] : null);
   const [misses, setMisses] = useState(0);
   /** さいごの 判定（片方だけ 正しい・両方 ちがう）。選び直しを 始めたら 消す。 */
-  const [verdict, setVerdict] = useState<"leftOk" | "rightOk" | "none" | null>(null);
+  const [verdict, setVerdict] = useState<"leftOk" | "leftWrong" | "rightOk" | "none" | null>(null);
   /** まちがえた 行（押した 行の そばに ✖ と 理由を 出す）。選び直しを 始めたら 消す。 */
   const [missed, setMissed] = useState<{ side: "left" | "right"; id: string }[]>([]);
   /* まちがいの 文・いま 押す 資料を 画面に 入れる（スマホでは 下に 隠れて いた） */
@@ -75,6 +75,22 @@ export function NoticePanel({
   useEffect(() => {
     notify.current = { onSolved, onWrong };
   });
+
+  /*
+   * ①の 行は 押した ときに すぐ 見る（前は ②を 押すまで ①の まちがいが 分からなかった・
+   * 2026-11-17 の 通しプレイ）。①が 正しければ ②へ 進む。
+   */
+  useEffect(() => {
+    if (done || !left || right || left === scene.answer[0]) return;
+    const timer = window.setTimeout(() => {
+      setMisses((n) => n + 1);
+      setVerdict("leftWrong");
+      setMissed([{ side: "left", id: left }]);
+      setLeft(null);
+      notify.current.onWrong();
+    }, COMPARE_DELAY_MS);
+    return () => window.clearTimeout(timer);
+  }, [left, right, done, scene.answer]);
 
   /* 2つ そろったら、少し 待って 自動で くらべる */
   useEffect(() => {
@@ -430,7 +446,7 @@ export function NoticePanel({
               </span>
             );
           })}
-          {verdict !== "none" ? (
+          {verdict === "leftOk" || verdict === "rightOk" ? (
             <span className="text-leaf-deep block">
               ✔{" "}
               <RubyText
@@ -565,11 +581,13 @@ export function ChoosePanel({
       <div className="grid grid-cols-3 gap-2">
         {people.map((person) => {
           const right = cleared && person.id === scene.answer;
+          const bad = wrongBy === person.id;
           return (
             <button
               key={person.id}
               type="button"
               data-person={person.id}
+              data-wrong={bad ? "1" : undefined}
               onClick={() => {
                 if (person.id === scene.answer) {
                   setWrongBy(null);
@@ -581,9 +599,19 @@ export function ChoosePanel({
               }}
               className="flex flex-col items-center gap-1 rounded-2xl border-2 bg-white p-2 transition hover:-translate-y-0.5"
               style={{
-                borderColor: right ? "var(--color-leaf)" : "var(--color-hairline)",
+                borderColor: right
+                  ? "var(--color-leaf)"
+                  : bad
+                    ? "var(--color-coral-deep)"
+                    : "var(--color-hairline)",
+                background: bad ? "#fdecea" : undefined,
               }}
             >
+              {bad ? (
+                <span className="text-coral-deep text-xs font-black" aria-hidden>
+                  ✖
+                </span>
+              ) : null}
               <Image
                 src={assetUrl(`/img/characters/${person.id}/portrait.webp`) ?? ""}
                 alt=""

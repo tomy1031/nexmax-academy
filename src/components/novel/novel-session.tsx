@@ -369,6 +369,9 @@ function Player({
   /** 相談の 前に 相手の 席の 絵を 見て いる（舞台を 隠す——絵が 舞台の かわりに なる）。 */
   const [approaching, setApproaching] = useState(false);
   const onApproach = useCallback((on: boolean) => setApproaching(on), []);
+  /** 相談メモを 作って いる（スマホでは パネルを 高さ いっぱいに）。 */
+  const [memoing, setMemoing] = useState(false);
+  const onMemo = useCallback((on: boolean) => setMemoing(on), []);
   const day = novel.days[save.day] ?? novel.days[0];
   const scene = day?.scenes[save.index];
   const show = save.settings.furigana;
@@ -519,11 +522,12 @@ function Player({
   const panelMode = !readable || isScreen;
   const fullPanel = scene.type === "ending" || approaching;
   /*
-   * 縦長（スマホ）で、資料を くらべる・相談メモを 作る・相談する 場面は、パネルを 高さ
-   * いっぱいに する。前は 下の 3分の2 だけで、②の 表が 枠の 下に 隠れて「押す ものが
-   * 無い」に なって いた（2026-11-17 の N4 の 通しプレイ・スマホ）。
+   * 縦長（スマホ）で、資料を くらべる・相談メモを 作る ときは、パネルを 高さ いっぱいに
+   * する。前は 下の 3分の2 だけで、②の 表が 枠の 下に 隠れて「押す ものが 無い」に
+   * なって いた（2026-11-17 の N4 の 通しプレイ・スマホ）。相談で 話す ときは 前の まま
+   *（相手の 顔の 反応が 見える ように・同日の code-critic）。
    */
-  const roomy = scene.type === "notice" || scene.type === "consult";
+  const roomy = scene.type === "notice" || (scene.type === "consult" && memoing);
   const wide = frame.layout === "wide";
 
   const stage = (
@@ -654,6 +658,8 @@ function Player({
         onFace={setFaceOverride}
         onBusy={onBusy}
         onApproach={onApproach}
+        onMemo={onMemo}
+        contentId={meeting.id}
         onFail={(type: NovelFailureType) =>
           setSave((now) => ({ ...now, attempts: addFailure(now.attempts, scene.id, type) }))
         }

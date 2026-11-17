@@ -31,13 +31,20 @@ const PICK_MAX = 3;
 /**
  * 読みこみ直しても メモを 消さない（2026-11-17 の 通しプレイ「作った メモが 消える」）。
  * 端末の 中だけに 置く（記録の 台帳には 送らない）。読めない 端末では 何も しない。
+ *
+ * 鍵は「教材の id ＋ 場面の id ＋ 版」（`nexmax.novel-memo.<教材>.<場面>.v1.draft|done`）——
+ * 場面の id は 教材を またぐと 重なりうる（2026-11-17 の code-critic）。ログアウトで
+ * `nexmax.` ごと 消える（書きかけの 診断 `DiagnosisDraft` と 同じ 扱い）。
+ * 読み戻す ときは **形を ぜんぶ 確かめ**、今の 教材に 無い ことば・選択肢は 捨てる
+ *（先生が DB で ことばを 直した あとに、古い ことばが 残らない ように）。
  */
-const DRAFT_PREFIX = "nexmax.novel-memo.";
+const MEMO_PREFIX = "nexmax.novel-memo.";
+const MEMO_VERSION = "v1";
 
-function readStored<T>(key: string): T | null {
+function readStored(key: string): unknown {
   try {
-    const raw = window.localStorage.getItem(DRAFT_PREFIX + key);
-    return raw ? (JSON.parse(raw) as T) : null;
+    const raw = window.localStorage.getItem(`${MEMO_PREFIX}${key}.${MEMO_VERSION}`);
+    return raw ? (JSON.parse(raw) as unknown) : null;
   } catch {
     return null;
   }
@@ -45,22 +52,51 @@ function readStored<T>(key: string): T | null {
 
 function writeStored(key: string, value: unknown): void {
   try {
-    if (value === null) window.localStorage.removeItem(DRAFT_PREFIX + key);
-    else window.localStorage.setItem(DRAFT_PREFIX + key, JSON.stringify(value));
+    const full = `${MEMO_PREFIX}${key}.${MEMO_VERSION}`;
+    if (value === null) window.localStorage.removeItem(full);
+    else window.localStorage.setItem(full, JSON.stringify(value));
   } catch {
     // 保存できない 端末でも 遊べる
   }
 }
 
-/** できあがった メモ（その 相談の）。無ければ null。 */
-export function readSavedMemo(sceneId: string): NovelMemo | null {
-  const memo = readStored<NovelMemo>(`${sceneId}.done`);
-  return memo && typeof memo.ask === "string" && Array.isArray(memo.seen) ? memo : null;
+const isStrings = (value: unknown): value is string[] =>
+  Array.isArray(value) && value.every((one) => typeof one === "string");
+
+/**
+ * 端末に 残った メモを 確かめる。形が ちがえば null。今の 教材に 無い ことば・選択肢は 捨てる。
+ * `spec` が 無ければ ことばの 絞りこみは しない。
+ */
+export function parseStoredMemo(value: unknown, spec?: MemoSpec): NovelMemo | null {
+  if (typeof value !== "object" || value === null) return null;
+  const memo = value as Record<string, unknown>;
+  if (!isStrings(memo.seen) || !isStrings(memo.diff) || typeof memo.ask !== "string") return null;
+  if (memo.stance !== null && typeof memo.stance !== "string") return null;
+  const stance =
+    typeof memo.stance === "string" && (!spec?.stance || spec.stance.options.includes(memo.stance))
+      ? memo.stance
+      : null;
+  return {
+    seen: spec ? memo.seen.filter((word) => spec.seenWords.includes(word)) : memo.seen,
+    diff: spec ? memo.diff.filter((word) => spec.diffWords.includes(word)) : memo.diff,
+    stance,
+    ask: memo.ask,
+  };
 }
 
-export function saveMemo(sceneId: string, memo: NovelMemo | null): void {
-  writeStored(`${sceneId}.done`, memo);
-  if (memo) writeStored(`${sceneId}.draft`, null);
+/** できあがった メモ（その 相談の）。無ければ null。 */
+export function readSavedMemo(key: string, spec?: MemoSpec): NovelMemo | null {
+  return parseStoredMemo(readStored(`${key}.done`), spec);
+}
+
+export function saveMemo(key: string, memo: NovelMemo | null): void {
+  writeStored(`${key}.done`, memo);
+  if (memo) writeStored(`${key}.draft`, null);
+}
+
+/** ③が 聞く 文か（「〜か。」で 終わる。講義の「いただけませんか」「いかがでしょうか」「〜ますか」）。 */
+export function asksSomething(text: string): boolean {
+  return /か[。．.？?！!\s]*$/u.test(text.trim());
 }
 
 type Section = 1 | 2 | 3;
@@ -97,18 +133,14 @@ export function MemoMaker({
   spec: MemoSpec;
   askForm?: string;
   facts?: MemoFacts | null;
-  /** 書きかけを 端末に 残す ための 名前（相談の 場面の id）。 */
+  /** 書きかけを 端末に 残す ための 名前（教材の id ＋ 相談の 場面の id）。 */
   storageKey: string;
   index: FuriganaIndex;
   show: boolean;
   translation: boolean;
   onDone: (memo: NovelMemo) => void;
 }) {
-  const [draft] = useState(() =>
-    readStored<{ seen: string[]; diff: string[]; stance: string | null; ask: string }>(
-      `${storageKey}.draft`,
-    ),
-  );
+  const [draft] = useState(() => parseStoredMemo(readStored(`${storageKey}.draft`), spec));
   const [seen, setSeen] = useState<readonly string[]>(draft?.seen ?? []);
   const [diff, setDiff] = useState<readonly string[]>(draft?.diff ?? []);
   const [stance, setStance] = useState<string | null>(draft?.stance ?? null);
@@ -124,7 +156,11 @@ export function MemoMaker({
 
   const seenDone = sectionDone(seen, spec.seenAnswer);
   const diffDone = sectionDone(diff, spec.diffAnswer);
-  const askDone = (!needStance || stance !== null) && ask.trim() !== "";
+  /*
+   * ③は 聞く 文（「〜か。」で 終わる）に なって いれば できあがり。1語だけ（「キーボード」）
+   * では 話す ときに 言う 文が 無い（2026-11-17 の 通しプレイ）。中身の 正しさは 見ない。
+   */
+  const askDone = (!needStance || stance !== null) && asksSomething(ask);
 
   const finish = () => {
     const lack: Section[] = [];
@@ -289,30 +325,39 @@ export function MemoMaker({
         ) : null}
       </section>
 
-      {missing.length > 0 && !(seenDone && diffDone && askDone) ? (
-        <p
-          role="status"
-          className="rounded-xl px-3 py-2 text-sm font-black"
-          style={{ background: "var(--color-cream)", color: "var(--color-coral-deep)" }}
-          data-testid="novel-memo-missing"
-        >
-          <RubyText
-            text={`まだです。${missingText(missing, { seenDone, diffDone, needStance, stance, ask })}`}
-            index={index}
-            show={show}
-          />
-        </p>
-      ) : null}
-
-      <button
-        type="button"
-        onClick={finish}
-        className="btn-island btn-game w-full px-6 py-3"
-        data-testid="novel-memo-done"
-        data-ready={seenDone && diffDone && askDone ? "1" : undefined}
+      {/*
+       * 「メモが できた」と 足りない 所の 文は、パネルの 下に はりつける——メモが 長く、
+       * スマホでは 枠の 外に 隠れて いた（2026-11-17 の 通しプレイ）。
+       */}
+      <div
+        className="sticky -bottom-3 z-10 -mx-2.5 space-y-2 border-t px-2.5 pt-2 pb-3 sm:-mx-3 sm:px-3"
+        style={{ borderColor: "var(--color-hairline)", background: "var(--color-panel)" }}
       >
-        <RubyText text="メモが できた" index={index} show={show} />
-      </button>
+        {missing.length > 0 && !(seenDone && diffDone && askDone) ? (
+          <p
+            role="status"
+            className="rounded-xl px-3 py-2 text-sm font-black"
+            style={{ background: "var(--color-cream)", color: "var(--color-coral-deep)" }}
+            data-testid="novel-memo-missing"
+          >
+            <RubyText
+              text={`まだです。${missingText(missing, { seenDone, diffDone, needStance, stance, ask })}`}
+              index={index}
+              show={show}
+            />
+          </p>
+        ) : null}
+
+        <button
+          type="button"
+          onClick={finish}
+          className="btn-island btn-game w-full px-6 py-3"
+          data-testid="novel-memo-done"
+          data-ready={seenDone && diffDone && askDone ? "1" : undefined}
+        >
+          <RubyText text="メモが できた" index={index} show={show} />
+        </button>
+      </div>
     </div>
   );
 }
@@ -339,6 +384,8 @@ function missingText(
   if (missing.includes(3)) {
     if (state.needStance && state.stance === null) parts.push("③で 自分の 考えを 選びます。");
     if (state.ask.trim() === "") parts.push("③に お願いを 書きます。");
+    else if (!asksSomething(state.ask))
+      parts.push("③は 聞く 文に します。「〜か。」で 終わります。");
   }
   return parts.join("");
 }
@@ -489,7 +536,7 @@ export function MemoCard({
       <p className="text-navy text-sm font-black">
         📝 <RubyText text="相談メモ" index={index} show={show} />
         <span className="text-ink-soft ml-1 text-xs font-bold">
-          <RubyText text="メモを 見て、文に して 話します。" index={index} show={show} />
+          <RubyText text="見ながら、文に して 話します。" index={index} show={show} />
         </span>
       </p>
       <ol className="text-navy mt-1 space-y-0.5 text-sm font-bold">

@@ -101,6 +101,7 @@ function failNote(reason: string): string {
 }
 
 export function ConsultPanel({
+  contentId,
   scene,
   novel,
   notice,
@@ -117,10 +118,13 @@ export function ConsultPanel({
   onFace,
   onBusy,
   onApproach,
+  onMemo,
   onFail,
   onPassed,
   onNext,
 }: {
+  /** 教材の id（相談メモを 端末に 残す 鍵に 入れる）。 */
+  contentId: string;
   scene: ConsultScene;
   novel: Novel;
   notice: NoticeScene | null;
@@ -141,6 +145,8 @@ export function ConsultPanel({
   onBusy: (busy: boolean) => void;
   /** 席の 絵を 見て いる あいだ（舞台の 立ち絵を 隠す——相手は まだ 席に いる）。 */
   onApproach: (on: boolean) => void;
+  /** 相談メモを 作って いる あいだ（スマホでは パネルを 高さ いっぱいに する）。 */
+  onMemo: (on: boolean) => void;
   onFail: (type: NovelFailureType) => void;
   onPassed: (stars: number) => void;
   onNext: () => void;
@@ -159,12 +165,17 @@ export function ConsultPanel({
    * 席の 絵の 無い 相談（悪い 知らせ）は、これまで どおり 声で 声を かける。
    */
   const opening: Phase = desk ? "approach" : "call";
-  /** 相談メモ（要望 #746）。あれば 話しかける 前に 作る。読みこみ直しても 残す（端末の 中）。 */
+  /*
+   * 相談メモ（要望 #746）。あれば 話しかける 前に 作る。読みこみ直しても 残す（端末の 中）。
+   * 合格して 戻って きた ときも 読む——合格の 画面の「あなたの お願い」と、「もう 一度
+   * 練習する」の 動きが、読み込み直したか どうかで 変わらない ように（2026-11-17 の code-critic）。
+   */
+  const memoKey = `${contentId}.${scene.id}`;
   const [memo, setMemo] = useState<NovelMemo | null>(() =>
-    scene.memo && !cleared ? readSavedMemo(scene.id) : null,
+    scene.memo ? readSavedMemo(memoKey, scene.memo) : null,
   );
   const [phase, setPhase] = useState<Phase>(() =>
-    cleared ? "passed" : scene.memo && !readSavedMemo(scene.id) ? "memo" : opening,
+    cleared ? "passed" : scene.memo && !memo ? "memo" : opening,
   );
   /** タイミングを 当てて 声かけに 来た（声かけの 上に「いい タイミング」を 出す）。 */
   const [timed, setTimed] = useState(false);
@@ -213,6 +224,10 @@ export function ConsultPanel({
     onApproach(phase === "approach");
   }, [phase, onApproach]);
   useLayoutEffect(() => () => onApproach(false), [onApproach]);
+  useLayoutEffect(() => {
+    onMemo(phase === "memo");
+  }, [phase, onMemo]);
+  useLayoutEffect(() => () => onMemo(false), [onMemo]);
 
   const level = retryLevel(effectiveFails);
   const name = `${partnerName}さん`;
@@ -510,13 +525,13 @@ export function ConsultPanel({
               spec={scene.memo}
               askForm={scene.askForm}
               facts={noticeFacts(notice)}
-              storageKey={scene.id}
+              storageKey={memoKey}
               index={index}
               show={show}
               translation={translation}
               onDone={(made) => {
                 setMemo(made);
-                saveMemo(scene.id, made);
+                saveMemo(memoKey, made);
                 setPhase(opening);
               }}
             />

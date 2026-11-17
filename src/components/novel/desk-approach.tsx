@@ -32,16 +32,26 @@ const SWITCH_GRACE_MS = 600;
 const LOAD_TIMEOUT_MS = 15_000;
 
 /**
+ * まちがえて 押した あと、押しても 通らない 時間（✖ を 読む 時間）。この あいだに 絵が
+ * 切りかわる 番が 来たら、切りかえを この 時間の 終わりまで 待たせる——✖ の 文と 絵が
+ * 食い違わない ように（2026-11-13 の 検収）、かつ ✖ が 0.1秒で 消えない ように
+ *（2026-11-17 の code-critic）。連打で「大丈夫そう」の 瞬間に 通れる のも 防ぐ（同日の R9）。
+ * 待ちが のびるのは 押した とき だけ、最大で この 長さ。
+ */
+const WRONG_LOCK_MS = 2000;
+
+/**
  * 話しかける タイミング（要望 #723）— 相手の 席の 絵を 見て、今 話しかけて いいかを 決める。
  *
  * 絵は 5秒ごとに 電話中・忙しそう・ほかの 人と 話して いる・大丈夫そう を 切りかわる
  *（並びは `deskCycle`）。絵は ゲームの 画面 いっぱいに 出し、**真ん中の「◯◯さんに 話しかける」**
  * を 大丈夫そうな ときに 押せば、声かけ（相談の はじめ）へ 進む（2026-11-13 の 指定）。
  * ちがう ときに 押すと、**絵を 横に ゆらし、絵の 中に**「✖ 今は 電話中です。…」を 出す
- *（同日の 指定）。押しつづけても 通れない ので、見て 待つ ことに なる。
- * 待ち時間は **のばさない**（前は まちがえる たびに 5秒 のびて いた。連打すると 待ちが
- * のびつづけ、「待てば 変わる」が 見えなく なる・2026-11-17 の Codex の 指摘）。
- * 上の 決まりに「絵は 5秒ぐらいで 変わります。」を 出し、待つ ことも 操作だと 先に 伝える。
+ *（同日の 指定）。まちがえた あと 2秒は 押しても 通らない（`WRONG_LOCK_MS`）ので、押し
+ * つづけても 通れず、見て 待つ ことに なる。前は まちがえる たびに 絵が まるまる 5秒 のびて
+ * いた（連打すると 待ちが のびつづけ、「待てば 変わる」が 見えなく なる・2026-11-17 の Codex）。
+ * 上の 決まりに「絵は 5秒ぐらいで 変わります。待つ ときは 押しません。」を 出し、待つ ことも
+ * 操作だと 先に 伝える。
  * 切りかえは 4枚が 読みこめて から 始める。
  *
  * ここで まちがえても 相談の 星は 減らさない——星は「相談の 中身が 伝わったか」の 目印なので、
@@ -86,6 +96,8 @@ export function DeskApproach({
   const [wrong, setWrong] = useState<{ state: NovelDeskState; at: number } | null>(null);
   const state: NovelDeskState = cycle[at % cycle.length] ?? "ok";
   const changedAt = useRef(0);
+  /** この 時刻までは 押しても 通らない・絵も 切りかえない（まちがえた あと）。 */
+  const lockUntil = useRef(0);
   const frame = useGameFrame();
   /* まちがえた ときに 絵を 横に ゆらす */
   const [scope, animate] = useAnimate<HTMLDivElement>();
@@ -97,11 +109,19 @@ export function DeskApproach({
 
   useEffect(() => {
     if (!ready) return;
-    const timer = window.setInterval(() => {
+    let timer = 0;
+    const tick = () => {
+      const wait = lockUntil.current - Date.now();
+      if (wait > 0) {
+        timer = window.setTimeout(tick, wait);
+        return;
+      }
       changedAt.current = Date.now();
       setAt((now) => now + 1);
-    }, DESK_SWITCH_MS);
-    return () => window.clearInterval(timer);
+      timer = window.setTimeout(tick, DESK_SWITCH_MS);
+    };
+    timer = window.setTimeout(tick, DESK_SWITCH_MS);
+    return () => window.clearTimeout(timer);
   }, [ready]);
 
   const markLoaded = (key: NovelDeskState) =>
@@ -109,12 +129,15 @@ export function DeskApproach({
 
   const tap = () => {
     if (!ready) return;
+    /* まちがえた すぐ あと（✖ を 出して いる あいだ）は 何も しない */
+    if (Date.now() < lockUntil.current) return;
     const before = at > 0 ? cycle[(at - 1) % cycle.length] : undefined;
     const justLeftOk = before === "ok" && Date.now() - changedAt.current < SWITCH_GRACE_MS;
     if (state === "ok" || justLeftOk) {
       onReady();
       return;
     }
+    lockUntil.current = Date.now() + WRONG_LOCK_MS;
     setWrong({ state, at });
     if (scope.current) {
       void animate(scope.current, { x: [0, -16, 16, -12, 12, -6, 6, 0] }, { duration: 0.5 });
@@ -203,7 +226,12 @@ export function DeskApproach({
             />
           </span>
           <span data-testid="novel-approach-wait">
-            ⏱ <RubyText text="絵は 5秒ぐらいで 変わります。" index={index} show={show} />
+            ⏱{" "}
+            <RubyText
+              text="絵は 5秒ぐらいで 変わります。待つ ときは 押しません。"
+              index={index}
+              show={show}
+            />
           </span>
         </p>
         {translation ? (

@@ -7,6 +7,7 @@ import { meetingSchema, type Novel } from "@/content/schema";
 import { pinnedShortContent, replacedContent } from "@/lib/stage-routes";
 import { annotateRuby, buildFuriganaIndex, mergeFuriganaEntries } from "@/lib/text/furigana";
 import { NOVEL_UI_FURIGANA } from "@/components/novel/ui-furigana";
+import { asksSomething, parseStoredMemo } from "@/components/novel/memo-panel";
 import {
   buildNovelJudgePrompt,
   parseNovelJudgment,
@@ -150,6 +151,44 @@ describe("相談の 練習の データ（仕様書 v4 §8）", () => {
     if (!memoScene?.memo) throw new Error("相談メモの ある 相談が ない");
     memoScene.memo.seenAnswer = ["ない ことば"];
     expect(meetingSchema.safeParse(broken).success).toBe(false);
+  });
+
+  it("端末に 残った 相談メモは 形を 確かめ、今の 教材に 無い ことばを 捨てる（2026-11-17 の code-critic）", () => {
+    const spec = allConsults(novel).find((consult) => consult.memo)?.memo;
+    if (!spec) throw new Error("相談メモが ない");
+    expect(parseStoredMemo(null, spec)).toBeNull();
+    expect(parseStoredMemo("文字", spec)).toBeNull();
+    expect(parseStoredMemo({ seen: "マウス", diff: [], stance: null, ask: "" }, spec)).toBeNull();
+    expect(parseStoredMemo({ seen: [], diff: [], stance: 3, ask: "" }, spec)).toBeNull();
+    expect(parseStoredMemo({ seen: [], diff: [], stance: null, ask: 5 }, spec)).toBeNull();
+    const kept = parseStoredMemo(
+      {
+        seen: ["マウス", "古い ことば"],
+        diff: ["キーボード"],
+        stance: "古い 選択肢",
+        ask: "教えて いただけませんか",
+      },
+      spec,
+    );
+    expect(kept).toEqual({
+      seen: ["マウス"],
+      diff: ["キーボード"],
+      stance: null,
+      ask: "教えて いただけませんか",
+    });
+  });
+
+  it("相談メモの ③は 聞く 文（「〜か。」で 終わる）で できあがる", () => {
+    for (const text of [
+      "教えて いただけませんか",
+      "キーボードも 出しますか。",
+      "いかがでしょうか？",
+    ]) {
+      expect(asksSomething(text), text).toBe(true);
+    }
+    for (const text of ["キーボード", "キーボードも 出します。", ""]) {
+      expect(asksSomething(text), text).toBe(false);
+    }
   });
 
   it("お手本の 文は 自分の 判定（読めば 合格）でも 合格に なる", () => {
@@ -339,7 +378,15 @@ describe("画面の 字の 読み（UI の 辞書だけでも、教材と 混ぜ
     ["不正解です。もう 一度、①から 選びます。", "ふせいかいです。もう いちど、①から えらびます。"],
     ["合わない 行を 1行 押します。", "あわない ぎょうを 1ぎょう おします。"],
     /* 2026-11-17（相談メモの 問い・くらべる 画面の ✖・席の 絵の 待ち方） */
-    ["絵は 5秒ぐらいで 変わります。", "えは 5びょうぐらいで かわります。"],
+    [
+      "絵は 5秒ぐらいで 変わります。待つ ときは 押しません。",
+      "えは 5びょうぐらいで かわります。まつ ときは おしません。",
+    ],
+    ["見ながら、文に して 話します。", "みながら、ぶんに して はなします。"],
+    [
+      "③は 聞く 文に します。「〜か。」で 終わります。",
+      "③は きく ぶんに します。「〜か。」で おわります。",
+    ],
     [
       "①と ②は 質問に 答えて、ことばを 押します。③は 自分で 考えて 書きます。",
       "①と ②は しつもんに こたえて、ことばを おします。③は じぶんで かんがえて かきます。",

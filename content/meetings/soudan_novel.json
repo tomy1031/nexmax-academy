@@ -256,16 +256,16 @@
             "step": "goal",
             "type": "line",
             "speaker": "hendy",
-            "text": "ちがいが あったら、作る 前に 私に 聞いて ください。",
-            "en": "If something is different, ask me before you build it.",
+            "text": "ちがいが あったら、作る 前に 聞いて ください。",
+            "en": "If something is different, ask before you build it.",
             "face": "neutral"
           },
           {
             "id": "m10",
             "step": "goal",
             "type": "goal",
-            "text": "今日の 目的：商品一覧を 作る 前に、仕様書と 商品データを 比べる。ちがいが あったら、ヘンディさんに 聞く。",
-            "en": "Today's goal: before making the product list, compare the specification and the product data. If something is different, ask Hendy."
+            "text": "今日の 目的：商品一覧を 作る 前に、仕様書と 商品データを 比べる。ちがいが あったら、聞く。",
+            "en": "Today's goal: before making the product list, compare the specification and the product data. If something is different, ask."
           },
           {
             "id": "m11",
@@ -420,8 +420,8 @@
             "type": "consult",
             "to": "hendy",
             "support": "form",
-            "askForm": "「＿＿ いただけませんか。」　または「私は ＿＿と 思うのですが、いかがでしょうか。」",
-            "call": "ヘンディさん、今、お時間 よろしいですか。",
+            "askForm": "＿＿ いただけませんか。",
+            "call": "ヘンディさん、今、お時間 よろしいでしょうか。",
             "reply": "はい、どう しましたか。",
             "replyEn": "Yes, what is it?",
             "topic": "出す 商品",
@@ -433,7 +433,7 @@
             },
             "example": "仕様書では、出す 商品は マウスと USBライトです。でも、商品データには キーボードも あります。キーボードを 出すか どうか、わかりません。教えて いただけませんか。",
             "exampleEn": "The specification says to show the mouse and the USB light. But the product data also has a keyboard. I don't know whether to show the keyboard. Could you tell me?",
-            "cloze": "仕様書では、出す 商品は ＿＿です。でも、商品データには ＿＿も あります。キーボードを ＿＿か どうか、わかりません。＿＿ いただけませんか。",
+            "cloze": "仕様書では、出す 商品は ＿＿です。でも、商品データには ＿＿も あります。＿＿を 出すか どうか、わかりません。＿＿ いただけませんか。",
             "reactions": {
               "no_ask": {
                 "text": "わかりました。それで、何を お願いしたいですか？",
@@ -470,13 +470,13 @@
                   "まだ わからない"
                 ]
               },
-              "ask": "でも、決めるのは ヘンディさんです。ヘンディさんに 何と 聞きますか。短く 書きます。",
+              "ask": "でも、決めるのは ヘンディさんです。ヘンディさんに 何を お願いしますか。短く 書きます。",
               "hints": [
                 "この まま 作ると、どう なりますか。",
                 "ヘンディさんは 何が できますか。（決める・教える）",
                 "聞かないで 作ったら、あとで 何が こまりますか。"
               ],
-              "frame": "① 仕様書では、出す 商品は ＿＿です。② ＿＿を 出すか どうか、わかりません。③ ＿＿。",
+              "frame": "① 仕様書では、出す 商品は ＿＿です。② でも、商品データには ＿＿も あります。＿＿を 出すか どうか、わかりません。③ ＿＿ いただけませんか。",
               "others": [
                 {
                   "text": "キーボードは 出さなくて いいですか。",
@@ -698,7 +698,7 @@
             "type": "consult",
             "to": "shirai",
             "support": "sentence",
-            "call": "白井さん、今、お時間 よろしいですか。",
+            "call": "白井さん、今、お時間 よろしいでしょうか。",
             "reply": "はい、どう しましたか。",
             "replyEn": "Yes, what is it?",
             "topic": "住所の 欄",
@@ -708,9 +708,9 @@
               "ask": "住所の 欄を 入れて ほしい と お願いする、または どう するかを 聞く。",
               "note": "「わかりません」と はっきり 言わなくても、ちがい・問題を 言えば ②は ある と する。"
             },
-            "example": "仕様書には、名前と 住所と 数量が あります。でも、デザインには 住所の 欄が ありません。どうして ないのか、わかりません。住所の 欄を 入れて もらえますか。",
+            "example": "仕様書には、名前と 住所と 数量が あります。でも、デザインには 住所の 欄が ありません。どうして ないのか、わかりません。住所の 欄を 入れて いただけませんか。",
             "exampleEn": "The specification has name, address, and quantity. But the design has no address field. I don't know why it isn't there. Could you add an address field?",
-            "cloze": "仕様書には、＿＿。でも、デザインには ＿＿。どうして ないのか、＿＿。＿＿もらえますか。"
+            "cloze": "仕様書には、＿＿。でも、デザインには ＿＿。どうして ないのか、＿＿。＿＿ いただけませんか。"
           },
           {
             "id": "t09",
@@ -871,7 +871,7 @@
             "type": "consult",
             "to": "nyam",
             "support": "sentence",
-            "call": "ニャムさん、今、お時間 よろしいですか。",
+            "call": "ニャムさん、今、お時間 よろしいでしょうか。",
             "reply": "はい、どう しましたか。",
             "replyEn": "Yes, what is it?",
             "topic": "ユーザーID",
@@ -881,9 +881,9 @@
               "ask": "ユーザーIDが なくても 注文できるように して ほしい と お願いする、または どう するかを 聞く。",
               "note": "「わかりません」と はっきり 言わなくても、ちがい・問題を 言えば ②は ある と する。"
             },
-            "example": "仕様書では、ログインしなくても 注文できます。でも、APIは ユーザーIDが 必須です。IDが ない ときに どう するか、わかりません。IDが なくても 注文できるように して もらえますか。",
+            "example": "仕様書では、ログインしなくても 注文できます。でも、APIは ユーザーIDが 必須です。IDが ない ときに どう するか、わかりません。IDが なくても 注文できるように して いただけませんか。",
             "exampleEn": "The specification says you can order without logging in. But the API requires a user ID. I don't know what to do when there is no ID. Could you make it possible to order without an ID?",
-            "cloze": "仕様書では、＿＿。でも、APIは ＿＿。IDが ない ときに どう するか、＿＿。＿＿もらえますか。"
+            "cloze": "仕様書では、＿＿。でも、APIは ＿＿。IDが ない ときに どう するか、＿＿。＿＿ いただけませんか。"
           },
           {
             "id": "t17",
@@ -1223,7 +1223,7 @@
             "type": "consult",
             "to": "shirai",
             "support": "keyword",
-            "call": "白井さん、今、お時間 よろしいですか。",
+            "call": "白井さん、今、お時間 よろしいでしょうか。",
             "reply": "はい、どう しましたか。",
             "replyEn": "Yes, what is it?",
             "topic": "light.pngの ファイル",
@@ -1233,9 +1233,9 @@
               "ask": "light.png を フォルダに 入れて ほしい と お願いする。",
               "note": "自分で した ことを 先に 言うのが この 日の ポイント。した ことが 無ければ has_context は false。 「わかりません」と はっきり 言わなくても、ちがい・問題を 言えば ②は ある と する。"
             },
-            "example": "ファイル名を 直したので、マウスの 画像は 出ました。でも、light.pngが フォルダに ありません。どこに あるか、わかりません。light.pngを 入れて もらえますか。",
+            "example": "ファイル名を 直したので、マウスの 画像は 出ました。でも、light.pngが フォルダに ありません。どこに あるか、わかりません。light.pngを 入れて いただけませんか。",
             "exampleEn": "I fixed the file name, so the mouse image appears. But light.png is not in the folder. I don't know where it is. Could you put light.png in?",
-            "cloze": "＿＿を 直したので、マウスの 画像は 出ました。でも、＿＿。どこに あるか、＿＿。＿＿もらえますか。",
+            "cloze": "＿＿を 直したので、マウスの 画像は 出ました。でも、＿＿。どこに あるか、＿＿。＿＿ いただけませんか。",
             "reactions": {
               "vague": {
                 "text": "すみません、何の 話ですか？",
@@ -1498,7 +1498,7 @@
             "type": "consult",
             "to": "hendy",
             "support": "keyword",
-            "call": "ヘンディさん、今、お時間 よろしいですか。",
+            "call": "ヘンディさん、今、お時間 よろしいでしょうか。",
             "reply": "はい、どう しましたか。",
             "replyEn": "Yes, what is it?",
             "topic": "松本さんの メッセージ",
@@ -1529,8 +1529,8 @@
               "no_ask": {
                 "text": "わかりました。それで、何を お願いしたいですか？",
                 "en": "I see. So, what would you like to ask me to do?",
-                "hint": "③ お願いを 言いましょう。「〜ますか。」",
-                "hintEn": "Say ③ your request: \"...masu ka?\""
+                "hint": "③ お願いを 言いましょう。「〜と 思うのですが、いかがでしょうか。」",
+                "hintEn": "Say ③ your request: \"... to omou no desu ga, ikaga deshou ka?\""
               }
             }
           },
@@ -1783,7 +1783,7 @@
             "type": "consult",
             "to": "nyam",
             "support": "closed",
-            "call": "ニャムさん、今、お時間 よろしいですか。",
+            "call": "ニャムさん、今、お時間 よろしいでしょうか。",
             "reply": "はい、どう しましたか。",
             "replyEn": "Yes, what is it?",
             "topic": "注文の テスト",
@@ -1793,9 +1793,9 @@
               "ask": "調べて ほしい・直して ほしい と お願いする。",
               "note": "「たぶん 大丈夫」など、問題を そのまま 言わない ときは hiding。 「わかりません」と はっきり 言わなくても、ちがい・問題を 言えば ②は ある と する。"
             },
-            "example": "「注文する」ボタンを 2回 つづけて 押しました。すると、同じ 注文が 2件 登録されました。原因が わかりません。調べて もらえますか。",
+            "example": "「注文する」ボタンを 2回 つづけて 押しました。すると、同じ 注文が 2件 登録されました。原因が わかりません。調べて いただけませんか。",
             "exampleEn": "I pressed the \"Order\" button twice in a row. Then the same order was registered twice. I don't know the cause. Could you check it?",
-            "cloze": "＿＿を 2回 つづけて 押しました。すると、＿＿。原因が ＿＿。＿＿もらえますか。",
+            "cloze": "＿＿を 2回 つづけて 押しました。すると、＿＿。原因が ＿＿。＿＿ いただけませんか。",
             "whatIf": {
               "hiding": [
                 {
@@ -1937,7 +1937,7 @@
             "type": "consult",
             "to": "hendy",
             "support": "closed",
-            "call": "ヘンディさん、今、お時間 よろしいですか。",
+            "call": "ヘンディさん、今、お時間 よろしいでしょうか。",
             "reply": "はい、どう しましたか。",
             "replyEn": "Yes, what is it?",
             "topic": "納品の 時間",
@@ -1968,8 +1968,8 @@
               "no_ask": {
                 "text": "わかりました。それで、何を お願いしたいですか？",
                 "en": "I see. So, what would you like to ask me to do?",
-                "hint": "③ お願いを 言いましょう。「〜ますか。」",
-                "hintEn": "Say ③ your request: \"...masu ka?\""
+                "hint": "③ お願いを 言いましょう。「〜と 思うのですが、いかがでしょうか。」",
+                "hintEn": "Say ③ your request: \"... to omou no desu ga, ikaga deshou ka?\""
               }
             }
           },

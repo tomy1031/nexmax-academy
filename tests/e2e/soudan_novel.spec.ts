@@ -73,7 +73,9 @@ async function fillMemo(page: Page): Promise<void> {
     [2, memo.diffAnswer ?? []],
   ] as const) {
     for (const word of words) {
-      await page.getByTestId(`novel-memo-pick-${n}`).locator(`[data-word="${word}"]`).click();
+      const chip = page.getByTestId(`novel-memo-pick-${n}`).locator(`[data-word="${word}"]`);
+      /* 書きかけが 戻って いる ときは 押した まま（押すと 外れる） */
+      if ((await chip.getAttribute("aria-pressed")) !== "true") await chip.click();
     }
   }
   await page.locator("[data-stance]").first().click();
@@ -160,6 +162,10 @@ test.describe("相談の 練習（サウンドノベル）", () => {
       const id = (await page.getByTestId("novel-player").getAttribute("data-scene")) ?? "";
       if (!seen.has(id)) {
         seen.add(id);
+        /* 悪い 知らせの 相談（席の 絵が 無い）は、これまで どおり 声で 声を かける 段から */
+        if (id === "c_fri1") {
+          await expect(page.getByTestId("novel-consult")).toHaveAttribute("data-phase", "call");
+        }
         /* 代表の 場面で ルビの 漏れを 数える（気づき・相談・結果の 画面・ポイント） */
         if (["n_mon", "c_mon", "m20", "m22", "c_thu", "f21"].includes(id)) {
           /* 相談は 合格の 画面で 見る（タイミングの 段では 気づきカードを 隠す ため） */
@@ -382,10 +388,24 @@ test.describe("相談の 練習（サウンドノベル）", () => {
     const wrongWord = ["マウス", "USBライト", "キーボード"].find(
       (word) => !(memoSpec.seenAnswer ?? []).includes(word),
     );
+    if (!wrongWord) throw new Error("①に 不正解の ことばが 無い");
     await page.getByTestId("novel-memo-pick-1").locator(`[data-word="${wrongWord}"]`).click();
     await expect(page.getByTestId("novel-memo-wrong-1")).toBeVisible();
     expect(await bareKanjiTexts(page)).toEqual([]);
     await shot(page, "novel-memo");
+    /* ③が 聞く 文で なければ「できた」に しない */
+    const rightWord = (memoSpec.seenAnswer ?? [])[0] ?? "";
+    await page.getByTestId("novel-memo-pick-1").locator(`[data-word="${rightWord}"]`).click();
+    await page.getByTestId("novel-memo-input").fill("キーボード");
+    await page.getByTestId("novel-memo-done").click();
+    await expect(page.getByTestId("novel-memo-missing")).toBeVisible();
+    /* 書きかけは 読み込み直しても 残る（2026-11-17 の 通しプレイ「作った メモが 消える」） */
+    await page.reload();
+    await page.getByTestId("novel-continue").click();
+    await expect(
+      page.getByTestId("novel-memo-pick-1").locator(`[data-word="${rightWord}"]`),
+    ).toHaveAttribute("aria-pressed", "true");
+    await expect(page.getByTestId("novel-memo-input")).toHaveValue("キーボード");
     await fillMemo(page);
     /* 席の 絵が ゲームの 画面に 出て、真ん中に「◯◯さん、今 お時間 よろしいでしょうか？」が ある */
     await expect(page.getByTestId("novel-approach")).toBeVisible();
@@ -449,6 +469,8 @@ test.describe("相談の 練習（サウンドノベル）", () => {
     /* 左は 正しい・右が ちがう → 左を 残して 右を 選び直す */
     await page.locator(`[data-line="left:${left}"]`).click();
     await expect(page.locator('[data-doc="right"]')).toHaveAttribute("data-active", "1");
+    /* ②に 移ると 表（右の 資料）が 画面に 入る（スマホでは 下に 隠れて いた） */
+    await expect(page.locator('[data-doc="right"]')).toBeInViewport();
     await page.locator(`[data-line="right:${wrongRight}"]`).click();
     const wrong = page.getByTestId("novel-notice-wrong");
     /* 文は ルビで 割れるので、判定の 種類で 見る */
@@ -461,10 +483,13 @@ test.describe("相談の 練習（サウンドノベル）", () => {
     await expect(wrong).toBeInViewport();
     expect(await bareKanjiTexts(page)).toEqual([]);
     await shot(page, "novel-notice-partial");
-    /* 両方 ちがう → ①から（左の 行は 押し直せる） */
+    /* ①の まちがいは ②を 待たずに すぐ 言う（2026-11-17 の 通しプレイ） */
     await page.locator(`[data-line="left:${wrongLeft}"]`).click();
-    await page.locator(`[data-line="right:${wrongRight}"]`).click();
-    await expect(wrong).toHaveAttribute("data-verdict", "none");
+    await expect(wrong).toHaveAttribute("data-verdict", "leftWrong");
+    await expect(page.locator(`[data-line="left:${wrongLeft}"]`)).toHaveAttribute(
+      "data-wrong",
+      "1",
+    );
     /* 正解 → カードと「つぎへ」が パネルの 中で 見える */
     await page.locator(`[data-line="left:${left}"]`).click();
     await page.locator(`[data-line="right:${right}"]`).click();
