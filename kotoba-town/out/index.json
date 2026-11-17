@@ -7163,5 +7163,221 @@
   "seconds": 5.662,
   "model": "gemini-2.5-flash-native-audio-preview-12-2025",
   "transcript": "はい。 さくらまちまでにひゃくよんじゅうえんです。一緒に買いましょう。"
+ },
+ "l14a/n4_plat_0": {
+  "hash": "4caf73a127",
+  "seconds": 4.964833,
+  "model": "gemini-3.8-live",
+  "transcript": "さくらまちは にばんせんです。きっぷは いっしょに かいましょう。"
+ },
+ "l14a/n5_0": {
+  "hash": "6a0f9d3954",
+  "seconds": 3.5465,
+  "model": "gemini-3.8-live",
+  "transcript": "ここ を 見 て ください 。 漢字 が 分かり ます か ?"
+ },
+ "l14a/n6_help_0": {
+  "hash": "90758f3764",
+  "seconds": 7.185208,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "いいですよ。これはさくらまちです。240円を出してください。"
+ },
+ "l14a/n6_ok_0": {
+  "hash": "ca21908a2b",
+  "seconds": 4.931833,
+  "model": "gemini-3.8-live",
+  "transcript": "すごいですね 。じゃ 、240 円 を 出し て ください 。"
+ },
+ "l14a/n7_0": {
+  "hash": "3e2c74974f",
+  "seconds": 3.059,
+  "model": "gemini-3.8-live",
+  "transcript": "はい 。 キップ と お釣り です 。 どうぞ 。"
+ },
+ "l14a/n7_1": {
+  "hash": "470daeb2e0",
+  "seconds": 3.558208,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "さくらまちへ 何をしに行きますか。"
+ },
+ "l14a/end_hurry_0": {
+  "hash": "44e80824f5",
+  "seconds": 3.719667,
+  "model": "gemini-3.8-live",
+  "transcript": "じゃ、いそいでください。すぐでんしゃがきますよ。"
+ },
+ "l14a/end_hurry_1": {
+  "hash": "81b998b320",
+  "seconds": 2.659292,
+  "model": "gemini-3.8-live",
+  "transcript": "2番 線 です 。 いっ て いらっしゃい 。"
+ },
+ "l14a/end_ok_0": {
+  "hash": "9b572a46ea",
+  "seconds": 3.291792,
+  "model": "gemini-3.8-live",
+  "transcript": " あ、でんしゃが きましたよ。"
+ },
+ "l14a/end_ok_1": {
+  "hash": "8f49fbe307",
+  "seconds": 2.713958,
+  "model": "gemini-3.8-live",
+  "transcript": "いそいで ください！"
+ },
+ "l14b/n1_0": {
+  "hash": "4fd88d139a",
+  "seconds": 4.012167,
+  "model": "gemini-3.8-live",
+  "transcript": "あー 、 忙しい です 。 5 時 から 会議 です 。"
+ },
+ "l14b/n1_1": {
+  "hash": "ab43417321",
+  "seconds": 2.830125,
+  "model": "gemini-3.8-live",
+  "transcript": "まだコピーが50枚あります。"
+ },
+ "l14b/n2_copy_0": {
+  "hash": "68d452238f",
+  "seconds": 5.697833,
+  "model": "gemini-3.8-live",
+  "transcript": "ありがとうございます 。 じゃ 、 これ を 20 枚 コピー し て ください 。"
+ },
+ "l14b/n2_other_0": {
+  "hash": "398398129c",
+  "seconds": 3.771083,
+  "model": "gemini-3.8-live",
+  "transcript": " ありがとうございます。じゃ、コピーを手伝ってください。"
+ },
+ "l14b/n3_0": {
+  "hash": "247c28d77f",
+  "seconds": 3.551292,
+  "model": "gemini-3.8-live",
+  "transcript": "ちょっといいですか。いま"
+ },
+ "l14b/n4_help_0": {
+  "hash": "ee46ab43f2",
+  "seconds": 6.325625,
+  "model": "gemini-3.8-live",
+  "transcript": "ありがとう。会議は五時からです。急いでください。"
+ },
+ "l14b/n4_other_0": {
+  "hash": "cfd333e747",
+  "seconds": 5.937542,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か 。 すみ ませ ん が 、 後 で 青木 さん を 手伝っ て ください 。"
+ },
+ "l14b/n5_0": {
+  "hash": "9f4e7d7ed8",
+  "seconds": 3.938125,
+  "model": "gemini-3.8-live",
+  "transcript": "子ども部屋 は ちょっと 暑い です ね 。"
+ },
+ "l14b/n6_ac_0": {
+  "hash": "a62b9f527d",
+  "seconds": 4.371875,
+  "model": "gemini-3.8-live",
+  "transcript": " ええ、お願いします。 ……ああ、涼しいですね。"
+ },
+ "l14b/n6_window_0": {
+  "hash": "e36383faf3",
+  "seconds": 4.323417,
+  "model": "gemini-3.8-live",
+  "transcript": "窓ですか。ええ、お願いします。ありがとう。"
+ },
+ "l14b/n7_0": {
+  "hash": "ae44f242c5",
+  "seconds": 3.141167,
+  "model": "gemini-3.8-live",
+  "transcript": "あれ 、 コピー 機 の 紙 が あり ませ ん 。"
+ },
+ "l14b/n8_offer_0": {
+  "hash": "a050fbc0bf",
+  "seconds": 4.984625,
+  "model": "gemini-3.8-live",
+  "transcript": "すみ ませ ん お 願い し ます 神 は あの 棚 の 上 です"
+ },
+ "l14b/n8_ask_0": {
+  "hash": "4256e71ca2",
+  "seconds": 4.589958,
+  "model": "gemini-3.8-live",
+  "transcript": "あの 棚 の 上 です 。 すみ ませ ん が 取っ て ください 。"
+ },
+ "l14b/end_0": {
+  "hash": "90cb0072d7",
+  "seconds": 2.937625,
+  "model": "gemini-3.8-live",
+  "transcript": "終わり まし た 。 どう も ありがとう ござい まし た 。"
+ },
+ "l14b/end_1": {
+  "hash": "1f6186a6ad",
+  "seconds": 2.585333,
+  "model": "gemini-3.8-live",
+  "transcript": "じゃあ 、 会議 を 始め ましょう 。"
+ },
+ "l14b/free_open": {
+  "hash": "ee10b59a91",
+  "seconds": 5.886583,
+  "model": "gemini-3.8-live",
+  "transcript": "会議は 6時までです。それから時間があります。何か手伝いましょうか。"
+ },
+ "l14c/n1_0": {
+  "hash": "509909149c",
+  "seconds": 3.538667,
+  "model": "gemini-3.8-live",
+  "transcript": "こんにちは 。 あれ 、 その 髪 は 何 です か ?"
+ },
+ "l14c/n2_read_0": {
+  "hash": "34256d63e0",
+  "seconds": 2.818708,
+  "model": "gemini-3.8-live",
+  "transcript": "いい です よ 。 ちょっと 見せ て ください 。"
+ },
+ "l14c/n2_look_0": {
+  "hash": "72e9f5c890",
+  "seconds": 3.82675,
+  "model": "gemini-3.8-live",
+  "transcript": "漢字 が 多い です ね 。 ちょっと 見せ て ください 。"
+ },
+ "l14c/n3_0": {
+  "hash": "39adc0b57d",
+  "seconds": 6.742167,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "これは ゆうびんきょくのかみです。くにから にもつがきましたよ。"
+ },
+ "l14c/n3_1": {
+  "hash": "0a7a5c529c",
+  "seconds": 3.632208,
+  "model": "gemini-3.8-live",
+  "transcript": "私 が 郵便 局 に 電話 を かけ ましょう か ?"
+ },
+ "l14c/n4_call_0": {
+  "hash": "d8ffd99198",
+  "seconds": 3.605542,
+  "model": "gemini-3.8-live",
+  "transcript": "じゃあかけますね。ちょっと待ってください。"
+ },
+ "l14c/n4_self_0": {
+  "hash": "5938944579",
+  "seconds": 4.980083,
+  "model": "gemini-3.8-live",
+  "transcript": " わたしが かけますね。"
+ },
+ "l14c/n5_0": {
+  "hash": "5cc5a90232",
+  "seconds": 4.434958,
+  "model": "gemini-3.8-live",
+  "transcript": "こんにちは 。 寒い です ね 。 ここ で 何 を し て い ます か ?"
+ },
+ "l14c/n6_call_0": {
+  "hash": "e73408e613",
+  "seconds": 4.565083,
+  "model": "gemini-3.8-live",
+  "transcript": "電話 です か 。 彩 の 電話 は いつ も 長い です よ 。"
+ },
+ "l14c/n6_wait_0": {
+  "hash": "41ee1f23ff",
+  "seconds": 4.292333,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か 寒い です から 中 で 待っ て ください 。"
  }
 }
