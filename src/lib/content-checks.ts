@@ -1284,9 +1284,10 @@ export function collectLabeledTexts(content: Content): LabeledText[] {
                   (scene[side].columns ?? []).forEach((column, c) =>
                     push(`${at}.${side}.columns[${c}]`, column),
                   );
-                  scene[side].lines.forEach((line, l) =>
-                    push(`${at}.${side}.lines[${l}].text`, line.text),
-                  );
+                  scene[side].lines.forEach((line, l) => {
+                    push(`${at}.${side}.lines[${l}].text`, line.text);
+                    push(`${at}.${side}.lines[${l}].why`, line.why);
+                  });
                 }
                 push(`${at}.prompt`, scene.prompt);
                 push(`${at}.hint`, scene.hint);
@@ -1320,7 +1321,9 @@ export function collectLabeledTexts(content: Content): LabeledText[] {
                 if (scene.memo) {
                   const memo = scene.memo;
                   memo.seenWords.forEach((word, w) => push(`${at}.memo.seenWords[${w}]`, word));
+                  push(`${at}.memo.seenAsk`, memo.seenAsk);
                   memo.diffWords.forEach((word, w) => push(`${at}.memo.diffWords[${w}]`, word));
+                  push(`${at}.memo.diffAsk`, memo.diffAsk);
                   push(`${at}.memo.stance.question`, memo.stance?.question);
                   (memo.stance?.options ?? []).forEach((option, o) =>
                     push(`${at}.memo.stance.options[${o}]`, option),
