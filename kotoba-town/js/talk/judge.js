@@ -333,11 +333,11 @@ export function offlineInterviewReport(turns, rubric) {
 export const FREE_LEVELS = {
   easy: {
     ja: 'やさしい', en: 'Easy · N5',
-    guide: 'The learner is a beginner (around JLPT N5, Minna no Nihongo lessons 1–10). Speak slowly and very simply: short です/ます sentences, basic everyday words, one idea per sentence, no long chains, no keigo. If they struggle, ask a yes/no question or give two choices (AですかBですか).',
+    guide: 'The learner is a beginner (around JLPT N5, Minna no Nihongo lessons 1–10). Speak slowly and very simply, using ONLY: short です/ます sentences, nouns and adjectives (〜は 〜です, 〜い／〜な), ます-forms (〜ます／〜ません／〜ました／〜ませんか／〜ましょう), あります／います, 〜が 好きです, reasons with 〜から. Do NOT use ので, 〜と 思います, 〜て-forms (〜て います／〜て ください), dictionary or plain forms inside a sentence, or relative clauses. Basic everyday words, one idea per sentence, no keigo. If they struggle, ask a yes/no question or give two choices (AですかBですか).',
   },
   normal: {
     ja: 'ふつう', en: 'Normal · N4',
-    guide: 'The learner is around JLPT N4 (Minna no Nihongo up to about lesson 25: て-form, ない-form, dictionary and た-forms, 〜たい, 〜たことが あります, 〜と 思います). Speak at a gentle pace in short, natural sentences.',
+    guide: 'The learner is around JLPT N4 (Minna no Nihongo up to about lesson 25: て-form, ない-form, dictionary and た-forms, 〜たい, 〜たことが あります, 〜と 思います, 〜とき, 〜たら). Speak at a gentle pace in short, natural sentences; avoid N3 grammar and difficult kanji words.',
   },
   hard: {
     ja: 'むずかしい', en: 'Hard · N3',
@@ -370,13 +370,14 @@ export function freeTool({ nonBlocking = false } = {}) {
  * System instruction for the free-talk room: the partner is played live, nothing is scripted.
  * partner = resolved cast entry; info = data/freetalk.json partners[id]; topic = a topic entry (or the "anything" topic).
  */
-export function freeSystemInstruction({ partner, info = {}, place, setupEn = '', topic, level = 'easy', style = 'polite', learnerName = '', news = [] }) {
+export function freeSystemInstruction({ partner, info = {}, place, setupEn = '', topic, level = 'easy', style = 'polite', learnerName = '', news = [], mood = '' }) {
   const L = FREE_LEVELS[level] || FREE_LEVELS.easy;
   const casual = style === 'casual';
   return [
     `You are ${partner.nameJa}（${partner.kana}）, ${partner.roleEn}. Persona (Japanese): ${partner.personaJa}${partner.styleJa ? ` Speaking style: ${partner.styleJa}` : ''}`,
     `This is "Kotoba Town", a Japanese speaking-practice game set in a small Japanese town. Right now you and the learner have a FREE CONVERSATION by voice — nothing is scripted. The learner is an IT student from Cambodia who studies Japanese${learnerName ? `; their name is ${learnerName}` : ''}.`,
     `Place: ${place}${setupEn ? ` (${setupEn})` : ''}.${info.relationEn ? ` Who you are to the learner: ${info.relationEn}.` : ''}${info.likesEn ? ` You like: ${info.likesEn}.` : ''}`,
+    mood ? `Today you are ${mood} — let it colour how you talk, without overdoing it.` : '',
     news.length ? `Small things from your own life today that you may mention naturally, one at a time, only when it fits: ${news.map((n) => `「${n}」`).join(' ')}` : '',
     `Level: ${L.guide}`,
     casual

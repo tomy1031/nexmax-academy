@@ -2,9 +2,15 @@
   "note": "Cases for the 'Kotoba Town e2e' workflow: the learner's voice (fake mic, repeated), how long to run, and the mode (practice = れんしゅう, real = ほんばん).",
   "cases": [
     {
-      "variant": "free-sakamoto-cafe-easy",
+      "variant": "l17a",
       "mode": "practice",
-      "say": "しゅうまつは ともだちと こうえんへ いきました。とても たのしかったです。",
+      "say": "きのうから のどが いたいです。ねつも あります。",
+      "seconds": 200
+    },
+    {
+      "variant": "free-nakano-izakaya-normal",
+      "mode": "practice",
+      "say": "からあげと ウーロン茶を ください。カンボジアでも からあげを よく 食べます。",
       "seconds": 170
     }
   ],

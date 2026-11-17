@@ -19,6 +19,12 @@ export function topicsFor(data, { partner, place, level }) {
   return [ANY_TOPIC, ...specific, ...general];
 }
 
+/** The partner's mood today (one per conversation, for variety). */
+export const MOODS = [
+  'in a cheerful mood', 'relaxed and chatty', 'a little tired but friendly', 'excited about some small good news',
+  'curious about the learner and full of questions', 'calm and thoughtful', 'in a playful, joking mood', 'a bit busy but kind',
+];
+
 export const ANY_TOPIC = {
   id: 'any', kind: 'chat', titleJa: 'なんでも', titleEn: 'Anything',
   ideasEn: ['Answer their question, then ask one back', 'Talk about your day, your studies or your town', 'Say what you like and why'],
@@ -47,6 +53,7 @@ export class FreeTalk {
     this.twistAt = 3 + Math.floor(Math.random() * 3);
     this.twist = o.twists?.length && Math.random() < 0.85 ? pick(o.twists) : null;
     this.news = shuffle(o.info?.newsJa || []).slice(0, 3);
+    this.mood = o.mood || pick(MOODS);
     this.mode = 'free';
   }
 
@@ -97,7 +104,7 @@ export class FreeTalk {
   instruction() {
     return freeSystemInstruction({
       partner: this.partner, info: this.info, place: `${this.place.nameJa} (${this.place.nameEn})`, setupEn: this.setupEn,
-      topic: this.topic, level: this.level, style: this.style, learnerName: this.settings.name, news: this.news,
+      topic: this.topic, level: this.level, style: this.style, learnerName: this.settings.name, news: this.news, mood: this.mood,
     });
   }
 
