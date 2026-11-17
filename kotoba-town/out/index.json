@@ -5455,8 +5455,9 @@
  },
  "b09b/n2a_0": {
   "hash": "84ccc27e4c",
-  "seconds": 6.750083,
+  "seconds": 3.047333,
   "model": "gemini-3.8-live",
-  "transcript": "……はい。それで、原因は何だったんでしょうか。"
+  "transcript": "",
+  "note": "re-take (run 44006779216) repeated the sentence; kept this take, which only drops the leading はい"
  }
 }

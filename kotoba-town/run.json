@@ -2,7 +2,7 @@
   "note": "Controls the 'Kotoba Town voices' workflow. Change a value and push to run it again.",
   "selfcheck": false,
   "generate": true,
-  "only": "b09b/n2a_0",
-  "rounds": 1,
+  "only": "",
+  "rounds": 6,
   "roundMinutes": 22
 }
