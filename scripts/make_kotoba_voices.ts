@@ -81,7 +81,7 @@ for (const line of todo) {
   }
   try {
     // 長すぎる 音は 捨てる（途中で 10 秒 以上 だまった 例が あった・l03b/n8_tea_0）
-    const maxSeconds = Math.max(3, [...line.text].length * 0.32 + 1.5);
+    const maxSeconds = Math.max(3, [...line.text].length * 0.28 + 1.2); // a doubled sentence must not fit
     const spoken = await synthesizeWithFallback(
       line.text,
       {
