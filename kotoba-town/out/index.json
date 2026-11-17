@@ -7379,5 +7379,335 @@
   "seconds": 4.292333,
   "model": "gemini-3.8-live",
   "transcript": "そう です か 寒い です から 中 で 待っ て ください 。"
+ },
+ "l14c/n7_0": {
+  "hash": "195aad5855",
+  "seconds": 4.702625,
+  "model": "gemini-3.8-live",
+  "transcript": "にもつはこんばん しちじごろきます。うちにいて くださいね。"
+ },
+ "l14c/n7_1": {
+  "hash": "95091c67cd",
+  "seconds": 5.234125,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "おもい荷物ですか。七時に手伝いましょうか。"
+ },
+ "l14c/end_help_0": {
+  "hash": "01ba4da9d9",
+  "seconds": 4.359792,
+  "model": "gemini-3.8-live",
+  "transcript": "いい です よ 。 じゃあ 、 7 時 に 呼ん で ください 。"
+ },
+ "l14c/end_help_1": {
+  "hash": "26b37ee2c2",
+  "seconds": 3.24775,
+  "model": "gemini-3.8-live",
+  "transcript": "よかっ た です ね じゃあ また 今晩"
+ },
+ "l14c/end_alone_0": {
+  "hash": "150c60de94",
+  "seconds": 3.30275,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か わかり まし た じゃあ また"
+ },
+ "l14c/end_alone_1": {
+  "hash": "b487909165",
+  "seconds": 3.046583,
+  "model": "gemini-3.8-live",
+  "transcript": "荷物 は ゆっくり 持っ て ください ね 。"
+ },
+ "l15a/n1_0": {
+  "hash": "3c8c140c70",
+  "seconds": 2.557333,
+  "model": "gemini-3.8-live",
+  "transcript": "いらっしゃい ませ チケット を どうぞ"
+ },
+ "l15a/n2_in_0": {
+  "hash": "4489850318",
+  "seconds": 3.757,
+  "model": "gemini-3.8-live",
+  "transcript": "すみ ませ ん 。 中 で 写真 を 撮っ て は いけ ませ ん 。"
+ },
+ "l15a/n2_here_0": {
+  "hash": "0b7d6126da",
+  "seconds": 4.4835,
+  "model": "gemini-3.8-live",
+  "transcript": "ここ で は いい です よ 。 中 で は 撮っ て は いけ ませ ん 。"
+ },
+ "l15a/n3_0": {
+  "hash": "d61f9e0ca6",
+  "seconds": 1.807833,
+  "model": "gemini-3.8-live",
+  "transcript": "他 に 何 か あり ます か ?"
+ },
+ "l15a/n4_kasa_0": {
+  "hash": "1b4f9b4a85",
+  "seconds": 5.132083,
+  "model": "gemini-3.8-live",
+  "transcript": "すみません、ここはちょっと…。かさはあそこに置いてください。"
+ },
+ "l15a/n4_bag_0": {
+  "hash": "c47c3f785b",
+  "seconds": 4.350167,
+  "model": "gemini-3.8-live",
+  "transcript": "かばんは あのロッカーを 使ってください。 100円です。"
+ },
+ "l15a/n5_0": {
+  "hash": "df8b825e27",
+  "seconds": 2.630542,
+  "model": "gemini-3.8-live",
+  "transcript": "すみません 、 会社 から 電話 でし た 。"
+ },
+ "l15a/n5_1": {
+  "hash": "931eda513d",
+  "seconds": 2.546958,
+  "model": "gemini-3.8-live",
+  "transcript": "中で 写真を撮って も いい です か ?"
+ },
+ "l15a/n6_no_0": {
+  "hash": "650b1a7912",
+  "seconds": 4.235,
+  "model": "gemini-3.8-live",
+  "transcript": "え 行け ませ ん か ? 残念 です ね 。"
+ },
+ "l15a/n6_here_0": {
+  "hash": "4836828d56",
+  "seconds": 2.754542,
+  "model": "gemini-3.8-live",
+  "transcript": "じゃあ 後 で ここ で 一緒 に 取りましょ 。"
+ },
+ "l15a/n7_0": {
+  "hash": "bcedfb30be",
+  "seconds": 2.719042,
+  "model": "gemini-3.8-live",
+  "transcript": "あの ポスター の 絵 を 知っ て い ます か ?"
+ },
+ "l15a/n8_yes_0": {
+  "hash": "0fed1a8ebe",
+  "seconds": 3.001958,
+  "model": "gemini-3.8-live",
+  "transcript": "有名 な 絵 です ね 。 2 階 に あり ます よ 。"
+ },
+ "l15a/n8_no_0": {
+  "hash": "cdae6d68e3",
+  "seconds": 5.437542,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "あおい まち です。ゆうめいな えですよ。にかいにあります。"
+ },
+ "l15a/n9_0": {
+  "hash": "bd46d2eb05",
+  "seconds": 2.585708,
+  "model": "gemini-2.5-flash-native-audio-preview-12-2025",
+  "transcript": "ああ、 のどが かわきました。"
+ },
+ "l15a/end_inside_0": {
+  "hash": "be57325ec1",
+  "seconds": 5.120458,
+  "model": "gemini-3.8-live",
+  "transcript": "すみません。 中 で 飲ん で は いけ ませ ん。 カフェ で どうぞ。"
+ },
+ "l15a/end_inside_1": {
+  "hash": "9fce8d2520",
+  "seconds": 2.825958,
+  "model": "gemini-3.8-live",
+  "transcript": "じゃ カフェ で コーヒー を 飲み ましょう 。"
+ },
+ "l15a/end_where_0": {
+  "hash": "cd27df4803",
+  "seconds": 3.994333,
+  "model": "gemini-3.8-live",
+  "transcript": "あそこのカフェでどうぞ。中で飲んではいけません。"
+ },
+ "l15a/end_where_1": {
+  "hash": "20cafa318e",
+  "seconds": 4.373,
+  "model": "gemini-3.8-live",
+  "transcript": " いいですね。わたしは コーヒーが 飲みたいです。"
+ },
+ "l15b/n1_0": {
+  "hash": "6c93e6b977",
+  "seconds": 2.553625,
+  "model": "gemini-3.8-live",
+  "transcript": " いらっしゃい。 どうぞ 上がって ください。"
+ },
+ "l15b/n2_sit_0": {
+  "hash": "30d7443bec",
+  "seconds": 2.800167,
+  "model": "gemini-3.8-live",
+  "transcript": "A 、 どうぞ 。 座っ て ください 。"
+ },
+ "l15b/n2_photo_0": {
+  "hash": "d1968e3bd2",
+  "seconds": 2.394708,
+  "model": "gemini-3.8-live",
+  "transcript": "ええ 、 どうぞ 見 て ください 。"
+ },
+ "l15b/n3_0": {
+  "hash": "e38c59053d",
+  "seconds": 4.279875,
+  "model": "gemini-3.8-live",
+  "transcript": "これ は 妹 です 大阪 に 住ん で い ます"
+ },
+ "l15b/n4_married_0": {
+  "hash": "622c8ff51e",
+  "seconds": 4.106542,
+  "model": "gemini-3.8-live",
+  "transcript": "いえ 、 独身 です 。 仕事 が 大好き です から 。"
+ },
+ "l15b/n4_work_0": {
+  "hash": "ce9b16811a",
+  "seconds": 4.167667,
+  "model": "gemini-3.8-live",
+  "transcript": "大阪 の 病院 で 働い て い ます 。 まだ 独身 です よ 。"
+ },
+ "l15b/n5_0": {
+  "hash": "13bc7ee895",
+  "seconds": 3.699667,
+  "model": "gemini-3.8-live",
+  "transcript": "ご 家族 は どちら に 住ん で い ます か ?"
+ },
+ "l15b/n6_home_0": {
+  "hash": "a7af8df52e",
+  "seconds": 5.221,
+  "model": "gemini-3.8-live",
+  "transcript": " そうですか。遠いですね。わたしも行きたいです。"
+ },
+ "l15b/n6_japan_0": {
+  "hash": "ef051c3f22",
+  "seconds": 2.958792,
+  "model": "gemini-3.8-live",
+  "transcript": "そうですか。それはいいですね。"
+ },
+ "l15b/n7_0": {
+  "hash": "83bd3cde0d",
+  "seconds": 3.128792,
+  "model": "gemini-3.8-live",
+  "transcript": "ご家族はどこで働いて"
+ },
+ "l15b/n8_work_0": {
+  "hash": "d78c074a24",
+  "seconds": 5.000792,
+  "model": "gemini-3.8-live",
+  "transcript": "いい お 仕事 です ね 。 私 は 銀行 で 働い て い ます 。"
+ },
+ "l15b/n8_study_0": {
+  "hash": "779497b1f2",
+  "seconds": 6.095,
+  "model": "gemini-3.8-live",
+  "transcript": "学生 です か いい です ね 私 は 銀行 で 働い て い ます 。"
+ },
+ "l15b/n9_0": {
+  "hash": "5b3c22be96",
+  "seconds": 2.751083,
+  "model": "gemini-3.8-live",
+  "transcript": "駅 の 前 の 花屋 を 知っ て い ます か ?"
+ },
+ "l15b/end_yes_0": {
+  "hash": "207b9d6368",
+  "seconds": 5.073583,
+  "model": "gemini-3.8-live",
+  "transcript": "私はあそこ で 花 を 売っ て い ます 。 来 て ください ね 。"
+ },
+ "l15b/end_yes_1": {
+  "hash": "5147ab4b58",
+  "seconds": 4.273958,
+  "model": "gemini-3.8-live",
+  "transcript": "じゃ、そろそろ晩ごはんを食べましょう。"
+ },
+ "l15b/end_no_0": {
+  "hash": "1541dcd7a3",
+  "seconds": 5.751667,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "駅の前にあります。わたしはあそこで花を売っています。"
+ },
+ "l15b/end_no_1": {
+  "hash": "83746a0fb5",
+  "seconds": 4.109583,
+  "model": "gemini-3.8-live",
+  "transcript": "いい店 です よ 。 じゃ 、 晩 ごはん を 食べ ましょう 。"
+ },
+ "l15b/free_open": {
+  "hash": "4c20900580",
+  "seconds": 3.071708,
+  "model": "gemini-3.8-live",
+  "transcript": "お 国 の 家族 の 話 を もっと 聞き たい です 。"
+ },
+ "l15c/n1_0": {
+  "hash": "5e745dc164",
+  "seconds": 5.077875,
+  "model": "gemini-3.8-live",
+  "transcript": "おはようございます ここ を 使っ て ください これ が 机 です"
+ },
+ "l15c/n2_pc_0": {
+  "hash": "2615ae0774",
+  "seconds": 3.530542,
+  "model": "gemini-3.8-live",
+  "transcript": "ええ 、 いい です よ 。 毎日 使っ て ください 。"
+ },
+ "l15c/n2_bag_0": {
+  "hash": "30f5f2c327",
+  "seconds": 4.143667,
+  "model": "gemini-3.8-live",
+  "transcript": "ええ 、 いい です よ 。 机 の 下 に 置い て ください 。"
+ },
+ "l15c/n3_0": {
+  "hash": "f0966f0f5e",
+  "seconds": 3.516583,
+  "model": "gemini-3.8-live",
+  "transcript": "あの 会議 室 で 食べ て は いけ ませ ん よ 。"
+ },
+ "l15c/n4_desk_0": {
+  "hash": "ac459b6c5c",
+  "seconds": 3.989292,
+  "model": "gemini-3.8-live",
+  "transcript": "ええ、いいですよ。私も机で食べています。"
+ },
+ "l15c/n4_out_0": {
+  "hash": "7da213d9d9",
+  "seconds": 3.97025,
+  "model": "gemini-3.8-live",
+  "transcript": "ええ 、 いい です よ 。 近く に いい 店 が あり ます 。"
+ },
+ "l15c/n5_0": {
+  "hash": "cc5fb93b66",
+  "seconds": 4.280667,
+  "model": "gemini-3.8-live",
+  "transcript": "おはようございます。 今 どちら に 住ん で い ます か ?"
+ },
+ "l15c/n6_near_0": {
+  "hash": "953e79485c",
+  "seconds": 2.865333,
+  "model": "gemini-3.8-live",
+  "transcript": "近い です ね それ は いい です ね"
+ },
+ "l15c/n6_far_0": {
+  "hash": "776aa3fb1a",
+  "seconds": 3.232625,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か 毎朝 大変 です ね"
+ },
+ "l15c/n7_0": {
+  "hash": "d5f36b1565",
+  "seconds": 4.60775,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "あしたの会議の時間を知っていますか。"
+ },
+ "l15c/n8_no_0": {
+  "hash": "ef1f2eebad",
+  "seconds": 4.928625,
+  "model": "gemini-3.8-live",
+  "transcript": "10 時 から です 青木 さん が 資料 を 持っ て い ます 。"
+ },
+ "l15c/n8_yes_0": {
+  "hash": "16f28343d4",
+  "seconds": 4.80475,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か 。 で は 10 時 に 会議 室 へ 来 て ください 。"
+ },
+ "l15c/n9_0": {
+  "hash": "2aae471ca7",
+  "seconds": 1.791375,
+  "model": "gemini-3.8-live",
+  "transcript": "他 に 質問 は あり ます か ?"
  }
 }
