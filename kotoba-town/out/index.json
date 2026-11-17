@@ -3340,5 +3340,461 @@
   "seconds": 3.139125,
   "model": "gemini-3.8-live",
   "transcript": "すみ ませ ん もう 一度 お 願い し ます"
+ },
+ "b01a/n1_0": {
+  "hash": "1c86a17f19",
+  "seconds": 3.540583,
+  "model": "gemini-3.8-live",
+  "transcript": "おはよう ござい ます で は 朝 会 を 始め ましょ う"
+ },
+ "b01a/n1_1": {
+  "hash": "5a2c1b8c2a",
+  "seconds": 6.98325,
+  "model": "gemini-3.8-live",
+  "transcript": "昨日は予約データの保存を作りました。今日はテストです。困りごとはありません。"
+ },
+ "b01a/n1_2": {
+  "hash": "89dcf9b2ad",
+  "seconds": 3.142458,
+  "model": "gemini-3.8-live",
+  "transcript": "ありがとう ござい ます 。 で は 次 お 願い し ます 。"
+ },
+ "b01a/n2a_0": {
+  "hash": "7ebb6a4331",
+  "seconds": 3.756875,
+  "model": "gemini-3.8-live",
+  "transcript": " ログイン画面ですね。今日は何をする予定ですか。"
+ },
+ "b01a/n2b_0": {
+  "hash": "e30ea30e7e",
+  "seconds": 4.175833,
+  "model": "gemini-3.8-live",
+  "transcript": "予約 フォーム です ね 。 昨日 は 何 を し まし た か ?"
+ },
+ "b01a/n2c_0": {
+  "hash": "6da621779b",
+  "seconds": 6.948333,
+  "model": "gemini-3.8-live",
+  "transcript": "作業 は 終わり まし た か 途中 です も 言う と 分かり やすい です 。"
+ },
+ "b01a/n3_0": {
+  "hash": "840c44b928",
+  "seconds": 2.879458,
+  "model": "gemini-3.8-live",
+  "transcript": "予約 フォーム は いつ頃 終わり そう です か ?"
+ },
+ "b01a/n3a_0": {
+  "hash": "4931b90672",
+  "seconds": 3.00875,
+  "model": "gemini-3.8-live",
+  "transcript": "分かりました。その予定でお願いします。"
+ },
+ "b01a/n3v_0": {
+  "hash": "6a1088ae5c",
+  "seconds": 4.307833,
+  "model": "gemini-3.8-live",
+  "transcript": "では、今日の夕方に、もう一度見通しを教えてください。"
+ },
+ "b01a/n4_0": {
+  "hash": "f011443e0b",
+  "seconds": 1.830125,
+  "model": "gemini-3.8-live",
+  "transcript": "困っ て いる こと は あり ます か ?"
+ },
+ "b01a/n5a_0": {
+  "hash": "6e5f16d3d7",
+  "seconds": 2.459833,
+  "model": "gemini-3.8-live",
+  "transcript": "順調ですね。良かったです。"
+ },
+ "b01a/n5b_0": {
+  "hash": "5a06581a90",
+  "seconds": 3.812417,
+  "model": "gemini-3.8-live",
+  "transcript": "いい です よ 。 朝 会 の 後 で 一緒 に 見 ましょう 。"
+ },
+ "b01a/n5_0": {
+  "hash": "c7a6fee59e",
+  "seconds": 4.556417,
+  "model": "gemini-3.8-live",
+  "transcript": "1 つ 連絡 です 。 予約 フォーム の ボタン の 色 を 変え まし た 。"
+ },
+ "b01a/n5_1": {
+  "hash": "a6630144b2",
+  "seconds": 3.01825,
+  "model": "gemini-3.8-live",
+  "transcript": "新しいデザインは後で送りますね。"
+ },
+ "b01a/n6a_0": {
+  "hash": "8d17261cde",
+  "seconds": 1.62075,
+  "model": "gemini-3.8-live",
+  "transcript": "はい、お願いします。"
+ },
+ "b01a/n6b_0": {
+  "hash": "dc9f29be02",
+  "seconds": 2.957042,
+  "model": "gemini-3.8-live",
+  "transcript": "届い たら ボタン の 色 を 見 て ください ね 。"
+ },
+ "b01a/n6c_0": {
+  "hash": "9c49e29df8",
+  "seconds": 3.214708,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "午前中に 送ります。少し待ってください。"
+ },
+ "b01a/end_0": {
+  "hash": "bd76e242e3",
+  "seconds": 4.99825,
+  "model": "gemini-3.8-live",
+  "transcript": "では、あさかいを終わります。今日もよろしくお願いします。"
+ },
+ "b01a/free_open": {
+  "hash": "aed6246cca",
+  "seconds": 2.846542,
+  "model": "gemini-3.8-live",
+  "transcript": "ところで仕事にはもう慣れましたか?"
+ },
+ "b01b/n1_0": {
+  "hash": "7a4d312ef7",
+  "seconds": 5.052917,
+  "model": "gemini-3.8-live",
+  "transcript": "おはよう ござい ます 朝会 を 始め ます 青木 さん から どうぞ"
+ },
+ "b01b/n1_1": {
+  "hash": "88d6f0a42e",
+  "seconds": 6.0615,
+  "model": "gemini-3.8-live",
+  "transcript": "昨日は予約画面のデザインを直しました。今日はメニュー画面を作ります。"
+ },
+ "b01b/n1_2": {
+  "hash": "89dcf9b2ad",
+  "seconds": 3.303625,
+  "model": "gemini-3.8-live",
+  "transcript": "ありがとうございます。では次お願いします。"
+ },
+ "b01b/n2_0": {
+  "hash": "5b3579cc15",
+  "seconds": 2.025917,
+  "model": "gemini-3.8-live",
+  "transcript": "困っていることはありませんか？"
+ },
+ "b01b/n2h_0": {
+  "hash": "8b776bd23e",
+  "seconds": 3.056125,
+  "model": "gemini-3.8-live",
+  "transcript": "予約フォームの破損はもう動いていますか？"
+ },
+ "b01b/n2z_0": {
+  "hash": "3273629c6d",
+  "seconds": 4.684042,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "そう"
+ },
+ "b01b/n2z_1": {
+  "hash": "b6cdf6fe79",
+  "seconds": 3.001958,
+  "model": "gemini-3.8-live",
+  "transcript": "では、朝会を終わります"
+ },
+ "b01b/n3_0": {
+  "hash": "2031ca01de",
+  "seconds": 2.853375,
+  "model": "gemini-3.8-live",
+  "transcript": "ええとですね、どんな時出ますか？"
+ },
+ "b01b/n3v_0": {
+  "hash": "f3d9a124c5",
+  "seconds": 3.75075,
+  "model": "gemini-3.8-live",
+  "transcript": "どの操作で出ます か ? 日付 を 選ん だ 後 です か ?"
+ },
+ "b01b/n4n_0": {
+  "hash": "e40b7fe524",
+  "seconds": 3.335333,
+  "model": "gemini-3.8-live",
+  "transcript": "わかりました。あとで画面を見せてください。"
+ },
+ "b01b/n4_0": {
+  "hash": "0dc72cc948",
+  "seconds": 4.124875,
+  "model": "gemini-3.8-live",
+  "transcript": " 保存の ときですね。自分では何を試しましたか。"
+ },
+ "b01b/n5a_0": {
+  "hash": "0512cf91ac",
+  "seconds": 4.535208,
+  "model": "gemini-3.8-live",
+  "transcript": "設定はもう見たんですね。それならほかの原因ですね。"
+ },
+ "b01b/n5b_0": {
+  "hash": "7587248d83",
+  "seconds": 3.241958,
+  "model": "gemini-3.8-live",
+  "transcript": "わかりました。一緒に見た方が早そうですね。"
+ },
+ "b01b/n5_0": {
+  "hash": "b329fb0782",
+  "seconds": 3.818333,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "くわしい話は、朝会のあとにしましょう。"
+ },
+ "b01b/n6a_0": {
+  "hash": "0d5275a270",
+  "seconds": 3.743625,
+  "model": "gemini-3.8-live",
+  "transcript": "いいですよ。朝会の後で席に来てください。"
+ },
+ "b01b/n6b_0": {
+  "hash": "96b1e3bc50",
+  "seconds": 5.097917,
+  "model": "gemini-3.8-live",
+  "transcript": "いいですよ。15分ぐらいでいいですか?後で席に来てください。"
+ },
+ "b01b/n6c_0": {
+  "hash": "928b67d277",
+  "seconds": 4.832,
+  "model": "gemini-3.8-live",
+  "transcript": "1時間調べたなら もう聞いていいですよ。藤田さん、お願いします。"
+ },
+ "b01b/end_0": {
+  "hash": "09d6c22e99",
+  "seconds": 4.012625,
+  "model": "gemini-3.8-live",
+  "transcript": " 早く言ってくれて、助かります。では、今日もお願いします。"
+ },
+ "b02a/n1_0": {
+  "hash": "0ce9739483",
+  "seconds": 3.908083,
+  "model": "gemini-3.8-live",
+  "transcript": " 坂本さん、今日は お時間を いただき、ありがとう ございます。"
+ },
+ "b02a/n1_1": {
+  "hash": "cbd03097b8",
+  "seconds": 4.419375,
+  "model": "gemini-3.8-live",
+  "transcript": "いえいえ、予約のアプリ楽しみにしていますよ。"
+ },
+ "b02a/n1_2": {
+  "hash": "10fa5bd8f4",
+  "seconds": 3.767292,
+  "model": "gemini-3.8-live",
+  "transcript": "今日は新しいエンジニアがお話を伺います。"
+ },
+ "b02a/n2_0": {
+  "hash": "e33e89520b",
+  "seconds": 3.43925,
+  "model": "gemini-3.8-live",
+  "transcript": "はい、よろしく。何でも聞いてください。"
+ },
+ "b02a/n2g_0": {
+  "hash": "4e65025865",
+  "seconds": 5.053917,
+  "model": "gemini-3.8-live",
+  "transcript": "よろしく。それで、今日は何を話せばいいですか？"
+ },
+ "b02a/a1_0": {
+  "hash": "dd63db5e44",
+  "seconds": 5.494292,
+  "model": "gemini-3.8-live",
+  "transcript": "テーブルは4つです。1つのテーブルに4人まで座れます。"
+ },
+ "b02a/a1o_0": {
+  "hash": "a991a8e065",
+  "seconds": 9.214958,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "お客さんが スマホで 席を 予約できれば、うれしいです。席は 4テーブル、4人ずつです。"
+ },
+ "b02a/a2_0": {
+  "hash": "93be2951d5",
+  "seconds": 4.777958,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です 。 予約 は 10 時 から 17 時 まで に し て ください 。"
+ },
+ "b02a/a2n_0": {
+  "hash": "1bae3e1a08",
+  "seconds": 5.894375,
+  "model": "gemini-3.8-live",
+  "transcript": "席の話は大丈夫ですか？予約の時間は10時から17時です。"
+ },
+ "b02a/a2o_0": {
+  "hash": "f0bff5befa",
+  "seconds": 8.610333,
+  "model": "gemini-3.8-live",
+  "transcript": "店は7時から19時です。でも予約は10時から12時だけにしたいです。"
+ },
+ "b02a/a3_0": {
+  "hash": "0385de55b8",
+  "seconds": 5.551458,
+  "model": "gemini-3.8-live",
+  "transcript": "00:00 2 週間 先 まで で お 願い し ます 。 それ と キャンセル は どう なり ます か ?"
+ },
+ "b02a/a4_0": {
+  "hash": "01d9f1d189",
+  "seconds": 4.321958,
+  "model": "gemini-3.8-live",
+  "transcript": "前の日までアプリでキャンセルできると助かります。"
+ },
+ "b02a/a4p_0": {
+  "hash": "fb35d45b74",
+  "seconds": 5.140083,
+  "model": "gemini-3.8-live",
+  "transcript": "そうですね 。前 の 日 まで アプリ で できる よう に し て ください 。"
+ },
+ "b02a/a3c_0": {
+  "hash": "2bd349449e",
+  "seconds": 5.830083,
+  "model": "gemini-3.8-live",
+  "transcript": "前の日までアプリでできるといいですね。予約は2週間先までで"
+ },
+ "b02a/a5_0": {
+  "hash": "649643f1a2",
+  "seconds": 7.818208,
+  "model": "gemini-3.8-live",
+  "transcript": " 12月 ついたちから 使いたいです。 年末は 予約が 多いので。"
+ },
+ "b02a/a5v_0": {
+  "hash": "ef1f011902",
+  "seconds": 4.59825,
+  "model": "gemini-3.8-live",
+  "transcript": "急ぎではないですが、12月1日から使えると嬉しいです。"
+ },
+ "b02a/end_0": {
+  "hash": "74f3fa3b58",
+  "seconds": 6.149125,
+  "model": "gemini-3.8-live",
+  "transcript": "今日の内容は、議事録にまとめてお送りします。"
+ },
+ "b02a/end_1": {
+  "hash": "2edaed433a",
+  "seconds": 3.359042,
+  "model": "gemini-3.8-live",
+  "transcript": "助かります。さあ、コーヒーをどうぞ。"
+ },
+ "b02b/n1_0": {
+  "hash": "3071a2ac93",
+  "seconds": 2.975833,
+  "model": "gemini-3.8-live",
+  "transcript": "いらっしゃい アプリ の 話 です ね"
+ },
+ "b02b/n1_1": {
+  "hash": "631adcecdc",
+  "seconds": 4.539917,
+  "model": "gemini-3.8-live",
+  "transcript": "むずかしいことはわからないので、いい感じにお願いします。"
+ },
+ "b02b/n1_2": {
+  "hash": "5a0c1a67d0",
+  "seconds": 4.030625,
+  "model": "gemini-3.8-live",
+  "transcript": "ありがとうございます いくつか具体的に伺いますね"
+ },
+ "b02b/b1o_0": {
+  "hash": "51adacec9b",
+  "seconds": 4.717417,
+  "model": "gemini-3.8-live",
+  "transcript": "うーん、お客さんが便利ならなんでもいいですよ。"
+ },
+ "b02b/b1o_1": {
+  "hash": "1695036658",
+  "seconds": 5.389292,
+  "model": "gemini-3.8-live",
+  "transcript": "考えて、例えば席の数です。坂本さん、テーブルは幾つありますか？"
+ },
+ "b02b/b1_0": {
+  "hash": "57625b7be3",
+  "seconds": 4.548458,
+  "model": "gemini-3.8-live",
+  "transcript": "ああ、テーブルは4つです。どれも4人まで座れますよ。"
+ },
+ "b02b/b2_0": {
+  "hash": "5e3dafe614",
+  "seconds": 5.463833,
+  "model": "gemini-3.8-live",
+  "transcript": "はい。時間はまあ、忙しくない時ならいつでも。"
+ },
+ "b02b/b2n_0": {
+  "hash": "a643e3877f",
+  "seconds": 7.393958,
+  "model": "gemini-3.8-live",
+  "transcript": "席は4つで4人ずつ。いいですね。時間は忙しくない時なら"
+ },
+ "b02b/b3_0": {
+  "hash": "e770cc31ce",
+  "seconds": 4.297958,
+  "model": "gemini-3.8-live",
+  "transcript": "そうだな。10時から17時までなら大丈夫です。"
+ },
+ "b02b/b3p_0": {
+  "hash": "843f690f23",
+  "seconds": 5.113958,
+  "model": "gemini-3.8-live",
+  "transcript": "朝と夜は忙しいんです。10時から17時までにしてください。"
+ },
+ "b02b/n4_0": {
+  "hash": "24b0a1e0ba",
+  "seconds": 4.830208,
+  "model": "gemini-3.8-live",
+  "transcript": "あとはおまかせします。いい感じにして"
+ },
+ "b02b/b4_0": {
+  "hash": "03d0b5633b",
+  "seconds": 5.158125,
+  "model": "gemini-3.8-live",
+  "transcript": "2週間先までキャンセルは前の日まで、うん、それでいいです。"
+ },
+ "b02b/b4o_0": {
+  "hash": "c127b7f797",
+  "seconds": 6.510292,
+  "model": "gemini-3.8-live",
+  "transcript": "いいですね。予約は2週間先まで、キャンセルは前の日"
+ },
+ "b02b/b4m_0": {
+  "hash": "7795050177",
+  "seconds": 5.735417,
+  "model": "gemini-3.8-live",
+  "transcript": "他の店では2週間先までキャンセルは前の日までが多いです。"
+ },
+ "b02b/b4m_1": {
+  "hash": "42394ca308",
+  "seconds": 2.864042,
+  "model": "gemini-3.8-live",
+  "transcript": "じゃあ、うちもそれでお願いします"
+ },
+ "b02b/n5_0": {
+  "hash": "5f9056fcde",
+  "seconds": 6.020125,
+  "model": "gemini-3.8-live",
+  "transcript": "それと、できれば、早く使いたいですね。年末は忙しいので。"
+ },
+ "b02b/b6a_0": {
+  "hash": "007179ff2f",
+  "seconds": 3.820458,
+  "model": "gemini-3.8-live",
+  "transcript": "いいですね、お願いします。"
+ },
+ "b02b/b6b_0": {
+  "hash": "65731f2115",
+  "seconds": 4.520417,
+  "model": "gemini-3.8-live",
+  "transcript": "そうだなあ…12月ついたちから"
+ },
+ "b02b/end_0": {
+  "hash": "ec7c71cb94",
+  "seconds": 5.100542,
+  "model": "gemini-3.8-live",
+  "transcript": "では、12月1日のリリースで進めます。議事録をお送りします。"
+ },
+ "b02b/end_1": {
+  "hash": "d9df1ba3bf",
+  "seconds": 2.891458,
+  "model": "gemini-3.8-live",
+  "transcript": "はっきり 聞い て くれ て 、 助かり まし た 。"
+ },
+ "b03a/n1_0": {
+  "hash": "6324134120",
+  "seconds": 4.448458,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "お疲れさまです。ヒアリングの内容を確認しましょう。"
  }
 }
