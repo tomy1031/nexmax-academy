@@ -15,6 +15,11 @@
 /_next/static/*
   Cache-Control: public,max-age=31536000,immutable
 
+# 字の ファイル（2026-11-17 に next/font/google から 手元に 移した）。名前は 中身の ハッシュ
+#（scripts/fonts/selfhost_google_fonts.mjs）なので、上と 同じく ずっと 使い回して よい。
+/fonts/*
+  Cache-Control: public,max-age=31536000,immutable
+
 # ── 教材の メディア（2026-08-26 に 追加）──
 #
 # 既定のままだと、音声も PDF も **開くたび サーバに 問い合わせる**（実測で
