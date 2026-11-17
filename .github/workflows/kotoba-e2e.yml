@@ -17,6 +17,7 @@ on:
       - scripts/kotoba_e2e.mjs
       - scripts/kotoba_selfcheck.ts
       - scripts/kotoba_interview_check.ts
+      - scripts/kotoba_thinking_probe.ts
       - kotoba-town/interview_check.json
       - .github/workflows/kotoba-e2e.yml
 
@@ -40,6 +41,15 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci --ignore-scripts
+      - name: Extended Thinking の 関数呼び出しの 試し
+        continue-on-error: true
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          mkdir -p kotoba-town/out
+          if [ "$(node -p "require('./kotoba-town/e2e.json').thinkingProbe === true")" != "true" ]; then echo "probe は 今回 なし"; exit 0; fi
+          timeout 8m node --import tsx scripts/kotoba_thinking_probe.ts > kotoba-town/out/thinking_probe.log 2>&1 || true
+          cat kotoba-town/out/thinking_probe.log | head -150
       - name: 面接の 判定の 確かめ（Extended Thinking）
         continue-on-error: true
         env:
@@ -87,7 +97,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add kotoba-town/out/e2e* kotoba-town/out/selfcheck* kotoba-town/out/interview_check* || true
+          git add kotoba-town/out/e2e* kotoba-town/out/selfcheck* kotoba-town/out/interview_check* kotoba-town/out/thinking_probe* || true
           git diff --cached --quiet && exit 0
           git commit -q -m "kotoba-town: e2e results [run ${GITHUB_RUN_ID}]"
           for try in 1 2 3 4; do
