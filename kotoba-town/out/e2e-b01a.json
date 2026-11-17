@@ -3,19 +3,20 @@
  "log": [
   "live connecting ",
   "live live gemini-3.8-live",
-  "judge both 3 おはようございます昨日はログイン画面を作りました今日は予約フォームを作る予定です困っていることは特にありません",
-  "judge concrete 3 明日の昼までに終わる予定です",
-  "judge none 3 困っていることは特にありません",
-  "judge repeat_back 3 ボタンの色が変わったんですね承知しました届いたら確認します"
+  "judge both 3 おはようございます。昨日はログイン画面を作りました。今日は予約フォームを作る予定です。困っていることは特にありません。",
+  "judge off_topic 1 画面を作りました。今日は予約フォームを作る予定です。困っていることは特にありません。",
+  "live reconnecting badKey",
+  "live connecting ",
+  "live live gemini-3.8-live"
  ],
  "turns": [
   {
    "nodeId": "n1",
    "promptEn": "Your turn. Say what you did yesterday and what you will do today.",
-   "heard": "おはようございます昨日はログイン画面を作りました今日は予約フォームを作る予定です困っていることは特にありません",
+   "heard": "おはようございます。昨日はログイン画面を作りました。今日は予約フォームを作る予定です。困っていることは特にありません。",
    "score": 3,
    "correction": "おはようございます。昨日はログイン画面を作りました。今日は予約フォームを作る予定です。困っていることは特にありません。",
-   "tipEn": "Excellent report! It was clear, polite, and followed the perfect stand-up order.",
+   "tipEn": "Great job reporting your progress and plan clearly and in the correct order!",
    "branch": "both",
    "grammar": [
     "g1"
@@ -23,61 +24,6 @@
    "grammarUsed": [
     "g1"
    ]
-  },
-  {
-   "nodeId": "n3",
-   "promptEn": "Give your forecast with a concrete time (your plan: by tomorrow noon).",
-   "heard": "明日の昼までに終わる予定です",
-   "score": 3,
-   "correction": "明日の昼までに終わる予定です。",
-   "tipEn": "Great job giving a clear and concrete deadline for your task.",
-   "branch": "concrete",
-   "grammar": [
-    "g3"
-   ],
-   "grammarUsed": [
-    "g3"
-   ]
-  },
-  {
-   "nodeId": "n4",
-   "promptEn": "Nothing blocks you — say so clearly. (If you like, ask Aoki to look at your form's design later.)",
-   "heard": "困っていることは特にありません",
-   "score": 3,
-   "correction": "困っていることは特にありません。",
-   "tipEn": "Perfect. Stating clearly that there are no blockers is exactly what's needed.",
-   "branch": "none",
-   "grammar": [
-    "g2"
-   ],
-   "grammarUsed": [
-    "g2"
-   ]
-  },
-  {
-   "nodeId": "n5",
-   "promptEn": "This change affects your work today. Show you got it: repeat the point back and say what you'll do — or ask when it will arrive.",
-   "heard": "ボタンの色が変わったんですね承知しました届いたら確認します",
-   "score": 3,
-   "correction": "ボタンの色が変わったんですね。承知しました。届いたら確認します。",
-   "tipEn": "Great job repeating the change and confirming you will check the new design.",
-   "branch": "repeat_back",
-   "grammar": [
-    "g4"
-   ],
-   "grammarUsed": [
-    "g4"
-   ]
-  },
-  {
-   "promptEn": "Free talk",
-   "heard": "1000",
-   "score": 1,
-   "correction": "",
-   "tipEn": "",
-   "branch": "unjudged",
-   "grammar": [],
-   "grammarUsed": []
   }
  ],
  "report": null,
@@ -85,5 +31,5 @@
  "pageErrors": [],
  "variant": "b01a",
  "mode": "real",
- "at": "2026-11-17T00:36:29.379Z"
+ "at": "2026-11-17T00:44:35.802Z"
 }
