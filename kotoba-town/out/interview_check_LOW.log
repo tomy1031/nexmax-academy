@@ -1,0 +1,129 @@
+{
+ "say": "リンと 申します。プノンペンの 大学で ITを 勉強して います。三人の チームで、お店の 予約サイトを 作りました。わたしは 画面を 担当しました。本日は よろしく お願いいたします。",
+ "asr": "リンと申します。プノンペンの大学で IT を勉強しています。3 人のチームでお店の予約サイトを作りました。私は画面を担当しました。本日はよろしくお願いいたします。",
+ "asrIsJapanese": true,
+ "verdict": {
+  "heard": "リンと申します。プノンペンの大学で IT を勉強しています。3 人のチームでお店の予約サイトを作りました。私は画面を担当しました。本日はよろしくお願いいたします。",
+  "branch": "unjudged",
+  "score": 1,
+  "grammarUsed": [],
+  "correction": "",
+  "tipEn": "",
+  "source": "transcript"
+ },
+ "msAfterSpeech": 16752,
+ "branchOk": false,
+ "missedOk": true
+}
+{
+ "say": "日本で 働きたいからです。日本の 会社は いいと 思います。",
+ "asr": "日本で働きたいからです。日本の会社はいいと思います。",
+ "asrIsJapanese": true,
+ "verdict": {
+  "heard": "日本で働きたいからです。日本の会社はいいと思います。",
+  "branch": "unjudged",
+  "score": 1,
+  "grammarUsed": [],
+  "correction": "",
+  "tipEn": "",
+  "source": "transcript"
+ },
+ "msAfterSpeech": 5821,
+ "branchOk": false,
+ "missedOk": false
+}
+{
+ "say": "わたしの 強みは ていねいな テストです。予約サイトを 作った とき、しめきりの 前に 大きな バグを 見つけて、チームで 直しました。",
+ "asr": "私の強みは丁寧なテストです 。 予約サイトを作った時 、 締め切りの前に大きなバグを見つけてチームで直しました 。",
+ "asrIsJapanese": true,
+ "verdict": {
+  "heard": "私の強みは丁寧なテストです 。 予約サイトを作った時 、 締め切りの前に大きなバグを見つけてチームで直しました 。",
+  "branch": "unjudged",
+  "score": 1,
+  "grammarUsed": [],
+  "correction": "",
+  "tipEn": "",
+  "source": "transcript"
+ },
+ "msAfterSpeech": 16559,
+ "branchOk": false,
+ "missedOk": true
+}
+{
+ "say": "いいえ、特に ありません。",
+ "asr": "いいえ、特にありません。",
+ "asrIsJapanese": true,
+ "verdict": {
+  "heard": "いいえ、特にありません。",
+  "branch": "unjudged",
+  "score": 1,
+  "grammarUsed": [],
+  "correction": "",
+  "tipEn": "",
+  "source": "transcript"
+ },
+ "msAfterSpeech": 17256,
+ "branchOk": false,
+ "missedOk": false
+}
+status: connecting live(gemini-3.8-live-extended-thinking)
+trace 8614 raw sessionResumptionUpdate
+trace 9599 raw voiceActivity
+trace 30094 raw  sc{inputTranscription}
+trace 30094 in:リンと申します。プノンペンの大学で IT を勉強しています。3 人のチームでお店の予約サイトを作りました。私は画面を担当しました。本日はよろしくお願いいたします。
+trace 30094 raw voiceActivity
+trace 30818 raw  sc{generationComplete}
+trace 30836 raw usageMetadata sc{turnComplete,interactionStatus}
+trace 30836 turnComplete(drop)
+trace 30836 status:IN_PROGRESS
+trace 44837 fallback judge → nothing
+trace 47145 raw  sc{outputTranscription,parts:audio}
+trace 47145 out:申し訳ありません、システム
+trace 47291 raw voiceActivity
+trace 47291 raw  sc{interrupted}
+trace 47291 interrupted
+trace 47452 raw usageMetadata sc{turnComplete,interactionStatus}
+trace 47452 turnComplete(drop)
+trace 47452 status:IDLE
+trace 55853 raw  sc{inputTranscription}
+trace 55853 in:日本で働きたいからです。日本の会社はいいと思います。
+trace 55854 raw voiceActivity
+trace 55856 raw  sc{generationComplete}
+trace 55856 raw usageMetadata sc{turnComplete,interactionStatus}
+trace 55856 turnComplete(drop)
+trace 55856 status:IN_PROGRESS
+trace 59856 fallback judge → nothing
+trace 62366 raw voiceActivity
+trace 76950 raw  sc{inputTranscription}
+trace 76950 in:私の強みは丁寧なテストです 。 予約サイトを作った時 、 締め切りの前に大きなバグを見つけてチームで直しました 。
+trace 76950 raw voiceActivity
+trace 77531 raw  sc{generationComplete}
+trace 77553 raw usageMetadata sc{turnComplete,interactionStatus}
+trace 77553 turnComplete(drop)
+trace 77553 status:IN_PROGRESS
+trace 91554 fallback judge → nothing
+trace 93960 raw voiceActivity
+trace 98487 raw  sc{inputTranscription}
+trace 98487 in:いいえ、特にありません。
+trace 98487 raw voiceActivity
+trace 98487 raw  sc{outputTranscription,parts:audio}
+trace 98487 out:かしこまりました。
+trace 68 raw  sc{generationComplete}
+trace 71 raw usageMetadata sc{turnComplete,interactionStatus}
+trace 71 turnComplete(drop)
+trace 71 status:IN_PROGRESS
+trace 14072 fallback judge → nothing
+trace 17172 raw  sc{generationComplete}
+trace 17190 raw usageMetadata sc{turnComplete,interactionStatus}
+trace 17190 turnComplete(drop)
+trace 17190 status:IN_PROGRESS
+trace 33526 raw  sc{outputTranscription,parts:audio}
+trace 33526 out:申し訳ありません、システム
+trace 34159 raw  sc{outputTranscription,parts:audio}
+trace 35237 raw  sc{outputTranscription,parts:audio}
+trace 35237 out:エラーが発生しました。
+trace 36669 raw  sc{generationComplete}
+trace 36669 raw usageMetadata sc{turnComplete,interactionStatus}
+trace 36669 turnComplete(drop)
+trace 36669 status:IDLE
+INTERVIEW model=gemini-3.8-live-extended-thinking level=LOW branches 0/4 report=no (60001 ms)
