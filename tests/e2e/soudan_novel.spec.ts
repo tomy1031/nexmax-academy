@@ -61,7 +61,7 @@ async function teacherPass(page: Page): Promise<void> {
 
 /**
  * 話しかける タイミング（要望 #723）: 席の 絵が「大丈夫そう」に なるのを 待って 押す。
- * 絵は 4枚 読みこめて から 5秒ごとに 切りかわり、大丈夫そうに なるのは 5〜15秒後（`deskCycle`）。
+ * 絵は 4枚 読みこめて から 3秒ごとに 切りかわり、大丈夫そうに なるのは 3〜9秒後（`deskCycle`）。
  */
 async function fillMemo(page: Page): Promise<void> {
   if (!(await page.getByTestId("novel-memo").count())) return;
@@ -422,7 +422,7 @@ test.describe("相談の 練習（サウンドノベル）", () => {
     await expect(page.getByTestId("novel-consult")).toHaveAttribute("data-phase", "approach");
     expect(await bareKanjiTexts(page)).toEqual([]);
     await shot(page, "novel-approach-wrong");
-    /* 押した あと 5秒で 絵が 切りかわり、✖ の 文も 消える（今の 絵と 食い違わない） */
+    /* 押した あと 3秒ほどで 絵が 切りかわり、✖ の 文も 消える（今の 絵と 食い違わない） */
     await expect(desk).not.toHaveAttribute("data-desk-state", first ?? "", { timeout: 7_000 });
     await expect(wrong).toHaveCount(0);
     await approach(page);
