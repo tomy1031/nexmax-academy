@@ -57,10 +57,10 @@ jobs:
           {
             echo "== playwright"; npx playwright install --with-deps chromium 2>&1 | tail -3
             CASES=$(node -p "JSON.stringify(require('./kotoba-town/e2e.json').cases)")
-            node -e "for (const c of JSON.parse(process.argv[1])) console.log(c.variant + '\t' + c.say + '\t' + (c.seconds || 170))" "$CASES" | while IFS=$'\t' read -r V SAY SEC; do
+            node -e "for (const c of JSON.parse(process.argv[1])) console.log(c.variant + '\t' + c.say + '\t' + (c.seconds || 170) + '\t' + (c.mode || 'practice'))" "$CASES" | while IFS=$'\t' read -r V SAY SEC MODE; do
               echo "== case $V: $SAY"
               node --import tsx scripts/kotoba_learner_wav.ts "$SAY" 2>&1 | tail -2
-              timeout 9m node scripts/kotoba_e2e.mjs "$V" "$SEC" 2>&1 | tail -40
+              timeout 9m node scripts/kotoba_e2e.mjs "$V" "$SEC" "$MODE" 2>&1 | tail -40
               [ -f kotoba-town/out/e2e.json ] && mv kotoba-town/out/e2e.json "kotoba-town/out/e2e-$V.json"
               [ -f kotoba-town/out/e2e.png ] && mv kotoba-town/out/e2e.png "kotoba-town/out/e2e-$V.png"
             done
@@ -72,8 +72,8 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add kotoba-town/out/e2e* kotoba-town/out/selfcheck* || true
           git diff --cached --quiet && exit 0
-          git commit --no-verify -q -m "kotoba-town: e2e results [run ${GITHUB_RUN_ID}]"
+          git commit -q -m "kotoba-town: e2e results [run ${GITHUB_RUN_ID}]"
           for try in 1 2 3 4; do
-            git pull --rebase --no-verify -q origin claude/kotoba-town-voices && git push -q origin HEAD:claude/kotoba-town-voices && exit 0
+            git pull --rebase -q origin claude/kotoba-town-voices && git push -q origin HEAD:claude/kotoba-town-voices && exit 0
             sleep 7
           done

@@ -22,6 +22,7 @@ export default function build({ setup }) {
   const A = makeAtlas(1024);
   const T = makeAtlas(1024);
   A.textAtlas = T;
+  T.overflow = A;
   const add = (o, x = 0, y = 0, z = 0, ry = 0, parent = g) => { o.position.set(x, y, z); o.rotation.y = ry; parent.add(o); return o; };
 
   const M = {
@@ -349,10 +350,10 @@ function buildOutside({ time, weather, season, A, M, X0 }) {
   const kraftM = K.mat(kraft, { rough: 0.9 });
   boxG.add(K.box(0.5, 0.012, 0.16, kraftM, { y: 0.33, z: 0.25, rx: 0.5 }));
   const box = K.prop('box', boxG, { labelJa: 'はこ', labelEn: 'cardboard box' });
-  add2(grp, box, X0 - 0.55, 0, -1.6, Math.PI / 2 + 0.15);
+  add2(grp, box, X0 - 0.55, 0, -1.2, Math.PI / 2 + 0.15);
   const catModel = whiteCat(); catModel.scale.setScalar(1.15);
   const cat = K.prop('cat', catModel, { labelJa: 'ねこ', labelEn: 'cat (Shiro)' });
-  add2(grp, cat, X0 - 0.55, 0.33, -1.6, Math.PI / 2 - 0.35);
+  add2(grp, cat, X0 - 0.55, 0.33, -1.2, Math.PI / 2 - 0.35);
   // light spilling out of the store onto the pavement and the cat
   const spill = new THREE.PointLight(dark ? '#fff2dc' : '#ffffff', dark ? 3.2 : 1, 4.5, 1.3);
   spill.position.set(X0 - 0.9, 1.9, -1.2);
@@ -776,17 +777,18 @@ function posRegister(A, M) {
 function odenPot(A, M) {
   const o = new THREE.Group();
   const steel = K.mat('#c8ccd0', { rough: 0.3 });
-  o.add(K.box(0.5, 0.14, 0.36, steel, {}));
-  o.add(K.box(0.48, 0.005, 0.34, K.mat('#b07a3a', { rough: 0.1 }), { y: 0.12 }));
+  o.add(K.box(0.5, 0.02, 0.36, steel, {}));
+  for (const [x, z, w, d] of [[0, 0.175, 0.5, 0.01], [0, -0.175, 0.5, 0.01], [0.245, 0, 0.01, 0.36], [-0.245, 0, 0.01, 0.36]]) o.add(K.box(w, 0.14, d, steel, { x, z }));
+  o.add(K.box(0.48, 0.005, 0.34, K.mat('#b07a3a', { rough: 0.1 }), { y: 0.095 }));
   o.add(K.box(0.48, 0.03, 0.006, steel, { y: 0.1 }));
   o.add(K.box(0.006, 0.03, 0.34, steel, { y: 0.1 }));
   const r = K.rng(3);
   for (let i = 0; i < 12; i++) {
     const x = -0.2 + (i % 4) * 0.13; const z = -0.12 + Math.floor(i / 4) * 0.12;
     const k = i % 3;
-    if (k === 0) o.add(K.cyl(0.035, 0.035, 0.03, K.mat('#e8d6a8', { rough: 0.5 }), { x, y: 0.105, z }, 12)); // daikon
-    else if (k === 1) { const e = K.mesh(new THREE.SphereGeometry(0.026, 10, 6), K.mat('#c9884a', { rough: 0.4 }), { x, y: 0.125, z }); e.scale.set(1, 0.8, 1.2); o.add(e); } // egg
-    else o.add(K.box(0.05, 0.03, 0.04, K.mat('#5a5048', { rough: 0.7 }), { x, y: 0.105, z, ry: r() })); // konnyaku
+    if (k === 0) o.add(K.cyl(0.035, 0.035, 0.03, K.mat('#e8d6a8', { rough: 0.5 }), { x, y: 0.088, z }, 12)); // daikon
+    else if (k === 1) { const e = K.mesh(new THREE.SphereGeometry(0.026, 10, 6), K.mat('#c9884a', { rough: 0.4 }), { x, y: 0.105, z }); e.scale.set(1, 0.8, 1.2); o.add(e); } // egg
+    else o.add(K.box(0.05, 0.03, 0.04, K.mat('#5a5048', { rough: 0.7 }), { x, y: 0.088, z, ry: r() })); // konnyaku
   }
   const s = A.text([{ t: 'おでん', color: '#b5452c' }], 0.24, 0.08, { bg: '#fff6e0', fg: '#333', border: '#b5452c', radius: 0.2 });
   s.position.set(0, 0.24, 0.12); s.rotation.x = -0.3; o.add(s);
@@ -1083,6 +1085,7 @@ function rod(rt, rb, h, material, o = {}, seg = 8) {
 /**
  * One canvas atlas shared by signs, labels, product faces and (via atlasize) every plain-coloured mesh:
  * a handful of materials for the whole scene, so K.finalize merges it into a few draw calls.
+ * When it is full, regions spill into A.overflow (another atlas); every region remembers its atlas.
  */
 function makeAtlas(size = 1024) {
   const c = document.createElement('canvas');
@@ -1126,20 +1129,24 @@ function makeAtlas(size = 1024) {
     return { x, y: bestY };
   };
   const solids = new Map();
-  const A = { material, glow, bucket, tex, ctx, own };
+  const A = { material, glow, bucket, tex, ctx, own, overflow: null };
   A.region = (w, h, draw) => {
     w = Math.max(4, Math.ceil(w)); h = Math.max(4, Math.ceil(h));
     const at = place(w + PAD, h + PAD);
-    if (!at) { console.warn('atlas full', w, h); return { u0: 0, u1: 0.001, v0: 0.999, v1: 1 }; }
+    if (!at) {
+      if (A.overflow) return A.overflow.region(w, h, draw);
+      console.warn('atlas full', w, h);
+      return { u0: 0, u1: 0.001, v0: 0.999, v1: 1, atlas: A };
+    }
     const { x, y } = at;
     ctx.save(); ctx.translate(x, y); ctx.beginPath(); ctx.rect(0, 0, w, h); ctx.clip(); draw(ctx, w, h); ctx.restore();
-    return { u0: (x + 0.5) / size, u1: (x + w - 0.5) / size, v0: 1 - (y + h - 0.5) / size, v1: 1 - (y + 0.5) / size };
+    return { u0: (x + 0.5) / size, u1: (x + w - 0.5) / size, v0: 1 - (y + h - 0.5) / size, v1: 1 - (y + 0.5) / size, atlas: A };
   };
   A.solid = (color) => {
     if (!solids.has(color)) {
       const r = A.region(12, 12, (g) => { g.fillStyle = color; g.fillRect(0, 0, 12, 12); });
       const u = (r.u0 + r.u1) / 2; const v = (r.v0 + r.v1) / 2;
-      solids.set(color, { u0: u, u1: u, v0: v, v1: v });
+      solids.set(color, { u0: u, u1: u, v0: v, v1: v, atlas: r.atlas, color });
     }
     return solids.get(color);
   };
@@ -1149,15 +1156,20 @@ function makeAtlas(size = 1024) {
     uv.needsUpdate = true;
     return geo;
   };
-  /** Box (bottom at y=0) with per-face regions [px, nx, py, ny, pz(front), nz]. */
+  /** Box (bottom at y=0) with per-face regions [px, nx, py, ny, pz(front), nz] — all faces from one atlas. */
   A.boxGeo = (w, h, d, faces) => {
+    const owner = faces[4].atlas || A;
+    const same = faces.map((r) => (r.atlas && r.atlas !== owner && r.color ? owner.solid(r.color) : r));
     const geo = new THREE.BoxGeometry(w, h, d);
-    faces.forEach((r, i) => A.remap(geo, r, i * 4, 4));
+    same.forEach((r, i) => A.remap(geo, r, i * 4, 4));
     geo.translate(0, h / 2, 0);
     return geo;
   };
-  A.box = (w, h, d, front, side, o = {}) => K.mesh(A.boxGeo(w, h, d, [side, side, o.top ?? side, side, front, o.back ?? side]), o.glow ? glow : (o.mat ?? material), o);
-  A.plane = (w, h, r, o = {}) => K.mesh(A.remap(new THREE.PlaneGeometry(w, h), r), o.glow ? glow : material, { cast: false, ...o });
+  A.box = (w, h, d, front, side, o = {}) => {
+    const owner = front.atlas || A;
+    return K.mesh(A.boxGeo(w, h, d, [side, side, o.top ?? side, side, front, o.back ?? side]), o.glow ? owner.glow : (o.mat ?? owner.material), o);
+  };
+  A.plane = (w, h, r, o = {}) => { const owner = r.atlas || A; return K.mesh(A.remap(new THREE.PlaneGeometry(w, h), r), o.glow ? owner.glow : owner.material, { cast: false, ...o }); };
   /** Text sign (a plane); goes to A.textAtlas when one is attached (keeps product faces and signs apart). */
   A.text = (lines, w, h, o = {}) => {
     const T = A.textAtlas || A;

@@ -220,6 +220,9 @@ export default function build({ setup }) {
   // pictures / records on the walls
   add(framedPicture(A, 'sea', 0.7, 0.5, M), X0 + 0.02, 1.62, -1.35, Math.PI / 2);
   add(framedPicture(A, 'mountain', 0.6, 0.45, M), X0 + 0.02, 1.62, 0.55, Math.PI / 2);
+  add(framedPicture(A, 'sea', 0.4, 0.3, M), 0.345, 1.7, -2.95, -Math.PI / 2);
+  add(smallPlant(1.3, 9), -0.55, 0.73, -3.27);
+  add(smallPlant(1.1, 4), -2.0, 0.73, -3.27);
   // newspaper rack near the south-west corner
   const np = K.prop('newspaper', newspaperRack(M, A), { labelJa: 'しんぶん', labelEn: 'newspaper' });
   add(np, -3.0, 0, 2.47, Math.PI);
@@ -281,7 +284,7 @@ export default function build({ setup }) {
   for (let i = 0; i < 4; i++) { const b = K.box(0.55, 0.012, 0.12, M.wood, { x: 0.33 }); const piv = new THREE.Group(); piv.rotation.y = i * Math.PI / 2; piv.add(b); blades.add(piv); }
   blades.position.y = -0.1;
   fan.add(blades);
-  add(fan, 1.2, H - 0.32, 0.35);
+  add(fan, 1.2, H - 0.32, 1.25);
 
   for (const o of [windowProp, reg, cake, cdp, menu, tbl, cc, tc, np, poster, clk]) props[o.userData.propId] = o;
   atlasize(g, A);
@@ -316,6 +319,7 @@ function rod(rt, rb, h, material, o = {}, seg = 8) {
 /**
  * One canvas atlas shared by signs, labels, product faces and (via atlasize) every plain-coloured mesh:
  * a handful of materials for the whole scene, so K.finalize merges it into a few draw calls.
+ * When it is full, regions spill into A.overflow (another atlas); every region remembers its atlas.
  */
 function makeAtlas(size = 1024) {
   const c = document.createElement('canvas');
@@ -359,20 +363,24 @@ function makeAtlas(size = 1024) {
     return { x, y: bestY };
   };
   const solids = new Map();
-  const A = { material, glow, bucket, tex, ctx, own };
+  const A = { material, glow, bucket, tex, ctx, own, overflow: null };
   A.region = (w, h, draw) => {
     w = Math.max(4, Math.ceil(w)); h = Math.max(4, Math.ceil(h));
     const at = place(w + PAD, h + PAD);
-    if (!at) { console.warn('atlas full', w, h); return { u0: 0, u1: 0.001, v0: 0.999, v1: 1 }; }
+    if (!at) {
+      if (A.overflow) return A.overflow.region(w, h, draw);
+      console.warn('atlas full', w, h);
+      return { u0: 0, u1: 0.001, v0: 0.999, v1: 1, atlas: A };
+    }
     const { x, y } = at;
     ctx.save(); ctx.translate(x, y); ctx.beginPath(); ctx.rect(0, 0, w, h); ctx.clip(); draw(ctx, w, h); ctx.restore();
-    return { u0: (x + 0.5) / size, u1: (x + w - 0.5) / size, v0: 1 - (y + h - 0.5) / size, v1: 1 - (y + 0.5) / size };
+    return { u0: (x + 0.5) / size, u1: (x + w - 0.5) / size, v0: 1 - (y + h - 0.5) / size, v1: 1 - (y + 0.5) / size, atlas: A };
   };
   A.solid = (color) => {
     if (!solids.has(color)) {
       const r = A.region(12, 12, (g) => { g.fillStyle = color; g.fillRect(0, 0, 12, 12); });
       const u = (r.u0 + r.u1) / 2; const v = (r.v0 + r.v1) / 2;
-      solids.set(color, { u0: u, u1: u, v0: v, v1: v });
+      solids.set(color, { u0: u, u1: u, v0: v, v1: v, atlas: r.atlas, color });
     }
     return solids.get(color);
   };
@@ -382,15 +390,20 @@ function makeAtlas(size = 1024) {
     uv.needsUpdate = true;
     return geo;
   };
-  /** Box (bottom at y=0) with per-face regions [px, nx, py, ny, pz(front), nz]. */
+  /** Box (bottom at y=0) with per-face regions [px, nx, py, ny, pz(front), nz] — all faces from one atlas. */
   A.boxGeo = (w, h, d, faces) => {
+    const owner = faces[4].atlas || A;
+    const same = faces.map((r) => (r.atlas && r.atlas !== owner && r.color ? owner.solid(r.color) : r));
     const geo = new THREE.BoxGeometry(w, h, d);
-    faces.forEach((r, i) => A.remap(geo, r, i * 4, 4));
+    same.forEach((r, i) => A.remap(geo, r, i * 4, 4));
     geo.translate(0, h / 2, 0);
     return geo;
   };
-  A.box = (w, h, d, front, side, o = {}) => K.mesh(A.boxGeo(w, h, d, [side, side, o.top ?? side, side, front, o.back ?? side]), o.glow ? glow : (o.mat ?? material), o);
-  A.plane = (w, h, r, o = {}) => K.mesh(A.remap(new THREE.PlaneGeometry(w, h), r), o.glow ? glow : material, { cast: false, ...o });
+  A.box = (w, h, d, front, side, o = {}) => {
+    const owner = front.atlas || A;
+    return K.mesh(A.boxGeo(w, h, d, [side, side, o.top ?? side, side, front, o.back ?? side]), o.glow ? owner.glow : (o.mat ?? owner.material), o);
+  };
+  A.plane = (w, h, r, o = {}) => { const owner = r.atlas || A; return K.mesh(A.remap(new THREE.PlaneGeometry(w, h), r), o.glow ? owner.glow : owner.material, { cast: false, ...o }); };
   /** Text sign (a plane); goes to A.textAtlas when one is attached (keeps product faces and signs apart). */
   A.text = (lines, w, h, o = {}) => {
     const T = A.textAtlas || A;
@@ -669,6 +682,17 @@ function bicycle(frameMat) {
   return b;
 }
 
+
+/** Closed pie-slice solid (tip at the origin, pointing -z), bottom at y=0. */
+function sliceGeo(r = 0.075, h = 0.07, ang = Math.PI / 3) {
+  const s = new THREE.Shape();
+  s.moveTo(0, 0); s.lineTo(Math.sin(ang / 2) * r, Math.cos(ang / 2) * r); s.lineTo(-Math.sin(ang / 2) * r, Math.cos(ang / 2) * r); s.closePath();
+  const geo = new THREE.ExtrudeGeometry(s, { depth: h, bevelEnabled: false });
+  geo.rotateX(-Math.PI / 2);
+  if (!geo.index) geo.setIndex([...Array(geo.attributes.position.count).keys()]);
+  return geo;
+}
+
 // --------------------------------------------------------------- furniture & small things
 function pedestalTable(w, d, h, topMat, legMat) {
   const t = new THREE.Group();
@@ -785,9 +809,9 @@ function cakeCase(M, A) {
       c.add(K.cyl(0.035, 0.045, 0.05, K.mat('#e8d6b0'), { x, y: 0.096, z: 0.02 }, 10));
       c.add(K.cyl(0.006, 0.042, 0.06, K.mat(body, { rough: 0.7 }), { x, y: 0.146, z: 0.02 }, 10));
     } else {
-      const wedge = new THREE.CylinderGeometry(0.06, 0.06, 0.065, 6, 1, false, 0, Math.PI / 3);
-      c.add(K.mesh(wedge, K.mat(body, { rough: 0.6 }), { x: x - 0.02, y: 0.13, z: 0.0, ry: -Math.PI / 6 + Math.PI / 2 }));
-      c.add(K.mesh(new THREE.SphereGeometry(0.012, 6, 4), K.mat(top, { rough: 0.4 }), { x, y: 0.17, z: 0.03 }));
+      c.add(K.mesh(sliceGeo(0.085, 0.07), K.mat(body, { rough: 0.6 }), { x, y: 0.096, z: 0.06, ry: 0.5 }));
+      c.add(K.mesh(sliceGeo(0.085, 0.012), K.mat(top === '#d93a3a' ? '#fbf6ee' : top, { rough: 0.5 }), { x, y: 0.166, z: 0.06, ry: 0.5 }));
+      c.add(K.mesh(new THREE.SphereGeometry(0.016, 8, 6), K.mat(top, { rough: 0.4 }), { x: x - 0.02, y: 0.19, z: 0.02 }));
     }
   });
   const tag = A.text([{ t: 'ケーキ', scale: 0.8, color: '#7a3a2a' }, { t: 'かく 520円', scale: 1 }], 0.18, 0.08, { bg: '#fffaf0', fg: '#3b2a1e', border: '#c9a253', radius: 0.12 });
@@ -963,7 +987,9 @@ function newspaperRack(M, A) {
 
 function bookshelf(A, M) {
   const b = new THREE.Group();
-  b.add(K.box(1.6, 1.7, 0.32, M.dark, { z: -0.02 }));
+  b.add(K.box(1.6, 1.7, 0.03, M.dark, { z: -0.16 }));
+  for (const x of [-0.79, 0.79]) b.add(K.box(0.04, 1.7, 0.32, M.dark, { x, z: -0.02 }));
+  b.add(K.box(1.62, 0.04, 0.34, M.dark, { y: 1.68, z: -0.02 }));
   const cols = ['#7a2a2a', '#2a4a6a', '#3f6b4e', '#8a6a2a', '#e0d6c0', '#5a3a5a', '#b5452c', '#2f2f3a'];
   const spines = cols.map((c) => A.region(24, 96, (g, w, h) => {
     g.fillStyle = c; g.fillRect(0, 0, w, h);

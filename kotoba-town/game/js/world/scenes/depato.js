@@ -12,13 +12,13 @@ export const meta = { indoor: true, ambience: 'depato' };
 
 export default function build({ setup }) {
   const time = setup.time || 'evening';
-  const season = setup.season || 'autumn';
   const evening = time === 'evening' || time === 'night';
   const g = new THREE.Group();
   const props = {};
   const A = makeAtlas(1024);
   const T = makeAtlas(1024);
   A.textAtlas = T;
+  T.overflow = A;
   const add = (o, x = 0, y = 0, z = 0, ry = 0, parent = g) => { o.position.set(x, y, z); o.rotation.y = ry; parent.add(o); return o; };
 
   const M = {
@@ -91,7 +91,7 @@ export default function build({ setup }) {
     { id: 'wine_it', x: 0.0, label: 'イタリア', sub: 'ITALIA', flag: ['#2f8a4a', '#ffffff', '#d9333a'], price: '2,500円', name: 'トスカーナ 赤', glass: '#24331f', lab: '#e8dcc0', foil: '#1f3a6a', ja: 'イタリアの ワイン', en: 'Italian wine' },
     { id: 'wine_jp', x: 1.25, label: '日本', sub: 'やまなし', flag: ['#ffffff', '#d9333a', '#ffffff'], price: '1,900円', name: '山梨 白', glass: '#b8c48a', lab: '#fbf8f0', foil: '#c9a253', ja: 'にほんの ワイン', en: 'Japanese wine' },
   ];
-  const featuredX = { wine_fr: -1.0, wine_it: 0.5, wine_jp: 1.2 };
+  const featuredX = { wine_fr: -0.85, wine_it: 0.55, wine_jp: 1.05 };
   for (const s of sections) {
     const grp = new THREE.Group();
     const reg = bottleRegion(A, s);
@@ -147,9 +147,9 @@ export default function build({ setup }) {
     const cp = T.plane(0.17, 0.11, card, { cast: true });
     cp.position.set(0, 0.07, 0.11); cp.rotation.x = -0.35; feat.add(cp);
     feat.add(K.box(0.16, 0.08, 0.01, M.gold, { y: 0.0, z: 0.1, rx: -0.35 }));
-    feat.position.set(featuredX[s.id], CH, -1.0);
-    grp.add(feat);
-    const p = K.prop(s.id, grp, { labelJa: s.ja, labelEn: s.en });
+    feat.position.set(featuredX[s.id], CH, -1.07);
+    g.add(grp);
+    const p = K.prop(s.id, feat, { labelJa: s.ja, labelEn: s.en });
     g.add(p);
     props[s.id] = p;
   }
@@ -160,7 +160,15 @@ export default function build({ setup }) {
   const reg = K.prop('register', posRegister(T, M), { labelJa: 'レジ', labelEn: 'register' });
   add(reg, -1.38, CH, -0.95, 0.15);
   for (let i = 0; i < 3; i++) add(paperBag(T, i === 1 ? 0.75 : 0.85, M), -1.95 - i * 0.03, 0, -1.6 + i * 0.12, 0.3 + i * 0.2);
-  for (let i = 0; i < 6; i++) add(K.box(0.32, 0.006, 0.12, M.cream, {}), -0.95, CH + i * 0.006, -1.03, 0.1); // folded bags
+  for (let i = 0; i < 6; i++) add(K.box(0.32, 0.006, 0.12, M.cream, {}), 1.45, CH + i * 0.006, -0.85, 0.1); // folded bags
+  // tasting tray in front of the clerk
+  const tray = new THREE.Group();
+  tray.add(K.box(0.3, 0.012, 0.14, M.walnut, {}));
+  for (let i = 0; i < 3; i++) { const wg = wineGlass(M); wg.scale.setScalar(0.75); wg.position.set(-0.09 + i * 0.09, 0.012, 0); tray.add(wg); }
+  for (let i = 0; i < 3; i++) tray.add(K.cyl(0.018, 0.018, 0.012, K.mat(['#6a1a2a', '#7a1f2f', '#e8dca0'][i], { rough: 0.1 }), { x: -0.09 + i * 0.09, y: 0.058 }, 8));
+  const tc = T.text([{ t: 'ご試飲 どうぞ', scale: 0.9 }], 0.16, 0.05, { bg: '#fffaf0', fg: '#7a2a3a', border: '#c9a253', radius: 0.15 });
+  const tcg = new THREE.Group(); tc.position.y = 0.03; tc.rotation.x = -0.4; tcg.add(tc); tcg.position.set(0, 0.012, 0.09); tray.add(tcg);
+  add(tray, -0.22, CH, -0.82, 0.05);
   // watch showcase at the right end (clerk side)
   const watch = K.prop('watch_case', watchCase(T, M), { labelJa: 'とけいの ケース', labelEn: 'watch showcase' });
   add(watch, 2.2, 0, -1.1, 0);
@@ -195,10 +203,12 @@ export default function build({ setup }) {
   add(shopFront(A, T, M, 'pastry'), -3.9, 0, ZN);
   add(shopFront(A, T, M, 'wagashi'), 4.1, 0, ZN);
   // deli island behind-left with the evening time sale
-  add(deliIsland(A, T, M, evening), -2.6, 0, 2.6);
+  add(deliIsland(A, T, M, evening), -2.5, 0, 2.95);
+  add(shopFront(A, T, M, 'bakery', 0.95), -4.6, 0, ZS, Math.PI);
+  add(shopFront(A, T, M, 'tea', 0.95), -1.2, 0, ZS, Math.PI);
   // ------------------------------------------------------------------ far left: escalators
   const esc = K.prop('escalator', escalators(T, M), { labelJa: 'エスカレーター', labelEn: 'escalator' });
-  add(esc, -6.4, 0, 1.2);
+  add(esc, X0 + 2.1, 0, 0.9, Math.PI / 2);
   // ------------------------------------------------------------------ far right: elevators + restroom corridor
   const ev = K.prop('elevator', elevators(T, M), { labelJa: 'エレベーター', labelEn: 'elevator' });
   add(ev, X1 - 0.02, 0, -0.8, -Math.PI / 2);
@@ -218,18 +228,18 @@ export default function build({ setup }) {
   const um = K.prop('umbrella_rack', umbrellaRack(T, M), { labelJa: 'かさ', labelEn: 'umbrella rack' });
   add(um, 5.0, 0, 3.5, Math.PI + 0.5);
   const bs = K.prop('bag_shelf', bagShelf(T, M), { labelJa: 'バッグの たな', labelEn: 'bag shelf' });
-  add(bs, 2.7, 0, ZS - 0.25, Math.PI);
+  add(bs, 2.4, 0, ZS - 0.02, Math.PI);
   add(K.plant(1.3, 7), 6.7, 0, 4.8);
-  add(K.plant(1.3, 13), -6.8, 0, 4.8);
-  // big logo on the south wall
-  const logo = T.text([{ t: 'ことば百貨店', scale: 1 }, { t: 'KOTOBA DEPARTMENT STORE', scale: 0.4 }], 2.6, 0.6, { bg: null, fg: '#7a5a3a' });
-  add(logo, -2.2, 2.2, ZS - 0.02, Math.PI);
+  add(K.plant(1.3, 13), X0 + 0.5, 0, 4.9);
+  // big logo on the south wall (above the bag shelf)
+  const logo = T.text([{ t: 'ことば百貨店', scale: 1 }, { t: 'KOTOBA DEPARTMENT STORE', scale: 0.4 }], 2.2, 0.5, { bg: null, fg: '#7a5a3a', ppm: 220 });
+  add(logo, 4.9, 2.45, ZS - 0.02, Math.PI);
   // benches with shopping bags (a rest spot)
   const bench = new THREE.Group();
   bench.add(K.box(1.4, 0.06, 0.45, M.oak, { y: 0.42 }));
   for (const x of [-0.6, 0.6]) bench.add(K.box(0.06, 0.42, 0.4, M.steel, { x }));
-  add(bench, -4.6, 0, ZS - 0.5, Math.PI);
-  add(paperBag(T, 0.85, M), -4.2, 0.48, ZS - 0.5, 0.2);
+  add(bench, X1 - 0.5, 0, 3.6, -Math.PI / 2);
+  add(paperBag(T, 0.85, M), X1 - 0.5, 0.48, 3.2, -1.2);
 
   for (const o of [reg, watch, tieBlue, tieRed, fg, esc, ev, wc, um, bs]) props[o.userData.propId] = o;
   atlasize(g, A);
@@ -251,6 +261,16 @@ export default function build({ setup }) {
 }
 
 // =================================================================== local props
+/** Closed pie-slice solid (tip at the origin, pointing -z), bottom at y=0. */
+function sliceGeo(r = 0.075, h = 0.07, ang = Math.PI / 3) {
+  const s = new THREE.Shape();
+  s.moveTo(0, 0); s.lineTo(Math.sin(ang / 2) * r, Math.cos(ang / 2) * r); s.lineTo(-Math.sin(ang / 2) * r, Math.cos(ang / 2) * r); s.closePath();
+  const geo = new THREE.ExtrudeGeometry(s, { depth: h, bevelEnabled: false });
+  geo.rotateX(-Math.PI / 2);
+  if (!geo.index) geo.setIndex([...Array(geo.attributes.position.count).keys()]);
+  return geo;
+}
+
 function bottleRegion(A, s) {
   return A.region(64, 96, (c, w, h) => {
     // v (bottom→top) = profile index / 9; canvas y = (1 - v) * h
@@ -401,9 +421,10 @@ function floorGuide(T, M) {
   return f;
 }
 
-function shopFront(A, T, M, kind) {
+function shopFront(A, T, M, kind, depth = 1.35) {
   const s = new THREE.Group();
-  const pastry = kind === 'pastry';
+  const pastry = kind === 'pastry' || kind === 'bakery';
+  const shopName = { pastry: ['パティスリー ことり', '洋菓子'], bakery: ['ベーカリー こむぎ', 'パン'], wagashi: ['和菓子  ことば屋', ''], tea: ['日本茶  みどり園', ''] }[kind];
   const Wd = 3.0;
   // back wall shelves with gift boxes
   s.add(K.box(Wd, 2.2, 0.35, pastry ? K.mat('#f3e6e0', { rough: 0.6 }) : K.mat('#ffffff', { map: K.woodTex('#c9a27a', [2, 1], 6), rough: 0.5 }), { z: 0.175 }));
@@ -411,16 +432,16 @@ function shopFront(A, T, M, kind) {
     c.fillStyle = pastry ? '#f6d8dc' : '#e8e0c8'; c.fillRect(0, 0, w, h);
     c.fillStyle = pastry ? '#b5452c' : '#3f6b4e'; c.fillRect(0, h * 0.4, w, h * 0.2);
     c.fillStyle = pastry ? '#7a2a3a' : '#5a3a22'; c.font = `700 14px ${K.JP_FONT}`; c.textAlign = 'center'; c.textBaseline = 'middle';
-    c.fillText(pastry ? 'ことり' : 'ことば屋', w / 2, h * 0.22);
+    c.fillText({ pastry: 'ことり', bakery: 'こむぎ', wagashi: 'ことば屋', tea: 'みどり園' }[kind], w / 2, h * 0.22);
   });
   for (let lv = 0; lv < 3; lv++) for (let i = 0; i < 8; i++) s.add(T.box(0.28, 0.12, 0.2, boxReg, T.solid(pastry ? '#f6d8dc' : '#e8e0c8'), { x: -1.25 + i * 0.36, y: 0.9 + lv * 0.35, z: 0.42 }));
   for (let lv = 0; lv < 3; lv++) s.add(K.box(Wd - 0.1, 0.02, 0.3, pastry ? M.cream : M.oak, { y: 0.88 + lv * 0.35, z: 0.45 }));
   // sign / noren
   if (pastry) {
-    const sg = T.text([{ t: 'パティスリー ことり', scale: 0.9 }, { t: '洋菓子', scale: 0.6 }], 1.8, 0.36, { bg: '#f6d8dc', fg: '#7a2a3a', radius: 0.15, glow: true });
+    const sg = T.text([{ t: shopName[0], scale: 0.9 }, { t: shopName[1], scale: 0.6 }], 1.8, 0.36, { bg: kind === 'bakery' ? '#f2dcb0' : '#f6d8dc', fg: '#7a2a3a', radius: 0.15, glow: true, ppm: 240 });
     sg.position.set(0, 2.55, 0.36); s.add(sg);
   } else {
-    const nr = T.text([{ t: '和菓子  ことば屋', scale: 0.9 }], 2.4, 0.42, { bg: '#2f3a5a', fg: '#f6efe2', radius: 0.02 });
+    const nr = T.text([{ t: shopName[0], scale: 0.9 }], 2.4, 0.42, { bg: kind === 'tea' ? '#3f6b4e' : '#2f3a5a', fg: '#f6efe2', radius: 0.02, ppm: 220 });
     nr.position.set(0, 2.5, 0.38); s.add(nr);
     for (let i = 1; i < 4; i++) s.add(K.box(0.012, 0.3, 0.012, K.mat('#f6efe2'), { x: -1.2 + i * 0.6, y: 2.29, z: 0.39 }));
   }
@@ -434,10 +455,16 @@ function shopFront(A, T, M, kind) {
   const r = K.rng(pastry ? 3 : 8);
   for (let i = 0; i < 16; i++) {
     const x = -1.25 + (i % 8) * 0.36; const z = i < 8 ? 0.1 : -0.12;
-    if (pastry) {
+    if (kind === 'bakery') {
+      const col = ['#d9a050', '#e8c547', '#b5652c', '#e0b070', '#c98a4a'][i % 5];
+      for (let k = 0; k < 3; k++) { const m = K.mesh(new THREE.SphereGeometry(0.045, 8, 6), K.mat(col, { rough: 0.7 }), { x: x - 0.08 + k * 0.08, y: 0.9, z }); m.scale.set(1.2, 0.6, 0.9); sc.add(m); }
+    } else if (kind === 'tea') {
+      const col = ['#3f6b4e', '#5f8f55', '#7a5a3a', '#c9a253', '#2f4a3a'][i % 5];
+      for (let k = 0; k < 2; k++) sc.add(K.cyl(0.04, 0.04, 0.12, K.mat(col, { rough: 0.4 }), { x: x - 0.05 + k * 0.1, y: 0.85, z }, 10));
+    } else if (pastry) {
       const col = ['#fbf6ee', '#4a2a1a', '#f1d9a0', '#c9925a', '#f6c6d3'][i % 5];
       for (let k = 0; k < 3; k++) {
-        const slice = K.mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.06, 5, 1, false, 0, Math.PI / 2.5), K.mat(col, { rough: 0.6 }), { x: x - 0.08 + k * 0.08, y: 0.89, z });
+        const slice = K.mesh(sliceGeo(0.06, 0.05, Math.PI / 3), K.mat(col, { rough: 0.6 }), { x: x - 0.08 + k * 0.08, y: 0.86, z: z + 0.03 });
         sc.add(slice);
         sc.add(K.mesh(new THREE.SphereGeometry(0.01, 5, 4), K.mat(k % 2 ? '#d93a3a' : '#f2e6d0'), { x: x - 0.08 + k * 0.08 + 0.02, y: 0.93, z: z + 0.02 }));
       }
@@ -445,11 +472,11 @@ function shopFront(A, T, M, kind) {
       const col = ['#f6c6d3', '#8fbf6a', '#f4f1ea', '#5a3a2a', '#e8c070'][i % 5];
       for (let k = 0; k < 3; k++) { const m = K.mesh(new THREE.SphereGeometry(0.03, 8, 6), K.mat(col, { rough: 0.7 }), { x: x - 0.08 + k * 0.08, y: 0.885, z }); m.scale.set(1, 0.65, 1); sc.add(m); }
     }
-    const tag = T.text([{ t: `${(pastry ? 380 : 220) + Math.floor(r() * 8) * 20}円`, scale: 0.9 }], 0.09, 0.04, { bg: '#ffffff', fg: '#b5302a', radius: 0.2 });
+    const tag = T.text([{ t: `${({ pastry: 380, bakery: 180, wagashi: 220, tea: 980 })[kind] + Math.floor(r() * 8) * 20}円`, scale: 0.9 }], 0.09, 0.04, { bg: '#ffffff', fg: '#b5302a', radius: 0.2, ppm: 400 });
     tag.position.set(x, 0.86, z + 0.1); tag.rotation.x = -0.6; sc.add(tag);
   }
   sc.add(K.box(Wd - 0.2, 0.012, 0.5, M.cream, { y: 0.84 }));
-  sc.position.z = 1.35;
+  sc.position.z = depth;
   s.add(sc);
   return s;
 }
@@ -484,7 +511,7 @@ function deliIsland(A, T, M, evening) {
 
 function escalators(T, M) {
   const e = new THREE.Group();
-  const rise = 3.0; const run = 5.0; const ang = Math.atan2(rise, run); const len = Math.hypot(rise, run);
+  const rise = 3.0; const run = 4.2; const ang = Math.atan2(rise, run); const len = Math.hypot(rise, run);
   const side = K.mat('#d9d4cc', { rough: 0.3, metal: 0.2 });
   const rail = K.mat('#1f1f22', { rough: 0.4 });
   const stepReg = T.region(64, 256, (c, w, h) => {
@@ -509,9 +536,11 @@ function escalators(T, M) {
     band.position.x = x;
     e.add(band);
     const arrow = T.text([{ t: up ? '↑ のぼり' : '↓ くだり', scale: 0.8 }], 0.5, 0.12, { bg: '#2f5a4a', fg: '#ffffff', radius: 0.2 });
-    arrow.position.set(x, 1.2, run / 2 + 1.0); e.add(arrow);
+    arrow.position.set(x, 1.25, run / 2 + 0.06); e.add(arrow);
   }
-  e.add(K.box(2.4, 0.4, run + 1, side, { y: -0.39, z: 0.5 }));
+  // truss under the slope and the ceiling opening edge
+  e.add(K.box(2.3, 0.5, len, side, { y: rise / 2 - 0.62, rx: ang }));
+  e.add(K.box(2.5, 0.25, 0.3, side, { y: rise - 0.25, z: -run / 2 }));
   const sg = T.text([{ t: 'エスカレーター', scale: 0.9 }, { t: '1F〜7F', scale: 0.6 }], 1.3, 0.32, { bg: '#3a2a22', fg: '#ffffff', radius: 0.1, glow: true });
   sg.position.set(0, 2.62, run / 2 + 0.5); e.add(sg);
   e.add(K.box(0.01, 0.4, 0.01, M.steel, { x: -0.5, y: 2.78, z: run / 2 + 0.5 }));
@@ -559,8 +588,10 @@ function umbrellaRack(T, M) {
 
 function bagShelf(T, M) {
   const b = new THREE.Group();
-  b.add(K.box(2.0, 1.9, 0.4, M.cream, { z: -0.0 }));
   b.add(K.box(2.0, 1.9, 0.02, M.walnut, { z: -0.19 }));
+  for (const x of [-1.0, 1.0]) b.add(K.box(0.04, 1.9, 0.4, M.cream, { x }));
+  b.add(K.box(2.04, 0.04, 0.4, M.cream, { y: 1.9 }));
+  b.add(K.box(2.0, 0.08, 0.4, M.dark, {}));
   const cols = ['#7a5a3a', '#2a2a2a', '#a8323a', '#e8dcc6', '#3f6b4e', '#c98a9a', '#2f4f8f', '#b98b5e'];
   for (let lv = 0; lv < 3; lv++) {
     const y = 0.25 + lv * 0.55;
@@ -592,6 +623,7 @@ function rod(rt, rb, h, material, o = {}, seg = 8) {
 /**
  * One canvas atlas shared by signs, labels, product faces and (via atlasize) every plain-coloured mesh:
  * a handful of materials for the whole scene, so K.finalize merges it into a few draw calls.
+ * When it is full, regions spill into A.overflow (another atlas); every region remembers its atlas.
  */
 function makeAtlas(size = 1024) {
   const c = document.createElement('canvas');
@@ -635,20 +667,24 @@ function makeAtlas(size = 1024) {
     return { x, y: bestY };
   };
   const solids = new Map();
-  const A = { material, glow, bucket, tex, ctx, own };
+  const A = { material, glow, bucket, tex, ctx, own, overflow: null };
   A.region = (w, h, draw) => {
     w = Math.max(4, Math.ceil(w)); h = Math.max(4, Math.ceil(h));
     const at = place(w + PAD, h + PAD);
-    if (!at) { console.warn('atlas full', w, h); return { u0: 0, u1: 0.001, v0: 0.999, v1: 1 }; }
+    if (!at) {
+      if (A.overflow) return A.overflow.region(w, h, draw);
+      console.warn('atlas full', w, h);
+      return { u0: 0, u1: 0.001, v0: 0.999, v1: 1, atlas: A };
+    }
     const { x, y } = at;
     ctx.save(); ctx.translate(x, y); ctx.beginPath(); ctx.rect(0, 0, w, h); ctx.clip(); draw(ctx, w, h); ctx.restore();
-    return { u0: (x + 0.5) / size, u1: (x + w - 0.5) / size, v0: 1 - (y + h - 0.5) / size, v1: 1 - (y + 0.5) / size };
+    return { u0: (x + 0.5) / size, u1: (x + w - 0.5) / size, v0: 1 - (y + h - 0.5) / size, v1: 1 - (y + 0.5) / size, atlas: A };
   };
   A.solid = (color) => {
     if (!solids.has(color)) {
       const r = A.region(12, 12, (g) => { g.fillStyle = color; g.fillRect(0, 0, 12, 12); });
       const u = (r.u0 + r.u1) / 2; const v = (r.v0 + r.v1) / 2;
-      solids.set(color, { u0: u, u1: u, v0: v, v1: v });
+      solids.set(color, { u0: u, u1: u, v0: v, v1: v, atlas: r.atlas, color });
     }
     return solids.get(color);
   };
@@ -658,15 +694,20 @@ function makeAtlas(size = 1024) {
     uv.needsUpdate = true;
     return geo;
   };
-  /** Box (bottom at y=0) with per-face regions [px, nx, py, ny, pz(front), nz]. */
+  /** Box (bottom at y=0) with per-face regions [px, nx, py, ny, pz(front), nz] — all faces from one atlas. */
   A.boxGeo = (w, h, d, faces) => {
+    const owner = faces[4].atlas || A;
+    const same = faces.map((r) => (r.atlas && r.atlas !== owner && r.color ? owner.solid(r.color) : r));
     const geo = new THREE.BoxGeometry(w, h, d);
-    faces.forEach((r, i) => A.remap(geo, r, i * 4, 4));
+    same.forEach((r, i) => A.remap(geo, r, i * 4, 4));
     geo.translate(0, h / 2, 0);
     return geo;
   };
-  A.box = (w, h, d, front, side, o = {}) => K.mesh(A.boxGeo(w, h, d, [side, side, o.top ?? side, side, front, o.back ?? side]), o.glow ? glow : (o.mat ?? material), o);
-  A.plane = (w, h, r, o = {}) => K.mesh(A.remap(new THREE.PlaneGeometry(w, h), r), o.glow ? glow : material, { cast: false, ...o });
+  A.box = (w, h, d, front, side, o = {}) => {
+    const owner = front.atlas || A;
+    return K.mesh(A.boxGeo(w, h, d, [side, side, o.top ?? side, side, front, o.back ?? side]), o.glow ? owner.glow : (o.mat ?? owner.material), o);
+  };
+  A.plane = (w, h, r, o = {}) => { const owner = r.atlas || A; return K.mesh(A.remap(new THREE.PlaneGeometry(w, h), r), o.glow ? owner.glow : owner.material, { cast: false, ...o }); };
   /** Text sign (a plane); goes to A.textAtlas when one is attached (keeps product faces and signs apart). */
   A.text = (lines, w, h, o = {}) => {
     const T = A.textAtlas || A;

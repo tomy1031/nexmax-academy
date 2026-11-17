@@ -78,9 +78,9 @@ jobs:
           commit() {
             git add kotoba-town/out
             if git diff --cached --quiet; then return 0; fi
-            git commit --no-verify -q -m "kotoba-town: voices ($1) [run ${GITHUB_RUN_ID}]"
+            git commit -q -m "kotoba-town: voices ($1) [run ${GITHUB_RUN_ID}]"
             for try in 1 2 3; do
-              git pull --rebase --no-verify -q origin claude/kotoba-town-voices && git push -q origin HEAD:claude/kotoba-town-voices && return 0
+              git pull --rebase -q origin claude/kotoba-town-voices && git push -q origin HEAD:claude/kotoba-town-voices && return 0
               sleep 5
             done
             echo "::warning::push に 失敗しました"

@@ -18,6 +18,7 @@ import { chromium } from "@playwright/test";
 const apiKey = process.env.GEMINI_API_KEY ?? "";
 const variant = process.argv[2] || "l01a";
 const seconds = Number(process.argv[3] || 150);
+const mode = process.argv[4] === "real" ? "real" : "practice"; // ほんばん or れんしゅう
 if (!apiKey) throw new Error("GEMINI_API_KEY が ありません");
 const root = resolve("kotoba-town/game");
 const wav = resolve("kotoba-town/e2e/learner.wav");
@@ -51,7 +52,7 @@ const errors = [];
 page.on("pageerror", (e) => errors.push(String(e).slice(0, 300)));
 await page.goto(`http://127.0.0.1:${port}/?play=${variant}&debug=1`);
 await page.waitForFunction("window.KT && window.KT.ready && window.KT.state.where === 'brief'", null, { timeout: 120000 });
-await page.evaluate(() => { window.KT.start(); }); // fire and forget: start() resolves only when the conversation ends
+await page.evaluate((m) => { window.KT.start(m); }, mode); // fire and forget: start() resolves only when the conversation ends
 const t0 = Date.now();
 let last = "";
 while (Date.now() - t0 < seconds * 1000) {
@@ -70,6 +71,7 @@ const result = await page.evaluate(() => ({
 }));
 result.pageErrors = errors;
 result.variant = variant;
+result.mode = mode;
 result.at = new Date().toISOString();
 await page.screenshot({ path: "kotoba-town/out/e2e.png" });
 mkdirSync("kotoba-town/out", { recursive: true });

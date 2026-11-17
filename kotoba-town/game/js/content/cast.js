@@ -40,7 +40,7 @@ export const CAST = {
     voice: 'Aoede', personaJa: '30代なかばの となりの 奥さん。やさしくて 話し好き。花屋で パートを している。',
     styleJa: 'やさしく、あたたかく、少し 話し好きな 感じで。',
     look: { sex: 'f', age: 35, height: 1.6, build: 1.0, skin: SKIN.fair, hair: { style: 'bob', color: '#4a3020' },
-      outfit: { type: 'cardigan', top: '#e9b9a4', bottom: '#5d6b7a', accent: '#fff6e8' }, extras: ['earrings'] },
+      outfit: { type: 'cardigan', top: '#8fb8a3', bottom: '#5d6b7a', accent: '#fff3df' }, extras: ['earrings'] },
   },
   mori_shun: {
     nameJa: '森 しゅん', kana: 'もり しゅん', roleEn: "Aya's husband, bank employee",
@@ -133,6 +133,14 @@ export const CAST = {
     look: { sex: 'm', age: 20, height: 1.75, build: 0.92, skin: SKIN.light, hair: { style: 'wavy', color: '#3b2a1c' },
       outfit: { type: 'konbini', top: '#3a8f6b', bottom: '#2a2d33', accent: '#ffffff' }, extras: ['badge'] },
   },
+  murakami: {
+    nameJa: '村上 なおみ', kana: 'むらかみ なおみ', roleEn: 'Project leader of the development team at Midori Design',
+    voice: 'Callirrhoe',
+    styleJa: '仕事が できる 先輩らしく、落ち着いて、はっきり、やさしく。',
+    personaJa: '30代の プロジェクトリーダー。みどりデザインの 開発チームを まとめて いる。落ち着いて いて、報連相を ていねいに 教える。',
+    look: { sex: 'f', age: 36, height: 1.63, build: 1.0, skin: '#ecc5a6', hair: { style: 'long', color: '#2a1c14' },
+      outfit: { type: 'blouse', top: '#4f6d8f', bottom: '#2d3440', accent: '#f2ede2' }, extras: ['lanyard', 'earrings'] },
+  },
   takeuchi: {
     nameJa: '竹内 えみ', kana: 'たけうち えみ', roleEn: 'Office worker you meet around town',
     voice: 'Kore', personaJa: '40代の 会社員。てきぱき して いて 親切。',
@@ -145,7 +153,7 @@ export const CAST = {
 /** Scene catalog: slots and props (zone = near | npc | far, relative to the learner). */
 export const SCENES = {
   office: {
-    nameEn: 'Office', slots: ['npc1', 'npc2', 'reception', 'phone'],
+    nameEn: 'Office', slots: ['npc1', 'npc2', 'npc3', 'reception', 'phone'],
     props: { business_card: 'near', my_desk: 'near', pc: 'near', logo_wall: 'far', coffee_machine: 'far', whiteboard: 'far', plant: 'npc', clock: 'far', calendar: 'npc', phone_desk: 'npc', aoki_desk: 'npc', cup: 'npc', meeting_room: 'far', toilet_sign: 'far', elevator: 'far', door: 'far' },
   },
   classroom: {
@@ -170,7 +178,7 @@ export const SCENES = {
   },
   cafe: {
     nameEn: 'Café', slots: ['counter', 'npc1', 'npc2', 'phone'],
-    props: { menu_board: 'npc', cake_case: 'npc', coffee_cup: 'near', tea_cup: 'near', table: 'near', window: 'far', poster_concert: 'far', newspaper: 'far', register: 'npc' },
+    props: { menu_board: 'npc', cake_case: 'npc', coffee_cup: 'near', tea_cup: 'near', table: 'near', window: 'far', poster_concert: 'far', newspaper: 'far', register: 'npc', cd_player: 'npc', clock: 'far' },
   },
   park: {
     nameEn: 'Park', slots: ['npc1', 'npc2', 'phone'],
@@ -182,7 +190,7 @@ export const SCENES = {
   },
   konbini: {
     nameEn: 'Convenience store', slots: ['clerk', 'npc1', 'phone'],
-    props: { register: 'npc', atm: 'far', copy_machine: 'far', drinks_fridge: 'far', spices: 'far', onigiri: 'near', bento: 'near', bread: 'npc', magazines: 'far', basket: 'near', toilet_sign: 'far', entrance: 'far', box: 'near', cat: 'npc' },
+    props: { register: 'npc', atm: 'far', copy_machine: 'far', drinks_fridge: 'far', spices: 'far', onigiri: 'near', bento: 'near', bread: 'npc', magazines: 'far', basket: 'near', toilet_sign: 'far', entrance: 'far', box: 'far', cat: 'far', umbrella_stand: 'far', batteries: 'far' },
   },
 };
 
