@@ -13,7 +13,9 @@ import { join } from "node:path";
 import { OUT_RATE, synthesizeWithFallback } from "./lib/live_tts";
 
 const apiKey = process.env.GEMINI_API_KEY ?? "";
-const level = (process.argv[2] || "MEDIUM").toUpperCase();
+// FAST = the conversation on gemini-3.8-live (default in the game); THINK-LOW / THINK-MEDIUM = Live Extended Thinking
+const mode = (process.argv[2] || "FAST").toUpperCase();
+const level = mode.startsWith("THINK") ? mode.split("-")[1] || "LOW" : "LOW";
 const ROOT = "kotoba-town";
 const fx = JSON.parse(readFileSync(join(ROOT, "interview_check.json"), "utf8"));
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -24,6 +26,7 @@ async function main(): Promise<void> {
   const { LiveBrain } = await import("../kotoba-town/js/talk/brain.js");
   const { turnNote, endNote } = await import("../kotoba-town/js/talk/judge.js");
   const { resample, floatToPcm16, bytesToBase64, LIVE_MODELS, THINKING_MODEL } = await import("../kotoba-town/js/talk/live.js");
+  const { reviewInterview } = await import("../kotoba-town/js/talk/review.js");
 
   // 1) the learner's voice for every answer (made first, so the session is not kept waiting)
   const voices: Float32Array[] = [];
@@ -49,7 +52,7 @@ async function main(): Promise<void> {
     character: fx.character,
     learnerName: "リン",
     silenceMs: 1600,
-    models: [THINKING_MODEL, ...LIVE_MODELS],
+    models: mode.startsWith("THINK") ? [THINKING_MODEL, ...LIVE_MODELS] : LIVE_MODELS,
     thinkingLevel: level,
     traceRaw: true,
     on: {
@@ -96,7 +99,7 @@ async function main(): Promise<void> {
       console.log(JSON.stringify(row, null, 1));
       turns.push({
         questionJa: t.npcLines.map((l: { ja: string }) => l.ja).join(" "), promptEn: t.listen.promptEn, heard: v?.heard ?? asr, score: v?.score ?? 0,
-        criteria: t.listen.criteria, criteriaMet: v?.criteriaMet ?? [], criteriaMissed: missed,
+        criteria: t.listen.criteria, criteriaMet: v?.criteriaMet ?? [], criteriaMissed: missed, lookForEn: t.listen.lookForEn,
       });
       await sleep(1_500);
     }
@@ -107,6 +110,13 @@ async function main(): Promise<void> {
   const reportMs = Date.now() - r0;
   const model = brain.model;
   brain.close();
+  // 4) the considered evaluation by a thinking model (what the game shows at the end)
+  const reviewLog: string[] = [];
+  const v0 = Date.now();
+  const review = await reviewInterview({ apiKey, lesson: fx.lesson, variant: fx.variant, turns, level: "HIGH", timeoutMs: 90_000, log: (m: string) => reviewLog.push(m) });
+  const reviewMs = Date.now() - v0;
+  console.log("REVIEW", reviewMs, "ms", JSON.stringify(reviewLog));
+  console.log(JSON.stringify(review, null, 1));
   const out = {
     at: new Date().toISOString(),
     thinkingLevel: level,
@@ -115,6 +125,9 @@ async function main(): Promise<void> {
     turns: rows,
     report,
     reportMs,
+    review,
+    reviewMs,
+    reviewLog,
     totalMs: Date.now() - started,
     trace: trace.slice(-200),
   };
@@ -123,7 +136,7 @@ async function main(): Promise<void> {
   const okTurns = rows.filter((r) => (r as { branchOk: boolean }).branchOk).length;
   console.log(`status: ${out.status}`);
   for (const line of out.trace) console.log(`trace ${line}`);
-  console.log(`INTERVIEW model=${model} level=${level} branches ${okTurns}/${rows.length} report=${report ? "yes" : "no"} (${reportMs} ms)`);
+  console.log(`INTERVIEW mode=${mode} model=${model} branches ${okTurns}/${rows.length} live-report=${report ? "yes" : "no"} (${reportMs} ms) review=${review ? `${(review as { model?: string }).model} ${(review as { verdict?: string }).verdict}` : "no"} (${reviewMs} ms)`);
 }
 
 void main()
