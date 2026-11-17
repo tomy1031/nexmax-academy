@@ -21,7 +21,15 @@ import {
 import type { FuriganaIndex } from "@/lib/text/furigana";
 import { DeskApproach } from "./desk-approach";
 import { FaceIcon } from "./face-icon";
-import { MemoCard, MemoMaker, MemoOthers, type NovelMemo } from "./memo-panel";
+import {
+  MemoCard,
+  MemoMaker,
+  MemoOthers,
+  readSavedMemo,
+  saveMemo,
+  type MemoFacts,
+  type NovelMemo,
+} from "./memo-panel";
 import { playNovelSe } from "./novel-sound";
 
 type ConsultScene = Extract<NovelScene, { type: "consult" }>;
@@ -142,11 +150,22 @@ export function ConsultPanel({
   const desk = showsTiming(novel, scene)
     ? novel.cast.find((one) => one.id === scene.to)?.desk
     : undefined;
-  /** 席の 絵の あとの 段（席の 絵が あれば タイミングから）。 */
+  /**
+   * 席の 絵の あとの 段（席の 絵が あれば タイミングから）。
+   *
+   * 席の 絵の ボタンが「◯◯さん、今 お時間 よろしいでしょうか？」（声かけ そのもの）なので、
+   * 席の 絵の ある 相談では **声かけの 段（「まず 声を かけましょう」）を 出さない**——押したら
+   * 相手の 返事へ 進む（2026-11-17 tomy さん「残すことにしたので…これは要らない」）。
+   * 席の 絵の 無い 相談（悪い 知らせ）は、これまで どおり 声で 声を かける。
+   */
   const opening: Phase = desk ? "approach" : "call";
-  /** 相談メモ（要望 #746）。あれば 話しかける 前に 作る。 */
-  const [memo, setMemo] = useState<NovelMemo | null>(null);
-  const [phase, setPhase] = useState<Phase>(cleared ? "passed" : scene.memo ? "memo" : opening);
+  /** 相談メモ（要望 #746）。あれば 話しかける 前に 作る。読みこみ直しても 残す（端末の 中）。 */
+  const [memo, setMemo] = useState<NovelMemo | null>(() =>
+    scene.memo && !cleared ? readSavedMemo(scene.id) : null,
+  );
+  const [phase, setPhase] = useState<Phase>(() =>
+    cleared ? "passed" : scene.memo && !readSavedMemo(scene.id) ? "memo" : opening,
+  );
   /** タイミングを 当てて 声かけに 来た（声かけの 上に「いい タイミング」を 出す）。 */
   const [timed, setTimed] = useState(false);
   /** 合格した あとの「もう 一度 練習する」（記録の 失敗回数を 増やさない）。 */
@@ -490,11 +509,14 @@ export function ConsultPanel({
             <MemoMaker
               spec={scene.memo}
               askForm={scene.askForm}
+              facts={noticeFacts(notice)}
+              storageKey={scene.id}
               index={index}
               show={show}
               translation={translation}
               onDone={(made) => {
                 setMemo(made);
+                saveMemo(scene.id, made);
                 setPhase(opening);
               }}
             />
@@ -514,13 +536,14 @@ export function ConsultPanel({
                 onReady={() => {
                   playNovelSe("notice", volume);
                   setTimed(true);
-                  setPhase("call");
+                  /* ボタンが 声かけ そのもの——相手の 返事へ（声かけの 段は 出さない） */
+                  setPhase("reply");
                 }}
               />
             </div>
           ) : null}
 
-          {phase === "call" && timed ? (
+          {phase === "reply" && timed ? (
             <p
               role="status"
               className="text-leaf-deep text-sm font-black"
@@ -1120,4 +1143,16 @@ function TextInput({
       </div>
     </div>
   );
+}
+
+/** くらべる 画面の 正解の 2行（相談メモの 上に 出す）。 */
+function noticeFacts(notice: NoticeScene | null): MemoFacts | null {
+  if (!notice) return null;
+  const left = notice.left.lines.find((line) => line.id === notice.answer[0]);
+  const right = notice.right.lines.find((line) => line.id === notice.answer[1]);
+  if (!left || !right) return null;
+  return {
+    left: { title: notice.left.title, text: left.text },
+    right: { title: notice.right.title, text: right.text },
+  };
 }

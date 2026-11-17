@@ -38,8 +38,10 @@ const LOAD_TIMEOUT_MS = 15_000;
  *（並びは `deskCycle`）。絵は ゲームの 画面 いっぱいに 出し、**真ん中の「◯◯さんに 話しかける」**
  * を 大丈夫そうな ときに 押せば、声かけ（相談の はじめ）へ 進む（2026-11-13 の 指定）。
  * ちがう ときに 押すと、**絵を 横に ゆらし、絵の 中に**「✖ 今は 電話中です。…」を 出す
- *（同日の 指定）。その 絵は もう 5秒 のびる（相手の じゃまを した ぶん、待つ 時間が のびる）。
- * 押しつづけても 通れない ので、見て 待つ ことに なる。
+ *（同日の 指定）。押しつづけても 通れない ので、見て 待つ ことに なる。
+ * 待ち時間は **のばさない**（前は まちがえる たびに 5秒 のびて いた。連打すると 待ちが
+ * のびつづけ、「待てば 変わる」が 見えなく なる・2026-11-17 の Codex の 指摘）。
+ * 上の 決まりに「絵は 約5秒で 変わります。」を 出し、待つ ことも 操作だと 先に 伝える。
  * 切りかえは 4枚が 読みこめて から 始める。
  *
  * ここで まちがえても 相談の 星は 減らさない——星は「相談の 中身が 伝わったか」の 目印なので、
@@ -73,8 +75,6 @@ export function DeskApproach({
 }) {
   const cycle = deskCycle(seed);
   const [at, setAt] = useState(0);
-  /** まちがえて 押すたびに 1 ふえ、今の 絵の 5秒を 数え直す。 */
-  const [round, setRound] = useState(0);
   const [loaded, setLoaded] = useState<readonly NovelDeskState[]>([]);
   const [timedOut, setTimedOut] = useState(false);
   const ready = timedOut || loaded.length >= Object.keys(desk).length;
@@ -102,7 +102,7 @@ export function DeskApproach({
       setAt((now) => now + 1);
     }, DESK_SWITCH_MS);
     return () => window.clearInterval(timer);
-  }, [ready, round]);
+  }, [ready]);
 
   const markLoaded = (key: NovelDeskState) =>
     setLoaded((now) => (now.includes(key) ? now : [...now, key]));
@@ -116,7 +116,6 @@ export function DeskApproach({
       return;
     }
     setWrong({ state, at });
-    setRound((now) => now + 1);
     if (scope.current) {
       void animate(scope.current, { x: [0, -16, 16, -12, 12, -6, 6, 0] }, { duration: 0.5 });
     }
@@ -202,6 +201,9 @@ export function DeskApproach({
               index={index}
               show={show}
             />
+          </span>
+          <span data-testid="novel-approach-wait">
+            ⏱ <RubyText text="絵は 約5秒で 変わります。" index={index} show={show} />
           </span>
         </p>
         {translation ? (

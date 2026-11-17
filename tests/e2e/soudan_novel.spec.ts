@@ -22,6 +22,7 @@ interface NovelScene {
   id: string;
   type: string;
   answer?: unknown;
+  memo?: { seenAnswer?: string[]; diffAnswer?: string[] };
 }
 
 const MEETING = JSON.parse(
@@ -64,10 +65,19 @@ async function teacherPass(page: Page): Promise<void> {
  */
 async function fillMemo(page: Page): Promise<void> {
   if (!(await page.getByTestId("novel-memo").count())) return;
-  await page.getByTestId("novel-memo-pick-1").locator("[data-word]").first().click();
-  await page.getByTestId("novel-memo-pick-2").locator("[data-word]").nth(1).click();
+  /* ①②は 問いの 正解を 押す（教材の データの 正解・2026-11-17「BCodex」） */
+  const id = (await page.getByTestId("novel-player").getAttribute("data-scene")) ?? "";
+  const memo = sceneById(id)?.memo ?? {};
+  for (const [n, words] of [
+    [1, memo.seenAnswer ?? []],
+    [2, memo.diffAnswer ?? []],
+  ] as const) {
+    for (const word of words) {
+      await page.getByTestId(`novel-memo-pick-${n}`).locator(`[data-word="${word}"]`).click();
+    }
+  }
   await page.locator("[data-stance]").first().click();
-  await page.getByTestId("novel-memo-input").fill("キーボードも 出しますか");
+  await page.getByTestId("novel-memo-input").fill("教えて いただけませんか");
   await page.getByTestId("novel-memo-done").click();
 }
 
@@ -213,6 +223,7 @@ test.describe("相談の 練習（サウンドノベル）", () => {
       await step(page);
     }
     await approach(page);
+    await page.getByTestId("novel-to-talk").click();
     await page.getByTestId("novel-mic-connect").click();
     await expect(page.getByTestId("novel-text")).toBeVisible({ timeout: 30_000 });
     expect(await bareKanjiTexts(page)).toEqual([]);
@@ -235,10 +246,9 @@ test.describe("相談の 練習（サウンドノベル）", () => {
     await approach(page);
     /* 先生用の 合格は 学生の 端末では 押せない */
     await expect(page.getByTestId("novel-teacher-pass")).not.toHaveAttribute("data-teacher", "1");
-    await expect(page.getByTestId("novel-text")).toBeVisible();
-    await page.getByTestId("novel-text-input").fill("ヘンディさん、今、お時間よろしいですか。");
-    await page.getByTestId("novel-text-send").click();
+    /* 席の 絵の ボタンが 声かけ——相手の 返事から 本題へ（2026-11-17「これは要らない」） */
     await page.getByTestId("novel-to-talk").click();
+    await expect(page.getByTestId("novel-text")).toBeVisible();
     /* AI が 使えない ことと、お手本を 読めば 進める ことが 出る */
     await expect(page.getByTestId("novel-error")).toHaveAttribute("data-reason", "noKey");
     await expect(page.getByTestId("novel-hint")).toBeVisible();
@@ -247,7 +257,7 @@ test.describe("相談の 練習（サウンドノベル）", () => {
     await page
       .getByTestId("novel-text-input")
       .fill(
-        "仕様書では、出す商品は2つです。でも、商品データにはキーボードもあります。キーボードも出しますか。",
+        "仕様書では、出す商品はマウスとUSBライトです。キーボードはありません。キーボードを出すかどうか、わかりません。教えていただけませんか。",
       );
     await page.getByTestId("novel-text-send").click();
     await expect(page.getByTestId("novel-passed")).toHaveAttribute("data-stars", "1");
@@ -322,11 +332,9 @@ test.describe("相談の 練習（サウンドノベル）", () => {
       await step(page);
     }
     await approach(page);
+    await page.getByTestId("novel-to-talk").click();
     await page.getByTestId("novel-mic-connect").click();
     await expect(page.getByTestId("novel-text")).toBeVisible({ timeout: 30_000 });
-    await page.getByTestId("novel-text-input").fill("ヘンディさん、今、お時間よろしいですか。");
-    await page.getByTestId("novel-text-send").click();
-    await page.getByTestId("novel-to-talk").click();
     await page.getByTestId("novel-text-input").fill("キーボードも出しますか。");
     await page.getByTestId("novel-text-send").click();
     const react = page.getByTestId("novel-react");
@@ -360,9 +368,22 @@ test.describe("相談の 練習（サウンドノベル）", () => {
     for (let i = 0; i < 80 && !(await page.getByTestId("novel-consult").count()); i += 1) {
       await step(page);
     }
-    /* 相談メモ: ①②は 押して 拾い、③は 自分の 考えを 選んでから 書く（それまで「できた」は 押せない） */
+    /*
+     * 相談メモ: ①②は 問いに 答えて 押し（まちがえたら その 場で ✖）、③は 自分の 考えを
+     * 選んでから 書く。足りない まま「できた」を 押すと、足りない 所を 言う（2026-11-17）
+     */
     await expect(page.getByTestId("novel-memo")).toBeVisible();
-    await expect(page.getByTestId("novel-memo-done")).toBeDisabled();
+    await expect(page.getByTestId("novel-memo-facts")).toBeVisible();
+    await expect(page.getByTestId("novel-memo-form")).toBeVisible();
+    await page.getByTestId("novel-memo-done").click();
+    await expect(page.getByTestId("novel-memo-missing")).toBeVisible();
+    await expect(page.getByTestId("novel-memo-pick-1")).toHaveAttribute("data-lit", "1");
+    const memoSpec = sceneById("c_mon")?.memo ?? {};
+    const wrongWord = ["マウス", "USBライト", "キーボード"].find(
+      (word) => !(memoSpec.seenAnswer ?? []).includes(word),
+    );
+    await page.getByTestId("novel-memo-pick-1").locator(`[data-word="${wrongWord}"]`).click();
+    await expect(page.getByTestId("novel-memo-wrong-1")).toBeVisible();
     expect(await bareKanjiTexts(page)).toEqual([]);
     await shot(page, "novel-memo");
     await fillMemo(page);
@@ -385,7 +406,8 @@ test.describe("相談の 練習（サウンドノベル）", () => {
     await expect(desk).not.toHaveAttribute("data-desk-state", first ?? "", { timeout: 7_000 });
     await expect(wrong).toHaveCount(0);
     await approach(page);
-    await expect(page.getByTestId("novel-consult")).toHaveAttribute("data-phase", "call");
+    /* ボタンが 声かけ そのもの——「まず 声を かけましょう」は 出さず、相手の 返事へ */
+    await expect(page.getByTestId("novel-consult")).toHaveAttribute("data-phase", "reply");
     await expect(page.getByTestId("novel-stage")).toBeVisible();
     expect(await bareKanjiTexts(page)).toEqual([]);
     await shot(page, "novel-approach-ok");
@@ -396,10 +418,9 @@ test.describe("相談の 練習（サウンドノベル）", () => {
     await page.getByTestId("novel-continue").click();
     await teacherPass(page);
     await page.getByTestId("novel-passed").getByRole("button").nth(1).click();
-    /* 読み込み直した あとは メモが 無いので、メモから 作り直す → そのあと タイミング */
-    await expect(page.getByTestId("novel-memo")).toBeVisible();
-    await fillMemo(page);
+    /* 読み込み直しても メモは 残る（端末の 中）→ メモは 作り直さず タイミングから */
     await expect(page.getByTestId("novel-approach")).toBeVisible();
+    await expect(page.getByTestId("novel-memo")).toHaveCount(0);
     /* 合格した 相談に もどって 来た ときは タイミングを 出さない */
     await page.reload();
     await page.getByTestId("novel-continue").click();
@@ -432,11 +453,15 @@ test.describe("相談の 練習（サウンドノベル）", () => {
     const wrong = page.getByTestId("novel-notice-wrong");
     /* 文は ルビで 割れるので、判定の 種類で 見る */
     await expect(wrong).toHaveAttribute("data-verdict", "leftOk");
-    await expect(page.locator('[data-slot="left"]')).toContainText("✔");
+    /* ✖ は 押した 行に 付き、まちがいの 文は 画面に 入る（スマホでも 見える） */
+    await expect(page.locator(`[data-line="right:${wrongRight}"]`)).toHaveAttribute(
+      "data-wrong",
+      "1",
+    );
+    await expect(wrong).toBeInViewport();
     expect(await bareKanjiTexts(page)).toEqual([]);
     await shot(page, "novel-notice-partial");
-    /* 両方 ちがう → ①から */
-    await page.locator('[data-slot="left"]').click();
+    /* 両方 ちがう → ①から（左の 行は 押し直せる） */
     await page.locator(`[data-line="left:${wrongLeft}"]`).click();
     await page.locator(`[data-line="right:${wrongRight}"]`).click();
     await expect(wrong).toHaveAttribute("data-verdict", "none");

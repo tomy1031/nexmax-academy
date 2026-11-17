@@ -39,15 +39,23 @@ async function toMondayConsult(page: Page): Promise<void> {
     if (await next.count()) await next.click();
   }
   // 話しかける タイミング（要望 #723）: 大丈夫そうに なるまで 待って 押す
+  // 相談メモ（月曜）: ①②は 問いの 正解を 押し、③は 考えを 選んで 書く
+  if (await page.getByTestId("novel-memo").count()) {
+    for (const word of ["マウス", "USBライト"]) {
+      await page.getByTestId("novel-memo-pick-1").locator(`[data-word="${word}"]`).click();
+    }
+    await page.getByTestId("novel-memo-pick-2").locator('[data-word="キーボード"]').click();
+    await page.locator("[data-stance]").first().click();
+    await page.getByTestId("novel-memo-input").fill("教えて いただけませんか");
+    await page.getByTestId("novel-memo-done").click();
+  }
   const desk = page.getByTestId("novel-desk");
   await expect(desk).toHaveAttribute("data-desk-state", "ok", { timeout: 20_000 });
+  // 席の 絵の ボタンが 声かけ そのもの → 相手の 返事 → 本題
   await desk.click();
+  await page.getByTestId("novel-to-talk").click();
   await page.getByTestId("novel-mic-connect").click();
   await expect(page.getByTestId("novel-text")).toBeVisible({ timeout: 30_000 });
-  // 声かけ
-  await page.getByTestId("novel-text-input").fill("ヘンディさん、今、お時間よろしいですか。");
-  await page.getByTestId("novel-text-send").click();
-  await page.getByTestId("novel-to-talk").click();
 }
 
 test.describe("相談の 判定（鍵が あるときだけ）", () => {
@@ -70,7 +78,7 @@ test.describe("相談の 判定（鍵が あるときだけ）", () => {
     await page
       .getByTestId("novel-text-input")
       .fill(
-        "仕様書では、出す商品は2つです。でも、商品データにはキーボードもあります。キーボードも出しますか。",
+        "仕様書では、出す商品はマウスとUSBライトです。キーボードはありません。キーボードを出すかどうか、わかりません。教えていただけませんか。",
       );
     await page.getByTestId("novel-text-send").click();
     const consult = page.getByTestId("novel-consult");

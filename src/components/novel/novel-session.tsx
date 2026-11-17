@@ -518,6 +518,12 @@ function Player({
   const isScreen = scene.type === "screen";
   const panelMode = !readable || isScreen;
   const fullPanel = scene.type === "ending" || approaching;
+  /*
+   * 縦長（スマホ）で、資料を くらべる・相談メモを 作る・相談する 場面は、パネルを 高さ
+   * いっぱいに する。前は 下の 3分の2 だけで、②の 表が 枠の 下に 隠れて「押す ものが
+   * 無い」に なって いた（2026-11-17 の N4 の 通しプレイ・スマホ）。
+   */
+  const roomy = scene.type === "notice" || scene.type === "consult";
   const wide = frame.layout === "wide";
 
   const stage = (
@@ -850,7 +856,9 @@ function Player({
                     ? "max-h-full w-full"
                     : wide
                       ? "h-full w-[58%]"
-                      : "max-h-[66%] w-full"
+                      : roomy
+                        ? "h-full w-full"
+                        : "max-h-[66%] w-full"
               }`}
               style={glass}
               data-testid="novel-panel"

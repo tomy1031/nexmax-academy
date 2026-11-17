@@ -133,6 +133,25 @@ describe("相談の 練習の データ（仕様書 v4 §8）", () => {
     }
   });
 
+  it("お手本は スキットと 同じ 3つ: ② わからない ことを「わかりません」と はっきり 言う（2026-11-17「C３つにわける」）", () => {
+    for (const consult of allConsults(novel)) {
+      expect(consult.example, consult.id).toMatch(/わかりません/u);
+    }
+  });
+
+  it("相談メモの ①②の 正解は、えらぶ ことばの 中に ある（2026-11-17「BCodex」）", () => {
+    const base = allConsults(novel).find((consult) => consult.memo);
+    expect(base?.memo?.seenAnswer?.length).toBeGreaterThan(0);
+    expect(base?.memo?.diffAnswer?.length).toBeGreaterThan(0);
+    const broken = structuredClone(novelMeeting) as {
+      novel: { days: { scenes: { memo?: { seenAnswer?: string[] } }[] }[] };
+    };
+    const memoScene = broken.novel.days.flatMap((day) => day.scenes).find((scene) => scene.memo);
+    if (!memoScene?.memo) throw new Error("相談メモの ある 相談が ない");
+    memoScene.memo.seenAnswer = ["ない ことば"];
+    expect(meetingSchema.safeParse(broken).success).toBe(false);
+  });
+
   it("お手本の 文は 自分の 判定（読めば 合格）でも 合格に なる", () => {
     for (const consult of allConsults(novel)) {
       expect(readsExample(consult.example, consult.example)).toBe(true);

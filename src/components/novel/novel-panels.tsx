@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Fragment, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
 import type { Novel, NovelScene } from "@/content/schema";
 import { DictionaryText } from "@/components/dictionary-text";
@@ -58,6 +58,11 @@ export function NoticePanel({
   const [misses, setMisses] = useState(0);
   /** さいごの 判定（片方だけ 正しい・両方 ちがう）。選び直しを 始めたら 消す。 */
   const [verdict, setVerdict] = useState<"leftOk" | "rightOk" | "none" | null>(null);
+  /** まちがえた 行（押した 行の そばに ✖ と 理由を 出す）。選び直しを 始めたら 消す。 */
+  const [missed, setMissed] = useState<{ side: "left" | "right"; id: string }[]>([]);
+  /* まちがいの 文・いま 押す 資料を 画面に 入れる（スマホでは 下に 隠れて いた） */
+  const feedbackRef = useRef<HTMLDivElement>(null);
+  const docRefs = useRef<Record<"left" | "right", HTMLElement | null>>({ left: null, right: null });
   const [solved, setSolved] = useState(cleared);
   const [practice, setPractice] = useState(false);
   const done = solved && !practice;
@@ -86,6 +91,10 @@ export function NoticePanel({
       }
       setMisses((n) => n + 1);
       setVerdict(leftOk ? "leftOk" : rightOk ? "rightOk" : "none");
+      setMissed([
+        ...(leftOk ? [] : [{ side: "left" as const, id: left }]),
+        ...(rightOk ? [] : [{ side: "right" as const, id: right }]),
+      ]);
       if (!leftOk) setLeft(null);
       if (!rightOk) setRight(null);
       notify.current.onWrong();
@@ -96,6 +105,7 @@ export function NoticePanel({
   const pick = (side: "left" | "right", id: string) => {
     if (done) return;
     setVerdict(null);
+    setMissed([]);
     if (side === "left") setLeft(id);
     else setRight(id);
   };
@@ -105,19 +115,34 @@ export function NoticePanel({
     setRight(null);
     setMisses(0);
     setVerdict(null);
+    setMissed([]);
     setPractice(true);
   };
 
   /* いま 押す 側（左が まだなら 左、左が 済んで いれば 右） */
   const active: "left" | "right" | null = done ? null : !left ? "left" : !right ? "right" : null;
+  /*
+   * ②は「①の 行と 合わない 行」——何と 何を くらべるかを 言う（前は「合わない 行を
+   * 1行」だけで、左の 行も まちがいだと 読めた・2026-11-17 の N4 の 通しプレイ）。
+   */
   const step =
     active === "left"
-      ? `① 「${scene.left.title}」から、1行 押します。`
+      ? `① 「${scene.left.title}」から、くらべる 行を 1行 押します。`
       : active === "right"
-        ? `② 「${scene.right.title}」から、合わない 行を 1行 押します。`
+        ? `② 「${scene.right.title}」から、①の 行と 合わない 行を 1行 押します。`
         : null;
-  const lineText = (side: "left" | "right", id: string | null) =>
-    id ? (scene[side].lines.find((line) => line.id === id)?.text ?? "") : "";
+  const line = (side: "left" | "right", id: string) =>
+    scene[side].lines.find((one) => one.id === id);
+
+  /* ②に 移ったら、表（右の 資料）を 画面に 入れる。まちがえたら、その 文を 画面に 入れる */
+  useEffect(() => {
+    if (active !== "right") return;
+    docRefs.current.right?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }, [active]);
+  useEffect(() => {
+    if (!verdict) return;
+    feedbackRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }, [verdict, misses]);
 
   return (
     <div className="space-y-2.5" data-testid="novel-notice">
@@ -131,56 +156,11 @@ export function NoticePanel({
         />
       </p>
 
-      {/* くらべる 台: 選んだ 行が 入る。押すと 選び直せる */}
-      <div className="grid grid-cols-[1fr_auto_1fr] items-stretch gap-1.5" data-testid="novel-tray">
-        {(["left", "right"] as const).map((side, i) => {
-          const id = side === "left" ? left : right;
-          const ok =
-            (side === "left" && verdict === "leftOk") ||
-            (side === "right" && verdict === "rightOk");
-          const slot = (
-            <button
-              key={side}
-              type="button"
-              disabled={done || !id}
-              onClick={() => {
-                setVerdict(null);
-                if (side === "left") setLeft(null);
-                else setRight(null);
-              }}
-              className="min-h-12 rounded-xl border-2 border-dashed px-2 py-1.5 text-left text-xs font-bold"
-              style={{
-                borderColor: active === side ? "var(--color-sun)" : "var(--color-hairline)",
-                borderStyle: id ? "solid" : "dashed",
-                background: id ? "var(--color-sky-soft)" : "white",
-              }}
-              data-slot={side}
-            >
-              {id ? (
-                <>
-                  {ok ? "✔ " : null}
-                  <RubyText text={lineText(side, id)} index={index} show={show} />
-                </>
-              ) : (
-                <span className="text-ink-soft">
-                  <RubyText text={`${scene[side].title}の 行`} index={index} show={show} />
-                </span>
-              )}
-            </button>
-          );
-          return i === 0 ? (
-            slot
-          ) : (
-            <Fragment key={side}>
-              <span className="text-coral-deep self-center text-lg font-black" aria-hidden>
-                ≠
-              </span>
-              {slot}
-            </Fragment>
-          );
-        })}
-      </div>
-
+      {/*
+       * 前は ここに 選んだ 行が 入る 台（点線の 枠と「≠」）が あった。押せる 所に 見えて
+       * 押しても 何も 起きず、「≠」も 説明が 無かったので 外した（2026-11-17・Fable と Codex）。
+       * 選んだ 行は 資料の 中で 色が 変わる。
+       */}
       {step ? (
         <p
           className="rounded-xl px-3 py-1.5 text-sm font-black"
@@ -188,40 +168,6 @@ export function NoticePanel({
           data-testid="novel-notice-step"
         >
           👉 <DictionaryText text={step} index={index} show={show} />
-        </p>
-      ) : null}
-
-      {!done && misses >= 1 && verdict ? (
-        <p
-          role="status"
-          className="rounded-xl px-3 py-2 text-sm font-black"
-          style={{ background: "var(--color-cream)", color: "var(--color-coral-deep)" }}
-          data-testid="novel-notice-wrong"
-          data-verdict={verdict}
-        >
-          <span className="block">
-            ✖{" "}
-            <RubyText
-              text={
-                verdict === "leftOk"
-                  ? `不正解です。「${scene.left.title}」の 行は 正しいです。「${scene.right.title}」の 行を 選び直します。`
-                  : verdict === "rightOk"
-                    ? `不正解です。「${scene.right.title}」の 行は 正しいです。「${scene.left.title}」の 行を 選び直します。`
-                    : "不正解です。もう 一度、①から 選びます。"
-              }
-              index={index}
-              show={show}
-            />
-          </span>
-          💡 <RubyText text={scene.hint} index={index} show={show} />
-          {misses >= 2 ? (
-            <span className="text-ink-soft ml-1 text-xs font-bold">
-              （<RubyText text="光って いる 行を 見ましょう" index={index} show={show} />）
-            </span>
-          ) : null}
-          {translation && scene.hintEn ? (
-            <span className="text-ink-soft block text-xs font-medium">{scene.hintEn}</span>
-          ) : null}
         </p>
       ) : null}
 
@@ -242,6 +188,9 @@ export function NoticePanel({
                   ? "0 0 0 3px var(--color-sun), 0 8px 18px rgba(0,0,0,0.18)"
                   : "0 8px 18px rgba(0,0,0,0.15)",
                 opacity: active && !now ? 0.75 : 1,
+              }}
+              ref={(el) => {
+                docRefs.current[side] = el;
               }}
               data-doc={side}
               data-active={now ? "1" : undefined}
@@ -335,6 +284,7 @@ export function NoticePanel({
                     {doc.lines.map((line, i) => {
                       const on = picked === line.id;
                       const lit = glow && line.id === answer;
+                      const bad = missed.some((miss) => miss.side === side && miss.id === line.id);
                       return (
                         <button
                           key={line.id}
@@ -349,15 +299,20 @@ export function NoticePanel({
                             borderColor: "#c8ccd2",
                             background: on
                               ? "var(--color-sky-soft)"
-                              : lit
-                                ? "var(--color-cream)"
-                                : "white",
+                              : bad
+                                ? "#fdecea"
+                                : lit
+                                  ? "var(--color-cream)"
+                                  : "white",
                             boxShadow: on
                               ? "inset 0 0 0 2px var(--color-navy)"
-                              : lit
-                                ? "inset 0 0 0 3px var(--color-sun)"
-                                : undefined,
+                              : bad
+                                ? "inset 0 0 0 2px var(--color-coral-deep)"
+                                : lit
+                                  ? "inset 0 0 0 3px var(--color-sun)"
+                                  : undefined,
                           }}
+                          data-wrong={bad ? "1" : undefined}
                         >
                           <span
                             className="border-r px-1 py-1.5 text-center text-[10px] font-bold"
@@ -368,7 +323,7 @@ export function NoticePanel({
                             }}
                             aria-hidden
                           >
-                            {i + 2}
+                            {bad ? "✖" : i + 2}
                           </span>
                           {line.text.split("：").map((cell, c) => (
                             <span
@@ -400,6 +355,7 @@ export function NoticePanel({
                     {doc.lines.map((line) => {
                       const on = picked === line.id;
                       const lit = glow && line.id === answer;
+                      const bad = missed.some((miss) => miss.side === side && miss.id === line.id);
                       return (
                         <li key={line.id}>
                           <button
@@ -408,17 +364,20 @@ export function NoticePanel({
                             disabled={done}
                             onClick={() => pick(side, line.id)}
                             data-line={`${side}:${line.id}`}
+                            data-wrong={bad ? "1" : undefined}
                             className={`w-full rounded-xl border-2 px-3 py-1.5 text-left text-sm font-bold transition ${
                               doc.look === "code" || doc.look === "files" ? "font-mono" : ""
                             }`}
                             style={{
                               borderColor: on
                                 ? "var(--color-navy)"
-                                : lit
-                                  ? "var(--color-sun)"
-                                  : doc.look === "doc"
-                                    ? "transparent"
-                                    : "var(--color-hairline)",
+                                : bad
+                                  ? "var(--color-coral-deep)"
+                                  : lit
+                                    ? "var(--color-sun)"
+                                    : doc.look === "doc"
+                                      ? "transparent"
+                                      : "var(--color-hairline)",
                               background: on
                                 ? "var(--color-sky-soft)"
                                 : lit
@@ -429,7 +388,7 @@ export function NoticePanel({
                               boxShadow: lit ? "0 0 0 3px var(--color-sun)" : undefined,
                             }}
                           >
-                            {doc.look === "doc" ? "・" : null}
+                            {bad ? "✖ " : doc.look === "doc" ? "・" : null}
                             <RubyText text={line.text} index={index} show={show} />
                             {translation && line.en ? (
                               <span className="text-ink-soft mt-0.5 block text-xs font-medium">
@@ -447,6 +406,51 @@ export function NoticePanel({
           );
         })}
       </div>
+
+      {!done && misses >= 1 && verdict ? (
+        <div
+          ref={feedbackRef}
+          role="status"
+          className="rounded-xl px-3 py-2 text-sm font-black"
+          style={{ background: "var(--color-cream)", color: "var(--color-coral-deep)" }}
+          data-testid="novel-notice-wrong"
+          data-verdict={verdict}
+        >
+          {missed.map((miss) => {
+            const one = line(miss.side, miss.id);
+            const title = scene[miss.side].title;
+            return (
+              <span key={`${miss.side}:${miss.id}`} className="block">
+                ✖{" "}
+                <RubyText
+                  text={`不正解です。${one?.why ?? `「${one?.text ?? ""}」では ありません。`}「${title}」の ほかの 行を 選びます。`}
+                  index={index}
+                  show={show}
+                />
+              </span>
+            );
+          })}
+          {verdict !== "none" ? (
+            <span className="text-leaf-deep block">
+              ✔{" "}
+              <RubyText
+                text={`「${verdict === "leftOk" ? scene.left.title : scene.right.title}」の 行は 正しいです。`}
+                index={index}
+                show={show}
+              />
+            </span>
+          ) : null}
+          💡 <RubyText text={scene.hint} index={index} show={show} />
+          {misses >= 2 ? (
+            <span className="text-ink-soft ml-1 text-xs font-bold">
+              （<RubyText text="光って いる 行を 見ましょう" index={index} show={show} />）
+            </span>
+          ) : null}
+          {translation && scene.hintEn ? (
+            <span className="text-ink-soft block text-xs font-medium">{scene.hintEn}</span>
+          ) : null}
+        </div>
+      ) : null}
 
       {done ? (
         <NoticeCard scene={scene} index={index} show={show} onNext={onNext} onRetry={retry} />
@@ -504,7 +508,9 @@ function NoticeCard({
         <li>
           ② <RubyText text={scene.card.diff} index={index} show={show} />
         </li>
-        <li className="text-ink-soft">③ ……</li>
+        <li className="text-ink-soft">
+          ③ <RubyText text="お願いは、相談の ときに 自分で 考えます。" index={index} show={show} />
+        </li>
       </ol>
       <div className="mt-3 flex gap-2">
         <button type="button" onClick={onNext} className="btn-island btn-game flex-1 px-4 py-2.5">
