@@ -4,7 +4,6 @@
 import { LiveBrain } from './brain.js';
 import { turnNote, freeTalkNote, endNote, offlineJudge, offlineReport, offlineInterviewReport } from './judge.js';
 import { LIVE_MODELS, THINKING_MODEL } from './live.js';
-import { reviewInterview } from './review.js';
 import { resolveCharacter } from '../content/lines.js';
 import { voiceUrl } from '../content/index.js';
 import { UTILITY_LINES } from '../content/cast.js';
@@ -19,8 +18,8 @@ export class Runner {
     this.chars = Object.fromEntries(this.variant.characters.map((c) => { const r = resolveCharacter(c); return [r.id, r]; }));
     this.main = resolveCharacter(this.variant.characters[0]);
     this.nodes = Object.fromEntries(this.variant.nodes.map((n) => [n.id, n]));
-    // job interviews (ITビジネス編 Story C): every answer is judged against an interviewer's rubric on
-    // Gemini Live; the final evaluation comes from a model that thinks first (review.js)
+    // job interviews (ITビジネス編 Story C): every answer and the final evaluation are judged against an
+    // interviewer's rubric on Gemini Live
     this.interview = this.lesson.format === 'interview';
     this.turns = [];
     this.k = 0;
@@ -480,14 +479,10 @@ export class Runner {
     let report = null;
     const rubric = this.interview ? this.lesson.rubric || [] : null;
     if (this.interview) {
-      // the considered evaluation (a thinking model reads the whole interview) and Live's quick one, in parallel
-      const [review, quick] = await Promise.all([
-        this.apiKey ? reviewInterview({ apiKey: this.apiKey, lesson: this.lesson, variant: this.variant, turns: this.turns, level: this.settings.reviewLevel || 'HIGH', timeoutMs: 75000, log: (m) => this.log('review', m) }).catch(() => null) : null,
-        this.live ? this.brain.report(endNote({ turns: this.turns, rubric }), 30000) : null,
-      ]);
+      // Gemini Live writes the interviewer's evaluation (verdict, a score per criterion, what to improve, a better answer)
+      const quick = this.live ? await this.brain.report(endNote({ turns: this.turns, rubric }), 30000) : null;
       const local = offlineInterviewReport(this.turns, rubric);
-      if (review) report = { ...local, ...review };
-      else if (quick?.interview) report = { ...local, ...quick, model: this.brain?.model || null };
+      if (quick?.interview) report = { ...local, ...quick, model: this.brain?.model || null };
       else if (quick) report = { ...local, ...quick, interview: true, verdict: local.verdict, criteria: local.criteria, improvements: local.improvements, rewrite: local.rewrite, model: this.brain?.model || null };
       else report = local;
     } else if (this.live) report = await this.brain.report(endNote({ turns: this.turns }), 15000);
