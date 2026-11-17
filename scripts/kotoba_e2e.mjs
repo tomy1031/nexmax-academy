@@ -68,6 +68,7 @@ const result = await page.evaluate(() => ({
   turns: window.KT.runner?.turns || window.KT.lastReport?.turns || [],
   report: window.KT.lastReport?.report || null,
   errors: window.KT.errors,
+  trace: (window.KT.trace || []).slice(-120),
 }));
 result.pageErrors = errors;
 result.variant = variant;
