@@ -9317,5 +9317,11 @@
   "seconds": 1.198875,
   "model": "gemini-3.8-live",
   "transcript": "そう です か 。"
+ },
+ "l17c/end_bike_0": {
+  "hash": "51fdf60b0b",
+  "seconds": 5.041958,
+  "model": "gemini-3.8-live",
+  "transcript": " いっかいの かいだんの うしろに おいて ください。おねがいしますね。"
  }
 }
