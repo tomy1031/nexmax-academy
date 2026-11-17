@@ -1,12 +1,9 @@
 {
   "note": "Controls the 'Kotoba Town voices' workflow. Change a value and push to run it again.",
-  "selfcheck": true,
-  "generate": false,
+  "selfcheck": false,
+  "generate": true,
   "only": "",
   "rounds": 6,
   "roundMinutes": 22,
-  "interviewCheck": [
-    "MEDIUM",
-    "LOW"
-  ]
+  "interviewCheck": []
 }
