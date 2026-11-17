@@ -2,8 +2,8 @@
   "note": "Controls the 'Kotoba Town voices' workflow. Change a value and push to run it again.",
   "selfcheck": false,
   "generate": true,
-  "only": "l17c/end_bike_0",
-  "rounds": 1,
-  "roundMinutes": 6,
+  "only": "",
+  "rounds": 6,
+  "roundMinutes": 22,
   "interviewCheck": []
 }
