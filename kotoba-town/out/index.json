@@ -8483,5 +8483,473 @@
   "seconds": 3.050958,
   "model": "gemini-3.8-live",
   "transcript": "よかった です じゃあ 一緒 に 書い て ください"
+ },
+ "l18b/n4_no_0": {
+  "hash": "47bbce9183",
+  "seconds": 5.077917,
+  "model": "gemini-3.8-live",
+  "transcript": "私 も です 。 漢字 は なかなか 覚える こと が でき ませ ん 。"
+ },
+ "l18b/n5_0": {
+  "hash": "1abb1fcfe1",
+  "seconds": 3.983542,
+  "model": "gemini-3.8-live",
+  "transcript": "パーティー は 土曜日 の 6 時 から です 。"
+ },
+ "l18b/n5_1": {
+  "hash": "505241842e",
+  "seconds": 6.310875,
+  "model": "gemini-3.8-live",
+  "transcript": "パーティ の 前 に 買い物 に 行き ます 。 何時 に 来る こと が でき ます か ?"
+ },
+ "l18b/n6_early_0": {
+  "hash": "89466fbeca",
+  "seconds": 4.654,
+  "model": "gemini-3.8-live",
+  "transcript": "ありがとう ござい ます じゃあ その 時間 に ここ で 会い ましょ う"
+ },
+ "l18b/n6_late_0": {
+  "hash": "d1d8f2b671",
+  "seconds": 5.79925,
+  "model": "gemini-3.8-live",
+  "transcript": "わかりました。 大丈夫 です よ 。 じゃあ 、 6 時 に 来 て ください 。"
+ },
+ "l18b/n7_0": {
+  "hash": "39e948d512",
+  "seconds": 4.739125,
+  "model": "gemini-3.8-live",
+  "transcript": "プチ で 趣味 の 話 を し ましょ 。 趣味 は 何 です か ?"
+ },
+ "l18b/n8_active_0": {
+  "hash": "b91f92c0cb",
+  "seconds": 5.875667,
+  "model": "gemini-2.5-flash-native-audio-preview-12-2025",
+  "transcript": "いいですね！わたしも外が好きです。趣味はサッカーをすることです。"
+ },
+ "l18b/n8_indoor_0": {
+  "hash": "e02b26b8df",
+  "seconds": 4.561958,
+  "model": "gemini-3.8-live",
+  "transcript": "へえ 、 いい です ね 。 私 の 趣味 は サッカー を する こと です 。"
+ },
+ "l18b/end_0": {
+  "hash": "b1b886ffb0",
+  "seconds": 4.02825,
+  "model": "gemini-3.8-live",
+  "transcript": "じゃあ 皆 さん 土曜日 は 是非 友達 と 来 て ください 。"
+ },
+ "l18c/n1_0": {
+  "hash": "e0895f7007",
+  "seconds": 2.417167,
+  "model": "gemini-3.8-live",
+  "transcript": "いらっしゃい どうぞ こちら へ"
+ },
+ "l18c/n1_1": {
+  "hash": "b598d8419a",
+  "seconds": 6.35475,
+  "model": "gemini-3.8-live",
+  "transcript": " きょうは てんぷらです。わたしの趣味は料理を作ることです。"
+ },
+ "l18c/n1_2": {
+  "hash": "fc0a91c9d4",
+  "seconds": 4.506042,
+  "model": "gemini-3.8-live",
+  "transcript": "箸 で 食べる こと が でき ます か ?"
+ },
+ "l18c/n2_yes_0": {
+  "hash": "ce6b86fb4e",
+  "seconds": 3.846583,
+  "model": "gemini-3.8-live",
+  "transcript": "すごいですね。 じゃあ、箸をどうぞ。"
+ },
+ "l18c/n2_no_0": {
+  "hash": "af6404c6b8",
+  "seconds": 3.068292,
+  "model": "gemini-3.8-live",
+  "transcript": "だいじょうぶですよ フォーク を 持っ て き ます"
+ },
+ "l18c/n3_0": {
+  "hash": "53d3ba7172",
+  "seconds": 4.2185,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "食べるまえに、手を洗ってください。あそこです。"
+ },
+ "l18c/n3_1": {
+  "hash": "0d85f78d0a",
+  "seconds": 3.065,
+  "model": "gemini-3.8-live",
+  "transcript": "国 の 料理 を 作る こと が でき ます か ?"
+ },
+ "l18c/n4_yes_0": {
+  "hash": "802efe244e",
+  "seconds": 3.188125,
+  "model": "gemini-3.8-live",
+  "transcript": "いい です ね 是非 今度 教え て ください"
+ },
+ "l18c/n4_no_0": {
+  "hash": "9349e9884c",
+  "seconds": 3.473042,
+  "model": "gemini-3.8-live",
+  "transcript": " そうですか。じゃ、主人が教えますよ。"
+ },
+ "l18c/n5_0": {
+  "hash": "5c12eedcfd",
+  "seconds": 5.011875,
+  "model": "gemini-3.8-live",
+  "transcript": " 日本へ 来る まえに、 勉強しましたか。"
+ },
+ "l18c/n6_yes_0": {
+  "hash": "df9e916205",
+  "seconds": 3.320083,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か とても 上手 です よ"
+ },
+ "l18c/n6_no_0": {
+  "hash": "2bbfde9e95",
+  "seconds": 4.241083,
+  "model": "gemini-3.8-live",
+  "transcript": "ええ 、 本当 です か ? すごい です ね 。"
+ },
+ "l18c/n7_0": {
+  "hash": "4016f04b95",
+  "seconds": 6.18825,
+  "model": "gemini-3.8-live",
+  "transcript": "私 の 趣味 は 花 の 写真 を 撮る こと です 。 趣味 は 何 です か ?"
+ },
+ "l18c/n8_photo_0": {
+  "hash": "bd22d24d12",
+  "seconds": 4.433458,
+  "model": "gemini-3.8-live",
+  "transcript": "わあ 、 私も です 。 今度 一緒 に 撮り ましょう 。"
+ },
+ "l18c/n8_other_0": {
+  "hash": "bb04163ef6",
+  "seconds": 5.442333,
+  "model": "gemini-3.8-live",
+  "transcript": "へえ 、 面白い です ね 。 主人 の 趣味 は 料理 と 野球 だけ です 。"
+ },
+ "l18c/end_0": {
+  "hash": "72cd8e8702",
+  "seconds": 6.358333,
+  "model": "gemini-3.8-live",
+  "transcript": "すみません 。 もう 少し 待っ て ください 。 天ぷら は 難しい です 。"
+ },
+ "l18c/free_open": {
+  "hash": "dce6092e79",
+  "seconds": 3.55175,
+  "model": "gemini-3.8-live",
+  "transcript": "国 で は 食べる 前 に 何 を し ます か ?"
+ },
+ "l19a/n1_0": {
+  "hash": "bac46bce91",
+  "seconds": 2.971,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "おつかれさまです。じゃ、かんぱい!"
+ },
+ "l19a/n1_1": {
+  "hash": "9e3dd18826",
+  "seconds": 3.908042,
+  "model": "gemini-3.8-live",
+  "transcript": "今日は魚 が いい です よ 。 寿司 も あり ます 。"
+ },
+ "l19a/n1_2": {
+  "hash": "db380fe74e",
+  "seconds": 2.547792,
+  "model": "gemini-3.8-live",
+  "transcript": "寿司を食べたことがありますか？"
+ },
+ "l19a/n2_yes_0": {
+  "hash": "a653d62fed",
+  "seconds": 3.843958,
+  "model": "gemini-3.8-live",
+  "transcript": "お、いいですね。じゃあ、今日の寿司をどうぞ。"
+ },
+ "l19a/n2_no_0": {
+  "hash": "8341ab9b99",
+  "seconds": 3.466792,
+  "model": "gemini-3.8-live",
+  "transcript": "初めて です か じゃあ 少し だけ どうぞ"
+ },
+ "l19a/n3_0": {
+  "hash": "49aaaa812c",
+  "seconds": 5.159583,
+  "model": "gemini-3.8-live",
+  "transcript": "わたしは山が好きです。きょねん富士山にのぼりました。"
+ },
+ "l19a/n3_1": {
+  "hash": "51f71acbac",
+  "seconds": 2.654875,
+  "model": "gemini-3.8-live",
+  "transcript": "富士山 を 見 た こと が あり ます か ?"
+ },
+ "l19a/n4_seen_0": {
+  "hash": "b2970daf01",
+  "seconds": 3.937958,
+  "model": "gemini-3.8-live",
+  "transcript": "いい です ね 。 私 は 2 回 登っ た こと が あり ます よ 。"
+ },
+ "l19a/n4_never_0": {
+  "hash": "5a07b610b0",
+  "seconds": 3.676792,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か 。 じゃあ 、 夏 に 一緒 に 登り ましょう 。"
+ },
+ "l19a/n5_0": {
+  "hash": "357ccf2c53",
+  "seconds": 4.857083,
+  "model": "gemini-3.8-live",
+  "transcript": "私 は 外国 へ 行っ た こと が あり ませ ん 。 行き たい です ね 。"
+ },
+ "l19a/n6_go_0": {
+  "hash": "6034b390f1",
+  "seconds": 4.470708,
+  "model": "gemini-3.8-live",
+  "transcript": "いえ 、 一度 も あり ませ ん 。 いつ か 行き たい です 。"
+ },
+ "l19a/n6_food_0": {
+  "hash": "74a53b7ebb",
+  "seconds": 4.132417,
+  "model": "gemini-3.8-live",
+  "transcript": "はい。一度食べたことがあります。美味しかったですよ。"
+ },
+ "l19a/n7_0": {
+  "hash": "95e68441a0",
+  "seconds": 6.180542,
+  "model": "gemini-3.8-live",
+  "transcript": "冬 は 温泉 が いい です ね 。 温泉 に 入っ た こと が あり ます か ?"
+ },
+ "l19a/n8_yes_0": {
+  "hash": "5d9935d70e",
+  "seconds": 4.0585,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か 。 温泉 は 体 に いい です ね 。"
+ },
+ "l19a/n8_no_0": {
+  "hash": "d998dff51c",
+  "seconds": 2.371,
+  "model": "gemini-3.8-live",
+  "transcript": "じゃあ 今度 みんな で 行き ましょう 。"
+ },
+ "l19a/n9_0": {
+  "hash": "c559e1c96c",
+  "seconds": 2.660375,
+  "model": "gemini-3.8-live",
+  "transcript": "はい 、 焼き鳥 です 。 お 待た せ し まし た 。"
+ },
+ "l19b/n1_0": {
+  "hash": "00aeedc1f8",
+  "seconds": 2.927292,
+  "model": "gemini-3.8-live",
+  "transcript": "おはようございます 。暑くなりましたね 。"
+ },
+ "l19b/n1_1": {
+  "hash": "9dd056afea",
+  "seconds": 2.960167,
+  "model": "gemini-3.8-live",
+  "transcript": "週末 は 何 を し まし た か ?"
+ },
+ "l19b/n2_out_0": {
+  "hash": "7529e5af7e",
+  "seconds": 4.754208,
+  "model": "gemini-3.8-live",
+  "transcript": "いいですね 。 私 は うち で 掃除 し たり 寝 たり し まし た 。"
+ },
+ "l19b/n2_home_0": {
+  "hash": "b873335a6c",
+  "seconds": 4.605625,
+  "model": "gemini-3.8-live",
+  "transcript": "私も です 。 掃除 し たり 、 洗濯 し たり し まし た 。"
+ },
+ "l19b/n3_0": {
+  "hash": "8539c77fcb",
+  "seconds": 3.78025,
+  "model": "gemini-3.8-live",
+  "transcript": "雨 の 日 は いつ も うち で 何 を し ます か ?"
+ },
+ "l19b/n4_fun_0": {
+  "hash": "fa912c49e0",
+  "seconds": 4.61025,
+  "model": "gemini-3.8-live",
+  "transcript": " わたしは 雨の日が 好きに なりました。"
+ },
+ "l19b/n4_study_0": {
+  "hash": "70084666d6",
+  "seconds": 4.350708,
+  "model": "gemini-3.8-live",
+  "transcript": "すごい です ね 。 日本 語 が 上手 に なり まし た ね 。"
+ },
+ "l19b/n5_0": {
+  "hash": "5b4233b8ed",
+  "seconds": 4.66875,
+  "model": "gemini-3.8-live",
+  "transcript": "おはよう ござい ます 日本 へ 来 て もう 半年 です ね"
+ },
+ "l19b/n5_1": {
+  "hash": "18e456cede",
+  "seconds": 2.536458,
+  "model": "gemini-3.8-live",
+  "transcript": "仕事 は どう です か ?"
+ },
+ "l19b/n6_pos_0": {
+  "hash": "80e56e51c3",
+  "seconds": 3.254375,
+  "model": "gemini-3.8-live",
+  "transcript": "それはよかったです。これからもお願いします。"
+ },
+ "l19b/n6_hard_0": {
+  "hash": "5c1e3cc537",
+  "seconds": 4.013083,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か あまり 無理 を し ない で ください ね 。"
+ },
+ "l19b/n7_0": {
+  "hash": "e5cca8dc3a",
+  "seconds": 5.6185,
+  "model": "gemini-3.8-live",
+  "transcript": "来週から夏休みですね。 休みは何をしますか?"
+ },
+ "l19b/n8_trip_0": {
+  "hash": "244fc4e278",
+  "seconds": 2.812875,
+  "model": "gemini-3.8-live",
+  "transcript": "いいですね 。 写真 を 見せ て ください ね 。"
+ },
+ "l19b/n8_rest_0": {
+  "hash": "36c54af3d6",
+  "seconds": 3.852292,
+  "model": "gemini-3.8-live",
+  "transcript": "ゆっくり休んでください。"
+ },
+ "l19b/n9_0": {
+  "hash": "5fb11f721b",
+  "seconds": 3.175833,
+  "model": "gemini-3.8-live",
+  "transcript": "では、きょうもよろしくお願い"
+ },
+ "l19c/n1_0": {
+  "hash": "3901290173",
+  "seconds": 5.477583,
+  "model": "gemini-3.8-live",
+  "transcript": "こんにちは。 雨 です が 暖かく なり まし た ね 。"
+ },
+ "l19c/n1_1": {
+  "hash": "8bc38eb33a",
+  "seconds": 2.090792,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "きょうは 風ですか。"
+ },
+ "l19c/n2_better_0": {
+  "hash": "76a7d0ce84",
+  "seconds": 2.604875,
+  "model": "gemini-3.8-live",
+  "transcript": "それは よかった です ね 。"
+ },
+ "l19c/n2_still_0": {
+  "hash": "31cb47ed97",
+  "seconds": 2.669542,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か お 大事 に"
+ },
+ "l19c/n3_0": {
+  "hash": "0f517b45c7",
+  "seconds": 1.810667,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "つぎのかた、\n\nどうぞ。"
+ },
+ "l19c/n4_0": {
+  "hash": "c78d45ce1f",
+  "seconds": 3.757208,
+  "model": "gemini-3.8-live",
+  "transcript": "こんにちは 。 体 の 調子 は どう です か ?"
+ },
+ "l19c/n5_good_0": {
+  "hash": "2d8fc0f544",
+  "seconds": 3.918917,
+  "model": "gemini-3.8-live",
+  "transcript": " よかったですね。 熱も ありませんね。"
+ },
+ "l19c/n5_partly_0": {
+  "hash": "36b7e8593d",
+  "seconds": 3.905625,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か で も だんだん よく なり ます よ"
+ },
+ "l19c/n6_0": {
+  "hash": "4d8aa1b3d5",
+  "seconds": 3.462417,
+  "model": "gemini-3.8-live",
+  "transcript": "この 一 週間 うち で 何 を し て い まし た か ?"
+ },
+ "l19c/n7_rest_0": {
+  "hash": "a28b4d02a0",
+  "seconds": 2.925625,
+  "model": "gemini-3.8-live",
+  "transcript": "いい です ね よく 休み まし た ね"
+ },
+ "l19c/n7_work_0": {
+  "hash": "c1f89c8649",
+  "seconds": 3.6995,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か まだ 無理 を し ない で ください ね"
+ },
+ "l19c/n8_0": {
+  "hash": "72034fd9a3",
+  "seconds": 2.282792,
+  "model": "gemini-3.8-live",
+  "transcript": "もう少し 薬 を 出し ます 。"
+ },
+ "l19c/n8_1": {
+  "hash": "9be7a983d1",
+  "seconds": 2.387625,
+  "model": "gemini-3.8-live",
+  "transcript": "この 薬 を 飲ん だ こと が あり ます か ?"
+ },
+ "l19c/n9_yes_0": {
+  "hash": "f49684965a",
+  "seconds": 5.16875,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "じゃ、だいじょうぶですね。いちにちにに会のんでください。"
+ },
+ "l19c/n9_no_0": {
+  "hash": "0d8195f33e",
+  "seconds": 5.037458,
+  "model": "gemini-3.8-live",
+  "transcript": "少し 眠く なり ます から 夜 飲ん で ください 。"
+ },
+ "l19c/n10_0": {
+  "hash": "f58c120fd7",
+  "seconds": 1.609958,
+  "model": "gemini-3.8-live",
+  "transcript": "じゃあ お 大事 に 。"
+ },
+ "l20a/n1_0": {
+  "hash": "fedabffafe",
+  "seconds": 2.501125,
+  "model": "gemini-3.8-live",
+  "transcript": "おい 、 こっち 、 こっち"
+ },
+ "l20a/n1_1": {
+  "hash": "1cbaa355b9",
+  "seconds": 3.375375,
+  "model": "gemini-3.8-live",
+  "transcript": "もう友だちだから、「です・ます」はいらないよ。"
+ },
+ "l20a/n1_2": {
+  "hash": "3a540a871f",
+  "seconds": 1.371167,
+  "model": "gemini-3.8-live",
+  "transcript": "お腹すいた 。"
+ },
+ "l20a/n2_yes_0": {
+  "hash": "94611e7d11",
+  "seconds": 3.300292,
+  "model": "gemini-3.8-live",
+  "transcript": "僕 も じゃあ すぐ 食べ ない ?"
+ },
+ "l20a/n2_no_0": {
+  "hash": "0bc502ef20",
+  "seconds": 2.747917,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "ほんとう？ぼくは すごくすいた。"
  }
 }
