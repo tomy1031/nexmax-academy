@@ -3880,5 +3880,119 @@
   "seconds": 1.591,
   "model": "gemini-3.8-live",
   "transcript": "私も大丈夫です"
+ },
+ "b03a/n5c_1": {
+  "hash": "1ef77744d6",
+  "seconds": 1.801958,
+  "model": "gemini-3.8-live",
+  "transcript": "議事録はどうしますか？"
+ },
+ "b03a/n6_0": {
+  "hash": "ceac27ff4f",
+  "seconds": 5.877542,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "では、今日中に共有してください。青木さんが待っていますから。"
+ },
+ "b03a/end_a_0": {
+  "hash": "b5140b4359",
+  "seconds": 3.772583,
+  "model": "gemini-3.8-live",
+  "transcript": "助かります。議事録を見てデザインを始めますね。"
+ },
+ "b03b/n1_0": {
+  "hash": "d205073f03",
+  "seconds": 3.490667,
+  "model": "gemini-3.8-live",
+  "transcript": "ヒアリングのまとめを青木さんと確認しましょう。"
+ },
+ "b03b/n1_1": {
+  "hash": "e794321d60",
+  "seconds": 4.024583,
+  "model": "gemini-3.8-live",
+  "transcript": "きのうお店で、坂本さんと少し話しました。"
+ },
+ "b03b/n2_0": {
+  "hash": "9439128462",
+  "seconds": 3.716792,
+  "model": "gemini-3.8-live",
+  "transcript": "続けてください。"
+ },
+ "b03b/n2p_0": {
+  "hash": "26bef8fe10",
+  "seconds": 6.321333,
+  "model": "gemini-3.8-live",
+  "transcript": "席は4テーブルで4人まで、予約は10時から17時でしたね。続けてください。"
+ },
+ "b03b/n3_0": {
+  "hash": "08a0c26508",
+  "seconds": 3.244167,
+  "model": "gemini-3.8-live",
+  "transcript": "あれ ? キャンセル は 電話 だけ と 聞き まし た よ ?"
+ },
+ "b03b/n3_1": {
+  "hash": "b53f773a2c",
+  "seconds": 4.822125,
+  "model": "gemini-3.8-live",
+  "transcript": "昨日 坂本さんが 電話の方が安心だと話していました"
+ },
+ "b03b/n3alt_0": {
+  "hash": "1197cc5d9d",
+  "seconds": 4.981375,
+  "model": "gemini-3.8-live",
+  "transcript": "キャ、キャンセルの話がまだですね。私は、電話だけと聞きましたが。"
+ },
+ "b03b/n4a_0": {
+  "hash": "e7446c9a1c",
+  "seconds": 5.134625,
+  "model": "gemini-3.8-live",
+  "transcript": "そうですね、どちらも聞いた話ですから確認が必要ですね。"
+ },
+ "b03b/n4b_0": {
+  "hash": "2d44beb962",
+  "seconds": 5.33175,
+  "model": "gemini-3.8-live",
+  "transcript": "メモはそうですね。でも、坂本さんの考えが変わったかもしれません。"
+ },
+ "b03b/n4c_0": {
+  "hash": "0e5889b7b2",
+  "seconds": 4.998083,
+  "model": "gemini-3.8-live",
+  "transcript": "まだ決めないでください。ヒアリングでは、アプリで、と聞きましたよね。"
+ },
+ "b03b/n5_0": {
+  "hash": "73a76bb95f",
+  "seconds": 2.440333,
+  "model": "gemini-3.8-live",
+  "transcript": "ではどうやって確認しますか？"
+ },
+ "b03b/n6w_0": {
+  "hash": "c72491cf66",
+  "seconds": 3.884125,
+  "model": "gemini-3.8-live",
+  "transcript": "いつ行けますか？青木さんの作業が止まってしまいます。"
+ },
+ "b03b/n6a_0": {
+  "hash": "f52dad7fe9",
+  "seconds": 3.673958,
+  "model": "gemini-3.8-live",
+  "transcript": "お願いします。わかったら、すぐ共有してください。"
+ },
+ "b03b/n6l_0": {
+  "hash": "053c6f4b3a",
+  "seconds": 5.066167,
+  "model": "gemini-3.8-live",
+  "transcript": "できれば今日中にお願いします。私も手伝いますから。"
+ },
+ "b03b/n7_0": {
+  "hash": "8a448e26fb",
+  "seconds": 3.790375,
+  "model": "gemini-3.8-live",
+  "transcript": "じゃ、キャンセルの画面は待ったほうがいいですか？"
+ },
+ "b03b/n8_0": {
+  "hash": "a648d91c3d",
+  "seconds": 4.949625,
+  "model": "gemini-3.8-live",
+  "transcript": "変わるかもしれないのはキャンセルだけです。他は進めましょう。"
  }
 }
