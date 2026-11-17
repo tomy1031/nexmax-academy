@@ -3796,5 +3796,89 @@
   "seconds": 4.448458,
   "model": "gemini-3.1-flash-live-preview",
   "transcript": "お疲れさまです。ヒアリングの内容を確認しましょう。"
+ },
+ "b03a/n1_1": {
+  "hash": "3407da4c06",
+  "seconds": 4.017833,
+  "model": "gemini-3.8-live",
+  "transcript": "これ から デザイン を 始める の で 要件 を 教え て ください"
+ },
+ "b03a/n2_0": {
+  "hash": "7533a801f1",
+  "seconds": 4.330375,
+  "model": "gemini-3.8-live",
+  "transcript": " スマホで 予約、4テーブルで 4人までですね。メモしました。"
+ },
+ "b03a/n2o_0": {
+  "hash": "4a1313f748",
+  "seconds": 7.164125,
+  "model": "gemini-3.8-live",
+  "transcript": "スマホで予約ですね。席はお店で見ました、4テーブルで4人ずつですね。"
+ },
+ "b03a/q2_0": {
+  "hash": "69b0150141",
+  "seconds": 3.961958,
+  "model": "gemini-3.8-live",
+  "transcript": "予約できる時間はお店が開いている時間ですか？"
+ },
+ "b03a/n3_0": {
+  "hash": "51cdc90f6e",
+  "seconds": 4.2195,
+  "model": "gemini-3.8-live",
+  "transcript": "なるほど、予約は10時から17時だけですね。"
+ },
+ "b03a/n3w_0": {
+  "hash": "89f5f94331",
+  "seconds": 6.522625,
+  "model": "gemini-3.8-live",
+  "transcript": "お店は7時から19時ですが、予約は10時から17時でしたね。"
+ },
+ "b03a/q3_0": {
+  "hash": "a7c88a1171",
+  "seconds": 4.099542,
+  "model": "gemini-3.8-live",
+  "transcript": "何日先まで予約できますか？キャンセルはどうなりますか？"
+ },
+ "b03a/n4c_0": {
+  "hash": "9e3643350b",
+  "seconds": 4.51525,
+  "model": "gemini-3.8-live",
+  "transcript": "2週間先までキャンセルは前の日までアプリで、でしたね。"
+ },
+ "b03a/n4_0": {
+  "hash": "e3839758eb",
+  "seconds": 2.521958,
+  "model": "gemini-3.8-live",
+  "transcript": "わかりました。リリースはいつですか？"
+ },
+ "b03a/n4v_0": {
+  "hash": "cdfdaceb90",
+  "seconds": 5.408333,
+  "model": "gemini-3.8-live",
+  "transcript": "日付ははっきり言いましょう。"
+ },
+ "b03a/n5q_0": {
+  "hash": "3941593d2a",
+  "seconds": 2.085167,
+  "model": "gemini-3.8-live",
+  "transcript": "はい、まとめは以上です。"
+ },
+ "b03a/n5_0": {
+  "hash": "5a8fdcec62",
+  "seconds": 2.667667,
+  "model": "gemini-3.8-live",
+  "transcript": "はい、私の理解と同じ。"
+ },
+ "b03a/n5b_0": {
+  "hash": "770803a5c1",
+  "seconds": 5.454292,
+  "model": "gemini-3.8-live",
+  "transcript": "はい。最後に「この理解でよろしいでしょうか」と聞くと安心です。"
+ },
+ "b03a/n5c_0": {
+  "hash": "b289b98efb",
+  "seconds": 1.591,
+  "model": "gemini-3.8-live",
+  "transcript": "私も大丈夫です"
  }
 }
