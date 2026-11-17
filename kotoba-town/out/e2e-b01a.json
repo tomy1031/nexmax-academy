@@ -3,9 +3,9 @@
  "log": [
   "live connecting ",
   "live live gemini-3.8-live",
-  "judge both 3 おはようございます。昨日はログイン画面を作りました。今日は予約フォームを作る予定です。困っていることは特にありません。",
-  "judge off_topic 1 画面を作りました。今日は予約フォームを作る予定です。困っていることは特にありません。",
-  "live reconnecting badKey",
+  "judge both 3 昨日はログイン画面を作りました。今日は予約フォームを作る予定です。困っていることは特にありません。",
+  "judge off_topic 1 を作りました。今日は予約フォームを作る予定です。困っていることは特にありません。",
+  "live reconnecting closed",
   "live connecting ",
   "live live gemini-3.8-live"
  ],
@@ -13,10 +13,10 @@
   {
    "nodeId": "n1",
    "promptEn": "Your turn. Say what you did yesterday and what you will do today.",
-   "heard": "おはようございます。昨日はログイン画面を作りました。今日は予約フォームを作る予定です。困っていることは特にありません。",
+   "heard": "昨日はログイン画面を作りました。今日は予約フォームを作る予定です。困っていることは特にありません。",
    "score": 3,
-   "correction": "おはようございます。昨日はログイン画面を作りました。今日は予約フォームを作る予定です。困っていることは特にありません。",
-   "tipEn": "Great job reporting your progress and plan clearly and in the correct order!",
+   "correction": "昨日はログイン画面を作りました。今日は予約フォームを作る予定です。困っていることは特にありません。",
+   "tipEn": "Great report! It's clear, concise, and follows the correct order perfectly.",
    "branch": "both",
    "grammar": [
     "g1"
@@ -28,8 +28,30 @@
  ],
  "report": null,
  "errors": [],
+ "trace": [
+  "89166 in:昨日はログイン画面を作りました。今日は予約フォームを作る予定です。困っていることは特にありません。",
+  "89957 toolCall:judge_reply",
+  "90014 judge:both/3 → nothing",
+  "90017 turnComplete(drop)",
+  "90963 out:<no ",
+  "91104 out:speech>{pause}",
+  "95834 interrupted",
+  "95838 turnComplete(drop)",
+  "3141 in:を作りました。今日は予約フォームを作る予定です。困っていることは特にありません。",
+  "3213 out:<no ",
+  "3353 out:speech>{pause}",
+  "7108 interrupted",
+  "7115 turnComplete(drop)",
+  "7323 in:Oh",
+  "8089 toolCall:judge_reply",
+  "8090 judge:unclear/0 → nothing",
+  "8107 turnComplete(drop)",
+  "9270 out:<no ",
+  "9342 out:speech>{pause}",
+  "29429 close 1008 Session closed due to client inactivity."
+ ],
  "pageErrors": [],
  "variant": "b01a",
  "mode": "real",
- "at": "2026-11-17T00:44:35.802Z"
+ "at": "2026-11-17T00:52:11.834Z"
 }

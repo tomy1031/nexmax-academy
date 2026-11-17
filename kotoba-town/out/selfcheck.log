@@ -7,10 +7,10 @@
   "branch": "asks_npc",
   "score": 1,
   "grammarUsed": [],
-  "correction": "はじめまして。わたしはリンです。アメリカじんです。",
-  "tipEn": "Please introduce yourself first: say your name and your country.",
+  "correction": "はじめまして。わたしはリンです。アメリカじんです。どうぞよろしくおねがいします。",
+  "tipEn": "Please introduce yourself with your name and country first!",
   "source": "live",
-  "asr": "大木さんはデザイナーですか?"
+  "asr": "青木さんはデザイナーですか?"
  },
  "pass": true,
  "expect": [
@@ -21,24 +21,14 @@
  "npcText": "はい、わたしはデザイナーです。",
  "report": null,
  "trace": [
-  "13988 in:大木さんはデザイナーですか?",
-  "13988 toolCall:judge_reply",
-  "13989 judge:asks_npc/1 → react",
-  "13991 turnComplete(armed)",
-  "14642 audio",
-  "14642 out:はい、わたしはデザイナー",
-  "14642 audio",
-  "14645 audio",
-  "14648 audio",
-  "14775 audio",
-  "14776 audio",
-  "14777 audio",
-  "14946 audio",
-  "14946 out:です。",
-  "14946 audio",
-  "17112 turnComplete(play)"
+  "50053 in:青木さんはデザイナーですか?",
+  "50053 toolCall:judge_reply",
+  "50054 judge:asks_npc/1 → react",
+  "50055 turnComplete(armed)",
+  "50843 out:はい、わたしはデザイナーです。",
+  "53352 turnComplete(play)"
  ],
- "ms": 14587
+ "ms": 13516
 }
 {
  "say": "すみません、トイレは どこですか。",
@@ -50,7 +40,7 @@
   "score": 0,
   "grammarUsed": [],
   "correction": "はじめまして。わたしはリンです。アメリカじんです。",
-  "tipEn": "Please introduce yourself with your name and country.",
+  "tipEn": "Please introduce yourself with your name and country first.",
   "source": "live",
   "asr": "すみません、トイレはどこですか?"
  },
@@ -63,38 +53,29 @@
  "npcText": "トイレは あちらです。",
  "report": null,
  "trace": [
-  "30287 in:すみません、トイレはどこですか?",
-  "30288 toolCall:judge_reply",
-  "30288 judge:off_topic/0 → react",
-  "30290 turnComplete(armed)",
-  "30875 audio",
-  "30875 out:トイレは ",
-  "30876 audio",
-  "30877 audio",
-  "30932 audio",
-  "30979 audio",
-  "31221 audio",
-  "31221 out:あちらです。",
-  "31221 audio",
-  "31223 audio",
-  "31224 audio",
-  "32640 turnComplete(play)"
+  "69376 in:すみません、トイレはどこですか?",
+  "69376 toolCall:judge_reply",
+  "69377 judge:off_topic/0 → react",
+  "69379 turnComplete(armed)",
+  "70123 out:トイレは ",
+  "70251 out:あちらです。",
+  "71902 turnComplete(play)"
  ],
- "ms": 11468
+ "ms": 14635
 }
 {
  "say": "I am Lin from Vietnam.",
  "model": "gemini-3.8-live",
  "status": "connecting live(gemini-3.8-live)",
  "verdict": {
-  "heard": "I am Lynn from Vietnam.",
+  "heard": "I am Linh from Vietnam.",
   "branch": "english",
   "score": 0,
   "grammarUsed": [],
-  "correction": "はじめまして。わたしはリンです。ベトナムじんです。",
-  "tipEn": "Please introduce yourself in Japanese.",
+  "correction": "はじめまして。わたしはリンです。ベトナム人です。どうぞよろしくお願いします。",
+  "tipEn": "Please introduce yourself in Japanese. Say your name and country using 'わたしは [name] です。 [country] です。'",
   "source": "live",
-  "asr": "I am Lynn from Vietnam."
+  "asr": "I am Linh from Vietnam."
  },
  "pass": true,
  "expect": [
@@ -104,19 +85,19 @@
  "npcText": "",
  "report": {
   "stars": 1,
-  "summaryEn": "The learner did not use Japanese during the interaction. They need to practice basic self-introductions.",
-  "strengthsEn": "None demonstrated in this session.",
-  "improveEn": "Practice introducing yourself in Japanese using the target grammar \"N1 wa N2 desu\".",
+  "summaryEn": "The learner did not complete the self-introduction task in Japanese. Please review the basic sentence structures for introducing your name and nationality.",
+  "strengthsEn": "N/A",
+  "improveEn": "Practice introducing yourself in Japanese using 'Watashi wa [Name] desu' and '[Country] jin desu'.",
   "pronunciationEn": "N/A",
   "source": "live"
  },
  "trace": [
-  "46016 in:I am Lynn from Vietnam.",
-  "46016 toolCall:judge_reply",
-  "46016 judge:english/0 → nothing",
-  "46018 turnComplete(drop)",
-  "47048 toolCall:final_report"
+  "96203 in:I am Linh from Vietnam.",
+  "96203 toolCall:judge_reply",
+  "96204 judge:english/0 → nothing",
+  "96205 turnComplete(drop)",
+  "97066 toolCall:final_report"
  ],
- "ms": 10372
+ "ms": 21064
 }
 SELFCHECK 3/3
