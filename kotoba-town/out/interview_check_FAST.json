@@ -1,0 +1,258 @@
+{
+ "at": "2026-11-17T06:46:11.636Z",
+ "thinkingLevel": "LOW",
+ "model": "gemini-3.8-live",
+ "status": "connecting live(gemini-3.8-live)",
+ "turns": [
+  {
+   "say": "リンと 申します。プノンペンの 大学で ITを 勉強して います。三人の チームで、お店の 予約サイトを 作りました。わたしは 画面を 担当しました。本日は よろしく お願いいたします。",
+   "asr": "リンと申します。プノンペンの大学で IT を勉強しています。 3 人のチームでお店の予約サイトを作りました。私は画面を担当しました。本日はよろしくお願いいたします。",
+   "asrIsJapanese": true,
+   "verdict": {
+    "heard": "リンと申しますプノンペンの大学でアイティーを勉強しています三人チームでお店の予約サイトを作りました私は画面を担当しました本日はよろしくお願いいたします",
+    "branch": "full",
+    "score": 3,
+    "grammarUsed": [
+     "g1"
+    ],
+    "correction": "リンと申します。プノンペンの大学でITを勉強しています。3人のチームでお店の予約サイトを作りました。私は画面を担当しました。本日はよろしくお願いいたします。",
+    "tipEn": "Your introduction was clear and included all necessary details. Great job!",
+    "criteriaMet": [
+     "conclusion",
+     "specific",
+     "keigo",
+     "length"
+    ],
+    "criteriaMissed": [],
+    "improveEn": "Your self-introduction was excellent, clear, and included your specific role in the project. Keep this up.",
+    "betterAnswer": "リンと申します。プノンペンの大学でITを勉強しています。3人のチームでお店の予約サイトを作りました。私は画面を担当しました。本日はよろしくお願いいたします。",
+    "source": "live",
+    "asr": "リンと申します。プノンペンの大学で IT を勉強しています。 3 人のチームでお店の予約サイトを作りました。私は画面を担当しました。本日はよろしくお願いいたします。"
+   },
+   "msAfterSpeech": 1908,
+   "branchOk": true,
+   "missedOk": true
+  },
+  {
+   "say": "日本で 働きたいからです。日本の 会社は いいと 思います。",
+   "asr": "日本で働きたいからです。日本の会社はいいと思います。",
+   "asrIsJapanese": true,
+   "verdict": {
+    "heard": "日本で働きたいからです日本の会社はいいと思います",
+    "branch": "generic",
+    "score": 1,
+    "grammarUsed": [],
+    "correction": "日本で働きたいからです。また、御社のように町の小さなお店を助ける仕事がしたいと考えています。",
+    "tipEn": "Try to mention why you want to work at *this* specific company.",
+    "criteriaMet": [],
+    "criteriaMissed": [
+     "company",
+     "specific"
+    ],
+    "improveEn": "Make sure to connect your reason to what Midori Design specifically does, like building apps for local shops.",
+    "betterAnswer": "御社は町の小さなお店のウェブサイトやアプリを作っているからです。私も地元の人の役に立つシステムを作りたいと考えています。",
+    "source": "live",
+    "asr": "日本で働きたいからです。日本の会社はいいと思います。"
+   },
+   "msAfterSpeech": 1809,
+   "branchOk": true,
+   "missedOk": true
+  },
+  {
+   "say": "わたしの 強みは ていねいな テストです。予約サイトを 作った とき、しめきりの 前に 大きな バグを 見つけて、チームで 直しました。",
+   "asr": "私の強みは丁寧なテストです。予約サイトを作った時、締め切りの前に大きなバグを見つけてチームで直しました。",
+   "asrIsJapanese": true,
+   "verdict": {
+    "heard": "私の強みは丁寧なテストです予約サイトを作った時締め切りの前に大きなバグを見つけてチームで直しました",
+    "branch": "with_example",
+    "score": 3,
+    "grammarUsed": [
+     "g3"
+    ],
+    "correction": "私の強みは、丁寧なテストです。予約サイトを作った時、締め切りの前に大きなバグを見つけて、チームで直しました。",
+    "tipEn": "Great job providing a specific example to support your strength!",
+    "criteriaMet": [
+     "conclusion",
+     "specific",
+     "attitude"
+    ],
+    "criteriaMissed": [],
+    "improveEn": "Your answer was excellent. Stating your strength first and following up with a concrete example is exactly what interviewers look for.",
+    "betterAnswer": "私の強みは、丁寧なテストと問題解決能力です。予約サイトを作った時、締め切りの前にバグを見つけ、チームで協力して直しました。",
+    "source": "live",
+    "asr": "私の強みは丁寧なテストです。予約サイトを作った時、締め切りの前に大きなバグを見つけてチームで直しました。"
+   },
+   "msAfterSpeech": 2009,
+   "branchOk": true,
+   "missedOk": true
+  },
+  {
+   "say": "いいえ、特に ありません。",
+   "asr": "いいえ、特にありません。",
+   "asrIsJapanese": true,
+   "verdict": {
+    "heard": "いいえ特にありません",
+    "branch": "no_question",
+    "score": 1,
+    "grammarUsed": [],
+    "correction": "いいえ、特にありません。",
+    "tipEn": "Try to ask a question about the work or team to show your interest.",
+    "criteriaMet": [],
+    "criteriaMissed": [
+     "attitude",
+     "company"
+    ],
+    "improveEn": "Always ask at least one question about the job or team to show your enthusiasm and interest in the company.",
+    "betterAnswer": "はい。入社までに、どのようなことを勉強しておけばいいですか。",
+    "source": "live",
+    "asr": "いいえ、特にありません。"
+   },
+   "msAfterSpeech": 1808,
+   "branchOk": true,
+   "missedOk": true
+  }
+ ],
+ "report": {
+  "stars": 2,
+  "summaryEn": "You gave strong, specific answers about your background and strengths, but missed opportunities to show interest in the company during the motivation and final question.",
+  "strengthsEn": "Excellent self-introduction and clear, concrete examples when describing your strengths.",
+  "improveEn": "Practice connecting your motivation to the specific company's work and always prepare a question to ask at the end of the interview.",
+  "pronunciationEn": "Clear pronunciation with a consistent pace, making the responses easy to understand.",
+  "interview": true,
+  "verdict": "borderline",
+  "verdictReasonEn": "Strong technical background and good communication in the first half, but lack of company research and engagement in the second half.",
+  "criteria": [
+   {
+    "id": "manners",
+    "score": 3,
+    "commentEn": "Used polite expressions and appropriate closings during the self-introduction."
+   },
+   {
+    "id": "conclusion",
+    "score": 3,
+    "commentEn": "Started with direct answers in the self-introduction and strengths questions."
+   },
+   {
+    "id": "specific",
+    "score": 3,
+    "commentEn": "Provided specific examples of project work and testing in Q1 and Q3."
+   },
+   {
+    "id": "company",
+    "score": 2,
+    "commentEn": "Did not connect the motivation and final question to the specific company."
+   },
+   {
+    "id": "keigo",
+    "score": 4,
+    "commentEn": "Maintained polite 'desu/masu' forms throughout the interview."
+   },
+   {
+    "id": "length",
+    "score": 3,
+    "commentEn": "Responses varied; Q1 and Q3 were well-structured, but Q2 and Q4 were too brief."
+   },
+   {
+    "id": "attitude",
+    "score": 2,
+    "commentEn": "Showed a positive attitude in Q1 and Q3, but lacked enthusiasm in Q2 and Q4."
+   }
+  ],
+  "improvements": [
+   "Connect your reason for applying directly to the company's specific work and mission.",
+   "Always ask a thoughtful question at the end of an interview to show your enthusiasm."
+  ],
+  "rewrite": {
+   "questionJa": "ありがとう ございます。では、志望動機を 教えて ください。",
+   "answerJa": "御社は町の小さなお店のウェブサイトやアプリを作っているからです。私も地元の人の役に立つシステムを作りたいと考えています。"
+  },
+  "source": "live"
+ },
+ "reportMs": 2560,
+ "review": null,
+ "reviewMs": 90002,
+ "reviewLog": [
+  "review: gemini-3.1-pro-preview (thinking) → 429 {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/do",
+  "review: gemini-2.5-pro (thinking) → 404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest featur",
+  "review: gemini-3.8-flash (thinking) → 503 {\n  \"error\": {\n    \"code\": 503,\n    \"message\": \"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\n    \"status\": \"UNAVAILABLE\"\n  }\n}\n",
+  "review: gemini-3.7-flash ✗ This operation was aborted"
+ ],
+ "totalMs": 148765,
+ "trace": [
+  "23051 raw sessionResumptionUpdate",
+  "24076 raw voiceActivity",
+  "41742 raw  sc{inputTranscription}",
+  "41742 in:リンと申します。プノンペンの大学で IT を勉強しています。 3 人のチームでお店の予約サイトを作りました。私は画面を担当しました。本日はよろしくお願いいたします。",
+  "41743 raw voiceActivity",
+  "41743 raw toolCall {\"functionCalls\":[{\"name\":\"judge_reply\",\"args\":{\"grammar_used\":\"g1\",\"improve_en\":\"Your sel",
+  "41743 toolCall:judge_reply",
+  "41744 judged 2 ms after the last words",
+  "41744 judge:full/3 → nothing",
+  "41744 raw  sc{generationComplete}",
+  "41745 raw usageMetadata sc{turnComplete}",
+  "41745 turnComplete(drop)",
+  "42484 raw  sc{outputTranscription,parts:audio}",
+  "42484 out:<no ",
+  "42589 raw  sc{outputTranscription}",
+  "42589 out:speech>{pause}",
+  "42589 raw  sc{generationComplete}",
+  "44207 raw voiceActivity",
+  "44207 raw  sc{interrupted}",
+  "44207 interrupted",
+  "44212 raw usageMetadata sc{turnComplete}",
+  "44212 turnComplete(drop)",
+  "52219 raw  sc{inputTranscription}",
+  "52219 in:日本で働きたいからです。日本の会社はいいと思います。",
+  "52219 raw voiceActivity",
+  "52220 raw toolCall {\"functionCalls\":[{\"name\":\"judge_reply\",\"args\":{\"criteria_missed\":\"company,specific\",\"scor",
+  "52220 toolCall:judge_reply",
+  "52220 judged 1 ms after the last words",
+  "52220 judge:generic/1 → nothing",
+  "52220 raw  sc{generationComplete}",
+  "52220 raw usageMetadata sc{turnComplete}",
+  "52220 turnComplete(drop)",
+  "53041 raw  sc{outputTranscription,parts:audio}",
+  "53041 out:<no ",
+  "53135 raw  sc{outputTranscription}",
+  "53135 out:speech>{pause}",
+  "53135 raw  sc{generationComplete}",
+  "54698 raw voiceActivity",
+  "54698 raw  sc{interrupted}",
+  "54698 interrupted",
+  "54702 raw usageMetadata sc{turnComplete}",
+  "54702 turnComplete(drop)",
+  "70809 raw  sc{inputTranscription}",
+  "70809 in:私の強みは丁寧なテストです。予約サイトを作った時、締め切りの前に大きなバグを見つけてチームで直しました。",
+  "70809 raw voiceActivity",
+  "70809 raw toolCall {\"functionCalls\":[{\"name\":\"judge_reply\",\"args\":{\"branch\":\"with_example\",\"criteria_missed\":",
+  "70809 toolCall:judge_reply",
+  "70810 judged 1 ms after the last words",
+  "70810 judge:with_example/3 → nothing",
+  "70810 raw  sc{generationComplete}",
+  "70810 raw usageMetadata sc{turnComplete}",
+  "70810 turnComplete(drop)",
+  "71548 raw  sc{outputTranscription,parts:audio}",
+  "71548 out:<no ",
+  "71648 raw  sc{outputTranscription}",
+  "71648 out:speech>{pause}",
+  "71648 raw  sc{generationComplete}",
+  "73282 raw voiceActivity",
+  "73282 raw  sc{interrupted}",
+  "73282 interrupted",
+  "73286 raw usageMetadata sc{turnComplete}",
+  "73286 turnComplete(drop)",
+  "77498 raw  sc{inputTranscription}",
+  "77498 in:いいえ、特にありません。",
+  "77498 raw voiceActivity",
+  "77501 raw toolCall {\"functionCalls\":[{\"name\":\"judge_reply\",\"args\":{\"better_answer\":\"はい。入社までに、どのようなことを勉強しておけばい",
+  "77501 toolCall:judge_reply",
+  "77501 judged 3 ms after the last words",
+  "77501 judge:no_question/1 → nothing",
+  "77501 raw  sc{generationComplete}",
+  "77501 raw usageMetadata sc{turnComplete}",
+  "77501 turnComplete(drop)",
+  "81633 raw toolCall {\"functionCalls\":[{\"name\":\"final_report\",\"args\":{\"criteria_scores\":[{\"score\":3,\"id\":\"manne",
+  "81633 toolCall:final_report",
+  "81640 close 1000 "
+ ]
+}
