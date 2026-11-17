@@ -469,6 +469,12 @@ test.describe("相談の 練習（サウンドノベル）", () => {
     await expect(page.getByTestId("novel-stage")).toHaveAttribute("data-kind", "side");
     expect(await bareKanjiTexts(page)).toEqual([]);
     await shot(page, "novel-full-wide");
+    /* 広い 画面でも 横いっぱいに 広がる（左右に 黒い 帯を 出さない・2026-11-17） */
+    await page.setViewportSize({ width: 1700, height: 820 });
+    await expect
+      .poll(async () => (await page.getByTestId("novel-stage").boundingBox())?.width ?? 0)
+      .toBeGreaterThanOrEqual(1690);
+    await shot(page, "novel-full-1700");
     await page.getByTestId("novel-full").click();
     await expect(frame).not.toHaveAttribute("data-full", "1");
     expect(await page.evaluate(() => document.documentElement.style.overflow)).toBe("");

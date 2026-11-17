@@ -66,6 +66,7 @@ function fullscreenElement(): Element | null {
  *    本当の 全画面）。枠では なく ページに 向けるのは、辞書の 吹き出しなど body に 出す
  *    部品が 全画面の 下に 隠れない ように（2026-11-13 の 検収）。
  *    iPhone の Safari は 要素の 全画面を 受け付けないので 1 だけ（アドレスバーは 残る）。
+ * どちらも 横幅に 上限は 付けない（画面の 横いっぱいに 広げる・2026-11-17）。
  * Esc や 端末の 操作で 本当の 全画面を 抜けたら、1 も 解く。枠の DOM は 作り直さない
  *（録音中に 出入りしても 止まらない）。
  *
@@ -194,10 +195,13 @@ export function GameFrame({ children }: { children: ReactNode }) {
       data-layout={layout}
       data-full={full ? "1" : undefined}
     >
+      {/*
+       * 全画面では 横幅に 上限を 付けない（広い 画面でも 左右に 黒い 帯を 出さない・
+       * 2026-11-17 tomy さん「全画面にした時に横画面いっぱいに広がるように」）。
+       */}
       <div
-        className="relative mx-auto h-full w-full"
+        className="relative h-full w-full"
         style={{
-          maxWidth: full ? 1200 : undefined,
           background: "var(--color-panel-tint, #eef4fb)",
           paddingTop: full ? "env(safe-area-inset-top)" : undefined,
           paddingBottom: full ? "env(safe-area-inset-bottom)" : undefined,
