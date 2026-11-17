@@ -144,7 +144,7 @@ export function MemoMaker({
         📝 <RubyText text="相談メモを 作ります" index={index} show={show} />
         <span className="text-ink-soft block text-xs font-bold">
           <RubyText
-            text="①と ②は 問いに 答えて、ことばを 押します。③は 自分で 考えて 書きます。"
+            text="①と ②は 質問に 答えて、ことばを 押します。③は 自分で 考えて 書きます。"
             index={index}
             show={show}
           />
@@ -246,7 +246,7 @@ export function MemoMaker({
               style={{ background: "var(--color-sky-soft)", color: "var(--color-navy)" }}
               data-testid="novel-memo-form"
             >
-              ✏️ <RubyText text={`文の 終わり：${askForm}`} index={index} show={show} />
+              ✏️ <RubyText text={`文の 形：${askForm}`} index={index} show={show} />
             </p>
           ) : null}
           <input
@@ -403,7 +403,7 @@ function MemoPick({
           {answer ? (
             <span className="text-ink-soft ml-1 text-xs">
               <RubyText
-                text={answer.length > 1 ? `（${answer.length}つ 押します）` : "（1つ 押します）"}
+                text={`（${["1つ", "2つ", "3つ"][answer.length - 1] ?? "ぜんぶ"} 押します）`}
                 index={index}
                 show={show}
               />
@@ -447,7 +447,7 @@ function MemoPick({
         >
           ✖{" "}
           <RubyText
-            text={`不正解です。「${wrong}」は ちがいます。上の 2行を 見て、もう 一度 押します。`}
+            text={`不正解です。「${wrong}」は ${n === 1 ? "①" : "②"}の 答えでは ありません。上の 2行を 見て、もう 一度 押します。`}
             index={index}
             show={show}
           />

@@ -423,7 +423,7 @@ export function NoticePanel({
               <span key={`${miss.side}:${miss.id}`} className="block">
                 ✖{" "}
                 <RubyText
-                  text={`不正解です。${one?.why ?? `「${one?.text ?? ""}」では ありません。`}「${title}」の ほかの 行を 選びます。`}
+                  text={`不正解です。${one?.why ?? "選んだ 行は ちがいます。"}「${title}」の ほかの 行を 選びます。`}
                   index={index}
                   show={show}
                 />

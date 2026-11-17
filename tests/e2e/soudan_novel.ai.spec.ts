@@ -78,7 +78,7 @@ test.describe("相談の 判定（鍵が あるときだけ）", () => {
     await page
       .getByTestId("novel-text-input")
       .fill(
-        "仕様書では、出す商品はマウスとUSBライトです。キーボードはありません。キーボードを出すかどうか、わかりません。教えていただけませんか。",
+        "仕様書では、出す商品はマウスとUSBライトです。でも、商品データにはキーボードもあります。キーボードを出すかどうか、わかりません。教えていただけませんか。",
       );
     await page.getByTestId("novel-text-send").click();
     const consult = page.getByTestId("novel-consult");
