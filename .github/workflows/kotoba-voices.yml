@@ -23,6 +23,8 @@ on:
       - kotoba-town/js/**
       - scripts/make_kotoba_voices.ts
       - scripts/kotoba_selfcheck.ts
+      - scripts/kotoba_interview_check.ts
+      - kotoba-town/interview_check.json
       - .github/workflows/kotoba-voices.yml
 
 concurrency:
@@ -63,6 +65,20 @@ jobs:
           else
             echo "selfcheck は 今回 なし（run.json）"
           fi
+
+      - name: 面接の 判定の 確かめ（Extended Thinking）
+        if: ${{ hashFiles('kotoba-town/interview_check.json') != '' }}
+        continue-on-error: true
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          LEVELS=$(node -p "(require('./kotoba-town/run.json').interviewCheck || []).join(' ')")
+          if [ -z "$LEVELS" ]; then echo "interviewCheck は 今回 なし（run.json）"; exit 0; fi
+          for L in $LEVELS; do
+            timeout 12m node --import tsx scripts/kotoba_interview_check.ts "$L" || true
+            cp kotoba-town/out/interview_check.json "kotoba-town/out/interview_check_${L}.json" 2>/dev/null || true
+            sleep 20
+          done
 
       - name: 声を 作る（区切りごとに コミット）
         env:
