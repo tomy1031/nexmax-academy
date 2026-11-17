@@ -1,178 +1,106 @@
-simple NON_BLOCKING + LOW → no call
-    550 sessionResumptionUpdate
-    1503 
-    1503  sc{}
-    1522 
-    1523  sc{generationComplete}
-    1540 usageMetadata sc{turnComplete,interactionStatus}
-    17571 
-    17571  sc{}
-    17849 
-    17851 
-    17851 
-    17851  sc{outputTranscription parts:audio} out:恐れ入りますが、システムエラー
-    17857  sc{ parts:audio}
-    17880  sc{ parts:audio}
-    18087 
-    18098  sc{ parts:audio}
-    18247 
-    18258  sc{ parts:audio}
-    18407 
-    18413  sc{ parts:audio}
-    18446 
-    18466  sc{outputTranscription parts:audio}
-    18726 
-    18737  sc{ parts:audio}
-    18887 
-    18898  sc{ parts:audio}
-    19049 
-    19080  sc{ parts:audio}
-    19366 
-    19381  sc{ parts:audio}
-    19568 
-    19586  sc{outputTranscription parts:audio} out:が発生いたしました。
-    19807 
-    19818  sc{ parts:audio}
-    19966 
-    19978  sc{ parts:audio}
-    20127 
-    20138  sc{ parts:audio}
-    20286 
-    20298  sc{ parts:audio}
-    20446 
-    20471  sc{ parts:audio}
-    20767  sc{generationComplete}
-    20768 usageMetadata sc{turnComplete,interactionStatus}
-simple, no behavior + LOW → no call
-    265 sessionResumptionUpdate
-    796 
-    796  sc{}
-    814  sc{generationComplete}
-    839 usageMetadata sc{turnComplete,interactionStatus}
-    16629 
-    16629  sc{}
-    16919 
-    16919 
-    16920  sc{outputTranscription parts:audio} out:申し訳ございませんが、ただいま
-    16936  sc{ parts:audio}
-    16969 
-    16988  sc{ parts:audio}
-    17169 
-    17188  sc{ parts:audio}
-    17373 
-    17392  sc{ parts:audio}
-    17569 
-    17588  sc{outputTranscription parts:audio}
-    17771 
-    17783  sc{ parts:audio}
-    17929 
-    17943  sc{ parts:audio}
-    18089 
-    18120  sc{ parts:audio}
-    18409 
-    18424  sc{ parts:audio}
-    18568 
-    18594  sc{outputTranscription parts:audio} out:システムエラーが発生し、
-    18849 
-    18867  sc{ parts:audio}
-    19049 
-    19083  sc{ parts:audio}
-    19409 
-    19422  sc{ parts:audio}
-    19575 
-    19619  sc{outputTranscription parts:audio} out:評価
-    20168 
-    20194  sc{ parts:audio}
-    20568 
-    20601  sc{outputTranscription parts:audio} out:を記録できません
-    21088 
-    21117  sc{ parts:audio}
-    21529 
-    21562  sc{outputTranscription parts:audio} out:でした。
-    22089 
-    22104  sc{ parts:audio}
-    22331  sc{generationComplete}
-    22334 usageMetadata sc{turnComplete,interactionStatus}
-simple NON_BLOCKING, no thinkingConfig → setup failed closed ["gemini-3.8-live-extended-thinking:closed"]
-basic judge NON_BLOCKING + LOW → no call
-    246 sessionResumptionUpdate
-    985 
-    986  sc{}
-    1006  sc{generationComplete}
-    1023 usageMetadata sc{turnComplete,interactionStatus}
-    17436 
-    17436 
-    17436 
-    17436  sc{}
-    17437  sc{outputTranscription parts:audio} out:申し訳ありませんが、システムエラー
-    17452  sc{ parts:audio}
-    17487 
-    17501  sc{ parts:audio}
-    17647 
-    17771  sc{ parts:audio}
-    17928 
-    17941  sc{ parts:audio}
-    18092 
-    18114  sc{outputTranscription parts:audio}
-    18367 
-    18386  sc{ parts:audio}
-    18567 
-    18581  sc{ parts:audio}
-    18726 
-    18741  sc{ parts:audio}
-    18888 
-    18901  sc{ parts:audio}
-    19047 
-    19081  sc{outputTranscription parts:audio} out:が発生しました。
-    19407 
-    19423  sc{ parts:audio}
-    19606 
-    19624  sc{ parts:audio}
-    19807 
-    19823  sc{ parts:audio}
-    20009 
-    20029  sc{ parts:audio}
-    20289 
-    20296  sc{ parts:audio}
-    20407  sc{generationComplete}
-    20414 usageMetadata sc{turnComplete,interactionStatus}
-interview judge NON_BLOCKING + LOW → no call
-    247 sessionResumptionUpdate
-    1213 
-    1213  sc{}
-    1226  sc{generationComplete}
-    1247 usageMetadata sc{turnComplete,interactionStatus}
-    17237 
-    17237  sc{}
-    17661 
-    17662  sc{outputTranscription parts:audio} out:I apologize, but 
-    17662 
-    17662 
-    17663  sc{ parts:audio}
-    17669  sc{ parts:audio}
-    17783 
-    17788  sc{ parts:audio}
-    17943 
-    17949  sc{ parts:audio}
-    18103 
-    18109  sc{ parts:audio}
-    18303 
-    18315  sc{outputTranscription parts:audio} out:a system error
-    18663 
-    18668  sc{ parts:audio}
-    18825 
-    18830  sc{ parts:audio}
-    18983 
-    18988  sc{ parts:audio}
-    19143 
-    19148  sc{ parts:audio}
-    19303 
-    19314  sc{outputTranscription parts:audio} out: occurred.
-    19583 
-    19594  sc{ parts:audio}
-    19903 
-    19914  sc{ parts:audio}
-    20223 
-    20224  sc{ parts:audio}
-    20344  sc{generationComplete}
-    20350 usageMetadata sc{turnComplete,interactionStatus}
+v1alpha simple NON_BLOCKING + LOW → no call
+    339 sessionResumptionUpdate
+    716 
+    716  sc{}
+    734  sc{generationComplete}
+    752 status IN_PROGRESS turnComplete
+    752 usageMetadata sc{turnComplete,interactionStatus}
+    16788 
+    16788  sc{}
+    17007 
+    17070  sc{outputTranscription parts:audio} out:申し訳ありませんが、システム
+    17070 
+    17099  sc{ parts:audio}
+    17316 
+    17329  sc{ parts:audio}
+    17477 
+    17493  sc{ parts:audio}
+    17677 
+    17680  sc{ parts:audio}
+    17716 
+    17739  sc{outputTranscription parts:audio}
+    17997 
+    18039  sc{ parts:audio}
+    18197 
+    18210  sc{ parts:audio}
+    18356 
+    18373  sc{ parts:audio}
+    18556 
+    18570  sc{ parts:audio}
+    18717 
+    18748  sc{outputTranscription parts:audio} out:エラーが発生しました。
+    19076 
+    19092  sc{ parts:audio}
+    19277 
+    19288  sc{ parts:audio}
+    19437 
+    19467  sc{ parts:audio}
+    19797 
+    19822  sc{ parts:audio}
+    20119 
+    20123  sc{ parts:audio}
+    20157  sc{generationComplete}
+    20160 status IDLE turnComplete
+    20160 usageMetadata sc{turnComplete,interactionStatus}
+v1alpha interview judge NON_BLOCKING + LOW → no call
+    259 sessionResumptionUpdate
+    1231 
+    1232  sc{}
+    1251 
+    1251  sc{generationComplete}
+    1269 status IN_PROGRESS turnComplete
+    1269 usageMetadata sc{turnComplete,interactionStatus}
+    17213 
+    17213  sc{}
+    17320 
+    17321  sc{outputTranscription parts:audio} out:I apologize, but 
+    17338 
+    17506  sc{ parts:audio}
+    17508 
+    17520  sc{ parts:audio}
+    17638 
+    17662  sc{ parts:audio}
+    17878 
+    17888  sc{ parts:audio}
+    17998 
+    18012  sc{outputTranscription parts:audio} out:a system error
+    18159 
+    18173  sc{ parts:audio}
+    18319 
+    18333  sc{ parts:audio}
+    18478 
+    18493  sc{ parts:audio}
+    18638 
+    18665  sc{ parts:audio}
+    18919 
+    18923  sc{ parts:audio}
+    18998 
+    19030  sc{outputTranscription parts:audio} out: occurred while evaluating
+    19318 
+    19336  sc{ parts:audio}
+    19518 
+    19537  sc{ parts:audio}
+    19718 
+    19732  sc{ parts:audio}
+    19884 
+    19900  sc{ parts:audio}
+    20078 
+    20126  sc{outputTranscription parts:audio} out: your answer.
+    20598 
+    20628  sc{ parts:audio}
+    20998 
+    21020  sc{ parts:audio}
+    21319 
+    21340  sc{ parts:audio}
+    21639  sc{generationComplete}
+    21640 status IDLE turnComplete
+    21640 usageMetadata sc{turnComplete,interactionStatus}
+v1beta TEXT, no tools, LOW → no call
+    284 sessionResumptionUpdate
+    close modelNotFound 1007 The requested combination of response modalities (AUDIO, TEXT) is not supported by the model. models/gemini_api_beyond_live
+v1beta TEXT, no tools, HIGH → no call
+    231 sessionResumptionUpdate
+    close modelNotFound 1007 The requested combination of response modalities (AUDIO, TEXT) is not supported by the model. models/gemini_api_beyond_live
+v1alpha TEXT, no tools, MEDIUM → no call
+    417 sessionResumptionUpdate
+    close modelNotFound 1007 The requested combination of response modalities (AUDIO, TEXT) is not supported by the model. models/gemini_api_beyond_live
