@@ -1,5 +1,5 @@
 {
- "at": "2026-11-17T05:35:31.759Z",
+ "at": "2026-11-17T07:05:49.268Z",
  "results": [
   {
    "say": "あおきさんは デザイナーですか。",
@@ -8,10 +8,10 @@
    "verdict": {
     "heard": "青木さんはデザイナーですか",
     "branch": "asks_npc",
-    "score": 1,
+    "score": 0,
     "grammarUsed": [],
-    "correction": "はい、デザイナーです。",
-    "tipEn": "Please introduce yourself with your name and country first.",
+    "correction": "はじめまして。わたしはリンです。アメリカじんです。",
+    "tipEn": "Please introduce yourself with your name and country first!",
     "criteriaMet": [],
     "criteriaMissed": [],
     "improveEn": "",
@@ -24,20 +24,20 @@
     "asks_npc",
     "off_topic"
    ],
-   "npcSpeechSeconds": 7.9,
-   "npcText": "はい、そうです。デザイナーです。",
+   "npcSpeechSeconds": 2.3,
+   "npcText": "はい、わたしはデザイナーです。",
    "report": null,
    "trace": [
-    "86146 in:青木さんはデザイナーですか ?",
-    "86147 toolCall:judge_reply",
-    "86147 judged 1 ms after the last words",
-    "86147 judge:asks_npc/1 → react",
-    "86148 turnComplete(armed)",
-    "86632 out:はい、そうです。デザイナー",
-    "87231 out:です。",
-    "87821 close 1000 "
+    "9665 in:青木さんはデザイナーですか ?",
+    "9666 toolCall:judge_reply",
+    "9667 judged 2 ms after the last words",
+    "9667 judge:asks_npc/0 → react",
+    "9667 turnComplete(armed)",
+    "10897 out:はい、わたしはデザイナーです。",
+    "13183 turnComplete(play)",
+    "13317 close 1000 "
    ],
-   "ms": 12610
+   "ms": 14485
   },
   {
    "say": "すみません、トイレは どこですか。",
@@ -49,7 +49,7 @@
     "score": 0,
     "grammarUsed": [],
     "correction": "はじめまして。わたしはリンです。アメリカじんです。",
-    "tipEn": "Please introduce yourself with your name and country instead of asking about the restroom.",
+    "tipEn": "Please introduce yourself with your name and country first.",
     "criteriaMet": [],
     "criteriaMissed": [],
     "improveEn": "",
@@ -62,21 +62,21 @@
     "asks_npc",
     "off_topic"
    ],
-   "npcSpeechSeconds": 2,
+   "npcSpeechSeconds": 1.6,
    "npcText": "トイレは あちらです。",
    "report": null,
    "trace": [
-    "1085 in:すみません、トイレはどこですか?",
-    "1085 toolCall:judge_reply",
-    "1086 judged 1 ms after the last words",
-    "1086 judge:off_topic/0 → react",
-    "1087 turnComplete(armed)",
-    "1597 out:トイレは ",
-    "1765 out:あちらです。",
-    "3578 turnComplete(play)",
-    "3689 close 1000 "
+    "28500 in:すみません、トイレはどこですか?",
+    "28500 toolCall:judge_reply",
+    "28500 judged 0 ms after the last words",
+    "28500 judge:off_topic/0 → react",
+    "28501 turnComplete(armed)",
+    "29326 out:トイレは ",
+    "29660 out:あちらです。",
+    "30881 turnComplete(play)",
+    "30977 close 1000 "
    ],
-   "ms": 11867
+   "ms": 13659
   },
   {
    "say": "I am Lin from Vietnam.",
@@ -87,8 +87,8 @@
     "branch": "english",
     "score": 0,
     "grammarUsed": [],
-    "correction": "はじめまして。わたしはリンです。ベトナムじんです。どうぞよろしくお願いします。",
-    "tipEn": "Please introduce yourself in Japanese. You can say your name and country using \"です\".",
+    "correction": "わたしはリンです。ベトナムじんです。",
+    "tipEn": "Please introduce yourself in Japanese. Try: わたしは リンです。",
     "criteriaMet": [],
     "criteriaMissed": [],
     "improveEn": "",
@@ -104,22 +104,22 @@
    "npcText": "",
    "report": {
     "stars": 1,
-    "summaryEn": "The learner responded in English instead of Japanese during the self-introduction. More practice with basic Japanese introductions is needed.",
-    "strengthsEn": "N/A",
-    "improveEn": "Practice introducing yourself in Japanese using the grammar \"Watashi wa [Name] desu\" and \"[Country] jin desu.\"",
+    "summaryEn": "You understood the questions but responded in English. Next time, try to use Japanese for your self-introduction.",
+    "strengthsEn": "You understood the question well and provided the correct information.",
+    "improveEn": "Please practice introducing yourself in Japanese using the grammar pattern: わたしは [Name] です。",
     "pronunciationEn": "N/A",
     "source": "live"
    },
    "trace": [
-    "27019 in:I am Lin from Vietnam.",
-    "27019 toolCall:judge_reply",
-    "27019 judged 0 ms after the last words",
-    "27019 judge:english/0 → nothing",
-    "27020 turnComplete(drop)",
-    "27756 toolCall:final_report",
-    "27778 close 1000 "
+    "44394 in:I am Lin from Vietnam.",
+    "44394 toolCall:judge_reply",
+    "44394 judged 0 ms after the last words",
+    "44394 judge:english/0 → nothing",
+    "44395 turnComplete(drop)",
+    "45264 toolCall:final_report",
+    "45330 close 1000 "
    ],
-   "ms": 20086
+   "ms": 10349
   }
  ]
 }
