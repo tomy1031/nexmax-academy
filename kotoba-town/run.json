@@ -3,6 +3,6 @@
   "selfcheck": false,
   "generate": true,
   "only": "",
-  "rounds": 6,
+  "rounds": 7,
   "roundMinutes": 22
 }
