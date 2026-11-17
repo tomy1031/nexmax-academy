@@ -8,6 +8,8 @@
  * 4. 判定の 記録（KT.log の judge 行）と ふりかえりを kotoba-town/out/e2e.json に 書く
  *
  * 使い方: GEMINI_API_KEY=… node scripts/kotoba_e2e.mjs [variant=l01a] [seconds=150]
+ * フリートーク: variant を free-<相手>-<場所>-<レベル> に する（例 free-sakamoto-cafe-easy）。
+ *   相手が Live の 声で 話し始め、偽マイクの 声に 返事を し、最後に ふりかえりを 書くまでを 通す。
  * 鍵は ページの 中だけで 使い、ログには 出さない。
  */
 import { createServer } from "node:http";
@@ -50,19 +52,41 @@ await ctx.addInitScript((key) => {
 const page = await ctx.newPage();
 const errors = [];
 page.on("pageerror", (e) => errors.push(String(e).slice(0, 300)));
-await page.goto(`http://127.0.0.1:${port}/?play=${variant}&debug=1`);
-await page.waitForFunction("window.KT && window.KT.ready && window.KT.state.where === 'brief'", null, { timeout: 120000 });
-await page.evaluate((m) => { window.KT.start(m); }, mode); // fire and forget: start() resolves only when the conversation ends
+const free = variant.startsWith("free-");
 const t0 = Date.now();
-let last = "";
-while (Date.now() - t0 < seconds * 1000) {
-  const st = await page.evaluate(() => ({ where: window.KT.state.where, log: window.KT.log.filter((l) => /^(judge|live)/.test(l)).slice(-30) }));
-  const s = st.log.join("\n");
-  if (s !== last) { console.log(st.log.slice(-3).join("\n")); last = s; }
-  if (st.where === "report") break;
-  await page.waitForTimeout(2000);
+if (free) {
+  // the free-talk room: partner, place and level from the variant name
+  const [, partner = "sakamoto", place = "cafe", level = "easy"] = variant.split("-");
+  await page.goto(`http://127.0.0.1:${port}/?debug=1`);
+  await page.waitForFunction("window.KT && window.KT.ready", null, { timeout: 120000 });
+  await page.evaluate(([p, pl, lv]) => { window.KT.free({ partner: p, place: pl, level: lv, topic: 1 }); window.KT.startFree(); }, [partner, place, level]);
+  let shown = 0;
+  while (Date.now() - t0 < (seconds - 40) * 1000) {
+    const st = await page.evaluate(() => ({ where: window.KT.state.where, turns: window.KT.runner?.turns?.length || 0, talked: window.KT.runner?.talked || [], last: window.KT.runner?.turns?.at(-1) || null }));
+    if (st.where !== "free" && st.where !== "town" && st.where !== "title") break;
+    for (const t of st.talked.slice(shown)) console.log(`partner: ${t}`);
+    shown = st.talked.length;
+    if (st.last) console.log(`learner(${st.turns}): ${st.last.heard} → ${st.last.correction} [${st.last.score}]`);
+    await page.waitForTimeout(4000);
+  }
+  await page.evaluate(() => window.KT.runner?.finish?.());
+  await page.waitForFunction("window.KT.state.where === 'report'", null, { timeout: 60000 }).catch(() => {});
+} else {
+  await page.goto(`http://127.0.0.1:${port}/?play=${variant}&debug=1`);
+  await page.waitForFunction("window.KT && window.KT.ready && window.KT.state.where === 'brief'", null, { timeout: 120000 });
+  await page.evaluate((m) => { window.KT.start(m); }, mode); // fire and forget: start() resolves only when the conversation ends
+  let last = "";
+  while (Date.now() - t0 < seconds * 1000) {
+    const st = await page.evaluate(() => ({ where: window.KT.state.where, log: window.KT.log.filter((l) => /^(judge|live)/.test(l)).slice(-30) }));
+    const s = st.log.join("\n");
+    if (s !== last) { console.log(st.log.slice(-3).join("\n")); last = s; }
+    if (st.where === "report") break;
+    await page.waitForTimeout(2000);
+  }
 }
 const result = await page.evaluate(() => ({
+  talked: window.KT.runner?.talked || [],
+  topics: (window.KT.runner?.topicsUsed || []).map((t) => t.id),
   where: window.KT.state.where,
   log: window.KT.log.filter((l) => /^(judge|live|mic|audio)/.test(l)),
   turns: window.KT.runner?.turns || window.KT.lastReport?.turns || [],
@@ -77,7 +101,7 @@ result.at = new Date().toISOString();
 await page.screenshot({ path: "kotoba-town/out/e2e.png" });
 mkdirSync("kotoba-town/out", { recursive: true });
 writeFileSync("kotoba-town/out/e2e.json", JSON.stringify(result, null, 1) + "\n");
-console.log(`E2E ${variant}: where=${result.where} judged=${result.log.filter((l) => l.startsWith("judge")).length} turns=${result.turns.length}`);
+console.log(`E2E ${variant}: where=${result.where} judged=${result.log.filter((l) => l.startsWith("judge")).length} turns=${result.turns.length}${free ? ` partner-lines=${result.talked.length} report=${result.report ? `${result.report.source} ${result.report.stars}★ corrections=${result.report.corrections?.length ?? 0} words=${result.report.words?.length ?? 0}` : "none"}` : ""}`);
 await browser.close();
 srv.close();
 void readFileSync;

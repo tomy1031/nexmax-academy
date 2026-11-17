@@ -2,14 +2,14 @@
   "note": "Cases for the 'Kotoba Town e2e' workflow: the learner's voice (fake mic, repeated), how long to run, and the mode (practice = れんしゅう, real = ほんばん).",
   "cases": [
     {
-      "variant": "b01a",
-      "mode": "real",
-      "say": "おはようございます。昨日は ログイン画面を 作りました。今日は 予約フォームを 作る 予定です。困って いる ことは 特に ありません。",
+      "variant": "free-sakamoto-cafe-easy",
+      "mode": "practice",
+      "say": "しゅうまつは ともだちと こうえんへ いきました。とても たのしかったです。",
       "seconds": 170
     }
   ],
   "interviewCheck": [],
-  "selfcheck": true,
+  "selfcheck": false,
   "thinkingProbe": false,
   "sdkProbe": false
 }
