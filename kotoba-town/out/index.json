@@ -7709,5 +7709,359 @@
   "seconds": 1.791375,
   "model": "gemini-3.8-live",
   "transcript": "他 に 質問 は あり ます か ?"
+ },
+ "l15c/end_company_0": {
+  "hash": "29eb91228f",
+  "seconds": 3.339208,
+  "model": "gemini-3.8-live",
+  "transcript": "会社 や お 店 の ウェブサイト を 作っ て い ます 。"
+ },
+ "l15c/end_company_1": {
+  "hash": "1b2669d340",
+  "seconds": 2.501833,
+  "model": "gemini-3.8-live",
+  "transcript": "じゃあ今日もよろしくお願いします。"
+ },
+ "l15c/end_aoki_0": {
+  "hash": "96296582c7",
+  "seconds": 4.448167,
+  "model": "gemini-3.8-live",
+  "transcript": "今 、 駅 の 前 の 花屋 の ポスター を 作っ て い ます 。"
+ },
+ "l15c/end_aoki_1": {
+  "hash": "7b9cf117e7",
+  "seconds": 3.361958,
+  "model": "gemini-3.8-live",
+  "transcript": "では、今日もよろしくおねがいします。"
+ },
+ "l16a/n1_0": {
+  "hash": "c2006f8b9d",
+  "seconds": 1.283208,
+  "model": "gemini-3.8-live",
+  "transcript": "おはようございます。"
+ },
+ "l16a/n2_castle_0": {
+  "hash": "46f97ca7d0",
+  "seconds": 6.612333,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "おし"
+ },
+ "l16a/n2_temple_0": {
+  "hash": "bac177678e",
+  "seconds": 5.963667,
+  "model": "gemini-2.5-flash-native-audio-preview-12-2025",
+  "transcript": "おてらですか。いちばんせんのでんしゃに乗って、みどり駅でバスに乗り換えてください。"
+ },
+ "l16a/n3_0": {
+  "hash": "a5b32d6567",
+  "seconds": 3.507583,
+  "model": "gemini-3.8-live",
+  "transcript": "きっぷはそこのきかいで買ってくだ"
+ },
+ "l16a/n4_how_0": {
+  "hash": "e8562ad3fe",
+  "seconds": 4.805625,
+  "model": "gemini-2.5-flash-native-audio-preview-12-2025",
+  "transcript": "まず、おかねを入れて、320円のボタンを押してください。"
+ },
+ "l16a/n4_which_0": {
+  "hash": "01fbb43004",
+  "seconds": 6.00525,
+  "model": "gemini-3.8-live",
+  "transcript": "さんびゃくにじゅうえんのボタンです。おかねをいれてから、おして ください。"
+ },
+ "l16a/n5_0": {
+  "hash": "b1ea241443",
+  "seconds": 3.313958,
+  "model": "gemini-3.8-live",
+  "transcript": "あら、おはようございます。お出かけですか?"
+ },
+ "l16a/n5_1": {
+  "hash": "6178e9790e",
+  "seconds": 3.52275,
+  "model": "gemini-3.8-live",
+  "transcript": "今日 は 何 を し ます か ?"
+ },
+ "l16a/n6_friend_0": {
+  "hash": "5cab135680",
+  "seconds": 3.911375,
+  "model": "gemini-3.8-live",
+  "transcript": "お 友 達 と 一緒 です か ? 楽 し い で す ね 。"
+ },
+ "l16a/n6_sight_0": {
+  "hash": "e0ed80e63c",
+  "seconds": 4.252875,
+  "model": "gemini-3.8-live",
+  "transcript": "いいですね。あの街は古くて綺麗ですよ。"
+ },
+ "l16a/n7_0": {
+  "hash": "b3753aee73",
+  "seconds": 2.601167,
+  "model": "gemini-3.8-live",
+  "transcript": "この 街 の 生活 は どう です か ?"
+ },
+ "l16a/n8_good_0": {
+  "hash": "6fcbc3ee89",
+  "seconds": 3.122167,
+  "model": "gemini-3.8-live",
+  "transcript": "よかっ た です 。 私 も この 町 が 好き です 。"
+ },
+ "l16a/n8_hard_0": {
+  "hash": "a3bb9b9a2c",
+  "seconds": 3.221792,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か ? それ は 大変 です ね 。"
+ },
+ "l16a/n9_0": {
+  "hash": "83f70b7497",
+  "seconds": 3.41925,
+  "model": "gemini-3.8-live",
+  "transcript": "晩ご飯 は 家 へ 帰っ て から 食べ ます か ?"
+ },
+ "l16a/n10_home_0": {
+  "hash": "ae389984e9",
+  "seconds": 3.617375,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か 。 私 も いつも 帰っ て から 食べ ます 。"
+ },
+ "l16a/n10_out_0": {
+  "hash": "b97a30c5af",
+  "seconds": 4.525208,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "いい"
+ },
+ "l16a/end_0": {
+  "hash": "4c8e875999",
+  "seconds": 2.509375,
+  "model": "gemini-3.8-live",
+  "transcript": "あ、電車が来ましたよ。"
+ },
+ "l16a/end_1": {
+  "hash": "835e3ca150",
+  "seconds": 2.083292,
+  "model": "gemini-3.8-live",
+  "transcript": "じゃあ 、 行っ てらっしゃい 。"
+ },
+ "l16b/n1_0": {
+  "hash": "f8dd56182d",
+  "seconds": 5.15475,
+  "model": "gemini-3.8-live",
+  "transcript": "こんばんは。今日はすずしくて、いい日ですね。"
+ },
+ "l16b/n1_1": {
+  "hash": "628b274e93",
+  "seconds": 5.097083,
+  "model": "gemini-3.8-live",
+  "transcript": "お 友達 を 待っ て い ます か ? どんな 人 です か ?"
+ },
+ "l16b/n2_looks_0": {
+  "hash": "3a4c95ea7d",
+  "seconds": 4.300167,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か 。 背 が 高く て 素敵 な 人 です ね 。"
+ },
+ "l16b/n2_char_0": {
+  "hash": "65ae7c227b",
+  "seconds": 3.440792,
+  "model": "gemini-3.8-live",
+  "transcript": "そうですか いいお友達ですね"
+ },
+ "l16b/n3_0": {
+  "hash": "ebea2b67a7",
+  "seconds": 3.455667,
+  "model": "gemini-3.8-live",
+  "transcript": "この 公園 は どう です か ?"
+ },
+ "l16b/n4_nature_0": {
+  "hash": "b7ca9ab9c2",
+  "seconds": 4.067792,
+  "model": "gemini-3.8-live",
+  "transcript": "え 、 木 が 多く て 秋 は とても 綺麗 です 。"
+ },
+ "l16b/n4_big_0": {
+  "hash": "96dc670107",
+  "seconds": 6.278167,
+  "model": "gemini-3.8-live",
+  "transcript": " ええ、 広くて、にぎやかですね。 日曜日は人が多いです。"
+ },
+ "l16b/n5_0": {
+  "hash": "fcfcfa4974",
+  "seconds": 5.799625,
+  "model": "gemini-3.8-live",
+  "transcript": "私 は 毎朝 ここ を 散歩 し て から 朝ご飯 を 食べ ます 。"
+ },
+ "l16b/n5_1": {
+  "hash": "7f5ab3c2b8",
+  "seconds": 3.819542,
+  "model": "gemini-3.8-live",
+  "transcript": "朝 起き て から 何 を し ます か ?"
+ },
+ "l16b/n6_active_0": {
+  "hash": "40b5271053",
+  "seconds": 3.452417,
+  "model": "gemini-3.8-live",
+  "transcript": "はあ 、 元気 です ね 。 いい です ね 。"
+ },
+ "l16b/n6_other_0": {
+  "hash": "a3c3229b0c",
+  "seconds": 3.827542,
+  "model": "gemini-3.1-flash-live-preview",
+  "transcript": "そう"
+ },
+ "l16b/n7_0": {
+  "hash": "42d0bbf469",
+  "seconds": 5.173917,
+  "model": "gemini-3.8-live",
+  "transcript": "きょう は お と も だ ち に あ っ て か ら な に を し ま す か ?"
+ },
+ "l16b/n8_food_0": {
+  "hash": "1aeac595d4",
+  "seconds": 6.345375,
+  "model": "gemini-3.8-live",
+  "transcript": " 駅の 前の そば屋は 安くて、おいしいですよ。"
+ },
+ "l16b/n8_other_0": {
+  "hash": "5212217b9f",
+  "seconds": 4.659667,
+  "model": "gemini-3.8-live",
+  "transcript": "いいですね 。若い人は元気でいいですね 。"
+ },
+ "l16b/n9_0": {
+  "hash": "ac0df98005",
+  "seconds": 2.961042,
+  "model": "gemini-3.8-live",
+  "transcript": "すみません。 バス が 来 ませ ん でし た 。"
+ },
+ "l16b/n9_1": {
+  "hash": "6b759bd191",
+  "seconds": 2.089958,
+  "model": "gemini-3.8-live",
+  "transcript": "あ 、 お 友 達 で す ね 。"
+ },
+ "l16b/end_bg_0": {
+  "hash": "094ff8a02a",
+  "seconds": 5.965708,
+  "model": "gemini-3.8-live",
+  "transcript": "\nミンさん、はじめまして。原です。じゃ、いっていらっしゃい。"
+ },
+ "l16b/end_char_0": {
+  "hash": "90fe00cb65",
+  "seconds": 4.513958,
+  "model": "gemini-3.8-live",
+  "transcript": "いいお 友達 です ね 。 じゃあ いっ て いらっしゃれ 。"
+ },
+ "l16c/n1_0": {
+  "hash": "177efac720",
+  "seconds": 6.479667,
+  "model": "gemini-3.8-live",
+  "transcript": "きょうは街の話です。お国にはどんな街ですか?"
+ },
+ "l16c/n2_city_0": {
+  "hash": "87bd01d00c",
+  "seconds": 3.41825,
+  "model": "gemini-3.8-live",
+  "transcript": "私 の 町 も 大きく て 賑やか です 。"
+ },
+ "l16c/n2_quiet_0": {
+  "hash": "bcfa67ba22",
+  "seconds": 4.746833,
+  "model": "gemini-3.8-live",
+  "transcript": "いいですね 。私の街はバイクが多くて賑やかです。"
+ },
+ "l16c/n3_0": {
+  "hash": "884f1c1ae4",
+  "seconds": 2.0495,
+  "model": "gemini-3.8-live",
+  "transcript": "食べ物はどうですか？"
+ },
+ "l16c/n4_spec_0": {
+  "hash": "70c0b47b89",
+  "seconds": 3.361958,
+  "model": "gemini-3.8-live",
+  "transcript": " わあ、いいですね。わたしも食べたいです。"
+ },
+ "l16c/n4_gen_0": {
+  "hash": "12f6e5e6e0",
+  "seconds": 4.3355,
+  "model": "gemini-3.8-live",
+  "transcript": "ベトナム も 食べ物 が 安く て 美味しい です よ 。"
+ },
+ "l16c/n5_0": {
+  "hash": "d138ceb434",
+  "seconds": 2.404083,
+  "model": "gemini-3.8-live",
+  "transcript": "街 の 人 は どう です か ?"
+ },
+ "l16c/n6_kind_0": {
+  "hash": "b0215c213a",
+  "seconds": 4.805833,
+  "model": "gemini-3.8-live",
+  "transcript": "いいですね。"
+ },
+ "l16c/n6_other_0": {
+  "hash": "360b693865",
+  "seconds": 2.860833,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か 。 面白い です ね 。"
+ },
+ "l16c/n7_0": {
+  "hash": "8e947e6a9b",
+  "seconds": 2.77225,
+  "model": "gemini-3.8-live",
+  "transcript": "日本 から どう やっ て いき ます か ?"
+ },
+ "l16c/n8_change_0": {
+  "hash": "451302bc9b",
+  "seconds": 5.297917,
+  "model": "gemini-3.8-live",
+  "transcript": "飛行 機 を 降り て から バス に 乗り ます ね 。 遠い です ね 。"
+ },
+ "l16c/n8_direct_0": {
+  "hash": "baf215ad2c",
+  "seconds": 4.273958,
+  "model": "gemini-3.8-live",
+  "transcript": "飛行 機 です ね 。 遠く て 大変 です ね 。"
+ },
+ "l16c/n9_0": {
+  "hash": "e3200822d9",
+  "seconds": 3.020375,
+  "model": "gemini-3.8-live",
+  "transcript": "国 に 帰っ て から 何 を し ます か ?"
+ },
+ "l16c/n10_work_0": {
+  "hash": "658edd8628",
+  "seconds": 3.885625,
+  "model": "gemini-3.8-live",
+  "transcript": " いいですね。日本語を 使って、働いてくださいね。"
+ },
+ "l16c/n10_family_0": {
+  "hash": "23486a1d5e",
+  "seconds": 4.031042,
+  "model": "gemini-3.8-live",
+  "transcript": "私も 家族 に 会っ て 母 の 料理 を 食べ たい です 。"
+ },
+ "l16c/end_0": {
+  "hash": "af1433e897",
+  "seconds": 4.043792,
+  "model": "gemini-3.8-live",
+  "transcript": "みなさん、とてもよかったです。じゃ、終わりましょう。"
+ },
+ "l17a/n1_0": {
+  "hash": "189988da5d",
+  "seconds": 3.27075,
+  "model": "gemini-3.8-live",
+  "transcript": "おはよう ござい ます 。 今日 は どう し まし た か ?"
+ },
+ "l17a/n2_0": {
+  "hash": "978432effb",
+  "seconds": 2.641958,
+  "model": "gemini-3.8-live",
+  "transcript": "そう です か ? 熱 も あり ます か ?"
+ },
+ "l17a/n3_0": {
+  "hash": "8fb0d2fbeb",
+  "seconds": 4.661083,
+  "model": "gemini-3.8-live",
+  "transcript": "わかり まし た 。 じゃあ ここ に 名前 と 住所 を 書い て ください 。"
  }
 }
