@@ -3047,6 +3047,12 @@ const novelDocLineSchema = z.object({
   id: novelId,
   text: plainText,
   en: z.string().optional(),
+  /**
+   * この 行を まちがえて 選んだ ときに 出す 理由（「マウスは 仕様書にも あります。」）。
+   * 無ければ「『◯◯』では ありません。」。✖ は 押した 行の そばに 出す（2026-11-17 の
+   * N4 の 通しプレイ・Fable と Codex の 案「判定は 押した 行に、理由と 一緒に」）。
+   */
+  why: plainText.optional(),
 });
 
 /** 気づきで 並べる 資料 1つ（2〜3行）。 */
@@ -3155,13 +3161,27 @@ const novelLineSceneSchema = z.object({
  * ①②は 資料から 大事な ことばを 押して 拾う（事実）。③は 自分の 案——答えを 見せず、
  * 先に 自分の 考え（立場）を 聞き、「決めるのは 相手」と 伝えてから 短く 書かせる。
  * 話す 画面では 完成した 文を 出さず、メモの ことばと 文の 枠だけを 見て 話す。
- * 正解・不正解は 付けない（星は 話した 結果だけ）。
+ *
+ * ①②は **問い（`seenAsk`・`diffAsk`）と 正解（`seenAnswer`・`diffAnswer`）**を 持てる
+ *（2026-11-17 tomy さん「BCodex」——ことばを 選ぶ 形は 残し、問いを はっきり させて
+ * 正解・不正解を 出す。N4 の 通しプレイで「② わからない こと」に 分かって いる 事実しか
+ * 並ばず、どれを 選んでも 通って いた）。正解の ある 段は、正解を ぜんぶ 押すと できあがる。
+ * ③には 正解を 付けない。星は 話した 結果だけ。
  */
-const novelMemoSchema = z.object({
-  /** ①で 押して 拾える ことば（資料の 名前を 先頭に）。 */
-  seenWords: z.array(plainText).min(2).max(6),
-  /** ②で 押して 拾える ことば。 */
-  diffWords: z.array(plainText).min(2).max(6),
+const novelMemoSchema = z
+  .object({
+    /** ①で 押して 拾える ことば（資料の 名前を 先頭に）。 */
+    seenWords: z.array(plainText).min(2).max(6),
+    /** ①の 問い（「仕様書に 書いて ある 商品は どれですか。」）。 */
+    seenAsk: plainText.optional(),
+    /** ①の 正解（`seenWords` の 中から）。あれば まちがいに ✖ を 出す。 */
+    seenAnswer: z.array(plainText).min(1).max(3).optional(),
+    /** ②で 押して 拾える ことば。 */
+    diffWords: z.array(plainText).min(2).max(6),
+    /** ②の 問い（「出して いいか、わからない 商品は どれですか。」）。 */
+    diffAsk: plainText.optional(),
+    /** ②の 正解（`diffWords` の 中から）。 */
+    diffAnswer: z.array(plainText).min(1).max(3).optional(),
   /** ③の 前に 自分の 考えを 聞く 問いと 選ぶ ことば（正解は 付けない）。 */
   stance: z
     .object({ question: plainText, options: z.array(plainText).min(2).max(4) })
@@ -3172,12 +3192,28 @@ const novelMemoSchema = z.object({
   hints: z.array(plainText).max(4).default([]),
   /** 話す ときに 見せる 文の 枠（ことばは 入れない）。 */
   frame: plainText.optional(),
-  /** 合格の あとに 見せる「ほかの 聞き方」。 */
-  others: z
-    .array(z.object({ text: plainText, en: z.string().optional() }))
-    .max(3)
-    .default([]),
-});
+    /** 合格の あとに 見せる「ほかの 聞き方」。 */
+    others: z
+      .array(z.object({ text: plainText, en: z.string().optional() }))
+      .max(3)
+      .default([]),
+  })
+  .superRefine((memo, ctx) => {
+    for (const [words, answer, key] of [
+      [memo.seenWords, memo.seenAnswer, "seenAnswer"],
+      [memo.diffWords, memo.diffAnswer, "diffAnswer"],
+    ] as const) {
+      for (const word of answer ?? []) {
+        if (!words.includes(word)) {
+          ctx.addIssue({
+            code: "custom",
+            path: [key],
+            message: `正解「${word}」が えらぶ ことばに ありません`,
+          });
+        }
+      }
+    }
+  });
 
 const novelGoalSceneSchema = z.object({
   ...novelSceneBase,
