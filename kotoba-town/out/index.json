@@ -4978,5 +4978,485 @@
   "seconds": 5.104875,
   "model": "gemini-3.8-live",
   "transcript": "正直で いいです。わからない ことは、そう 言ってください。"
+ },
+ "b08b/n9_0": {
+  "hash": "783958f16b",
+  "seconds": 3.253125,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b08b/end_a_0": {
+  "hash": "fb735693a0",
+  "seconds": 3.07475,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b08b/end_b_0": {
+  "hash": "81db946db1",
+  "seconds": 4.297958,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b08b/end_c_0": {
+  "hash": "c53ae26631",
+  "seconds": 6.402958,
+  "model": "gemini-3.8-live",
+  "transcript": "では、村上さんに声をかけておきます。困ったらすぐ言ってください。"
+ },
+ "b08b/end_0": {
+  "hash": "83d42541c8",
+  "seconds": 3.778292,
+  "model": "gemini-3.8-live",
+  "transcript": "会議は少し遅らせます。"
+ },
+ "b08b/end_1": {
+  "hash": "355f24f57d",
+  "seconds": 3.692917,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b09a/n1_0": {
+  "hash": "e4e908a638",
+  "seconds": 3.906208,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b09a/n1_1": {
+  "hash": "e952898e06",
+  "seconds": 4.336417,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b09a/n2a_0": {
+  "hash": "984d74f21c",
+  "seconds": 6.053583,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b09a/n2b_0": {
+  "hash": "fbebc67212",
+  "seconds": 4.942875,
+  "model": "gemini-3.8-live",
+  "transcript": "まず、ご迷惑をおかけして申し訳ございませんでした。"
+ },
+ "b09a/n2b_1": {
+  "hash": "f1bf283afc",
+  "seconds": 3.820708,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b09a/n4a_0": {
+  "hash": "cce1184e40",
+  "seconds": 3.433958,
+  "model": "gemini-3.8-live",
+  "transcript": "ちがうファイルだったんですね。よく"
+ },
+ "b09a/n4b_0": {
+  "hash": "925d1cb30d",
+  "seconds": 4.078833,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b09a/n4b_1": {
+  "hash": "a4e0c07e54",
+  "seconds": 3.165792,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b09a/n5_0": {
+  "hash": "3a7d460b36",
+  "seconds": 2.141542,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b09a/n6a_0": {
+  "hash": "50b9d7a860",
+  "seconds": 5.555042,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b09a/n6b_0": {
+  "hash": "0061701dcf",
+  "seconds": 5.108542,
+  "model": "gemini-3.8-live",
+  "transcript": " じゅうごけん ぜんぶ なおった、という ことで よろしいですね。あんしんしました。"
+ },
+ "b09a/n7_0": {
+  "hash": "f7856bca0a",
+  "seconds": 4.15525,
+  "model": "gemini-3.8-live",
+  "transcript": " ただ、また 同じことが 起きないか、少し"
+ },
+ "b09a/n8b_0": {
+  "hash": "96d1d4879d",
+  "seconds": 4.276,
+  "model": "gemini-3.8-live",
+  "transcript": "具体的には、何が変わりますか。"
+ },
+ "b09a/n8a_0": {
+  "hash": "bc2fb6ccbe",
+  "seconds": 4.072083,
+  "model": "gemini-3.8-live",
+  "transcript": "ふたりでかくにんして くださるんですね。それならあんしんです。"
+ },
+ "b09a/n9_0": {
+  "hash": "e0a0991121",
+  "seconds": 5.795167,
+  "model": "gemini-3.8-live",
+  "transcript": " ゼロえんで はいった さんけんの ちゅうもんは、こちらから おきゃくさまに ごれんらくします。"
+ },
+ "b09a/end_a_0": {
+  "hash": "6d4b812db2",
+  "seconds": 5.100542,
+  "model": "gemini-3.8-live",
+  "transcript": "リストがあると助かります。丁寧なご説明で、安心しました。"
+ },
+ "b09a/end_b_0": {
+  "hash": "2eec28da88",
+  "seconds": 4.731167,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b09a/end_0": {
+  "hash": "b1247a43d1",
+  "seconds": 3.129875,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b09b/n1_0": {
+  "hash": "e4e908a638",
+  "seconds": 3.375417,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b09b/n1_1": {
+  "hash": "74a11bba21",
+  "seconds": 4.905792,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b09b/n2a_0": {
+  "hash": "84ccc27e4c",
+  "seconds": 3.047333,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b09b/n2b_0": {
+  "hash": "abe3eb740e",
+  "seconds": 4.801958,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b09b/n2b_1": {
+  "hash": "c2291b78b9",
+  "seconds": 2.991208,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b09b/n4b_0": {
+  "hash": "722ae8aec4",
+  "seconds": 5.153917,
+  "model": "gemini-3.8-live",
+  "transcript": " すみません、むずかしくて…。つまり、どういうことでしょうか。"
+ },
+ "b09b/n4a_0": {
+  "hash": "5692891239",
+  "seconds": 2.902333,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b09b/n4a_1": {
+  "hash": "da838c0144",
+  "seconds": 4.252917,
+  "model": "gemini-3.8-live",
+  "transcript": "また起きませんか。"
+ },
+ "b09b/n6a_0": {
+  "hash": "a22af5d1cf",
+  "seconds": 3.836125,
+  "model": "gemini-3.8-live",
+  "transcript": "カレンダーで管理してくださるんですね。わかりました。"
+ },
+ "b09b/n6b_0": {
+  "hash": "47ad68595a",
+  "seconds": 5.061167,
+  "model": "gemini-3.8-live",
+  "transcript": "今は使えるんですね。これからは、期限の管理もお願いいたし"
+ },
+ "b09b/n7_0": {
+  "hash": "1ddbcfb5a1",
+  "seconds": 6.134333,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b09b/n8a_0": {
+  "hash": "c7013e4c58",
+  "seconds": 6.369083,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b09b/n8b_0": {
+  "hash": "2711a6723b",
+  "seconds": 3.078333,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b09b/n8b_1": {
+  "hash": "95116e236b",
+  "seconds": 4.648583,
+  "model": "gemini-3.8-live",
+  "transcript": "そうですね。でも、文を 書く時間が なくて……。"
+ },
+ "b09b/end_a_0": {
+  "hash": "48e1df4d8a",
+  "seconds": 4.071708,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b09b/end_b_0": {
+  "hash": "f449edbcce",
+  "seconds": 4.191917,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b09b/end_b_1": {
+  "hash": "51e21da78a",
+  "seconds": 3.453042,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b09b/end_0": {
+  "hash": "708a4ff5c4",
+  "seconds": 6.334458,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b10a/n1_0": {
+  "hash": "9c8d45e247",
+  "seconds": 5.695083,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b10a/n1_1": {
+  "hash": "4334d12bd2",
+  "seconds": 3.994583,
+  "model": "gemini-3.8-live",
+  "transcript": "どうでしたか。"
+ },
+ "b10a/n2a_0": {
+  "hash": "493886edcd",
+  "seconds": 4.380875,
+  "model": "gemini-3.8-live",
+  "transcript": " も すぐ 直せましたね。"
+ },
+ "b10a/n2b_0": {
+  "hash": "afe6a5bfc9",
+  "seconds": 5.306375,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b10a/n2c_0": {
+  "hash": "9045da1ff4",
+  "seconds": 3.547083,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b10a/n3_0": {
+  "hash": "e8af890024",
+  "seconds": 4.311708,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b10a/n4a_0": {
+  "hash": "70bd0fb16c",
+  "seconds": 6.093875,
+  "model": "gemini-3.8-live",
+  "transcript": "カレンダーは みっか おくれましたね。みつもりは、わたしも むずかしいです。"
+ },
+ "b10a/n4b_0": {
+  "hash": "bf44f85909",
+  "seconds": 5.563958,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b10a/n5_0": {
+  "hash": "9a9f3f94a2",
+  "seconds": 4.403458,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b10a/n6b_0": {
+  "hash": "ee49fe8cd7",
+  "seconds": 4.468708,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b10a/n6a_0": {
+  "hash": "2e5e7c1554",
+  "seconds": 3.867708,
+  "model": "gemini-3.8-live",
+  "transcript": "いいですね！それ、わたしも一緒にやりたい"
+ },
+ "b10a/n7_0": {
+  "hash": "551a2b2016",
+  "seconds": 3.820125,
+  "model": "gemini-3.8-live",
+  "transcript": " ホワイトボードに書きました。来"
+ },
+ "b10a/n7_1": {
+  "hash": "288bbd187f",
+  "seconds": 3.037125,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b10a/end_a_0": {
+  "hash": "21422fb6e9",
+  "seconds": 4.293458,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b10a/end_b_0": {
+  "hash": "b145672fe7",
+  "seconds": 4.372708,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b10a/end_0": {
+  "hash": "cae757faed",
+  "seconds": 6.323,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b10a/free_open": {
+  "hash": "837260cd24",
+  "seconds": 3.807917,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b10b/n1_0": {
+  "hash": "9002ad9096",
+  "seconds": 2.8245,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b10b/n1_1": {
+  "hash": "ed5f651b06",
+  "seconds": 4.348708,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b10b/n2c_0": {
+  "hash": "294c8fc45f",
+  "seconds": 5.940083,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b10b/n2a_0": {
+  "hash": "f2830c6bda",
+  "seconds": 5.276292,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b10b/n2b_0": {
+  "hash": "04e08b74ae",
+  "seconds": 5.608917,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b10b/n3_0": {
+  "hash": "d57417f94c",
+  "seconds": 3.838875,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b10b/n4a_0": {
+  "hash": "ce8425f6c7",
+  "seconds": 5.257958,
+  "model": "gemini-3.8-live",
+  "transcript": "気を つけます。"
+ },
+ "b10b/n4b_0": {
+  "hash": "83cfef5e96",
+  "seconds": 4.682458,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b10b/n5_0": {
+  "hash": "c1e3c42e85",
+  "seconds": 5.245917,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b10b/n6b_0": {
+  "hash": "63ffe5bb65",
+  "seconds": 5.385667,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b10b/n6a_0": {
+  "hash": "96d91ceb3c",
+  "seconds": 3.661958,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b10b/n6a_1": {
+  "hash": "5fecb7c6f2",
+  "seconds": 5.105292,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b10b/n7_0": {
+  "hash": "288bbd187f",
+  "seconds": 3.116375,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b10b/end_a_0": {
+  "hash": "c112fda463",
+  "seconds": 3.481958,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "b10b/end_b_0": {
+  "hash": "e6b17f93a5",
+  "seconds": 4.123083,
+  "model": "gemini-3.8-live",
+  "transcript": "わあ、たのもしいです！ こちらこそ、ありがとうございます。"
+ },
+ "b10b/end_0": {
+  "hash": "99ea97856d",
+  "seconds": 5.540792,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "_cast/murakami_again": {
+  "hash": "462114d82d",
+  "seconds": 3.135625,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "_cast/murakami_slow": {
+  "hash": "5b11d4f626",
+  "seconds": 2.077292,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "_cast/murakami_hmm": {
+  "hash": "69e1aff1f9",
+  "seconds": 1.285625,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "_cast/murakami_ok": {
+  "hash": "76d117f715",
+  "seconds": 0.490708,
+  "model": "gemini-3.8-live",
+  "transcript": ""
+ },
+ "_cast/murakami_sodesuka": {
+  "hash": "f28958ab02",
+  "seconds": 1.086333,
+  "model": "gemini-3.8-live",
+  "transcript": ""
  }
 }
