@@ -1,19 +1,16 @@
-node:internal/modules/esm/resolve:318
-  return new ERR_PACKAGE_PATH_NOT_EXPORTED(
-         ^
-
-Error [ERR_PACKAGE_PATH_NOT_EXPORTED]: Package subpath './package.json' is not defined by "exports" in /tmp/genai-latest/node_modules/@google/genai/package.json
-    at exportsNotFound (node:internal/modules/esm/resolve:318:10)
-    at packageExportsResolve (node:internal/modules/esm/resolve:665:9)
-    at resolveExports (node:internal/modules/cjs/loader:664:36)
-    at Function._findPath (node:internal/modules/cjs/loader:731:31)
-    at Function._resolveFilename (node:internal/modules/cjs/loader:1415:27)
-    at defaultResolveImpl (node:internal/modules/cjs/loader:1040:19)
-    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1045:22)
-    at Function._load (node:internal/modules/cjs/loader:1216:25)
-    at wrapModuleLoad (node:internal/modules/cjs/loader:254:19)
-    at Module.require (node:internal/modules/cjs/loader:1527:12) {
-  code: 'ERR_PACKAGE_PATH_NOT_EXPORTED'
-}
-
-Node.js v22.23.4
+v1beta NON_BLOCKING → no call
+    1452 out:かしこまりました。
+    2593 IN_PROGRESS turnComplete 
+v1beta default → no call
+    11552 out:承知いたしました、少々お待ち
+    13213 out:ください。
+    13981 IN_PROGRESS turnComplete 
+v1alpha NON_BLOCKING → no call
+    586 out:少々お待ちください。
+    1927 out:
+<no speech>{pause}
+    1927 IN_PROGRESS turnComplete 
+v1alpha default → no call
+    879 out:回答を評価いたします。
+    2621 IN_PROGRESS turnComplete 
+@google/genai 3.4.0

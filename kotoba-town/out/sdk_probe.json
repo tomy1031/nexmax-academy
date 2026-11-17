@@ -1,0 +1,43 @@
+{
+ "version": "3.4.0",
+ "results": [
+  {
+   "case": "v1beta NON_BLOCKING",
+   "called": false,
+   "log": [
+    "1452 out:かしこまりました。",
+    "2593 IN_PROGRESS turnComplete ",
+    "close 1000 "
+   ]
+  },
+  {
+   "case": "v1beta default",
+   "called": false,
+   "log": [
+    "11552 out:承知いたしました、少々お待ち",
+    "13213 out:ください。",
+    "13981 IN_PROGRESS turnComplete ",
+    "close 1000 "
+   ]
+  },
+  {
+   "case": "v1alpha NON_BLOCKING",
+   "called": false,
+   "log": [
+    "586 out:少々お待ちください。",
+    "1927 out:\n<no speech>{pause}",
+    "1927 IN_PROGRESS turnComplete ",
+    "close 1000 "
+   ]
+  },
+  {
+   "case": "v1alpha default",
+   "called": false,
+   "log": [
+    "879 out:回答を評価いたします。",
+    "2621 IN_PROGRESS turnComplete ",
+    "close 1000 "
+   ]
+  }
+ ]
+}
