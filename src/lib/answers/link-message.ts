@@ -123,3 +123,43 @@ export function readLinkMessage(data: unknown, linkId: string): LinkMessage | nu
   }
   return null;
 }
+
+/* ------------------------------------------------------------------ *
+ * 声と 判定の 橋（相談の 練習問題・2026-11-18）
+ *
+ * 学習者の 画面で Gemini の `generateContent` は 使えない（注意事項「Gemini は Live だけ」）。
+ * 静的な ツールは Live の しくみを 持たないので、**親の 画面に 頼む**:
+ *   - 聞き取り … 親が 声の Live（`useLiveVoice` の 聞くだけ）で 聞き、文を 返す
+ *   - 判定 …… 親が 判定の Live（`requestLinkJudge`）に 頼みの 文を 渡し、道具の 引数を 返す
+ * 受けるのは **自分が 埋めた iframe から 来た もの だけ**（呼ぶ側で `event.source` を 見る）。
+ * ------------------------------------------------------------------ */
+
+/** ツール → 親（声・判定の 頼み）。 */
+export const VOICE_MESSAGE = "nexmax:link-voice";
+/** 親 → ツール（つなぎの ようす・聞き取った 文・判定の 返事）。 */
+export const VOICE_REPLY = "nexmax:link-voice-reply";
+
+const VOICE_KEY = /^[a-z0-9:_-]{1,80}$/;
+
+export type LinkVoiceMessage =
+  | { readonly op: "connect" | "talk-start" | "talk-stop" | "disconnect" }
+  | { readonly op: "warm"; readonly key: string }
+  | { readonly op: "judge"; readonly key: string; readonly prompt: string; readonly reqId: number };
+
+/** 声と 判定の 頼みを 読む。この 教材あてで、形が 合う ものだけ。 */
+export function readLinkVoiceMessage(data: unknown, linkId: string): LinkVoiceMessage | null {
+  if (!data || typeof data !== "object") return null;
+  const { type, id, op, key, prompt, reqId } = data as Record<string, unknown>;
+  if (type !== VOICE_MESSAGE || id !== linkId) return null;
+  if (op === "connect" || op === "talk-start" || op === "talk-stop" || op === "disconnect") {
+    return { op };
+  }
+  if (typeof key !== "string" || !VOICE_KEY.test(key)) return null;
+  if (op === "warm") return { op, key };
+  if (op === "judge") {
+    if (typeof prompt !== "string" || !prompt.trim() || prompt.length > 12_000) return null;
+    if (typeof reqId !== "number" || !Number.isInteger(reqId)) return null;
+    return { op, key, prompt, reqId };
+  }
+  return null;
+}

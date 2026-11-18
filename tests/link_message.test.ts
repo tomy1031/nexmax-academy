@@ -5,8 +5,10 @@ import {
   OWNS_DONE_MESSAGE,
   PROGRESS_MESSAGE,
   PROGRESS_REQUEST_MESSAGE,
+  VOICE_MESSAGE,
   parseProgressPosition,
   readLinkMessage,
+  readLinkVoiceMessage,
 } from "@/lib/answers/link-message";
 
 /*
@@ -115,5 +117,45 @@ describe("進み具合の 合図（相談の 練習問題・2026-11-17「状況�
       kind: "progress-request",
     });
     expect(readLinkMessage({ type: PROGRESS_REQUEST_MESSAGE }, LINK_ID)).toBeNull();
+  });
+});
+
+describe("声と 判定の 橋の 頼み（2026-11-18・学習者の 画面は Gemini Live だけ）", () => {
+  const LINK_ID = "soudan_renshu";
+  const base = { type: VOICE_MESSAGE, id: LINK_ID };
+
+  it("つなぐ・話す・止める・切る は そのまま 受ける", () => {
+    for (const op of ["connect", "talk-start", "talk-stop", "disconnect"] as const) {
+      expect(readLinkVoiceMessage({ ...base, op }, LINK_ID)).toEqual({ op });
+    }
+  });
+
+  it("判定の 頼みは 鍵・頼みの 文・番号が そろって いる ときだけ", () => {
+    expect(
+      readLinkVoiceMessage(
+        { ...base, op: "judge", key: "l1-1", prompt: "学生の 相談", reqId: 3 },
+        LINK_ID,
+      ),
+    ).toEqual({ op: "judge", key: "l1-1", prompt: "学生の 相談", reqId: 3 });
+    expect(readLinkVoiceMessage({ ...base, op: "warm", key: "l1-1" }, LINK_ID)).toEqual({
+      op: "warm",
+      key: "l1-1",
+    });
+    for (const bad of [
+      { op: "judge", key: "l1-1", prompt: "", reqId: 1 },
+      { op: "judge", key: "l1-1", prompt: "x".repeat(12_001), reqId: 1 },
+      { op: "judge", key: "L1 1", prompt: "x", reqId: 1 },
+      { op: "judge", key: "l1-1", prompt: "x", reqId: "1" },
+      { op: "nanika", key: "l1-1" },
+    ]) {
+      expect(readLinkVoiceMessage({ ...base, ...bad }, LINK_ID)).toBeNull();
+    }
+  });
+
+  it("よその 教材・ちがう 種別は 受けない", () => {
+    expect(readLinkVoiceMessage({ ...base, id: "hoka", op: "connect" }, LINK_ID)).toBeNull();
+    expect(
+      readLinkVoiceMessage({ type: ANSWERS_MESSAGE, id: LINK_ID, op: "connect" }, LINK_ID),
+    ).toBeNull();
   });
 });

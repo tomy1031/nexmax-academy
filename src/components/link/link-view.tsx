@@ -13,6 +13,7 @@ import {
 import { parseAttemptId, parseLinkAnswers, saveLinkAnswers } from "@/lib/answers/link-answers-db";
 import { PROGRESS_RESTORE_MESSAGE, readLinkMessage } from "@/lib/answers/link-message";
 import { fetchOwnContentProgress } from "@/lib/records/own-progress";
+import { LinkVoiceBridge } from "./link-voice-bridge";
 
 /**
  * リンク教材 — 1枚で完結する練習ページを、ステージの中から 全画面で 開く
@@ -64,6 +65,8 @@ export function LinkView({ link, embedded }: { link: LinkContent; embedded?: boo
   const [wide, setWide] = useState(false);
 
   const shellRef = useRef<HTMLDivElement | null>(null);
+  /** 埋めた ページ（声と 判定の 橋が 返事を 送る 先・頼みの 差出人の 確かめ）。 */
+  const frameRef = useRef<HTMLIFrameElement | null>(null);
 
   /*
    * おわった かどうかは 保存層から 読む（画面に 別の 控えを 置かない）。
@@ -232,6 +235,7 @@ export function LinkView({ link, embedded }: { link: LinkContent; embedded?: boo
         style={wide ? undefined : { height: `${link.height}px` }}
       >
         <iframe
+          ref={frameRef}
           src={link.url}
           title={link.title}
           className="h-full w-full border-0"
@@ -243,12 +247,13 @@ export function LinkView({ link, embedded }: { link: LinkContent; embedded?: boo
            *（ブラウザは 理由を 出さない）。
            */
           sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-downloads"
-          /*
-           * マイクは **同じ 置き場の ページ だけ**（`'self'`）に 渡す——相談の 練習問題
-           *（2026-11-17）が 中で 録音する。外の サイトを 埋めた ときには 渡さない。
-           */
-          allow="fullscreen; clipboard-write; microphone 'self'"
+          allow="fullscreen; clipboard-write"
         />
+        {/*
+          自前の ページ（`/tools/...`）だけに、声と 判定の 橋を 付ける（相談の 練習問題）。
+          頼まれる までは 何も しない——ほかの ツールには 影響しない。
+        */}
+        {link.url.startsWith("/") ? <LinkVoiceBridge linkId={link.id} frameRef={frameRef} /> : null}
       </div>
 
       <div
