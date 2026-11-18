@@ -292,7 +292,8 @@ test("アプリの 外（べつの タブ）で 開くと、アプリの 中の 
 }) => {
   const google = await watchGoogle(page);
   await page.goto(TOOL);
-  await expect(page).toHaveURL(/\/link\/soudan_renshu$/u);
+  /* `/link/soudan_renshu` は アプリが ステージの 中の 本来の URL（`/soudan/link`）へ 送る */
+  await expect(page).toHaveURL(/\/(?:link\/soudan_renshu|soudan\/link)$/u);
   expect(google).toEqual([]);
 });
 
