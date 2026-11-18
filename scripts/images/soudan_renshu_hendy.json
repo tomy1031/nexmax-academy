@@ -1,0 +1,48 @@
+{
+  "refs": [
+    "public/img/characters/soka/sheet.webp",
+    "public/img/characters/hendy/sheet.webp",
+    "public/img/novel/hendy/desk_ok.webp"
+  ],
+  "_comment": "相談の 練習問題の 絵の うち、ヘンディさん（相談の 相手・全レベル 共通。2026-11-17 tomy さん「ヘンディさん」）が 出る もの。学生役は ソカさんの 設定画、ヘンディさんは 設定画と 5日間の 席の 絵に そろえる。字は 英語・数字・印だけ。",
+  "style": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions and exactly five fingers on each hand. This is a TEACHING picture, not a mood picture: a student who can hardly read Japanese must understand what is happening from the picture alone. EMOTIONS ARE BIG AND OBVIOUS, like a Japanese comedy manga — exaggerated faces and whole-body poses that read from across the room. Happy people beam with huge open smiles and sparkling eyes and give thumbs-up. Manga symbols are welcome and carry the message: big question marks, exclamation marks, sweat drops, lightbulbs, sparkles, motion lines, check marks. Two different people appear and they must never look alike. THE NEW ENGINEER is the young woman in the first attached character sheet: a Cambodian woman in her early twenties, warm light-brown skin, straight black hair with a centre part falling just past the shoulders, no fringe, a coral long-sleeved button-down shirt with the sleeves rolled up, dark navy trousers, no glasses. HENDY is the senior engineer and project manager in the second attached character sheet and the desk picture: a man in his late twenties, slim, short black hair slightly tousled with soft spiky tips and a loose fringe, dark brown eyes, straight thick eyebrows, clean-shaven, a navy business suit with a white dress shirt and a solid navy necktie, no glasses. Hendy's desk has a laptop, one external monitor, a small desk calendar and a coffee mug, as in the desk picture. ONLY the people described in the scene appear in the picture. Do NOT draw any other coworkers, onlookers or crowds reacting in the background — the rest of the office is calm and empty (empty chairs and desks are fine), so the viewer's eye goes straight to the message.",
+  "noText": "Lettering — read this part carefully. The picture contains ONLY the words listed above, and no other writing at all. Print each listed word LARGE, clear and spelled exactly as given, in a bold rounded sans-serif font; a word said by a person goes inside a white speech balloon whose tail clearly points at that person. There are NO Japanese characters anywhere in the picture. Screens, papers and whiteboards show only soft abstract shapes and simple pictures apart from the listed words. No other letters, numbers, logos or watermarks anywhere in the picture.",
+  "negative": "Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, horror or a scary dark mood, real grief, violence, watermarks, real company logos or brand marks of any kind (no fruit logo on laptops, no chat-app or browser logos), national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots, two copies of the same person.",
+  "scenes": [
+    {
+      "out": "you_soudan",
+      "dest": "public/img/hourensou/soudan/renshu/you_soudan.webp",
+      "title": "相談したい こと：何を 確認したいですか・何を 決めて ほしいですか",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: she asks Hendy to decide or check something. Hendy sits at his desk and has turned his chair toward the new engineer, listening attentively with a kind face. The new engineer stands beside his desk holding her open cream notebook, one hand open toward him in a polite asking gesture, a little bow of the head. A white speech balloon from her contains only a big question mark. A small speech balloon from Hendy contains only a lightbulb.",
+      "text": []
+    },
+    {
+      "out": "l1_result",
+      "dest": "public/img/hourensou/soudan/renshu/l1_result.webp",
+      "title": "レベル1 結果：仮の 写真で 完成",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the page is finished today with placeholder pictures, and they will be swapped for real photos later. Hendy and the new engineer look together at her large monitor. It shows a shop list web page with the first words as the heading and six shop cards; each card's photo area shows the same grey placeholder (a camera icon with a line through it and the second words). A curved arrow from one placeholder points to a small colourful real shop photo floating beside the monitor, to show it will be replaced later. Hendy gives a big thumbs-up with a big smile; the new engineer beams with relief and sparkles. A speech balloon from Hendy says the third word.",
+      "text": ["SHOP LIST", "NO IMAGE", "OK!"]
+    },
+    {
+      "out": "l2_result",
+      "dest": "public/img/hourensou/soudan/renshu/l2_result.webp",
+      "title": "レベル2 結果：いっしょに ソースコードを 見る",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: Hendy and she look at the source code together and find the place. Two-shot at the new engineer's desk: Hendy leans in beside her and points at ONE line in the code editor on her monitor, which is highlighted in bright yellow. Both of them have a big exclamation mark and a lightbulb above their heads, surprised and happy that they found it. The rest of the code is colourful abstract lines.",
+      "text": []
+    },
+    {
+      "out": "result_ok",
+      "dest": "public/img/hourensou/soudan/renshu/result_ok.webp",
+      "title": "結果：ヘンディさんが 決めて くれた",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the consultation went well — Hendy understood and decided, and she can move forward. Hendy sits at his desk, turned toward the new engineer, smiling widely and giving a big thumbs-up. The new engineer stands beside the desk holding her open cream notebook to her chest, beaming with relief, sparkles around her. A speech balloon from Hendy says the word below.",
+      "text": ["OK!"]
+    },
+    {
+      "out": "l4_demo",
+      "dest": "public/img/hourensou/soudan/renshu/l4_demo.webp",
+      "title": "レベル4：明日の 午前10時に お客様への デモ",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: a demo means showing the app to the customer on a big screen. A bright meeting room. The new engineer stands beside a large wall screen showing a food delivery app with a search box and a login button, presenting it with an open hand. Hendy stands next to her. Two customers in business suits (a middle-aged man and a woman, both clearly different from Hendy) sit at the table, watching with interest. A round wall clock shows ten o'clock. A small paper sign on the door shows the first word.",
+      "text": ["DEMO"]
+    }
+  ]
+}

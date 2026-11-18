@@ -1,0 +1,23 @@
+{
+  "refs": ["public/img/novel/office_morning.webp"],
+  "_comment": "相談の 練習問題 レベル5（OCRアプリ）の お客様の 会社の 絵。登場人物は 出ない（設定画を 渡すと 社員の 顔に なる・§6.7）。会社は 架空の「大阪食品販売株式会社」。字は 英語・数字・印だけ。",
+  "style": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. People are drawn as real human beings with natural proportions and exactly five fingers on each hand. This is a TEACHING picture, not a mood picture: a student who can hardly read Japanese must understand what is happening from the picture alone. EMOTIONS ARE BIG AND OBVIOUS, like a Japanese comedy manga. Manga symbols are welcome and carry the message: sweat drops, motion lines, check marks, cross marks. The office workers here are ordinary Japanese office staff of a food wholesale company (a man in his forties with a white shirt and a grey vest, and a woman in her thirties with a ponytail and a beige cardigan). They are NOT software engineers. ONLY the people described in the scene appear in the picture. Do NOT draw any other coworkers, onlookers or crowds reacting in the background — the rest of the office is calm and empty (empty chairs and desks are fine), so the viewer's eye goes straight to the message.",
+  "noText": "Lettering — read this part carefully. The picture contains ONLY the words listed above, and no other writing at all. Print each listed word LARGE, clear and spelled exactly as given, in a bold rounded sans-serif font. There are NO Japanese characters anywhere in the picture. Papers, invoices, spreadsheets and screens show only soft abstract shapes, grid lines and simple pictures apart from the listed words. No other letters, numbers, logos or watermarks anywhere in the picture.",
+  "negative": "Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, horror or a scary dark mood, real grief, violence, watermarks, real company logos or brand marks of any kind (no spreadsheet-app logo, no fruit logo on laptops), national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots.",
+  "scenes": [
+    {
+      "out": "l5_client",
+      "dest": "public/img/hourensou/soudan/renshu/l5_client.webp",
+      "title": "レベル5：お客様の 会社（請求書を 手で 入力して いる）",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: every day many paper invoices arrive, and the staff type them into a spreadsheet by hand, which is slow and causes mistakes. An office of a food wholesale company: on a desk stand tall messy piles of paper invoices and delivery slips (with small food pictures like rice bags and oil bottles on them, and abstract lines). The man types numbers from one paper into a spreadsheet on his computer, sweating and tired, with swirling eyes; one cell on the screen has a big red cross mark (a typing mistake). The woman brings yet another big stack of papers, looking overwhelmed. A wall clock shows late evening.",
+      "text": []
+    },
+    {
+      "out": "l5_app",
+      "dest": "public/img/hourensou/soudan/renshu/l5_app.webp",
+      "title": "レベル5：OCRアプリ（AIが 読み取って、社員が 確認してから 保存）",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: with the new app, AI reads the invoice automatically, and a staff member checks the result before saving. The same woman sits at a tidy desk, relaxed and smiling. She has just taken a photo of one paper invoice with her smartphone (a camera flash sparkle). Her laptop screen shows the app: on the left, the photo of the invoice; in the middle, a small glowing chip icon with the first word and a big arrow; on the right, a neat table of the read data with a green check mark in every row, and at the bottom a big blue button with the second word. She points at the table, checking it carefully. The messy pile of paper is gone; only one invoice is on the desk.",
+      "text": ["AI", "SAVE"]
+    }
+  ]
+}

@@ -31,6 +31,10 @@
       "type": "quizset"
     },
     {
+      "ref": "soudan_renshu",
+      "type": "link"
+    },
+    {
       "ref": "soudan_novel",
       "type": "meeting"
     }

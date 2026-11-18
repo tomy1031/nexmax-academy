@@ -1,0 +1,177 @@
+{
+  "refs": ["public/img/characters/soka/sheet.webp", "public/img/novel/office_morning.webp"],
+  "_comment": "相談の 練習問題（public/tools/hourensou/soudan_renshu.html）の 説明の 絵（2026-11-17 の 指定「文字情報過多にならず、丁寧にわかりやすく説明、図解してくれる画像を多用」「画像は抽象的にせず、何をしているのか、何を説明しているのか具体的に」「日本語の難しい箇所は絵を見ることで理解させたい」）。学生役（あなた）は 新人エンジニアの ソカさんの 設定画に そろえる。絵の 中の 字は 画面の 英語・数字・印だけ（日本語は 絵の 下に アプリが ふりがな付きで 出す）。人の 出る 絵の うち ヘンディさんが 出る ものは soudan_renshu_hendy.json。",
+  "style": "Warm modern anime illustration, like a friendly Japanese educational manga — clean confident black linework, flat cel shading, bright natural daylight, soft pastel palette of sky blue, cream and coral, rounded friendly shapes. A tidy contemporary Japanese software office with real desks, chairs, windows, plants, mugs and laptops. People are drawn as real human beings with natural proportions and exactly five fingers on each hand. This is a TEACHING picture, not a mood picture: a student who can hardly read Japanese must understand what is happening from the picture alone. Computer screens are drawn LARGE and close enough that the viewer can clearly see what is on them. EMOTIONS ARE BIG AND OBVIOUS, like a Japanese comedy manga — exaggerated faces and whole-body poses that read from across the room. Troubled people clutch their heads, sweat big comic sweat drops and have wavy worried mouths. Happy people beam with huge open smiles and sparkling eyes. Puzzled people tilt their heads under a big question mark. Manga symbols are welcome and carry the message: big question marks, exclamation marks, sweat drops, lightbulbs, sparkles, motion lines, check marks, cross marks. THE NEW ENGINEER is the young woman in the attached character sheet: a Cambodian woman in her early twenties, warm light-brown skin, straight black hair with a centre part falling just past the shoulders, no fringe, soft oval face, a coral long-sleeved button-down shirt with the sleeves rolled up, dark navy trousers, no glasses. Draw her with the same face, hair and clothes in every picture. ONLY the people described in the scene appear in the picture. Do NOT draw any other coworkers, onlookers or crowds reacting in the background — the rest of the office is calm and empty (empty chairs and desks are fine), so the viewer's eye goes straight to the message.",
+  "noText": "Lettering — read this part carefully. The picture contains ONLY the words listed above, and no other writing at all. Print each listed word LARGE, clear and spelled exactly as given, in a bold rounded sans-serif font. There are NO Japanese characters anywhere in the picture. Screens, papers, folders and whiteboards show only soft abstract shapes and simple pictures apart from the listed words. No other letters, numbers, logos or watermarks anywhere in the picture.",
+  "negative": "Never: photo-realistic rendering, harsh shadows, extra or merged fingers, distorted hands, horror or a scary dark mood, real grief, violence, watermarks, real company logos or brand marks of any kind (no fruit logo on laptops, no chat-app or browser logos), national flags, country outlines, maps with borders, tiny cluttered text, paragraphs of text, 3D render, flat vector icon art, pictograms floating on an empty background, robots, mascots, a second copy of the new engineer.",
+  "scenes": [
+    {
+      "out": "you_jokyo",
+      "dest": "public/img/hourensou/soudan/renshu/you_jokyo.webp",
+      "title": "状況：今、何を して いますか",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: this is what she is doing right now — she is building a web page. Medium shot from slightly behind and to the side of the new engineer at her desk. She types on her laptop with a calm, focused, cheerful face. A large external monitor in front of her clearly shows a web page under construction: a header bar, a few rectangular content cards in a grid, and on the left half of the screen a code editor with colourful abstract lines of code. A small coffee mug and her cream notebook on the desk.",
+      "text": []
+    },
+    {
+      "out": "you_mondai",
+      "dest": "public/img/hourensou/soudan/renshu/you_mondai.webp",
+      "title": "問題：何が 起きて いますか",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: a problem has happened. The new engineer at the same desk, seen from the front-left. Her large monitor shows a big red warning triangle and a red error box with the word below. She jumps back in her chair in shock — eyes wide, mouth open, both hands raised beside her face, two big sweat drops, a big exclamation mark above her head.",
+      "text": ["ERROR"]
+    },
+    {
+      "out": "you_kakunin",
+      "dest": "public/img/hourensou/soudan/renshu/you_kakunin.webp",
+      "title": "確認したこと：何を しましたか・何が わかりましたか",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: she checked things one by one and found out facts. The new engineer at her desk holds a big magnifying glass up to her monitor and looks closely, serious and careful. On the desk her cream notebook lies open with a short checklist: three rows, each with a big green check mark. Her other hand holds a pen. She nods with a small confident smile.",
+      "text": []
+    },
+    {
+      "out": "you_kangae",
+      "dest": "public/img/hourensou/soudan/renshu/you_kangae.webp",
+      "title": "自分の 考え：どう したら いいと 思いますか・なぜですか",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: she has her own idea and her reason. The new engineer stands in front of a small whiteboard. On the whiteboard are three large cards side by side marked with the letters below. She points at the middle card, which she has circled with a red marker. A big glowing lightbulb shines above her head and she smiles with confidence, the other hand on her chest as if saying 'I think this one'.",
+      "text": ["A", "B", "C"]
+    },
+    {
+      "out": "l1_making",
+      "dest": "public/img/hourensou/soudan/renshu/l1_making.webp",
+      "title": "レベル1：お店の 一覧画面を 作って います",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: she is making a web page that lists shops. Over-the-shoulder view of the new engineer at her desk, typing happily. Her large monitor fills much of the picture and shows a web page with the heading below at the top and a neat grid of six shop cards (two rows of three). Each card has a big rectangular photo area at the top drawn only as a faint dotted outline, and two short grey lines for the shop name and address below it. She is concentrating and smiling, clearly in the middle of building it.",
+      "text": ["SHOP LIST"]
+    },
+    {
+      "out": "l1_nophoto",
+      "dest": "public/img/hourensou/soudan/renshu/l1_nophoto.webp",
+      "title": "レベル1：お店の 写真が まだ ありません",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the shop photos have not arrived yet, so the photo spaces are empty. The same monitor and the same shop list page with the same heading, now seen larger: every shop card has an EMPTY grey photo box with a big question mark inside. Next to the monitor, an open folder window labelled with the word below is completely empty. The new engineer leans toward the screen with her head tilted, puzzled, a big question mark and a sweat drop above her head.",
+      "text": ["SHOP LIST", "PHOTOS"]
+    },
+    {
+      "out": "l1_today",
+      "dest": "public/img/hourensou/soudan/renshu/l1_today.webp",
+      "title": "レベル1：今日中に 完成させたい",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: she wants to finish the page today. The new engineer at her desk looks up at a round wall clock showing ten o'clock in the morning. On her desk a big desk calendar shows one day page with the first word below, and a red flag stuck on it with the time below. She makes a determined fist, eyes shining with motivation, little motion lines around her.",
+      "text": ["TODAY", "17:00"]
+    },
+    {
+      "out": "l1_opt_wait",
+      "dest": "public/img/hourensou/soudan/renshu/l1_opt_wait.webp",
+      "title": "レベル1 A：写真が 来るまで 待つ",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: waiting — nothing moves forward until the photos come. The same shop list page on the monitor, still with empty grey photo boxes with question marks. The new engineer sits back with her chin on her hand, waiting, a little bored and anxious. A big hourglass stands on the desk with sand falling, and the wall clock hands have motion lines to show time passing.",
+      "text": ["SHOP LIST"]
+    },
+    {
+      "out": "l1_opt_noimage",
+      "dest": "public/img/hourensou/soudan/renshu/l1_opt_noimage.webp",
+      "title": "レベル1 B：仮の 写真（NO IMAGE）を 使う",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: temporary placeholder pictures are used, so the page looks finished. A large close view of the monitor showing the same shop list page with the same heading and six shop cards. In every card the photo area now shows the SAME light grey placeholder picture: a simple camera icon with a diagonal line through it and the words below printed clearly under the icon. The page looks complete and tidy. The new engineer is small in the lower corner, looking at it with a neutral, thinking face.",
+      "text": ["SHOP LIST", "NO IMAGE"]
+    },
+    {
+      "out": "l1_opt_hide",
+      "dest": "public/img/hourensou/soudan/renshu/l1_opt_hide.webp",
+      "title": "レベル1 C：写真の ない お店は 表示しない",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: shops without a photo are hidden, so fewer shops are shown. A large close view of the monitor showing the same shop list page with the same heading. Only THREE shop cards remain in one row, and each of them has a real colourful shop photo (a small cafe, a bakery, a flower shop). Below them, three more cards are fading away like ghosts, almost transparent, with a big 'eye with a line through it' symbol over them. The new engineer is small in the lower corner, looking at it with a neutral, thinking face.",
+      "text": ["SHOP LIST"]
+    },
+    {
+      "out": "l2_making",
+      "dest": "public/img/hourensou/soudan/renshu/l2_making.webp",
+      "title": "レベル2：ログイン機能を 作って います",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: she is building a login screen. Over-the-shoulder view of the new engineer typing on her laptop. Her large monitor shows a clean login page: the title word at the top, below it two input boxes labelled with the next two words, and a big blue button with the title word on it. On the left side of the monitor, a code editor with colourful abstract code lines. She is focused and confident.",
+      "text": ["LOGIN", "Email", "Password"]
+    },
+    {
+      "out": "l2_401",
+      "dest": "public/img/hourensou/soudan/renshu/l2_401.webp",
+      "title": "レベル2：401エラーが 出て、ログイン できません",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: she pressed the login button and got an error, so she cannot log in. The same login page on the monitor: the mouse pointer is on the big blue button with the first word on it, and a big red error box has popped up in the middle of the screen with the second words in large letters. The new engineer leans back in shock — eyes wide, mouth open, a big exclamation mark and sweat drops.",
+      "text": ["LOGIN", "401 ERROR"]
+    },
+    {
+      "out": "l2_check",
+      "dest": "public/img/hourensou/soudan/renshu/l2_check.webp",
+      "title": "レベル2：メールアドレスと パスワードは 正しい",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: she checked that the email and password are correct. The new engineer compares her cream notebook (open page with two short abstract lines) with the two input boxes on the login page on her monitor, labelled with the words below; the password box shows round dots. A big green check mark sits next to each input box. She nods seriously, pen in hand, a small confident smile.",
+      "text": ["Email", "Password"]
+    },
+    {
+      "out": "l2_compare",
+      "dest": "public/img/hourensou/soudan/renshu/l2_compare.webp",
+      "title": "レベル2：Postmanでは できる・Web画面では できない",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the same login works in the API test tool but fails on the web page. Her large monitor is split into two windows side by side with a clear gap. LEFT window: a web browser with the small login page and a big red cross mark and a red box with the first word. RIGHT window: an API testing tool with an orange top bar, a request line with the second words, and a big green box with the third words and a big green check mark. The new engineer sits in front, head tilted, finger on her chin, a big question mark above her head — she does not understand why they are different.",
+      "text": ["401", "POST /login", "200 OK"]
+    },
+    {
+      "out": "l2_code",
+      "dest": "public/img/hourensou/soudan/renshu/l2_code.webp",
+      "title": "レベル2：ソースコードの どこに 問題が あるか わからない",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the problem may be in her source code, but she cannot find where. Her monitor fills the picture with a long code editor full of colourful abstract code lines (no readable words). Several small question marks float over different lines of code. The new engineer scrolls with the mouse, frowning hard, one hand scratching her head, a big swirl of confusion and a sweat drop above her head.",
+      "text": []
+    },
+    {
+      "out": "l3_making",
+      "dest": "public/img/hourensou/soudan/renshu/l3_making.webp",
+      "title": "レベル3：フードデリバリーアプリの 商品一覧",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: she is building the product list of a food delivery app with very many dishes. Over-the-shoulder view of the new engineer at her desk. Her large monitor shows a food delivery app screen: a long grid of many small food cards (ramen, sushi, curry rice, pizza, salad, burger, noodles, cake…), each with a colourful food photo, and at the top a counter badge with the words below. A small scooter delivery icon on the app header. She is typing, cheerful and busy.",
+      "text": ["100 items"]
+    },
+    {
+      "out": "l3_missing",
+      "dest": "public/img/hourensou/soudan/renshu/l3_missing.webp",
+      "title": "レベル3：20個の 商品の 画像が まだ 届いて いない",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: some product pictures from the customer have not arrived yet. The same food grid on the monitor, but about one in five cards is an EMPTY grey box with a big question mark, and a red badge at the top shows the number below. A mail notification card pops up on the screen with a closed envelope icon and a small calendar icon. The new engineer looks worried, one hand on her cheek, a sweat drop.",
+      "text": ["20"]
+    },
+    {
+      "out": "l3_opt_hide",
+      "dest": "public/img/hourensou/soudan/renshu/l3_opt_hide.webp",
+      "title": "レベル3 A：画像が ない 商品は 表示しない",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: only the products that have a picture are shown. A large close view of the monitor with the food delivery app. Every card that is visible has a colourful food photo; the grid is a little shorter, and the counter badge at the top shows the words below. A few cards at the side are fading away like ghosts with a big 'eye with a line through it' symbol over them. The new engineer is small in the lower corner, thinking.",
+      "text": ["80 items"]
+    },
+    {
+      "out": "l3_opt_noimage",
+      "dest": "public/img/hourensou/soudan/renshu/l3_opt_noimage.webp",
+      "title": "レベル3 B：仮の 画像を 使う",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: all products are shown, and the ones without a picture use the same temporary 'no image' illustration. A large close view of the monitor with the food delivery app and the counter badge with the first words. Most cards have colourful food photos, but several cards show the same simple grey illustration of an empty plate under a silver dome cover, with the second words printed under it. The page looks complete. The new engineer is small in the lower corner, thinking.",
+      "text": ["100 items", "NO IMAGE"]
+    },
+    {
+      "out": "l3_opt_wait",
+      "dest": "public/img/hourensou/soudan/renshu/l3_opt_wait.webp",
+      "title": "レベル3 C：画像が 届いてから 完成させる",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the finish day is moved later, until the pictures arrive. A big wall calendar shows a row of days. A red flag with the word below is being lifted from one day and moved two days later along a big curved arrow. On that later day, a closed envelope with small food pictures is arriving. The new engineer stands beside the calendar holding the flag, with an unsure, worried face and a sweat drop.",
+      "text": ["DONE"]
+    },
+    {
+      "out": "l4_task1",
+      "dest": "public/img/hourensou/soudan/renshu/l4_task1.webp",
+      "title": "レベル4 仕事①：商品の 検索機能（あと 3時間）",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: she is in the middle of building a product search feature and still needs about three hours. Her large monitor shows a food app with a search box with a magnifying-glass icon at the top and a short list of matching food results below it. A big progress bar across the bottom of the screen is about 60 percent full, with the label below at its end. She types steadily with a focused face.",
+      "text": ["SEARCH", "3h"]
+    },
+    {
+      "out": "l4_task2",
+      "dest": "public/img/hourensou/soudan/renshu/l4_task2.webp",
+      "title": "レベル4 仕事②：ログインが 10回中 4回 失敗",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: a tester reported that login fails 4 times out of 10. Her monitor shows a chat window with one message bubble from a tester (a small round avatar of a young woman with a headset). Inside the bubble is the first word as a title and a row of exactly TEN result marks: green check, red cross, green check, green check, red cross, green check, red cross, green check, red cross, green check — four red crosses and six green checks. The new engineer leans in, alarmed, with a big exclamation mark.",
+      "text": ["LOGIN TEST"]
+    },
+    {
+      "out": "l4_test",
+      "dest": "public/img/hourensou/soudan/renshu/l4_test.webp",
+      "title": "レベル4：同じ エラー。原因は まだ わからない",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: she tested it herself, got the same error, and still does not know the cause. The new engineer clicks the login button on her monitor and a red box with the first word pops up. She scratches her head with a puzzled, worried face under a big question mark. On the desk a small clock and a sticky note with the second words.",
+      "text": ["ERROR", "4h?"]
+    },
+    {
+      "out": "l5_research",
+      "dest": "public/img/hourensou/soudan/renshu/l5_research.webp",
+      "title": "レベル5：3つの APIを 調べて 比べる",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: she is researching three different services and comparing them in a table. The new engineer sits at a desk with two monitors. The monitors show three documentation web pages side by side, each with a different plain colour header (purple, green, blue) and abstract text lines — no logos, no names. In her cream notebook she draws a comparison table with three columns, each column headed by a small coloured dot (purple, green, blue) that matches one of the pages, filling the cells with check marks, cross marks and question marks. She is focused and serious, pen in hand.",
+      "text": []
+    }
+  ]
+}
