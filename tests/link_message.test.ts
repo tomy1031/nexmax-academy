@@ -3,6 +3,9 @@ import {
   ANSWERS_MESSAGE,
   DONE_MESSAGE,
   OWNS_DONE_MESSAGE,
+  PROGRESS_MESSAGE,
+  PROGRESS_REQUEST_MESSAGE,
+  parseProgressPosition,
   readLinkMessage,
 } from "@/lib/answers/link-message";
 
@@ -61,5 +64,56 @@ describe("1問ずつ 送る ツール（Renraku Master・2026-11-02）", () => {
         "renraku_slack",
       ),
     ).toEqual({ kind: "answers", answers, attemptId: "x", fullSet: false });
+  });
+});
+
+describe("進み具合の 合図（相談の 練習問題・2026-11-17「状況はSupabase保存できるように」）", () => {
+  const LINK_ID = "soudan_renshu";
+
+  it("数だけの しおりを 受ける。status は completed 以外 started に そろえる", () => {
+    expect(
+      readLinkMessage(
+        { type: PROGRESS_MESSAGE, id: LINK_ID, status: "completed", position: { open: 3, s1: 3 } },
+        LINK_ID,
+      ),
+    ).toEqual({ kind: "progress", status: "completed", position: { open: 3, s1: 3 } });
+    expect(
+      readLinkMessage(
+        { type: PROGRESS_MESSAGE, id: LINK_ID, status: "?", position: { s1: 1 } },
+        LINK_ID,
+      ),
+    ).toEqual({ kind: "progress", status: "started", position: { s1: 1 } });
+  });
+
+  it("形の 崩れた しおり・よその 教材の 合図は まるごと 捨てる", () => {
+    for (const position of [
+      null,
+      [],
+      {},
+      { s1: "3" },
+      { S1: 3 },
+      { s1: Number.NaN },
+      { s1: 10_000_000 },
+      Object.fromEntries(Array.from({ length: 41 }, (_, i) => [`k${i}`, 1])),
+    ]) {
+      expect(
+        readLinkMessage({ type: PROGRESS_MESSAGE, id: LINK_ID, position }, LINK_ID),
+      ).toBeNull();
+    }
+    expect(
+      readLinkMessage({ type: PROGRESS_MESSAGE, id: "hoka", position: { s1: 1 } }, LINK_ID),
+    ).toBeNull();
+    expect(parseProgressPosition({ intro: 1, open: 2, p5: 0 })).toEqual({
+      intro: 1,
+      open: 2,
+      p5: 0,
+    });
+  });
+
+  it("「記録から 戻して」は id が 合う ときだけ", () => {
+    expect(readLinkMessage({ type: PROGRESS_REQUEST_MESSAGE, id: LINK_ID }, LINK_ID)).toEqual({
+      kind: "progress-request",
+    });
+    expect(readLinkMessage({ type: PROGRESS_REQUEST_MESSAGE }, LINK_ID)).toBeNull();
   });
 });
