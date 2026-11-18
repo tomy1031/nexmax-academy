@@ -217,7 +217,10 @@ describe("データの 形", () => {
       ...Object.values(DATA.partner.desk),
       ...Object.values(DATA.partner.figures),
     ]);
-    for (const slide of DATA.intro) if (slide.image) images.add(slide.image);
+    for (const slide of DATA.intro as { image?: string; steps?: { image?: string }[] }[]) {
+      if (slide.image) images.add(slide.image);
+      for (const step of slide.steps ?? []) if (step.image) images.add(step.image);
+    }
     for (const level of DATA.levels) {
       images.add(level.cover);
       images.add(level.resultImage);

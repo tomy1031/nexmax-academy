@@ -33,7 +33,7 @@ const FLAGS = { decided_alone: false, off_topic: false, unclear: false };
  */
 const HARNESS_HTML = `<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;height:100%}iframe{border:0;width:100%;height:100%}</style></head>
 <body><iframe id="f" src="${TOOL}"></iframe><script>
-window.__msgs = []; window.__heard = []; window.__replies = [];
+window.__msgs = []; window.__heard = []; window.__replies = []; window.__connect = "live";
 const f = document.getElementById("f");
 const send = (m) => f.contentWindow.postMessage(Object.assign({ id: "soudan_renshu" }, m), location.origin);
 window.addEventListener("message", (e) => {
@@ -42,7 +42,7 @@ window.addEventListener("message", (e) => {
   if (d.type === "nexmax:link-progress-request") send({ type: "nexmax:link-progress-restore", owner: "", status: null, position: null });
   if (d.type !== "nexmax:link-voice") return;
   const reply = (m) => send(Object.assign({ type: "nexmax:link-voice-reply" }, m));
-  if (d.op === "connect") { reply({ op: "status", status: "connecting", talking: false }); setTimeout(() => reply({ op: "status", status: "live", talking: false }), 200); }
+  if (d.op === "connect") { reply({ op: "status", status: "connecting", talking: false }); setTimeout(() => reply({ op: "status", status: window.__connect, talking: false }), 200); }
   if (d.op === "talk-start") reply({ op: "status", status: "live", talking: true });
   if (d.op === "talk-stop") { reply({ op: "status", status: "live", talking: false }); setTimeout(() => reply({ op: "heard", text: window.__heard.shift() || "" }), 200); }
   if (d.op === "judge") { const args = window.__replies.length > 1 ? window.__replies.shift() : window.__replies[0]; setTimeout(() => reply({ op: "judged", reqId: d.reqId, ok: true, args }), 200); }
@@ -59,19 +59,25 @@ async function watchGoogle(page: Page): Promise<string[]> {
   return google;
 }
 
-async function openHarness(page: Page, heard: string[], replies: Reply[]): Promise<FrameLocator> {
+async function openHarness(
+  page: Page,
+  heard: string[],
+  replies: Reply[],
+  connect: "live" | "error" = "live",
+): Promise<FrameLocator> {
   await page.route(`**${HARNESS}`, (route) =>
     route.fulfill({ status: 200, contentType: "text/html", body: HARNESS_HTML }),
   );
   await page.addInitScript(() => window.localStorage.setItem("nexmax.geminiKey", "e2e-dummy-key"));
   await page.goto(HARNESS);
   await page.evaluate(
-    ([h, r]) => {
-      const w = window as unknown as { __heard: string[]; __replies: unknown[] };
+    ([h, r, c]) => {
+      const w = window as unknown as { __heard: string[]; __replies: unknown[]; __connect: string };
       w.__heard.push(...h);
       w.__replies.push(...r);
+      w.__connect = c;
     },
-    [heard, replies] as const,
+    [heard, replies, connect] as const,
   );
   return page.frameLocator("#f");
 }
@@ -90,6 +96,16 @@ async function next(scope: FrameLocator | Page): Promise<void> {
   await scope.locator('.caption [data-act="next"]').click();
 }
 
+/** マイクで 話す（押して 録音 → もう 一度 押して 止める）。録音中の ⏹ は 脈打つので force で 押す。 */
+async function speak(tool: FrameLocator): Promise<void> {
+  const consult = tool.getByTestId("consult");
+  await tool.getByTestId("mic").click();
+  await expect(consult).toHaveAttribute("data-phase", "recording");
+  await tool.getByTestId("mic").click({ force: true });
+  await expect(tool.getByTestId("heard")).toBeVisible();
+  await tool.getByTestId("send").click();
+}
+
 /** 席の 絵が 大丈夫そうに なるのを 待って 押す。 */
 async function callWhenOk(scope: FrameLocator | Page): Promise<void> {
   const call = scope.getByTestId("desk-call");
@@ -104,7 +120,10 @@ test("レベル1を 最後まで: 席の 絵を 見て 話しかけ、マイク�
   const google = await watchGoogle(page);
   const tool = await openHarness(
     page,
-    ["お店の 一覧画面を 作って います。写真が ありません。"],
+    [
+      "お店の 一覧画面を 作って います。写真が ありません。",
+      "お店の 一覧画面を 作って います。写真が ありません。仮の 写真を 使っても いいですか。",
+    ],
     [
       {
         ...ALL,
@@ -135,8 +154,10 @@ test("レベル1を 最後まで: 席の 絵を 見て 話しかけ、マイク�
     if (i === 4) await shot(page, "soudan-renshu-03-options");
     await next(tool);
   }
-  /* 伝える こと（3つ） */
+  /* 伝える こと（3つ）。メモを 書ける */
   await expect(tool.locator(".check")).toHaveCount(3);
+  await tool.getByTestId("memo-1").fill("おみせの いちらんがめん");
+  await shot(page, "soudan-renshu-03-checklist");
   await next(tool);
 
   /* 席の 絵: はじめは かならず 大丈夫そうで ない。押すと ✖ と 何中か */
@@ -158,34 +179,33 @@ test("レベル1を 最後まで: 席の 絵を 見て 話しかけ、マイク�
   expect(gap).toBeLessThan(4_500);
   await callWhenOk(tool);
 
-  /* 相談: マイクを つなぐ → 話す → 止める → 聞き取った 文 → 伝える */
-  const consult = tool.getByTestId("consult");
-  await expect(consult).toHaveAttribute("data-phase", "ready");
+  /* 相談: マイクは 自動で つながる（文字の 欄は 出ない）→ 話す → 止める → 聞き取った 文 → 伝える */
+  await expect(tool.getByTestId("mic")).toBeVisible();
+  await expect(tool.getByTestId("typed")).toHaveCount(0);
   await expect(tool.getByTestId("facts")).toBeVisible();
-  await tool.getByTestId("mic-connect").click();
-  await tool.getByTestId("mic").click();
-  await expect(consult).toHaveAttribute("data-phase", "recording");
-  /* 録音中の ⏹ は 脈打つ（大きさが 動き 続ける）ので、止まるのを 待たずに 押す（5日間の テストと 同じ） */
-  await tool.getByTestId("mic").click({ force: true });
-  await expect(tool.getByTestId("heard")).toContainText("写真が ありません");
-  await tool.getByTestId("send").click();
+  await expect(tool.getByTestId("memo-read-1")).toContainText("おみせの いちらんがめん");
+  await shot(page, "soudan-renshu-05-mic");
+  /* 相談の とちゅうで 説明の 絵を 見返せる（めくって 閉じると 相談の まま） */
+  await tool.getByTestId("review-open").click();
+  await expect(tool.getByTestId("review")).toBeVisible();
+  await tool.getByTestId("review-next").click();
+  expect(await bare(page)).toEqual([]);
+  await shot(page, "soudan-renshu-05r-review");
+  await tool.getByTestId("review-close").click();
+  await expect(tool.getByTestId("review")).toHaveCount(0);
+  await expect(tool.getByTestId("memo-read-1")).toBeVisible();
+  await speak(tool);
 
   /* 足りない（相談したい こと）→ ✖ と ヘンディさんの 反応 */
   await expect(tool.getByTestId("verdict-retry")).toBeVisible();
   await expect(tool.locator(".check.miss")).toHaveCount(1);
   expect(await bare(page)).toEqual([]);
-  await shot(page, "soudan-renshu-05-retry");
+  await shot(page, "soudan-renshu-05b-retry");
 
-  /* 2回目は ヒントを 開いて 書いて 送る → 合格（ヒントを うめた だけ）→ 星・加点・もっと 伝わる 言い方 */
+  /* 2回目は ヒントを 開いて マイクで 話す → 合格（ヒントを うめた だけ）→ 星・ボーナス・もっと 伝わる 言い方 */
   await tool.getByTestId("hint-btn").click();
   await expect(tool.getByTestId("hints")).toBeVisible();
-  await tool.locator('[data-act="typemode"]').click();
-  await tool
-    .getByTestId("typed")
-    .fill(
-      "おみせの いちらんがめんを つくって います。しゃしんが ありません。かりの しゃしんを つかっても いいですか。",
-    );
-  await tool.getByTestId("send-typed").click();
+  await speak(tool);
   await expect(tool.getByTestId("verdict-pass")).toBeVisible();
   await expect(tool.getByTestId("bonus")).toBeVisible();
   await expect(tool.getByTestId("better")).toBeVisible();
@@ -226,7 +246,7 @@ test("勝手に 決めて 言うと やり直し（許可を 聞く ことを �
   );
   const tool = await openHarness(
     page,
-    [],
+    ["仮の 写真で 進めます。"],
     [
       {
         ...ALL,
@@ -241,17 +261,13 @@ test("勝手に 決めて 言うと やり直し（許可を 聞く ことを �
   );
   /* 相談の 途中から 開き直すと、席の 絵から やり直す */
   await callWhenOk(tool);
-  await tool.locator('[data-act="typemode"]').click();
-  await tool.getByTestId("typed").fill("かりの しゃしんで すすめます。");
-  await tool.getByTestId("send-typed").click();
+  await speak(tool);
   await expect(tool.getByTestId("verdict-retry")).toBeVisible();
   await expect(tool.locator(".bubble")).toContainText("待まって");
 });
 
-test("親の いない ところで 開くと AI は 使わない。お手本を 書けば 星 1つ", async ({ page }) => {
-  const google = await watchGoogle(page);
-  await page.addInitScript(() => {
-    window.localStorage.setItem("nexmax.geminiKey", "e2e-dummy-key");
+test("マイクに 2回 つながらない ときだけ、文を 書いて 送れる", async ({ page }) => {
+  await page.addInitScript(() =>
     window.localStorage.setItem(
       "nexmax:soudan_renshu:v1",
       JSON.stringify({
@@ -261,23 +277,32 @@ test("親の いない ところで 開くと AI は 使わない。お手本を
         worksheet: { cells: {}, thoughts: {} },
         at: { level: 0, page: 6 },
       }),
-    );
-  });
-  await page.goto(TOOL);
-  await callWhenOk(page);
-  await expect(page.getByTestId("no-bridge")).toBeVisible();
-  await expect(page.getByTestId("model")).toBeVisible();
-  await page
-    .getByTestId("typed")
-    .fill(
-      "お店の 一覧画面を 作って います。しかし、お店の 写真が まだ ありません。今日中に 画面を 完成させたいです。仮の 写真を 使っても いいですか。",
-    );
-  await page.getByTestId("send-typed").click();
-  await expect(page.getByTestId("verdict-pass")).toBeVisible();
-  const saved = await page.evaluate(() =>
-    JSON.parse(window.localStorage.getItem("nexmax:soudan_renshu:v1") ?? "null"),
+    ),
   );
-  expect(saved.levels.l1.stars).toBe(1);
+  const tool = await openHarness(
+    page,
+    [],
+    [{ ...ALL, own_words: true, bonus: [], choice: "B", ...FLAGS, heard_ruby: "" }],
+    "error",
+  );
+  await callWhenOk(tool);
+  /* 1回目は 自動で つなぐ → つながらない。押して もう 一度 → つながらない → 文の 欄 */
+  await expect(tool.getByTestId("mic-connect")).toBeEnabled();
+  await expect(tool.getByTestId("typed")).toHaveCount(0);
+  await tool.getByTestId("mic-connect").click();
+  await expect(tool.getByTestId("typed")).toBeVisible();
+  await tool.getByTestId("typed").fill("かりの しゃしんを つかっても いいですか。");
+  await tool.getByTestId("send-typed").click();
+  await expect(tool.getByTestId("verdict-pass")).toBeVisible();
+});
+
+test("アプリの 外（べつの タブ）で 開くと、アプリの 中の 教材へ 移る（説明は 出さない）", async ({
+  page,
+}) => {
+  const google = await watchGoogle(page);
+  await page.goto(TOOL);
+  /* `/link/soudan_renshu` は アプリが ステージの 中の 本来の URL（`/soudan/link`）へ 送る */
+  await expect(page).toHaveURL(/\/(?:link\/soudan_renshu|soudan\/link)$/u);
   expect(google).toEqual([]);
 });
 

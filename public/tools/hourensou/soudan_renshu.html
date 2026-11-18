@@ -516,6 +516,17 @@
         line-height: 1.9;
         position: relative;
       }
+      .flow .step .shot {
+        display: block;
+        width: 100%;
+        aspect-ratio: 16 / 10;
+        object-fit: cover;
+        object-position: top;
+        border-radius: 12px;
+        border: 2px solid var(--line);
+        margin: 18px 0 6px;
+        background: var(--sky-soft);
+      }
       .flow .step .ic {
         font-size: 44px;
         display: block;
@@ -1019,6 +1030,33 @@
           box-shadow: 0 0 0 6px rgba(242, 101, 74, 0.35);
         }
       }
+      .memo {
+        display: block;
+        margin-top: 4px;
+      }
+      .memo span {
+        font-size: 13px;
+        font-weight: 900;
+        color: var(--navy);
+      }
+      .memo textarea {
+        min-height: 44px;
+        font-size: 15px;
+      }
+      .memo-read {
+        margin-top: 2px;
+        background: var(--sun-soft);
+        border-radius: 10px;
+        padding: 2px 10px;
+        font-weight: 800;
+        font-size: 15px;
+        line-height: 1.8;
+      }
+      .memo-lead {
+        display: block;
+        font-size: 15px;
+        color: var(--ink-soft);
+      }
       .lead-box {
         max-width: 980px;
         margin: 0 auto 10px;
@@ -1201,7 +1239,11 @@
       .consult {
         display: grid;
         grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+        grid-template-rows: minmax(0, 1fr);
         height: 100%;
+      }
+      .consult > .talk {
+        min-height: 0;
       }
       @media (max-width: 860px) {
         .consult {
@@ -1301,6 +1343,64 @@
       .seg .tag {
         margin-right: 6px;
         font-size: 12px;
+      }
+      .talk {
+        padding-bottom: 0 !important;
+      }
+      .consult {
+        position: relative;
+      }
+      .review-btn {
+        position: absolute;
+        left: 8px;
+        bottom: 10px;
+        z-index: 2;
+      }
+      .review {
+        position: absolute;
+        inset: 0;
+        z-index: 5;
+        display: flex;
+        flex-direction: column;
+        background: var(--night);
+      }
+      .review-head {
+        flex: 0 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 10px;
+        color: #fff;
+        font-weight: 900;
+      }
+      .review .pic {
+        cursor: default;
+      }
+      .talk-controls {
+        position: sticky;
+        bottom: 0;
+        margin: auto -12px 0;
+        padding: 6px 12px 14px;
+        background: rgba(255, 255, 255, 0.97);
+        border-top: 3px solid var(--coral);
+        box-shadow: 0 -6px 14px rgba(0, 0, 0, 0.08);
+        z-index: 2;
+      }
+      .talk-controls .mic {
+        width: 92px;
+        height: 92px;
+        font-size: 13px;
+      }
+      .talk-controls .mic .ic {
+        font-size: 30px;
+      }
+      .mic .lb {
+        display: block;
+        line-height: 1.5;
+      }
+      .talk-controls .fine {
+        margin: 0 0 4px;
       }
       .mic-row {
         display: flex;
@@ -1983,7 +2083,14 @@
               '</p><div class="flow">' +
               slide.steps
                 .map(function (step) {
-                  return '<div class="step"><span class="ic">' + step.icon + "</span>" + R(step.text) + "</div>";
+                  return (
+                    '<div class="step">' +
+                    (step.image
+                      ? '<img class="shot" src="' + `${img(step.image)}` + '" alt="" />'
+                      : '<span class="ic">' + (step.icon || "") + "</span>") +
+                    R(step.text) +
+                    "</div>"
+                  );
                 })
                 .join("") +
               "</div>"
@@ -2300,7 +2407,13 @@
 
         /* ---------------- 伝える こと ---------------- */
 
-        function checklistHtml(level, judgment) {
+        /** 伝える ことの メモ（端末に 残す。相談の 画面で 読み返す・2026-11-18 要望 #763）。 */
+        function memoOf(level, at) {
+          var memos = (save.memos && save.memos[level.id]) || {};
+          return String(memos[at] || "");
+        }
+
+        function checklistHtml(level, judgment, mode) {
           return (
             '<div class="checks">' +
             level.checklist
@@ -2334,7 +2447,25 @@
                   '</div><div class="tags">' +
                   item.parts.map(partTag).join("") +
                   (item.optional ? '<span class="tag c-sun">＋ ' + R(D.ui.optional) + "</span>" : "") +
-                  "</div></div>" +
+                  "</div>" +
+                  (mode === "edit"
+                    ? '<label class="memo"><span>📝 ' +
+                      R(D.ui.memoLabel) +
+                      '</span><textarea data-memo="' +
+                      at +
+                      '" maxlength="300" rows="2" data-testid="memo-' +
+                      (at + 1) +
+                      '" placeholder="">' +
+                      esc(memoOf(level, at)) +
+                      "</textarea></label>"
+                    : memoOf(level, at).trim()
+                      ? '<p class="memo-read" data-testid="memo-read-' +
+                        (at + 1) +
+                        '">📝 <span data-furigana="off">' +
+                        esc(memoOf(level, at)) +
+                        "</span></p>"
+                      : "") +
+                  "</div>" +
                   (mark || "<span></span>") +
                   "</div>"
                 );
@@ -2350,12 +2481,22 @@
             R(D.ui.checklistTitle) +
             "<br />" +
             R(level.checklistLead) +
-            "</p>" +
-            checklistHtml(level, null) +
+            '<span class="memo-lead">📝 ' +
+            R(D.ui.memoLead) +
+            "</span></p>" +
+            checklistHtml(level, null, "edit") +
             "</div>" +
             '<div class="caption">' +
             navHtml({ nextLabel: D.ui.stepCall, nextClass: "go" }) +
             "</div></div>";
+          screenEl.querySelectorAll("textarea[data-memo]").forEach(function (area) {
+            area.addEventListener("input", function () {
+              save.memos = save.memos || {};
+              save.memos[level.id] = save.memos[level.id] || {};
+              save.memos[level.id][area.getAttribute("data-memo")] = area.value;
+              writeSave();
+            });
+          });
         }
 
         /* ---------------- 席の 絵（3秒ごと） ---------------- */
@@ -2522,6 +2663,8 @@
             noMic: false,
             attemptId: newAttemptId(),
             attemptNo: 0,
+            micErrors: 0,
+            autoAsked: false,
             reply: D.ui.replyCall,
             face: "neutral",
             passed: false,
@@ -2531,6 +2674,9 @@
 
         function renderConsult(level) {
           if (!talk || talk.levelId !== level.id) talk = newTalk(level);
+          /* 描き直しで 書きかけの 文を 消さない（説明を 見返す ときなど） */
+          var typedNow = document.getElementById("typed");
+          if (typedNow) talk.typedDraft = typedNow.value;
           var noKey = !getKey();
           var support = L.supportLevel(talk.fails);
           /* お手本を 見せて「言えば 合格」に する とき（3回 失敗・キーが 無い・AI が 届かない） */
@@ -2549,7 +2695,16 @@
             R(D.partner.name + "さん") +
             "</span>" +
             R(talk.reply) +
-            '</div></div><div class="talk">';
+            "</div>" +
+            /* 説明の 画面を 見返す（2026-11-18「相談フェーズで説明の画面を見返すボタンを作れますか？」） */
+            (talk.passed
+              ? ""
+              : '<button type="button" class="btn sub small review-btn" data-act="review" data-testid="review-open"' +
+                (busyPhase() ? " disabled" : "") +
+                ">📖 " +
+                R(D.ui.reviewOpen) +
+                "</button>") +
+            '</div><div class="talk">';
 
           if (talk.passed) {
             html += passedHtml(level);
@@ -2559,11 +2714,70 @@
             html += factsHtml(level);
             html += hintsHtml(level);
             if (showModel) html += modelHtml(level, true);
-            html += talkControls(level, noKey);
+            /*
+             * マイクの ボタンは パネルの 下に 固定する（下まで スクロールしないと 見えず、
+             * 「マイクで 話しかける ボタンが ない」と なった・2026-11-18 要望 #766）
+             */
+            html += '<div class="talk-controls" data-testid="talk-controls">' + talkControls(level, noKey) + "</div>";
           }
-          html += "</div></div>";
+          html += "</div>" + (talk.review != null ? reviewHtml(level) : "") + "</div>";
           screenEl.innerHTML = html;
+          var typedAgain = document.getElementById("typed");
+          if (typedAgain && talk.typedDraft) typedAgain.value = talk.typedDraft;
           bindTalk(level, noKey);
+          if (talk.phase === "ready" && talk.review == null) autoConnect();
+        }
+
+        /** 録音・聞き取り・判定の 最中か（その あいだは 説明を 開かない）。 */
+        function busyPhase() {
+          return talk.phase === "recording" || talk.phase === "transcribing" || talk.phase === "judging";
+        }
+
+        /** 見返せる 説明（調べ表は のぞく）。 */
+        function reviewSlides(level) {
+          return level.slides.filter(function (slide) {
+            return slide.kind !== "worksheet";
+          });
+        }
+
+        /** 説明を 見返す 窓（相談の 上に 重ねる。マイク・メモ・やり直しの 回数は そのまま）。 */
+        function reviewHtml(level) {
+          var slides = reviewSlides(level);
+          var at = Math.max(0, Math.min(slides.length - 1, talk.review));
+          var slide = slides[at];
+          var kind = slide.kind || "picture";
+          var body =
+            kind === "picture"
+              ? '<div class="pic"><img src="' + `${img(slide.image)}` + '" alt="" /></div>'
+              : '<div class="panelpic">' + slidePanel(slide) + "</div>";
+          return (
+            '<div class="review" role="dialog" aria-modal="true" data-testid="review">' +
+            '<div class="review-head"><span>📖 ' +
+            R(D.ui.reviewTitle) +
+            "　" +
+            (at + 1) +
+            " / " +
+            slides.length +
+            '</span><button type="button" class="btn go small" data-act="review-close" data-testid="review-close">✕ ' +
+            R(D.ui.reviewClose) +
+            "</button></div>" +
+            body +
+            '<div class="caption">' +
+            (slide.text ? '<p class="text">' + R(slide.text) + "</p>" : "") +
+            (slide.quote
+              ? '<div class="quote"><span class="who-name">💬 ' + R(slide.quote.who) + "</span>「" + R(slide.quote.text) + "」</div>"
+              : "") +
+            (slide.note ? '<span class="note">' + R(slide.note) + "</span>" : "") +
+            '<div class="nav"><button type="button" class="btn sub small" data-act="review-prev"' +
+            (at === 0 ? " disabled" : "") +
+            ">◀ " +
+            R(D.ui.back) +
+            '</button><button type="button" class="btn small" data-act="review-next" data-testid="review-next"' +
+            (at >= slides.length - 1 ? " disabled" : "") +
+            ">" +
+            R(D.ui.next) +
+            " ▶</button></div></div></div>"
+          );
         }
 
         /**
@@ -2656,7 +2870,9 @@
           if (talk.phase === "recording") {
             return (
               '<div class="mic-row"><button type="button" class="mic rec" data-act="mic" id="micBtn" data-testid="mic" style="--ring:14px"><span class="ic">⏹</span>' +
+              '<span class="lb">' +
               R(D.ui.micStop) +
+              "</span>" +
               '</button><p class="status" id="micStatus">' +
               R(D.ui.micListening) +
               "</p></div>"
@@ -2693,36 +2909,39 @@
               ) +
               "</p>";
           }
-          if (!inFrame) {
-            html += '<p class="box" style="font-weight:800" data-testid="no-bridge">🔗 ' + R(D.ui.noBridge) + "</p>";
-          } else if (noKey) {
+          if (noKey) {
             html += '<p class="box" style="font-weight:800">🔑 ' + R(D.ui.noKey) + "</p>";
           }
-          var typeMode = !aiAvailable() || talk.noMic || talk.typed;
+          /*
+           * 文字で 送るのは マイクが 使えない ときだけ（2026-11-18 要望 #765）: キーが 無い・
+           * マイクに 2回 つながらない・聞き取りの しくみが 無い。ふだんは マイクだけ。
+           */
+          var typeMode = micUnusable();
           if (!typeMode && voice.status !== "live") {
-            /* まず マイクを つなぐ（5日間の 相談と 同じ 手順） */
+            /* マイクを つなぐ（相談の 画面に 来たら 自動で つなぐ。つながらない ときは 押して やり直す） */
             var connecting = talk.phase === "connecting" || voice.status === "connecting";
             html +=
-              '<div class="mic-row"><button type="button" class="btn go" data-act="connect" data-testid="mic-connect"' +
+              '<div class="mic-row"><button type="button" class="mic" data-act="connect" id="micBtn" data-testid="mic-connect"' +
               (connecting ? " disabled" : "") +
-              ">🎤 " +
+              '><span class="ic">🎤</span>' +
+              '<span class="lb">' +
               R(connecting ? D.ui.micConnecting : D.ui.micConnect) +
+              "</span>" +
               "</button>" +
               (voice.status === "error" || voice.status === "notReady"
                 ? '<p class="fine">' + R(D.ui.micConnectError) + "</p>"
                 : "") +
-              '<button type="button" class="linkbtn" data-act="typemode">⌨️ ' +
-              R(D.ui.typeInstead) +
-              "</button></div>";
+              "</div>";
           } else if (!typeMode) {
             if (talk.firstTime) html += '<p class="fine" style="text-align:center">' + R(D.micHelp) + "</p>";
             html +=
               '<div class="mic-row"><button type="button" class="mic" data-act="mic" id="micBtn" data-testid="mic"><span class="ic">🎤</span>' +
+              '<span class="lb">' +
               R(D.ui.micStart) +
-              '</button><button type="button" class="linkbtn" data-act="typemode">⌨️ ' +
-              R(D.ui.typeInstead) +
+              "</span>" +
               "</button></div>";
           } else {
+            if (!noKey) html += '<p class="fine" style="text-align:center">' + R(D.ui.micTyping) + "</p>";
             html +=
               '<div class="box"><textarea id="typed" maxlength="900" placeholder="" data-testid="typed"></textarea><div class="row" style="margin-top:6px"><button type="button" class="btn go" data-act="sendtyped" data-testid="send-typed">' +
               R(D.ui.typeSend) +
@@ -2919,7 +3138,24 @@
           }
         });
 
+        /** マイクが 使えないか（文字で 送る のは この とき だけ）。 */
+        function micUnusable() {
+          return !aiAvailable() || !!talk.noMic || talk.micErrors >= 2 || voice.status === "notReady";
+        }
+
+        /** 相談の 画面に 来たら マイクを つなぐ（席の 絵の ボタンを 押した 直後なので、許可の 確かめが 出せる）。 */
+        function autoConnect() {
+          if (!talk || talk.autoAsked || talk.passed || micUnusable()) return;
+          if (voice.status === "live" || voice.status === "connecting") return;
+          talk.autoAsked = true;
+          connectVoice();
+        }
+
+        var lastVoiceStatus = "idle";
         function onVoiceStatus() {
+          /* つながらなかった 回数（2回で 文字に 切りかえる・5日間と 同じ） */
+          if (voice.status === "error" && lastVoiceStatus !== "error" && talk) talk.micErrors = (talk.micErrors || 0) + 1;
+          lastVoiceStatus = voice.status;
           if (!talk || !onConsultPage(talk.levelId)) return;
           var level = LEVELS[view.level];
           if (talk.phase === "connecting" && voice.status !== "connecting") talk.phase = "ready";
@@ -2931,7 +3167,7 @@
         }
 
         function connectVoice() {
-          if (!inFrame) return;
+          if (!inFrame || !talk) return;
           talk.phase = "connecting";
           voicePost({ op: "connect" });
           renderConsult(LEVELS[view.level]);
@@ -3399,6 +3635,20 @@
             talk = null;
             return go("level", { level: Math.min(LEVELS.length - 1, view.level + 1), page: 0 });
           }
+          if (act === "review") {
+            if (busyPhase()) return;
+            talk.review = 0;
+            return renderConsult(level);
+          }
+          if (act === "review-close") {
+            talk.review = null;
+            return renderConsult(level);
+          }
+          if (act === "review-prev" || act === "review-next") {
+            var count = reviewSlides(level).length;
+            talk.review = Math.max(0, Math.min(count - 1, talk.review + (act === "review-next" ? 1 : -1)));
+            return renderConsult(level);
+          }
           if (act === "hints") {
             talk.hintsOpen = true;
             talk.hintsSeen = true;
@@ -3417,10 +3667,6 @@
           if (act === "send") {
             talk.lastTyped = false;
             return judge(talk.heard);
-          }
-          if (act === "typemode") {
-            talk.typed = true;
-            return renderConsult(level);
           }
           if (act === "sendtyped") {
             var area = document.getElementById("typed");
@@ -3444,6 +3690,18 @@
 
         document.addEventListener("keydown", function (event) {
           var target = event.target;
+          /* 説明を 見返して いる とき: ← → で めくり、Esc で 相談に もどる */
+          if (talk && talk.review != null && view.screen === "level") {
+            var lv = LEVELS[view.level];
+            var total = reviewSlides(lv).length;
+            if (event.key === "Escape") talk.review = null;
+            else if (event.key === "ArrowRight") talk.review = Math.min(total - 1, talk.review + 1);
+            else if (event.key === "ArrowLeft") talk.review = Math.max(0, talk.review - 1);
+            else return;
+            event.preventDefault();
+            renderConsult(lv);
+            return;
+          }
           if (target && target.closest && target.closest("input, textarea, button, a, select")) return;
           if (event.key === "ArrowLeft") {
             event.preventDefault();
@@ -3468,6 +3726,15 @@
         document.title = D.title.replace(/\{([^{}|]+)\|[^{}|]+\}/g, "$1");
         post({ type: "nexmax:link-owns-done" });
         post({ type: "nexmax:link-progress-request" });
+        /*
+         * アプリの 外（べつの タブ）で 開いた ときは、アプリの 中の この 教材へ 戻す。マイクと
+         * 判定は アプリの Live を 使うので、外では 動かない（2026-11-18 要望 #764・#766）。
+         * 学生には 説明を 出さず、そのまま 移る。
+         */
+        if (!inFrame) {
+          window.location.replace("/link/" + LINK_ID);
+          return;
+        }
         if (!save.introSeen) {
           view = { screen: "intro", level: 0, page: 0, intro: 0 };
         } else if (save.at && typeof save.at.level === "number" && save.at.level < L.openLevelCount(save, LEVELS.length)) {
