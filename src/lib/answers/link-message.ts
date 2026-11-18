@@ -11,6 +11,7 @@
  * - 差出人（`event.origin`）は **呼ぶ側**が 先に 見る（ここには 渡って こない）
  * - 種別が 知らない ものは 捨てる
  * - **id は 必須**。どの 教材の 合図か 分からない ものは 受けない
+ * - 進み具合（`progress`）は **数だけの しおり**しか 受けない（`parseProgressPosition`）
  *   （`link-done` だけは 例外。id を 付けない 古い ページが 残って いる
  *    ——`public/tools/romaji/app.js`）
  */
@@ -24,9 +25,55 @@ export const OWNS_DONE_MESSAGE = "nexmax:link-owns-done";
 /** 中のページが **学習者の 書いた もの**を 渡して くる 合図。 */
 export const ANSWERS_MESSAGE = "nexmax:link-answers";
 
+/**
+ * 中のページが **進み具合**（数だけの しおり）を 渡して くる 合図（2026-11-17・相談の 練習問題）。
+ *
+ * 親は それを 学習の 記録（`recordContentProgress`）に 写す ——あとは ほかの 教材と 同じ
+ * 道（`src/lib/records/sync.ts`）で Supabase の `content_progress` に 入る。
+ * tomy さんの 指定「埋め込みとして作る。ただし状況はSupabase保存できるように」。
+ */
+export const PROGRESS_MESSAGE = "nexmax:link-progress";
+
+/** 中のページが「記録から 戻して」と 頼む 合図。親は 本人の 行を 読んで 返す。 */
+export const PROGRESS_REQUEST_MESSAGE = "nexmax:link-progress-request";
+
+/** 親が 中のページへ 返す 合図（`owner`・`status`・`position`）。 */
+export const PROGRESS_RESTORE_MESSAGE = "nexmax:link-progress-restore";
+
+/**
+ * しおりの 鍵の 形と 数の 上限。
+ *
+ * しおりは そのまま DB の 1行（`content_progress.position`）に 入り、先生の 画面が 読む。
+ * 外から 来る ものなので、**短い 英小文字の 鍵と ふつうの 数だけ**を 受ける。
+ */
+const POSITION_KEY = /^[a-z][a-z0-9_]{0,15}$/;
+const POSITION_MAX_KEYS = 40;
+const POSITION_MAX_VALUE = 1_000_000;
+
+/** 届いた しおりを 確かめる。形が ちがえば `null`（**ひとつでも 崩れて いたら まるごと 捨てる**）。 */
+export function parseProgressPosition(value: unknown): Record<string, number> | null {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return null;
+  const entries = Object.entries(value as Record<string, unknown>);
+  if (entries.length === 0 || entries.length > POSITION_MAX_KEYS) return null;
+  const out: Record<string, number> = {};
+  for (const [key, raw] of entries) {
+    if (!POSITION_KEY.test(key)) return null;
+    if (typeof raw !== "number" || !Number.isFinite(raw)) return null;
+    if (Math.abs(raw) > POSITION_MAX_VALUE) return null;
+    out[key] = raw;
+  }
+  return out;
+}
+
 export type LinkMessage =
   | { readonly kind: "done" }
   | { readonly kind: "owns-done" }
+  | {
+      readonly kind: "progress";
+      readonly status: "started" | "completed";
+      readonly position: Record<string, number>;
+    }
+  | { readonly kind: "progress-request" }
   | {
       readonly kind: "answers";
       readonly answers: unknown;
@@ -55,6 +102,17 @@ export function readLinkMessage(data: unknown, linkId: string): LinkMessage | nu
   // 下の 2つは **鍵と 記録**なので id を 必須に する
   if (id !== linkId) return null;
   if (type === OWNS_DONE_MESSAGE) return { kind: "owns-done" };
+  if (type === PROGRESS_REQUEST_MESSAGE) return { kind: "progress-request" };
+  if (type === PROGRESS_MESSAGE) {
+    const { status, position } = data as { status?: unknown; position?: unknown };
+    const parsed = parseProgressPosition(position);
+    if (!parsed) return null;
+    return {
+      kind: "progress",
+      status: status === "completed" ? "completed" : "started",
+      position: parsed,
+    };
+  }
   if (type === ANSWERS_MESSAGE) {
     const { answers, attemptId, fullSet } = data as {
       answers?: unknown;
@@ -62,6 +120,46 @@ export function readLinkMessage(data: unknown, linkId: string): LinkMessage | nu
       fullSet?: unknown;
     };
     return { kind: "answers", answers, attemptId, fullSet };
+  }
+  return null;
+}
+
+/* ------------------------------------------------------------------ *
+ * 声と 判定の 橋（相談の 練習問題・2026-11-18）
+ *
+ * 学習者の 画面で Gemini の `generateContent` は 使えない（注意事項「Gemini は Live だけ」）。
+ * 静的な ツールは Live の しくみを 持たないので、**親の 画面に 頼む**:
+ *   - 聞き取り … 親が 声の Live（`useLiveVoice` の 聞くだけ）で 聞き、文を 返す
+ *   - 判定 …… 親が 判定の Live（`requestLinkJudge`）に 頼みの 文を 渡し、道具の 引数を 返す
+ * 受けるのは **自分が 埋めた iframe から 来た もの だけ**（呼ぶ側で `event.source` を 見る）。
+ * ------------------------------------------------------------------ */
+
+/** ツール → 親（声・判定の 頼み）。 */
+export const VOICE_MESSAGE = "nexmax:link-voice";
+/** 親 → ツール（つなぎの ようす・聞き取った 文・判定の 返事）。 */
+export const VOICE_REPLY = "nexmax:link-voice-reply";
+
+const VOICE_KEY = /^[a-z0-9:_-]{1,80}$/;
+
+export type LinkVoiceMessage =
+  | { readonly op: "connect" | "talk-start" | "talk-stop" | "disconnect" }
+  | { readonly op: "warm"; readonly key: string }
+  | { readonly op: "judge"; readonly key: string; readonly prompt: string; readonly reqId: number };
+
+/** 声と 判定の 頼みを 読む。この 教材あてで、形が 合う ものだけ。 */
+export function readLinkVoiceMessage(data: unknown, linkId: string): LinkVoiceMessage | null {
+  if (!data || typeof data !== "object") return null;
+  const { type, id, op, key, prompt, reqId } = data as Record<string, unknown>;
+  if (type !== VOICE_MESSAGE || id !== linkId) return null;
+  if (op === "connect" || op === "talk-start" || op === "talk-stop" || op === "disconnect") {
+    return { op };
+  }
+  if (typeof key !== "string" || !VOICE_KEY.test(key)) return null;
+  if (op === "warm") return { op, key };
+  if (op === "judge") {
+    if (typeof prompt !== "string" || !prompt.trim() || prompt.length > 12_000) return null;
+    if (typeof reqId !== "number" || !Number.isInteger(reqId)) return null;
+    return { op, key, prompt, reqId };
   }
   return null;
 }

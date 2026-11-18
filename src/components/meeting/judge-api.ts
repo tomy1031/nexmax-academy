@@ -35,6 +35,7 @@ import {
   type NovelJudgment,
 } from "@/lib/novel/judge";
 import { getGeminiKey } from "@/lib/profile";
+import { LINK_JUDGE_SYSTEM, LINK_JUDGE_TOOL, readLinkJudgeArgs } from "@/lib/link-judge";
 import {
   BUG_REVIEW_SYSTEM,
   BUG_REVIEW_TOOL,
@@ -662,6 +663,66 @@ export async function requestNovelJudge(
   return result;
 }
 
+export type LinkJudgeApiResult =
+  { ok: true; args: Record<string, unknown>; model: string } | { ok: false; reason: string };
+
+/** ツール教材の 判定の つなぎを 先に 張って おく（話して いる あいだに）。 */
+export async function warmLinkJudge(key: string): Promise<boolean> {
+  const apiKey = getGeminiKey();
+  if (!apiKey || SLOTS.link.busy) return false;
+  if (SLOTS.link.key === key && (SLOTS.link.session?.alive() || SLOTS.link.opening)) return true;
+  const opened = await openJudge(apiKey, "link", key).catch(() => null);
+  return opened?.ok === true;
+}
+
+/**
+ * ツール教材の 判定（`report_consult`）。返すのは 道具の 引数 そのまま——合否は ツールが 決める。
+ * 決まりは 相談の 練習（`requestNovelJudge`）と 同じ: 1本ずつ・遅い／崩れた ときは
+ * 新しい つなぎで 1回だけ やり直す・上限 30秒。
+ */
+export async function requestLinkJudge(key: string, prompt: string): Promise<LinkJudgeApiResult> {
+  const apiKey = getGeminiKey();
+  if (!apiKey) return { ok: false, reason: "noKey" };
+  if (SLOTS.link.busy) return { ok: false, reason: "busy" };
+  SLOTS.link.busy = true;
+  let gaveUp = false;
+  const ask = async (slotKey: string): Promise<LinkJudgeApiResult> => {
+    let mine: JudgeSession | null = null;
+    try {
+      const opened = await openJudge(apiKey, "link", slotKey);
+      if (!opened.ok) return { ok: false, reason: opened.reason };
+      if (gaveUp) return { ok: false, reason: "timeout" };
+      mine = opened.session;
+      const args = readLinkJudgeArgs(await mine.ask(prompt));
+      return args ? { ok: true, args, model: mine.model } : { ok: false, reason: "badShape" };
+    } catch (error) {
+      if (mine && SLOTS.link.session === mine) dropSlot(SLOTS.link);
+      return { ok: false, reason: error instanceof JudgeError ? error.reason : "network" };
+    }
+  };
+  const work = (async (): Promise<LinkJudgeApiResult> => {
+    const first = await ask(key);
+    if (first.ok || gaveUp) return first;
+    if (!["timeout", "network", "upstream", "badShape"].includes(first.reason)) return first;
+    liveDebug("judge.link", `retry after ${first.reason}`, true);
+    dropSlot(SLOTS.link);
+    return ask(`${key}:retry`);
+  })().finally(() => {
+    SLOTS.link.busy = false;
+  });
+  const result = await Promise.race([
+    work,
+    new Promise<LinkJudgeApiResult>((resolve) =>
+      setTimeout(() => {
+        gaveUp = true;
+        resolve({ ok: false, reason: "timeout" });
+      }, NOVEL_TIMEOUT_MS),
+    ),
+  ]);
+  liveDebug("judge.link", result.ok ? `ok ${result.model}` : result.reason, !result.ok);
+  return result;
+}
+
 export type TalkApiResult =
   { ok: true; judgement: TalkJudgement; model: string } | { ok: false; reason: string };
 
@@ -792,7 +853,7 @@ interface JudgeSession {
  * 問題が 変わるまでは 同じ つなぎを 使い回して いた。
  */
 /** つなぎの 役（役ごとに 別の つなぎを 張る）。 */
-type SlotKind = "judge" | "cards" | "talk" | "asakai" | "review" | "bug" | "novel";
+type SlotKind = "judge" | "cards" | "talk" | "asakai" | "review" | "bug" | "novel" | "link";
 
 interface Slot {
   /** つなぎの 中身（相手に 渡す 決まりと 道具）。 */
@@ -893,6 +954,19 @@ const SLOTS: Record<SlotKind, Slot> = {
   novel: {
     system: NOVEL_JUDGE_SYSTEM,
     tool: NOVEL_TOOL,
+    temperature: 0,
+    session: null,
+    key: "",
+    opening: null,
+  },
+  /*
+   * ツール教材（静的な ページ）の 判定（2026-11-18・相談の 練習問題）。ツールは 学習者の
+   * 画面で `generateContent` を 使えない（注意事項「Gemini は Live だけ」）ので、親の 画面が
+   * この つなぎで 聞いて 引数を 返す。相談 1件（1回の 挑戦）ごとに 鍵を 変えて 張り直す。
+   */
+  link: {
+    system: LINK_JUDGE_SYSTEM,
+    tool: LINK_JUDGE_TOOL,
     temperature: 0,
     session: null,
     key: "",

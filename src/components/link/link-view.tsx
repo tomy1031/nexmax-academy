@@ -11,7 +11,9 @@ import {
   subscribeProgress,
 } from "@/lib/progress/store";
 import { parseAttemptId, parseLinkAnswers, saveLinkAnswers } from "@/lib/answers/link-answers-db";
-import { readLinkMessage } from "@/lib/answers/link-message";
+import { PROGRESS_RESTORE_MESSAGE, readLinkMessage } from "@/lib/answers/link-message";
+import { fetchOwnContentProgress } from "@/lib/records/own-progress";
+import { LinkVoiceBridge } from "./link-voice-bridge";
 
 /**
  * リンク教材 — 1枚で完結する練習ページを、ステージの中から 全画面で 開く
@@ -63,6 +65,8 @@ export function LinkView({ link, embedded }: { link: LinkContent; embedded?: boo
   const [wide, setWide] = useState(false);
 
   const shellRef = useRef<HTMLDivElement | null>(null);
+  /** 埋めた ページ（声と 判定の 橋が 返事を 送る 先・頼みの 差出人の 確かめ）。 */
+  const frameRef = useRef<HTMLIFrameElement | null>(null);
 
   /*
    * おわった かどうかは 保存層から 読む（画面に 別の 控えを 置かない）。
@@ -95,6 +99,39 @@ export function LinkView({ link, embedded }: { link: LinkContent; embedded?: boo
       if (!message) return;
       if (message.kind === "owns-done") {
         setOwnsDone(true);
+        return;
+      }
+      if (message.kind === "progress") {
+        /*
+         * 進み具合（数だけの しおり）。学習の 記録に 写せば、ほかの 教材と 同じ 道で
+         * Supabase に 入る（2026-11-17「状況はSupabase保存できるように」）。
+         * completed は started に 戻らない（`recordContentProgress` が 守る）。
+         */
+        recordContentProgress(link.id, { status: message.status, position: message.position });
+        return;
+      }
+      if (message.kind === "progress-request") {
+        /*
+         * 「記録から 戻して」。本人の 行を Supabase から 読んで 返す（別の 端末で 開いた とき）。
+         * 読めない（デモモード・ログイン前）ときは この 端末の 記録を 返す。
+         * 返す 先は 頼んで きた 窓だけ（同じ 置き場の ページ）。
+         */
+        const source = event.source as Window | null;
+        void fetchOwnContentProgress(link.id).then((remote) => {
+          const local = readContentProgress(link.id);
+          const reply = {
+            type: PROGRESS_RESTORE_MESSAGE,
+            id: link.id,
+            owner: remote?.owner ?? "",
+            status: remote ? remote.status : (local?.status ?? null),
+            position: remote ? remote.position : (local?.position ?? null),
+          };
+          try {
+            source?.postMessage(reply, window.location.origin);
+          } catch {
+            /* 返せなくても 練習は 止めない */
+          }
+        });
         return;
       }
       if (message.kind === "answers") {
@@ -198,6 +235,7 @@ export function LinkView({ link, embedded }: { link: LinkContent; embedded?: boo
         style={wide ? undefined : { height: `${link.height}px` }}
       >
         <iframe
+          ref={frameRef}
           src={link.url}
           title={link.title}
           className="h-full w-full border-0"
@@ -211,6 +249,11 @@ export function LinkView({ link, embedded }: { link: LinkContent; embedded?: boo
           sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-downloads"
           allow="fullscreen; clipboard-write"
         />
+        {/*
+          自前の ページ（`/tools/...`）だけに、声と 判定の 橋を 付ける（相談の 練習問題）。
+          頼まれる までは 何も しない——ほかの ツールには 影響しない。
+        */}
+        {link.url.startsWith("/") ? <LinkVoiceBridge linkId={link.id} frameRef={frameRef} /> : null}
       </div>
 
       <div

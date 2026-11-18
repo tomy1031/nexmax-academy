@@ -111,7 +111,9 @@ describe("相談の 練習の データ（仕様書 v4 §8）", () => {
     const refs = soudanStage.contents.map((item) => item.ref);
     expect(refs).toContain("soudan_novel");
     expect(refs).not.toContain("soudan_kehai");
-    expect(refs.indexOf("soudan_novel")).toBe(refs.indexOf("soudan_quiz") + 1);
+    /* 2026-11-17 から もんだい → 相談の 練習問題（soudan_renshu）→ 5日間 の 順（tomy さん「相談の5日間の手前に」） */
+    expect(refs.indexOf("soudan_renshu")).toBe(refs.indexOf("soudan_quiz") + 1);
+    expect(refs.indexOf("soudan_novel")).toBe(refs.indexOf("soudan_renshu") + 1);
   });
 
   it("古い URL（いま 話しかけて いい？）は 相談の 練習へ 送る", () => {
@@ -379,8 +381,8 @@ describe("画面の 字の 読み（UI の 辞書だけでも、教材と 混ぜ
     ["合わない 行を 1行 押します。", "あわない ぎょうを 1ぎょう おします。"],
     /* 2026-11-17（相談メモの 問い・くらべる 画面の ✖・席の 絵の 待ち方） */
     [
-      "絵は 5秒ぐらいで 変わります。待つ ときは 押しません。",
-      "えは 5びょうぐらいで かわります。まつ ときは おしません。",
+      "絵は 3秒ぐらいで 変わります。待つ ときは 押しません。",
+      "えは 3びょうぐらいで かわります。まつ ときは おしません。",
     ],
     ["見ながら、文に して 話します。", "みながら、ぶんに して はなします。"],
     [
@@ -494,7 +496,7 @@ describe("保存（ブラウザに 1行ごと）", () => {
 describe("話しかける タイミング（要望 #723）", () => {
   const timed = allConsults(novel).filter((consult) => showsTiming(novel, consult));
 
-  it("はじめは かならず 話しかけては いけない 状態で、15秒 以内に 大丈夫そうに なる", () => {
+  it("はじめは かならず 話しかけては いけない 状態で、9秒 以内に 大丈夫そうに なる", () => {
     for (const consult of allConsults(novel)) {
       const cycle = deskCycle(consult.id);
       expect(cycle[0]).not.toBe("ok");
