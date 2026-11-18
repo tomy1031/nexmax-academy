@@ -51,8 +51,8 @@ import { LinkVoiceBridge } from "./link-voice-bridge";
 
 /** 画面じたいの 文言の 読み辞書（教材データの 辞書は UIの 文言まで 覆わない・規律2）。 */
 const UI_FURIGANA = buildFuriganaIndex([
-  ["中", "なか"],
-  ["出", "だ"],
+  ["上", "うえ"],
+  ["最後", "さいご"],
 ]);
 
 export function LinkView({ link, embedded }: { link: LinkContent; embedded?: boolean }) {
@@ -274,15 +274,16 @@ export function LinkView({ link, embedded }: { link: LinkContent; embedded?: boo
         </button>
         {ownsDone && !done ? (
           /*
-            中で「出す」と ✅ に なる ページ。手で 押す ボタンは 出さない
-            ——押すだけで 関門が 開いては、出す ことに 意味が 無くなる。
+            中で 最後まで やると ✅ に なる ページ（調べものの 提出・相談の 練習問題）。手で 押す ボタンは
+            出さない——押すだけで 関門が 開いては、中で やる ことに 意味が 無くなる。
+            文は「中で 出すと」だと 何の ことか 分からなかった（2026-11-18 tomy さん「なにこれ？」）。
           */
           <span
             className={`rounded-full px-4 py-1.5 text-xs font-black ${
               wide ? "bg-white/90 text-[#0b2138]" : "bg-sky-soft text-navy"
             }`}
           >
-            <RubyText text="中で 出すと ✅ に なります" index={UI_FURIGANA} />
+            <RubyText text="上の ページを 最後まで やると ✅ に なります" index={UI_FURIGANA} />
           </span>
         ) : (
           <button

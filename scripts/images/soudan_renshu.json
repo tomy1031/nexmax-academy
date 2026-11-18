@@ -41,11 +41,32 @@
       "text": ["SHOP LIST"]
     },
     {
-      "out": "l1_nophoto",
-      "dest": "public/img/hourensou/soudan/renshu/l1_nophoto.webp",
-      "title": "レベル1：お店の 写真が まだ ありません",
-      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the shop photos have not arrived yet, so the photo spaces are empty. The same monitor and the same shop list page with the same heading, now seen larger: every shop card has an EMPTY grey photo box with a big question mark inside. Next to the monitor, an open folder window labelled with the word below is completely empty. The new engineer leans toward the screen with her head tilted, puzzled, a big question mark and a sweat drop above her head.",
-      "text": ["SHOP LIST", "PHOTOS"]
+      "out": "l1_noorder",
+      "dest": "public/img/hourensou/soudan/renshu/l1_noorder.webp",
+      "title": "レベル1：並べる 順番が 決まって いない",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: nobody has decided in which ORDER the shops should be listed on the page. Over-the-shoulder view of the new engineer at her desk, her large monitor filling much of the picture. It shows the same shop list web page as before, with the first words below as the heading. Every shop card now HAS a small colourful photo (a cafe, a bakery, a flower shop, a ramen shop, a book shop, a pizza shop), so the photos are clearly fine. But the six cards are jumbled: tilted, overlapping and floating loosely, with curved double-headed arrows swapping them back and forth as if they could go in any order. The second words below are printed big in the middle of the screen. The new engineer holds her head with one hand and tilts it, puzzled, a big question mark and a sweat drop above her head.",
+      "text": ["SHOP LIST", "ORDER ?"]
+    },
+    {
+      "out": "l1_opt_name",
+      "dest": "public/img/hourensou/soudan/renshu/l1_opt_name.webp",
+      "title": "レベル1：名前の 順",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the shops are listed in alphabetical order of their names. A large close view of a smartphone held upright in one hand, in front of a soft plain cream background. The phone screen shows the shop list page with the first words below as the heading, and four shop rows stacked from top to bottom. Each row has a small colourful shop photo on the left, a big bold capital letter badge, and two short grey lines for the name. The letter badges from top to bottom are exactly A, B, C, D. A big thick arrow beside the phone points downward, with the last words below printed next to it.",
+      "text": ["SHOP LIST", "A", "B", "C", "D", "A → Z"]
+    },
+    {
+      "out": "l1_opt_near",
+      "dest": "public/img/hourensou/soudan/renshu/l1_opt_near.webp",
+      "title": "レベル1：使う 人から 近い 順",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the shops are listed from the one CLOSEST to the person using the app. Outdoors on a bright, calm shopping street. In the foreground a young man who uses the app (short black hair, grey hoodie — he is NOT the new engineer) holds up a smartphone; a big red location pin floats above his head to show where he is standing right now. Around him on the street are three small shops at clearly different distances: a cafe right next to him, a bakery a bit farther away, and a flower shop far away in the back. Dotted lines run from his pin to each shop. A large close-up of his phone screen floats beside him: the shop list page with the first words below as the heading, a small map strip at the top with a blue 'you are here' dot, and four shop rows; on the right of each row a distance is printed big, growing from top to bottom exactly as listed below.",
+      "text": ["SHOP LIST", "100 m", "300 m", "800 m", "2 km"]
+    },
+    {
+      "out": "l1_opt_new",
+      "dest": "public/img/hourensou/soudan/renshu/l1_opt_new.webp",
+      "title": "レベル1：新しく できた 順",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the shops are listed from the one that opened most recently. A large close view of a smartphone held upright in one hand, in front of a soft plain cream background. The phone screen shows the shop list page with the first words below as the heading, and four shop rows stacked from top to bottom. Each row has a small colourful shop photo on the left and an opening date tag on the right; the dates go from newest at the top to oldest at the bottom, exactly as listed below. The top row also has a bright red ribbon with the word NEW and little sparkles around it. A big thick arrow beside the phone points downward.",
+      "text": ["SHOP LIST", "NEW", "OPEN 11/15", "OPEN 11/1", "OPEN 10/20", "OPEN 9/5"]
     },
     {
       "out": "l1_today",
@@ -54,27 +75,6 @@
       "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: she wants to finish the page today. The new engineer at her desk looks up at a round wall clock showing ten o'clock in the morning. On her desk a big desk calendar shows one day page with the word below, and a small red flag stuck on it. She makes a determined fist, eyes shining with motivation, little motion lines around her.",
       "text": ["TODAY"],
       "_comment": "2026-11-18: 1枚目は 17:00 を 入れて いたが、場面の 文に 時刻が 無い（レベル4の 午後5時と 混ざる・検収の 指摘）ので 外して 作り直した。"
-    },
-    {
-      "out": "l1_opt_wait",
-      "dest": "public/img/hourensou/soudan/renshu/l1_opt_wait.webp",
-      "title": "レベル1 A：写真が 来るまで 待つ",
-      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: waiting — nothing moves forward until the photos come. The same shop list page on the monitor, still with empty grey photo boxes with question marks. The new engineer sits back with her chin on her hand, waiting, a little bored and anxious. A big hourglass stands on the desk with sand falling, and the wall clock hands have motion lines to show time passing.",
-      "text": ["SHOP LIST"]
-    },
-    {
-      "out": "l1_opt_noimage",
-      "dest": "public/img/hourensou/soudan/renshu/l1_opt_noimage.webp",
-      "title": "レベル1 B：仮の 写真（NO IMAGE）を 使う",
-      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: temporary placeholder pictures are used, so the page looks finished. A large close view of the monitor showing the same shop list page with the same heading and six shop cards. In every card the photo area now shows the SAME light grey placeholder picture: a simple camera icon with a diagonal line through it and the words below printed clearly under the icon. The page looks complete and tidy. The new engineer is small in the lower corner, looking at it with a neutral, thinking face.",
-      "text": ["SHOP LIST", "NO IMAGE"]
-    },
-    {
-      "out": "l1_opt_hide",
-      "dest": "public/img/hourensou/soudan/renshu/l1_opt_hide.webp",
-      "title": "レベル1 C：写真の ない お店は 表示しない",
-      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: shops without a photo are hidden, so fewer shops are shown. A large close view of the monitor showing the same shop list page with the same heading. Only THREE shop cards remain in one row, and each of them has a real colourful shop photo (a small cafe, a bakery, a flower shop). Below them, three more cards are fading away like ghosts, almost transparent, with a big 'eye with a line through it' symbol over them. The new engineer is small in the lower corner, looking at it with a neutral, thinking face.",
-      "text": ["SHOP LIST"]
     },
     {
       "out": "l2_making",

@@ -45,8 +45,8 @@ interface Level {
   resultImage: string;
   slides: { kind?: string; image?: string; options?: { image: string }[] }[];
   checklist: { parts: string[]; ask: string }[];
-  hints: string[];
-  model: { part: string; text: string }[];
+  hints: { part: string; text: string }[];
+  model: { part: string; text: string; bonus?: string }[];
   better: { adds: { part: string }[] };
   bonus: { id: string; label: string }[];
   results: Record<string, string>;
@@ -201,6 +201,40 @@ describe("データの 形", () => {
     }
   });
 
+  it("ヒントは 型（5つ）ごとに ある・合格に 要る 型には かならず ヒントが ある（2026-11-18 要望 #777）", () => {
+    for (const level of DATA.levels) {
+      for (const hint of level.hints) {
+        expect(parts, `${level.id} ${hint.text}`).toContain(hint.part);
+        expect(hint.text, level.id).toBeTruthy();
+      }
+      const hinted = new Set(level.hints.map((hint) => hint.part));
+      for (const key of level.ai.required) expect(hinted.has(key), `${level.id} ${key}`).toBe(true);
+    }
+  });
+
+  it("お手本に ボーナスの 文が ぜんぶ ある（2026-11-18 要望 #778）", () => {
+    for (const level of DATA.levels) {
+      const ids = level.bonus.map((one) => one.id);
+      const marked = level.model.flatMap((seg) => (seg.bonus ? [seg.bonus] : []));
+      for (const id of marked) expect(ids, `${level.id} ${id}`).toContain(id);
+      expect([...new Set(marked)].sort(), level.id).toEqual([...ids].sort());
+    }
+  });
+
+  it("場面の メモ（答えに なる 事実の 一覧）は 持たない（2026-11-18 要望 #775）", () => {
+    for (const level of DATA.levels) expect("facts" in level, level.id).toBe(false);
+  });
+
+  it("レベル1と レベル3は 困りごとが 違う（レベル1は 並べる 順番・写真の 話は レベル3だけ）", () => {
+    const l1 = JSON.stringify(L1.slides) + JSON.stringify(L1.model);
+    expect(plain(l1)).not.toMatch(/写真|画像|NO IMAGE/u);
+    expect(plain(l1)).toContain("順番");
+  });
+
+  it("「自分なり」（N1）を 使わない（2026-11-18「自分のアイデアを持つに変更」）", () => {
+    expect(learnerTexts().map(plain).join("\n")).not.toContain("自分なり");
+  });
+
   it("加点の id は 判定の 基準と そろって いる・選んだ 方法ごとの 答えが ある", () => {
     for (const level of DATA.levels) {
       expect(level.bonus.map((one) => one.id).sort()).toEqual(Object.keys(level.ai.bonus).sort());
@@ -245,7 +279,7 @@ describe("データの 形", () => {
 describe("判定の 決まり（合格は コードが 決める）", () => {
   const yes = { jokyo: true, mondai: true, kakunin: true, kangae: true, soudan: true };
   const said =
-    "お店の 一覧画面を 作って います。写真が ありません。仮の 写真を 使っても いいですか。";
+    "お店の 一覧画面を 作って います。並べる 順番が 決まって いません。近い 順に しても いいですか。";
 
   it("要る 要素が ぜんぶ あれば 合格。1つ 欠ければ やり直し（欠けた 要素から 反応を 選ぶ）", () => {
     const pass = LOGIC.settle(L1, { ...yes, own_words: false, bonus: [], choice: "B" }, said);
@@ -425,10 +459,12 @@ describe("先生の 画面に 残す 文", () => {
 
   it("相談の 記録は 何回目に 何と 言ったかを 1行に（1000字まで）", () => {
     const text = LOGIC.attemptsText([
-      { heard: "写真が ありません。", pass: false },
-      { heard: "仮の 写真を 使っても いいですか。", pass: true },
+      { heard: "順番が 決まって いません。", pass: false },
+      { heard: "近い 順に しても いいですか。", pass: true },
     ]);
-    expect(text).toBe("1回目✖：写真が ありません。 ／ 2回目⭕：仮の 写真を 使っても いいですか。");
+    expect(text).toBe(
+      "1回目✖：順番が 決まって いません。 ／ 2回目⭕：近い 順に しても いいですか。",
+    );
     expect(LOGIC.attemptsText([{ heard: "あ".repeat(2000), pass: true }]).length).toBe(1000);
   });
 
