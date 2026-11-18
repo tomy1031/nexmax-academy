@@ -182,6 +182,8 @@ test("レベル1を 最後まで: 席の 絵を 見て 話しかけ、マイク�
   /* 相談: マイクは 自動で つながる（文字の 欄は 出ない）→ 話す → 止める → 聞き取った 文 → 伝える */
   await expect(tool.getByTestId("mic")).toBeVisible();
   await expect(tool.getByTestId("typed")).toHaveCount(0);
+  /* お手本は 合格する まで 出さない（2026-11-18「答えのようなもので棒読みできてしまう」→「合格したあとだけ」） */
+  await expect(tool.locator(".model")).toHaveCount(0);
   await expect(tool.getByTestId("facts")).toBeVisible();
   await expect(tool.getByTestId("memo-read-1")).toContainText("おみせの いちらんがめん");
   await shot(page, "soudan-renshu-05-mic");

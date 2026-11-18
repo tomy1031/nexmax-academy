@@ -52,13 +52,16 @@
         -webkit-text-size-adjust: 100%;
       }
       body {
+        /* 丸ゴシック（アプリと 同じ M PLUS Rounded 1c。字の 定義は 親の 画面から 借りる・adoptAppFonts） */
         font-family:
-          system-ui,
-          -apple-system,
-          "Hiragino Kaku Gothic ProN",
+          "M PLUS Rounded 1c",
+          "Hiragino Maru Gothic ProN",
           "Noto Sans JP",
+          "Hiragino Kaku Gothic ProN",
           "Yu Gothic",
+          system-ui,
           sans-serif;
+        font-weight: 500;
         font-size: 16px;
         line-height: 1.7;
         color: var(--ink);
@@ -96,39 +99,74 @@
         height: 100%;
       }
 
-      /* ---------------- 上の 帯 ---------------- */
+      /* ---------------- 上の 帯（白・2026-11-18 の 見本） ---------------- */
       .bar {
         flex: 0 0 auto;
         display: flex;
         align-items: center;
-        gap: 8px;
-        padding: 6px 10px;
-        background: linear-gradient(180deg, #0d2a47, var(--night));
-        color: #fff;
-        min-height: 48px;
+        gap: 10px;
+        padding: 6px 14px;
+        background: #fff;
+        color: #13263f;
+        min-height: 54px;
+        border-bottom: 1px solid #e3ecf5;
+        box-shadow: 0 2px 8px rgba(18, 60, 110, 0.05);
+        position: relative;
+        z-index: 3;
       }
       .bar-btn {
         flex: 0 0 auto;
         border-radius: 999px;
-        padding: 4px 12px;
+        padding: 4px 14px;
         font-size: 13px;
         font-weight: 800;
-        background: rgba(255, 255, 255, 0.14);
-        color: #fff;
-        border: 1px solid rgba(255, 255, 255, 0.3);
-      }
-      .bar-btn.on {
         background: #fff;
         color: var(--navy);
+        border: 2px solid #d9e6f2;
       }
       .bar-title {
         flex: 1 1 auto;
         min-width: 0;
-        font-weight: 900;
-        font-size: 15px;
+        font-weight: 800;
+        font-size: 16px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        color: #13263f;
+      }
+      .bar-title .ic {
+        color: var(--sky);
+        margin-right: 6px;
+      }
+      .furi {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .furi .switch {
+        width: 40px;
+        height: 22px;
+        border-radius: 999px;
+        background: #c9d4df;
+        position: relative;
+        transition: background 0.2s;
+      }
+      .furi .switch::after {
+        content: "";
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: #fff;
+        transition: left 0.2s;
+      }
+      .furi.on .switch {
+        background: var(--sky);
+      }
+      .furi.on .switch::after {
+        left: 21px;
       }
       .steps {
         display: flex;
@@ -141,16 +179,16 @@
         font-weight: 800;
         padding: 2px 10px;
         border-radius: 999px;
-        background: rgba(255, 255, 255, 0.12);
-        color: rgba(255, 255, 255, 0.7);
+        background: #eef3f8;
+        color: #7b8da1;
       }
       .steps li.now {
         background: var(--sun);
-        color: var(--night);
+        color: #3a2a00;
       }
       .steps li.done {
-        background: rgba(88, 194, 115, 0.35);
-        color: #fff;
+        background: #dff3e5;
+        color: var(--leaf-deep);
       }
       @media (max-width: 720px) {
         .steps li {
@@ -798,130 +836,247 @@
         border-top: 2px solid var(--ink);
       }
 
-      /* ---------------- タイトル ---------------- */
+      /* ---------------- タイトル（2026-11-18 tomy さんの 見本: 明るい 地・丸ゴシック・白い カード） ---------------- */
       .title-screen {
-        min-height: 100%;
-        display: grid;
-        grid-template-columns: minmax(0, 1fr);
-        background: url("/img/novel/office_morning.webp") center / cover no-repeat;
         position: relative;
+        min-height: 100%;
+        overflow: hidden;
+        background: linear-gradient(118deg, #ffffff 0%, #f6fbff 48%, #e6f3fd 100%);
       }
       .title-screen::before {
         content: "";
         position: absolute;
-        inset: 0;
-        background: linear-gradient(90deg, rgba(11, 33, 56, 0.86) 0%, rgba(11, 33, 56, 0.55) 60%, rgba(11, 33, 56, 0.2) 100%);
+        left: 22%;
+        top: -30%;
+        width: 60%;
+        height: 80%;
+        border-radius: 50%;
+        background: radial-gradient(closest-side, rgba(2, 136, 209, 0.08), rgba(2, 136, 209, 0));
+        pointer-events: none;
       }
-      .title-inner {
-        position: relative;
-        padding: 18px 16px 24px;
-        max-width: 760px;
-        color: #fff;
-      }
-      .title-inner h1 {
-        font-size: clamp(26px, 4vw, 40px);
-        font-weight: 900;
-        line-height: 1.9;
-        text-shadow: 0 3px 0 rgba(0, 0, 0, 0.3);
-      }
-      .title-inner .lead {
-        font-weight: 800;
-        margin-bottom: 12px;
-        line-height: 2;
+      .title-photo {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 42%;
+        background: url("/img/novel/office_morning.webp") center / cover no-repeat;
+        clip-path: polygon(9% 0, 100% 0, 100% 100%, 0 100%);
       }
       .title-hendy {
         position: absolute;
-        right: 2%;
+        right: 3%;
         bottom: 0;
-        height: 92%;
-        max-height: 620px;
+        height: 94%;
+        max-height: 700px;
         pointer-events: none;
       }
-      @media (max-width: 760px) {
+      .title-inner {
+        position: relative;
+        padding: 26px 28px 30px;
+        width: 60%;
+        min-width: 340px;
+      }
+      @media (max-width: 860px) {
+        .title-photo,
         .title-hendy {
-          opacity: 0.35;
+          display: none;
         }
+        .title-inner {
+          width: auto;
+          min-width: 0;
+          padding: 18px 14px 24px;
+        }
+      }
+      .title-h1 {
+        font-size: clamp(30px, 4.4vw, 54px);
+        font-weight: 800;
+        color: #12263f;
+        line-height: 1.75;
+        border-left: 7px solid var(--sky);
+        padding-left: 16px;
+        letter-spacing: 0.02em;
+      }
+      .title-inner .lead {
+        font-weight: 700;
+        color: #23405e;
+        font-size: clamp(16px, 1.7vw, 20px);
+        margin: 2px 0 16px;
+        line-height: 2;
+      }
+      .intro-btn {
+        min-width: 200px;
+        font-size: 18px;
+        letter-spacing: 0.06em;
       }
       .levels {
         display: grid;
-        gap: 8px;
-        margin-top: 10px;
+        gap: 12px;
+        margin-top: 18px;
       }
       .lvbtn {
         display: grid;
-        grid-template-columns: 64px 1fr auto;
-        gap: 10px;
+        grid-template-columns: 76px auto 2px minmax(0, 1fr) auto;
+        gap: 14px;
         align-items: center;
         text-align: left;
-        background: rgba(255, 255, 255, 0.95);
+        background: #fff;
         color: var(--ink);
-        border-radius: 16px;
-        padding: 8px 12px;
-        border: 2px solid #fff;
-        box-shadow: 0 4px 0 rgba(0, 0, 0, 0.25);
+        border-radius: 18px;
+        padding: 10px 16px 10px 12px;
+        border: 2px solid #e2edf7;
+        box-shadow: 0 6px 16px rgba(18, 60, 110, 0.08);
+      }
+      .lvbtn.current {
+        border-color: var(--sky);
+        background: #f3f9ff;
+        box-shadow: 0 0 0 3px rgba(2, 136, 209, 0.12), 0 6px 16px rgba(18, 60, 110, 0.08);
       }
       .lvbtn .no {
-        width: 56px;
-        height: 56px;
+        width: 76px;
+        height: 76px;
         border-radius: 14px;
-        background: var(--navy);
+        background: linear-gradient(180deg, #2196f3 0%, #0d63c8 100%);
         color: #fff;
-        font-weight: 900;
+        font-weight: 800;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        line-height: 1.1;
-        font-size: 24px;
+        line-height: 1.05;
+        font-size: 34px;
+        box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.12);
       }
       .lvbtn .no small {
-        font-size: 10px;
-      }
-      .lvbtn .name {
-        font-weight: 900;
-        line-height: 1.9;
-      }
-      .lvbtn .goal {
         font-size: 13px;
-        color: var(--ink-soft);
         font-weight: 700;
-        line-height: 1.8;
-      }
-      .lvbtn .score {
-        text-align: right;
-        font-weight: 900;
-        white-space: nowrap;
-        font-size: 14px;
-      }
-      .lvbtn.locked {
-        opacity: 0.6;
-      }
-      .lvbtn.locked .no {
-        background: var(--ink-faint);
+        margin-bottom: 2px;
       }
       .badge {
         display: inline-block;
         font-size: 11px;
-        font-weight: 900;
+        font-weight: 800;
         padding: 0 8px;
         border-radius: 999px;
         background: var(--sun);
-        color: var(--night);
+        color: #3a2a00;
         margin-right: 6px;
         vertical-align: middle;
         line-height: 1.8;
       }
+      .lvbtn .badge {
+        display: inline-block;
+        min-width: 96px;
+        text-align: center;
+        font-size: 17px;
+        font-weight: 800;
+        padding: 4px 16px;
+        border-radius: 999px;
+        background: linear-gradient(180deg, #ffe48f 0%, #ffd15a 100%);
+        color: #4a3300;
+        line-height: 1.9;
+        margin: 0;
+        white-space: nowrap;
+      }
+      .lvbtn .sep {
+        width: 2px;
+        height: 44px;
+        background: #dfe8f1;
+        border-radius: 2px;
+      }
+      .lvbtn .txt {
+        min-width: 0;
+      }
+      .lvbtn .name {
+        display: block;
+        font-weight: 800;
+        font-size: clamp(18px, 2vw, 24px);
+        line-height: 1.9;
+        color: #13263f;
+      }
+      .lvbtn .goal {
+        display: block;
+        font-size: 15px;
+        color: #5d7189;
+        font-weight: 700;
+        line-height: 1.9;
+      }
+      .lvbtn .end {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .lvbtn .got {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        font-weight: 800;
+        font-size: 15px;
+      }
+      .lvbtn .got small {
+        font-size: 12px;
+        color: var(--ink-soft);
+      }
+      .go-circle {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--sky);
+        color: #fff;
+        font-size: 28px;
+        line-height: 36px;
+        text-align: center;
+        font-weight: 800;
+        box-shadow: 0 3px 8px rgba(2, 136, 209, 0.35);
+      }
+      .lock {
+        width: 30px;
+        height: 30px;
+        fill: #a6b3c1;
+      }
+      .lvbtn.locked {
+        background: #fbfdff;
+        cursor: default;
+      }
+      /* 見本どおり、ロックの カードも 字は 濃い まま（ブラウザの「押せない ボタンを 薄く する」を 打ち消す） */
+      .lvbtn:disabled {
+        opacity: 1;
+      }
+      .lvbtn.locked .badge {
+        filter: saturate(0.6);
+      }
+      .lvbtn.locked .no {
+        background: linear-gradient(180deg, #8d99a7 0%, #6f7c8b 100%);
+      }
+      .lvbtn.locked .name {
+        color: #2a3b4f;
+      }
+      @media (max-width: 560px) {
+        .lvbtn {
+          grid-template-columns: 58px minmax(0, 1fr) auto;
+          gap: 10px;
+        }
+        .lvbtn .no {
+          width: 58px;
+          height: 58px;
+          font-size: 26px;
+        }
+        .lvbtn .badge,
+        .lvbtn .sep {
+          display: none;
+        }
+      }
       .keybox {
-        margin-top: 12px;
-        background: rgba(255, 255, 255, 0.95);
-        color: var(--ink);
+        margin-top: 14px;
+        background: #fff;
+        border: 2px solid #e2edf7;
         border-radius: 14px;
         padding: 10px 12px;
         font-weight: 800;
         font-size: 14px;
         line-height: 1.9;
       }
-      .keybox input {
+      .keyform input {
         width: 100%;
         margin: 6px 0;
         font: inherit;
@@ -1651,7 +1806,7 @@
         <button type="button" class="bar-btn" id="homeBtn" hidden></button>
         <div class="bar-title" id="barTitle"></div>
         <ol class="steps" id="steps" hidden></ol>
-        <button type="button" class="bar-btn on" id="furiBtn"></button>
+        <button type="button" class="bar-btn furi on" id="furiBtn"></button>
       </header>
       <main class="screen" id="screen"></main>
     </div>
@@ -1726,6 +1881,38 @@
           toast.timer = setTimeout(function () {
             el.hidden = true;
           }, 1800);
+        }
+
+        /**
+         * 丸ゴシック（M PLUS Rounded 1c）の 字の 定義を、親の 画面（アプリ）から 借りる。
+         * アプリは 字を 手元に 置いて いて（public/fonts/rounded・字の 範囲ごとに 分かれた ファイル）、
+         * その 定義は アプリの CSS に ある。同じ 置き場なので 読める。ファイル名を ここに 写さない
+         *（字を 作り直すと 名前が 変わる）。借りられない ときは 端末の 丸ゴシック・ゴシックに なる。
+         */
+        function adoptAppFonts() {
+          try {
+            if (!window.parent || window.parent === window) return;
+            var sheets = window.parent.document.styleSheets;
+            var rules = [];
+            for (var i = 0; i < sheets.length; i += 1) {
+              var list;
+              try {
+                list = sheets[i].cssRules;
+              } catch (error) {
+                continue;
+              }
+              for (var k = 0; k < list.length; k += 1) {
+                var rule = list[k];
+                if (rule.type === 5 && /M PLUS Rounded 1c/.test(rule.cssText)) rules.push(rule.cssText);
+              }
+            }
+            if (rules.length === 0) return;
+            var style = document.createElement("style");
+            style.textContent = rules.join("\n");
+            document.head.appendChild(style);
+          } catch (error) {
+            /* 借りられなくても 表示は 続ける */
+          }
         }
 
         /* ============================================================ 保存 */
@@ -1927,12 +2114,13 @@
           var steps = document.getElementById("steps");
           home.innerHTML = "≡ " + R(D.ui.title);
           home.hidden = view.screen === "title";
-          furi.innerHTML = R(D.ui.furigana);
-          furi.classList.toggle("on", save.furigana);
+          furi.className = "bar-btn furi" + (save.furigana ? " on" : "");
+          furi.setAttribute("aria-pressed", save.furigana ? "true" : "false");
+          furi.innerHTML = R(D.ui.furigana) + '<span class="switch" aria-hidden="true"></span>';
           document.body.classList.toggle("nofuri", !save.furigana);
           if (view.screen === "level") {
             var level = LEVELS[view.level];
-            title.innerHTML = R(D.ui.levelWord + level.no + "　" + level.title);
+            title.innerHTML = '<span class="ic">💻</span>' + R(D.ui.levelWord + level.no + "　" + level.title);
             var now = stepOf(pagesFor(level)[view.page]);
             var names = [D.ui.stepExplain, D.ui.stepCall, D.ui.stepTalk, D.ui.stepResult];
             steps.innerHTML = names
@@ -1942,7 +2130,7 @@
               .join("");
             steps.hidden = false;
           } else {
-            title.innerHTML = R(view.screen === "intro" ? D.ui.intro : D.title);
+            title.innerHTML = '<span class="ic">💻</span>' + R(view.screen === "intro" ? D.ui.intro : D.title);
             steps.hidden = true;
           }
         }
@@ -1996,19 +2184,39 @@
           }
         }
 
+        /** Gemini の キーを 入れる 欄（タイトルと 相談の 画面）。 */
+        function keyFormHtml() {
+          return (
+            '<div class="keyform"><label for="keyInput">' +
+            R(D.ui.keyLabel) +
+            '</label><input id="keyInput" type="password" autocomplete="off" /><button type="button" class="btn small" data-act="savekey">' +
+            R(D.ui.keySave) +
+            "</button></div>"
+          );
+        }
+
         function renderTitle() {
           var open = L.openLevelCount(save, LEVELS.length);
+          /* いま 進める レベル（開いて いて まだ 合格して いない 最初の もの）を 強く 見せる */
+          var current = -1;
+          for (var n = 0; n < open; n += 1) {
+            if (!(save.levels[LEVELS[n].id] || {}).stars) {
+              current = n;
+              break;
+            }
+          }
           var html =
-            '<div class="scroll"><div class="title-screen">' +
+            '<div class="scroll"><div class="title-screen" data-testid="title">' +
+            '<div class="title-photo" aria-hidden="true"></div>' +
             '<img class="title-hendy" src="' +
             `${img(D.partner.figures.neutral)}` +
             '" alt="" />' +
-            '<div class="title-inner"><h1>' +
+            '<div class="title-inner"><h1 class="title-h1">' +
             R(D.title) +
             '</h1><p class="lead">' +
             R(D.subtitle) +
             "</p>" +
-            '<button type="button" class="btn sub small" data-act="intro">📘 ' +
+            '<button type="button" class="btn intro-btn" data-act="intro">📖 ' +
             R(D.ui.intro) +
             "</button>" +
             '<div class="levels">';
@@ -2018,6 +2226,7 @@
             html +=
               '<button type="button" class="lvbtn' +
               (locked ? " locked" : "") +
+              (at === current ? " current" : "") +
               '" data-act="level" data-level="' +
               at +
               '"' +
@@ -2028,26 +2237,24 @@
               R(D.ui.levelWord) +
               "</small>" +
               level.no +
-              '</span><span><span class="name"><span class="badge">' +
+              '</span><span class="badge">' +
               R(level.badge) +
-              "</span>" +
+              '</span><span class="sep" aria-hidden="true"></span><span class="txt"><span class="name">' +
               R(level.title) +
-              '</span><span class="goal" style="display:block">' +
+              '</span><span class="goal">' +
               R(locked ? D.ui.locked : level.goal) +
-              '</span></span><span class="score">' +
-              (mine.stars ? stars(mine.stars) + "<br />" + R(D.ui.bonusTitle) + " ＋" + (mine.bonus || 0) : locked ? "🔒" : "▶") +
+              '</span></span><span class="end">' +
+              (mine.stars
+                ? '<span class="got">' + stars(mine.stars) + "<small>" + R(D.ui.bonusTitle) + " ＋" + (mine.bonus || 0) + "</small></span>"
+                : "") +
+              (locked
+                ? '<svg class="lock" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10V7a5 5 0 0 1 10 0v3h1a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h1zm2 0h6V7a3 3 0 0 0-6 0v3zm3 4a1.5 1.5 0 0 0-.8 2.8V18h1.6v-1.2A1.5 1.5 0 0 0 12 14z"/></svg>'
+                : '<span class="go-circle" aria-hidden="true">›</span>') +
               "</span></button>";
           });
           html += "</div>";
           if (!getKey()) {
-            html +=
-              '<div class="keybox"><label for="keyInput">' +
-              R(D.ui.keyLabel) +
-              '</label><input id="keyInput" type="password" autocomplete="off" /><button type="button" class="btn small" data-act="savekey">' +
-              R(D.ui.keySave) +
-              '</button><p class="fine">' +
-              R(D.ui.noKey) +
-              "</p></div>";
+            html += '<div class="keybox">' + keyFormHtml() + '<p class="fine">' + R(D.ui.noKey) + "</p></div>";
           }
           html += "</div></div></div>";
           screenEl.innerHTML = html;
@@ -2679,8 +2886,7 @@
           if (typedNow) talk.typedDraft = typedNow.value;
           var noKey = !getKey();
           var support = L.supportLevel(talk.fails);
-          /* お手本を 見せて「言えば 合格」に する とき（3回 失敗・キーが 無い・AI が 届かない） */
-          var showModel = support >= 3 || !aiAvailable() || talk.error === "quota" || talk.error === "ai";
+          /* お手本は 合格した あと だけ（2026-11-18「答えのようなもので そのまま 棒読みできてしまう」→「合格したあとだけ」） */
           if (support >= 2 && !talk.hintsOpen && !talk.passed) {
             talk.hintsOpen = true;
             talk.hintsSeen = true;
@@ -2713,7 +2919,6 @@
             html += '<div class="box"><h4>🗣 ' + R(D.ui.checklistTitle) + "</h4>" + checklistHtml(level, talk.phase === "result" ? j : null) + "</div>";
             html += factsHtml(level);
             html += hintsHtml(level);
-            if (showModel) html += modelHtml(level, true);
             /*
              * マイクの ボタンは パネルの 下に 固定する（下まで スクロールしないと 見えず、
              * 「マイクで 話しかける ボタンが ない」と なった・2026-11-18 要望 #766）
@@ -2845,16 +3050,6 @@
           );
         }
 
-        function modelHtml(level, toRead) {
-          return (
-            '<div class="box model" data-testid="model"><h4>📗 ' +
-            R(D.ui.modelTitle) +
-            "</h4>" +
-            (toRead ? '<p class="fine" style="margin:0 0 4px">' + R(D.ui.modelRead) + "</p>" : "") +
-            segsHtml(level.model) +
-            "</div>"
-          );
-        }
 
         function segsHtml(segs) {
           return segs
@@ -2903,14 +3098,13 @@
                   ? D.ui.aiQuota
                   : talk.error === "mic"
                     ? D.ui.micDenied
-                    : talk.error === "mismatch"
-                      ? D.ui.modelMismatch
-                      : D.ui.aiError,
+                    : D.ui.aiError,
               ) +
               "</p>";
           }
           if (noKey) {
-            html += '<p class="box" style="font-weight:800">🔑 ' + R(D.ui.noKey) + "</p>";
+            html += '<div class="box" style="font-weight:800">🔑 ' + R(D.ui.noKey) + keyFormHtml() + "</div>";
+            return html;
           }
           /*
            * 文字で 送るのは マイクが 使えない ときだけ（2026-11-18 要望 #765）: キーが 無い・
@@ -2983,7 +3177,7 @@
         function passedHtml(level) {
           var j = talk.judgment;
           var mine = levelSave(level.id);
-          var starsNow = j && j.byModel ? 1 : L.starsForFails(talk.fails);
+          var starsNow = L.starsForFails(talk.fails);
           var html =
             '<div class="verdict pass" data-testid="verdict-pass"><span class="big">⭕ ' +
             R(D.ui.pass) +
@@ -2992,7 +3186,7 @@
             "　" +
             (talk.fails > 0 ? R(D.ui.retryTimes.replace("{N}", String(talk.fails))) : "") +
             "<br />" +
-            R(j && j.byModel ? D.ui.byModel : D.ui.passLead) +
+            R(D.ui.passLead) +
             '<div class="next">👉 ' +
             R(D.ui.nextAction) +
             "：" +
@@ -3274,28 +3468,8 @@
           var said = String(utterance || "").trim();
           if (!said || talk.phase === "judging") return;
           talk.heard = said;
-          /* お手本を 見せて いる とき（3回 失敗・AI が 使えない・届かない）は、お手本を 言えば 合格（星 1つ） */
-          var ai = aiAvailable();
-          var modelShown = L.supportLevel(talk.fails) >= 3 || !ai || talk.error === "quota" || talk.error === "ai";
-          if (modelShown && L.readsModel(said, level.model)) {
-            passWith(level, {
-              pass: true,
-              parts: allParts(level),
-              missing: [],
-              bonus: [],
-              ownWords: false,
-              addedOwn: false,
-              templateOnly: false,
-              choice: "none",
-              failure: "none",
-              heard: said,
-              byModel: true,
-            });
-            return;
-          }
-          if (!ai) {
-            /* AI で 見られない。お手本と ちがう ことを はっきり 言う */
-            talk.error = "mismatch";
+          /* AI で 見られない（キーが 無い）ときは 送らない。キーを 入れる 欄を 出して いる */
+          if (!aiAvailable()) {
             renderConsult(level);
             return;
           }
@@ -3346,8 +3520,7 @@
           talk.face = "happy";
           talk.reply = D.ui.passReply;
           var mine = levelSave(level.id);
-          /* お手本を 見て 言えた ときは 星 1つ（logic の 決まり「お手本を 読んで 1つ」）。正解にも 数えない */
-          var got = j.byModel ? 1 : L.starsForFails(talk.fails);
+          var got = L.starsForFails(talk.fails);
           var points = L.bonusPoints(j);
           mine.stars = Math.max(mine.stars || 0, got);
           mine.bonus = Math.max(mine.bonus || 0, points);
@@ -3355,7 +3528,7 @@
           writeSave();
           reportProgress();
           var note = "（" + D.ui.levelWord.replace(/\{([^{}|]+)\|[^{}|]+\}/g, "$1") + level.no + "・★" + got + "・加点＋" + points + "）";
-          reportAnswers([{ id: level.id, text: (L.attemptsText(talk.attempts) + " " + note).slice(0, 1000), correct: talk.fails === 0 && !j.byModel }], talk.attemptId);
+          reportAnswers([{ id: level.id, text: (L.attemptsText(talk.attempts) + " " + note).slice(0, 1000), correct: talk.fails === 0 }], talk.attemptId);
           renderConsult(level);
         }
 
@@ -3626,7 +3799,8 @@
               } catch (error) {
                 /* 保存できない */
               }
-              renderTitle();
+              if (view.screen === "level") renderConsult(level);
+              else renderTitle();
             }
             return;
           }
@@ -3724,6 +3898,7 @@
         /* ============================================================ はじめ */
 
         document.title = D.title.replace(/\{([^{}|]+)\|[^{}|]+\}/g, "$1");
+        adoptAppFonts();
         post({ type: "nexmax:link-owns-done" });
         post({ type: "nexmax:link-progress-request" });
         /*
