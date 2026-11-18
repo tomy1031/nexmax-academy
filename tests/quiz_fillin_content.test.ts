@@ -167,6 +167,20 @@ describe("AIが 中身で 見て よい 欄", () => {
   it("空の 欄は 渡さない", () => {
     expect(aiMay("全社員", "  ")).toBe(false);
   });
+
+  /*
+   * 2026-11-18 の 指定「言っている内容に問題なくて、言葉として不自然でなければOKとなるように」
+   *「自分で文章を組み立てるべき問題がNGとなっています」。正解が みじかい 欄（15:00）で、
+   * 自分で 組み立てた 文が 長さの 見張りに かかり、AIにも 渡らず ✗で 決まって いた。
+   */
+  it("正解が みじかい 欄でも、自分で 組み立てた 文 1つは AIに 渡す", () => {
+    expect(ok("15:00", "明日の15:00開始に変更してください")).toBe(false);
+    expect(aiMay("15:00", "明日の15:00開始に変更してください")).toBe(true);
+    expect(aiMay("15:00", "明日の15:00からに変更していただけますか")).toBe(true);
+    expect(aiMay("15:00", "明日の15時から")).toBe(true);
+    // 数字が ちがえば 文でも 渡さない
+    expect(aiMay("15:00", "明日の16:00開始に変更してください")).toBe(false);
+  });
 });
 
 describe("AIの 返事の 読み取り（欄）", () => {
@@ -215,6 +229,16 @@ describe("AIの 返事の 読み取り（欄）", () => {
     expect(prompt).toContain("- f1（宛先）: ✗（中身で 見て ください）");
     expect(prompt).toContain("- f2（問題）: ✗ /");
     expect(prompt).toContain("1字1句 同じで なくて よい");
+  });
+
+  it("頼みの 文で、チャットや 正解と 同じ 言い方で なくて よいと 伝える（2026-11-18）", () => {
+    const prompt = buildQuizReviewPrompt(context);
+    expect(prompt).toContain(
+      "チャット（場面の メモ）や 正解と 同じ 言い方で ある 必要は ありません",
+    );
+    expect(prompt).toContain("自分で 組み立てた 文");
+    expect(prompt).toContain("日本語として 不自然で なければ");
+    expect(prompt).toContain("を ✗の 理由に しません");
   });
 
   it("学生の ことばは 囲いの 中だけに 置く（欄に 書いた 指示で ⭕を 取らせない）", () => {
