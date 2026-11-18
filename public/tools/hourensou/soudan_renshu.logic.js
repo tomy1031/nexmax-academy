@@ -33,7 +33,14 @@
     return {
       type: "OBJECT",
       properties: props,
-      required: PART_KEYS.concat(["own_words", "bonus", "choice", "decided_alone", "off_topic", "unclear"]),
+      required: PART_KEYS.concat([
+        "own_words",
+        "bonus",
+        "choice",
+        "decided_alone",
+        "off_topic",
+        "unclear",
+      ]),
     };
   }
 
@@ -67,7 +74,9 @@
       "相談の 5つの 要素（それぞれ true / false）:",
     ];
     PART_KEYS.forEach(function (key) {
-      lines.push("- " + key + "（" + labels[key] + "）: " + (parts[key] || "（このレベルでは見ない）"));
+      lines.push(
+        "- " + key + "（" + labels[key] + "）: " + (parts[key] || "（このレベルでは見ない）"),
+      );
     });
     lines.push("この レベルで 必ず 要る 要素: " + (ai.required || []).join(", "));
     lines.push("");
@@ -81,11 +90,18 @@
     lines.push("unclear: 文が 短すぎる・ほとんど 意味が とれない（相談に なって いない）。");
     lines.push("");
     lines.push("own_words（自分で 考えた 文か）:");
-    lines.push("学生には 次の ヒント（文の 型）を 見せる ことが あります: " + (level.hints || []).map(plain).join(" "));
+    lines.push(
+      "学生には 次の ヒント（文の 型）を 見せる ことが あります: " +
+        (level.hints || []).map(plain).join(" "),
+    );
     lines.push(
       "ヒントの 型の 空欄を 埋めた だけの 文なら false。ヒントに 無い 内容（理由・期限・数字・自分の 案・比べた こと・別の 言い方 など）を 自分で 1つ 以上 足して いれば true。",
     );
-    lines.push("（参考: 学生は この 相談の 前に ヒントを " + (hintsOpened ? "開きました" : "開いて いません") + "。）");
+    lines.push(
+      "（参考: 学生は この 相談の 前に ヒントを " +
+        (hintsOpened ? "開きました" : "開いて いません") +
+        "。）",
+    );
     lines.push("");
     var bonusIds = Object.keys(bonus);
     if (bonusIds.length > 0) {
@@ -98,7 +114,9 @@
     }
     var choiceIds = Object.keys(choices);
     if (choiceIds.length > 0) {
-      lines.push("choice（学生が いいと 言った 方法・先に する 仕事・選んだ API。当てはまらなければ none）:");
+      lines.push(
+        "choice（学生が いいと 言った 方法・先に する 仕事・選んだ API。当てはまらなければ none）:",
+      );
       choiceIds.forEach(function (id) {
         lines.push("- " + id + ": " + choices[id]);
       });
@@ -145,7 +163,8 @@
         })
       : [];
     var choiceKeys = Object.keys(ai.choices || {});
-    var choice = typeof raw.choice === "string" && choiceKeys.indexOf(raw.choice) >= 0 ? raw.choice : "none";
+    var choice =
+      typeof raw.choice === "string" && choiceKeys.indexOf(raw.choice) >= 0 ? raw.choice : "none";
     var decidedAlone =
       asBool(raw.decided_alone) && !!ai.decidedAlone && ai.decidedAlone.indexOf("false") < 0;
     var offTopic = asBool(raw.off_topic);
