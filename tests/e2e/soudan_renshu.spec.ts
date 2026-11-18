@@ -121,8 +121,8 @@ test("レベル1を 最後まで: 席の 絵を 見て 話しかけ、マイク�
   const tool = await openHarness(
     page,
     [
-      "お店の 一覧画面を 作って います。写真が ありません。",
-      "お店の 一覧画面を 作って います。写真が ありません。仮の 写真を 使っても いいですか。",
+      "お店の 一覧画面を 作って います。並べる 順番が 決まって いません。",
+      "お店の 一覧画面を 作って います。並べる 順番が 決まって いません。近い 順に しても いいですか。",
     ],
     [
       {
@@ -154,8 +154,9 @@ test("レベル1を 最後まで: 席の 絵を 見て 話しかけ、マイク�
     if (i === 4) await shot(page, "soudan-renshu-03-options");
     await next(tool);
   }
-  /* 伝える こと（3つ）。メモを 書ける */
-  await expect(tool.locator(".check")).toHaveCount(3);
+  /* 伝える こと（3つ ＋ 言えたら ボーナスの「どんな 方法が いいか」）。メモを 書ける */
+  await expect(tool.locator(".check")).toHaveCount(4);
+  await expect(tool.locator(".check").nth(2)).toContainText("方法");
   await tool.getByTestId("memo-1").fill("おみせの いちらんがめん");
   await shot(page, "soudan-renshu-03-checklist");
   await next(tool);
@@ -184,7 +185,17 @@ test("レベル1を 最後まで: 席の 絵を 見て 話しかけ、マイク�
   await expect(tool.getByTestId("typed")).toHaveCount(0);
   /* お手本は 合格する まで 出さない（2026-11-18「答えのようなもので棒読みできてしまう」→「合格したあとだけ」） */
   await expect(tool.locator(".model")).toHaveCount(0);
-  await expect(tool.getByTestId("facts")).toBeVisible();
+  /* 場面の メモは 出さない（答えに なる・2026-11-18 要望 #775） */
+  await expect(tool.getByTestId("facts")).toHaveCount(0);
+  /* マイクの ボタンの 🎤 は 1つ だけ（要望 #776） */
+  expect(((await tool.getByTestId("mic").textContent()) ?? "").match(/🎤/gu)).toHaveLength(1);
+  /* 画面の 文は 選べず、コピーも できない（要望 #770） */
+  const copyBlocked = await tool.locator("body").evaluate((body) => {
+    const event = new Event("copy", { bubbles: true, cancelable: true });
+    body.querySelector(".bubble")?.dispatchEvent(event);
+    return { prevented: event.defaultPrevented, select: getComputedStyle(body).userSelect };
+  });
+  expect(copyBlocked).toEqual({ prevented: true, select: "none" });
   await expect(tool.getByTestId("memo-read-1")).toContainText("おみせの いちらんがめん");
   await shot(page, "soudan-renshu-05-mic");
   /* 相談の とちゅうで 説明の 絵を 見返せる（めくって 閉じると 相談の まま） */
@@ -207,10 +218,17 @@ test("レベル1を 最後まで: 席の 絵を 見て 話しかけ、マイク�
   /* 2回目は ヒントを 開いて マイクで 話す → 合格（ヒントを うめた だけ）→ 星・ボーナス・もっと 伝わる 言い方 */
   await tool.getByTestId("hint-btn").click();
   await expect(tool.getByTestId("hints")).toBeVisible();
+  /* ヒントは 型ごと（要望 #777）。合格に 要らない「自分の 考え」は 言えたら ボーナス */
+  for (const part of ["jokyo", "mondai", "kangae", "soudan"])
+    await expect(tool.getByTestId(`hint-${part}`)).toBeVisible();
+  await expect(tool.getByTestId("hint-kangae")).toContainText("ボーナス");
+  await shot(page, "soudan-renshu-05c-hints");
   await speak(tool);
   await expect(tool.getByTestId("verdict-pass")).toBeVisible();
   await expect(tool.getByTestId("bonus")).toBeVisible();
   await expect(tool.getByTestId("better")).toBeVisible();
+  /* お手本に ボーナスの 文が 2つ（いつまでか・考えと 理由）。印が 付く（要望 #778） */
+  await expect(tool.getByTestId("model-bonus")).toHaveCount(2);
   expect(await bare(page)).toEqual([]);
   await shot(page, "soudan-renshu-06-pass");
 
@@ -248,7 +266,7 @@ test("勝手に 決めて 言うと やり直し（許可を 聞く ことを �
   );
   const tool = await openHarness(
     page,
-    ["仮の 写真で 進めます。"],
+    ["近い 順に します。"],
     [
       {
         ...ALL,
@@ -293,7 +311,14 @@ test("マイクに 2回 つながらない ときだけ、文を 書いて 送�
   await expect(tool.getByTestId("typed")).toHaveCount(0);
   await tool.getByTestId("mic-connect").click();
   await expect(tool.getByTestId("typed")).toBeVisible();
-  await tool.getByTestId("typed").fill("かりの しゃしんを つかっても いいですか。");
+  /* 文の 欄にも 貼り付けは できない（要望 #770） */
+  const pasteBlocked = await tool.getByTestId("typed").evaluate((area) => {
+    const event = new Event("paste", { bubbles: true, cancelable: true });
+    area.dispatchEvent(event);
+    return event.defaultPrevented;
+  });
+  expect(pasteBlocked).toBe(true);
+  await tool.getByTestId("typed").fill("ちかい じゅんに しても いいですか。");
   await tool.getByTestId("send-typed").click();
   await expect(tool.getByTestId("verdict-pass")).toBeVisible();
 });

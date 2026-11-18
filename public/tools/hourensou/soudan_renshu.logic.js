@@ -92,7 +92,11 @@
     lines.push("own_words（自分で 考えた 文か）:");
     lines.push(
       "学生には 次の ヒント（文の 型）を 見せる ことが あります: " +
-        (level.hints || []).map(plain).join(" "),
+        (level.hints || [])
+          .map(function (hint) {
+            return plain(hint.text);
+          })
+          .join(" "),
     );
     lines.push(
       "ヒントの 型の 空欄を 埋めた だけの 文なら false。ヒントに 無い 内容（理由・期限・数字・自分の 案・比べた こと・別の 言い方 など）を 自分で 1つ 以上 足して いれば true。",

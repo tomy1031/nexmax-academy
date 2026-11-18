@@ -59,7 +59,7 @@ export const LINK_ANSWER_PROMPTS: Readonly<Record<string, Readonly<Record<string
    *（ずれたら `tests/soudan_renshu_tool.test.ts` が 止める）。
    */
   soudan_renshu: {
-    l1: "レベル1 写真が ありません — マイクで 相談（何回目に 何と 言ったか）",
+    l1: "レベル1 並べる 順番が 決まって いません — マイクで 相談（何回目に 何と 言ったか）",
     l2: "レベル2 ログインが できません — マイクで 相談（何回目に 何と 言ったか）",
     l3: "レベル3 お客様から 画像が 届きません — マイクで 相談（何回目に 何と 言ったか）",
     l4: "レベル4 どちらの 仕事を 先に しますか — マイクで 相談（何回目に 何と 言ったか）",

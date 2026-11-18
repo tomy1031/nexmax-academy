@@ -67,6 +67,14 @@
         color: var(--ink);
         background: var(--night);
         overflow: hidden;
+        /* 画面の 文は 選べない（コピーして 答えに 貼らせない・2026-11-18 要望 #770）。自分で 書く 欄だけ 選べる */
+        -webkit-user-select: none;
+        user-select: none;
+      }
+      textarea,
+      input {
+        -webkit-user-select: text;
+        user-select: text;
       }
       body.nofuri rt {
         display: none;
@@ -327,20 +335,6 @@
         display: block;
         font-size: 12px;
         color: var(--sky-deep);
-      }
-      .facts {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 6px;
-      }
-      .facts span {
-        background: var(--sky-soft);
-        border: 1.5px solid var(--line);
-        border-radius: 10px;
-        padding: 0 8px;
-        font-weight: 800;
-        font-size: 14px;
-        line-height: 2;
       }
       .caption .note {
         display: inline-block;
@@ -1471,6 +1465,44 @@
       }
       .box.hints p {
         margin: 2px 0;
+      }
+      /* ヒントは 型（5つ）ごとに まとめる（2026-11-18「型と伝えたい内容が整理されていない」） */
+      .hint-part {
+        margin: 6px 0;
+        padding: 4px 0 4px 10px;
+        border-left: 5px solid var(--c);
+      }
+      .hint-part .hp-head {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 6px;
+      }
+      .hint-part .hp-ask {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--ink-soft);
+      }
+      .hint-part p {
+        margin: 2px 0 0;
+        font-weight: 800;
+      }
+      /* お手本の 中の ボーナスの 文（2026-11-18「お手本の中にボーナスとなる内容がありません」） */
+      .bonus-chip {
+        display: inline-block;
+        margin-left: 6px;
+        padding: 0 8px;
+        border-radius: 999px;
+        background: var(--sun-soft);
+        border: 1.5px solid var(--sun-deep);
+        color: var(--sun-deep);
+        font-size: 12px;
+        font-weight: 900;
+        line-height: 1.9;
+        white-space: nowrap;
+      }
+      .seg.cont {
+        margin-top: -2px;
       }
       .box.heard {
         border-color: var(--sky);
@@ -2917,7 +2949,7 @@
           } else {
             if (talk.phase === "result" && j) html += retryHtml(level, j);
             html += '<div class="box"><h4>🗣 ' + R(D.ui.checklistTitle) + "</h4>" + checklistHtml(level, talk.phase === "result" ? j : null) + "</div>";
-            html += factsHtml(level);
+            html += notesHtml(level);
             html += hintsHtml(level);
             /*
              * マイクの ボタンは パネルの 下に 固定する（下まで スクロールしないと 見えず、
@@ -2997,24 +3029,12 @@
         }
 
         /**
-         * 場面の メモ（説明の スライドの 数字と 事実）。相談の 画面に 戻らずに 見られる ように
-         *（検収の 指摘「3時間・4時間・6時間は 説明の スライドにしか 無い」）。
-         * レベル5は 自分の 課題③の メモも 出す。
+         * レベル5の 自分の 課題③の メモ（本人が 書いた もの）。
+         * 場面の メモ（説明の 数字と 事実を 並べた もの）は 出さない——答えに なって しまう
+         *（2026-11-18「場面のメモも答えになってしまうので非表示がいいです」）。数字は「📖 説明を 見る」で 見返す。
          */
-        function factsHtml(level) {
+        function notesHtml(level) {
           var html = "";
-          if (level.facts && level.facts.length) {
-            html +=
-              '<details class="box" open data-testid="facts"><summary>📋 ' +
-              R(D.ui.factsTitle) +
-              '</summary><div class="facts">' +
-              level.facts
-                .map(function (fact) {
-                  return "<span>" + R(fact) + "</span>";
-                })
-                .join("") +
-              "</div></details>";
-          }
           if (level.worksheet) {
             var notes = level.worksheet.thoughts
               .map(function (one) {
@@ -3027,15 +3047,54 @@
           return html;
         }
 
+        /**
+         * ヒントを 型（5つ）ごとに まとめる。型の 名前・その 型で 伝える こと（parts の ask）・文の 型 の 順。
+         * 並びは データに 出てきた 順（レベル5は 確認した こと → 考え → まだ わからない こと の 順で 話す）。
+         * 合格に 要らない 型には「＋ 言えたら ボーナス」を 付ける。
+         */
+        function hintGroups(level) {
+          var order = [];
+          var byPart = {};
+          level.hints.forEach(function (hint) {
+            if (!byPart[hint.part]) {
+              byPart[hint.part] = [];
+              order.push(hint.part);
+            }
+            byPart[hint.part].push(hint.text);
+          });
+          return order.map(function (key) {
+            return { part: key, texts: byPart[key] };
+          });
+        }
+
         function hintsHtml(level) {
           if (talk.hintsOpen) {
+            var required = level.ai.required || [];
             return (
               '<div class="box hints" data-testid="hints"><h4>💡 ' +
               R(D.ui.hintTitle) +
               "</h4>" +
-              level.hints
-                .map(function (hint) {
-                  return "<p>" + R(hint) + "</p>";
+              hintGroups(level)
+                .map(function (group) {
+                  var part = D.parts[group.part];
+                  return (
+                    '<div class="hint-part c-' +
+                    part.color +
+                    '" data-testid="hint-' +
+                    group.part +
+                    '"><div class="hp-head">' +
+                    partTag(group.part) +
+                    (required.indexOf(group.part) < 0 ? '<span class="tag c-sun">＋ ' + R(D.ui.optional) + "</span>" : "") +
+                    '<span class="hp-ask">' +
+                    R(part.ask) +
+                    "</span></div>" +
+                    group.texts
+                      .map(function (text) {
+                        return "<p>" + R(text) + "</p>";
+                      })
+                      .join("") +
+                    "</div>"
+                  );
                 })
                 .join("") +
               "</div>"
@@ -3051,11 +3110,31 @@
         }
 
 
-        function segsHtml(segs) {
+        /**
+         * お手本の 文を 型ごとに 出す。同じ 型が 続く ときは 型の 札を 1回だけ にする（「状況 状況」と 並べない）。
+         * ボーナスに なる 文には、どの ボーナスかを 札で 付ける（2026-11-18 要望 #778）。
+         */
+        function segsHtml(segs, level) {
+          var bonusLabels = {};
+          (level.bonus || []).forEach(function (one) {
+            bonusLabels[one.id] = one.label;
+          });
           return segs
-            .map(function (seg) {
+            .map(function (seg, at) {
               var part = D.parts[seg.part];
-              return '<span class="seg c-' + part.color + '">' + partTag(seg.part) + R(seg.text) + "</span>";
+              var cont = at > 0 && segs[at - 1].part === seg.part;
+              return (
+                '<span class="seg c-' +
+                part.color +
+                (cont ? " cont" : "") +
+                '">' +
+                (cont ? "" : partTag(seg.part)) +
+                R(seg.text) +
+                (seg.bonus && bonusLabels[seg.bonus]
+                  ? '<span class="bonus-chip" data-testid="model-bonus">⭐ ' + R(D.ui.bonusTitle) + "：" + R(bonusLabels[seg.bonus]) + "</span>"
+                  : "") +
+                "</span>"
+              );
             })
             .join("");
         }
@@ -3266,7 +3345,7 @@
             "><summary>📗 " +
             R(D.ui.modelTitle) +
             "</summary>" +
-            segsHtml(level.model) +
+            segsHtml(level.model, level) +
             '<p class="fine">' +
             R(level.modelNote) +
             "</p></details>";
@@ -3860,6 +3939,25 @@
               toast(D.ui.copied);
             });
           }
+        });
+
+        /*
+         * 場面の 文・ヘンディさんの ことば・ヒントを コピーして 答えに 貼れない ように する
+         *（2026-11-18「これらのメッセージエリアの文字のコピペ禁止」）。自分で 書く メモの 中は ふつうに 使える。
+         * 文字で 送る 欄（マイクが 使えない とき）には、貼り付けも 落とし込みも させない。
+         */
+        function inTextField(node) {
+          return !!(node && node.closest && node.closest("textarea, input"));
+        }
+        ["copy", "cut", "dragstart"].forEach(function (name) {
+          document.addEventListener(name, function (event) {
+            if (!inTextField(event.target)) event.preventDefault();
+          });
+        });
+        ["paste", "drop"].forEach(function (name) {
+          document.addEventListener(name, function (event) {
+            if (event.target && event.target.id === "typed") event.preventDefault();
+          });
         });
 
         document.addEventListener("keydown", function (event) {

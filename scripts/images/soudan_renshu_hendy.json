@@ -19,9 +19,9 @@
     {
       "out": "l1_result",
       "dest": "public/img/hourensou/soudan/renshu/l1_result.webp",
-      "title": "レベル1 結果：仮の 写真で 完成",
-      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the page is finished today with placeholder pictures, and they will be swapped for real photos later. Hendy and the new engineer look together at her large monitor. It shows a shop list web page with the first words as the heading and six shop cards; each card's photo area shows the same grey placeholder (a camera icon with a line through it and the second words). A curved arrow from one placeholder points to a small colourful real shop photo floating beside the monitor, to show it will be replaced later. Hendy gives a big thumbs-up with a big smile; the new engineer beams with relief and sparkles. A speech balloon from Hendy says the third word.",
-      "text": ["SHOP LIST", "NO IMAGE", "OK!"]
+      "title": "レベル1：近い 順で 完成",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: the page is finished today, with the shops listed from the one closest to the person using the app. Hendy and the new engineer look together at her large monitor. It shows the shop list page with the first words below as the heading, drawn inside a phone-shaped preview: a small map strip at the top with a blue 'you are here' dot, and three shop rows with small colourful photos; on the right of each row a distance is printed big, growing from top to bottom exactly as listed below. A big green check mark sits beside the preview. Hendy gives a big thumbs-up with a big smile; the new engineer beams with relief and sparkles. A speech balloon from Hendy says the last word.",
+      "text": ["SHOP LIST", "100 m", "300 m", "800 m", "OK!"]
     },
     {
       "out": "l2_result",
