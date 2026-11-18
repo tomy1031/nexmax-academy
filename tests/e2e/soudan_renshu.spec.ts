@@ -165,7 +165,8 @@ test("レベル1を 最後まで: 席の 絵を 見て 話しかけ、マイク�
   await tool.getByTestId("mic-connect").click();
   await tool.getByTestId("mic").click();
   await expect(consult).toHaveAttribute("data-phase", "recording");
-  await tool.getByTestId("mic").click();
+  /* 録音中の ⏹ は 脈打つ（大きさが 動き 続ける）ので、止まるのを 待たずに 押す（5日間の テストと 同じ） */
+  await tool.getByTestId("mic").click({ force: true });
   await expect(tool.getByTestId("heard")).toContainText("写真が ありません");
   await tool.getByTestId("send").click();
 
