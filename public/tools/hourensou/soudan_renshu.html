@@ -180,11 +180,14 @@
       }
 
       /* ---------------- ボタン ---------------- */
+      /*
+       * ボタンは ふつうの 文の 並べ方に する（flex に すると、ルビと 文の 切れ端が 1つずつ
+       * 箱に なり、せまい 画面で「ヘンディさ／ん、」の ように 割れる）。
+       */
       .btn {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 6px;
+        display: inline-block;
+        text-align: center;
+        line-break: strict;
         min-height: 48px;
         padding: 8px 20px;
         border-radius: 999px;
@@ -271,6 +274,35 @@
         font-size: clamp(17px, 2.1vw, 23px);
         font-weight: 800;
         line-height: 2.05;
+      }
+      .quote {
+        margin: 4px 0 2px;
+        background: var(--sky-soft);
+        border: 2px solid var(--sky);
+        border-radius: 16px;
+        padding: 4px 12px;
+        font-weight: 800;
+        line-height: 2;
+        font-size: clamp(15px, 1.8vw, 19px);
+      }
+      .quote .who-name {
+        display: block;
+        font-size: 12px;
+        color: var(--sky-deep);
+      }
+      .facts {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .facts span {
+        background: var(--sky-soft);
+        border: 1.5px solid var(--line);
+        border-radius: 10px;
+        padding: 0 8px;
+        font-weight: 800;
+        font-size: 14px;
+        line-height: 2;
       }
       .caption .note {
         display: inline-block;
@@ -1536,8 +1568,6 @@
         var LEVELS = D.levels;
         var STORE_KEY = "nexmax:soudan_renshu:v1";
         var GEMINI_KEY = "nexmax.geminiKey";
-        /** 文字起こしと 判定に 使う モデル（使えない・上限の ときは つぎを ためす）。 */
-        var MODELS = ["gemini-2.5-flash", "gemini-2.5-flash-lite", "gemini-3.5-flash-lite"];
         var TALK_LIMIT_MS = 60000;
         var WRONG_LOCK_MS = 2000;
         var SWITCH_GRACE_MS = 600;
@@ -1566,6 +1596,15 @@
             last = re.lastIndex;
           }
           return out + esc(source.slice(last));
+        }
+
+        /**
+         * 絵の URL に 版を 付ける。`/img/*` は 1年 使い回す 設定（public/_headers）なので、
+         * 絵を 描き直した ときは データの `imageVersion` を 上げると 新しい 絵が 届く。
+         */
+        function img(path) {
+          var url = String(path || "");
+          return esc(url + (url.indexOf("?") < 0 ? "?v=" + (D.imageVersion || "1") : ""));
         }
 
         function partTag(key) {
@@ -1629,6 +1668,18 @@
           }
         }
 
+        /** 端末の 保存に 何か 進み具合が あるか。 */
+        function hasProgress(one) {
+          if (one.introSeen) return true;
+          var levels = one.levels || {};
+          for (var key in levels) if (levels[key] && levels[key].stars) return true;
+          var ws = one.worksheet || {};
+          var texts = Object.values(ws.cells || {}).concat(Object.values(ws.thoughts || {}));
+          return texts.some(function (text) {
+            return String(text || "").trim() !== "";
+          });
+        }
+
         function levelSave(id) {
           if (!save.levels[id]) save.levels[id] = { stars: 0, bonus: 0 };
           return save.levels[id];
@@ -1681,16 +1732,28 @@
           var data = event.data;
           if (!data || data.type !== "nexmax:link-progress-restore" || data.id !== LINK_ID) return;
           var owner = typeof data.owner === "string" ? data.owner : "";
-          if (owner && save.owner && save.owner !== owner) {
+          /*
+           * 持ち主が ちがう（教室の 共用 PC で 前の 人の 保存）、または 持ち主の 分からない 保存に
+           * 進み具合が ある とき は、端末の 保存を 捨てて 本人の 記録だけに する。前の 人の 星や
+           * 調べ表の 文を、つぎの 人の 名前で 先生の 記録に 送らない ため（コードの 検収）。
+           */
+          var reset = false;
+          if (owner && save.owner !== owner && (save.owner || hasProgress(save))) {
             var furigana = save.furigana;
             save = emptySave();
             save.furigana = furigana;
+            reset = true;
           }
           if (owner) save.owner = owner;
           var introBefore = save.introSeen;
           save = L.mergePosition(save, data.position, LEVELS.length);
           writeSave();
           /* 別の 端末で もう「はじめに」を 見て いた → 1枚目に いる なら タイトルへ */
+          if (reset) {
+            talk = null;
+            go(save.introSeen ? "title" : "intro", { intro: 0 });
+            return;
+          }
           if (!introBefore && save.introSeen && view.screen === "intro" && view.intro === 0) {
             go("title");
             return;
@@ -1785,7 +1848,8 @@
         }
 
         document.getElementById("homeBtn").addEventListener("click", function () {
-          stopRecording(true);
+          stopTalkIfAny();
+          talk = null;
           go("title");
         });
         document.getElementById("furiBtn").addEventListener("click", function () {
@@ -1837,7 +1901,7 @@
           var html =
             '<div class="scroll"><div class="title-screen">' +
             '<img class="title-hendy" src="' +
-            esc(D.partner.figures.neutral) +
+            `${img(D.partner.figures.neutral)}` +
             '" alt="" />' +
             '<div class="title-inner"><h1>' +
             R(D.title) +
@@ -1897,7 +1961,7 @@
           var body;
           if (slide.kind === "picture") {
             body =
-              '<div class="pic" data-act="next"><img src="' + esc(slide.image) + '" alt="" /></div>' +
+              '<div class="pic" data-act="next"><img src="' + `${img(slide.image)}` + '" alt="" /></div>' +
               captionHtml(slide.text, null, { nextLabel: last ? D.ui.start : D.ui.next, back: view.intro > 0 });
           } else {
             body =
@@ -1942,7 +2006,7 @@
               " " +
               R(part.label) +
               '</div><img src="' +
-              esc(part.image) +
+              `${img(part.image)}` +
               '" alt="" /><div class="body">' +
               R(part.ask) +
               "</div></div>";
@@ -1983,7 +2047,7 @@
                   '<div class="card' +
                   (key === "ok" ? " part c-leaf" : "") +
                   '"><img src="' +
-                  esc(D.partner.desk[key]) +
+                  `${img(D.partner.desk[key])}` +
                   '" alt="" /><div class="body">' +
                   one.icon +
                   " " +
@@ -1998,11 +2062,14 @@
           );
         }
 
-        function captionHtml(text, note, opts) {
+        function captionHtml(text, note, opts, quote) {
           return (
             '<div class="caption"><p class="text">' +
             R(text) +
             "</p>" +
+            (quote
+              ? '<div class="quote"><span class="who-name">💬 ' + R(quote.who) + "</span>「" + R(quote.text) + "」</div>"
+              : "") +
             (note ? '<span class="note">' + R(note) + "</span>" : "") +
             navHtml(opts || {}) +
             "</div>"
@@ -2026,7 +2093,7 @@
         function renderCover(level) {
           screenEl.innerHTML =
             '<div class="slide"><div class="pic" data-act="next"><img src="' +
-            esc(level.cover) +
+            `${img(level.cover)}` +
             '" alt="" /></div><div class="caption"><div class="cover-text"><p class="lvno">' +
             R(D.ui.levelWord + level.no) +
             " ・ " +
@@ -2045,18 +2112,20 @@
           if (kind === "picture") {
             screenEl.innerHTML =
               '<div class="slide"><div class="pic" data-act="next"><img src="' +
-              esc(slide.image) +
+              `${img(slide.image)}` +
               '" alt="" /><span class="tap-hint">▶</span></div>' +
-              captionHtml(slide.text, slide.note) +
+              captionHtml(slide.text, slide.note, null, slide.quote) +
               "</div>";
             return;
           }
-          if (kind === "worksheet") return renderWorksheet(level);
+          if (kind === "worksheet") return renderWorksheet(level, slide.part || 1);
           screenEl.innerHTML =
             '<div class="slide"><div class="panelpic">' +
             slidePanel(slide) +
             "</div>" +
-            (slide.text ? captionHtml(slide.text, slide.note) : '<div class="caption">' + navHtml({}) + "</div>") +
+            (slide.text
+              ? captionHtml(slide.text, slide.note, null, slide.quote)
+              : '<div class="caption">' + navHtml({}) + "</div>") +
             "</div>";
         }
 
@@ -2070,7 +2139,7 @@
                 .map(function (one) {
                   return (
                     '<div class="card"><img src="' +
-                    esc(one.image) +
+                    `${img(one.image)}` +
                     '" alt="" /><div class="body"><span class="key">' +
                     esc(one.key) +
                     "</span>" +
@@ -2242,9 +2311,11 @@
                   var ok = item.parts.every(function (key) {
                     return judgment.parts[key];
                   });
-                  var needed = item.parts.some(function (key) {
-                    return (level.ai.required || []).indexOf(key) >= 0;
-                  });
+                  var needed =
+                    !item.optional &&
+                    item.parts.some(function (key) {
+                      return (level.ai.required || []).indexOf(key) >= 0;
+                    });
                   if (ok) {
                     state = " ok";
                     mark = '<span class="mark" style="color:var(--leaf-deep)">✓</span>';
@@ -2262,8 +2333,9 @@
                   R(item.ask) +
                   '</div><div class="tags">' +
                   item.parts.map(partTag).join("") +
+                  (item.optional ? '<span class="tag c-sun">＋ ' + R(D.ui.optional) + "</span>" : "") +
                   "</div></div>" +
-                  (mark || '<img class="thumb" src="' + esc(D.parts[item.parts[0]].image) + '" alt="" />') +
+                  (mark || "<span></span>") +
                   "</div>"
                 );
               })
@@ -2296,7 +2368,7 @@
             '<div class="desk"><div class="desk-stage" id="deskStage" data-testid="desk-stage"><div class="layer">' +
             keys
               .map(function (key) {
-                return '<img data-k="' + key + '" src="' + esc(D.partner.desk[key]) + '" alt="" style="opacity:0" />';
+                return '<img data-k="' + key + '" src="' + `${img(D.partner.desk[key])}` + '" alt="" style="opacity:0" />';
               })
               .join("") +
             '</div><div class="desk-top">👀 ' +
@@ -2319,7 +2391,7 @@
                   '<div class="lg' +
                   (key === "ok" ? " okk" : "") +
                   '"><img src="' +
-                  esc(D.partner.desk[key]) +
+                  `${img(D.partner.desk[key])}` +
                   '" alt="" /><span><b>' +
                   one.icon +
                   " " +
@@ -2449,6 +2521,7 @@
             typed: false,
             noMic: false,
             attemptId: newAttemptId(),
+            attemptNo: 0,
             reply: D.ui.replyCall,
             face: "neutral",
             passed: false,
@@ -2460,7 +2533,8 @@
           if (!talk || talk.levelId !== level.id) talk = newTalk(level);
           var noKey = !getKey();
           var support = L.supportLevel(talk.fails);
-          var showModel = support >= 3 || noKey || talk.error === "quota";
+          /* お手本を 見せて「言えば 合格」に する とき（3回 失敗・キーが 無い・AI が 届かない） */
+          var showModel = support >= 3 || !aiAvailable() || talk.error === "quota" || talk.error === "ai";
           if (support >= 2 && !talk.hintsOpen && !talk.passed) {
             talk.hintsOpen = true;
             talk.hintsSeen = true;
@@ -2470,7 +2544,7 @@
             '<div class="consult" data-testid="consult" data-phase="' +
             talk.phase +
             '"><div class="scene"><img class="fig" src="' +
-            esc(D.partner.figures[talk.face] || D.partner.figures.neutral) +
+            `${img(D.partner.figures[talk.face] || D.partner.figures.neutral)}` +
             '" alt="" /><div class="bubble"><span class="who-name">' +
             R(D.partner.name + "さん") +
             "</span>" +
@@ -2482,6 +2556,7 @@
           } else {
             if (talk.phase === "result" && j) html += retryHtml(level, j);
             html += '<div class="box"><h4>🗣 ' + R(D.ui.checklistTitle) + "</h4>" + checklistHtml(level, talk.phase === "result" ? j : null) + "</div>";
+            html += factsHtml(level);
             html += hintsHtml(level);
             if (showModel) html += modelHtml(level, true);
             html += talkControls(level, noKey);
@@ -2497,8 +2572,40 @@
          * その 箇所だけ `data-furigana="off"`（自動の ふりがなの 検査が 数えない 印）。
          */
         function saidHtml(text) {
-          if (talk && talk.lastTyped) return '<span data-furigana="off">' + esc(text) + "</span>";
-          return R(text);
+          var j = talk && talk.judgment;
+          if (j && j.heard === text && j.heardRuby) return R(j.heardRuby);
+          return '<span data-furigana="off">' + esc(text) + "</span>";
+        }
+
+        /**
+         * 場面の メモ（説明の スライドの 数字と 事実）。相談の 画面に 戻らずに 見られる ように
+         *（検収の 指摘「3時間・4時間・6時間は 説明の スライドにしか 無い」）。
+         * レベル5は 自分の 課題③の メモも 出す。
+         */
+        function factsHtml(level) {
+          var html = "";
+          if (level.facts && level.facts.length) {
+            html +=
+              '<details class="box" open data-testid="facts"><summary>📋 ' +
+              R(D.ui.factsTitle) +
+              '</summary><div class="facts">' +
+              level.facts
+                .map(function (fact) {
+                  return "<span>" + R(fact) + "</span>";
+                })
+                .join("") +
+              "</div></details>";
+          }
+          if (level.worksheet) {
+            var notes = level.worksheet.thoughts
+              .map(function (one) {
+                var value = String(save.worksheet.thoughts[one.id] || "").trim();
+                return value ? "<p><b>" + R(one.label) + "</b>：" + '<span data-furigana="off">' + esc(value) + "</span></p>" : "";
+              })
+              .join("");
+            if (notes) html += '<details class="box"><summary>📝 ' + R(D.ui.myNotes) + "</summary>" + notes + "</details>";
+          }
+          return html;
         }
 
         function hintsHtml(level) {
@@ -2548,7 +2655,7 @@
           var html = "";
           if (talk.phase === "recording") {
             return (
-              '<div class="mic-row"><button type="button" class="mic rec" data-act="mic" id="micBtn" data-testid="mic"><span class="ic">⏹</span>' +
+              '<div class="mic-row"><button type="button" class="mic rec" data-act="mic" id="micBtn" data-testid="mic" style="--ring:14px"><span class="ic">⏹</span>' +
               R(D.ui.micStop) +
               '</button><p class="status" id="micStatus">' +
               R(D.ui.micListening) +
@@ -2562,8 +2669,9 @@
             return (
               '<div class="box heard"><h4>👂 ' +
               R(D.ui.heardTitle) +
-              '</h4><p class="said" data-testid="heard">' +
-              R(talk.heard) +
+              '</h4><p class="said" data-testid="heard"><span data-furigana="off">' +
+              esc(talk.heard) +
+              "</span>" +
               '</p></div><div class="row"><button type="button" class="btn go" data-act="send" data-testid="send">' +
               R(D.ui.sendHeard) +
               '</button><button type="button" class="btn sub small" data-act="remic">🔁 ' +
@@ -2574,14 +2682,39 @@
           if (talk.error) {
             html +=
               '<p class="box" style="border-color:var(--coral-deep);font-weight:800">⚠️ ' +
-              R(talk.error === "quota" ? D.ui.aiQuota : talk.error === "mic" ? D.ui.micDenied : D.ui.aiError) +
+              R(
+                talk.error === "quota"
+                  ? D.ui.aiQuota
+                  : talk.error === "mic"
+                    ? D.ui.micDenied
+                    : talk.error === "mismatch"
+                      ? D.ui.modelMismatch
+                      : D.ui.aiError,
+              ) +
               "</p>";
           }
-          if (noKey) {
+          if (!inFrame) {
+            html += '<p class="box" style="font-weight:800" data-testid="no-bridge">🔗 ' + R(D.ui.noBridge) + "</p>";
+          } else if (noKey) {
             html += '<p class="box" style="font-weight:800">🔑 ' + R(D.ui.noKey) + "</p>";
           }
-          var typeMode = noKey || talk.noMic || talk.typed;
-          if (!typeMode) {
+          var typeMode = !aiAvailable() || talk.noMic || talk.typed;
+          if (!typeMode && voice.status !== "live") {
+            /* まず マイクを つなぐ（5日間の 相談と 同じ 手順） */
+            var connecting = talk.phase === "connecting" || voice.status === "connecting";
+            html +=
+              '<div class="mic-row"><button type="button" class="btn go" data-act="connect" data-testid="mic-connect"' +
+              (connecting ? " disabled" : "") +
+              ">🎤 " +
+              R(connecting ? D.ui.micConnecting : D.ui.micConnect) +
+              "</button>" +
+              (voice.status === "error" || voice.status === "notReady"
+                ? '<p class="fine">' + R(D.ui.micConnectError) + "</p>"
+                : "") +
+              '<button type="button" class="linkbtn" data-act="typemode">⌨️ ' +
+              R(D.ui.typeInstead) +
+              "</button></div>";
+          } else if (!typeMode) {
             if (talk.firstTime) html += '<p class="fine" style="text-align:center">' + R(D.micHelp) + "</p>";
             html +=
               '<div class="mic-row"><button type="button" class="mic" data-act="mic" id="micBtn" data-testid="mic"><span class="ic">🎤</span>' +
@@ -2631,7 +2764,7 @@
         function passedHtml(level) {
           var j = talk.judgment;
           var mine = levelSave(level.id);
-          var starsNow = L.starsForFails(talk.fails);
+          var starsNow = j && j.byModel ? 1 : L.starsForFails(talk.fails);
           var html =
             '<div class="verdict pass" data-testid="verdict-pass"><span class="big">⭕ ' +
             R(D.ui.pass) +
@@ -2640,8 +2773,17 @@
             "　" +
             (talk.fails > 0 ? R(D.ui.retryTimes.replace("{N}", String(talk.fails))) : "") +
             "<br />" +
-            R(D.ui.passLead) +
-            "</div>";
+            R(j && j.byModel ? D.ui.byModel : D.ui.passLead) +
+            '<div class="next">👉 ' +
+            R(D.ui.nextAction) +
+            "：" +
+            R(D.ui.passNext) +
+            "</div></div>" +
+            '<div class="row"><button type="button" class="btn go" data-act="toreply" data-testid="to-reply">' +
+            R(D.ui.toResult) +
+            ' ▶</button><button type="button" class="btn sub small" data-act="again">🔁 ' +
+            R(D.ui.practiceAgain) +
+            "</button></div>";
           if (j) {
             html +=
               '<div class="box"><h4>✅ ' +
@@ -2684,7 +2826,7 @@
                 '<div class="box hints" data-testid="better"><h4>🌱 ' +
                 R(j.templateOnly ? D.ui.templateOnly : D.ui.betterTitle) +
                 "</h4><p>" +
-                R(level.better.lead) +
+                R(j.templateOnly ? level.better.lead : D.ui.betterLeadOwn) +
                 "</p>" +
                 level.better.adds
                   .map(function (one) {
@@ -2707,7 +2849,7 @@
           }
           html +=
             '<details class="box model"' +
-            (j && j.addedOwn ? "" : " open") +
+            (j && j.templateOnly ? " open" : "") +
             "><summary>📗 " +
             R(D.ui.modelTitle) +
             "</summary>" +
@@ -2715,12 +2857,6 @@
             '<p class="fine">' +
             R(level.modelNote) +
             "</p></details>";
-          html +=
-            '<div class="row"><button type="button" class="btn go" data-act="toreply" data-testid="to-reply">' +
-            R(D.ui.toResult) +
-            ' ▶</button><button type="button" class="btn sub small" data-act="again">🔁 ' +
-            R(D.ui.practiceAgain) +
-            "</button></div>";
           void mine;
           return html;
         }
@@ -2730,265 +2866,169 @@
           if (typed) typed.focus({ preventScroll: true });
         }
 
-        /* ---------------- 録音（WAV 16kHz） ---------------- */
+        /* ---------------- 声と 判定（親の 画面の Live に 頼む） ---------------- */
 
-        var rec = null;
+        /*
+         * 学習者の 画面では **Gemini は Live だけ**（注意事項 2026-08-20・08-27）。この ページは
+         * Gemini を 自分で 呼ばず、親の 画面（アプリの ステージの 中）に 頼む
+         *（`src/components/link/link-voice-bridge.tsx`）。聞き取りは 親の 声の Live、判定は 親の
+         * 判定の Live。マイクを 使うのも 親の 画面。親が いない（べつの タブで 開いた）ときは
+         * AI を 使えない——お手本を 見て 書く 道だけ（星 1つ）。
+         */
+        var voice = { status: "idle", talking: false, reqId: 0, judging: {}, heardTimer: 0, limitTimer: 0, attempt: 0 };
 
-        function startRecording() {
-          if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-            talk.noMic = true;
-            talk.error = "mic";
-            renderConsult(LEVELS[view.level]);
+        function voicePost(message) {
+          post(Object.assign({ type: "nexmax:link-voice" }, message));
+        }
+
+        function aiAvailable() {
+          return inFrame && !!getKey();
+        }
+
+        /** いま この レベルの 相談の 画面に いるか（遅れて 届いた 返事を 捨てる ため）。 */
+        function onConsultPage(levelId) {
+          if (view.screen !== "level" || !talk || talk.levelId !== levelId) return false;
+          var level = LEVELS[view.level];
+          var page = pagesFor(level)[view.page];
+          return level.id === levelId && !!page && page.type === "consult";
+        }
+
+        function judgeKey() {
+          return talk.levelId + "-" + talk.attemptNo;
+        }
+
+        window.addEventListener("message", function (event) {
+          if (event.origin !== window.location.origin || event.source !== window.parent) return;
+          var data = event.data;
+          if (!data || data.type !== "nexmax:link-voice-reply" || data.id !== LINK_ID) return;
+          if (data.op === "status") {
+            voice.status = String(data.status || "idle");
+            voice.talking = data.talking === true;
+            onVoiceStatus();
             return;
           }
-          navigator.mediaDevices
-            .getUserMedia({ audio: { channelCount: 1, echoCancellation: true, noiseSuppression: true } })
-            .then(function (stream) {
-              var Ctx = window.AudioContext || window.webkitAudioContext;
-              var ctx = new Ctx();
-              var source = ctx.createMediaStreamSource(stream);
-              var proc = ctx.createScriptProcessor(4096, 1, 1);
-              var chunks = [];
-              proc.onaudioprocess = function (event) {
-                var data = event.inputBuffer.getChannelData(0);
-                chunks.push(new Float32Array(data));
-                var sum = 0;
-                for (var i = 0; i < data.length; i += 1) sum += data[i] * data[i];
-                var btn = document.getElementById("micBtn");
-                if (btn) btn.style.setProperty("--ring", Math.min(24, Math.sqrt(sum / data.length) * 160) + "px");
-              };
-              source.connect(proc);
-              proc.connect(ctx.destination);
-              rec = { stream: stream, ctx: ctx, source: source, proc: proc, chunks: chunks, rate: ctx.sampleRate, started: Date.now() };
-              talk.phase = "recording";
-              talk.error = null;
-              if (talk.firstTime) {
-                talk.firstTime = false;
-                save.micHelpSeen = true;
-                writeSave();
-              }
-              renderConsult(LEVELS[view.level]);
-              rec.timer = setInterval(function () {
-                var left = Math.ceil((TALK_LIMIT_MS - (Date.now() - rec.started)) / 1000);
-                var status = document.getElementById("micStatus");
-                if (status && left <= 10) status.innerHTML = R(D.ui.micLeft.replace("{N}", String(Math.max(0, left))));
-                if (left <= 0) finishRecording();
-              }, 500);
-            })
-            .catch(function () {
-              talk.noMic = true;
-              talk.error = "mic";
-              renderConsult(LEVELS[view.level]);
-            });
-        }
+          if (data.op === "heard") {
+            onHeard(String(data.text || ""));
+            return;
+          }
+          if (data.op === "judged") {
+            var waiter = voice.judging[data.reqId];
+            if (!waiter) return;
+            delete voice.judging[data.reqId];
+            waiter(data);
+          }
+        });
 
-        function stopRecording(discard) {
-          if (!rec) return null;
-          var one = rec;
-          rec = null;
-          clearInterval(one.timer);
-          try {
-            one.proc.disconnect();
-            one.source.disconnect();
-          } catch (error) {
-            /* もう 切れて いる */
-          }
-          one.stream.getTracks().forEach(function (track) {
-            track.stop();
-          });
-          try {
-            one.ctx.close();
-          } catch (error) {
-            /* 閉じられなくても よい */
-          }
-          if (discard) return null;
-          return encodeWav(one.chunks, one.rate);
-        }
-
-        function encodeWav(chunks, rate) {
-          var total = 0;
-          chunks.forEach(function (c) {
-            total += c.length;
-          });
-          var all = new Float32Array(total);
-          var offset = 0;
-          chunks.forEach(function (c) {
-            all.set(c, offset);
-            offset += c.length;
-          });
-          var target = 16000;
-          var ratio = rate / target;
-          var length = Math.floor(all.length / ratio);
-          var pcm = new Int16Array(length);
-          for (var i = 0; i < length; i += 1) {
-            var start = Math.floor(i * ratio);
-            var end = Math.min(all.length, Math.floor((i + 1) * ratio));
-            var sum = 0;
-            for (var k = start; k < end; k += 1) sum += all[k];
-            var v = end > start ? sum / (end - start) : 0;
-            v = Math.max(-1, Math.min(1, v));
-            pcm[i] = v < 0 ? v * 0x8000 : v * 0x7fff;
-          }
-          var buffer = new ArrayBuffer(44 + pcm.length * 2);
-          var view2 = new DataView(buffer);
-          var write = function (at, text) {
-            for (var n = 0; n < text.length; n += 1) view2.setUint8(at + n, text.charCodeAt(n));
-          };
-          write(0, "RIFF");
-          view2.setUint32(4, 36 + pcm.length * 2, true);
-          write(8, "WAVE");
-          write(12, "fmt ");
-          view2.setUint32(16, 16, true);
-          view2.setUint16(20, 1, true);
-          view2.setUint16(22, 1, true);
-          view2.setUint32(24, target, true);
-          view2.setUint32(28, target * 2, true);
-          view2.setUint16(32, 2, true);
-          view2.setUint16(34, 16, true);
-          write(36, "data");
-          view2.setUint32(40, pcm.length * 2, true);
-          for (var p = 0; p < pcm.length; p += 1) view2.setInt16(44 + p * 2, pcm[p], true);
-          var bytes = new Uint8Array(buffer);
-          var binary = "";
-          for (var b = 0; b < bytes.length; b += 0x8000) {
-            binary += String.fromCharCode.apply(null, bytes.subarray(b, b + 0x8000));
-          }
-          return { base64: btoa(binary), seconds: pcm.length / target };
-        }
-
-        function finishRecording() {
+        function onVoiceStatus() {
+          if (!talk || !onConsultPage(talk.levelId)) return;
           var level = LEVELS[view.level];
-          var wav = stopRecording(false);
-          if (!wav || wav.seconds < 0.6) {
+          if (talk.phase === "connecting" && voice.status !== "connecting") talk.phase = "ready";
+          /* 録音が 外から 止まった（つなぎの 張り直し など）→ 聞き取りを 待つ */
+          if (talk.phase === "recording" && !voice.talking && voice.status !== "live") talk.phase = "ready";
+          /* 書く 欄に 打って いる ときは 描き直さない（打った 字が 消える） */
+          if (document.getElementById("typed")) return;
+          if (talk.phase === "ready" || talk.phase === "connecting" || talk.phase === "recording") renderConsult(level);
+        }
+
+        function connectVoice() {
+          if (!inFrame) return;
+          talk.phase = "connecting";
+          voicePost({ op: "connect" });
+          renderConsult(LEVELS[view.level]);
+        }
+
+        function startTalk() {
+          if (voice.status !== "live" || talk.phase === "recording") return;
+          talk.phase = "recording";
+          talk.error = null;
+          talk.recStarted = Date.now();
+          if (talk.firstTime) {
+            talk.firstTime = false;
+            save.micHelpSeen = true;
+            writeSave();
+          }
+          voicePost({ op: "talk-start" });
+          voicePost({ op: "warm", key: judgeKey() });
+          renderConsult(LEVELS[view.level]);
+          clearInterval(voice.limitTimer);
+          var levelId = talk.levelId;
+          voice.limitTimer = setInterval(function () {
+            if (!onConsultPage(levelId) || talk.phase !== "recording") {
+              clearInterval(voice.limitTimer);
+              return;
+            }
+            var left = Math.ceil((TALK_LIMIT_MS - (Date.now() - talk.recStarted)) / 1000);
+            var status = document.getElementById("micStatus");
+            if (status && left <= 10) status.innerHTML = R(D.ui.micLeft.replace("{N}", String(Math.max(0, left))));
+            if (left <= 0) finishTalk();
+          }, 500);
+        }
+
+        function finishTalk() {
+          clearInterval(voice.limitTimer);
+          if (!talk || talk.phase !== "recording") return;
+          voicePost({ op: "talk-stop" });
+          talk.phase = "transcribing";
+          renderConsult(LEVELS[view.level]);
+          var levelId = talk.levelId;
+          clearTimeout(voice.heardTimer);
+          /* 聞き取りが 届かない とき（何も 言わなかった など）は「聞こえませんでした」 */
+          voice.heardTimer = setTimeout(function () {
+            if (!onConsultPage(levelId) || talk.phase !== "transcribing") return;
             talk.phase = "ready";
             talk.reply = D.reactions.unclear.text;
             talk.face = "troubled";
-            renderConsult(level);
-            return;
+            renderConsult(LEVELS[view.level]);
+          }, 9000);
+        }
+
+        /** 画面を 離れる とき、録音を 止める（親の マイクを 切る）。 */
+        function stopTalkIfAny() {
+          clearInterval(voice.limitTimer);
+          clearTimeout(voice.heardTimer);
+          if (talk && talk.phase === "recording") voicePost({ op: "talk-stop" });
+        }
+
+        function onHeard(text) {
+          if (!talk || !onConsultPage(talk.levelId) || talk.phase !== "transcribing") return;
+          clearTimeout(voice.heardTimer);
+          var level = LEVELS[view.level];
+          if (!text.trim()) {
+            talk.phase = "ready";
+            talk.reply = D.reactions.unclear.text;
+            talk.face = "troubled";
+          } else {
+            talk.heard = text.trim();
+            talk.phase = "confirm";
           }
-          talk.phase = "transcribing";
           renderConsult(level);
-          transcribe(wav.base64).then(
-            function (text) {
-              if (view.screen !== "level" || !talk || talk.levelId !== level.id) return;
-              if (!text) {
-                talk.phase = "ready";
-                talk.reply = D.reactions.unclear.text;
-                talk.face = "troubled";
-              } else {
-                talk.heard = text;
-                talk.phase = "confirm";
-              }
-              renderConsult(level);
-            },
-            function (error) {
-              if (!talk) return;
-              talk.phase = "ready";
-              talk.error = error && error.reason === "quota" ? "quota" : "ai";
-              renderConsult(level);
-            },
-          );
         }
 
-        /* ---------------- Gemini（キーは この 端末に ある もの・BYOK） ---------------- */
-
-        function aiError(reason) {
-          var error = new Error(reason);
-          error.reason = reason;
-          return error;
-        }
-
-        function fetchWithTimeout(url, options, ms) {
-          var controller = typeof AbortController === "function" ? new AbortController() : null;
-          var timer = setTimeout(function () {
-            if (controller) controller.abort();
-          }, ms);
-          return fetch(url, Object.assign({}, options, controller ? { signal: controller.signal } : {})).finally(function () {
-            clearTimeout(timer);
-          });
-        }
-
-        async function gemini(body) {
-          var key = getKey();
-          if (!key) throw aiError("noKey");
-          var last = "upstream";
-          for (var i = 0; i < MODELS.length; i += 1) {
-            var url = "https://generativelanguage.googleapis.com/v1beta/models/" + MODELS[i] + ":generateContent";
-            var options = {
-              method: "POST",
-              headers: { "Content-Type": "application/json", "x-goog-api-key": key },
-              body: JSON.stringify(body),
+        /** 判定を 親に 頼む。返事は 道具の 引数（合否は ここで `settle` が 決める）。 */
+        function judgeRemote(level, utterance) {
+          voice.reqId += 1;
+          var reqId = voice.reqId;
+          var hints = { hintsOpened: talk.hintsSeen };
+          voicePost({ op: "judge", key: judgeKey(), reqId: reqId, prompt: L.buildJudgePrompt(level, L.plain(utterance), hints) });
+          return new Promise(function (resolve) {
+            voice.judging[reqId] = resolve;
+            setTimeout(function () {
+              if (!voice.judging[reqId]) return;
+              delete voice.judging[reqId];
+              resolve({ ok: false, reason: "timeout" });
+            }, 40000);
+          }).then(function (data) {
+            if (!data.ok) return { ok: false, reason: String(data.reason || "upstream") };
+            var j = L.settle(level, data.args, utterance, hints);
+            if (!j) return { ok: false, reason: "badShape" };
+            var ruby = data.args && typeof data.args.heard_ruby === "string" ? data.args.heard_ruby : "";
+            /* 読みを 付けた 文が 元の 文と 同じ とき だけ 使う（AI が 文を 変えて いたら 使わない） */
+            var same = function (text) {
+              return L.plain(text).replace(/[\s、。，．,.!?！？]/g, "");
             };
-            try {
-              var res = await fetchWithTimeout(url, options, 30000);
-              if (res.status === 503) {
-                await new Promise(function (resolve) {
-                  setTimeout(resolve, 700);
-                });
-                res = await fetchWithTimeout(url, options, 30000);
-              }
-              if (res.ok) {
-                var json = await res.json();
-                var parts = (json.candidates && json.candidates[0] && json.candidates[0].content && json.candidates[0].content.parts) || [];
-                return parts
-                  .map(function (part) {
-                    return part.text || "";
-                  })
-                  .join("");
-              }
-              if (res.status === 401 || res.status === 403) throw aiError("noPermission");
-              last = res.status === 429 ? "quota" : "upstream";
-            } catch (error) {
-              if (error && error.reason === "noPermission") throw error;
-              last = (error && error.reason) || "network";
-            }
-          }
-          throw aiError(last);
-        }
-
-        function parseJson(text) {
-          try {
-            return JSON.parse(text);
-          } catch (error) {
-            var m = String(text || "").match(/\{[\s\S]*\}/);
-            if (!m) return null;
-            try {
-              return JSON.parse(m[0]);
-            } catch (error2) {
-              return null;
-            }
-          }
-        }
-
-        async function transcribe(base64) {
-          var text = await gemini({
-            contents: [
-              {
-                role: "user",
-                parts: [
-                  { inline_data: { mime_type: "audio/wav", data: base64 } },
-                  {
-                    text: "この 音声は、日本語を 学んで いる 学生が 職場の 上司に 相談して いる 声です。聞こえた とおりに 日本語の 文字に して ください。「えーと」などの 言いよどみは 省いて よいです。足したり 直したり しないで ください。漢字の 言葉には、{漢字|よみ} の 形で ひらがなの 読みを 付けます（例: {一覧|いちらん}{画面|がめん}を {作|つく}って います）。かな・カタカナ・英語・数字には 付けません。聞き取れなければ text を 空に します。",
-                  },
-                ],
-              },
-            ],
-            generationConfig: {
-              temperature: 0,
-              responseMimeType: "application/json",
-              responseSchema: { type: "OBJECT", properties: { text: { type: "STRING" } }, required: ["text"] },
-            },
+            j.heardRuby = ruby && same(ruby) === same(utterance) ? ruby : "";
+            return { ok: true, judgment: j };
           });
-          var data = parseJson(text);
-          return data && typeof data.text === "string" ? data.text.trim() : "";
-        }
-
-        async function judgeRemote(level, utterance) {
-          var text = await gemini({
-            contents: [{ role: "user", parts: [{ text: L.buildJudgePrompt(level, L.plain(utterance), { hintsOpened: talk.hintsSeen }) }] }],
-            generationConfig: { temperature: 0, responseMimeType: "application/json", responseSchema: L.judgeSchema(level) },
-          });
-          return L.settle(level, parseJson(text), utterance, { hintsOpened: talk.hintsSeen });
         }
 
         /* ---------------- 判定の 流れ ---------------- */
@@ -2996,11 +3036,12 @@
         function judge(utterance) {
           var level = LEVELS[view.level];
           var said = String(utterance || "").trim();
-          if (!said) return;
+          if (!said || talk.phase === "judging") return;
           talk.heard = said;
-          /* お手本を 見せて いる とき（3回 失敗・キーが 無い）は、お手本を 言えば 合格 */
-          var noKey = !getKey();
-          if ((L.supportLevel(talk.fails) >= 3 || noKey || talk.error === "quota") && L.readsModel(said, level.model)) {
+          /* お手本を 見せて いる とき（3回 失敗・AI が 使えない・届かない）は、お手本を 言えば 合格（星 1つ） */
+          var ai = aiAvailable();
+          var modelShown = L.supportLevel(talk.fails) >= 3 || !ai || talk.error === "quota" || talk.error === "ai";
+          if (modelShown && L.readsModel(said, level.model)) {
             passWith(level, {
               pass: true,
               parts: allParts(level),
@@ -3012,47 +3053,43 @@
               choice: "none",
               failure: "none",
               heard: said,
+              byModel: true,
             });
             return;
           }
-          if (noKey) {
-            talk.error = null;
-            talk.reply = D.reactions.unclear.text;
+          if (!ai) {
+            /* AI で 見られない。お手本と ちがう ことを はっきり 言う */
+            talk.error = "mismatch";
             renderConsult(level);
             return;
           }
           talk.phase = "judging";
           talk.error = null;
+          talk.attemptNo += 1;
           renderConsult(level);
-          judgeRemote(level, said).then(
-            function (j) {
-              if (view.screen !== "level" || !talk || talk.levelId !== level.id) return;
-              if (!j) {
-                talk.phase = "ready";
-                talk.error = "ai";
-                renderConsult(level);
-                return;
-              }
-              talk.judgment = j;
-              talk.attempts.push({ heard: said, pass: j.pass });
-              if (j.pass) {
-                passWith(level, j);
-                return;
-              }
-              if (L.countsAsFail(j)) talk.fails += 1;
-              var reaction = D.reactions[L.reactionKey(j)] || D.reactions.soudan;
-              talk.reply = reaction.text;
-              talk.face = "troubled";
-              talk.phase = "result";
-              renderConsult(level);
-            },
-            function (error) {
-              if (!talk) return;
+          var levelId = level.id;
+          judgeRemote(level, said).then(function (result) {
+            if (!onConsultPage(levelId)) return;
+            if (!result.ok) {
               talk.phase = "ready";
-              talk.error = error && error.reason === "quota" ? "quota" : "ai";
+              talk.error = result.reason === "quota" || result.reason === "rateLimited" ? "quota" : "ai";
               renderConsult(level);
-            },
-          );
+              return;
+            }
+            var j = result.judgment;
+            talk.judgment = j;
+            talk.attempts.push({ heard: said, pass: j.pass });
+            if (j.pass) {
+              passWith(level, j);
+              return;
+            }
+            if (L.countsAsFail(j)) talk.fails += 1;
+            var reaction = D.reactions[L.reactionKey(j)] || D.reactions.soudan;
+            talk.reply = reaction.text;
+            talk.face = "troubled";
+            talk.phase = "result";
+            renderConsult(level);
+          });
         }
 
         function allParts(level) {
@@ -3073,7 +3110,8 @@
           talk.face = "happy";
           talk.reply = D.ui.passReply;
           var mine = levelSave(level.id);
-          var got = L.starsForFails(talk.fails);
+          /* お手本を 見て 言えた ときは 星 1つ（logic の 決まり「お手本を 読んで 1つ」）。正解にも 数えない */
+          var got = j.byModel ? 1 : L.starsForFails(talk.fails);
           var points = L.bonusPoints(j);
           mine.stars = Math.max(mine.stars || 0, got);
           mine.bonus = Math.max(mine.bonus || 0, points);
@@ -3081,7 +3119,7 @@
           writeSave();
           reportProgress();
           var note = "（" + D.ui.levelWord.replace(/\{([^{}|]+)\|[^{}|]+\}/g, "$1") + level.no + "・★" + got + "・加点＋" + points + "）";
-          reportAnswers([{ id: level.id, text: (L.attemptsText(talk.attempts) + " " + note).slice(0, 1000), correct: talk.fails === 0 }], talk.attemptId);
+          reportAnswers([{ id: level.id, text: (L.attemptsText(talk.attempts) + " " + note).slice(0, 1000), correct: talk.fails === 0 && !j.byModel }], talk.attemptId);
           renderConsult(level);
         }
 
@@ -3094,9 +3132,9 @@
           var lastLevel = view.level >= LEVELS.length - 1;
           var html =
             '<div class="reply"><div class="pic"><img src="' +
-            esc(level.resultImage) +
+            `${img(level.resultImage)}` +
             '" alt="" /></div><div class="talk"><div class="box" style="display:flex;gap:10px;align-items:flex-start"><img src="' +
-            esc(D.partner.figures.happy) +
+            `${img(D.partner.figures.happy)}` +
             '" alt="" style="width:76px;height:96px;object-fit:cover;object-position:top;border-radius:12px;background:var(--sky-soft)" /><p style="font-weight:900;font-size:17px;line-height:2"><span class="who-name" style="display:block;font-size:12px;color:var(--sky-deep)">' +
             R(D.partner.name + "さん") +
             "</span>" +
@@ -3135,10 +3173,12 @@
 
         /* ---------------- レベル5の 調べ表 ---------------- */
 
-        function renderWorksheet(level) {
+        /** レベル5の 調べ表（課題①②③を 1画面ずつ・検収の 指摘「1画面に 31の 欄は 多すぎる」）。 */
+        function renderWorksheet(level, part) {
           var ws = level.worksheet;
           var values = save.worksheet;
           var html = '<div class="slide"><div class="panelpic"><div class="ws">';
+          if (part === 1) {
           html +=
             "<section><h3>🔎 " +
             R(ws.task1Title) +
@@ -3147,7 +3187,7 @@
               .map(function (api) {
                 return (
                   '<a href="' +
-                  esc(api.url) +
+                  `${esc(api.url)}` +
                   '" target="_blank" rel="noopener noreferrer">📄 ' +
                   esc(api.name) +
                   "<small>" +
@@ -3169,6 +3209,8 @@
             '</tbody></table><p class="fine">' +
             R(ws.task1Note) +
             "</p></section>";
+          }
+          if (part === 2) {
           html +=
             "<section><h3>📝 " +
             R(ws.task2Title) +
@@ -3210,6 +3252,8 @@
             '</tbody></table><div class="row"><button type="button" class="btn sub small" data-act="copyws">📋 ' +
             R(D.ui.copy) +
             "</button></div></section>";
+          }
+          if (part === 3) {
           html +=
             "<section><h3>💡 " +
             R(ws.task3Title) +
@@ -3232,8 +3276,9 @@
               })
               .join("") +
             "</section>";
+          }
           html += "</div></div>";
-          html += '<div class="caption">' + navHtml({ nextLabel: D.ui.wsSave }) + "</div></div>";
+          html += '<div class="caption">' + navHtml({ nextLabel: part === 3 ? D.ui.wsSave : D.ui.next }) + "</div></div>";
           screenEl.innerHTML = html;
           screenEl.querySelectorAll("textarea[data-ws]").forEach(function (area) {
             area.addEventListener("input", function () {
@@ -3299,7 +3344,8 @@
           var level = LEVELS[view.level];
           var page = pagesFor(level)[view.page];
           if (page.type === "desk" || page.type === "consult") return;
-          if (page.type === "slide" && page.slide.kind === "worksheet") sendWorksheet(level);
+          /* 調べ表は 最後（課題③）を 出る ときに まとめて 先生の 画面へ 送る */
+          if (page.type === "slide" && page.slide.kind === "worksheet" && page.slide.part === 3) sendWorksheet(level);
           setPage(view.page + 1);
         }
 
@@ -3313,7 +3359,7 @@
           }
           if (view.screen !== "level") return;
           if (view.page > 0) {
-            stopRecording(true);
+            stopTalkIfAny();
             setPage(view.page - 1);
           }
         }
@@ -3358,9 +3404,10 @@
             talk.hintsSeen = true;
             return renderConsult(level);
           }
+          if (act === "connect") return connectVoice();
           if (act === "mic") {
-            if (talk.phase === "recording") return finishRecording();
-            return startRecording();
+            if (talk.phase === "recording") return finishTalk();
+            return startTalk();
           }
           if (act === "remic") {
             talk.phase = "ready";
@@ -3382,6 +3429,7 @@
           }
           if (act === "toreply") return setPage(view.page + 1);
           if (act === "again") {
+            stopTalkIfAny();
             var fresh = newTalk(level);
             fresh.firstTime = false;
             talk = fresh;

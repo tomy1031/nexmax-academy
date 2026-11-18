@@ -111,7 +111,9 @@ describe("相談の 練習の データ（仕様書 v4 §8）", () => {
     const refs = soudanStage.contents.map((item) => item.ref);
     expect(refs).toContain("soudan_novel");
     expect(refs).not.toContain("soudan_kehai");
-    expect(refs.indexOf("soudan_novel")).toBe(refs.indexOf("soudan_quiz") + 1);
+    /* 2026-11-17 から もんだい → 相談の 練習問題（soudan_renshu）→ 5日間 の 順（tomy さん「相談の5日間の手前に」） */
+    expect(refs.indexOf("soudan_renshu")).toBe(refs.indexOf("soudan_quiz") + 1);
+    expect(refs.indexOf("soudan_novel")).toBe(refs.indexOf("soudan_renshu") + 1);
   });
 
   it("古い URL（いま 話しかけて いい？）は 相談の 練習へ 送る", () => {
