@@ -185,6 +185,15 @@ test("レベル1を 最後まで: 席の 絵を 見て 話しかけ、マイク�
   await expect(tool.getByTestId("facts")).toBeVisible();
   await expect(tool.getByTestId("memo-read-1")).toContainText("おみせの いちらんがめん");
   await shot(page, "soudan-renshu-05-mic");
+  /* 相談の とちゅうで 説明の 絵を 見返せる（めくって 閉じると 相談の まま） */
+  await tool.getByTestId("review-open").click();
+  await expect(tool.getByTestId("review")).toBeVisible();
+  await tool.getByTestId("review-next").click();
+  expect(await bare(page)).toEqual([]);
+  await shot(page, "soudan-renshu-05r-review");
+  await tool.getByTestId("review-close").click();
+  await expect(tool.getByTestId("review")).toHaveCount(0);
+  await expect(tool.getByTestId("memo-read-1")).toBeVisible();
   await speak(tool);
 
   /* 足りない（相談したい こと）→ ✖ と ヘンディさんの 反応 */

@@ -1347,6 +1347,36 @@
       .talk {
         padding-bottom: 0 !important;
       }
+      .consult {
+        position: relative;
+      }
+      .review-btn {
+        position: absolute;
+        left: 8px;
+        bottom: 10px;
+        z-index: 2;
+      }
+      .review {
+        position: absolute;
+        inset: 0;
+        z-index: 5;
+        display: flex;
+        flex-direction: column;
+        background: var(--night);
+      }
+      .review-head {
+        flex: 0 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 10px;
+        color: #fff;
+        font-weight: 900;
+      }
+      .review .pic {
+        cursor: default;
+      }
       .talk-controls {
         position: sticky;
         bottom: 0;
@@ -2644,6 +2674,9 @@
 
         function renderConsult(level) {
           if (!talk || talk.levelId !== level.id) talk = newTalk(level);
+          /* 描き直しで 書きかけの 文を 消さない（説明を 見返す ときなど） */
+          var typedNow = document.getElementById("typed");
+          if (typedNow) talk.typedDraft = typedNow.value;
           var noKey = !getKey();
           var support = L.supportLevel(talk.fails);
           /* お手本を 見せて「言えば 合格」に する とき（3回 失敗・キーが 無い・AI が 届かない） */
@@ -2662,7 +2695,16 @@
             R(D.partner.name + "さん") +
             "</span>" +
             R(talk.reply) +
-            '</div></div><div class="talk">';
+            "</div>" +
+            /* 説明の 画面を 見返す（2026-11-18「相談フェーズで説明の画面を見返すボタンを作れますか？」） */
+            (talk.passed
+              ? ""
+              : '<button type="button" class="btn sub small review-btn" data-act="review" data-testid="review-open"' +
+                (busyPhase() ? " disabled" : "") +
+                ">📖 " +
+                R(D.ui.reviewOpen) +
+                "</button>") +
+            '</div><div class="talk">';
 
           if (talk.passed) {
             html += passedHtml(level);
@@ -2678,10 +2720,64 @@
              */
             html += '<div class="talk-controls" data-testid="talk-controls">' + talkControls(level, noKey) + "</div>";
           }
-          html += "</div></div>";
+          html += "</div>" + (talk.review != null ? reviewHtml(level) : "") + "</div>";
           screenEl.innerHTML = html;
+          var typedAgain = document.getElementById("typed");
+          if (typedAgain && talk.typedDraft) typedAgain.value = talk.typedDraft;
           bindTalk(level, noKey);
-          if (talk.phase === "ready") autoConnect();
+          if (talk.phase === "ready" && talk.review == null) autoConnect();
+        }
+
+        /** 録音・聞き取り・判定の 最中か（その あいだは 説明を 開かない）。 */
+        function busyPhase() {
+          return talk.phase === "recording" || talk.phase === "transcribing" || talk.phase === "judging";
+        }
+
+        /** 見返せる 説明（調べ表は のぞく）。 */
+        function reviewSlides(level) {
+          return level.slides.filter(function (slide) {
+            return slide.kind !== "worksheet";
+          });
+        }
+
+        /** 説明を 見返す 窓（相談の 上に 重ねる。マイク・メモ・やり直しの 回数は そのまま）。 */
+        function reviewHtml(level) {
+          var slides = reviewSlides(level);
+          var at = Math.max(0, Math.min(slides.length - 1, talk.review));
+          var slide = slides[at];
+          var kind = slide.kind || "picture";
+          var body =
+            kind === "picture"
+              ? '<div class="pic"><img src="' + `${img(slide.image)}` + '" alt="" /></div>'
+              : '<div class="panelpic">' + slidePanel(slide) + "</div>";
+          return (
+            '<div class="review" role="dialog" aria-modal="true" data-testid="review">' +
+            '<div class="review-head"><span>📖 ' +
+            R(D.ui.reviewTitle) +
+            "　" +
+            (at + 1) +
+            " / " +
+            slides.length +
+            '</span><button type="button" class="btn go small" data-act="review-close" data-testid="review-close">✕ ' +
+            R(D.ui.reviewClose) +
+            "</button></div>" +
+            body +
+            '<div class="caption">' +
+            (slide.text ? '<p class="text">' + R(slide.text) + "</p>" : "") +
+            (slide.quote
+              ? '<div class="quote"><span class="who-name">💬 ' + R(slide.quote.who) + "</span>「" + R(slide.quote.text) + "」</div>"
+              : "") +
+            (slide.note ? '<span class="note">' + R(slide.note) + "</span>" : "") +
+            '<div class="nav"><button type="button" class="btn sub small" data-act="review-prev"' +
+            (at === 0 ? " disabled" : "") +
+            ">◀ " +
+            R(D.ui.back) +
+            '</button><button type="button" class="btn small" data-act="review-next" data-testid="review-next"' +
+            (at >= slides.length - 1 ? " disabled" : "") +
+            ">" +
+            R(D.ui.next) +
+            " ▶</button></div></div></div>"
+          );
         }
 
         /**
@@ -3539,6 +3635,20 @@
             talk = null;
             return go("level", { level: Math.min(LEVELS.length - 1, view.level + 1), page: 0 });
           }
+          if (act === "review") {
+            if (busyPhase()) return;
+            talk.review = 0;
+            return renderConsult(level);
+          }
+          if (act === "review-close") {
+            talk.review = null;
+            return renderConsult(level);
+          }
+          if (act === "review-prev" || act === "review-next") {
+            var count = reviewSlides(level).length;
+            talk.review = Math.max(0, Math.min(count - 1, talk.review + (act === "review-next" ? 1 : -1)));
+            return renderConsult(level);
+          }
           if (act === "hints") {
             talk.hintsOpen = true;
             talk.hintsSeen = true;
@@ -3580,6 +3690,18 @@
 
         document.addEventListener("keydown", function (event) {
           var target = event.target;
+          /* 説明を 見返して いる とき: ← → で めくり、Esc で 相談に もどる */
+          if (talk && talk.review != null && view.screen === "level") {
+            var lv = LEVELS[view.level];
+            var total = reviewSlides(lv).length;
+            if (event.key === "Escape") talk.review = null;
+            else if (event.key === "ArrowRight") talk.review = Math.min(total - 1, talk.review + 1);
+            else if (event.key === "ArrowLeft") talk.review = Math.max(0, talk.review - 1);
+            else return;
+            event.preventDefault();
+            renderConsult(lv);
+            return;
+          }
           if (target && target.closest && target.closest("input, textarea, button, a, select")) return;
           if (event.key === "ArrowLeft") {
             event.preventDefault();
