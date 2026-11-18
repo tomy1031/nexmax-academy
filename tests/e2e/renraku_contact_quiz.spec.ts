@@ -18,7 +18,7 @@ import { bareKanjiTexts, seedCompleted, shot, submitAnswers, writeFillinIn } fro
  *  1. 古い URL（`/renraku/link-renraku_contact`）が もんだいへ 送られる
  *  2. 別ページ（iframe）では なく、10問が 1ページに 並ぶ（初級・上級は **別の 教材**）
  *  3. **答える 前に お手本も 観点も 出さない**（写せない）
- *  4. 欄の となりに ⭕✗が 出る。**⭕に なるまで つぎの もんだいは 閉じて いる**
+ *  4. 欄の となりに ⭕✗が 出る。⭕で なくても つぎの もんだいは 開いて いる（2026-11-18 の 指定）
  *  5. ぜんぶ ⭕に なるまで「こたえを 出す」が 出ない
  *  6. お手本（模範解答）は **答え合わせの ときだけ**——Slack（上級）にも 出る
  *
@@ -148,12 +148,13 @@ test("連絡文: 1問ずつ ⭕に して 進み、ぜんぶ ⭕で 出せる", 
   await expect(page.getByText(/模範解答/)).toHaveCount(0);
   await expect(page.getByText(/AIが 見る ところ/)).toHaveCount(0);
 
-  /* 4. つぎの もんだいは 閉じて いて、その 理由が 書いて ある。 */
+  /*
+   * 4. 1問目が まだでも、つぎの もんだいは 開いて いる（2026-11-18 の 指定
+   *    「1問終わらないと次に進めないのを取り急ぎ直して」）。
+   */
   const second = page.locator("#q-mail_2");
-  await expect(second.getByText(/もんだいが ⭕に なると/)).toBeVisible();
-  // たたんで ある（欄その ものが 無い）。行は 残る ので「あと 何問」は 見える
-  await expect(second.getByLabel("宛先を 入力する")).toHaveCount(0);
-  await expect(second.getByText("2/10", { exact: true })).toBeVisible();
+  await expect(second.getByText(/もんだいが ⭕に なると/)).toHaveCount(0);
+  await expect(second.getByLabel("宛先を 入力する")).toBeEnabled();
 
   /* 5. ぜんぶ ⭕に なるまで「こたえを 出す」は 出ない。 */
   await expect(page.getByRole("button", { name: /こたえを 出/ })).toHaveCount(0);
@@ -173,11 +174,11 @@ test("連絡文: 1問ずつ ⭕に して 進み、ぜんぶ ⭕で 出せる", 
   await expect(first.getByText(/なおす ところが/)).toBeVisible();
   // まちがえても 正解は 出さない（答え合わせまで 見せない）
   await expect(page.getByText(/模範解答/)).toHaveCount(0);
-  // 閉じた ままで、つぎへは 進めない
-  await expect(second.getByLabel("宛先を 入力する")).toHaveCount(0);
+  // ✗でも つぎの もんだいは 開いた まま
+  await expect(second.getByLabel("宛先を 入力する")).toBeEnabled();
   await shot(page, "renraku-contact-quiz-02-naosu");
 
-  /* 4. 直して もう いちど 押すと ⭕。つぎの もんだいが 開く。 */
+  /* 4. 直して もう いちど 押すと ⭕。 */
   await writeFillinIn(page, "mail_1", { 問題: "ログインできない" });
   await ask.click();
   await expect(first.getByText(/OKです/)).toBeVisible();
@@ -301,9 +302,10 @@ test("連絡文（上級）: 別の 教材として 開き、書いて 進み、
   // 解いて いる 途中に お手本は 出さない
   await expect(page.getByText(/模範解答/)).toHaveCount(0);
 
-  /* 2. 2問目は 閉じて いる。1問目を ⭕に すると 開く。 */
+  /* 2. 2問目は 1問目が まだでも 開いて いる（2026-11-18 の 指定）。 */
   const second = page.locator(`#q-${SLACK_QUESTIONS[1]!.id}`);
-  await expect(second.getByText(/もんだいが ⭕に なると/)).toBeVisible();
+  await expect(second.getByText(/もんだいが ⭕に なると/)).toHaveCount(0);
+  await expect(second.getByLabel("じゆうに 書く")).toBeEnabled();
   await passOne(page, SLACK_QUESTIONS[0]!);
   await expect(second.getByLabel("じゆうに 書く")).toBeEnabled();
   await shot(page, "renraku-slack-quiz-01-ok");

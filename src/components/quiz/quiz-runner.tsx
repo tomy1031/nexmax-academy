@@ -1528,6 +1528,15 @@ function AllQuestionsCard({
     ? questions.findIndex((question) => needsCheck(question) && !passed(question))
     : questions.length - 1;
   const openIndex = openUpTo === -1 ? questions.length - 1 : openUpTo;
+  /*
+   * **つぎの もんだいを 閉じるのは バグ報告だけ**（2026-11-18 の 指定）。
+   * 「連絡文の練習。1問終わらないと次に進めないのを取り急ぎ直して」。
+   * 連絡文（メール・Slack）は ⭕で なくても 先の もんだいを 開いて 書ける。
+   * 出す ときに ぜんぶ ⭕が 要るのは これまで どおり。
+   */
+  const lockUpTo = questions.findIndex(
+    (question) => question.type === "bugreport" && needsCheck(question) && !passed(question),
+  );
   /** ⭕に なって いない チェックの 数（出す ボタンの 見せかたに 使う）。 */
   const unchecked = questions.filter((q) => needsCheck(q) && !passed(q)).length;
 
@@ -1628,7 +1637,7 @@ function AllQuestionsCard({
                 total={questions.length}
                 answered={draftAnswered(q, drafts[q.id])}
                 done={gated && needsCheck(q) && passed(q)}
-                locked={index > openIndex}
+                locked={lockUpTo !== -1 && index > lockUpTo}
                 draft={drafts[q.id]}
                 furigana={furigana}
                 dispatch={dispatchers.get(q.id)!}
