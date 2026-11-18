@@ -609,15 +609,32 @@ export function fillinSlotOk(slot: FillinSlot, input: string): boolean {
 }
 
 /**
+ * AIに 渡す ときの 長さの 下限（ふつうの 字の 数）。
+ *
+ * 正解が みじかい 欄（「15:00」）は、アプリの 幅（正解の 2倍＋8字）だと 18字ほどで、
+ * 学生が **自分で 組み立てた 文**（「明日の15:00開始に変更してください」）が AIにも
+ * 渡らずに ✗で 決まって いた（2026-11-18 の 指定「言っている内容に問題なくて、言葉として
+ * 不自然でなければOKとなるように」「自分で文章を組み立てるべき問題がNGとなっています」）。
+ * AIに 渡す ときだけ、文 1つぶんは 通す。メモを 丸ごと 貼った もの（100字ほど）は 通さない。
+ */
+const AI_SENTENCE_FLOOR = 40;
+
+/**
  * **アプリが ✗に した 欄を、AIが 中身を 見て ⭕に して よいか**（2026-10-26）。
  *
- * 言いかえ（「会議」／「ミーティング」）は 機械では 見分けられない ので AIに まかせる。
+ * 言いかえ（「会議」／「ミーティング」）や、自分で 組み立てた 文（「明日の 15時から」）は
+ * 機械では 見分けられない ので AIに まかせる。
  * ただし 数字と 日にちが ちがう もの・メモを 丸ごと 貼った ものは、AIが 何と 言っても ✗。
  */
 export function fillinSlotAiMayAccept(slot: FillinSlot, input: string): boolean {
   const written = input.trim();
   if (written === "") return false;
-  return fillinSlotFits(slot, written, (answer) => fillinAiMayAccept(answer, written));
+  return fillinSlotFits(
+    slot,
+    written,
+    (answer) => fillinAiMayAccept(answer, written),
+    AI_SENTENCE_FLOOR,
+  );
 }
 
 /**
@@ -625,16 +642,20 @@ export function fillinSlotAiMayAccept(slot: FillinSlot, input: string): boolean 
  *
  * 前に ことばが 付く ぶん（「ユーザーが ログインできない こと」）は 通し、文を 丸ごと
  * 貼った ものは 通さない 幅に する。当たった 正解の うち **いちばん 長い もの**で 測る
- *（別の 言い方を 足した 教材で きつく ならない ように）。
+ *（別の 言い方を 足した 教材で きつく ならない ように）。`floor` は 幅の 下限。
  */
 function fillinSlotFits(
   slot: FillinSlot,
   written: string,
   hits: (answer: string) => boolean,
+  floor = 0,
 ): boolean {
   const matched = [slot.answer, ...slot.accept].filter(hits);
   if (matched.length === 0) return false;
-  const limit = Math.max(...matched.map((answer) => normalizeReading(answer).length)) * 2 + 8;
+  const limit = Math.max(
+    floor,
+    Math.max(...matched.map((answer) => normalizeReading(answer).length)) * 2 + 8,
+  );
   return normalizeReading(written).length <= limit;
 }
 
