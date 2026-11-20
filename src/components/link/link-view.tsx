@@ -55,6 +55,14 @@ const UI_FURIGANA = buildFuriganaIndex([
   ["最後", "さいご"],
 ]);
 
+/**
+ * アプリの 中（埋め込み）で しか 動かない リンク教材。べつの タブで 開くと、ページが アプリの 中へ
+ * 戻る だけ なので「べつの タブで ひらく」を 出さない（マイク・判定・保存を 親の 画面に 頼む ため）。
+ * 「別のタブで開くが機能せず同じ画面がそのまま開かれます」（2026-11-19 tomy さん）。
+ * 大きく 見たい ときは「⛶ 大きく する」。
+ */
+const IN_APP_ONLY = new Set(["soudan_renshu"]);
+
 export function LinkView({ link, embedded }: { link: LinkContent; embedded?: boolean }) {
   const furigana = useMemo(() => buildFuriganaIndex(link.furigana ?? []), [link.furigana]);
   const [furiganaOn, setFuriganaOn] = useState(true);
@@ -358,8 +366,9 @@ export function LinkView({ link, embedded }: { link: LinkContent; embedded?: boo
             埋め込みの 中で 動かない ことがある（外のサイトが 断る・ブラウザの設定）。
             そのときの 逃げ道を 最初から 見せておく——白い枠を 見た学習者が
             そこで 止まらないように。
+            アプリの 中で しか 動かない ページ（IN_APP_ONLY）には 出さない。
           */}
-          {link.newTab ? null : (
+          {link.newTab || IN_APP_ONLY.has(link.id) ? null : (
             <button
               type="button"
               onClick={openTab}

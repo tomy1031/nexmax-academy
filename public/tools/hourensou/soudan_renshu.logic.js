@@ -109,7 +109,9 @@
     lines.push("");
     var bonusIds = Object.keys(bonus);
     if (bonusIds.length > 0) {
-      lines.push("bonus（当てはまる id を すべて 入れる。無ければ 空の 配列）:");
+      lines.push(
+        "bonus（当てはまる id を すべて 入れる。無ければ 空の 配列。例と 同じ ことばで なくても、意味が 合えば 入れる）:",
+      );
       bonusIds.forEach(function (id) {
         lines.push("- " + id + ": " + bonus[id]);
       });
@@ -238,7 +240,8 @@
   /* ---------------- お手本を 読んだか（5日間の readsExample と 同じ 見方） ---------------- */
 
   function fold(text) {
-    return plain(text).replace(/[\s、。，．,.!?！？「」『』（）()・…〜~ー\-]/g, "");
+    /* ＿ は レベル5の お手本の 空らん（自分で 調べた ことばを 入れる 所）。比べる ときは 数えない */
+    return plain(text).replace(/[\s、。，．,.!?！？「」『』（）()・…〜~ー\-＿]/g, "");
   }
 
   function pairs(text) {
@@ -274,6 +277,53 @@
     var whole = texts.join("");
     var last = texts[texts.length - 1] || whole;
     return overlap(said, pairs(fold(whole))) >= 0.6 && overlap(said, pairs(fold(last))) >= 0.6;
+  }
+
+  /* ---------------- 聞き取った 文の ふりがな ---------------- */
+
+  var KANJI_CHAR = /[\u3400-\u9fff\uf900-\ufaff々〆ヶ]/;
+  var KANA_RUN_HEAD = /^[\u3041-\u3096\u30a1-\u30fa\u30fc]+/;
+  var KANA_RUN_TAIL = /[\u3041-\u3096\u30a1-\u30fa\u30fc]+$/;
+
+  function toHiragana(text) {
+    return String(text).replace(/[\u30a1-\u30f6]/g, function (ch) {
+      return String.fromCharCode(ch.charCodeAt(0) - 0x60);
+    });
+  }
+
+  /**
+   * AI が 付けた ふりがなを 漢字の 部分だけに する（2026-11-19 STG で「ログイン機能」の 上に
+   *「ろぐいんきのう」と 出た）。{ログイン機能|ろぐいんきのう} → ログイン{機能|きのう}。
+   * かなの 部分が 読みと 合わない（英字 など）ときは、読みを 削らず その まま 残す。
+   * 漢字の 無い {…|…} は 読みを 外す。
+   */
+  function tidyRuby(text) {
+    return String(text || "").replace(/\{([^{}|]+)\|([^{}|]+)\}/g, function (all, base, reading) {
+      if (!KANJI_CHAR.test(base)) return base;
+      var head = "";
+      var tail = "";
+      var front = base.match(KANA_RUN_HEAD);
+      if (front && toHiragana(reading).indexOf(toHiragana(front[0])) === 0) {
+        head = front[0];
+        base = base.slice(head.length);
+        reading = reading.slice(head.length);
+      }
+      var back = base.match(KANA_RUN_TAIL);
+      if (back) {
+        var hiraBack = toHiragana(back[0]);
+        var hiraReading = toHiragana(reading);
+        if (
+          hiraReading.length > hiraBack.length &&
+          hiraReading.slice(-hiraBack.length) === hiraBack
+        ) {
+          tail = back[0];
+          base = base.slice(0, base.length - tail.length);
+          reading = reading.slice(0, reading.length - tail.length);
+        }
+      }
+      if (!base || !reading) return head + base + tail;
+      return head + "{" + base + "|" + reading + "}" + tail;
+    });
   }
 
   /* ---------------- 席の 絵の 並び ---------------- */
@@ -416,6 +466,7 @@
     bonusPoints: bonusPoints,
     maxBonus: maxBonus,
     readsModel: readsModel,
+    tidyRuby: tidyRuby,
     deskCycle: deskCycle,
     toPosition: toPosition,
     mergePosition: mergePosition,
