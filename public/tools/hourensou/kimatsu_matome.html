@@ -284,6 +284,12 @@
 <style>
   /* 旧アプリに 無かった ぶん（ルビの 行間・ぜんぶ クリアの 帯） */
   .memo li ruby rt{font-size:.5em;}
+  /* スマホ幅で カートリッジが はみ出た とき、左はしが 画面の 外に 切れて 戻れなかった（旧アプリの まま だと
+     center 寄せの はみ出しは 左へ スクロールできない）。入る ときは まん中、はみ出す ときは 左から 並べる */
+  .shelf{justify-content:flex-start;}
+  .shelf > .cart:first-child{margin-left:auto;}
+  .shelf > .cart:last-child{margin-right:auto;}
+  .pill{white-space:nowrap;}
   .allclear{position:relative;z-index:4;margin:0 auto 22px;max-width:560px;text-align:center;
     background:var(--correct-bg);border:3px solid var(--correct);border-radius:18px;padding:10px 16px;
     font-weight:800;color:var(--leaf-deep);box-shadow:0 4px 0 var(--shadow);}
@@ -749,7 +755,8 @@ function renderSort(c,si,s,n){
   let sel=null;
   function card(it){ const d=document.createElement('div'); d.className='scard'+(solved?' ok':''); d.innerHTML=R(it.t); d.dataset.i=it.i;
     d.draggable=!solved;
-    d.addEventListener('click',()=>{ if(solved)return; if(sel===it){sel=null;d.classList.remove('sel');}
+    // カゴの 中の カードを 押しても、カゴの 押し（同じ カゴに 入れ直す）まで 届かせない（旧アプリでは タップで 移せなかった）
+    d.addEventListener('click',(e)=>{ e.stopPropagation(); if(solved)return; if(sel===it){sel=null;d.classList.remove('sel');}
       else{ if(sel){const pc=el.querySelector('.scard.sel'); if(pc)pc.classList.remove('sel');} sel=it; d.classList.add('sel'); sClick(); } });
     d.addEventListener('dragstart',()=>{sel=it;});
     return d; }
