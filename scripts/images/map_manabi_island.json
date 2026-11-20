@@ -1,0 +1,17 @@
+{
+  "_comment": "期末テスト対策（ステージ test-taisaku）の まなびマップの 土地 1枚（2026-11-20）。tomy さん「絵は棚田でなく新しく作ったものにする。（旧アプリの）04_island_bg.png をベースとして、他同様上から俯瞰したアイソメトリック画像とする」。参照は 1枚目＝ほかの 土地の 絵柄（area_palace_town）、2枚目＝旧アプリ『まなびの島』の 背景（中身だけ 借りる）。形の 決まりは map_areas.json と 同じ（正方形・土地を 四辺まで）。",
+  "refs": ["public/img/scenes/area_palace_town.webp", "scripts/images/refs/manabi_island_bg.jpg"],
+  "style": "Style: a highly detailed isometric miniature diorama illustration seen from a high bird's-eye angle, like a tilt-shift toy town or a colourful city-builder game. Tiny crisp buildings, tiny trees, tiny boats and vehicles, thin clean outlines, bright saturated cheerful palette, soft even daylight, no harsh shadows, no gloom. Match the drawing style, colours and level of detail of the FIRST reference picture (an isometric diorama tile). The SECOND reference picture is a flat side-view background: take only WHAT is in that place from it (its cottage, tree, bench, mushrooms, flowers, river, hills and sea) and redraw all of it as a high bird's-eye isometric diorama in the style of the first picture.\nComposition (IMPORTANT — do not copy the reference here): the land FILLS the whole square frame and runs off all four edges. Never draw a floating island: no round or oval patch of land ringed by empty water, no wide empty flat-blue margin around the subject, no drop shadow under the land. The landmark that gives this place its character stands in the CENTRE and fills about the middle third of the picture. The map crops this picture to a wide horizontal band on a computer and to a narrow vertical band on a phone, so anything in the outer quarter of the frame may be cut away: keep the outer quarter as ordinary streets, fields, forest, roofs or water.",
+  "noText": "No text, no letters, no kanji, no kana, no numbers anywhere in the image. Every sign, banner, lantern, sail and screen is blank. No watermark, no signature, no logo, no frame border.",
+  "negative": "Never: photo-realistic rendering, night or dark or gloomy mood, harsh shadows, readable letters, national flags, country names, brand logos, weapons or soldiers, gambling tables, large detailed human faces, a floating island, empty blue margins.",
+  "output": "1024x1024",
+  "scenes": [
+    {
+      "out": "area_manabi_island",
+      "dest": "public/img/scenes/area_manabi_island.webp",
+      "title": "まなびの 島 — 期末テスト対策の 土地",
+      "output": "Output: ONE SQUARE illustration, exactly 1024x1024 pixels (square — not landscape, not portrait).",
+      "scene": "Scene: the cheerful 'island of learning' from the second reference, seen from high above. In the centre stands the round storybook cottage: a thick, leafy green roof with a little sprout on top, cream walls, a round wooden door with a round window, small round windows, a stone step, a wooden lantern post and a short wooden fence in front. Beside it grows a big round tree full of orange fruit with a wooden bench under it, and red, pink and yellow spotted mushrooms and white and yellow flowers dot the bright green meadows. A clear blue river winds from gentle green hills past the cottage down to a sandy shore and the sea, where a few small green islands with palm trees sit. Meadows, hills, river and sea reach every edge of the frame."
+    }
+  ]
+}

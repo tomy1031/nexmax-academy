@@ -179,14 +179,15 @@ const scenes = [
   ],
   [
     "houkoku_kiku",
-    "報告を 聞く ときの ポイント",
-    "THE NEW ENGINEER wears big headphones and listens carefully to THE COLLEAGUE, who is reporting at her desk. He writes on a large cream notepad that shows four questions with check boxes. A title label above. Small musical-note-free sound waves come from the colleague; he nods with a lightbulb.",
+    "報告を 聞く（リスニングの 5つの 場面）",
+    "THE NEW ENGINEER wears big headphones at his desk and listens carefully, writing notes in a notebook, with a small lightbulb of understanding. Around him, in a gentle arc, float five round cream badges, each with its label and one small clear picture: a finished screen with a green check mark, a clock and a calendar, a laptop with a red error, a magnifying glass over two small boxes being compared, and a small team standing in a circle in the morning. A title label above him.",
     [
       "報告（ほうこく）を 聞（き）く",
-      "用件（ようけん）は？",
-      "いつ？",
-      "どこまで？",
-      "お願（ねが）いは？",
+      "作業完了（さぎょうかんりょう）",
+      "遅（おく）れ",
+      "トラブル",
+      "技術調査（ぎじゅつちょうさ）",
+      "朝礼（ちょうれい）",
     ],
   ],
   // ── 報連相：連絡 ──────────────────────────────────────────
