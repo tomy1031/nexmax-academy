@@ -149,8 +149,8 @@
       "out": "l4_task1",
       "dest": "public/img/hourensou/soudan/renshu/l4_task1.webp",
       "title": "レベル4 仕事①：商品の 検索機能（あと 3時間）",
-      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: she is in the middle of building a product search feature and still needs about three hours. Her large monitor shows a food app with a search box with a magnifying-glass icon at the top and a short list of matching food results below it. A big progress bar across the bottom of the screen is about 60 percent full, with the label below at its end. She types steadily with a focused face.",
-      "text": ["SEARCH", "3h"]
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: she is in the middle of building a product search feature and still needs about five hours. Her large monitor shows a food app with a search box with a magnifying-glass icon at the top and a short list of matching food results below it. A big progress bar across the bottom of the screen is about 40 percent full, with the label below at its end. She types steadily with a focused face.",
+      "text": ["SEARCH", "5h"]
     },
     {
       "out": "l4_task2",
