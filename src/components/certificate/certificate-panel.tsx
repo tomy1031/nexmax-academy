@@ -8,8 +8,10 @@ import { certificateFile, saveCertificateFile } from "@/lib/certificate/draw";
 import {
   certificateLines,
   formatIssuedAt,
+  isSpecialCertificate,
   nextStepForPerfect,
   notPerfectReasons,
+  showsAttempt,
   type IssuedCertificate,
 } from "@/lib/certificate/model";
 import { CERTIFICATE_UI_FURIGANA as UI } from "./ui-furigana";
@@ -105,7 +107,13 @@ export function CertificatePanel({
   const cert = state.cert;
   const lines = certificateLines(cert);
   const reasons = notPerfectReasons(cert);
-  const frame = cert.perfect ? "border-[#f0a819] bg-[#fff6dc]" : "border-sky bg-sky-soft";
+  /*
+   * 特別課題（ツール教材の レベル5・2026-11-20「レベル5をもっと特別に」）は いつも 金の ふちと
+   *「🏅 特別課題」の 札。パーフェクトか どうかは 右上の 札と 理由の 欄で 分かる。
+   */
+  const special = isSpecialCertificate(cert);
+  const frame =
+    cert.perfect || special ? "border-[#f0a819] bg-[#fff6dc]" : "border-sky bg-sky-soft";
 
   return (
     <section
@@ -114,11 +122,20 @@ export function CertificatePanel({
       data-perfect={cert.perfect ? "true" : "false"}
       data-official={cert.official ? "true" : "false"}
       data-code={cert.code}
+      data-special={special ? "true" : "false"}
       aria-label="修了証"
     >
       <div className="flex flex-wrap items-start justify-between gap-3">
         <h2 className="text-navy text-2xl font-black">
           🎓 <RubyText text="修了証" index={UI} show={show} />
+          {special ? (
+            <span
+              className="ml-2 inline-block rounded-xl bg-[#f0a819] px-3 py-1 align-middle text-base font-black text-white"
+              data-certificate="special"
+            >
+              🏅 <RubyText text="特別課題" index={UI} show={show} />
+            </span>
+          ) : null}
         </h2>
         <span
           className={`rounded-xl px-4 py-1.5 text-lg font-black text-white ${
@@ -152,7 +169,7 @@ export function CertificatePanel({
         <Row label="終えた 時刻" show={show}>
           <span data-certificate="time">{formatIssuedAt(cert.issuedAt)}</span>
         </Row>
-        {cert.official ? (
+        {cert.official && showsAttempt(cert) ? (
           <Row label="回" show={show}>
             <RubyText text={`${cert.attempt}回目`} index={UI} show={show} />
           </Row>

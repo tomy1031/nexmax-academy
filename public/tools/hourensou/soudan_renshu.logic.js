@@ -358,13 +358,24 @@
   /* ---------------- 進み具合（DB の position は 数だけ） ---------------- */
 
   /** 端末の 保存 → DB に 置く 数（`content_progress.position`）。 */
+  /*
+   * しおりの 数（DB の content_progress.position）。
+   * - s1..: 星・p1..: 加点
+   * - f1..: **はじめて 合格した 回の** やり直し＋1（0 ＝ 分からない。修了証が できる 前に 終えた）
+   * - cm / cs: レベル1〜4 の 修了証・特別課題の 修了証を 親が 出した（または もう あった）
+   *   （2026-11-20「レベル4までで修了証」。別の 端末で 開いても 2回 頼まない）
+   */
   function toPosition(save, levelCount) {
     var pos = { intro: save.introSeen ? 1 : 0, open: openLevelCount(save, levelCount) };
     for (var n = 1; n <= levelCount; n += 1) {
       var one = (save.levels && save.levels["l" + n]) || {};
       pos["s" + n] = clampInt(one.stars, 0, 3);
       pos["p" + n] = clampInt(one.bonus, 0, 9);
+      pos["f" + n] = typeof one.firstFails === "number" ? clampInt(one.firstFails, 0, 98) + 1 : 0;
     }
+    var acked = save.certAck || {};
+    pos.cm = acked.main ? 1 : 0;
+    pos.cs = acked.special ? 1 : 0;
     return pos;
   }
 
@@ -382,6 +393,38 @@
       out.levels[key] = Object.assign({}, one, {
         stars: Math.max(clampInt(one.stars, 0, 3), stars),
         bonus: Math.max(clampInt(one.bonus, 0, 9), bonus),
+      });
+      // はじめて 合格した 回の やり直しは 端末に 無い ときだけ 記録から 入れる（端末が 勝つ）
+      var f = clampInt(position["f" + n], 0, 99);
+      if (typeof one.firstFails !== "number" && f > 0) out.levels[key].firstFails = f - 1;
+    }
+    out.certAck = Object.assign({}, out.certAck || {});
+    if (position.cm === 1) out.certAck.main = true;
+    if (position.cs === 1) out.certAck.special = true;
+    return out;
+  }
+
+  /** レベル1〜n を ぜんぶ 合格したか（n 以降は 見ない。レベル5は 挑戦・2026-11-20）。 */
+  function requiredCleared(save, required) {
+    for (var n = 1; n <= required; n += 1) {
+      var one = (save.levels && save.levels["l" + n]) || {};
+      if (clampInt(one.stars, 0, 3) <= 0) return false;
+    }
+    return true;
+  }
+
+  /**
+   * 修了証に 書く レベルごとの 数（親へ 送る 形）。やり直しは **はじめて 合格した 回**。
+   * 分からない（修了証が できる 前に 終えた）レベルは null。
+   */
+  function certificateFacts(save, fromNo, toNo) {
+    var out = [];
+    for (var n = fromNo; n <= toNo; n += 1) {
+      var one = (save.levels && save.levels["l" + n]) || {};
+      out.push({
+        no: n,
+        stars: Math.max(1, clampInt(one.stars, 0, 3)),
+        fails: typeof one.firstFails === "number" ? clampInt(one.firstFails, 0, 99) : null,
       });
     }
     return out;
@@ -472,6 +515,8 @@
     mergePosition: mergePosition,
     openLevelCount: openLevelCount,
     allCleared: allCleared,
+    requiredCleared: requiredCleared,
+    certificateFacts: certificateFacts,
     attemptsText: attemptsText,
     worksheetCellId: worksheetCellId,
     worksheetThoughtId: worksheetThoughtId,

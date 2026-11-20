@@ -14,6 +14,9 @@ import { parseAttemptId, parseLinkAnswers, saveLinkAnswers } from "@/lib/answers
 import { PROGRESS_RESTORE_MESSAGE, readLinkMessage } from "@/lib/answers/link-message";
 import { fetchOwnContentProgress } from "@/lib/records/own-progress";
 import { LinkVoiceBridge } from "./link-voice-bridge";
+import { CertificatePanel } from "@/components/certificate/certificate-panel";
+import { PreviousCertificate } from "@/components/certificate/previous-certificate";
+import { specialCertificateKey, useLinkCertificates } from "./use-link-certificates";
 
 /**
  * リンク教材 — 1枚で完結する練習ページを、ステージの中から 全画面で 開く
@@ -53,6 +56,8 @@ import { LinkVoiceBridge } from "./link-voice-bridge";
 const UI_FURIGANA = buildFuriganaIndex([
   ["上", "うえ"],
   ["最後", "さいご"],
+  // 「⛶ 大きく する」（ボタン。裸の 漢字を 残さない・規律2）
+  ["大きく", "おおきく"],
 ]);
 
 /**
@@ -75,6 +80,43 @@ export function LinkView({ link, embedded }: { link: LinkContent; embedded?: boo
   const shellRef = useRef<HTMLDivElement | null>(null);
   /** 埋めた ページ（声と 判定の 橋が 返事を 送る 先・頼みの 差出人の 確かめ）。 */
   const frameRef = useRef<HTMLIFrameElement | null>(null);
+
+  /*
+   * 修了証（ツール教材・2026-11-20 相談の 練習問題「レベル4までで修了証」「レベル5の特別な修了証」）。
+   * 修了証を 出さない 教材では `spec` が null で、何も しない。
+   */
+  const certificates = useLinkCertificates(link.id, frameRef);
+  const certificateFurigana = useMemo(
+    () =>
+      buildFuriganaIndex([
+        ...(link.furigana ?? []),
+        ...(certificates.spec?.furigana ?? []).map(([w, r]) => [w, r] as [string, string]),
+      ]),
+    [link.furigana, certificates.spec],
+  );
+  /** いま 出して いる 修了証（特別課題を 先に）。 */
+  const shownCertificate = certificates.special.certificate
+    ? { state: certificates.special.certificate, issuer: certificates.special }
+    : certificates.main.certificate
+      ? { state: certificates.main.certificate, issuer: certificates.main }
+      : null;
+  const certificatePanel = shownCertificate ? (
+    <div className="flex w-full max-w-2xl flex-col gap-3" data-link-certificate="">
+      <CertificatePanel
+        state={shownCertificate.state}
+        furigana={certificateFurigana}
+        show={furiganaOn}
+        onRetry={shownCertificate.issuer.retry}
+      />
+      <button
+        type="button"
+        onClick={shownCertificate.issuer.reset}
+        className="border-hairline text-navy self-center rounded-full border-2 bg-white px-5 py-2 text-sm font-black"
+      >
+        ✕ とじて つづける
+      </button>
+    </div>
+  ) : null;
 
   /*
    * おわった かどうかは 保存層から 読む（画面に 別の 控えを 置かない）。
@@ -262,6 +304,12 @@ export function LinkView({ link, embedded }: { link: LinkContent; embedded?: boo
           頼まれる までは 何も しない——ほかの ツールには 影響しない。
         */}
         {link.url.startsWith("/") ? <LinkVoiceBridge linkId={link.id} frameRef={frameRef} /> : null}
+        {/* 修了証は 埋め込みの 枠の 上に 重ねる（「大きく する」の 中でも 見える） */}
+        {certificatePanel ? (
+          <div className="absolute inset-0 z-10 flex justify-center overflow-auto bg-[#0b2138]/75 p-3">
+            {certificatePanel}
+          </div>
+        ) : null}
       </div>
 
       <div
@@ -278,7 +326,7 @@ export function LinkView({ link, embedded }: { link: LinkContent; embedded?: boo
               : "border-hairline text-navy bg-white"
           }`}
         >
-          {wide ? "✕ もどす" : "⛶ 大きく する"}
+          {wide ? "✕ もどす" : <RubyText text="⛶ 大きく する" index={UI_FURIGANA} />}
         </button>
         {ownsDone && !done ? (
           /*
@@ -291,7 +339,10 @@ export function LinkView({ link, embedded }: { link: LinkContent; embedded?: boo
               wide ? "bg-white/90 text-[#0b2138]" : "bg-sky-soft text-navy"
             }`}
           >
-            <RubyText text="上の ページを 最後まで やると ✅ に なります" index={UI_FURIGANA} />
+            <RubyText
+              text={certificates.spec?.doneHint ?? "上の ページを 最後まで やると ✅ に なります"}
+              index={UI_FURIGANA}
+            />
           </span>
         ) : (
           <button
@@ -358,7 +409,7 @@ export function LinkView({ link, embedded }: { link: LinkContent; embedded?: boo
               onClick={start}
               className="btn-game px-6 py-3 [--btn-face:#0288d1] [--btn-shadow:#0272ae]"
             >
-              {open ? "⛶ もういちど 大きく する" : "▶ ひらく"}
+              {open ? <RubyText text="⛶ もういちど 大きく する" index={UI_FURIGANA} /> : "▶ ひらく"}
             </button>
           )}
 
@@ -382,6 +433,27 @@ export function LinkView({ link, embedded }: { link: LinkContent; embedded?: boo
             <span className="text-leaf-deep ml-auto text-sm font-black">✅ おわりました</span>
           ) : null}
         </div>
+
+        {certificates.spec ? (
+          <div className="mt-3 flex flex-wrap gap-2">
+            <PreviousCertificate
+              contentId={link.id}
+              onOpen={certificates.main.open}
+              show={furiganaOn}
+              label="前に 出した 修了証を ひらく（レベル1〜4）"
+            />
+            <PreviousCertificate
+              contentId={specialCertificateKey(link.id)}
+              onOpen={certificates.special.open}
+              show={furiganaOn}
+              label="前に 出した 特別課題の 修了証を ひらく"
+            />
+          </div>
+        ) : null}
+        {/* 埋め込みを 開いて いない ときの 修了証（前に 出し損ねた 分の「もう一度 ためす」など） */}
+        {!open && certificatePanel ? (
+          <div className="mt-4 flex justify-center">{certificatePanel}</div>
+        ) : null}
       </section>
 
       {embed}

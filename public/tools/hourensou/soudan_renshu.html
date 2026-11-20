@@ -1076,6 +1076,27 @@
         background: #fbfdff;
         cursor: default;
       }
+      /* レベル5は 金の 特別な カード（2026-11-20「レベル5をもっと特別に」→「金色の特別なカード」） */
+      .lvbtn.special {
+        border-color: #f0a819;
+        background: linear-gradient(180deg, #fffaea 0%, #fff1c9 100%);
+        box-shadow: 0 0 0 3px rgba(240, 168, 25, 0.18), 0 6px 16px rgba(160, 110, 0, 0.12);
+      }
+      .lvbtn.special .no {
+        background: linear-gradient(180deg, #f8c64a 0%, #e09b0b 100%);
+      }
+      .lvbtn.special .badge {
+        background: linear-gradient(180deg, #f6b730 0%, #e08f00 100%);
+        color: #fff;
+      }
+      .lvbtn.special.locked .no {
+        background: linear-gradient(180deg, #e7c77a 0%, #c9a24e 100%);
+      }
+      .btn.special-go {
+        background: linear-gradient(180deg, #f8c64a 0%, #e09b0b 100%);
+        color: #3d2a00;
+        box-shadow: 0 4px 0 #b77800;
+      }
       /* 見本どおり、ロックの カードも 字は 濃い まま（ブラウザの「押せない ボタンを 薄く する」を 打ち消す） */
       .lvbtn:disabled {
         opacity: 1;
@@ -2118,9 +2139,15 @@
           }
         }
 
+        /**
+         * ✅（ステージを 進める）に 要る レベルの 数。レベル5は 挑戦（やらなくても よい）
+         *（2026-11-20「レベル4までで修了証」→ 選択「レベル5は挑戦（やらなくてもよい）」）。
+         */
+        var REQUIRED = Math.min(LEVELS.length, D.requiredLevels || LEVELS.length);
+
         /** 進み具合を 親へ（親が 学習の 記録に 写し、Supabase に 送る）。 */
         function reportProgress() {
-          var done = L.allCleared(save, LEVELS.length);
+          var done = L.requiredCleared(save, REQUIRED);
           post({
             type: "nexmax:link-progress",
             status: done ? "completed" : "started",
@@ -2128,6 +2155,47 @@
           });
           if (done) post({ type: "nexmax:link-done" });
         }
+
+        /*
+         * 修了証を 親に 頼む（2026-11-20「レベル4までで修了証」「レベル5の特別な修了証」）。
+         * - レベル1〜4 を ぜんぶ 合格したら main、レベル5（特別課題）に 合格したら special
+         * - 親が 出したら（または もう あったら）知らせて くる（ack）。それまでは 開く たびに 頼む
+         *   （DB で 2枚目は 出ない）。この 画面では 1種類 1回だけ 頼む
+         * - やり直しは **はじめて 合格した 回**の 数。分からない レベルは null（修了証が できる 前に
+         *   終えた。2026-11-20 の 選択「すでに終えた学生には1回だけ出す」）
+         */
+        var certAsked = { main: false, special: false };
+
+        function askCertificates() {
+          var acked = save.certAck || {};
+          if (!acked.main && !certAsked.main && L.requiredCleared(save, REQUIRED)) {
+            certAsked.main = true;
+            post({ type: "nexmax:link-certificate", tier: "main", levels: L.certificateFacts(save, 1, REQUIRED) });
+          }
+          var specialLevel = LEVELS.filter(function (level) {
+            return level.special;
+          })[0];
+          var specialDone = specialLevel && (save.levels[specialLevel.id] || {}).stars > 0;
+          if (specialLevel && specialDone && !acked.special && !certAsked.special) {
+            certAsked.special = true;
+            post({
+              type: "nexmax:link-certificate",
+              tier: "special",
+              levels: L.certificateFacts(save, specialLevel.no, specialLevel.no),
+            });
+          }
+        }
+
+        window.addEventListener("message", function (event) {
+          if (event.origin !== window.location.origin || event.source !== window.parent) return;
+          var data = event.data;
+          if (!data || data.type !== "nexmax:link-certificate-ack" || data.id !== LINK_ID) return;
+          if (data.tier !== "main" && data.tier !== "special") return;
+          save.certAck = Object.assign({}, save.certAck || {});
+          save.certAck[data.tier] = true;
+          writeSave();
+          reportProgress();
+        });
 
         function reportAnswers(answers, attemptId) {
           post({ type: "nexmax:link-answers", attemptId: attemptId, fullSet: true, answers: answers });
@@ -2168,6 +2236,17 @@
           var introBefore = save.introSeen;
           save = L.mergePosition(save, data.position, LEVELS.length);
           writeSave();
+          /*
+           * レベル4までで ✅ に した（2026-11-20）。前に レベル1〜4 を 終えて いて、まだ ✅ で ない
+           * 人にも 付ける。修了証も ここで 頼む（まだ 出して いない 人だけ・親が DB で 確かめる）
+           */
+          /*
+           * 持ち主が 確かめられない（owner が 空）のに、端末の 保存には 持ち主が いる ときは
+           * 自動では 送らない——共有 PC で 前の 人の 保存を 今の 人の 記録に しない（コードの 検収）
+           */
+          var trusted = !!owner || !save.owner;
+          if (trusted && L.requiredCleared(save, REQUIRED) && data.status !== "completed") reportProgress();
+          if (trusted) askCertificates();
           /* 別の 端末で もう「はじめに」を 見て いた → 1枚目に いる なら タイトルへ */
           if (reset) {
             talk = null;
@@ -2358,6 +2437,7 @@
             var locked = at + 1 > open;
             html +=
               '<button type="button" class="lvbtn' +
+              (level.special ? " special" : "") +
               (locked ? " locked" : "") +
               (at === current ? " current" : "") +
               '" data-act="level" data-level="' +
@@ -2370,12 +2450,12 @@
               R(D.ui.levelWord) +
               "</small>" +
               level.no +
-              '</span><span class="badge">' +
-              R(level.badge) +
+              '</span><span class="badge"' +
+              (level.special ? ' data-testid="special-badge">🏅 ' + R(D.ui.specialBadge) : ">" + R(level.badge)) +
               '</span><span class="sep" aria-hidden="true"></span><span class="txt"><span class="name">' +
               R(level.title) +
               '</span><span class="goal">' +
-              R(locked ? D.ui.locked : level.goal) +
+              R(locked ? D.ui.locked : level.special ? D.ui.specialNote : level.goal) +
               '</span></span><span class="end">' +
               (mine.stars
                 ? '<span class="got">' + stars(mine.stars) + "<small>" + R(D.ui.bonusTitle) + " ＋" + (mine.bonus || 0) + "</small></span>"
@@ -3841,7 +3921,18 @@
               passWith(level, j);
               return;
             }
-            if (L.countsAsFail(j)) talk.fails += 1;
+            if (L.countsAsFail(j)) {
+              talk.fails += 1;
+              /*
+               * はじめて 合格する までの 不合格は 端末に 積む（画面を 離れる・読み直すと talk は 0 に
+               * 戻る。修了証の パーフェクトが 崩れる・コードの 検収）
+               */
+              var lv = levelSave(level.id);
+              if (!(lv.stars > 0)) {
+                lv.failsBeforePass = (lv.failsBeforePass || 0) + 1;
+                writeSave();
+              }
+            }
             var reaction = D.reactions[L.reactionKey(j)] || D.reactions.soudan;
             talk.reply = reaction.text;
             talk.face = "troubled";
@@ -3868,6 +3959,10 @@
           talk.face = "happy";
           talk.reply = D.ui.passReply;
           var mine = levelSave(level.id);
+          /* はじめて 合格した 回の やり直し（修了証の パーフェクトは これで 決める） */
+          if (!(mine.stars > 0) && typeof mine.firstFails !== "number") {
+            mine.firstFails = Math.max(talk.fails, mine.failsBeforePass || 0);
+          }
           var got = L.starsForFails(talk.fails);
           var points = L.bonusPoints(j);
           mine.stars = Math.max(mine.stars || 0, got);
@@ -3875,6 +3970,7 @@
           mine.choice = j.choice;
           writeSave();
           reportProgress();
+          askCertificates();
           var note = "（" + D.ui.levelWord.replace(/\{([^{}|]+)\|[^{}|]+\}/g, "$1") + level.no + "・★" + got + "・加点＋" + points + "）";
           reportAnswers([{ id: level.id, text: (L.attemptsText(talk.attempts) + " " + note).slice(0, 1000), correct: talk.fails === 0 }], talk.attemptId);
           renderConsult(level);
@@ -3919,11 +4015,27 @@
           if (lastLevel && L.allCleared(save, LEVELS.length)) {
             html += '<p class="status" style="font-size:20px">🎉 ' + R(D.ui.allDone) + "</p>";
           }
+          var nextSpecial = !lastLevel && LEVELS[view.level + 1].special;
+          if (nextSpecial && L.requiredCleared(save, REQUIRED)) {
+            /* レベル1〜4 が 終わった（✅ と 修了証）。レベル5は やりたい 人だけ */
+            html +=
+              '<p class="status" style="font-size:20px" data-testid="required-done">🎉 ' +
+              R(D.ui.requiredDone) +
+              '</p><p class="fine" style="text-align:center">' +
+              R(D.ui.specialNote) +
+              "</p>";
+          }
           html +=
             '<div class="row">' +
             (lastLevel
               ? '<button type="button" class="btn go" data-act="home">' + R(D.ui.title) + "</button>"
-              : '<button type="button" class="btn go" data-act="nextlevel" data-testid="next-level">' + R(D.ui.nextLevel) + " ▶</button>") +
+              : nextSpecial
+                ? '<button type="button" class="btn special-go" data-act="nextlevel" data-testid="next-level">🏅 ' +
+                  R(D.ui.toSpecial) +
+                  ' ▶</button><button type="button" class="btn sub small" data-act="home">' +
+                  R(D.ui.title) +
+                  "</button>"
+                : '<button type="button" class="btn go" data-act="nextlevel" data-testid="next-level">' + R(D.ui.nextLevel) + " ▶</button>") +
             "</div></div></div>";
           screenEl.innerHTML = html;
         }

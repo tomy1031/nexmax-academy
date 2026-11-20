@@ -16,7 +16,7 @@
  */
 
 import type { ContentRefType } from "@/content/schema";
-import { formatIssuedAt } from "@/lib/certificate/model";
+import { formatIssuedAt, linkLevels } from "@/lib/certificate/model";
 import { contentKindMeta } from "@/lib/content-kinds";
 import type { ProfileRow } from "@/lib/profile-db";
 import { formatSchool } from "@/lib/school";
@@ -693,6 +693,7 @@ function certificateScoreText(record: CertificateRecord): string {
     ...(detail.finishedBefore ? ["修了証が できる 前に 終えた 回"] : []),
     ...(detail.sawModelAnswer ? ["バグ報告で こたえの 文を 見た"] : []),
     ...(detail.onlyMissed ? ["まちがえた ことばだけ"] : []),
+    ...(detail.beforeCert ? ["修了証が できる 前に 終えた レベルが ある"] : []),
   ];
   const tail = notes.length > 0 ? `（${notes.join("・")}）` : "";
   if (record.kind === "listening") return `スコア ${record.score ?? 0}点・ミス ${misses}回${tail}`;
@@ -700,6 +701,18 @@ function certificateScoreText(record: CertificateRecord): string {
     return `1回で 正解 ${record.score ?? 0}/${record.max_score ?? 0}・❌ ${misses}回${tail}`;
   }
   const num = (key: string) => Number(detail[key] ?? 0);
+  if (record.kind === "link") {
+    /*
+     * ツール教材（相談の 練習問題）: レベルごとの 星と、はじめて 合格した 回の やり直し。
+     * f ＝ やり直し＋1（0 は 分からない）。画像の 行と 同じ 数。
+     */
+    // 数は 範囲に 収めて 読む（学生が 自分で 入れた 行で 先生の 画面を 止めない）
+    const levels = linkLevels(detail).map((level) => {
+      const how = level.f === 0 ? "?" : level.f === 1 ? "1回目" : `やり直し${level.f - 1}`;
+      return `L${level.no} ★${level.stars}（${how}）`;
+    });
+    return `${levels.join("・")}${tail}`;
+  }
   if (record.kind === "meeting") {
     const found = num("discover") > 0 ? `・聞き出せた ${num("found")}/${num("discover")}` : "";
     return `答えた ${record.score ?? 0}/${record.max_score ?? 0}${found}${tail}`;
@@ -764,8 +777,16 @@ export function certificateTable(
       cells: {
         ...commonCells(record.profile_id, record.content_id, lookups),
         learnerName: record.learner_name,
-        attempt: `${record.attempt}回目`,
-        result: record.perfect ? "★PERFECT" : "修了",
+        // ツール教材は 2種類（レベル1〜4・特別課題）を 同じ 教材で 数えるので 回を 出さない
+        attempt: record.kind === "link" ? "—" : `${record.attempt}回目`,
+        result:
+          record.kind === "link" && (record.detail as Record<string, unknown> | null)?.special
+            ? record.perfect
+              ? "特別課題・★PERFECT"
+              : "特別課題"
+            : record.perfect
+              ? "★PERFECT"
+              : "修了",
         score: certificateScoreText(record),
         issuedAt: formatIssuedAt(record.issued_at),
         code: record.code,

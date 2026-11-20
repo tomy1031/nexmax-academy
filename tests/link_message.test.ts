@@ -1,12 +1,14 @@
 import { describe, expect, it } from "vitest";
 import {
   ANSWERS_MESSAGE,
+  CERTIFICATE_MESSAGE,
   DONE_MESSAGE,
   OWNS_DONE_MESSAGE,
   PROGRESS_MESSAGE,
   PROGRESS_REQUEST_MESSAGE,
   VOICE_MESSAGE,
   parseProgressPosition,
+  readLinkCertificateMessage,
   readLinkMessage,
   readLinkVoiceMessage,
 } from "@/lib/answers/link-message";
@@ -157,5 +159,65 @@ describe("声と 判定の 橋の 頼み（2026-11-18・学習者の 画面は G
     expect(
       readLinkVoiceMessage({ type: ANSWERS_MESSAGE, id: LINK_ID, op: "connect" }, LINK_ID),
     ).toBeNull();
+  });
+});
+
+describe("修了証の 頼み（ツール教材・2026-11-20 相談の 練習問題）", () => {
+  const ID = "soudan_renshu";
+  const ok = {
+    type: CERTIFICATE_MESSAGE,
+    id: ID,
+    tier: "main",
+    levels: [
+      { no: 1, stars: 3, fails: 0 },
+      { no: 2, stars: 2, fails: 1 },
+      { no: 3, stars: 3, fails: null },
+      { no: 4, stars: 1, fails: 3 },
+    ],
+  };
+
+  it("形が 合う ものだけ 受ける（やり直しの 数が 分からない レベルは null）", () => {
+    expect(readLinkCertificateMessage(ok, ID)).toEqual({ tier: "main", levels: ok.levels });
+    expect(
+      readLinkCertificateMessage(
+        { ...ok, tier: "special", levels: [{ no: 5, stars: 3, fails: 0 }] },
+        ID,
+      )?.tier,
+    ).toBe("special");
+  });
+
+  it("よその 教材・知らない 種類・範囲の 外・小数・重なりは まるごと 捨てる", () => {
+    expect(readLinkCertificateMessage({ ...ok, id: "other" }, ID)).toBeNull();
+    expect(readLinkCertificateMessage({ ...ok, id: undefined }, ID)).toBeNull();
+    expect(readLinkCertificateMessage({ ...ok, tier: "gold" }, ID)).toBeNull();
+    expect(readLinkCertificateMessage({ ...ok, levels: [] }, ID)).toBeNull();
+    expect(
+      readLinkCertificateMessage({ ...ok, levels: [{ no: 0, stars: 3, fails: 0 }] }, ID),
+    ).toBeNull();
+    expect(
+      readLinkCertificateMessage({ ...ok, levels: [{ no: 1, stars: 4, fails: 0 }] }, ID),
+    ).toBeNull();
+    expect(
+      readLinkCertificateMessage({ ...ok, levels: [{ no: 1, stars: 3, fails: 1.5 }] }, ID),
+    ).toBeNull();
+    expect(
+      readLinkCertificateMessage({ ...ok, levels: [{ no: 1, stars: 3, fails: -1 }] }, ID),
+    ).toBeNull();
+    expect(
+      readLinkCertificateMessage(
+        {
+          ...ok,
+          levels: [
+            { no: 1, stars: 3, fails: 0 },
+            { no: 1, stars: 3, fails: 0 },
+          ],
+        },
+        ID,
+      ),
+    ).toBeNull();
+  });
+
+  it("修了証の 頼みを「おわった」とは 読まない（✅ に 化けない）", () => {
+    expect(readLinkMessage(ok, ID)).toBeNull();
   });
 });

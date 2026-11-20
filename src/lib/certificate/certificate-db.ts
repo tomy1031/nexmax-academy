@@ -84,6 +84,38 @@ export async function hasIssuedCertificate(contentId: string): Promise<boolean |
   return (data ?? []).length > 0;
 }
 
+/**
+ * ツール教材（link）で、この 人が その 種類（レベル1〜4・特別課題）の 修了証を もう 持って いるか。
+ * 1つの 教材に 2種類 あるので `detail.special` で 分ける（2026-11-20・相談の 練習問題）。
+ * ログインして いない（デモ）は false、確かめられない ときは null（2枚目を 出さない）。
+ */
+export async function hasIssuedLinkCertificate(
+  contentId: string,
+  special: boolean,
+): Promise<boolean | null> {
+  const client = createClient();
+  if (!client) return false;
+  let profileId: string | null;
+  try {
+    profileId = await readOwnId(client);
+  } catch {
+    return null;
+  }
+  if (!profileId) return false;
+  const { data, error } = await client
+    .from("completion_certificates")
+    .select("detail")
+    .eq("profile_id", profileId)
+    .eq("content_id", contentId)
+    .eq("kind", "link")
+    .limit(50);
+  if (error) return null;
+  return (data ?? []).some(
+    (row) =>
+      ((row as { detail?: { special?: unknown } | null }).detail?.special === true) === special,
+  );
+}
+
 export async function issueCertificate(
   result: CertificateResult,
   /** 回を 始めた 人（`claimRun`）。いまの 人と ちがえば、前の 人の 続きと して 扱う。 */
