@@ -239,6 +239,43 @@ describe("データの 形", () => {
     expect(plain(JSON.stringify(L1.slides))).toContain("3日");
   });
 
+  it("レベル4の 時間は 朝 9時から 1本（9時〜18時・昼休み 1時間で 8時間。5時間 ＋ 4時間 ＝ 9時間）", () => {
+    const l4 = DATA.levels[3]!;
+    type Timebar = {
+      kind?: string;
+      capacity?: { hours: number };
+      tasks?: { hours: number }[];
+      day?: { blocks: { hours: number; rest?: string }[] };
+    };
+    const bar = (l4.slides as Timebar[]).find((slide) => slide.kind === "timebar")!;
+    const work = bar
+      .day!.blocks.filter((block) => !block.rest)
+      .reduce((sum, b) => sum + b.hours, 0);
+    expect(work).toBe(8);
+    expect(bar.capacity!.hours).toBe(8);
+    const need = bar.tasks!.reduce((sum, task) => sum + task.hours, 0);
+    expect(need).toBe(9);
+    expect(need).toBeGreaterThan(bar.capacity!.hours);
+    /* 前の 時刻（午前10時に 相談・午後5時・6時間）を 残さない */
+    const text = plain(
+      JSON.stringify(l4.slides) + JSON.stringify(l4.model) + JSON.stringify(l4.better),
+    );
+    expect(text).not.toMatch(/午後5時|6時間|3時間|7時間/u);
+    expect(plain(l4.checklist[0]!.ask)).toContain("今日 しなければ ならない 仕事");
+  });
+
+  it("合格に 要る 型は、伝える ことの 1つの 項目だけで 聞く（ヒントの 見出しに 番号と 問いが 出る）", () => {
+    for (const level of DATA.levels) {
+      if (level.id === "l2") continue; // 4つ目は 考えと お願いを 1つに まとめた 元の 問い
+      for (const key of level.ai.required) {
+        const own = level.checklist.filter(
+          (item) => item.parts.length === 1 && item.parts[0] === key,
+        );
+        expect(own.length, `${level.id} ${key}`).toBe(1);
+      }
+    }
+  });
+
   it("「自分なり」（N1）を 使わない（2026-11-18「自分のアイデアを持つに変更」）", () => {
     expect(learnerTexts().map(plain).join("\n")).not.toContain("自分なり");
   });

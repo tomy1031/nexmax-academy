@@ -698,6 +698,50 @@
         width: 0;
         border-left: 3px dashed var(--coral-deep);
       }
+      /* 今日の 予定の 帯 */
+      .daytrack {
+        display: flex;
+        height: 48px;
+        border-radius: 10px;
+        overflow: hidden;
+        border: 2px solid var(--line);
+      }
+      .daytrack .blk {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--leaf);
+        color: #fff;
+        font-weight: 900;
+        font-size: 18px;
+        white-space: nowrap;
+      }
+      .daytrack .blk + .blk {
+        border-left: 2px solid #fff;
+      }
+      .daytrack .blk.rest {
+        background: #d9e2ec;
+        color: var(--ink-soft);
+        font-size: 14px;
+      }
+      .dayticks {
+        position: relative;
+        height: 22px;
+        font-size: 13px;
+        font-weight: 900;
+        color: var(--ink-soft);
+      }
+      .dayticks .tick {
+        position: absolute;
+        top: 2px;
+        transform: translateX(-50%);
+      }
+      .dayticks .tick:first-child {
+        transform: none;
+      }
+      .dayticks .tick.end {
+        transform: translateX(-100%);
+      }
       .over {
         text-align: center;
         font-weight: 900;
@@ -1477,6 +1521,18 @@
         flex-wrap: wrap;
         align-items: center;
         gap: 6px;
+      }
+      .hint-part .hp-no {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: var(--navy);
+        color: #fff;
+        font-size: 13px;
+        font-weight: 900;
       }
       .hint-part .hp-ask {
         font-size: 13px;
@@ -2553,13 +2609,21 @@
             return html + '</div>' + (slide.clash ? '<p class="clash">⚠️ ' + R(slide.clash) + "</p>" : "");
           }
           if (slide.kind === "timebar") {
-            var scale = 8;
+            /* 図の 幅は 働ける 時間と 仕事の 合計の 大きい ほう（はみ出さない） */
+            var scale = Math.max(
+              slide.capacity.hours,
+              slide.tasks.reduce(function (sum, task) {
+                return sum + task.hours;
+              }, 0),
+            );
             var pct = function (hours) {
               return (hours / scale) * 100;
             };
             var capPct = pct(slide.capacity.hours);
             var html2 =
-              '<div class="bars"><div class="barrow"><span>' +
+              '<div class="bars">' +
+              dayHtml(slide.day) +
+              '<div class="barrow"><span>' +
               R(slide.capacity.label) +
               '</span><div class="track"><div class="fill cap" style="left:0;width:' +
               capPct +
@@ -2679,6 +2743,48 @@
             );
           }
           return "";
+        }
+
+        /**
+         * 時間の 図の 上の「今日の 予定」の 帯（9:00〜12:00・昼休み・13:00〜18:00）。
+         * 働ける 時間が 何時間かを 時刻から 数えられる ように（2026-11-20「時間関係がよくわかりません」）。
+         */
+        function dayHtml(day) {
+          if (!day) return "";
+          var total = 0;
+          day.blocks.forEach(function (block) {
+            total += block.hours;
+          });
+          var at = 0;
+          var ticks = "";
+          var blocks = day.blocks
+            .map(function (block, index) {
+              var left = (at / total) * 100;
+              ticks += '<span class="tick" style="left:' + left + '%">' + esc(block.from) + "</span>";
+              at += block.hours;
+              if (index === day.blocks.length - 1 && block.to) {
+                ticks += '<span class="tick end" style="left:100%">' + esc(block.to) + "</span>";
+              }
+              return (
+                '<div class="blk' +
+                (block.rest ? " rest" : "") +
+                '" style="flex:' +
+                block.hours +
+                '">' +
+                (block.rest ? R(block.rest) : block.hours + "h") +
+                "</div>"
+              );
+            })
+            .join("");
+          return (
+            '<div class="barrow"><span>' +
+            R(day.label) +
+            '</span><div class="dayplan"><div class="daytrack">' +
+            blocks +
+            '</div><div class="dayticks">' +
+            ticks +
+            "</div></div></div>"
+          );
         }
 
         /* ---------------- 伝える こと ---------------- */
@@ -3104,6 +3210,19 @@
           });
         }
 
+        /**
+         * その 型を 書く「伝える こと」の 項目（番号と 問い）。ヒントの 見出しを 項目と そろえて、
+         * どの 項目で 何を 話すかを 一目で 分かる ように する（2026-11-20「どの項目に何を入れるべきなのか
+         * 問題文から明確な答えがえにくい」）。2つの 型を まとめた 項目（レベル2の 4）は 型の 問いの まま。
+         */
+        function checklistItemFor(level, key) {
+          for (var i = 0; i < level.checklist.length; i += 1) {
+            var item = level.checklist[i];
+            if (item.parts.length === 1 && item.parts[0] === key) return { no: i + 1, ask: item.ask };
+          }
+          return null;
+        }
+
         function hintsHtml(level) {
           if (talk.hintsOpen) {
             var required = level.ai.required || [];
@@ -3114,16 +3233,18 @@
               hintGroups(level)
                 .map(function (group) {
                   var part = D.parts[group.part];
+                  var item = checklistItemFor(level, group.part);
                   return (
                     '<div class="hint-part c-' +
                     part.color +
                     '" data-testid="hint-' +
                     group.part +
                     '"><div class="hp-head">' +
+                    (item ? '<span class="hp-no">' + item.no + "</span>" : "") +
                     partTag(group.part) +
                     (required.indexOf(group.part) < 0 ? '<span class="tag c-sun">＋ ' + R(D.ui.optional) + "</span>" : "") +
                     '<span class="hp-ask">' +
-                    R(part.ask) +
+                    R(item ? item.ask : part.ask) +
                     "</span></div>" +
                     group.texts
                       .map(function (text) {

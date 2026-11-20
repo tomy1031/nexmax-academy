@@ -960,7 +960,7 @@ export const ASSET_VERSIONS: Readonly<Record<string, string>> = {
   "/img/hourensou/soudan/renshu/l3_opt_noimage.webp": "e5b4530a",
   "/img/hourensou/soudan/renshu/l3_opt_wait.webp": "9ef20c5d",
   "/img/hourensou/soudan/renshu/l4_demo.webp": "30bf2658",
-  "/img/hourensou/soudan/renshu/l4_task1.webp": "e128233d",
+  "/img/hourensou/soudan/renshu/l4_task1.webp": "4a0765bd",
   "/img/hourensou/soudan/renshu/l4_task2.webp": "e65b0d8b",
   "/img/hourensou/soudan/renshu/l4_test.webp": "2fdc1775",
   "/img/hourensou/soudan/renshu/l5_app.webp": "cd5f7312",
