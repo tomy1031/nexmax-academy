@@ -56,6 +56,8 @@ import { specialCertificateKey, useLinkCertificates } from "./use-link-certifica
 const UI_FURIGANA = buildFuriganaIndex([
   ["上", "うえ"],
   ["最後", "さいご"],
+  // 「⛶ 大きく する」（ボタン。裸の 漢字を 残さない・規律2）
+  ["大きく", "おおきく"],
 ]);
 
 /**
@@ -324,7 +326,7 @@ export function LinkView({ link, embedded }: { link: LinkContent; embedded?: boo
               : "border-hairline text-navy bg-white"
           }`}
         >
-          {wide ? "✕ もどす" : "⛶ 大きく する"}
+          {wide ? "✕ もどす" : <RubyText text="⛶ 大きく する" index={UI_FURIGANA} />}
         </button>
         {ownsDone && !done ? (
           /*
@@ -407,7 +409,7 @@ export function LinkView({ link, embedded }: { link: LinkContent; embedded?: boo
               onClick={start}
               className="btn-game px-6 py-3 [--btn-face:#0288d1] [--btn-shadow:#0272ae]"
             >
-              {open ? "⛶ もういちど 大きく する" : "▶ ひらく"}
+              {open ? <RubyText text="⛶ もういちど 大きく する" index={UI_FURIGANA} /> : "▶ ひらく"}
             </button>
           )}
 
