@@ -46,7 +46,7 @@ window.SOUDAN_RENSHU = {
   background: "/img/novel/office_morning.webp",
 
   /** 絵の 版（絵を 描き直したら 上げる。`/img/*` は ブラウザが 1年 使い回すため）。 */
-  imageVersion: "4",
+  imageVersion: "5",
 
   /** 席の 絵が 切りかわる 秒（5日間と 同じ 3秒・2026-11-17）。 */
   deskSeconds: 3,
