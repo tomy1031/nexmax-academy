@@ -16,7 +16,7 @@
  */
 
 import type { ContentRefType } from "@/content/schema";
-import { formatIssuedAt } from "@/lib/certificate/model";
+import { formatIssuedAt, linkLevels } from "@/lib/certificate/model";
 import { contentKindMeta } from "@/lib/content-kinds";
 import type { ProfileRow } from "@/lib/profile-db";
 import { formatSchool } from "@/lib/school";
@@ -706,13 +706,11 @@ function certificateScoreText(record: CertificateRecord): string {
      * ツール教材（相談の 練習問題）: レベルごとの 星と、はじめて 合格した 回の やり直し。
      * f ＝ やり直し＋1（0 は 分からない）。画像の 行と 同じ 数。
      */
-    const levels: string[] = [];
-    for (let i = 0; i < num("levels"); i += 1) {
-      const no = num("first") + i;
-      const f = num(`f${no}`);
-      const how = f === 0 ? "?" : f === 1 ? "1回目" : `やり直し${f - 1}`;
-      levels.push(`L${no} ★${num(`s${no}`)}（${how}）`);
-    }
+    // 数は 範囲に 収めて 読む（学生が 自分で 入れた 行で 先生の 画面を 止めない）
+    const levels = linkLevels(detail).map((level) => {
+      const how = level.f === 0 ? "?" : level.f === 1 ? "1回目" : `やり直し${level.f - 1}`;
+      return `L${level.no} ★${level.stars}（${how}）`;
+    });
     return `${levels.join("・")}${tail}`;
   }
   if (record.kind === "meeting") {

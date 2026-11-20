@@ -7,60 +7,43 @@
  *「アプリの修了証」「レベル5の特別な修了証」「すでに終えた学生には1回だけ出す」。
  *
  * - 中の ページは 成績の 数だけを 送る（`nexmax:link-certificate`）。題と 種類は ここで 持つ
- *   （ページから 受け取らない）
+ *   （ページから 受け取らない）。種類ごとに 決まった レベルの 組だけを 受ける
  * - 受けるのは **自分が 埋めた iframe から 来た もの だけ**（origin と `event.source` の 両方）
  * - 2種類（レベル1〜4・特別課題）を **別々の 手順**で 出す。DB の content_id は どちらも 教材の id
  *   （先生の 記録で 同じ 教材の 欄に 並ぶ）。端末の 控えの 鍵だけ 分ける
- * - 同じ 種類は 1人 1枚。DB に もう あれば 出さない（確かめられない ときも 出さない——2枚目を 作らない）
- * - 出した（または もう あった）ら ページに 知らせる（`nexmax:link-certificate-ack`）。ページは
- *   それを 見て、次から 頼まない
+ * - 同じ 種類は 1人 1枚。DB に もう あれば 出さない（確かめられない ときも 出さない——2枚目を 作らない）。
+ *   「もう一度 ためす」の 前にも 確かめる
+ * - **DB に 入った（または もう あった）ときだけ** ページに 知らせる（`nexmax:link-certificate-ack`）。
+ *   発行に 落ちた・見本に なった（ログインが 切れて いた）ときは 知らせない——ページは 次に 開いた
+ *   とき また 頼む（コードの 検収「ack を 先に 送ると 修了証が 永久に 出ない」）。
+ *   Supabase の 無い デモ（見本しか 出せない）だけは 見本でも 知らせる
  */
-import { useEffect, useRef, type RefObject } from "react";
+import { useCallback, useEffect, useRef, type RefObject } from "react";
+import type { CertificateState } from "@/components/certificate/certificate-panel";
 import { useCertificateIssuer } from "@/components/certificate/use-certificate-issuer";
-import {
-  CERTIFICATE_ACK_MESSAGE,
-  readLinkCertificateMessage,
-  type LinkCertificateRequest,
-} from "@/lib/answers/link-message";
+import { readLinkCertificateMessage } from "@/lib/answers/link-message";
 import { hasIssuedLinkCertificate } from "@/lib/certificate/certificate-db";
+import {
+  CERTIFICATE_LINKS,
+  ackTo,
+  matchesTier,
+  shouldAckIssued,
+  specialCertificateKey,
+  type LinkCertificateTier as Tier,
+} from "@/lib/certificate/link-certificates";
 import { linkCertificateResult } from "@/lib/certificate/model";
+import { createClient } from "@/lib/supabase/client";
 
-export interface LinkCertificateSpec {
-  /** レベル1〜4 の 修了証の 題。 */
-  readonly main: string;
-  /** 特別課題の 修了証の 題。 */
-  readonly special: string;
-  /** 題の 読み（修了証の カードの ルビ）。 */
-  readonly furigana: readonly (readonly [string, string])[];
-  /** 埋め込みの 下の 文（✅ が 付く とき）。 */
-  readonly doneHint: string;
-}
-
-/** 修了証を 出す ツール教材（いまは 相談の 練習問題だけ）。 */
-export const CERTIFICATE_LINKS: Readonly<Record<string, LinkCertificateSpec>> = {
-  soudan_renshu: {
-    main: "相談の 練習問題（レベル1〜4）",
-    special: "相談の 練習問題 特別課題（レベル5）",
-    furigana: [
-      ["相談", "そうだん"],
-      ["練習問題", "れんしゅうもんだい"],
-      ["特別課題", "とくべつかだい"],
-    ],
-    doneHint: "上の ページで レベル4まで やると ✅ に なります",
-  },
-};
-
-/** 特別課題の 控えの 鍵（端末）。 */
-export function specialCertificateKey(linkId: string): string {
-  return `${linkId}:special`;
-}
+export { CERTIFICATE_LINKS, specialCertificateKey };
 
 export function useLinkCertificates(linkId: string, frameRef: RefObject<HTMLIFrameElement | null>) {
   const spec = CERTIFICATE_LINKS[linkId] ?? null;
   const main = useCertificateIssuer(linkId);
   const special = useCertificateIssuer(specialCertificateKey(linkId));
   /** この 画面で もう 受けた 種類（確かめて いる 最中に 2つ目を 受けない）。 */
-  const handledRef = useRef<{ main: boolean; special: boolean }>({ main: false, special: false });
+  const handledRef = useRef<Record<Tier, boolean>>({ main: false, special: false });
+  /** 発行の 結果を 待って いる 種類と、知らせる 先（ページの 窓）。 */
+  const awaitingRef = useRef<Record<Tier, Window | null>>({ main: null, special: null });
 
   const beginMain = main.begin;
   const finishMain = main.finish;
@@ -69,22 +52,12 @@ export function useLinkCertificates(linkId: string, frameRef: RefObject<HTMLIFra
 
   useEffect(() => {
     if (!spec) return;
-    const ack = (target: Window | null, tier: LinkCertificateRequest["tier"]) => {
-      try {
-        target?.postMessage(
-          { type: CERTIFICATE_ACK_MESSAGE, id: linkId, tier },
-          window.location.origin,
-        );
-      } catch {
-        /* 知らせられなくても 次に 開いた ときに また 頼まれる（DB で 2枚目は 防ぐ） */
-      }
-    };
     const onMessage = (event: MessageEvent) => {
       if (event.origin !== window.location.origin) return;
       const frame = frameRef.current;
       if (!frame || event.source !== frame.contentWindow) return;
       const request = readLinkCertificateMessage(event.data, linkId);
-      if (!request) return;
+      if (!request || !matchesTier(spec, request)) return;
       const tier = request.tier;
       if (handledRef.current[tier]) return;
       handledRef.current[tier] = true;
@@ -96,9 +69,10 @@ export function useLinkCertificates(linkId: string, frameRef: RefObject<HTMLIFra
           return;
         }
         if (has) {
-          ack(target, tier);
+          ackTo(target, linkId, tier);
           return;
         }
+        awaitingRef.current[tier] = target;
         const result = linkCertificateResult(
           linkId,
           tier === "special" ? spec.special : spec.main,
@@ -111,12 +85,57 @@ export function useLinkCertificates(linkId: string, frameRef: RefObject<HTMLIFra
           beginMain({ resumed: false });
           finishMain(result);
         }
-        ack(target, tier);
       });
     };
     window.addEventListener("message", onMessage);
     return () => window.removeEventListener("message", onMessage);
   }, [spec, linkId, frameRef, beginMain, finishMain, beginSpecial, finishSpecial]);
 
-  return { spec, main, special };
+  /* 発行の 結果を 見て、DB に 入ったら（デモは 見本でも）ページに 知らせる */
+  const mainState = main.certificate;
+  const specialState = special.certificate;
+  useEffect(() => {
+    const demo = createClient() === null;
+    const settle = (tier: Tier, state: CertificateState | null) => {
+      const target = awaitingRef.current[tier];
+      if (!target || !shouldAckIssued(state, demo)) return;
+      awaitingRef.current[tier] = null;
+      ackTo(target, linkId, tier);
+    };
+    settle("main", mainState);
+    settle("special", specialState);
+  }, [linkId, mainState, specialState]);
+
+  /*
+   * 「もう一度 ためす」の 前に DB を 確かめる。返事だけが 届かなかった（行は 入った）ときに
+   * 2枚目を 出さない（コードの 検収）。もう あれば 出し直さずに 閉じる。
+   */
+  const retryMain = main.retry;
+  const resetMain = main.reset;
+  const retrySpecial = special.retry;
+  const resetSpecial = special.reset;
+  const retryChecked = useCallback(
+    (tier: Tier) => {
+      void hasIssuedLinkCertificate(linkId, tier === "special").then((has) => {
+        if (has === null) return;
+        if (has) {
+          if (tier === "special") resetSpecial();
+          else resetMain();
+          const target = awaitingRef.current[tier];
+          awaitingRef.current[tier] = null;
+          ackTo(target, linkId, tier);
+          return;
+        }
+        if (tier === "special") retrySpecial();
+        else retryMain();
+      });
+    },
+    [linkId, retryMain, resetMain, retrySpecial, resetSpecial],
+  );
+
+  return {
+    spec,
+    main: { ...main, retry: () => retryChecked("main") },
+    special: { ...special, retry: () => retryChecked("special") },
+  };
 }

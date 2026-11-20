@@ -480,4 +480,18 @@ describe("修了証の タブ", () => {
       "L1 ★3（?）・L2 ★3（1回目）（修了証が できる 前に 終えた レベルが ある）",
     );
   });
+
+  it("成績: ツール教材の 行の 数が 範囲の 外でも 固まらない・落ちない（学生が 自分で 入れられる 行）", () => {
+    const wild = cert({
+      id: "lw",
+      content_id: "soudan_renshu",
+      kind: "link",
+      code: "WILD2345",
+      detail: { special: false, first: 1, levels: 1e9, s1: -5, f1: 1 },
+    });
+    const table = certificateTable([wild], LOOKUPS);
+    const parts = String(table.rows[0]?.cells.score).split("・");
+    expect(parts.length).toBeLessThanOrEqual(10);
+    expect(parts[0]).toBe("L1 ★0（1回目）");
+  });
 });
