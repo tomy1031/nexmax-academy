@@ -1284,6 +1284,7 @@ export const ASSET_VERSIONS: Readonly<Record<string, string>> = {
   "/img/scenes/area_lantern_night_market.webp": "1084af59",
   "/img/scenes/area_lantern_old_port.webp": "3d8b1f82",
   "/img/scenes/area_long_wall_ridge.webp": "540778a9",
+  "/img/scenes/area_manabi_island.webp": "49997b2b",
   "/img/scenes/area_matcha_town.webp": "d1d8630e",
   "/img/scenes/area_misty_peaks.webp": "3cf309c7",
   "/img/scenes/area_monk_temple_town.webp": "3b04ce9d",
