@@ -130,7 +130,7 @@ const scenes = [
   [
     "houkoku_kaikyuu",
     "会社の 階級（ポジション）",
-    "A gentle wooden staircase with seven steps rises from the lower left to the upper right in the office. On each step stands one small cute person with a cream label beside them, from the top step down: a president in a dark suit, a director, a general manager, a deputy, a manager, a chief, and THE NEW ENGINEER on the lowest step waving happily. Each person bows slightly to the one above.",
+    "A gentle wooden staircase with EXACTLY SEVEN steps rises from the lower left to the upper right in the office. EXACTLY SEVEN small cute people stand on it, ONE PERSON ON EACH STEP and nobody else anywhere in the picture (no one on the floor). Each person has ONE cream speech-balloon label whose tail points clearly at that person's head, placed right above that person, so it is obvious which label belongs to whom. From the top step down: a president in a dark suit, a director in a brown suit, a general manager, a deputy general manager, a manager with glasses, a chief, and THE NEW ENGINEER on the lowest step waving happily. Each person bows slightly toward the one above.",
     [
       "社長（しゃちょう）",
       "取締役（とりしまりやく）",
