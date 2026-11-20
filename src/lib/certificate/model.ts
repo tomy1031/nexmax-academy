@@ -410,13 +410,27 @@ export function showsAttempt(cert: CertificateResult): boolean {
   return cert.kind !== "link";
 }
 
+/** 数を 範囲に 収める（DB の 行は 学生が 自分で 入れられる。変な 数で 画面を 止めない）。 */
+function clampCount(value: unknown, min: number, max: number): number {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return min;
+  return Math.min(max, Math.max(min, Math.floor(n)));
+}
+
+/** ツール教材の レベルの 数の 上限（合図の 受け口と 同じ）。 */
+export const LINK_MAX_LEVELS = 10;
+
 /** ツール教材の レベルごとの 印（1つ目の レベルから 順に）。 */
-function linkLevels(cert: CertificateResult): { no: number; stars: number; f: number }[] {
-  const n = (key: string) => Number(cert.detail[key] ?? 0);
+export function linkLevels(
+  detail: Readonly<Record<string, unknown>> | null | undefined,
+): { no: number; stars: number; f: number }[] {
+  const d = detail ?? {};
+  const count = clampCount(d.levels, 0, LINK_MAX_LEVELS);
+  const first = clampCount(d.first, 1, 20);
   const out: { no: number; stars: number; f: number }[] = [];
-  for (let i = 0; i < n("levels"); i += 1) {
-    const no = n("first") + i;
-    out.push({ no, stars: n(`s${no}`), f: n(`f${no}`) });
+  for (let i = 0; i < count; i += 1) {
+    const no = first + i;
+    out.push({ no, stars: clampCount(d[`s${no}`], 0, 3), f: clampCount(d[`f${no}`], 0, 100) });
   }
   return out;
 }
@@ -462,7 +476,7 @@ export function certificateLines(cert: CertificateResult): CertificateLine[] {
   const d = (key: string) => Number(cert.detail[key] ?? 0);
   if (cert.kind === "link") {
     return [
-      ...linkLevels(cert).map((level) => ({
+      ...linkLevels(cert.detail).map((level) => ({
         label: `レベル${level.no}`,
         value: `${"★".repeat(level.stars)}${"☆".repeat(Math.max(0, 3 - level.stars))}（${
           level.f === 0
@@ -585,7 +599,7 @@ export function notPerfectReasons(cert: CertificateResult): string[] {
   const partialReason = cert.detail.partial ? ["前の 回の 続きから 始めました。"] : [];
   const n = (key: string) => Number(cert.detail[key] ?? 0);
   if (cert.kind === "link") {
-    const levels = linkLevels(cert);
+    const levels = linkLevels(cert.detail);
     const retried = levels.filter((level) => level.f > 1).map((level) => level.no);
     const before = levels.filter((level) => level.f === 0).map((level) => level.no);
     return [
