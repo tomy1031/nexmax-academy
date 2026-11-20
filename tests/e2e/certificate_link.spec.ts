@@ -72,7 +72,16 @@ test("ツール教材の 修了証: レベル1〜4 と 特別課題が 枠の �
   await expect(panel).toHaveAttribute("data-special", "false");
   await expect(panel).toHaveAttribute("data-perfect", "false");
   await expect(panel).toContainText("レベル4");
-  await expect(panel).toContainText("やり直し 1回");
+  // ルビ（rt）を 外した 字で 比べる（「やり直し」の 直に ふりがなが 入る）
+  await expect
+    .poll(() =>
+      panel.evaluate((el) => {
+        const copy = el.cloneNode(true) as HTMLElement;
+        copy.querySelectorAll("rt").forEach((rt) => rt.remove());
+        return copy.textContent ?? "";
+      }),
+    )
+    .toContain("やり直し 1回");
   expect(await bareKanjiTexts(page)).toEqual([]);
   await expect
     .poll(() => frame.evaluate(() => (window as unknown as { __acks: string[] }).__acks))
