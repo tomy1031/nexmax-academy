@@ -73,12 +73,12 @@ const scenes = [
   ],
   [
     "kaisha_jutaku",
-    "受託開発と 自社サービス",
+    "受託開発と 自社開発",
     "One wide picture split into two halves by a soft wooden frame line. LEFT half: a friendly customer (a bakery owner in an apron) hands a request paper to THE BOSS and THE NEW ENGINEER, who show him a finished app on a tablet; the label above them. RIGHT half: THE NEW ENGINEER and THE COLLEAGUE stand at a whiteboard under a big glowing lightbulb, inventing their own app shown on a phone with sparkles; the label above them. Under each label a short cream caption.",
     [
       "受託開発（じゅたくかいはつ）",
       "お客（きゃく）さまに 頼（たの）まれて 作（つく）る",
-      "自社（じしゃ）サービス",
+      "自社開発（じしゃかいはつ）",
       "自分（じぶん）たちで 考（かんが）えて 作（つく）る",
     ],
   ],
