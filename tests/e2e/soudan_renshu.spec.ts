@@ -542,3 +542,56 @@ test("レベル5（特別課題）に 合格すると 特別課題の 修了証�
       },
     ]);
 });
+
+test("不合格の あと タイトルへ 戻って 合格しても、やり直しの 数は 残る（修了証の パーフェクトを 崩さない）", async ({
+  page,
+}) => {
+  test.setTimeout(120_000);
+  await seed(page, {
+    v: 1,
+    introSeen: true,
+    levels: {
+      l1: { stars: 3, bonus: 0, firstFails: 0 },
+      l2: { stars: 3, bonus: 0, firstFails: 0 },
+      l3: { stars: 3, bonus: 0, firstFails: 0 },
+    },
+    worksheet: { cells: {}, thoughts: {} },
+    at: { level: 3, page: 10 },
+  });
+  const tool = await openHarness(
+    page,
+    [
+      "明日の デモに ついて 相談が あります。",
+      "明日の デモに ついて 相談が あります。ログインを 先に 調べても いいでしょうか。",
+    ],
+    [
+      { ...PASS_ALL, soudan: false, choice: "none" },
+      { ...PASS_ALL, choice: "login" },
+    ],
+  );
+  /* 1回目は 足りない → ✖ */
+  await callWhenOk(tool);
+  await speak(tool);
+  await expect(tool.getByTestId("verdict-retry")).toBeVisible();
+
+  /* タイトルへ 戻って、レベル4を 開き直す（画面の 中の 数は 0 に 戻る） */
+  await tool.locator("#homeBtn").click();
+  await tool.getByTestId("level-4").click();
+  for (let i = 0; i < 12; i += 1) {
+    if ((await tool.getByTestId("desk-call").count()) > 0) break;
+    await next(tool);
+  }
+  await callWhenOk(tool);
+  await speak(tool);
+  await expect(tool.getByTestId("verdict-pass")).toBeVisible();
+
+  /* 修了証の 頼みには、レベル4は 1回 やり直した と 入る */
+  await expect
+    .poll(async () => {
+      const ask = (await messages(page)).find((m) => m.type === "nexmax:link-certificate");
+      return (ask?.levels as { no: number; fails: number | null }[] | undefined)?.find(
+        (level) => level.no === 4,
+      )?.fails;
+    })
+    .toBe(1);
+});
