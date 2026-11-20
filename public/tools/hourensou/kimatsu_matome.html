@@ -290,6 +290,8 @@
   .shelf > .cart:first-child{margin-left:auto;}
   .shelf > .cart:last-child{margin-right:auto;}
   .pill{white-space:nowrap;}
+  /* メモの 絵は 3:2 で 作った。16:9 に 切ると 上下の 札と ふりがなが 欠けるので、絵の 形の まま 見せる */
+  .memo-illust{aspect-ratio:auto;height:auto;object-fit:contain;}
   .allclear{position:relative;z-index:4;margin:0 auto 22px;max-width:560px;text-align:center;
     background:var(--correct-bg);border:3px solid var(--correct);border-radius:18px;padding:10px 16px;
     font-weight:800;color:var(--leaf-deep);box-shadow:0 4px 0 var(--shadow);}

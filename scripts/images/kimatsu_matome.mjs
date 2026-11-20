@@ -8,8 +8,8 @@
  *（窓の 外に 海と 小さな 島が 見える、木の 家具の あたたかい オフィス・頭の 大きい まるい 人物）に そろえる。
  * 旧アプリの 絵は 字に ふりがなが 無かった ので、新しく 描く 絵には ふりがなを 付ける（必ず守るルール2）。
  *
- * 出力は 横長 1536x1024 だが、ページは 16:9 で 見せる（旧アプリの CSS の まま）。
- * 上下を 切る ので、大切な ものは まん中の 帯に 入れる よう 書いて ある（変換は 1536x864 に 切って webp）。
+ * 出力は 横長 1536x1024。ページでは 切らずに 絵の 形（3:2）の まま 見せる（16:9 に 切ると 上下の 札と ふりがなが 欠けた）。
+ * 変換は cwebp -q 74 -resize 1200 0（1200x800）。
  */
 import fs from "node:fs";
 
@@ -297,7 +297,7 @@ const scenes = [
 
 const ledger = {
   _comment:
-    "期末テスト対策の まとめページ（kimatsu_matome）の 絵 24枚（2026-11-20）。旧アプリ『まなびの島』の 絵柄に そろえる（tomy さん「絵のテイストは元のものを生かしてください」）。参照は 旧アプリの 絵 3枚（scripts/images/refs/manabi_island_*.jpg）。生成は scripts/slides/gen_images.mjs。PNG は 1536x864 に 切って cwebp -q 80。",
+    "期末テスト対策の まとめページ（kimatsu_matome）の 絵 24枚（2026-11-20）。旧アプリ『まなびの島』の 絵柄に そろえる（tomy さん「絵のテイストは元のものを生かしてください」）。参照は 旧アプリの 絵 3枚（scripts/images/refs/manabi_island_*.jpg）。生成は scripts/slides/gen_images.mjs。PNG は 切らずに cwebp -q 74 -resize 1200 0（1200x800）。ページは 絵の 形の まま 見せる。",
   refs: [
     "scripts/images/refs/manabi_island_01_horenso_what.jpg",
     "scripts/images/refs/manabi_island_02_horenso_report_fast.jpg",

@@ -1,5 +1,5 @@
 {
-  "_comment": "期末テスト対策の まとめページ（kimatsu_matome）の 絵 24枚（2026-11-20）。旧アプリ『まなびの島』の 絵柄に そろえる（tomy さん「絵のテイストは元のものを生かしてください」）。参照は 旧アプリの 絵 3枚（scripts/images/refs/manabi_island_*.jpg）。生成は scripts/slides/gen_images.mjs。PNG は 1536x864 に 切って cwebp -q 80。",
+  "_comment": "期末テスト対策の まとめページ（kimatsu_matome）の 絵 24枚（2026-11-20）。旧アプリ『まなびの島』の 絵柄に そろえる（tomy さん「絵のテイストは元のものを生かしてください」）。参照は 旧アプリの 絵 3枚（scripts/images/refs/manabi_island_*.jpg）。生成は scripts/slides/gen_images.mjs。PNG は 切らずに cwebp -q 74 -resize 1200 0（1200x800）。ページは 絵の 形の まま 見せる。",
   "refs": [
     "scripts/images/refs/manabi_island_01_horenso_what.jpg",
     "scripts/images/refs/manabi_island_02_horenso_report_fast.jpg",
