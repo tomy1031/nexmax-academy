@@ -100,6 +100,12 @@ interface Logic {
   mergePosition(save: Rec, position: unknown, count: number): Rec;
   openLevelCount(save: Rec, count: number): number;
   allCleared(save: Rec, count: number): boolean;
+  requiredCleared(save: Rec, required: number): boolean;
+  certificateFacts(
+    save: Rec,
+    fromNo: number,
+    toNo: number,
+  ): { no: number; stars: number; fails: number | null }[];
   attemptsText(attempts: { heard: string; pass: boolean }[]): string;
   worksheetCellId(row: string, api: string): string;
   worksheetThoughtId(id: string): string;
@@ -496,6 +502,58 @@ describe("進み具合（Supabase に 入る 数）", () => {
     expect(LOGIC.openLevelCount(merged, 5)).toBe(3);
     expect(LOGIC.allCleared(merged, 5)).toBe(false);
     expect(LOGIC.mergePosition(save, "x", 5)).toEqual(save);
+  });
+});
+
+describe("レベル4までで 修了証と ✅・レベル5は 特別課題（2026-11-20）", () => {
+  const four = {
+    introSeen: true,
+    levels: {
+      l1: { stars: 3, bonus: 1, firstFails: 0 },
+      l2: { stars: 2, bonus: 0, firstFails: 1 },
+      l3: { stars: 3, bonus: 0 },
+      l4: { stars: 1, bonus: 0, firstFails: 3 },
+    },
+  };
+
+  it("✅ は レベル1〜4 で 付く（レベル5は 0でも よい）。データの 要る 数は 4・レベル5は special", () => {
+    const data = DATA as Rec & { requiredLevels?: number };
+    expect(data.requiredLevels).toBe(4);
+    expect((DATA.levels[4] as Level & { special?: boolean }).special).toBe(true);
+    expect(
+      DATA.levels.slice(0, 4).every((level) => !(level as { special?: boolean }).special),
+    ).toBe(true);
+    expect(LOGIC.requiredCleared(four, 4)).toBe(true);
+    expect(LOGIC.allCleared(four, 5)).toBe(false);
+    expect(LOGIC.requiredCleared({ levels: { l1: { stars: 3 } } }, 4)).toBe(false);
+  });
+
+  it("修了証に 書く 数は はじめて 合格した 回の やり直し。分からない レベルは null", () => {
+    expect(LOGIC.certificateFacts(four, 1, 4)).toEqual([
+      { no: 1, stars: 3, fails: 0 },
+      { no: 2, stars: 2, fails: 1 },
+      { no: 3, stars: 3, fails: null },
+      { no: 4, stars: 1, fails: 3 },
+    ]);
+  });
+
+  it("しおりに やり直し（f）と 修了証の 知らせ（cm・cs）が 入り、親の 受け口を 通る", () => {
+    const position = LOGIC.toPosition({ ...four, certAck: { main: true } }, 5);
+    expect(parseProgressPosition(position)).toEqual(position);
+    expect(position).toMatchObject({ f1: 1, f2: 2, f3: 0, f4: 4, f5: 0, cm: 1, cs: 0 });
+  });
+
+  it("記録から 戻すと、端末に 無い やり直しと 知らせだけ 入る（端末が 勝つ）", () => {
+    const merged = LOGIC.mergePosition(
+      { levels: { l1: { stars: 3, firstFails: 2 } } },
+      { s1: 3, f1: 1, s2: 2, f2: 3, cm: 1 },
+      5,
+    );
+    const levels = merged.levels as Record<string, Rec>;
+    expect(levels.l1?.firstFails).toBe(2);
+    expect(levels.l2?.firstFails).toBe(2);
+    expect(levels.l3?.firstFails).toBeUndefined();
+    expect(merged.certAck).toEqual({ main: true });
   });
 });
 

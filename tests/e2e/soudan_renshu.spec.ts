@@ -40,6 +40,7 @@ window.addEventListener("message", (e) => {
   if (e.source !== f.contentWindow) return;
   const d = e.data || {}; window.__msgs.push(d);
   if (d.type === "nexmax:link-progress-request") send({ type: "nexmax:link-progress-restore", owner: "", status: null, position: null });
+  if (d.type === "nexmax:link-certificate") send({ type: "nexmax:link-certificate-ack", tier: d.tier });
   if (d.type !== "nexmax:link-voice") return;
   const reply = (m) => send(Object.assign({ type: "nexmax:link-voice-reply" }, m));
   if (d.op === "connect") { reply({ op: "status", status: "connecting", talking: false }); setTimeout(() => reply({ op: "status", status: window.__connect, talking: false }), 200); }
@@ -371,4 +372,173 @@ test("ステージの 中で 開くと、進み具合が 学習の 記録に 入
       ),
     )
     .toMatchObject({ status: "started", position: { intro: 1, open: 1 } });
+});
+
+/* ------------------------------------------------------------------ *
+ * レベル4までで 修了証と ✅・レベル5は 金の 特別課題（2026-11-20）
+ * ------------------------------------------------------------------ */
+
+type Msg = { type?: string; tier?: string; levels?: unknown; status?: string };
+
+async function messages(page: Page): Promise<Msg[]> {
+  return (await page.evaluate(() => (window as unknown as { __msgs: Msg[] }).__msgs)) as Msg[];
+}
+
+function seed(page: Page, value: unknown): Promise<void> {
+  return page.addInitScript(
+    (v) => window.localStorage.setItem("nexmax:soudan_renshu:v1", JSON.stringify(v)),
+    value,
+  );
+}
+
+const PASS_ALL = {
+  jokyo: true,
+  mondai: true,
+  kakunin: true,
+  kangae: true,
+  soudan: true,
+  own_words: true,
+  bonus: [],
+  ...FLAGS,
+  heard_ruby: "",
+};
+
+test("レベル4に 合格すると ✅ と 修了証の 頼み（レベル1〜4・はじめて 合格した 回の やり直し）。つぎは 金の 特別課題", async ({
+  page,
+}) => {
+  test.setTimeout(90_000);
+  await seed(page, {
+    v: 1,
+    introSeen: true,
+    levels: {
+      l1: { stars: 3, bonus: 1, firstFails: 0 },
+      l2: { stars: 3, bonus: 0, firstFails: 0 },
+      l3: { stars: 2, bonus: 0, firstFails: 1 },
+    },
+    worksheet: { cells: {}, thoughts: {} },
+    at: { level: 3, page: 10 },
+  });
+  const tool = await openHarness(
+    page,
+    ["明日の デモに ついて 相談が あります。ログインを 先に 調べても いいでしょうか。"],
+    [{ ...PASS_ALL, choice: "login" }],
+  );
+  await callWhenOk(tool);
+  await speak(tool);
+  await expect(tool.getByTestId("verdict-pass")).toBeVisible();
+
+  await expect
+    .poll(async () => (await messages(page)).filter((m) => m.type === "nexmax:link-certificate"))
+    .toEqual([
+      {
+        type: "nexmax:link-certificate",
+        id: "soudan_renshu",
+        tier: "main",
+        levels: [
+          { no: 1, stars: 3, fails: 0 },
+          { no: 2, stars: 3, fails: 0 },
+          { no: 3, stars: 2, fails: 1 },
+          { no: 4, stars: 3, fails: 0 },
+        ],
+      },
+    ]);
+  const msgs = await messages(page);
+  expect(msgs.some((m) => m.type === "nexmax:link-done")).toBe(true);
+  expect(msgs.filter((m) => m.type === "nexmax:link-progress").pop()?.status).toBe("completed");
+  /* 親が 出したと 知らせたら、端末に 残す（次から 頼まない） */
+  await expect
+    .poll(() =>
+      page
+        .frameLocator("#f")
+        .locator("body")
+        .evaluate(
+          () => JSON.parse(window.localStorage.getItem("nexmax:soudan_renshu:v1") ?? "{}").certAck,
+        ),
+    )
+    .toEqual({ main: true });
+
+  /* ヘンディさんの 答え → 終わった ことと、金の「特別課題へ」 */
+  await tool.getByTestId("to-reply").click();
+  await expect(tool.getByTestId("required-done")).toBeVisible();
+  await expect(tool.getByTestId("next-level")).toContainText("レベル5");
+  expect(await bare(page)).toEqual([]);
+  await shot(page, "soudan-renshu-08-level4-done");
+
+  /* タイトル: レベル5は 金の 特別な カード */
+  await tool.locator('[data-act="home"]').first().click();
+  await expect(tool.getByTestId("special-badge")).toBeVisible();
+  await expect(tool.getByTestId("level-5")).toHaveClass(/special/u);
+  expect(await bare(page)).toEqual([]);
+  await shot(page, "soudan-renshu-09-title-special");
+});
+
+test("修了証が できる 前に レベル4まで 終えた 人にも、開いた ときに ✅ と 修了証を 1回だけ 頼む", async ({
+  page,
+}) => {
+  await seed(page, {
+    v: 1,
+    introSeen: true,
+    levels: {
+      l1: { stars: 3, bonus: 0 },
+      l2: { stars: 2, bonus: 0 },
+      l3: { stars: 3, bonus: 0 },
+      l4: { stars: 3, bonus: 0 },
+    },
+    worksheet: { cells: {}, thoughts: {} },
+  });
+  await openHarness(page, [], []);
+  await expect
+    .poll(async () => (await messages(page)).filter((m) => m.type === "nexmax:link-certificate"))
+    .toEqual([
+      {
+        type: "nexmax:link-certificate",
+        id: "soudan_renshu",
+        tier: "main",
+        levels: [
+          { no: 1, stars: 3, fails: null },
+          { no: 2, stars: 2, fails: null },
+          { no: 3, stars: 3, fails: null },
+          { no: 4, stars: 3, fails: null },
+        ],
+      },
+    ]);
+  const msgs = await messages(page);
+  expect(msgs.some((m) => m.type === "nexmax:link-done")).toBe(true);
+});
+
+test("レベル5（特別課題）に 合格すると 特別課題の 修了証を 頼む", async ({ page }) => {
+  test.setTimeout(90_000);
+  await seed(page, {
+    v: 1,
+    introSeen: true,
+    levels: {
+      l1: { stars: 3, bonus: 0, firstFails: 0 },
+      l2: { stars: 3, bonus: 0, firstFails: 0 },
+      l3: { stars: 3, bonus: 0, firstFails: 0 },
+      l4: { stars: 3, bonus: 0, firstFails: 0 },
+    },
+    certAck: { main: true },
+    worksheet: { cells: {}, thoughts: {} },
+    at: { level: 4, page: 15 },
+  });
+  const tool = await openHarness(
+    page,
+    [
+      "OCRアプリに 使う APIに ついて 相談が あります。まず Claudeで テストしても よろしいでしょうか。",
+    ],
+    [{ ...PASS_ALL, choice: "claude" }],
+  );
+  await callWhenOk(tool);
+  await speak(tool);
+  await expect(tool.getByTestId("verdict-pass")).toBeVisible();
+  await expect
+    .poll(async () => (await messages(page)).filter((m) => m.type === "nexmax:link-certificate"))
+    .toEqual([
+      {
+        type: "nexmax:link-certificate",
+        id: "soudan_renshu",
+        tier: "special",
+        levels: [{ no: 5, stars: 3, fails: 0 }],
+      },
+    ]);
 });
