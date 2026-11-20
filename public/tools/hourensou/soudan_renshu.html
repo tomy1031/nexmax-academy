@@ -1504,6 +1504,28 @@
       .seg.cont {
         margin-top: -2px;
       }
+      /* お手本を 読む 練習 */
+      .read-model {
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 2px dashed var(--line);
+        text-align: center;
+      }
+      .read-result {
+        margin: 6px 0;
+        padding: 6px 10px;
+        border-radius: 12px;
+        font-weight: 900;
+        text-align: left;
+      }
+      .read-result.ok {
+        background: var(--leaf-soft);
+        color: var(--leaf-deep);
+      }
+      .read-result.ng {
+        background: var(--coral-soft);
+        color: var(--coral-deep);
+      }
       .box.heard {
         border-color: var(--sky);
       }
@@ -1618,6 +1640,21 @@
       .mic.rec {
         background: radial-gradient(circle at 35% 30%, #ff7b7b, #d43b3b);
         animation: pulse 1.2s ease-in-out infinite;
+      }
+      /* お手本を 読む 練習の マイク（横長。丸い ままだと「読む」が 途中で 折り返した） */
+      .mic.small {
+        width: auto;
+        height: auto;
+        min-height: 56px;
+        border-radius: 999px;
+        flex-direction: row;
+        gap: 8px;
+        padding: 8px 22px;
+        font-size: 15px;
+        white-space: nowrap;
+      }
+      .mic.small .ic {
+        font-size: 26px;
       }
       @keyframes pulse {
         50% {
@@ -3339,18 +3376,101 @@
                 "</div>";
             }
           }
+          /* お手本は 最初から 開いて おく（2026-11-19「お手本は初期状態でONにしていると良いです」） */
           html +=
-            '<details class="box model"' +
-            (j && j.templateOnly ? " open" : "") +
-            "><summary>📗 " +
+            '<details class="box model" open data-testid="model"><summary>📗 ' +
             R(D.ui.modelTitle) +
             "</summary>" +
             segsHtml(level.model, level) +
             '<p class="fine">' +
             R(level.modelNote) +
-            "</p></details>";
+            "</p>" +
+            readModelHtml(level) +
+            "</details>";
           void mine;
           return html;
+        }
+
+        /**
+         * お手本を 声に 出して 読む 練習（2026-11-19「『お手本を読む』ボタンで、お手本の文章を読み上げる
+         * 機会を与えたい」→ 学生が 声に 出して 読む）。合格した あと だけ。聞き取った 文を お手本と
+         * くらべて、読めたか どうかを はっきり 出す（星・ボーナスには 数えない）。
+         * マイクが 使えない とき（キーが 無い・つながらない）は ボタンを 出さない。
+         */
+        function readModelHtml(level) {
+          if (micUnusable()) return "";
+          var read = talk.read || { phase: "idle" };
+          var html = '<div class="read-model" data-testid="read-model-box"><p class="fine">' + R(D.ui.readLead) + "</p>";
+          if (read.phase === "recording") {
+            html +=
+              '<div class="mic-row"><button type="button" class="mic rec small" data-act="readstop" data-testid="read-stop" style="--ring:14px"><span class="ic">⏹</span><span class="lb">' +
+              R(D.ui.readStop) +
+              "</span></button></div>";
+          } else if (read.phase === "transcribing" || read.phase === "connecting") {
+            html += '<div class="spinner"></div><p class="status">' + R(read.phase === "connecting" ? D.ui.micConnecting : D.ui.hearing) + "</p>";
+          } else {
+            if (read.phase === "done") {
+              html +=
+                '<div class="read-result ' +
+                (read.ok ? "ok" : "ng") +
+                '" data-testid="read-result" data-ok="' +
+                (read.ok ? "1" : "0") +
+                '">' +
+                (read.ok ? "⭕ " + R(D.ui.readOk) : "✖ " + R(read.heard ? D.ui.readNg : D.ui.readNone)) +
+                (read.heard
+                  ? '<p class="fine">' + R(D.ui.readHeard) + '：「<span data-furigana="off">' + esc(read.heard) + "</span>」</p>"
+                  : "") +
+                "</div>";
+            }
+            if (read.error) html += '<p class="fine">' + R(D.ui.micConnectError) + "</p>";
+            html +=
+              '<div class="mic-row"><button type="button" class="mic small" data-act="readmodel" data-testid="read-model"><span class="ic">🎤</span><span class="lb">' +
+              R(read.phase === "done" ? D.ui.readAgain : D.ui.readModel) +
+              "</span></button></div>";
+          }
+          return html + "</div>";
+        }
+
+        /** 描き直しても、いま 見て いる 所（お手本の あたり）から 動かさない。 */
+        function renderKeepingScroll(level) {
+          var panel = screenEl.querySelector(".talk");
+          var top = panel ? panel.scrollTop : 0;
+          renderConsult(level);
+          var again = screenEl.querySelector(".talk");
+          if (again) again.scrollTop = top;
+        }
+
+        function readStart() {
+          var level = LEVELS[view.level];
+          if (!talk || !talk.passed) return;
+          if (voice.status !== "live") {
+            talk.read = { phase: "connecting" };
+            voicePost({ op: "connect" });
+            return renderKeepingScroll(level);
+          }
+          talk.read = { phase: "recording" };
+          voicePost({ op: "talk-start" });
+          renderKeepingScroll(level);
+          clearTimeout(voice.limitTimer);
+          var levelId = talk.levelId;
+          voice.limitTimer = setTimeout(function () {
+            if (onConsultPage(levelId) && talk.read && talk.read.phase === "recording") readStop();
+          }, TALK_LIMIT_MS);
+        }
+
+        function readStop() {
+          clearTimeout(voice.limitTimer);
+          if (!talk || !talk.read || talk.read.phase !== "recording") return;
+          voicePost({ op: "talk-stop" });
+          talk.read = { phase: "transcribing" };
+          renderKeepingScroll(LEVELS[view.level]);
+          var levelId = talk.levelId;
+          clearTimeout(voice.heardTimer);
+          voice.heardTimer = setTimeout(function () {
+            if (!onConsultPage(levelId) || !talk.read || talk.read.phase !== "transcribing") return;
+            talk.read = { phase: "done", heard: "", ok: false };
+            renderKeepingScroll(LEVELS[view.level]);
+          }, 9000);
         }
 
         function bindTalk(level, noKey) {
@@ -3431,6 +3551,16 @@
           lastVoiceStatus = voice.status;
           if (!talk || !onConsultPage(talk.levelId)) return;
           var level = LEVELS[view.level];
+          /* 合格の あとの お手本を 読む 練習 */
+          if (talk.passed && talk.read) {
+            var phaseNow = talk.read.phase;
+            if (phaseNow === "connecting" && voice.status === "live") talk.read = { phase: "idle" };
+            else if (phaseNow === "connecting" && (voice.status === "error" || voice.status === "notReady"))
+              talk.read = { phase: "idle", error: true };
+            else if (phaseNow === "recording" && !voice.talking && voice.status !== "live") talk.read = { phase: "idle" };
+            else return;
+            return renderKeepingScroll(level);
+          }
           if (talk.phase === "connecting" && voice.status !== "connecting") talk.phase = "ready";
           /* 録音が 外から 止まった（つなぎの 張り直し など）→ 聞き取りを 待つ */
           if (talk.phase === "recording" && !voice.talking && voice.status !== "live") talk.phase = "ready";
@@ -3499,6 +3629,13 @@
         }
 
         function onHeard(text) {
+          if (talk && talk.passed && talk.read && talk.read.phase === "transcribing" && onConsultPage(talk.levelId)) {
+            clearTimeout(voice.heardTimer);
+            var said = text.trim();
+            var lv = LEVELS[view.level];
+            talk.read = { phase: "done", heard: said, ok: !!said && L.readsModel(said, lv.model) };
+            return renderKeepingScroll(lv);
+          }
           if (!talk || !onConsultPage(talk.levelId) || talk.phase !== "transcribing") return;
           clearTimeout(voice.heardTimer);
           var level = LEVELS[view.level];
@@ -3535,7 +3672,7 @@
             var same = function (text) {
               return L.plain(text).replace(/[\s、。，．,.!?！？]/g, "");
             };
-            j.heardRuby = ruby && same(ruby) === same(utterance) ? ruby : "";
+            j.heardRuby = ruby && same(ruby) === same(utterance) ? L.tidyRuby(ruby) : "";
             return { ok: true, judgment: j };
           });
         }
@@ -3926,6 +4063,8 @@
             talk.lastTyped = true;
             return judge(area ? area.value : "");
           }
+          if (act === "readmodel") return readStart();
+          if (act === "readstop") return readStop();
           if (act === "toreply") return setPage(view.page + 1);
           if (act === "again") {
             stopTalkIfAny();

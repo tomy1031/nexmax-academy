@@ -94,6 +94,7 @@ interface Logic {
   supportLevel(fails: number): number;
   bonusPoints(judgment: Judgment | null): number;
   readsModel(utterance: string, model: { text: string }[]): boolean;
+  tidyRuby(text: string): string;
   deskCycle(seed: string): string[];
   toPosition(save: Rec, count: number): Record<string, number>;
   mergePosition(save: Rec, position: unknown, count: number): Rec;
@@ -231,6 +232,13 @@ describe("データの 形", () => {
     expect(plain(l1)).toContain("順番");
   });
 
+  it("レベル1の 期限は 今週中（あと 3日）。今日中では ない（2026-11-19「近い順は今日中は厳しい」）", () => {
+    const l1 = plain(JSON.stringify(L1));
+    expect(l1).not.toContain("今日中");
+    expect(l1).toContain("今週中");
+    expect(plain(JSON.stringify(L1.slides))).toContain("3日");
+  });
+
   it("「自分なり」（N1）を 使わない（2026-11-18「自分のアイデアを持つに変更」）", () => {
     expect(learnerTexts().map(plain).join("\n")).not.toContain("自分なり");
   });
@@ -358,6 +366,27 @@ describe("判定の 決まり（合格は コードが 決める）", () => {
   it("星は 1回で 3つ・2〜3回目で 2つ・お手本で 1つ。支えは 反応 → ヒント → お手本", () => {
     expect([0, 1, 2, 3, 5].map(LOGIC.starsForFails)).toEqual([3, 2, 2, 1, 1]);
     expect([0, 1, 2, 3, 4].map(LOGIC.supportLevel)).toEqual([0, 1, 2, 3, 3]);
+  });
+
+  it("お手本を 声に 出して 読む 練習: 空らん（＿＿＿＿）に 自分の ことばを 入れて 読んでも 読めた ことに なる", () => {
+    for (const level of DATA.levels) {
+      const filled = level.model
+        .map((seg) => plain(seg.text).replace(/＿+/gu, "クロード"))
+        .join("");
+      expect(LOGIC.readsModel(filled, level.model), level.id).toBe(true);
+    }
+  });
+
+  it("聞き取った 文の ふりがなは 漢字の 部分だけ（2026-11-19「ログイン」の 上に「ろぐいん」と 出た）", () => {
+    expect(LOGIC.tidyRuby("{ログイン機能|ろぐいんきのう}について")).toBe(
+      "ログイン{機能|きのう}について",
+    );
+    expect(LOGIC.tidyRuby("{ウェブ画面|うぇぶがめん}")).toBe("ウェブ{画面|がめん}");
+    expect(LOGIC.tidyRuby("{正常に|せいじょうに}")).toBe("{正常|せいじょう}に");
+    expect(LOGIC.tidyRuby("{メールアドレス|めーるあどれす}を")).toBe("メールアドレスを");
+    expect(LOGIC.tidyRuby("{状態|じょうたい}です")).toBe("{状態|じょうたい}です");
+    /* 英字は 読みと 照らせない ので、読みを 削らずに 残す */
+    expect(LOGIC.tidyRuby("{Web画面|うぇぶがめん}")).toBe("{Web画面|うぇぶがめん}");
   });
 
   it("お手本を 読めば 合格。最後の お願いを 言わないと 通らない", () => {

@@ -69,12 +69,11 @@
       "text": ["SHOP LIST", "NEW", "OPEN 11/15", "OPEN 11/1", "OPEN 10/20", "OPEN 9/5"]
     },
     {
-      "out": "l1_today",
-      "dest": "public/img/hourensou/soudan/renshu/l1_today.webp",
-      "title": "レベル1：今日中に 完成させたい",
-      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: she wants to finish the page today. The new engineer at her desk looks up at a round wall clock showing ten o'clock in the morning. On her desk a big desk calendar shows one day page with the word below, and a small red flag stuck on it. She makes a determined fist, eyes shining with motivation, little motion lines around her.",
-      "text": ["TODAY"],
-      "_comment": "2026-11-18: 1枚目は 17:00 を 入れて いたが、場面の 文に 時刻が 無い（レベル4の 午後5時と 混ざる・検収の 指摘）ので 外して 作り直した。"
+      "out": "l1_week",
+      "dest": "public/img/hourensou/soudan/renshu/l1_week.webp",
+      "title": "レベル1：今週中（あと 3日）",
+      "scene": "THE ONE IDEA THIS PICTURE MUST MAKE OBVIOUS: she wants to finish the page within this week, and there are still three days left. The new engineer sits at her desk and points at a big week calendar pinned on the wall beside her monitor. The calendar shows one week as five large day boxes in a row, labelled exactly MON, TUE, WED, THU, FRI. MON and TUE are crossed out with grey lines because they are over. WED has a bright red circle and a small arrow above it to show that today is Wednesday. A small red flag stands in the FRI box to show the deadline. A big curved bracket spans the three boxes WED, THU and FRI, and the words 3 DAYS are printed large under the bracket. Her monitor shows the shop list page with the heading below, still being built. She looks calm and determined, making a small fist, with a few motion lines — there is enough time if she plans well.",
+      "text": ["MON", "TUE", "WED", "THU", "FRI", "3 DAYS", "SHOP LIST"]
     },
     {
       "out": "l2_making",

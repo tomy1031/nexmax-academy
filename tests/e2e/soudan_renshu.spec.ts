@@ -123,6 +123,9 @@ test("レベル1を 最後まで: 席の 絵を 見て 話しかけ、マイク�
     [
       "お店の 一覧画面を 作って います。並べる 順番が 決まって いません。",
       "お店の 一覧画面を 作って います。並べる 順番が 決まって いません。近い 順に しても いいですか。",
+      /* 合格の あと、お手本を 声に 出して 読む（1回目は 途中まで・2回目は 最後まで） */
+      "お店の 一覧画面を 作って います。",
+      "お店の 一覧画面を 作って います。しかし、お店を 並べる 順番が 決まって いません。今週中に 画面を 完成させたいです。私は、使う 人から 近い 順が いいと 思います。近くの お店を 探す 人が 多いからです。近い 順に しても いいですか。",
     ],
     [
       {
@@ -229,8 +232,21 @@ test("レベル1を 最後まで: 席の 絵を 見て 話しかけ、マイク�
   await expect(tool.getByTestId("better")).toBeVisible();
   /* お手本に ボーナスの 文が 2つ（いつまでか・考えと 理由）。印が 付く（要望 #778） */
   await expect(tool.getByTestId("model-bonus")).toHaveCount(2);
+  /* お手本は 最初から 開いて いる（要望 #783） */
+  await expect(tool.getByTestId("model")).toHaveAttribute("open", "");
   expect(await bare(page)).toEqual([]);
   await shot(page, "soudan-renshu-06-pass");
+
+  /* お手本を 声に 出して 読む（要望 #784）。途中までだと ✖、最後まで 読むと ⭕ */
+  await tool.getByTestId("read-model").click();
+  await tool.getByTestId("read-stop").click({ force: true });
+  await expect(tool.getByTestId("read-result")).toHaveAttribute("data-ok", "0");
+  await tool.getByTestId("read-model").click();
+  await tool.getByTestId("read-stop").click({ force: true });
+  await expect(tool.getByTestId("read-result")).toHaveAttribute("data-ok", "1");
+  expect(await bare(page)).toEqual([]);
+  await tool.getByTestId("read-result").scrollIntoViewIfNeeded();
+  await shot(page, "soudan-renshu-06b-read-model");
 
   /* 親へ: 進み具合（星 2・加点 1）と 先生の 記録（2回 ぶんの ことば）・判定の 頼み */
   const msgs = (await page.evaluate(

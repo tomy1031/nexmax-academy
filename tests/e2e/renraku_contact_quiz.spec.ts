@@ -262,7 +262,9 @@ test("連絡文: ⭕に した ところは 開き直しても 開いた まま"
   await page.getByRole("button", { name: "はじめる" }).click();
 
   await passOne(page, QUESTIONS[0]!);
-  await expect(page.locator("#q-mail_2").getByLabel("宛先を 入力する")).toBeEnabled();
+  /* 上の ⭕の 数（出せる 条件と 同じ ものさし）が 1つ 増える */
+  const oneDone = page.getByText(/^⭕ 1 \/ \d+$/u);
+  await expect(oneDone).toBeVisible();
 
   await page.reload();
   await closeClearDialog(page, { first: false });
@@ -271,8 +273,14 @@ test("連絡文: ⭕に した ところは 開き直しても 開いた まま"
     ? resume.click()
     : page.getByRole("button", { name: "はじめる" }).click());
 
+  /*
+   * 開き直しても ⭕は 1つ 残る。前は「3問目は まだ 閉じて いる」も 見て いたが、
+   * 2026-11-18 の 指定（PR #780「1問終わらないと次に進めないのを取り急ぎ直して」）で
+   * もんだいは ぜんぶ 開いて いる ので、その 確かめは「開いて いる」に 変えた。
+   */
+  await expect(oneDone).toBeVisible();
   await expect(page.locator("#q-mail_2").getByLabel("宛先を 入力する")).toBeEnabled();
-  await expect(page.locator("#q-mail_3").getByLabel("宛先を 入力する")).toHaveCount(0);
+  await expect(page.locator("#q-mail_3").getByLabel("宛先を 入力する")).toBeEnabled();
 });
 
 /**
