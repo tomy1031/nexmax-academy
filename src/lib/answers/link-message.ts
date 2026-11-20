@@ -65,6 +65,65 @@ export function parseProgressPosition(value: unknown): Record<string, number> | 
   return out;
 }
 
+/**
+ * 中のページが「**修了証を 出して**」と 頼む 合図（2026-11-20・相談の 練習問題）。
+ *
+ * tomy さんの 指定「レベル4までで修了証を作成できるようにして、レベル5をもっと特別に」→
+ * 選択「アプリの修了証」（名前と 終えた 時刻は DB が 入れる）。ページは **成績の 数だけ**を 送る。
+ * 題・種類は 親が 持つ（ページから 受け取らない）。受けるのは **自分が 埋めた iframe から
+ * 来た もの だけ**（呼ぶ側で `event.source` を 見る）。
+ *
+ * - `tier` … `main`（レベル1〜4 の 修了証）か `special`（特別課題の 修了証）
+ * - `levels` … レベルごとの 星と、**はじめて 合格した 回の** やり直しの 数
+ *   （`null` ＝ 分からない。修了証が できる 前に 終えた レベル）
+ */
+export const CERTIFICATE_MESSAGE = "nexmax:link-certificate";
+
+/** 親 → ページ: その 種類の 修了証を 出した（または もう あった）。ページは 次から 頼まない。 */
+export const CERTIFICATE_ACK_MESSAGE = "nexmax:link-certificate-ack";
+
+export interface LinkCertificateLevel {
+  readonly no: number;
+  readonly stars: number;
+  /** はじめて 合格した 回の やり直しの 数。`null` は 分からない（修了証が できる 前に 終えた）。 */
+  readonly fails: number | null;
+}
+
+export interface LinkCertificateRequest {
+  readonly tier: "main" | "special";
+  readonly levels: readonly LinkCertificateLevel[];
+}
+
+/** 修了証の 頼みを 読む。この 教材あてで、形が ぜんぶ 合う ものだけ（**ひとつでも 崩れて いたら 捨てる**）。 */
+export function readLinkCertificateMessage(
+  data: unknown,
+  linkId: string,
+): LinkCertificateRequest | null {
+  if (!data || typeof data !== "object") return null;
+  const { type, id, tier, levels } = data as Record<string, unknown>;
+  if (type !== CERTIFICATE_MESSAGE || id !== linkId) return null;
+  if (tier !== "main" && tier !== "special") return null;
+  if (!Array.isArray(levels) || levels.length < 1 || levels.length > 10) return null;
+  const seen = new Set<number>();
+  const out: LinkCertificateLevel[] = [];
+  for (const raw of levels as unknown[]) {
+    if (!raw || typeof raw !== "object") return null;
+    const { no, stars, fails } = raw as Record<string, unknown>;
+    if (typeof no !== "number" || !Number.isInteger(no) || no < 1 || no > 20) return null;
+    if (seen.has(no)) return null;
+    if (typeof stars !== "number" || !Number.isInteger(stars) || stars < 1 || stars > 3)
+      return null;
+    if (fails !== null) {
+      if (typeof fails !== "number" || !Number.isInteger(fails) || fails < 0 || fails > 99) {
+        return null;
+      }
+    }
+    seen.add(no);
+    out.push({ no, stars, fails: fails as number | null });
+  }
+  return { tier, levels: out };
+}
+
 export type LinkMessage =
   | { readonly kind: "done" }
   | { readonly kind: "owns-done" }

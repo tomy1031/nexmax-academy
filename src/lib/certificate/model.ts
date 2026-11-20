@@ -30,7 +30,15 @@
 
 /** 種類の 名前は ステージの `contents[].type` と 同じ（DB の kind 列。移行SQLの 註）。 */
 export type CertificateKind =
-  "listening" | "typing" | "quizset" | "wordtest" | "meeting" | "talkgame" | "asakai" | "scenario";
+  | "listening"
+  | "typing"
+  | "quizset"
+  | "wordtest"
+  | "meeting"
+  | "talkgame"
+  | "asakai"
+  | "scenario"
+  | "link";
 
 /** 1回ぶんの 成績（端末が まとめて DB へ 送る）。 */
 export interface CertificateResult {
@@ -340,6 +348,79 @@ export function scenarioResult(
   };
 }
 
+/**
+ * ツール教材（link）の 修了証（2026-11-20・相談の 練習問題）。
+ *
+ * - レベル1〜4 を 終えた ときの 修了証と、**特別課題**（レベル5）の 修了証の 2つ（`special`）。
+ *   どちらも DB の content_id は 教材の id の まま（先生の 記録で 同じ 教材の 欄に 並ぶ）。
+ * - **パーフェクト ＝ どの レベルも、はじめて 合格した 回が 1回目**（★3）。いちばん 良い 星では
+ *   決めない——合格の あとに 開く お手本を 見て やり直せば ★3 が 取れて しまう。
+ * - やり直しの 数が 分からない レベル（`fails: null` ＝ 修了証が できる 前に 終えた）が あれば
+ *   パーフェクトに しない（2026-11-20 の 選択「1回だけ出す」。リスニングの finishedBefore と 同じ 扱い）。
+ */
+export interface LinkRunFacts {
+  readonly special: boolean;
+  readonly levels: readonly {
+    readonly no: number;
+    readonly stars: number;
+    readonly fails: number | null;
+  }[];
+}
+
+export function linkCertificateResult(
+  contentId: string,
+  title: string,
+  facts: LinkRunFacts,
+): CertificateResult {
+  const levels = [...facts.levels].sort((a, b) => a.no - b.no);
+  const beforeCert = levels.some((level) => level.fails === null);
+  const detail: Record<string, number | boolean> = {
+    special: facts.special,
+    first: levels[0]?.no ?? 1,
+    levels: levels.length,
+    beforeCert,
+  };
+  for (const level of levels) {
+    detail[`s${level.no}`] = level.stars;
+    // 0 ＝ 分からない（修了証が できる 前に 終えた）・1 ＝ 1回目で 合格・n ＝ やり直し n-1回
+    detail[`f${level.no}`] = level.fails === null ? 0 : level.fails + 1;
+  }
+  return {
+    kind: "link",
+    contentId,
+    title,
+    perfect: levels.length > 0 && !beforeCert && levels.every((level) => level.fails === 0),
+    score: levels.reduce((sum, level) => sum + level.stars, 0),
+    maxScore: levels.length * 3,
+    misses: levels.reduce((sum, level) => sum + (level.fails ?? 0), 0),
+    detail,
+  };
+}
+
+/** 特別課題の 修了証か（金の ふちと「特別課題」の 札）。 */
+export function isSpecialCertificate(cert: CertificateResult): boolean {
+  return cert.kind === "link" && cert.detail.special === true;
+}
+
+/**
+ * 「回（◯回目）」を 出すか。ツール教材は 出さない——DB は 教材ごとに 数えるので、
+ * 特別課題の 修了証が「2回目」と 出て しまう。
+ */
+export function showsAttempt(cert: CertificateResult): boolean {
+  return cert.kind !== "link";
+}
+
+/** ツール教材の レベルごとの 印（1つ目の レベルから 順に）。 */
+function linkLevels(cert: CertificateResult): { no: number; stars: number; f: number }[] {
+  const n = (key: string) => Number(cert.detail[key] ?? 0);
+  const out: { no: number; stars: number; f: number }[] = [];
+  for (let i = 0; i < n("levels"); i += 1) {
+    const no = n("first") + i;
+    out.push({ no, stars: n(`s${no}`), f: n(`f${no}`) });
+  }
+  return out;
+}
+
 /** 修了証の 成績の 1行（ラベルと 値。画面の カードと 画像の 両方が 使う）。 */
 export interface CertificateLine {
   readonly label: string;
@@ -379,6 +460,21 @@ export function certificateLines(cert: CertificateResult): CertificateLine[] {
     ? [{ label: "はじめかた", value: "前の 回の 続きから" }]
     : [];
   const d = (key: string) => Number(cert.detail[key] ?? 0);
+  if (cert.kind === "link") {
+    return [
+      ...linkLevels(cert).map((level) => ({
+        label: `レベル${level.no}`,
+        value: `${"★".repeat(level.stars)}${"☆".repeat(Math.max(0, 3 - level.stars))}（${
+          level.f === 0
+            ? "修了証が できる 前に 終えた"
+            : level.f === 1
+              ? "1回目で 合格"
+              : `やり直し ${level.f - 1}回`
+        }）`,
+      })),
+      ...partialLine,
+    ];
+  }
   if (cert.kind === "meeting") {
     return [
       // 数には 数え方（こ・つ）を 付ける——画面の ほかの「7 / 8」と 同じ 字に しない
@@ -488,6 +584,20 @@ export function notPerfectReasons(cert: CertificateResult): string[] {
   }
   const partialReason = cert.detail.partial ? ["前の 回の 続きから 始めました。"] : [];
   const n = (key: string) => Number(cert.detail[key] ?? 0);
+  if (cert.kind === "link") {
+    const levels = linkLevels(cert);
+    const retried = levels.filter((level) => level.f > 1).map((level) => level.no);
+    const before = levels.filter((level) => level.f === 0).map((level) => level.no);
+    return [
+      ...(retried.length > 0
+        ? [`やり直した レベルが あります（レベル${retried.join("・")}）。`]
+        : []),
+      ...(before.length > 0
+        ? [`修了証が できる 前に 終えた レベルが あります（レベル${before.join("・")}）。`]
+        : []),
+      ...partialReason,
+    ];
+  }
   if (cert.kind === "meeting") {
     const unanswered = n("questions") - n("answered");
     const unfound = n("discover") - n("found");
@@ -540,6 +650,13 @@ export function notPerfectReasons(cert: CertificateResult): string[] {
 
 /** パーフェクトに する ための 次の 一手（1行）。 */
 export function nextStepForPerfect(cert: CertificateResult): string {
+  if (cert.kind === "link") {
+    /*
+     * 合格の あとに お手本を 見るので、この あとの やり直しは もう パーフェクトに ならない。
+     * できない ことを「めざそう」と 言わない（規律1・もんだいと 同じ）。
+     */
+    return "パーフェクトに なるのは、どの レベルも 1回目で 合格した ときだけです。つぎの 練習でも、話す 前に 伝える ことを メモしましょう。";
+  }
   if (cert.kind === "meeting") {
     return "パーフェクトを めざすなら、もう一度 はじめから 話して、取りこぼし なく 答えましょう。";
   }

@@ -91,13 +91,14 @@ export function useCertificateIssuer(contentId: string) {
             setCertificate({ status: "error" });
             return;
           }
-          saveIssued(outcome.cert);
+          // 控えは この 手順の 鍵で 残す（ふだんは 教材の id と 同じ）
+          saveIssued(outcome.cert, contentId);
           patch(run.startedAt, (r) => ({ ...r, pending: undefined, issued: true }));
           setCertificate({ status: "ready", cert: outcome.cert });
         })
         .catch(() => setCertificate({ status: "error" }));
     },
-    [patch],
+    [contentId, patch],
   );
 
   const finish = useCallback(

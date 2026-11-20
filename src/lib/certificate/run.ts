@@ -117,8 +117,12 @@ export function readIssued(contentId: string): IssuedCertificate | null {
   return readJson<IssuedCertificate>(ISSUED_PREFIX + contentId);
 }
 
-export function saveIssued(cert: IssuedCertificate): void {
-  writeJson(ISSUED_PREFIX + cert.contentId, cert);
+/**
+ * @param key 控えの 鍵（省くと 教材の id）。1つの 教材で 2種類 出す ツール教材は 分ける
+ *（相談の 練習問題の レベル1〜4 と 特別課題・2026-11-20）。
+ */
+export function saveIssued(cert: IssuedCertificate, key: string = cert.contentId): void {
+  writeJson(ISSUED_PREFIX + key, cert);
 }
 
 /** こたえあわせ（原稿）を 見た 印を 付ける（その 教材では 以後 ずっと 残る）。 */

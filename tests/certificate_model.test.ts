@@ -13,12 +13,15 @@ import {
   certificateFileName,
   certificateLines,
   formatIssuedAt,
+  isSpecialCertificate,
+  linkCertificateResult,
   listeningResult,
   meetingResult,
   nextStepForPerfect,
   notPerfectReasons,
   quizResult,
   scenarioResult,
+  showsAttempt,
   talkGameResult,
   typingResult,
   wordTestResult,
@@ -377,5 +380,80 @@ describe("修了証が できる 前に 終えた リスニング（2026-10-06 �
       "90点",
       "修了証が できる 前に 終えた 回",
     ]);
+  });
+});
+
+describe("ツール教材の 修了証（相談の 練習問題・2026-11-20）", () => {
+  const four = (fails: (number | null)[]) =>
+    fails.map((f, at) => ({
+      no: at + 1,
+      stars: f === null ? 3 : f === 0 ? 3 : f <= 2 ? 2 : 1,
+      fails: f,
+    }));
+
+  it("どの レベルも 1回目で 合格なら パーフェクト（金）。理由は 空", () => {
+    const cert = linkCertificateResult("soudan_renshu", "相談の 練習問題（レベル1〜4）", {
+      special: false,
+      levels: four([0, 0, 0, 0]),
+    });
+    expect(cert.kind).toBe("link");
+    expect(cert.perfect).toBe(true);
+    expect(cert.score).toBe(12);
+    expect(cert.maxScore).toBe(12);
+    expect(notPerfectReasons(cert)).toEqual([]);
+    expect(isSpecialCertificate(cert)).toBe(false);
+    expect(showsAttempt(cert)).toBe(false);
+  });
+
+  it("やり直した レベルが 1つでも あれば パーフェクトで ない。どの レベルかを 書く（規律1）", () => {
+    const cert = linkCertificateResult("soudan_renshu", "t", {
+      special: false,
+      levels: four([0, 2, 0, 0]),
+    });
+    expect(cert.perfect).toBe(false);
+    expect(notPerfectReasons(cert)).toEqual(["やり直した レベルが あります（レベル2）。"]);
+    // できない ことを「めざそう」と 言わない（合格の あとに お手本を 見て いる）
+    expect(nextStepForPerfect(cert)).toContain("1回目で 合格した ときだけ");
+  });
+
+  it("修了証が できる 前に 終えた レベル（やり直しの 数が 分からない）は パーフェクトに しない", () => {
+    const cert = linkCertificateResult("soudan_renshu", "t", {
+      special: false,
+      levels: four([null, null, 0, 0]),
+    });
+    expect(cert.perfect).toBe(false);
+    expect(cert.detail.beforeCert).toBe(true);
+    expect(notPerfectReasons(cert)).toEqual([
+      "修了証が できる 前に 終えた レベルが あります（レベル1・2）。",
+    ]);
+  });
+
+  it("成績の 行は レベルごとの 星と、はじめて 合格した 回の やり直し", () => {
+    const cert = linkCertificateResult("soudan_renshu", "t", {
+      special: false,
+      levels: four([0, 1, null, 3]),
+    });
+    expect(certificateLines(cert)).toEqual([
+      { label: "レベル1", value: "★★★（1回目で 合格）" },
+      { label: "レベル2", value: "★★☆（やり直し 1回）" },
+      { label: "レベル3", value: "★★★（修了証が できる 前に 終えた）" },
+      { label: "レベル4", value: "★☆☆（やり直し 3回）" },
+    ]);
+  });
+
+  it("特別課題の 修了証は 印が 付き、レベル5だけを 書く", () => {
+    const cert = linkCertificateResult("soudan_renshu", "相談の 練習問題 特別課題（レベル5）", {
+      special: true,
+      levels: [{ no: 5, stars: 3, fails: 0 }],
+    });
+    expect(isSpecialCertificate(cert)).toBe(true);
+    expect(cert.perfect).toBe(true);
+    expect(certificateLines(cert)).toEqual([{ label: "レベル5", value: "★★★（1回目で 合格）" }]);
+  });
+
+  it("ほかの 種類は これまでどおり 回を 出す", () => {
+    const cert = typingResult("t", "t", { total: 1, missesBySentence: [0], partial: false });
+    expect(showsAttempt(cert)).toBe(true);
+    expect(isSpecialCertificate(cert)).toBe(false);
   });
 });
