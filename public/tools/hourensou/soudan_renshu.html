@@ -1887,6 +1887,14 @@
         vertical-align: top;
         padding-top: 6px;
       }
+      .wsgrid .ws-ex {
+        display: block;
+        margin-top: 2px;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--ink-soft);
+        line-height: 1.8;
+      }
       .wsgrid textarea {
         min-height: 60px;
         font-size: 14px;
@@ -2541,7 +2549,10 @@
             R(level.title) +
             '</h2><span class="goal">🎯 ' +
             R(level.goal) +
-            "</span></div>" +
+            "</span>" +
+            /* 題の ことばの 注（レベル5の OCR・2026-11-20） */
+            (level.coverNote ? '<span class="note">' + R(level.coverNote) + "</span>" : "") +
+            "</div>" +
             navHtml({ back: false, nextLabel: D.ui.start }) +
             "</div></div>";
         }
@@ -3976,6 +3987,8 @@
                   (at + 1) +
                   ". " +
                   R(row.label) +
+                  /* 書き方の 例（2026-11-20「比較表のところ、それぞれの入力例をどこかに書いて」） */
+                  (row.example ? '<span class="ws-ex">' + R(D.ui.example) + "：" + R(row.example) + "</span>" : "") +
                   "</th>" +
                   ws.apis
                     .map(function (api) {
