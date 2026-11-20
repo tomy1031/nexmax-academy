@@ -17,7 +17,9 @@ import {
   certificateFileName,
   certificateLines,
   formatIssuedAt,
+  isSpecialCertificate,
   notPerfectReasons,
+  showsAttempt,
   type IssuedCertificate,
 } from "./model";
 
@@ -95,7 +97,7 @@ export async function drawCertificate(cert: IssuedCertificate): Promise<Blob> {
   const lines = certificateLines(cert);
   const reasons = notPerfectReasons(cert);
   const all = [
-    "修了証PERFECT修了名前教材終えた時刻回目成績照合番号見本NexMax Academy",
+    "修了証PERFECT修了名前教材終えた時刻回目成績照合番号見本NexMax Academy特別課題",
     "パーフェクトでは ありません：",
     "ログインして いないので、正式な 修了証では ありません。",
     "（名前が ありません）0123456789/:（ICT）",
@@ -107,8 +109,10 @@ export async function drawCertificate(cert: IssuedCertificate): Promise<Blob> {
   const family = await fontFamily(all);
   const font = (size: number, weight = 800) => `${weight} ${size}px ${family}`;
 
-  const accent = cert.perfect ? GOLD : SKY;
-  const soft = cert.perfect ? GOLD_SOFT : SKY_SOFT;
+  // 特別課題（ツール教材の レベル5）は いつも 金（パーフェクトかは 判と 理由で 分かる）
+  const special = isSpecialCertificate(cert);
+  const accent = cert.perfect || special ? GOLD : SKY;
+  const soft = cert.perfect || special ? GOLD_SOFT : SKY_SOFT;
 
   // 地と ふち（パーフェクトは 金・そうでない ものは 青。ひと目で 分かる）
   ctx.fillStyle = soft;
@@ -127,7 +131,7 @@ export async function drawCertificate(cert: IssuedCertificate): Promise<Blob> {
   ctx.fillText("修了証", W / 2, 170);
   ctx.font = font(30, 700);
   ctx.fillStyle = INK_SOFT;
-  ctx.fillText("NexMax Academy", W / 2, 215);
+  ctx.fillText(special ? "NexMax Academy ・ 特別課題" : "NexMax Academy", W / 2, 215);
 
   // 判（右上）
   ctx.save();
@@ -164,7 +168,7 @@ export async function drawCertificate(cert: IssuedCertificate): Promise<Blob> {
   row("名前", cert.learnerName || "（名前が ありません）", 60);
   row("教材", cert.title, 42);
   row("終えた 時刻", formatIssuedAt(cert.issuedAt), 42);
-  if (cert.official) row("回", `${cert.attempt}回目`, 42);
+  if (cert.official && showsAttempt(cert)) row("回", `${cert.attempt}回目`, 42);
 
   // 成績
   y += 10;

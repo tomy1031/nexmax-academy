@@ -23,10 +23,14 @@ export function PreviousCertificate({
   contentId,
   onOpen,
   show,
+  label = "前に 出した 修了証を ひらく",
 }: {
+  /** 控えの 鍵（ふだんは 教材の id）。 */
   contentId: string;
   onOpen: (cert: IssuedCertificate) => void;
   show: boolean;
+  /** ボタンの 文（1つの 教材で 2種類 出す ときに 分ける）。 */
+  label?: string;
 }) {
   const stored = useSyncExternalStore(
     subscribeNever,
@@ -47,8 +51,7 @@ export function PreviousCertificate({
         }}
         className="border-hairline text-navy bg-panel rounded-2xl border px-4 py-2 text-sm font-extrabold"
       >
-        🎓{" "}
-        <RubyText text="前に 出した 修了証を ひらく" index={CERTIFICATE_UI_FURIGANA} show={show} />
+        🎓 <RubyText text={label} index={CERTIFICATE_UI_FURIGANA} show={show} />
       </button>
     </p>
   );

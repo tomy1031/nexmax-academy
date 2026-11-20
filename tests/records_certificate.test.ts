@@ -422,4 +422,76 @@ describe("修了証の タブ", () => {
   it("既定は 進み具合より 修了証（学生が 出した ほう）", () => {
     expect(defaultKind(["progress", "certificate"])).toBe("certificate");
   });
+
+  it("成績: ツール教材（相談の 練習問題）は レベルごとの 星と やり直し。回は 出さず、特別課題は そう 書く", () => {
+    const main = cert({
+      id: "lm",
+      content_id: "soudan_renshu",
+      kind: "link",
+      attempt: 1,
+      perfect: false,
+      score: 11,
+      max_score: 12,
+      misses: 1,
+      detail: {
+        special: false,
+        first: 1,
+        levels: 4,
+        beforeCert: false,
+        s1: 3,
+        f1: 1,
+        s2: 2,
+        f2: 2,
+        s3: 3,
+        f3: 1,
+        s4: 3,
+        f4: 1,
+      },
+    });
+    const special = cert({
+      id: "ls",
+      content_id: "soudan_renshu",
+      kind: "link",
+      attempt: 2,
+      perfect: true,
+      score: 3,
+      max_score: 3,
+      misses: 0,
+      code: "SPEC2345",
+      detail: { special: true, first: 5, levels: 1, beforeCert: false, s5: 3, f5: 1 },
+    });
+    const before = cert({
+      id: "lb",
+      content_id: "soudan_renshu",
+      kind: "link",
+      perfect: false,
+      code: "BEFO2345",
+      detail: { special: false, first: 1, levels: 2, beforeCert: true, s1: 3, f1: 0, s2: 3, f2: 1 },
+    });
+    const table = certificateTable([main, special, before], LOOKUPS);
+    expect(table.rows[0]?.cells.score).toBe(
+      "L1 ★3（1回目）・L2 ★2（やり直し1）・L3 ★3（1回目）・L4 ★3（1回目）",
+    );
+    expect(table.rows[0]?.cells.attempt).toBe("—");
+    expect(table.rows[0]?.cells.result).toBe("修了");
+    expect(table.rows[1]?.cells.result).toBe("特別課題・★PERFECT");
+    expect(table.rows[1]?.cells.attempt).toBe("—");
+    expect(table.rows[2]?.cells.score).toBe(
+      "L1 ★3（?）・L2 ★3（1回目）（修了証が できる 前に 終えた レベルが ある）",
+    );
+  });
+
+  it("成績: ツール教材の 行の 数が 範囲の 外でも 固まらない・落ちない（学生が 自分で 入れられる 行）", () => {
+    const wild = cert({
+      id: "lw",
+      content_id: "soudan_renshu",
+      kind: "link",
+      code: "WILD2345",
+      detail: { special: false, first: 1, levels: 1e9, s1: -5, f1: 1 },
+    });
+    const table = certificateTable([wild], LOOKUPS);
+    const parts = String(table.rows[0]?.cells.score).split("・");
+    expect(parts.length).toBeLessThanOrEqual(10);
+    expect(parts[0]).toBe("L1 ★0（1回目）");
+  });
 });
