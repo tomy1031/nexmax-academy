@@ -15,6 +15,8 @@
  *   --skip-restore  戻すのを飛ばす（もう戻してあり、確かめと切り替えだけやり直すとき）
  *   --no-switch     戻して確かめるところまで。GitHub の鍵は変えない
  *   --key <path>    バックアップを開ける秘密鍵（既定 ~/.config/nexmax-academy/db-backup-age-key.txt）
+ *   --expect-privileges "<件数> <md5>"
+ *                   古い DB で PRIVILEGE_FINGERPRINT_SQL を流した値。新しい DB の権限の指紋と違えば止める
  *
  * 流れ:
  *   1. バックアップを開ける。平文は一時フォルダ（自分だけ読める）に置き、最後に必ず消す
@@ -25,7 +27,7 @@
  *   6. 戻す（Supabase 公式「Backup and restore using the CLI」と同じ並び・1つのトランザクション。
  *      docs/backup-recovery.md §5.3）
  *   7. Storage の置き場（assets）と権限を作る（ファイルはバックアップに入っていない）
- *   8. 確かめる: 表ごとの件数・移行の台帳・既定の権限・RLS（check_rls.mjs --strict）
+ *   8. 権限を古い DB とそろえる（privilegeSyncSql）。確かめる: 権限の指紋・表ごとの件数・移行の台帳・RLS
  *   9. 全部通ったら公開の鍵を聞き、GitHub の Environment「Preview」の3つ
  *      （SUPABASE_DB_URL・NEXT_PUBLIC_SUPABASE_URL・NEXT_PUBLIC_SUPABASE_ANON_KEY）と、
  *      見張り（academy-watch）の SUPABASE_URL を差し替える
@@ -36,7 +38,7 @@
 
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { homedir, tmpdir } from "node:os";
 import { delimiter, dirname, join } from "node:path";
 import { createInterface } from "node:readline";
@@ -116,6 +118,77 @@ export function projectRefFrom(text) {
     /^([a-z0-9]{20})$/.exec(value);
   return m ? m[1] : null;
 }
+
+/**
+ * 権限を、古い DB とまったく同じにそろえる SQL（2026-11-21 に実際にずれた）。
+ *
+ * pg_dump の schema.sql は、表の権限を「作った直後は持ち主だけ」という前提で、**足す GRANT だけ**を書く。
+ * ところが Supabase のプロジェクトは、public に作った表・関数・連番に anon・authenticated・service_role の
+ * 全権限を**作った瞬間に付ける**（既定の権限。schema.sql の末尾の ALTER DEFAULT PRIVILEGES と同じもの）。
+ * そのまま戻すと、古い DB で anon から外していた17の表と、外していた関数が、新しい DB では anon に開く。
+ * 件数は合うので、毎晩の「戻してみる」では見えない。RLS の検査（events を anon が読めた）で見つかった。
+ *
+ * だから public の表・関数から、この3つの役の権限をいったん全部外し、schema.sql の GRANT / REVOKE を
+ * もう一度流す。PUBLIC（だれでも）の権限は触らない——関数の PUBLIC の実行権は、戻したときに
+ * schema.sql の REVOKE がもう正しく外している。拡張機能の持ち物は触らない。
+ *
+ * @param {string} schemaSql バックアップの schema.sql の中身
+ * @returns {string}
+ */
+export function privilegeSyncSql(schemaSql) {
+  const replay = String(schemaSql)
+    .split("\n")
+    .filter((line) => /^(GRANT|REVOKE) .*;\s*$/.test(line));
+  if (replay.length === 0) throw new Error("schema.sql に GRANT / REVOKE の行がありません");
+  return [
+    "SET search_path = '';",
+    "DO $$",
+    "DECLARE r record;",
+    "BEGIN",
+    "  FOR r IN",
+    "    SELECT c.oid::regclass::text AS obj, c.relkind",
+    "    FROM pg_catalog.pg_class c JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace",
+    "    WHERE n.nspname = 'public' AND c.relkind IN ('r', 'v', 'm', 'S', 'p', 'f')",
+    "      AND NOT EXISTS (SELECT 1 FROM pg_catalog.pg_depend d",
+    "        WHERE d.classid = 'pg_catalog.pg_class'::regclass AND d.objid = c.oid AND d.deptype = 'e')",
+    "  LOOP",
+    "    EXECUTE format('REVOKE ALL ON %s %s FROM anon, authenticated, service_role',",
+    "      CASE WHEN r.relkind = 'S' THEN 'SEQUENCE' ELSE 'TABLE' END, r.obj);",
+    "  END LOOP;",
+    "  FOR r IN",
+    "    SELECT p.oid::regprocedure::text AS fn, p.prokind",
+    "    FROM pg_catalog.pg_proc p JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace",
+    "    WHERE n.nspname = 'public' AND p.prokind IN ('f', 'p')",
+    "      AND NOT EXISTS (SELECT 1 FROM pg_catalog.pg_depend d",
+    "        WHERE d.classid = 'pg_catalog.pg_proc'::regclass AND d.objid = p.oid AND d.deptype = 'e')",
+    "  LOOP",
+    "    EXECUTE format('REVOKE ALL ON %s %s FROM anon, authenticated, service_role',",
+    "      CASE WHEN r.prokind = 'p' THEN 'PROCEDURE' ELSE 'FUNCTION' END, r.fn);",
+    "  END LOOP;",
+    "END $$;",
+    ...replay,
+    "",
+  ].join("\n");
+}
+
+/**
+ * 権限の指紋。古い DB と新しい DB で同じ SQL を流し、値が同じなら権限は1件も違わない。
+ * public の表・ビュー・連番と、public・app の関数の権限を、（相手・種類）の1件ずつに開いて並べる。
+ * 出力は「件数 md5」の1行。
+ */
+export const PRIVILEGE_FINGERPRINT_SQL = `with rel as (
+  select 'r:' || c.relname || ':' || case when a.grantee = 0 then 'PUBLIC' else a.grantee::regrole::text end || ':' || a.privilege_type as x
+  from pg_class c join pg_namespace n on n.oid = c.relnamespace,
+  aclexplode(coalesce(c.relacl, acldefault(case when c.relkind = 'S' then 's'::"char" else 'r'::"char" end, c.relowner))) a
+  where n.nspname = 'public' and c.relkind in ('r','v','m','S','p')
+), fn as (
+  select 'f:' || n.nspname || '.' || p.proname || '(' || pg_get_function_identity_arguments(p.oid) || '):' || case when a.grantee = 0 then 'PUBLIC' else a.grantee::regrole::text end || ':' || a.privilege_type as x
+  from pg_proc p join pg_namespace n on n.oid = p.pronamespace,
+  aclexplode(coalesce(p.proacl, acldefault('f'::"char", p.proowner))) a
+  where n.nspname in ('public','app')
+)
+select count(*) || ' ' || md5(string_agg(x, ',' order by x))
+from (select x from rel union all select x from fn) t`;
 
 /* ───────────── ここから下は実行するときだけ ───────────── */
 
@@ -203,11 +276,13 @@ async function main() {
     const i = args.indexOf(name);
     return i >= 0 ? args[i + 1] : undefined;
   };
+  const withValue = new Set(["--key", "--expect-privileges"]);
   const positional = args.filter(
-    (a, i) => !a.startsWith("--") && !(i > 0 && args[i - 1] === "--key"),
+    (a, i) => !a.startsWith("--") && !(i > 0 && withValue.has(args[i - 1])),
   );
   const skipRestore = flag("--skip-restore");
   const noSwitch = flag("--no-switch");
+  const expectPrivileges = option("--expect-privileges")?.trim();
   const keyPath =
     option("--key") ?? join(homedir(), ".config", "nexmax-academy", "db-backup-age-key.txt");
 
@@ -335,9 +410,27 @@ async function main() {
       console.log("✓ Storage の置き場（assets）と権限を作りました");
     }
 
+    /* 権限を古い DB とそろえる（privilegeSyncSql の理由。何度流しても同じ結果になる） */
+    const syncFile = join(work, "privileges.sql");
+    writeFileSync(syncFile, privilegeSyncSql(readFileSync(join(dir, "schema.sql"), "utf8")), {
+      mode: 0o600,
+    });
+    const sync = run(["-v", "ON_ERROR_STOP=1", "--single-transaction", "-q", "-f", syncFile]);
+    if (sync.status !== 0) fail(`権限をそろえられませんでした:\n  ${redact(sync.stderr)}`);
+    console.log("✓ 表と関数の権限を、古い DB と同じにそろえました");
+
     /* 8. 確かめる */
     console.log("\n■ 4. 確かめます");
     const problems = [];
+    const fingerprint = query(PRIVILEGE_FINGERPRINT_SQL);
+    if (expectPrivileges && fingerprint !== expectPrivileges)
+      problems.push(
+        `権限の指紋が古い DB と違います（新しい DB ${fingerprint}・古い DB ${expectPrivileges}）`,
+      );
+    else
+      console.log(
+        `✓ 権限の指紋: ${fingerprint}${expectPrivileges ? "（古い DB と一致）" : "（古い DB と比べていません）"}`,
+      );
     const { countSql, parseCountRows, verifyCounts } = await import("./db_backup.mjs");
     const restored = parseCountRows(query(countSql(manifest.rows)));
     const countProblems = verifyCounts(manifest.rows, restored);

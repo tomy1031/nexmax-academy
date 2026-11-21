@@ -1433,6 +1433,13 @@ STG は `integration` へのマージで、本番は授業の前の自動の反�
 node scripts/move_to_new_supabase.mjs
 ```
 
+**権限の落とし穴（2026-11-21 に実際に起きた）。** バックアップの schema.sql は、表の権限を「足す GRANT」だけで書く。
+新しいプロジェクトは public に表を作った瞬間に anon にも全権限を付けるので、そのまま戻すと、古い DB で anon から
+外していた17の表（学習の記録の一覧・授業ごとの分析など）と関数が anon に開く。件数は合うので毎晩の「戻してみる」では
+見えず、RLS の検査（`anon が events を 読めた`）で止まって分かった。スクリプトは戻したあと、anon・authenticated・
+service_role の権限をいったん外して schema.sql の GRANT / REVOKE を流し直し、**権限の指紋**
+（`PRIVILEGE_FINGERPRINT_SQL`）を古い DB と比べる（古い DB で同じ SQL を流した値を `--expect-privileges` に渡す）。
+
 聞かれるのは、新しいプロジェクトの URL・DB の合言葉・公開の鍵（anon か Publishable）の3つ。
 新しいDBにもうアプリの表があれば**上書きせずに止まる**。戻したあと、件数・台帳・権限・RLS を確かめ、
 全部通ったときだけ鍵を差し替える。開けた平文は一時フォルダにだけ置き、終わると消す。

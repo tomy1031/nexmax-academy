@@ -4,6 +4,8 @@ import { describe, expect, it } from "vitest";
 import {
   anonKeyProblems,
   missingMigrations,
+  PRIVILEGE_FINGERPRINT_SQL,
+  privilegeSyncSql,
   projectRefFrom,
 } from "../scripts/move_to_new_supabase.mjs";
 
@@ -90,5 +92,44 @@ describe("projectRefFrom（貼られた URL から project-ref を取る）", ()
     expect(
       projectRefFrom("https://supabase.com/dashboard/project/ABCDEFGHIJKLMNOPQRST"),
     ).toBeNull();
+  });
+});
+
+describe("privilegeSyncSql（新しい DB の権限を古い DB とそろえる）", () => {
+  const schema = [
+    'CREATE TABLE "public"."events" ("id" bigint);',
+    'ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES TO "anon";',
+    'GRANT ALL ON TABLE "public"."events" TO "authenticated";',
+    'GRANT INSERT ON TABLE "public"."events" TO "anon";',
+    'REVOKE ALL ON FUNCTION "public"."is_admin"() FROM PUBLIC;',
+    'GRANT ALL ON FUNCTION "public"."is_admin"() TO "authenticated";',
+  ].join("\n");
+  const sql = privilegeSyncSql(schema);
+
+  it("先に anon・authenticated・service_role の権限を外し、そのあと schema.sql の GRANT / REVOKE を流す", () => {
+    const revokeAt = sql.indexOf("FROM anon, authenticated, service_role");
+    const replayAt = sql.indexOf('GRANT INSERT ON TABLE "public"."events" TO "anon";');
+    expect(revokeAt).toBeGreaterThan(-1);
+    expect(replayAt).toBeGreaterThan(revokeAt);
+    expect(sql).toContain('REVOKE ALL ON FUNCTION "public"."is_admin"() FROM PUBLIC;');
+  });
+
+  it("PUBLIC の権限と、表を作る文・既定の権限の文は流し直さない", () => {
+    expect(sql).not.toMatch(/FROM anon, authenticated, service_role, PUBLIC/i);
+    expect(sql).not.toContain("CREATE TABLE");
+    expect(sql).not.toContain("ALTER DEFAULT PRIVILEGES");
+  });
+
+  it("拡張機能の持ち物には触らない", () => {
+    expect(sql.match(/deptype = 'e'/g)?.length).toBe(2);
+  });
+
+  it("GRANT が1行も無い schema.sql は受け取らない（権限を全部外したままにしない）", () => {
+    expect(() => privilegeSyncSql('CREATE TABLE "public"."x" ("id" int);')).toThrow();
+  });
+
+  it("指紋の SQL は public の表と public・app の関数を数える", () => {
+    expect(PRIVILEGE_FINGERPRINT_SQL).toContain("n.nspname = 'public'");
+    expect(PRIVILEGE_FINGERPRINT_SQL).toContain("n.nspname in ('public','app')");
   });
 });
