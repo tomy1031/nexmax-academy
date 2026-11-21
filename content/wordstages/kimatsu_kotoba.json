@@ -1,0 +1,97 @@
+{
+  "kind": "wordstage",
+  "id": "kimatsu_kotoba",
+  "title": "期末テスト 対策の ことば",
+  "description": "会社を 知る・報告・連絡・相談で 出て きた ことばから、ITの 仕事で よく 使う 40こを えらびました。",
+  "fieldSequence": [
+    "forest",
+    "sky",
+    "space"
+  ],
+  "questionCount": 40,
+  "passRate": 80,
+  "furigana": [
+    [
+      "期末",
+      "きまつ"
+    ],
+    [
+      "対策",
+      "たいさく"
+    ],
+    [
+      "会社",
+      "かいしゃ"
+    ],
+    [
+      "知",
+      "し"
+    ],
+    [
+      "報告",
+      "ほうこく"
+    ],
+    [
+      "連絡",
+      "れんらく"
+    ],
+    [
+      "相談",
+      "そうだん"
+    ],
+    [
+      "出",
+      "で"
+    ],
+    [
+      "仕事",
+      "しごと"
+    ],
+    [
+      "使",
+      "つか"
+    ]
+  ],
+  "wordIds": [
+    "kakunin",
+    "houkoku",
+    "renraku",
+    "soudan",
+    "kaihatsu",
+    "sagyou",
+    "kinou",
+    "shiyou",
+    "genin",
+    "yotei",
+    "irai",
+    "shuusei",
+    "henkou",
+    "sinchoku",
+    "tantou",
+    "honbankankyou",
+    "kaihatukankyou",
+    "kyouyuu",
+    "hozon",
+    "hyouji",
+    "hassei",
+    "shougai",
+    "taiou",
+    "kigen",
+    "kanryou",
+    "ketsuron",
+    "jijitu",
+    "chousa",
+    "kensaku",
+    "kanri",
+    "settei",
+    "jouhou",
+    "ketsuka",
+    "joushi",
+    "douryou",
+    "youken_matter",
+    "shousai",
+    "fukkyuu",
+    "yuusenjunni",
+    "kenmei"
+  ]
+}

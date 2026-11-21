@@ -56,6 +56,7 @@ export const SCENE_IMAGES: readonly string[] = [
   "/img/scenes/area_ferris_harbour.webp",
   "/img/scenes/area_red_tower_city.webp",
   "/img/scenes/japan_goal.webp",
+  "/img/scenes/area_manabi_island.webp",
   "/img/scenes/map_cambodia.webp",
   "/img/scenes/map_japan.webp",
   "/img/scenes/office_president.webp",

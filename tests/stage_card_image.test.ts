@@ -274,7 +274,9 @@ describe("カードの 絵（実データ）", () => {
       .map((item) => item.id);
     // 報告（リスニング）は 5場面の 表紙が まだ 無い（scripts/images/houkoku_report_covers.json）。
     // 表紙が できたら ここから 外す（2026-09-30 に 承認を 得て 足した）
-    expect(fellBack).toEqual(["houkoku-kiku", "interview"]);
+    // 期末テスト対策（test-taisaku）は 教材が リンク 1つ（静的な まとめページ）で、リンクは 絵を
+    // 持たない ので 土地の 絵（まなびの 島）に 落ちる（2026-11-20 tomy さんの 了承「足して良い」）。
+    expect(fellBack).toEqual(["houkoku-kiku", "test-taisaku", "interview"]);
   });
 
   it("はじまりは まんがの 1コマ目（2026-09-22 に 見本として 指定された 1枚）", async () => {
