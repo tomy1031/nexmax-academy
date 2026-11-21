@@ -1458,6 +1458,7 @@ node scripts/switch_supabase.mjs
 | `node scripts/switch_supabase.mjs` | 保存してあるプロジェクトと、いまの向き先を出す |
 | `node scripts/switch_supabase.mjs save <URL>` | そのプロジェクトの DB の接続文字列と公開の鍵を、**1回だけ**貼って保存する（age で暗号化。`~/.config/nexmax-academy/supabase-profiles/`。開けるのはバックアップと同じ tomy さんの秘密鍵） |
 | `node scripts/switch_supabase.mjs use <ref>` | Environment「Preview」の3つの鍵と見張りの `SUPABASE_URL` を差し替え、STG を作り直す。貼るものは無い |
+| `node scripts/switch_supabase.mjs check [ref]` | ログインと保存が動いているかを**読むだけで**見る（最後のログイン・最後の答え・1時間以内の件数。だれかは出さない） |
 
 - 移すスクリプトは、新しいプロジェクトの値を自動で保存する。古いプロジェクトの値は `save` で1回保存する
   （合言葉が分からなければ、古いプロジェクトの Project Settings → Database → Reset database password。

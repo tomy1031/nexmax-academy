@@ -162,10 +162,14 @@ export function findPsql() {
  * 本番は起こさない（授業前の自動に任せる。急ぐときは tomy さんの「本番まで」で）。
  */
 export function deployStaging(log = console.log) {
-  const run = spawnSync("gh", ["workflow", "run", "deploy.yml", "-f", "target=staging"], {
-    encoding: "utf8",
-    cwd: ROOT,
-  });
+  const run = spawnSync(
+    "gh",
+    ["workflow", "run", "deploy.yml", "--ref", "integration", "-f", "target=staging"],
+    {
+      encoding: "utf8",
+      cwd: ROOT,
+    },
+  );
   if (run.status === 0)
     log("✓ STG の作り直しを始めました（数分。GitHub の Actions →「デプロイ」）");
   else log(`⚠ STG の作り直しを始められませんでした: ${(run.stderr || "").trim()}`);
