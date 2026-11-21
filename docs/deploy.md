@@ -1433,9 +1433,43 @@ STG は `integration` へのマージで、本番は授業の前の自動の反�
 node scripts/move_to_new_supabase.mjs
 ```
 
+**権限の落とし穴（2026-11-21 に実際に起きた）。** バックアップの schema.sql は、表の権限を「足す GRANT」だけで書く。
+新しいプロジェクトは public に表を作った瞬間に anon にも全権限を付けるので、そのまま戻すと、古い DB で anon から
+外していた17の表（学習の記録の一覧・授業ごとの分析など）と関数が anon に開く。件数は合うので毎晩の「戻してみる」では
+見えず、RLS の検査（`anon が events を 読めた`）で止まって分かった。スクリプトは戻したあと、anon・authenticated・
+service_role の権限をいったん外して schema.sql の GRANT / REVOKE を流し直し、**権限の指紋**
+（`PRIVILEGE_FINGERPRINT_SQL`）を古い DB と比べる（古い DB で同じ SQL を流した値を `--expect-privileges` に渡す）。
+
+新しいプロジェクトには、Supabase が最初から置く物が public にあることがある（2026-11-21 は権限2件ぶん）。
+指紋は**バックアップに入っている物だけ**で数え、それ以外は名前を出して比べない。
+
 聞かれるのは、新しいプロジェクトの URL・DB の合言葉・公開の鍵（anon か Publishable）の3つ。
 新しいDBにもうアプリの表があれば**上書きせずに止まる**。戻したあと、件数・台帳・権限・RLS を確かめ、
 全部通ったときだけ鍵を差し替える。開けた平文は一時フォルダにだけ置き、終わると消す。
+
+#### 古いプロジェクトと新しいプロジェクトを行き来する（2026-11-21 tomy さん「相互のDBは簡単に切り替えできるように」）
+
+```bash
+node scripts/switch_supabase.mjs
+```
+
+| コマンド | すること |
+| --- | --- |
+| `node scripts/switch_supabase.mjs` | 保存してあるプロジェクトと、いまの向き先を出す |
+| `node scripts/switch_supabase.mjs save <URL>` | そのプロジェクトの DB の接続文字列と公開の鍵を、**1回だけ**貼って保存する（age で暗号化。`~/.config/nexmax-academy/supabase-profiles/`。開けるのはバックアップと同じ tomy さんの秘密鍵） |
+| `node scripts/switch_supabase.mjs use <ref>` | Environment「Preview」の3つの鍵と見張りの `SUPABASE_URL` を差し替え、STG を作り直す。貼るものは無い |
+| `node scripts/switch_supabase.mjs check [ref]` | ログインと保存が動いているかを**読むだけで**見る（最後のログイン・最後の答え・1時間以内の件数。だれかは出さない） |
+
+- 移すスクリプトは、新しいプロジェクトの値を自動で保存する。古いプロジェクトの値は `save` で1回保存する
+  （合言葉が分からなければ、古いプロジェクトの Project Settings → Database → Reset database password。
+  切り替えたあとなら、ほかに古い合言葉を使っている所は無い）
+- 本番が切り替わるのは次の本番デプロイから（罠2）
+- **データは写さない。** 切り替えたあとに書かれた記録は、そのとき使っている DB にしか残らない。
+  戻す前に、どちらの DB に記録が増えたかを確かめる
+- AI が DB を見る道具（`.mcp.json` の Supabase）は、いま使っているプロジェクトを向ける（2026-11-21 に新しい方へ変えた。
+  切り替えたら一緒に変える。新しいアカウントの Supabase に初めてつなぐときは、tomy さんのログインが要る）
+- 古いプロジェクトは一時停止しない（停止すると戻すのに時間がかかり、90日を過ぎると戻せない）。
+  アプリが向いていなければ書き込みは起きない
 
 ## 1. 環境の位置づけ
 

@@ -15,6 +15,8 @@
  *   --skip-restore  戻すのを飛ばす（もう戻してあり、確かめと切り替えだけやり直すとき）
  *   --no-switch     戻して確かめるところまで。GitHub の鍵は変えない
  *   --key <path>    バックアップを開ける秘密鍵（既定 ~/.config/nexmax-academy/db-backup-age-key.txt）
+ *   --expect-privileges "<件数> <md5>"
+ *                   古い DB で PRIVILEGE_FINGERPRINT_SQL を流した値。新しい DB の権限の指紋と違えば止める
  *
  * 流れ:
  *   1. バックアップを開ける。平文は一時フォルダ（自分だけ読める）に置き、最後に必ず消す
@@ -25,10 +27,11 @@
  *   6. 戻す（Supabase 公式「Backup and restore using the CLI」と同じ並び・1つのトランザクション。
  *      docs/backup-recovery.md §5.3）
  *   7. Storage の置き場（assets）と権限を作る（ファイルはバックアップに入っていない）
- *   8. 確かめる: 表ごとの件数・移行の台帳・既定の権限・RLS（check_rls.mjs --strict）
- *   9. 全部通ったら公開の鍵を聞き、GitHub の Environment「Preview」の3つ
+ *   8. 権限を古い DB とそろえる（privilegeSyncSql）。確かめる: 権限の指紋・表ごとの件数・移行の台帳・RLS
+ *   9. 全部通ったら公開の鍵を聞き、このプロジェクトの値を暗号化して保存し（switch_supabase.mjs で
+ *      あとから行き来できるように）、GitHub の Environment「Preview」の3つ
  *      （SUPABASE_DB_URL・NEXT_PUBLIC_SUPABASE_URL・NEXT_PUBLIC_SUPABASE_ANON_KEY）と、
- *      見張り（academy-watch）の SUPABASE_URL を差し替える
+ *      見張り（academy-watch）の SUPABASE_URL を差し替えて、STG を作り直す
  *
  * 合言葉と鍵は画面にもファイルにも出さない。psql へは環境変数 PGPASSWORD で、
  * gh・wrangler へは標準入力で渡す（register_db_secret.mjs と同じ扱い）。
@@ -36,16 +39,21 @@
 
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { homedir, tmpdir } from "node:os";
 import { delimiter, dirname, join } from "node:path";
-import { createInterface } from "node:readline";
 import { fileURLToPath } from "node:url";
+import {
+  applyProfile,
+  askHidden,
+  askVisible,
+  deployStaging,
+  findPsql,
+  saveProfile,
+} from "./lib/supabase_profiles.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const BUCKET_SQL = join(ROOT, "supabase", "migrations", "20260805001747_studio_assets_bucket.sql");
-const ENVIRONMENT = "Preview";
-const WATCH_WORKER = "academy-watch";
 const BACKUP_FILES = ["roles.sql", "schema.sql", "data.sql", "extras.sql"];
 
 /**
@@ -117,6 +125,105 @@ export function projectRefFrom(text) {
   return m ? m[1] : null;
 }
 
+/**
+ * 権限を、古い DB とまったく同じにそろえる SQL（2026-11-21 に実際にずれた）。
+ *
+ * pg_dump の schema.sql は、表の権限を「作った直後は持ち主だけ」という前提で、**足す GRANT だけ**を書く。
+ * ところが Supabase のプロジェクトは、public に作った表・関数・連番に anon・authenticated・service_role の
+ * 全権限を**作った瞬間に付ける**（既定の権限。schema.sql の末尾の ALTER DEFAULT PRIVILEGES と同じもの）。
+ * そのまま戻すと、古い DB で anon から外していた17の表と、外していた関数が、新しい DB では anon に開く。
+ * 件数は合うので、毎晩の「戻してみる」では見えない。RLS の検査（events を anon が読めた）で見つかった。
+ *
+ * だから public の表・関数から、この3つの役の権限をいったん全部外し、schema.sql の GRANT / REVOKE を
+ * もう一度流す。PUBLIC（だれでも）の権限は触らない——関数の PUBLIC の実行権は、戻したときに
+ * schema.sql の REVOKE がもう正しく外している。拡張機能の持ち物は触らない。
+ *
+ * @param {string} schemaSql バックアップの schema.sql の中身
+ * @returns {string}
+ */
+export function privilegeSyncSql(schemaSql) {
+  const replay = String(schemaSql)
+    .split("\n")
+    .filter((line) => /^(GRANT|REVOKE) .*;\s*$/.test(line));
+  if (replay.length === 0) throw new Error("schema.sql に GRANT / REVOKE の行がありません");
+  return [
+    "SET search_path = '';",
+    "DO $$",
+    "DECLARE r record;",
+    "BEGIN",
+    "  FOR r IN",
+    "    SELECT c.oid::regclass::text AS obj, c.relkind",
+    "    FROM pg_catalog.pg_class c JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace",
+    "    WHERE n.nspname = 'public' AND c.relkind IN ('r', 'v', 'm', 'S', 'p', 'f')",
+    "      AND NOT EXISTS (SELECT 1 FROM pg_catalog.pg_depend d",
+    "        WHERE d.classid = 'pg_catalog.pg_class'::regclass AND d.objid = c.oid AND d.deptype = 'e')",
+    "  LOOP",
+    "    EXECUTE format('REVOKE ALL ON %s %s FROM anon, authenticated, service_role',",
+    "      CASE WHEN r.relkind = 'S' THEN 'SEQUENCE' ELSE 'TABLE' END, r.obj);",
+    "  END LOOP;",
+    "  FOR r IN",
+    "    SELECT p.oid::regprocedure::text AS fn, p.prokind",
+    "    FROM pg_catalog.pg_proc p JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace",
+    "    WHERE n.nspname = 'public' AND p.prokind IN ('f', 'p')",
+    "      AND NOT EXISTS (SELECT 1 FROM pg_catalog.pg_depend d",
+    "        WHERE d.classid = 'pg_catalog.pg_proc'::regclass AND d.objid = p.oid AND d.deptype = 'e')",
+    "  LOOP",
+    "    EXECUTE format('REVOKE ALL ON %s %s FROM anon, authenticated, service_role',",
+    "      CASE WHEN r.prokind = 'p' THEN 'PROCEDURE' ELSE 'FUNCTION' END, r.fn);",
+    "  END LOOP;",
+    "END $$;",
+    ...replay,
+    "",
+  ].join("\n");
+}
+
+/**
+ * 権限を1件ずつ開いて並べる SQL。出力は「種類<TAB>スキーマ<TAB>名前<TAB>1件の権限」の行。
+ * public の表・ビュー・連番と、public・app の関数が対象。
+ */
+export const PRIVILEGE_ROWS_SQL = `select 'r', n.nspname, c.relname,
+  'r:' || c.relname || ':' || case when a.grantee = 0 then 'PUBLIC' else a.grantee::regrole::text end || ':' || a.privilege_type
+from pg_class c join pg_namespace n on n.oid = c.relnamespace,
+  aclexplode(coalesce(c.relacl, acldefault(case when c.relkind = 'S' then 's'::"char" else 'r'::"char" end, c.relowner))) a
+where n.nspname = 'public' and c.relkind in ('r','v','m','S','p')
+union all
+select 'f', n.nspname, p.proname,
+  'f:' || n.nspname || '.' || p.proname || '(' || pg_get_function_identity_arguments(p.oid) || '):' || case when a.grantee = 0 then 'PUBLIC' else a.grantee::regrole::text end || ':' || a.privilege_type
+from pg_proc p join pg_namespace n on n.oid = p.pronamespace,
+  aclexplode(coalesce(p.proacl, acldefault('f'::"char", p.proowner))) a
+where n.nspname in ('public','app')`;
+
+/**
+ * 権限の指紋。**バックアップに入っている物だけ**を数え、「件数 md5」にする。
+ * 古い DB では、同じ並びを SQL で作った値（`count(*) || ' ' || md5(string_agg(x, ',' order by x collate "C"))`）と
+ * 一致する（古い DB の public・app の物は全部 schema.sql に入っているため）。
+ *
+ * 新しいプロジェクトには、Supabase が最初から置く物が public にあることがある（2026-11-21 は権限2件ぶん）。
+ * それは比べる相手が無いので数えず、名前だけ返して画面に出す。
+ *
+ * @param {string} rowsText PRIVILEGE_ROWS_SQL の出力（psql -A -t -F TAB）
+ * @param {string} schemaSql バックアップの schema.sql
+ * @returns {{ fingerprint: string, extras: string[] }}
+ */
+export function privilegeFingerprint(rowsText, schemaSql) {
+  const entries = [];
+  const extras = new Set();
+  for (const line of String(rowsText).split("\n")) {
+    if (!line.trim()) continue;
+    const [kind, nsp, name, entry] = line.split("\t");
+    const own =
+      kind === "r"
+        ? schemaSql.includes(`"${nsp}"."${name}"`)
+        : schemaSql.includes(`"${nsp}"."${name}"(`);
+    if (own) entries.push(entry);
+    else extras.add(`${nsp}.${name}${kind === "f" ? "()" : ""}`);
+  }
+  // 並べ方は collate "C"（バイトの順）と同じにする。ここに出る文字は ASCII だけ。
+  entries.sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+  const md5 = createHash("md5").update(entries.join(",")).digest("hex");
+  return { fingerprint: `${entries.length} ${md5}`, extras: [...extras].sort() };
+}
+
 /* ───────────── ここから下は実行するときだけ ───────────── */
 
 /** 暗号化されたバックアップを置いておく場所（docs/backup-recovery.md §5.1 と同じ）。 */
@@ -131,17 +238,6 @@ function latestBackup(folder) {
   return names.length > 0 ? join(folder, names[names.length - 1]) : null;
 }
 
-/** 見える形で1行読む（秘密ではない値だけ）。 */
-function askVisible(prompt) {
-  return new Promise((resolve) => {
-    const rl = createInterface({ input: process.stdin, output: process.stderr });
-    rl.question(prompt, (value) => {
-      rl.close();
-      resolve(value.trim());
-    });
-  });
-}
-
 function fail(message) {
   console.error(`\n✗ ${message}`);
   process.exitCode = 1;
@@ -152,50 +248,6 @@ function sha256(path) {
   return createHash("sha256").update(readFileSync(path)).digest("hex");
 }
 
-/** psql を探す（Homebrew の libpq は PATH に入らない）。 */
-function findPsql() {
-  const candidates = [
-    ...String(process.env.PATH ?? "")
-      .split(delimiter)
-      .map((dir) => join(dir, "psql")),
-    "/opt/homebrew/opt/libpq/bin/psql",
-    "/opt/homebrew/opt/postgresql@17/bin/psql",
-    "/usr/local/opt/libpq/bin/psql",
-  ];
-  return candidates.find((path) => existsSync(path)) ?? null;
-}
-
-/**
- * 伏せ字で1行読む（register_db_secret.mjs と同じしかけ）。
- * 空のときは終わらずに聞き直す——空の Enter で終わると、次に貼った値がシェルに
- * コマンドとして入り、画面と履歴に出てしまう（2026-11-21 に実際に起きた）。
- */
-async function askHidden(prompt) {
-  for (;;) {
-    const answer = await new Promise((resolve) => {
-      const terminal = Boolean(process.stdin.isTTY);
-      const rl = createInterface({ input: process.stdin, output: process.stderr, terminal });
-      if (terminal) {
-        let muted = false;
-        rl._writeToOutput = (chunk) => {
-          if (!muted) process.stderr.write(chunk);
-        };
-        process.stderr.write(prompt);
-        muted = true;
-      } else {
-        process.stderr.write(prompt);
-      }
-      rl.question("", (value) => {
-        rl.close();
-        process.stderr.write("\n");
-        resolve(value.trim());
-      });
-    });
-    if (answer) return answer;
-    console.error("  空でした。もう一度貼ってください（やめるときは Ctrl+C）。");
-  }
-}
-
 async function main() {
   const args = process.argv.slice(2);
   const flag = (name) => args.includes(name);
@@ -203,11 +255,13 @@ async function main() {
     const i = args.indexOf(name);
     return i >= 0 ? args[i + 1] : undefined;
   };
+  const withValue = new Set(["--key", "--expect-privileges"]);
   const positional = args.filter(
-    (a, i) => !a.startsWith("--") && !(i > 0 && args[i - 1] === "--key"),
+    (a, i) => !a.startsWith("--") && !(i > 0 && withValue.has(args[i - 1])),
   );
   const skipRestore = flag("--skip-restore");
   const noSwitch = flag("--no-switch");
+  const expectPrivileges = option("--expect-privileges")?.trim();
   const keyPath =
     option("--key") ?? join(homedir(), ".config", "nexmax-academy", "db-backup-age-key.txt");
 
@@ -335,9 +389,34 @@ async function main() {
       console.log("✓ Storage の置き場（assets）と権限を作りました");
     }
 
+    /* 権限を古い DB とそろえる（privilegeSyncSql の理由。何度流しても同じ結果になる） */
+    const syncFile = join(work, "privileges.sql");
+    writeFileSync(syncFile, privilegeSyncSql(readFileSync(join(dir, "schema.sql"), "utf8")), {
+      mode: 0o600,
+    });
+    const sync = run(["-v", "ON_ERROR_STOP=1", "--single-transaction", "-q", "-f", syncFile]);
+    if (sync.status !== 0) fail(`権限をそろえられませんでした:\n  ${redact(sync.stderr)}`);
+    console.log("✓ 表と関数の権限を、古い DB と同じにそろえました");
+
     /* 8. 確かめる */
     console.log("\n■ 4. 確かめます");
     const problems = [];
+    const { fingerprint, extras } = privilegeFingerprint(
+      query(PRIVILEGE_ROWS_SQL),
+      readFileSync(join(dir, "schema.sql"), "utf8"),
+    );
+    if (extras.length > 0)
+      console.log(
+        `  （バックアップに無い物は比べていません: ${extras.join(", ")}。Supabase が新しいプロジェクトに最初から置く物）`,
+      );
+    if (expectPrivileges && fingerprint !== expectPrivileges)
+      problems.push(
+        `権限の指紋が古い DB と違います（新しい DB ${fingerprint}・古い DB ${expectPrivileges}）`,
+      );
+    else
+      console.log(
+        `✓ 権限の指紋: ${fingerprint}${expectPrivileges ? "（古い DB と一致）" : "（古い DB と比べていません）"}`,
+      );
     const { countSql, parseCountRows, verifyCounts } = await import("./db_backup.mjs");
     const restored = parseCountRows(query(countSql(manifest.rows)));
     const countProblems = verifyCounts(manifest.rows, restored);
@@ -415,34 +494,21 @@ async function main() {
       console.error(`  ${keyProblems.join("・")}。もう一度どうぞ（やめるときは Ctrl+C）。`);
     }
 
-    const secrets = [
-      ["SUPABASE_DB_URL", poolerUrl({ ref, host, password: encodeURIComponent(password) })],
-      ["NEXT_PUBLIC_SUPABASE_URL", url],
-      ["NEXT_PUBLIC_SUPABASE_ANON_KEY", anonKey],
-    ];
-    for (const [name, value] of secrets) {
-      const set = spawnSync("gh", ["secret", "set", name, "--env", ENVIRONMENT], {
-        input: value,
-        encoding: "utf8",
-        cwd: ROOT,
-      });
-      if (set.status !== 0) fail(`${name} を登録できませんでした: ${(set.stderr || "").trim()}`);
-      console.log(`✓ GitHub の Environment「${ENVIRONMENT}」の ${name} を差し替えました`);
-    }
+    const profile = {
+      ref,
+      dbUrl: poolerUrl({ ref, host, password: encodeURIComponent(password) }),
+      anonKey,
+      label: "新しいアカウント（2026-11-21 に移した先）",
+    };
+    const saved = saveProfile(profile);
+    console.log(`✓ 切り替え用に、このプロジェクトの値を暗号化して保存しました（${saved}）`);
+    applyProfile(profile);
+    deployStaging();
 
-    const watch = spawnSync(
-      "npx",
-      ["--no-install", "wrangler", "secret", "put", "SUPABASE_URL", "--name", WATCH_WORKER],
-      { input: url, encoding: "utf8", cwd: ROOT },
+    console.log(
+      "\n✓ 終わりました。STG は今からの作り直しで、本番は次の本番デプロイ（授業前の自動）から新しいプロジェクトを使います。" +
+        "\n  古いプロジェクトへ戻すときは node scripts/switch_supabase.mjs（古い方の値を1回 save してから use）。",
     );
-    if (watch.status === 0)
-      console.log(`✓ 見張り（${WATCH_WORKER}）の SUPABASE_URL を差し替えました`);
-    else
-      console.log(
-        `⚠ 見張りの SUPABASE_URL は差し替えられませんでした（wrangler のログイン切れかも）。アプリには影響しません。`,
-      );
-
-    console.log("\n✓ 終わりました。STG と本番は、次のデプロイから新しいプロジェクトを使います。");
   } catch (error) {
     if (error?.message !== "stop") throw error;
   } finally {
