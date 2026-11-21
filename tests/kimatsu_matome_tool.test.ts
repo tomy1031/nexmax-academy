@@ -142,6 +142,12 @@ describe("期末テスト対策の まとめページ：文言", () => {
     }
   });
 
+  it("おわりの しるしは ページが 出す（owns-done を 名乗り、ぜんぶ クリアで link-done）", () => {
+    const html = readFileSync(join(DIR, "kimatsu_matome.html"), "utf8");
+    expect(html).toContain("nexmax:link-owns-done");
+    expect(html).toContain("nexmax:link-done");
+  });
+
   it("画面の 枠（HTML）に 学生が 読む 漢字を 書いて いない（文言は データだけ）", () => {
     const html = readFileSync(join(DIR, "kimatsu_matome.html"), "utf8");
     const body = html.slice(html.indexOf("<body>"), html.indexOf("<script src="));
@@ -234,7 +240,8 @@ describe("期末テスト対策の ステージ", () => {
   };
 
   it("ステージの 教材は この ページ、単語テストは 40語", () => {
-    expect(stage.contents).toEqual([{ ref: "kimatsu_matome", type: "link" }]);
+    // 関門に する：4つ ぜんぶ クリアした ときだけ ステージが おわる（関門で ないと、開いた 瞬間に「ステージ クリア」が 出た）
+    expect(stage.contents).toEqual([{ ref: "kimatsu_matome", type: "link", gates: true }]);
     expect(link.url).toBe("/tools/hourensou/kimatsu_matome.html");
     expect(link.id).toBe(DATA.id);
     expect(stage.wordStageIds).toEqual(["kimatsu_kotoba"]);

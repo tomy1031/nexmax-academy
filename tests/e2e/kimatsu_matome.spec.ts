@@ -7,7 +7,9 @@ import { shot } from "./helpers";
  * 見張るのは 3つ:
  *  1. ステージの リンクから 開くと、4つの カートリッジ（会社を 知る・報告・連絡・相談）が 並ぶ
  *  2. カートリッジを 開くと メモの 絵が 読めて、画面に ふりがなの ない 漢字が 無い（必ず守るルール2）
- *  3. 4つ ぜんぶ クリアすると、アプリ側が「✅ おわりました」に なる（iframe → 親への 合図）
+ *  3. 4つ ぜんぶ クリアすると、アプリ側が「✅ おわりました」に なる（iframe → 親への 合図）。
+ *     開いた だけでは おわらない（ページが 関門・owns-done を 名乗る。2026-11-20 の CI で、
+ *     関門で ない リンク 1つの ステージは 開いた 瞬間に「ステージ クリア」が 出て 画面を ふさいだ）
  *
  * 文言・もんだいの 形は `tests/kimatsu_matome_tool.test.ts` が 見る。
  */
@@ -57,6 +59,9 @@ async function bareKanji(frame: Frame): Promise<string[]> {
 
 test("期末テスト対策: 4つの カートリッジ・メモの 絵・ふりがな", async ({ page }) => {
   const frame = await openTool(page);
+  // 開いた だけでは おわらない：手で 押す「おわりました」は 引っこみ、ステージ クリアも 出ない
+  await expect(page.getByRole("button", { name: "おわりました", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("dialog", { name: "ステージ クリア" })).toHaveCount(0);
   expect(await bareKanji(frame)).toEqual([]);
   await shot(page, "kimatsu-01-home");
 

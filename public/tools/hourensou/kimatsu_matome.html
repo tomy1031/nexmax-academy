@@ -430,6 +430,15 @@ function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.flo
 /* ---------- 埋めて いる アプリへ「おわった」を 1回だけ 伝える（4つ ぜんぶ クリア） ---------- */
 let doneSent=false;
 function allCleared(){ return CARTS.every(c=>cp(c.id).cleared); }
+/**
+ * アプリに「おわりの しるしは こちらで 出す」と 名乗る（アプリ側の 手で 押す「おわりました」が 引っこむ）。
+ * この ページは ステージの 関門（contents[].gates: true）なので、4つ ぜんぶ クリアした ときだけ おわる。
+ * 名乗らないと、開いた だけで 押せる ボタンで ステージが おわって しまう。
+ */
+function claimDone(){
+  try{ if(window.parent&&window.parent!==window){
+    window.parent.postMessage({type:'nexmax:link-owns-done', id:D.id}, window.location.origin); } }catch(e){ /* 1枚で 開いた ときは 送り先が 無い */ }
+}
 function sendDoneIfAll(){
   if(doneSent||!allCleared()) return;
   doneSent=true;
@@ -981,6 +990,7 @@ document.getElementById('soundBtn').addEventListener('click',function(){ muted=!
   this.innerHTML=R(muted?U.soundOff:U.soundOn); if(!muted)sClick(); });
 document.addEventListener('click',()=>{ac();},{once:true});
 
+claimDone();
 paintStatic();
 renderHome();
 </script>

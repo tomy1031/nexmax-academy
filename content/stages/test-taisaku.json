@@ -14,7 +14,8 @@
   "contents": [
     {
       "ref": "kimatsu_matome",
-      "type": "link"
+      "type": "link",
+      "gates": true
     }
   ],
   "wordStageIds": [
