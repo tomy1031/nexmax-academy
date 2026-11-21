@@ -145,6 +145,7 @@ export const MEDIA_FILES: Readonly<Record<string, readonly [size: number, etag: 
   "/audio/listening/houkoku_shougai_listening/13.wav": [70124, "8eb9602e"],
   "/audio/listening/houkoku_shougai_listening/sentences.json": [8297, "3121a96b"],
   "/audio/listening/kaisha_shugyo_keitai_listening.wav": [3045176, "e25af32f"],
+  "/audio/listening/youkenweb_call.wav": [6050000, "ea950ad2"],
   "/audio/meetings/asakai_kantan/s0-ack-0bcb7ef9.wav": [314446, "d4d41710"],
   "/audio/meetings/asakai_kantan/s0-closing-0-4ace68dd.wav": [414284, "8846d28f"],
   "/audio/meetings/asakai_kantan/s0-kinou-ex-d5f5b9dc.wav": [403724, "41422303"],
