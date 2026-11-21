@@ -16,7 +16,7 @@ import {
   listStages,
   listWordStages,
 } from "@/lib/content";
-import { fetchDbContents } from "@/lib/content-db";
+import { fetchDbContents, withDbContentScope } from "@/lib/content-db";
 import {
   buildContentHealth,
   HEALTH_CONTENT_KINDS,
@@ -54,10 +54,30 @@ const LIST_BY_KIND = {
  * 返すのは **idと 数だけ**。教材の 本文も 学習者の データも 出さない
  *（id は public リポジトリに 元から ある 事実）。だから ログインの 内側に 置かない——
  * 内側に 置くと、いちばん 見たい とき（本番で 何かが 消えた とき）に 見られない。
+ *
+ * ## DB を 引くのは 1回（2026-11-21）
+ * 見張り（workers/watch）が 定期的に 叩く。一覧を 種類ぶん 呼ぶが、API ルートでは React の
+ * `cache()` が 効かず、**1回で studio_contents を 約21回 丸ごと 引いて いた**（1日 約560MB）。
+ * Supabase の 無料枠（月5GB）を 超えて、全員が ログインできなく なった。
+ * いまは `withDbContentScope` で 1回に 畳み、引いた 回数・行数・大きさを 答えの `db` に 出す
+ * （本番で 1回に なって いるかを 外から 確かめられる。見張りは この 大きさで 通信量を 見積もる）。
  */
 export const dynamic = "force-dynamic";
 
 export async function GET() {
+  return withDbContentScope(async (stats) => {
+    const body = await checkContentHealth();
+    return NextResponse.json(
+      {
+        ...body,
+        db: { fetches: stats.fetches, rows: stats.rows, bytes: stats.bytes },
+      },
+      { headers: { "cache-control": "no-store" } },
+    );
+  });
+}
+
+async function checkContentHealth() {
   const [liveStages, liveWordStages, db, ...lists] = await Promise.all([
     listStages(),
     listWordStages(),
@@ -91,8 +111,5 @@ export async function GET() {
     liveContentIds,
   });
 
-  return NextResponse.json(
-    { sha: buildInfo.sha, ...health },
-    { headers: { "cache-control": "no-store" } },
-  );
+  return { sha: buildInfo.sha, ...health };
 }

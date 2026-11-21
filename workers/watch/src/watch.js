@@ -57,6 +57,52 @@ export const KICKER_RECHECK_MS = 60 * 60_000;
 /** 1回 断られた あと、続いたかを 見に 行く までの 間（次の 10分ごとの 回に 当たる）。 */
 export const KICKER_CONFIRM_MS = 5 * 60_000;
 
+/**
+ * 教材の 健康しらべ（`/api/health/content`）を 見る 間（2026-11-21）。
+ *
+ * 健康しらべは 1回ごとに Supabase から 教材の 行（studio_contents）を 丸ごと 引く
+ * （2026-11 時点で 約190KB）。10分ごとに 叩いて いた うえ、1回で 約21回 引いて いたので
+ * 1日 約560MB に なり、Supabase の 無料枠（月 5GB）を 超えて 全員が ログインできなく なった。
+ * アプリ側は 1回に 畳んだ（src/lib/content-db.ts の withDbContentScope）。ここでは 回数を 減らす:
+ *   - 授業の 日（火・水・金）の 16:00〜19:59 ICT … 毎回（授業前の 自動反映 16:12〜 と 授業中）
+ *   - それ以外 … 1時間ごと
+ *   - 異常を 見た あと（警告・失敗が 続いて いるか 見る あいだ）… 毎回
+ * 3つの ページ（タイトル・門番）は これまでどおり 毎回 見る（DB を 通らない）。
+ * 見積もり（tests/watch_egress_budget.test.ts）: 授業の 日 56回・ほかの 日 24回 ≒ 月 約200MB。
+ */
+export const HEALTH_EVERY_MS = 55 * 60_000;
+export const CLASS_DAYS_ICT = [2, 3, 5]; // 火・水・金（getUTCDay の 番号。0＝日曜）
+export const CLASS_WINDOW_HOURS_ICT = [16, 20]; // 16:00 〜 19:59
+
+/**
+ * Supabase の 通信量（egress）の 見張り（2026-11-21）。
+ *
+ * Supabase の 管理用の API（Management API）で、この 24時間の 要求の 数を ログから 数え、
+ * 1日の 通信量を 見積もる。ログには 応答の 大きさが 残らない（Supabase の 資料）ので、
+ * 「教材の 行を 丸ごと 引いた 数 × 健康しらべが 測った 1回の 大きさ ＋ ほかの 要求 × 2KB」で 数える。
+ * 2026-11-19 の 実績で 試すと 3063回 × 約190KB ≒ 約570MB（その日の 実際の 犯人と 一致）。
+ *
+ * 1日 100MB（月 3GB の 速さ＝無料枠の 6割）を 超えたら 知らせる。1日 1回（朝 9時を 過ぎた
+ * 最初の 回）、知らせた あとは 1時間ごとに 見て、下がったら「直りました」。
+ * 鍵（SUPABASE_ACCESS_TOKEN）が 無ければ 見ない。
+ */
+export const EGRESS_DAILY_LIMIT_BYTES = 100 * 1024 * 1024;
+export const EGRESS_RECHECK_MS = 60 * 60_000;
+export const EGRESS_OTHER_REQUEST_BYTES = 2 * 1024;
+/** 健康しらべが まだ 大きさを 答えて いない ときの 仮の 大きさ（2026-11-21 の 公開分 約190KB）。 */
+export const EGRESS_DEFAULT_CONTENTS_BYTES = 200 * 1024;
+export const SUPABASE_FREE_EGRESS_BYTES = 5 * 1024 * 1024 * 1024;
+/**
+ * 24時間の 要求を 数える SQL（Management API の logs.all。MCP の query_logs と 同じ ClickHouse の 書き方）。
+ * 2xx だけ 数える（402 などの 断りは 小さい）。
+ */
+export const EGRESS_SQL = [
+  "select",
+  "countIf(log_attributes['request.path'] = '/rest/v1/studio_contents' and log_attributes['request.method'] = 'GET') as contents,",
+  "countIf(not (log_attributes['request.path'] = '/rest/v1/studio_contents' and log_attributes['request.method'] = 'GET')) as other",
+  "from logs where source = 'edge_logs' and startsWith(log_attributes['response.status_code'], '2')",
+].join(" ");
+
 /** 応答が 正常か を 見分ける。正常なら null、だめなら 短い 印。 */
 export function classifyResponse(probe, status, bodyText = "") {
   if (probe.ok.includes(status)) return null;
@@ -204,6 +250,103 @@ export function kickerDue(last, isOpen, now) {
   return ictDay(now) !== ictDay(last.at) && ictHour(now) >= KICKER_CHECK_HOUR_ICT;
 }
 
+/** 授業の 日（火・水・金）の 16:00〜19:59 ICT か。授業前の 自動反映と 授業中。 */
+export function isClassWindow(now) {
+  const ict = new Date(now + 7 * 60 * 60_000);
+  const hour = ict.getUTCHours();
+  return (
+    CLASS_DAYS_ICT.includes(ict.getUTCDay()) &&
+    hour >= CLASS_WINDOW_HOURS_ICT[0] &&
+    hour < CLASS_WINDOW_HOURS_ICT[1]
+  );
+}
+
+/**
+ * この 回に 教材の 健康しらべを 見に 行くか（Supabase の 通信量を 食うので 間を あける）。
+ * prev は 前の 状態（healthAt・pending・open・recentFail）。
+ */
+export function healthDue(prev, now) {
+  if (typeof prev?.healthAt !== "number") return true;
+  if (isClassWindow(now)) return true;
+  // 異常を 見た あとは 毎回（続いたかを 10分で 確かめ、直ったら 1時間で「直りました」）
+  if (prev?.pending?.health || prev?.pending?.["health-db"]) return true;
+  if (prev?.open?.content || prev?.open?.["page:health"] || prev?.open?.["health-db"]) return true;
+  const lastFail = prev?.recentFail?.health;
+  if (typeof lastFail === "number" && now - lastFail <= CARRY_MS) return true;
+  return now - prev.healthAt >= HEALTH_EVERY_MS;
+}
+
+/** この 回に 通信量を 見積もるか。正常なら 1日 1回、知らせた あと・測れなかった あとは 1時間ごと。 */
+export function egressDue(last, isOpen, now) {
+  if (typeof last?.at !== "number") return true;
+  const since = now - last.at;
+  if (isOpen || last.failed) return since >= EGRESS_RECHECK_MS;
+  return ictDay(now) !== ictDay(last.at) && ictHour(now) >= KICKER_CHECK_HOUR_ICT;
+}
+
+/** `https://<ref>.supabase.co` から ref を 取る（ref は リポジトリに 書かない。秘密の URL から 読む）。 */
+export function projectRefOf(supabaseUrl) {
+  const m = /^https:\/\/([a-z0-9]{10,40})\.supabase\.co\/?$/i.exec(
+    String(supabaseUrl ?? "").trim(),
+  );
+  return m ? m[1] : null;
+}
+
+/**
+ * この 24時間の Supabase の 要求を 数える（Management API）。鍵か URL が 無ければ 見ない。
+ * 返すのは { contents, other }（数）か { failed }。
+ */
+export async function readEgress(env, fetchImpl, now) {
+  const ref = projectRefOf(env.SUPABASE_URL);
+  if (!env.SUPABASE_ACCESS_TOKEN || !ref) return { skipped: true };
+  const params = new URLSearchParams({
+    sql: EGRESS_SQL,
+    iso_timestamp_start: new Date(now - 24 * 60 * 60_000).toISOString(),
+    iso_timestamp_end: new Date(now).toISOString(),
+  });
+  try {
+    const res = await fetchWithTimeout(
+      fetchImpl,
+      `https://api.supabase.com/v1/projects/${ref}/analytics/endpoints/logs.all?${params}`,
+      {
+        headers: {
+          Authorization: `Bearer ${env.SUPABASE_ACCESS_TOKEN}`,
+          "User-Agent": "nexmax-watch",
+        },
+      },
+    );
+    if (!res.ok) return { failed: `HTTP ${res.status}` };
+    let data;
+    try {
+      data = await res.json();
+    } catch {
+      return { failed: "bad-json" };
+    }
+    const row = Array.isArray(data?.result) ? data.result[0] : null;
+    const contents = Number(row?.contents);
+    const other = Number(row?.other);
+    if (!Number.isFinite(contents) || !Number.isFinite(other)) return { failed: "bad-json" };
+    return { contents, other };
+  } catch (error) {
+    return { failed: error && error.name === "AbortError" ? "timeout" : "network" };
+  }
+}
+
+/** 数と 1回の 大きさから 1日の 通信量（バイト）を 見積もる。 */
+export function estimateEgressBytes(counts, contentsBytes) {
+  const each =
+    Number.isFinite(contentsBytes) && contentsBytes > 0
+      ? contentsBytes
+      : EGRESS_DEFAULT_CONTENTS_BYTES;
+  return counts.contents * each + counts.other * EGRESS_OTHER_REQUEST_BYTES;
+}
+
+/** バイトを MB・GB の 短い 文に。 */
+export function formatBytes(bytes) {
+  const mb = bytes / (1024 * 1024);
+  return mb >= 1024 ? `${(mb / 1024).toFixed(1)}GB` : `${Math.round(mb)}MB`;
+}
+
 /**
  * 起こし役の 状態ページの `canDispatch` を 読む。ok が false なら、授業前に 時計が 起きても
  * GitHub に 断られる。status は GitHub の 答え（401・403・404。鍵が 無ければ null）。
@@ -278,18 +421,27 @@ export function safePath(path) {
  *   suspect   … まだ 1回だけ。新しくは 知らせないが、開いて いる 異常は 閉じない
  *   hold      … 測れなかった（健康しらべ・DB が 落ちた）。前の 回の 異常を そのまま 残す
  *               ——測れない ことを「直った」と 取り違えない ため
- *   keep      … この 回は 見て いない（起こし役の 鍵は 1日 1回だけ 見る）。開いて いる 異常を
- *               何も 変えずに 残す——見て いない 回を 正常と 数えると、1時間後に うその「直りました」が 出る
+ *   keep      … この 回は 見て いない（起こし役の 鍵は 1日 1回、健康しらべは ふだん 1時間ごと、
+ *               通信量は 1日 1回だけ 見る）。開いて いる 異常を 何も 変えずに 残す——
+ *               見て いない 回を 正常と 数えると、1時間後に うその「直りました」が 出る
  * 返す recentFail・pending は 次の 回に 引き継ぐ もの。
  *
  * @param {any} prev
  * @param {any[]} probeResults
  * @param {any} clientErrors
  * @param {number} now
- * @param {{ mutes?: string[], kicker?: any }} [opts]
+ * @param {{ mutes?: string[], kicker?: any, egress?: any, contentsBytes?: number }} [opts]
  *   kicker … readKicker の 結果。見て いない 回は 無し か { skipped: true }
+ *   egress … readEgress の 結果。見て いない 回は 無し か { skipped: true }
+ *   contentsBytes … 教材の 行を 丸ごと 引いた 1回の 大きさ（健康しらべの db.bytes）
  */
-export function judge(prev, probeResults, clientErrors, now, { mutes = [], kicker } = {}) {
+export function judge(
+  prev,
+  probeResults,
+  clientErrors,
+  now,
+  { mutes = [], kicker, egress, contentsBytes } = {},
+) {
   const findings = [];
   const recentFail = {};
   const pending = {};
@@ -299,6 +451,19 @@ export function judge(prev, probeResults, clientErrors, now, { mutes = [], kicke
   const hold = (key) => {
     if (lastOpen[key]) findings.push({ key, level: "hold", text: lastOpen[key].text });
   };
+  const keep = (key) => {
+    if (lastOpen[key]) findings.push({ key, level: "keep", text: lastOpen[key].text });
+  };
+
+  // 健康しらべを 見なかった 回（ふだんは 1時間ごと）。続きぐあいも 異常も 前の まま
+  if (!probeResults.some((r) => r.id === "health")) {
+    if (lastPending.health) pending.health = lastPending.health;
+    if (lastPending["health-db"]) pending["health-db"] = lastPending["health-db"];
+    if (typeof lastFail.health === "number") recentFail.health = lastFail.health;
+    keep("content");
+    keep("page:health");
+    keep("health-db");
+  }
 
   for (const r of probeResults) {
     const probe = PROBES.find((p) => p.id === r.id);
@@ -312,8 +477,23 @@ export function judge(prev, probeResults, clientErrors, now, { mutes = [], kicke
       if (r.code) {
         // 測れなかった。警告の 続きぐあいも 異常も 前の まま
         if (lastPending.health) pending.health = lastPending.health;
+        if (lastPending["health-db"]) pending["health-db"] = lastPending["health-db"];
         hold("content");
-      } else if (warnings.length > 0) {
+        hold("health-db");
+      } else {
+        // 健康しらべ 1回で DB を 引いた 回数。1回の はず（2026-11-21 に 21回 引いて いて
+        // Supabase の 無料枠を 超えた）。2回 続けて 多ければ 知らせる。古い 版は db を 答えない
+        const fetches = Number(r.body?.db?.fetches);
+        if (Number.isFinite(fetches) && fetches > 1) {
+          pending["health-db"] = fetches;
+          findings.push({
+            key: "health-db",
+            level: lastPending["health-db"] ? "confirmed" : "suspect",
+            text: `教材の自動チェックが1回でデータベースを${fetches}回読んでいる（1回のはず。Supabase の通信量が${fetches}倍になる）`,
+          });
+        }
+      }
+      if (!r.code && warnings.length > 0) {
         const key = warningsKey(warnings);
         pending.health = key;
         findings.push({
@@ -384,7 +564,43 @@ export function judge(prev, probeResults, clientErrors, now, { mutes = [], kicke
     });
   }
 
+  // Supabase の 通信量（1日 1回）。24時間の 合計なので 1回で 知らせる
+  if (!egress || egress.skipped) {
+    keep("egress");
+  } else if (egress.failed) {
+    hold("egress");
+  } else {
+    const bytes = estimateEgressBytes(egress, contentsBytes);
+    if (bytes >= EGRESS_DAILY_LIMIT_BYTES) {
+      const each = formatBytes(
+        Number.isFinite(contentsBytes) && contentsBytes > 0
+          ? contentsBytes
+          : EGRESS_DEFAULT_CONTENTS_BYTES,
+      );
+      findings.push({
+        key: "egress",
+        level: "confirmed",
+        text:
+          `Supabase の通信量が多い: この24時間で約${formatBytes(bytes)}（このままだと月${formatBytes(bytes * 30)}・` +
+          `無料枠は月${formatBytes(SUPABASE_FREE_EGRESS_BYTES)}。超えると全員がログインできなくなる）。` +
+          `教材の丸ごと読み出し${egress.contents}回×約${each}・ほか${egress.other}回`,
+      });
+    }
+  }
+
   return { findings, recentFail, pending };
+}
+
+/** 健康しらべの 答えの `db`（1回の 要求で DB を 引いた 回数・行数・大きさ）。無ければ null。 */
+function readHealthDb(probeResults, now) {
+  const db = probeResults.find((r) => r.id === "health")?.body?.db;
+  if (!db || !Number.isFinite(Number(db.bytes))) return null;
+  return {
+    at: now,
+    fetches: Number(db.fetches) || 0,
+    rows: Number(db.rows) || 0,
+    bytes: Number(db.bytes),
+  };
 }
 
 /** 時刻を カンボジア時間（UTC+7・夏時間 なし）で 短く。 */
@@ -469,7 +685,7 @@ export function decide(prev, judged, now, prodUrl, { mutes = [] } = {}) {
       title: "本番サイトの自動チェックを始めました",
       text: [
         `👀 本番サイトの自動チェックを始めました（${time}）`,
-        "10分ごと（授業がある火・水・金の17:05〜18:55は5分ごと）にチェックします。",
+        "10分ごと（授業がある火・水・金の17:05〜18:55は5分ごと）にチェックします。教材の自動チェックは1時間ごと（授業の日の16〜20時は毎回）です。",
         "知らせるのは、異常が続いたとき・続いている異常の2時間ごとの再通知（夜は送らない）・直ったときだけです。",
         openKeys.length === 0
           ? "✅ いまはすべて正常です。"
@@ -654,19 +870,32 @@ export async function runWatch(env, deps) {
   const checkKicker =
     Boolean(deps.kickerFetch && env.KICKER_URL) &&
     kickerDue(prev?.kicker, Boolean(prev?.open?.kicker), now);
+  // 健康しらべは Supabase の 通信量を 食う（1回 約190KB）。ふだんは 1時間ごと（HEALTH_EVERY_MS）
+  const checkHealth = healthDue(prev, now);
+  const checkEgress =
+    Boolean(env.SUPABASE_ACCESS_TOKEN) && egressDue(prev?.egress, Boolean(prev?.open?.egress), now);
 
-  const [probeResults, clientErrors, kicker] = await Promise.all([
+  const [probeResults, clientErrors, kicker, egress] = await Promise.all([
     Promise.all(
-      PROBES.map((probe) =>
+      PROBES.filter((probe) => probe.id !== "health" || checkHealth).map((probe) =>
         runProbe(probe, { baseUrl, fetchImpl: deps.probeFetch ?? deps.fetch, sleep: deps.sleep }),
       ),
     ),
     readClientErrors(env, deps.fetch),
     checkKicker ? readKicker(env.KICKER_URL, deps.kickerFetch) : { skipped: true },
+    checkEgress ? readEgress(env, deps.fetch, now) : { skipped: true },
   ]);
 
+  // 健康しらべが 答えた DB の 1回の 読み出し（回数・行数・大きさ）。見なかった 回は 前の 値
+  const healthDb = readHealthDb(probeResults, now) ?? prev?.healthDb ?? null;
+
   const mutes = parseMutes(env.MUTE_WARNINGS);
-  const judged = judge(prev, probeResults, clientErrors, now, { mutes, kicker });
+  const judged = judge(prev, probeResults, clientErrors, now, {
+    mutes,
+    kicker,
+    egress,
+    contentsBytes: healthDb?.bytes,
+  });
   const { messages, next } = decide(prev, judged, now, baseUrl, { mutes });
 
   // Telegram の 送り先。入れて あれば それ、覚えて いれば それ、無ければ 探す
@@ -703,6 +932,20 @@ export async function runWatch(env, deps) {
           status: kicker.status ?? null,
           failed: kicker.failed ?? null,
         },
+    // 健康しらべを 最後に 見た とき（次に いつ 見るかを healthDue が ここから 決める）
+    healthAt: checkHealth ? now : (prev?.healthAt ?? null),
+    healthDb,
+    // 通信量を 最後に 見積もった とき（次に いつ 見るかを egressDue が ここから 決める）
+    egress: egress.skipped
+      ? (prev?.egress ?? null)
+      : egress.failed
+        ? { at: now, failed: egress.failed }
+        : {
+            at: now,
+            contents: egress.contents,
+            other: egress.other,
+            bytes: estimateEgressBytes(egress, healthDb?.bytes),
+          },
     last: {
       at: now,
       probes: probeResults.map((r) => ({ id: r.id, code: r.code, failures: r.failures })),
