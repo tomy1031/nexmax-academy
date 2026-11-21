@@ -189,6 +189,9 @@ cd nexmax-db-*/ && shasum -a 256 *.sql && cat manifest.json
 
 ### 5.3 まるごと 戻す（プロジェクトが 消えた・使えない）
 
+**下の 2〜7 は `node scripts/move_to_new_supabase.mjs` が 1回で やる**（2026-11-21 に 別の アカウントへ
+移した ときに 作った。docs/deploy.md §0.22）。手で やるのは 1 と 4・5 だけ。
+
 1. Supabase で 新しい プロジェクトを 作る（Postgres 17・同じ 地域）。
    Connect → **Session pooler** の 接続文字列を 控える（docs/deploy.md §0.8）
 2. 戻す（Supabase 公式「Backup and restore using the CLI」と 同じ 並び。1つの トランザクション）:
