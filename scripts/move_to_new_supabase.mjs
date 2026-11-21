@@ -28,9 +28,10 @@
  *      docs/backup-recovery.md §5.3）
  *   7. Storage の置き場（assets）と権限を作る（ファイルはバックアップに入っていない）
  *   8. 権限を古い DB とそろえる（privilegeSyncSql）。確かめる: 権限の指紋・表ごとの件数・移行の台帳・RLS
- *   9. 全部通ったら公開の鍵を聞き、GitHub の Environment「Preview」の3つ
+ *   9. 全部通ったら公開の鍵を聞き、このプロジェクトの値を暗号化して保存し（switch_supabase.mjs で
+ *      あとから行き来できるように）、GitHub の Environment「Preview」の3つ
  *      （SUPABASE_DB_URL・NEXT_PUBLIC_SUPABASE_URL・NEXT_PUBLIC_SUPABASE_ANON_KEY）と、
- *      見張り（academy-watch）の SUPABASE_URL を差し替える
+ *      見張り（academy-watch）の SUPABASE_URL を差し替えて、STG を作り直す
  *
  * 合言葉と鍵は画面にもファイルにも出さない。psql へは環境変数 PGPASSWORD で、
  * gh・wrangler へは標準入力で渡す（register_db_secret.mjs と同じ扱い）。
@@ -41,13 +42,18 @@ import { createHash } from "node:crypto";
 import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { homedir, tmpdir } from "node:os";
 import { delimiter, dirname, join } from "node:path";
-import { createInterface } from "node:readline";
 import { fileURLToPath } from "node:url";
+import {
+  applyProfile,
+  askHidden,
+  askVisible,
+  deployStaging,
+  findPsql,
+  saveProfile,
+} from "./lib/supabase_profiles.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const BUCKET_SQL = join(ROOT, "supabase", "migrations", "20260805001747_studio_assets_bucket.sql");
-const ENVIRONMENT = "Preview";
-const WATCH_WORKER = "academy-watch";
 const BACKUP_FILES = ["roles.sql", "schema.sql", "data.sql", "extras.sql"];
 
 /**
@@ -172,23 +178,51 @@ export function privilegeSyncSql(schemaSql) {
 }
 
 /**
- * 権限の指紋。古い DB と新しい DB で同じ SQL を流し、値が同じなら権限は1件も違わない。
- * public の表・ビュー・連番と、public・app の関数の権限を、（相手・種類）の1件ずつに開いて並べる。
- * 出力は「件数 md5」の1行。
+ * 権限を1件ずつ開いて並べる SQL。出力は「種類<TAB>スキーマ<TAB>名前<TAB>1件の権限」の行。
+ * public の表・ビュー・連番と、public・app の関数が対象。
  */
-export const PRIVILEGE_FINGERPRINT_SQL = `with rel as (
-  select 'r:' || c.relname || ':' || case when a.grantee = 0 then 'PUBLIC' else a.grantee::regrole::text end || ':' || a.privilege_type as x
-  from pg_class c join pg_namespace n on n.oid = c.relnamespace,
+export const PRIVILEGE_ROWS_SQL = `select 'r', n.nspname, c.relname,
+  'r:' || c.relname || ':' || case when a.grantee = 0 then 'PUBLIC' else a.grantee::regrole::text end || ':' || a.privilege_type
+from pg_class c join pg_namespace n on n.oid = c.relnamespace,
   aclexplode(coalesce(c.relacl, acldefault(case when c.relkind = 'S' then 's'::"char" else 'r'::"char" end, c.relowner))) a
-  where n.nspname = 'public' and c.relkind in ('r','v','m','S','p')
-), fn as (
-  select 'f:' || n.nspname || '.' || p.proname || '(' || pg_get_function_identity_arguments(p.oid) || '):' || case when a.grantee = 0 then 'PUBLIC' else a.grantee::regrole::text end || ':' || a.privilege_type as x
-  from pg_proc p join pg_namespace n on n.oid = p.pronamespace,
+where n.nspname = 'public' and c.relkind in ('r','v','m','S','p')
+union all
+select 'f', n.nspname, p.proname,
+  'f:' || n.nspname || '.' || p.proname || '(' || pg_get_function_identity_arguments(p.oid) || '):' || case when a.grantee = 0 then 'PUBLIC' else a.grantee::regrole::text end || ':' || a.privilege_type
+from pg_proc p join pg_namespace n on n.oid = p.pronamespace,
   aclexplode(coalesce(p.proacl, acldefault('f'::"char", p.proowner))) a
-  where n.nspname in ('public','app')
-)
-select count(*) || ' ' || md5(string_agg(x, ',' order by x))
-from (select x from rel union all select x from fn) t`;
+where n.nspname in ('public','app')`;
+
+/**
+ * 権限の指紋。**バックアップに入っている物だけ**を数え、「件数 md5」にする。
+ * 古い DB では、同じ並びを SQL で作った値（`count(*) || ' ' || md5(string_agg(x, ',' order by x collate "C"))`）と
+ * 一致する（古い DB の public・app の物は全部 schema.sql に入っているため）。
+ *
+ * 新しいプロジェクトには、Supabase が最初から置く物が public にあることがある（2026-11-21 は権限2件ぶん）。
+ * それは比べる相手が無いので数えず、名前だけ返して画面に出す。
+ *
+ * @param {string} rowsText PRIVILEGE_ROWS_SQL の出力（psql -A -t -F TAB）
+ * @param {string} schemaSql バックアップの schema.sql
+ * @returns {{ fingerprint: string, extras: string[] }}
+ */
+export function privilegeFingerprint(rowsText, schemaSql) {
+  const entries = [];
+  const extras = new Set();
+  for (const line of String(rowsText).split("\n")) {
+    if (!line.trim()) continue;
+    const [kind, nsp, name, entry] = line.split("\t");
+    const own =
+      kind === "r"
+        ? schemaSql.includes(`"${nsp}"."${name}"`)
+        : schemaSql.includes(`"${nsp}"."${name}"(`);
+    if (own) entries.push(entry);
+    else extras.add(`${nsp}.${name}${kind === "f" ? "()" : ""}`);
+  }
+  // 並べ方は collate "C"（バイトの順）と同じにする。ここに出る文字は ASCII だけ。
+  entries.sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+  const md5 = createHash("md5").update(entries.join(",")).digest("hex");
+  return { fingerprint: `${entries.length} ${md5}`, extras: [...extras].sort() };
+}
 
 /* ───────────── ここから下は実行するときだけ ───────────── */
 
@@ -204,17 +238,6 @@ function latestBackup(folder) {
   return names.length > 0 ? join(folder, names[names.length - 1]) : null;
 }
 
-/** 見える形で1行読む（秘密ではない値だけ）。 */
-function askVisible(prompt) {
-  return new Promise((resolve) => {
-    const rl = createInterface({ input: process.stdin, output: process.stderr });
-    rl.question(prompt, (value) => {
-      rl.close();
-      resolve(value.trim());
-    });
-  });
-}
-
 function fail(message) {
   console.error(`\n✗ ${message}`);
   process.exitCode = 1;
@@ -223,50 +246,6 @@ function fail(message) {
 
 function sha256(path) {
   return createHash("sha256").update(readFileSync(path)).digest("hex");
-}
-
-/** psql を探す（Homebrew の libpq は PATH に入らない）。 */
-function findPsql() {
-  const candidates = [
-    ...String(process.env.PATH ?? "")
-      .split(delimiter)
-      .map((dir) => join(dir, "psql")),
-    "/opt/homebrew/opt/libpq/bin/psql",
-    "/opt/homebrew/opt/postgresql@17/bin/psql",
-    "/usr/local/opt/libpq/bin/psql",
-  ];
-  return candidates.find((path) => existsSync(path)) ?? null;
-}
-
-/**
- * 伏せ字で1行読む（register_db_secret.mjs と同じしかけ）。
- * 空のときは終わらずに聞き直す——空の Enter で終わると、次に貼った値がシェルに
- * コマンドとして入り、画面と履歴に出てしまう（2026-11-21 に実際に起きた）。
- */
-async function askHidden(prompt) {
-  for (;;) {
-    const answer = await new Promise((resolve) => {
-      const terminal = Boolean(process.stdin.isTTY);
-      const rl = createInterface({ input: process.stdin, output: process.stderr, terminal });
-      if (terminal) {
-        let muted = false;
-        rl._writeToOutput = (chunk) => {
-          if (!muted) process.stderr.write(chunk);
-        };
-        process.stderr.write(prompt);
-        muted = true;
-      } else {
-        process.stderr.write(prompt);
-      }
-      rl.question("", (value) => {
-        rl.close();
-        process.stderr.write("\n");
-        resolve(value.trim());
-      });
-    });
-    if (answer) return answer;
-    console.error("  空でした。もう一度貼ってください（やめるときは Ctrl+C）。");
-  }
 }
 
 async function main() {
@@ -422,7 +401,14 @@ async function main() {
     /* 8. 確かめる */
     console.log("\n■ 4. 確かめます");
     const problems = [];
-    const fingerprint = query(PRIVILEGE_FINGERPRINT_SQL);
+    const { fingerprint, extras } = privilegeFingerprint(
+      query(PRIVILEGE_ROWS_SQL),
+      readFileSync(join(dir, "schema.sql"), "utf8"),
+    );
+    if (extras.length > 0)
+      console.log(
+        `  （バックアップに無い物は比べていません: ${extras.join(", ")}。Supabase が新しいプロジェクトに最初から置く物）`,
+      );
     if (expectPrivileges && fingerprint !== expectPrivileges)
       problems.push(
         `権限の指紋が古い DB と違います（新しい DB ${fingerprint}・古い DB ${expectPrivileges}）`,
@@ -508,34 +494,21 @@ async function main() {
       console.error(`  ${keyProblems.join("・")}。もう一度どうぞ（やめるときは Ctrl+C）。`);
     }
 
-    const secrets = [
-      ["SUPABASE_DB_URL", poolerUrl({ ref, host, password: encodeURIComponent(password) })],
-      ["NEXT_PUBLIC_SUPABASE_URL", url],
-      ["NEXT_PUBLIC_SUPABASE_ANON_KEY", anonKey],
-    ];
-    for (const [name, value] of secrets) {
-      const set = spawnSync("gh", ["secret", "set", name, "--env", ENVIRONMENT], {
-        input: value,
-        encoding: "utf8",
-        cwd: ROOT,
-      });
-      if (set.status !== 0) fail(`${name} を登録できませんでした: ${(set.stderr || "").trim()}`);
-      console.log(`✓ GitHub の Environment「${ENVIRONMENT}」の ${name} を差し替えました`);
-    }
+    const profile = {
+      ref,
+      dbUrl: poolerUrl({ ref, host, password: encodeURIComponent(password) }),
+      anonKey,
+      label: "新しいアカウント（2026-11-21 に移した先）",
+    };
+    const saved = saveProfile(profile);
+    console.log(`✓ 切り替え用に、このプロジェクトの値を暗号化して保存しました（${saved}）`);
+    applyProfile(profile);
+    deployStaging();
 
-    const watch = spawnSync(
-      "npx",
-      ["--no-install", "wrangler", "secret", "put", "SUPABASE_URL", "--name", WATCH_WORKER],
-      { input: url, encoding: "utf8", cwd: ROOT },
+    console.log(
+      "\n✓ 終わりました。STG は今からの作り直しで、本番は次の本番デプロイ（授業前の自動）から新しいプロジェクトを使います。" +
+        "\n  古いプロジェクトへ戻すときは node scripts/switch_supabase.mjs（古い方の値を1回 save してから use）。",
     );
-    if (watch.status === 0)
-      console.log(`✓ 見張り（${WATCH_WORKER}）の SUPABASE_URL を差し替えました`);
-    else
-      console.log(
-        `⚠ 見張りの SUPABASE_URL は差し替えられませんでした（wrangler のログイン切れかも）。アプリには影響しません。`,
-      );
-
-    console.log("\n✓ 終わりました。STG と本番は、次のデプロイから新しいプロジェクトを使います。");
   } catch (error) {
     if (error?.message !== "stop") throw error;
   } finally {

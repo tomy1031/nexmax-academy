@@ -1,10 +1,12 @@
+import { createHash } from "node:crypto";
 import { readdirSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import {
   anonKeyProblems,
   missingMigrations,
-  PRIVILEGE_FINGERPRINT_SQL,
+  PRIVILEGE_ROWS_SQL,
+  privilegeFingerprint,
   privilegeSyncSql,
   projectRefFrom,
 } from "../scripts/move_to_new_supabase.mjs";
@@ -128,8 +130,46 @@ describe("privilegeSyncSql（新しい DB の権限を古い DB とそろえる�
     expect(() => privilegeSyncSql('CREATE TABLE "public"."x" ("id" int);')).toThrow();
   });
 
-  it("指紋の SQL は public の表と public・app の関数を数える", () => {
-    expect(PRIVILEGE_FINGERPRINT_SQL).toContain("n.nspname = 'public'");
-    expect(PRIVILEGE_FINGERPRINT_SQL).toContain("n.nspname in ('public','app')");
+  it("権限を並べる SQL は public の表と public・app の関数を数える", () => {
+    expect(PRIVILEGE_ROWS_SQL).toContain("n.nspname = 'public'");
+    expect(PRIVILEGE_ROWS_SQL).toContain("n.nspname in ('public','app')");
+  });
+});
+
+describe("privilegeFingerprint（権限の指紋。バックアップに入っている物だけを数える）", () => {
+  const schema = [
+    'CREATE TABLE "public"."events" ("id" bigint);',
+    'CREATE OR REPLACE FUNCTION "app"."is_admin"() RETURNS boolean AS $$ select true $$;',
+  ].join("\n");
+  const rows = [
+    "r\tpublic\tevents\tr:events:postgres:SELECT",
+    "r\tpublic\tevents\tr:events:anon:INSERT",
+    "f\tapp\tis_admin\tf:app.is_admin():PUBLIC:EXECUTE",
+    "f\tpublic\trls_auto_enable\tf:public.rls_auto_enable():postgres:EXECUTE",
+    "f\tpublic\trls_auto_enable\tf:public.rls_auto_enable():PUBLIC:EXECUTE",
+  ].join("\n");
+
+  it("バックアップに無い物（Supabase が新しいプロジェクトに置く物）は数えず、名前を返す", () => {
+    const { fingerprint, extras } = privilegeFingerprint(rows, schema);
+    expect(fingerprint.startsWith("3 ")).toBe(true);
+    expect(extras).toEqual(["public.rls_auto_enable()"]);
+  });
+
+  it("古い DB で SQL が作る値と同じ並べ方（バイトの順・カンマつなぎ）で md5 を取る", () => {
+    const expected = createHash("md5")
+      .update(
+        [
+          "f:app.is_admin():PUBLIC:EXECUTE",
+          "r:events:anon:INSERT",
+          "r:events:postgres:SELECT",
+        ].join(","),
+      )
+      .digest("hex");
+    expect(privilegeFingerprint(rows, schema).fingerprint).toBe(`3 ${expected}`);
+  });
+
+  it("行の順が変わっても同じ値になる", () => {
+    const shuffled = rows.split("\n").reverse().join("\n");
+    expect(privilegeFingerprint(shuffled, schema)).toEqual(privilegeFingerprint(rows, schema));
   });
 });
