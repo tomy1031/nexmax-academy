@@ -11,6 +11,7 @@
  * クライアントコンポーネントから import しないこと。
  */
 
+import { AsyncLocalStorage } from "node:async_hooks";
 import { cache } from "react";
 import { createClient as createPlainClient } from "@supabase/supabase-js";
 import { contentSchema, type Content } from "@/content/schema";
@@ -90,6 +91,17 @@ function createPublicClient() {
  * React の `cache()` は**同じリクエストの中でだけ**結果を使い回す
  *（リクエストをまたいで古い値を返すことはない）。引数で分かれると畳めないので、
  * 公開分と下書き入りを別の関数に分けてある。
+ *
+ * ## API ルートでは cache() が効かない（2026-11-21）
+ * `cache()` が畳むのは **React がページを組み立てている間だけ**。API ルート（route.ts）は
+ * React の描画の外で動くので、呼ぶたびに本体が走る（Next 16 / React 19 の実装で確かめた。
+ * 描画の外では使い回しの入れ物を毎回新しく作る）。教材の健康しらべ（`/api/health/content`）は
+ * 1回で一覧を種類ぶん呼ぶので、**1回の要求で studio_contents を約21回 丸ごと引いていた**。
+ * 見張り（workers/watch）が10分ごとに叩き、1日 約560MB。Supabase の無料枠（月5GB）を超えて
+ * 2026-11-20 から全員がログインできなくなった。
+ *
+ * API ルートで教材を読むときは **`withDbContentScope` で包む**。中では1回に畳む
+ *（`tests/supabase_egress_budget.test.ts` が回数を数えて守る）。
  */
 export async function fetchDbContents(opts?: {
   includeDrafts?: boolean;
@@ -98,12 +110,67 @@ export async function fetchDbContents(opts?: {
 }
 
 /** 公開分だけ（学習者の画面・ISR から呼ばれる）。 */
-const fetchPublished = cache(async (): Promise<DbContentEntry[]> => readContents(false));
+const fetchPublished = cache(async (): Promise<DbContentEntry[]> => readInScope(false));
 
 /** 下書きも含む（管理画面。本人のセッションが要る）。 */
-const fetchWithDrafts = cache(async (): Promise<DbContentEntry[]> => readContents(true));
+const fetchWithDrafts = cache(async (): Promise<DbContentEntry[]> => readInScope(true));
 
-async function readContents(includeDrafts: boolean): Promise<DbContentEntry[]> {
+/* ------------------------------------------------------------------ *
+ * 1回の要求の枠（API ルート用）
+ * ------------------------------------------------------------------ */
+
+/** 1回の要求の中で studio_contents を引いた回数・行数・大きさ（UTF-8 のバイト数・おおよそ）。 */
+export interface DbContentScopeStats {
+  fetches: number;
+  rows: number;
+  bytes: number;
+}
+
+interface DbContentScope extends DbContentScopeStats {
+  published?: Promise<DbContentEntry[]>;
+  withDrafts?: Promise<DbContentEntry[]>;
+}
+
+/*
+ * 要求ごとの入れ物。Cloudflare Workers でも nodejs_compat で使える（Next 自身も使っている）。
+ * **要求をまたいで使い回さない**——先生が管理画面で直した教材を、次の要求ですぐ出すため。
+ * モジュールの変数に覚える形（またぐ形）にすると、Workers では別の要求の I/O を
+ * 待つことにもなり、動かない。
+ */
+const requestScope = new AsyncLocalStorage<DbContentScope>();
+
+/**
+ * API ルートで教材を読むときの枠。中で何度 `fetchDbContents()`・`list*()` を呼んでも、
+ * studio_contents を引くのは公開分・下書き入りそれぞれ1回まで。
+ *
+ * 読めなかった結果（空）も その要求の中では使い回す。DB が止まっているときに
+ * 1回の要求から何度も引き直さない（ページの `cache()` と同じ ふるまい）。
+ * 入れ子にしたときは外側の枠を使う。
+ *
+ * `fn` に渡す stats は、その要求で引いた回数・行数・大きさ（健康しらべが答えに出す）。
+ */
+export function withDbContentScope<T>(
+  fn: (stats: Readonly<DbContentScopeStats>) => Promise<T>,
+): Promise<T> {
+  const outer = requestScope.getStore();
+  if (outer) return fn(outer);
+  const scope: DbContentScope = { fetches: 0, rows: 0, bytes: 0 };
+  return requestScope.run(scope, () => fn(scope));
+}
+
+function readInScope(includeDrafts: boolean): Promise<DbContentEntry[]> {
+  const scope = requestScope.getStore();
+  if (!scope) return readContents(includeDrafts, null);
+  const key = includeDrafts ? "withDrafts" : "published";
+  return (scope[key] ??= readContents(includeDrafts, scope));
+}
+
+const utf8 = new TextEncoder();
+
+async function readContents(
+  includeDrafts: boolean,
+  scope: DbContentScope | null,
+): Promise<DbContentEntry[]> {
   let supabase: NonNullable<Awaited<ReturnType<typeof createClient>>> | null;
   try {
     supabase = includeDrafts ? await createClient() : createPublicClient();
@@ -119,8 +186,14 @@ async function readContents(includeDrafts: boolean): Promise<DbContentEntry[]> {
   if (!includeDrafts) query = query.eq("status", "published");
 
   const { data, error } = await query;
+  if (scope) scope.fetches++;
   // テーブル未作成・権限なし・接続不良のいずれも「DBには何もない」として扱う
   if (error || !data) return [];
+  if (scope) {
+    // 大きさは 枠の 中（API ルート）でだけ 測る。ページの 組み立てに 手間を 足さない
+    scope.rows += data.length;
+    scope.bytes += utf8.encode(JSON.stringify(data)).length;
+  }
 
   return (data as ContentRow[]).flatMap((row) => toEntry(row));
 }

@@ -20,7 +20,7 @@ import {
   listStages,
   listWordStages,
 } from "@/lib/content";
-import { fetchDbContents } from "@/lib/content-db";
+import { fetchDbContents, withDbContentScope } from "@/lib/content-db";
 import { fail, requireAdmin } from "@/lib/studio/admin-gate";
 
 /**
@@ -41,6 +41,10 @@ import { fail, requireAdmin } from "@/lib/studio/admin-gate";
  * 参照整合とID重複は全コンテンツがそろって初めて判定できるため（未作成の教材を
  * 参照する下書きを止めてしまう）、ここでは1件で判定できる検査だけを走らせる。
  * 横断検査は CI の lint:content が受け持つ。
+ *
+ * **教材を読むときは withDbContentScope で包む**（2026-11-21）。API ルートでは React の
+ * `cache()` が効かず、一覧を種類ぶん呼ぶと studio_contents をその回数だけ丸ごと引く
+ *（`src/lib/content-db.ts`・`tests/supabase_egress_budget.test.ts`）。
  *
  * **ふりがなの覆いは以前ここに無かった。** 規律2 の検査は CI の `lint:content` に
  * しか無く、スタジオで作った教材は CI を通らずに公開できていた。
@@ -112,7 +116,8 @@ async function collectKnownIds(): Promise<Set<string>> {
  */
 async function collectDanglingWarnings(stage: Stage): Promise<Finding[]> {
   try {
-    return checkDanglingRefs(stage, await collectKnownIds());
+    // 保存の あとで 読むので、枠は ここだけ（保存の 前の 中身を 使い回さない）
+    return checkDanglingRefs(stage, await withDbContentScope(() => collectKnownIds()));
   } catch {
     return [];
   }

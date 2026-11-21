@@ -69,6 +69,15 @@ const handler = {
           email: Boolean(env.RESEND_API_KEY && env.ALERT_EMAIL_TO),
         },
         clientErrors: Boolean(env.SUPABASE_URL && env.SUPABASE_ANON_KEY),
+        // Supabase の 通信量を 1日 1回 見積もるか（SUPABASE_ACCESS_TOKEN を 入れたら true）
+        egressWatch: Boolean(env.SUPABASE_URL && env.SUPABASE_ACCESS_TOKEN),
+        // 教材の 健康しらべを 最後に 見た とき と、その 1回で DB を 引いた 回数・行数・大きさ
+        healthAt: state?.healthAt ? new Date(state.healthAt).toISOString() : null,
+        healthDb: state?.healthDb ?? null,
+        // 通信量の 見積もり（この 24時間。bytes は 教材の 丸ごと読み出し×1回の 大きさ＋ほか×2KB）
+        egress: state?.egress
+          ? { ...state.egress, at: new Date(state.egress.at).toISOString() }
+          : null,
         // 一時的に 黙らせて いる 既知の 誤報（deploy の --var で 渡した ときだけ）
         muted: env.MUTE_WARNINGS ?? null,
         startedAt: state?.startedAt ? new Date(state.startedAt).toISOString() : null,
