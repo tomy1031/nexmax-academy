@@ -282,6 +282,126 @@
         "③ 状況（じょうきょう）と 依頼（いらい）",
         "④ 意見（いけん）の 提案（ていあん）"
       ]
+    },
+    {
+      "out": "kaisha_3types",
+      "dest": "public/img/hourensou/kimatsu/kaisha_3types.webp",
+      "title": "ITの 仕事の 3つの タイプ（SES・受託開発・自社開発）",
+      "scene": "Three vertical columns: SES (working at client's company), 受託開発 (making requested app), 自社開発 (creating own app).",
+      "text": [
+        "SES",
+        "お客（きゃく）の 会社（かいしゃ）で 働（はたら）く",
+        "受託開発（じゅたくかいはつ）",
+        "頼（たの）まれて 作（つく）る",
+        "自社開発（じしゃかいはつ）",
+        "自分（じぶん）たちで 作（つく）る"
+      ]
+    },
+    {
+      "out": "kaisha_chigai",
+      "dest": "public/img/hourensou/kimatsu/kaisha_chigai.webp",
+      "title": "会社ごとの ちがいを 見つける",
+      "scene": "Comparing company A and company B with a magnifying glass to find unique strengths.",
+      "text": [
+        "会社（かいしゃ）ごとの ちがいを 見（み）つける",
+        "A社（しゃ）",
+        "B社（しゃ）",
+        "ここが 強（つよ）み！"
+      ]
+    },
+    {
+      "out": "kaisha_shitsumon",
+      "dest": "public/img/hourensou/kimatsu/kaisha_shitsumon.webp",
+      "title": "いい 質問を 考える 力",
+      "scene": "Left: bad question already on the website (2018). Right: good researched question asking about ingenuity.",
+      "text": [
+        "サイトにある質問（しつもん）",
+        "何年（なんねん）に できましたか？",
+        "調（しら）べたから出（で）る質問（しつもん）",
+        "どんな工夫（くふう）を していますか？"
+      ]
+    },
+    {
+      "out": "kuuki_kihon",
+      "dest": "public/img/hourensou/kimatsu/kuuki_kihon.webp",
+      "title": "空気を 読む 4ステップ",
+      "scene": "Four steps: observe, notice, act, check the mood; plus reminder that your own opinion matters too.",
+      "text": [
+        "空気（くうき）を読（よ）む4ステップ",
+        "①見（み）る",
+        "②気（き）づく",
+        "③動（うご）く",
+        "④ようすを見（み）る",
+        "自分（じぶん）の意見（いけん）も大切（たいせつ）！"
+      ]
+    },
+    {
+      "out": "kuuki_office",
+      "dest": "public/img/hourensou/kimatsu/kuuki_office.webp",
+      "title": "オフィスと オンラインの 基本",
+      "scene": "2x2 grid: 5 minutes early (9:55), stand up to greet visitors, mute notifications before screen sharing, nod clearly on video calls.",
+      "text": [
+        "5分前行動（ふんまえこうどう）",
+        "立（た）って あいさつ",
+        "通知（つうち）をオフ",
+        "大（おお）きく うなずく"
+      ]
+    },
+    {
+      "out": "kuuki_seki",
+      "dest": "public/img/hourensou/kimatsu/kuuki_seki.webp",
+      "title": "席の 順番（上座・下座）と 車",
+      "scene": "Left: meeting room kamiza vs shimoza. Right: taxi back seat vs boss driving front passenger seat.",
+      "text": [
+        "会議室（かいぎしつ）の席（せき）",
+        "上座（かみざ）",
+        "下座（しもざ）",
+        "車（くるま）の席（せき）",
+        "タクシー",
+        "上司（じょうし）が運転（うんてん）"
+      ]
+    },
+    {
+      "out": "kuuki_kotoba",
+      "dest": "public/img/hourensou/kimatsu/kuuki_kotoba.webp",
+      "title": "日本の 遠回しな 言葉と 確認",
+      "scene": "Left: politely checking timeline after 'we will consider it'. Right: showing options A and B after 'make it nice'.",
+      "text": [
+        "遠回（とおまわ）しな言葉（ことば）",
+        "検討（けんとう）します…",
+        "いつごろでしょうか？",
+        "例（れい）を出（だ）して確認（かくにん）",
+        "いい感（かん）じに！",
+        "AとB、どちらですか？"
+      ]
+    },
+    {
+      "out": "kuuki_nomikai",
+      "dest": "public/img/hourensou/kimatsu/kuuki_nomikai.webp",
+      "title": "飲み会と 謝罪の マナー",
+      "scene": "Left: asking before taking the last piece, non-alcoholic drinks OK. Right: apologizing first before explaining reason.",
+      "text": [
+        "飲（の）み会（かい）",
+        "いかがですか？",
+        "先（さき）に謝（あやま）る",
+        "申（もう）し訳（わけ）ありません",
+        "①謝（あやま）る",
+        "②理由（りゆう）"
+      ]
+    },
+    {
+      "out": "soudan_yusen",
+      "dest": "public/img/hourensou/kimatsu/soudan_yusen.webp",
+      "title": "優先順位を 相談する",
+      "scene": "Engineer shows clipboard with task 1 (bug fix 4h) and task 2 (new screen 5h) and proposes doing task 1 first.",
+      "text": [
+        "優先順位（ゆうせんじゅんい）を相談（そうだん）する",
+        "①を先（さき）にしてもいいですか？",
+        "バグ修正（しゅうせい）",
+        "4時間（じかん）",
+        "新画面（しんがめん）",
+        "5時間（じかん）"
+      ]
     }
   ]
 }

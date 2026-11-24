@@ -15,7 +15,7 @@
       （必ず守るルール2。この ファイルに 学生が 読む 日本語を 書かない）
    2. しわけの 正解は カゴの 番号で 持つ（旧は カゴの 文字で くらべて いた）
    3. リスニングの カートリッジ（旧で 非表示）は 外した
-   4. 4つ ぜんぶ クリアしたら、埋めて いる アプリへ「おわった」を 伝える（nexmax:link-done）
+   4. 5つ ぜんぶ クリアしたら、埋めて いる アプリへ「おわった」を 伝える（nexmax:link-done）
 -->
 <style>
   :root{
@@ -295,6 +295,8 @@
   .allclear{position:relative;z-index:4;margin:0 auto 22px;max-width:560px;text-align:center;
     background:var(--correct-bg);border:3px solid var(--correct);border-radius:18px;padding:10px 16px;
     font-weight:800;color:var(--leaf-deep);box-shadow:0 4px 0 var(--shadow);}
+  /* 濃い色の 面（白文字）の ふりがなも 白に そろえる（注意事項 2026-08-21・09-21） */
+  .thead ruby rt,.qtag ruby rt,.checkbtn ruby rt,.chip ruby rt,#toast ruby rt{color:currentColor;opacity:.92;}
 </style>
 </head>
 <body>
@@ -390,7 +392,7 @@ const META = {};
 CARTS.forEach(c=>{ META[c.id]={nm:R(c.nm), en:c.en, icon:c.icon, color:c.color, cap:c.cap, sub:R(c.sub), stamp:c.stamp}; });
 
 /* ---------- state ---------- */
-const KEY='kimatsu_matome_v1';
+const KEY='kimatsu_matome_v2';
 let S = load();
 function load(){ try{return JSON.parse(localStorage.getItem(KEY))||{coins:0,carts:{}};}catch(e){return{coins:0,carts:{}};} }
 function save(){ try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){} }
@@ -427,7 +429,7 @@ function confetti(){ const ems=['🍃','🌰','🌸','⭐','🍀']; for(let i=0;
 function addCoins(n){ S.coins+=n; save(); const el=document.getElementById('coinN'); if(el)el.textContent=S.coins; sCoin(); }
 function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
 
-/* ---------- 埋めて いる アプリへ「おわった」を 1回だけ 伝える（4つ ぜんぶ クリア） ---------- */
+/* ---------- 埋めて いる アプリへ「おわった」を 1回だけ 伝える（5つ ぜんぶ クリア） ---------- */
 let doneSent=false;
 function allCleared(){ return CARTS.every(c=>cp(c.id).cleared); }
 /**
@@ -525,7 +527,7 @@ function runBulkGrade(c){
   cp(c.id).bulkGraded=true; save(); BULK=false;
   const bar=document.getElementById('bulkBar');
   bar.classList.add('graded');   // 固定バー→通常フロー（クリアスタンプと重ならない）
-  bar.innerHTML='<div class="bulk-done">'+R(U.bulkDone)+'　<b>'+esc(fill(U.bulkScore,{c:correct,t:total}))+'</b><br>'+
+  bar.innerHTML='<div class="bulk-done">'+R(U.bulkDone)+'　<b>'+R(fill(U.bulkScore,{c:correct,t:total}))+'</b><br>'+
     '<span class="bulk-sub">'+R(U.bulkSub)+'</span></div>';
   sStamp(); confetti();
 }
