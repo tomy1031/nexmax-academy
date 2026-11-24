@@ -14,8 +14,8 @@ import { shot } from "./helpers";
  * 文言・もんだいの 形は `tests/kimatsu_matome_tool.test.ts` が 見る。
  */
 const PATH = "/test-taisaku/link";
-const KEY = "kimatsu_matome_v1";
-const CARTS = ["kaisha", "houkoku", "renraku", "soudan"];
+const KEY = "kimatsu_matome_v2";
+const CARTS = ["kaisha", "kuuki", "houkoku", "renraku", "soudan"];
 
 async function openTool(page: Page): Promise<Frame> {
   await page.goto(PATH);

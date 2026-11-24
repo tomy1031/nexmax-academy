@@ -157,8 +157,14 @@ describe("期末テスト対策の まとめページ：文言", () => {
 });
 
 describe("期末テスト対策の まとめページ：もんだいの 形", () => {
-  it("カートリッジは 4つ（会社を 知る・報告・連絡・相談）", () => {
-    expect(DATA.carts.map((cart) => cart.id)).toEqual(["kaisha", "houkoku", "renraku", "soudan"]);
+  it("カートリッジは 5つ（企業調査・空気を 読む・報告・連絡・相談）", () => {
+    expect(DATA.carts.map((cart) => cart.id)).toEqual([
+      "kaisha",
+      "kuuki",
+      "houkoku",
+      "renraku",
+      "soudan",
+    ]);
   });
 
   for (const cart of DATA.carts) {
