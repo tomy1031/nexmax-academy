@@ -407,6 +407,18 @@
       ]
     },
     {
+      "out": "kuuki_meishi",
+      "dest": "public/img/hourensou/kimatsu/kuuki_meishi.webp",
+      "title": "名刺交換の マナー（相手より 少し 下・テーブルに 置く）",
+      "scene": "Left: new engineer presenting business card with both hands clearly lower than client's card. Right: client's business card resting flat on brown card case on meeting table.",
+      "text": [
+        "名刺交換（めいしこうかん）",
+        "相手（あいて）より少（すこ）し下（した）",
+        "テーブルに置（お）く",
+        "終（お）わったらしまう"
+      ]
+    },
+    {
       "out": "soudan_yusen",
       "dest": "public/img/hourensou/kimatsu/soudan_yusen.webp",
       "title": "優先順位を 相談する",
@@ -418,6 +430,19 @@
         "4時間（じかん）",
         "新画面（しんがめん）",
         "5時間（じかん）"
+      ]
+    },
+    {
+      "out": "soudan_hikaku",
+      "dest": "public/img/hourensou/kimatsu/soudan_hikaku.webp",
+      "title": "ツールや 技術を 比べて 相談する",
+      "scene": "Engineer shows comparison board (A vs B on cost, accuracy, usability) to senior and recommends A.",
+      "text": [
+        "比（くら）べて相談（そうだん）",
+        "Aがおすすめです！",
+        "料金（りょうきん）",
+        "精度（せいど）",
+        "使（つか）いやすさ"
       ]
     }
   ]
