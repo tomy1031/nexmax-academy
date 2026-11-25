@@ -297,6 +297,11 @@
     font-weight:800;color:var(--leaf-deep);box-shadow:0 4px 0 var(--shadow);}
   /* 濃い色の 面（白文字）の ふりがなも 白に そろえる（注意事項 2026-08-21・09-21） */
   .thead ruby rt,.qtag ruby rt,.checkbtn ruby rt,.chip ruby rt,#toast ruby rt{color:currentColor;opacity:.92;}
+  /* 問題に 添える 簡単な SVG 図解（名刺交換など） */
+  .qfig{margin:6px 0 12px;padding:12px 14px;background:var(--panel-soft);border:2px solid #efe4cb;
+    border-radius:14px;text-align:center;}
+  .qfig svg{max-width:100%;height:auto;display:block;margin:0 auto;}
+  .qfig .qfig-cap{margin-top:6px;font-size:12.5px;color:var(--ink-soft);font-weight:700;}
 </style>
 </head>
 <body>
@@ -392,7 +397,7 @@ const META = {};
 CARTS.forEach(c=>{ META[c.id]={nm:R(c.nm), en:c.en, icon:c.icon, color:c.color, cap:c.cap, sub:R(c.sub), stamp:c.stamp}; });
 
 /* ---------- state ---------- */
-const KEY='kimatsu_matome_v2';
+const KEY='kimatsu_matome_v3';
 let S = load();
 function load(){ try{return JSON.parse(localStorage.getItem(KEY))||{coins:0,carts:{}};}catch(e){return{coins:0,carts:{}};} }
 function save(){ try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){} }
@@ -421,6 +426,91 @@ function renderMemo(c){
     return `<section class="memo-block"><h4>${R(e.heading)}</h4>${img}<ul>`+
       e.points.map(pt=>`<li>${R(pt)}</li>`).join('')+`</ul></section>`;
   }).join('');
+}
+/* 問題に 添える 簡単な SVG 図解（漢字は SVG の 中に 書かず、figCap に ルビ記法で 渡す） */
+const FIGS = {
+  meishi_height: `<svg viewBox="0 0 460 168" width="460" height="168" role="img" aria-label="Business card height and greeting diagram">
+    <rect x="4" y="4" width="452" height="160" rx="14" fill="#fffdf8" stroke="#e8dcc2" stroke-width="2"/>
+    <rect x="26" y="16" width="84" height="24" rx="12" fill="#3e9447"/>
+    <text x="68" y="32" text-anchor="middle" font-size="12" font-weight="800" fill="#ffffff" font-family="sans-serif">YOU</text>
+    <rect x="342" y="16" width="92" height="24" rx="12" fill="#3b6ea5"/>
+    <text x="388" y="32" text-anchor="middle" font-size="12" font-weight="800" fill="#ffffff" font-family="sans-serif">CLIENT</text>
+    <!-- Speech bubble near YOU -->
+    <rect x="122" y="14" width="96" height="30" rx="12" fill="#eef9ee" stroke="#4aa956" stroke-width="2"/>
+    <polygon points="134,44 124,52 146,44" fill="#eef9ee" stroke="#4aa956" stroke-width="2" stroke-linejoin="round"/>
+    <line x1="133" y1="43" x2="147" y2="43" stroke="#eef9ee" stroke-width="3"/>
+    <text x="170" y="34" text-anchor="middle" font-size="13" font-weight="800" fill="#2b6e33" font-family="sans-serif">&quot; . . . ? &quot;</text>
+    <!-- Dashed reference line from CLIENT card height -->
+    <line x1="178" y1="88" x2="282" y2="88" stroke="#3b6ea5" stroke-width="2" stroke-dasharray="6 5" opacity="0.65"/>
+    <!-- Vertical height comparison arrows between YOU and CLIENT -->
+    <line x1="230" y1="54" x2="230" y2="122" stroke="#d97b38" stroke-width="2.5" stroke-linecap="round"/>
+    <polygon points="230,48 224,59 236,59" fill="#d97b38"/>
+    <polygon points="230,128 224,117 236,117" fill="#d97b38"/>
+    <circle cx="230" cy="88" r="13" fill="#fff4e5" stroke="#d97b38" stroke-width="2"/>
+    <text x="230" y="93" text-anchor="middle" font-size="14" font-weight="800" fill="#b85d19" font-family="sans-serif">?</text>
+    <!-- YOU: two hands holding business card -->
+    <rect x="16" y="72" width="54" height="34" rx="10" fill="#4aa956" stroke="#3b2616" stroke-width="2"/>
+    <ellipse cx="78" cy="82" rx="15" ry="9" fill="#ffe1c4" stroke="#3b2616" stroke-width="2"/>
+    <ellipse cx="78" cy="100" rx="15" ry="9" fill="#ffe1c4" stroke="#3b2616" stroke-width="2"/>
+    <rect x="82" y="61" width="96" height="54" rx="7" fill="#ffffff" stroke="#3b2616" stroke-width="2.2"/>
+    <rect x="92" y="71" width="20" height="16" rx="3" fill="#d6f0d8"/>
+    <line x1="118" y1="77" x2="166" y2="77" stroke="#5a3d24" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="118" y1="87" x2="154" y2="87" stroke="#9e876d" stroke-width="2" stroke-linecap="round"/>
+    <line x1="92" y1="99" x2="164" y2="99" stroke="#c8b99e" stroke-width="2" stroke-linecap="round"/>
+    <ellipse cx="90" cy="80" rx="9" ry="5.5" fill="#ffe1c4" stroke="#3b2616" stroke-width="1.8"/>
+    <ellipse cx="90" cy="102" rx="9" ry="5.5" fill="#ffe1c4" stroke="#3b2616" stroke-width="1.8"/>
+    <!-- CLIENT: two hands holding business card at reference height -->
+    <rect x="390" y="72" width="54" height="34" rx="10" fill="#3b6ea5" stroke="#3b2616" stroke-width="2"/>
+    <ellipse cx="382" cy="82" rx="15" ry="9" fill="#ffe1c4" stroke="#3b2616" stroke-width="2"/>
+    <ellipse cx="382" cy="100" rx="15" ry="9" fill="#ffe1c4" stroke="#3b2616" stroke-width="2"/>
+    <rect x="282" y="61" width="96" height="54" rx="7" fill="#ffffff" stroke="#3b2616" stroke-width="2.2"/>
+    <rect x="348" y="71" width="20" height="16" rx="3" fill="#d8e9fa"/>
+    <line x1="294" y1="77" x2="342" y2="77" stroke="#5a3d24" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="306" y1="87" x2="342" y2="87" stroke="#9e876d" stroke-width="2" stroke-linecap="round"/>
+    <line x1="294" y1="99" x2="366" y2="99" stroke="#c8b99e" stroke-width="2" stroke-linecap="round"/>
+    <ellipse cx="370" cy="80" rx="9" ry="5.5" fill="#ffe1c4" stroke="#3b2616" stroke-width="1.8"/>
+    <ellipse cx="370" cy="102" rx="9" ry="5.5" fill="#ffe1c4" stroke="#3b2616" stroke-width="1.8"/>
+    <!-- Labels below -->
+    <text x="130" y="150" text-anchor="middle" font-size="11.5" font-weight="700" fill="#6b5642" font-family="sans-serif">YOUR CARD</text>
+    <text x="330" y="150" text-anchor="middle" font-size="11.5" font-weight="700" fill="#6b5642" font-family="sans-serif">CLIENT CARD</text>
+  </svg>`,
+  meishi_order: `<svg viewBox="0 0 460 132" width="460" height="132" role="img" aria-label="Business card exchange scene diagram">
+    <rect x="4" y="4" width="452" height="124" rx="14" fill="#fffdf8" stroke="#e8dcc2" stroke-width="2"/>
+    <!-- Wooden meeting table -->
+    <rect x="34" y="78" width="392" height="36" rx="10" fill="#e7c796" stroke="#8c6239" stroke-width="2"/>
+    <line x1="48" y1="90" x2="412" y2="90" stroke="#d4ad75" stroke-width="1.5"/>
+    <!-- Left card (YOU) -->
+    <rect x="64" y="24" width="84" height="46" rx="6" fill="#ffffff" stroke="#3e9447" stroke-width="2.2"/>
+    <line x1="76" y1="38" x2="132" y2="38" stroke="#3e9447" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="76" y1="49" x2="120" y2="49" stroke="#9eb89e" stroke-width="2" stroke-linecap="round"/>
+    <line x1="76" y1="59" x2="136" y2="59" stroke="#c8d9c8" stroke-width="1.8" stroke-linecap="round"/>
+    <text x="106" y="18" text-anchor="middle" font-size="11" font-weight="800" fill="#3e9447" font-family="sans-serif">YOU</text>
+    <!-- Exchange arrows -->
+    <path d="M162 40 L198 40" stroke="#d97b38" stroke-width="2.5" stroke-linecap="round"/>
+    <polygon points="204,40 194,35 194,45" fill="#d97b38"/>
+    <path d="M198 54 L162 54" stroke="#3b6ea5" stroke-width="2.5" stroke-linecap="round"/>
+    <polygon points="156,54 166,49 166,59" fill="#3b6ea5"/>
+    <!-- Right card (CLIENT) -->
+    <rect x="214" y="24" width="84" height="46" rx="6" fill="#ffffff" stroke="#3b6ea5" stroke-width="2.2"/>
+    <line x1="226" y1="38" x2="282" y2="38" stroke="#3b6ea5" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="226" y1="49" x2="270" y2="49" stroke="#8aa8c7" stroke-width="2" stroke-linecap="round"/>
+    <line x1="226" y1="59" x2="286" y2="59" stroke="#bdd0e3" stroke-width="1.8" stroke-linecap="round"/>
+    <text x="256" y="18" text-anchor="middle" font-size="11" font-weight="800" fill="#3b6ea5" font-family="sans-serif">CLIENT</text>
+    <!-- Card placed on table -->
+    <rect x="196" y="85" width="54" height="22" rx="4" fill="#ffffff" stroke="#5a3d24" stroke-width="1.8"/>
+    <line x1="204" y1="93" x2="240" y2="93" stroke="#5a3d24" stroke-width="1.8" stroke-linecap="round"/>
+    <line x1="204" y1="100" x2="232" y2="100" stroke="#9e876d" stroke-width="1.5" stroke-linecap="round"/>
+    <!-- Card case on right of table -->
+    <rect x="330" y="38" width="76" height="48" rx="8" fill="#8c6239" stroke="#3b2616" stroke-width="2"/>
+    <rect x="330" y="38" width="76" height="16" rx="6" fill="#a8794c" stroke="#3b2616" stroke-width="1.8"/>
+    <rect x="360" y="50" width="16" height="7" rx="3" fill="#f3c94b" stroke="#3b2616" stroke-width="1.4"/>
+    <text x="368" y="102" text-anchor="middle" font-size="11" font-weight="800" fill="#5a3d24" font-family="sans-serif">CARD CASE</text>
+    <text x="122" y="102" text-anchor="middle" font-size="11" font-weight="800" fill="#5a3d24" font-family="sans-serif">TABLE</text>
+  </svg>`
+};
+function renderFig(fig, cap){
+  if(!fig || !FIGS[fig]) return '';
+  return `<div class="qfig">${FIGS[fig]}${cap?`<div class="qfig-cap">${R(cap)}</div>`:''}</div>`;
 }
 function confetti(){ const ems=['🍃','🌰','🌸','⭐','🍀']; for(let i=0;i<26;i++){ const e=document.createElement('div');
   e.className='conf'; e.textContent=ems[i%ems.length]; e.style.left=(Math.random()*100)+'vw';
@@ -624,7 +714,7 @@ function mcqEl(c,k,q,tagtxt,n){
   const el=document.createElement('div'); el.className='quiz';
   const order=shuffle(q.options.map((_,i)=>i));   // 選択肢の順番をシャッフル（正解の位置がAに偏らないように）
   el.innerHTML=`<div class="qtop"><span class="qbadge">Q${n}</span><span class="qtag ${solved?'done':'mcq'}">${solved?R(U.clear):tagtxt}</span></div>
-    <div class="qq">${R(q.q)}</div>
+    <div class="qq">${R(q.q)}</div>${renderFig(q.fig,q.figCap)}
     <div class="opts">${order.map((oi,pos)=>`<button class="opt ${solved&&oi===q.answer?'correct':''}" data-o="${oi}" ${solved?'disabled':''}>
       <span class="mk">${'ABCDEF'[pos]}</span><span>${R(q.options[oi])}</span></button>`).join('')}</div>
     <div class="exp ${solved?'show':''}"><b>${R(U.explainLabel)}</b>${R(q.explain)}</div>`;
@@ -704,7 +794,7 @@ function renderOrder(c,si,s,n){
   if(!solved && order.every((o,i)=>o.ci===i)) order.push(order.shift());
   const el=document.createElement('div'); el.className='quiz';
   el.innerHTML=`<div class="qtop"><span class="qbadge">Q${n}</span><span class="qtag ${solved?'done':'order'}">${solved?R(U.clear):R(U.tagOrder)}</span></div>
-    <div class="qq">${R(s.prompt)}</div><div class="tiles"></div>
+    <div class="qq">${R(s.prompt)}</div>${renderFig(s.fig,s.figCap)}<div class="tiles"></div>
     <button class="checkbtn">${R(U.check)}</button>
     <div class="exp ${solved?'show':''}"><b>${R(U.explainLabel)}</b>${R(s.explain)}</div>`;
   if(solved) el.querySelector('.checkbtn').classList.add('hidden');
