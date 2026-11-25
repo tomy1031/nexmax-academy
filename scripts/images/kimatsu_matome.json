@@ -13,9 +13,15 @@
     {
       "out": "kaisha_shirabekata",
       "dest": "public/img/hourensou/kimatsu/kaisha_shirabekata.webp",
-      "title": "会社の 調べかた（3つの 手順）",
-      "scene": "THE NEW ENGINEER sits at a wooden desk with a laptop that shows a simple company website (soft abstract blocks only) and holds a cream research sheet on a clipboard, a big magnifying glass beside him. Across the middle of the picture float three large numbered cream wooden labels from left to right, joined by thick soft arrows, so the order 1 → 2 → 3 is obvious. He looks focused and confident.",
-      "text": ["① 質問（しつもん）を 見（み）る", "② ページを 読（よ）む", "③ シートに 書（か）く"]
+      "title": "会社を 調べる 4つの ポイント",
+      "scene": "THE NEW ENGINEER sits at a wooden desk researching a company website on a laptop with a notebook, surrounded by four numbered cream cards showing the universal company research elements: what work they do, what they value, how they differ from other companies, and how to use your strengths.",
+      "text": [
+        "会社（かいしゃ）を調（しら）べる 4つのポイント",
+        "① 何（なん）の仕事（しごと）？",
+        "② 大切（たいせつ）な考（かんが）え",
+        "③ ほかとのちがい",
+        "④ 自分（じぶん）の力（ちから）の使（つか）いかた"
+      ]
     },
     {
       "out": "kaisha_gaiyou",
@@ -324,14 +330,12 @@
     {
       "out": "kuuki_kihon",
       "dest": "public/img/hourensou/kimatsu/kuuki_kihon.webp",
-      "title": "空気を 読む 4ステップ",
-      "scene": "Four steps: observe, notice, act, check the mood; plus reminder that your own opinion matters too.",
+      "title": "空気を 読む（相手の ようすを 見る・見えない ルールを 覚える）",
+      "scene": "Left: noticing a struggling colleague's expression and thinking what they want you to do. Right: learning unwritten rules while keeping your own opinion.",
       "text": [
-        "空気（くうき）を読（よ）む4ステップ",
-        "①見（み）る",
-        "②気（き）づく",
-        "③動（うご）く",
-        "④ようすを見（み）る",
+        "相手（あいて）のようすを見（み）る",
+        "何（なに）をしてほしい？",
+        "見（み）えないルールを覚（おぼ）える",
         "自分（じぶん）の意見（いけん）も大切（たいせつ）！"
       ]
     },
@@ -351,7 +355,7 @@
       "out": "kuuki_seki",
       "dest": "public/img/hourensou/kimatsu/kuuki_seki.webp",
       "title": "席の 順番（上座・下座）と 車",
-      "scene": "Left: meeting room kamiza vs shimoza. Right: taxi back seat vs boss driving front passenger seat.",
+      "scene": "Left: meeting room with ONE single door at bottom-left, kamiza farthest from door and shimoza nearest door. Right: taxi back seat vs boss driving front passenger seat.",
       "text": [
         "会議室（かいぎしつ）の席（せき）",
         "上座（かみざ）",
@@ -364,12 +368,12 @@
     {
       "out": "kuuki_kotoba",
       "dest": "public/img/hourensou/kimatsu/kuuki_kotoba.webp",
-      "title": "日本の 遠回しな 言葉と 確認",
-      "scene": "Left: politely checking timeline after 'we will consider it'. Right: showing options A and B after 'make it nice'.",
+      "title": "別の 意味に 注意！（大丈夫です・いい感じに）",
+      "scene": "Left: client politely waving hand saying 大丈夫です showing it can mean NO. Right: showing options A and B after 'make it nice'.",
       "text": [
-        "遠回（とおまわ）しな言葉（ことば）",
-        "検討（けんとう）します…",
-        "いつごろでしょうか？",
+        "別（べつ）の意味（いみ）に注意（ちゅうい）！",
+        "大丈夫（だいじょうぶ）です…",
+        "NOのときもある！",
         "例（れい）を出（だ）して確認（かくにん）",
         "いい感（かん）じに！",
         "AとB、どちらですか？"
@@ -378,15 +382,28 @@
     {
       "out": "kuuki_nomikai",
       "dest": "public/img/hourensou/kimatsu/kuuki_nomikai.webp",
-      "title": "飲み会と 謝罪の マナー",
-      "scene": "Left: asking before taking the last piece, non-alcoholic drinks OK. Right: apologizing first before explaining reason.",
+      "title": "飲み会の マナー（気くばりと 次の 朝の お礼）",
+      "scene": "Left: office drinking party asking before taking the last piece, non-alcoholic soft drink OK. Right: next morning greeting thanking the boss.",
       "text": [
         "飲（の）み会（かい）",
         "いかがですか？",
+        "ソフトドリンク",
+        "朝（あさ）のお礼（れい）",
+        "昨日（きのう）はありがとうございました！"
+      ]
+    },
+    {
+      "out": "kuuki_shazai",
+      "dest": "public/img/hourensou/kimatsu/kuuki_shazai.webp",
+      "title": "お客さまへの 対応と 謝罪の マナー",
+      "scene": "Left: apologizing first deeply before explaining the reason. Right: seeing the client off until out of sight.",
+      "text": [
         "先（さき）に謝（あやま）る",
         "申（もう）し訳（わけ）ありません",
         "①謝（あやま）る",
-        "②理由（りゆう）"
+        "②理由（りゆう）",
+        "お見送（みおく）り",
+        "ありがとうございました！"
       ]
     },
     {

@@ -26,6 +26,8 @@ new Function("window", source)(win);
 
 interface Question {
   type: string;
+  fig?: string;
+  figCap?: string;
   q: string;
   options?: string[];
   answer?: number | string;
@@ -40,6 +42,8 @@ interface Question {
 }
 interface Special {
   type: string;
+  fig?: string;
+  figCap?: string;
   prompt: string;
   items: string[];
   buckets?: string[];
@@ -60,7 +64,7 @@ const RUBY = /\{([^{}|]+)\|([^{}|]+)\}/g;
 const outsideRuby = (text: string) => text.replace(RUBY, "");
 const plain = (text: string) => text.replace(RUBY, "$1");
 
-/** 画面に 出ない 値（絵の 道・色・id・英字の 札・入力の 受け入れ）。 */
+/** 画面に 出ない 値（絵の 道・色・id・英字の 札・SVG図解のID・入力の 受け入れ）。 */
 const SKIP = new Set([
   "id",
   "image",
@@ -73,6 +77,7 @@ const SKIP = new Set([
   "type",
   "en",
   "accept",
+  "fig",
 ]);
 
 function learnerTexts(): string[] {
@@ -137,6 +142,7 @@ describe("期末テスト対策の まとめページ：文言", () => {
       "ヘンディ",
       "藤木",
       "Japanese IT Pathway",
+      "遠回し",
     ]) {
       expect(all, `「${name}」が 出て いる`).not.toContain(name);
     }
@@ -223,6 +229,22 @@ describe("期末テスト対策の まとめページ：もんだいの 形", ()
         for (const block of cart.explanation) {
           expect(block.image, block.heading).toBeTruthy();
           expect(existsSync(join("public", block.image ?? "")), block.image).toBe(true);
+        }
+      });
+
+      it("SVG 図解の ID が HTML の FIGS に あり、SVG 内に 漢字が 無い", () => {
+        const html = readFileSync(join(DIR, "kimatsu_matome.html"), "utf8");
+        const figs = [
+          ...cart.questions.map((q) => q.fig),
+          ...cart.special.map((s) => s.fig),
+        ].filter((v): v is string => Boolean(v));
+        for (const figId of figs) {
+          expect(html, `SVG 図解 ${figId} が 見つからない`).toContain(`${figId}: \``);
+        }
+        const figsMatch = html.match(/const FIGS = \{([\s\S]*?)\n\};/);
+        if (figsMatch) {
+          const svgBlock = figsMatch[1] ?? "";
+          expect([...svgBlock].filter((char) => KANJI.test(char))).toEqual([]);
         }
       });
     });
