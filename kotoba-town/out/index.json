@@ -9323,5 +9323,11 @@
   "seconds": 5.041958,
   "model": "gemini-3.8-live",
   "transcript": " いっかいの かいだんの うしろに おいて ください。おねがいしますね。"
+ },
+ "l01b/n1_kh_0": {
+  "hash": "090ba915ab",
+  "seconds": 5.358125,
+  "model": "gemini-3.8-live",
+  "transcript": "わたしはミンです。ベトナムじんです。"
  }
 }
