@@ -35,8 +35,12 @@ import { fillinSlots, type FillinSlot } from "@/lib/quiz/fillin";
 import {
   fillinAiMayAccept,
   fillinContentMatches,
+  fillinMissOf,
   fillinNegationAgrees,
+  fillinSpellings,
+  type FillinMiss,
 } from "@/lib/quiz/fillin-match";
+import type { FuriganaEntry } from "@/lib/text/furigana";
 import { answerMatches, normalizeReading } from "@/lib/text/normalize";
 
 /**
@@ -586,8 +590,17 @@ export function correctAnswerText(question: QuizQuestion): string {
  *
  * **1字1句 同じで なくて よい**（2026-10-26 の 指定「システム管理部佐藤さん」は 誤りでは ない）。
  * 助詞・呼び方・ていねいな 形・時刻の 書き方の ちがいは `fillinContentMatches` が 通す。
+ *
+ * `readings`（正解の 漢字と 読み・`answerReadings`）を 渡すと、**漢字を ひらがな・カタカナで
+ * 書いた もの**も ⭕に する（2026-11-27 の 指定「ひらがなを使っていたりカタカナを使っている
+ * ものは許容して欲しい」）。画面（`mail-question`）が 教材の 読み辞書から 作って 渡す。
+ * 渡さない 採点（`gradeDraft`）は 字の まま——チェックの ⭕に そろえる（`withCheck`）ので ずれない。
  */
-export function fillinSlotOk(slot: FillinSlot, input: string): boolean {
+export function fillinSlotOk(
+  slot: FillinSlot,
+  input: string,
+  readings: readonly FuriganaEntry[] = [],
+): boolean {
   const written = input.trim();
   if (written === "") return false;
   /*
@@ -599,13 +612,61 @@ export function fillinSlotOk(slot: FillinSlot, input: string): boolean {
    * 打ち消しの 数は どちらの 見かたでも 合わせる。包含だけだと「サーバーの エラーでは ない」が
    * 「サーバーの エラー」を 含むので ⭕に なって いた（2026-10-26 の コード検収）。
    */
-  return fillinSlotFits(
-    slot,
-    written,
-    (answer) =>
-      fillinNegationAgrees(answer, written) &&
-      (answerMatches(written, [answer]) || fillinContentMatches(answer, written)),
+  return fillinSlotFits(slot, written, (answer) => fillinAnswerHits(answer, written, readings), {
+    readings,
+  });
+}
+
+/** 正解 1つに 当たるか（字の まま か、読みに そろえた 形で）。長さは 見ない。 */
+function fillinAnswerHits(
+  answer: string,
+  written: string,
+  readings: readonly FuriganaEntry[],
+): boolean {
+  return fillinSpellings(answer, written, readings).some(
+    ([want, have]) =>
+      fillinNegationAgrees(want, have) &&
+      (answerMatches(have, [want]) || fillinContentMatches(want, have)),
   );
+}
+
+/**
+ * 欄が ✗の **わけ**（⭕なら null）。画面の「なおすところ」の 見出しに 出す
+ *（2026-11-27 の 指定「何が間違っているのか明確になるようなメッセージを表示」）。
+ *
+ * - `otherSlot` … **となりの 欄の 中身**を 書いて いる（変更前と 変更後の 入れちがい など）
+ * - `copied` … メモを そのまま 写して いる（文 1つぶん（`AI_SENTENCE_FLOOR`）より 長い）
+ * - `tooLong` … 中身は 入って いるが、この 欄には 長すぎる
+ * - それ以外 … `fillinMissOf` の わけ（数字・日・朝夜・打ち消し・ことば）
+ */
+export type FillinSlotMiss =
+  | { readonly kind: "otherSlot"; readonly label: string }
+  | { readonly kind: "copied" }
+  | { readonly kind: "tooLong" }
+  | { readonly kind: FillinMiss };
+
+export function fillinSlotMiss(
+  slots: readonly FillinSlot[],
+  index: number,
+  input: string,
+  readings: readonly (readonly FuriganaEntry[])[] = [],
+): FillinSlotMiss | null {
+  const slot = slots[index];
+  if (!slot) return null;
+  const own = readings[index] ?? [];
+  if (fillinSlotOk(slot, input, own)) return null;
+  const written = input.trim();
+  const other = slots.findIndex(
+    (one, i) => i !== index && fillinSlotOk(one, written, readings[i] ?? []),
+  );
+  if (other >= 0) return { kind: "otherSlot", label: slots[other]?.label ?? "" };
+  if (normalizeReading(written).length > Math.max(AI_SENTENCE_FLOOR, slotLengthLimit(slot, own))) {
+    return { kind: "copied" };
+  }
+  if ([slot.answer, ...slot.accept].some((answer) => fillinAnswerHits(answer, written, own))) {
+    return { kind: "tooLong" };
+  }
+  return { kind: fillinMissOf(slot.answer, written, own) };
 }
 
 /**
@@ -626,14 +687,21 @@ const AI_SENTENCE_FLOOR = 40;
  * 機械では 見分けられない ので AIに まかせる。
  * ただし 数字と 日にちが ちがう もの・メモを 丸ごと 貼った ものは、AIが 何と 言っても ✗。
  */
-export function fillinSlotAiMayAccept(slot: FillinSlot, input: string): boolean {
+export function fillinSlotAiMayAccept(
+  slot: FillinSlot,
+  input: string,
+  readings: readonly FuriganaEntry[] = [],
+): boolean {
   const written = input.trim();
   if (written === "") return false;
   return fillinSlotFits(
     slot,
     written,
-    (answer) => fillinAiMayAccept(answer, written),
-    AI_SENTENCE_FLOOR,
+    (answer) =>
+      fillinSpellings(answer, written, readings).some(([want, have]) =>
+        fillinAiMayAccept(want, have),
+      ),
+    { floor: AI_SENTENCE_FLOOR, readings },
   );
 }
 
@@ -643,20 +711,34 @@ export function fillinSlotAiMayAccept(slot: FillinSlot, input: string): boolean 
  * 前に ことばが 付く ぶん（「ユーザーが ログインできない こと」）は 通し、文を 丸ごと
  * 貼った ものは 通さない 幅に する。当たった 正解の うち **いちばん 長い もの**で 測る
  *（別の 言い方を 足した 教材で きつく ならない ように）。`floor` は 幅の 下限。
+ *
+ * 正解は **かなで 書いた 長さ**でも 測る（`readings`）——漢字を かなで 書くと 字が 増える
+ *（佐藤→さとう）ので、漢字の 長さだけで 測ると かなで 書いた 学生が 長さで 落ちる。
  */
 function fillinSlotFits(
   slot: FillinSlot,
   written: string,
   hits: (answer: string) => boolean,
-  floor = 0,
+  { floor = 0, readings = [] }: { floor?: number; readings?: readonly FuriganaEntry[] } = {},
 ): boolean {
   const matched = [slot.answer, ...slot.accept].filter(hits);
   if (matched.length === 0) return false;
-  const limit = Math.max(
-    floor,
-    Math.max(...matched.map((answer) => normalizeReading(answer).length)) * 2 + 8,
-  );
+  const limit = Math.max(floor, lengthLimit(matched, readings));
   return normalizeReading(written).length <= limit;
+}
+
+/** 正解（いくつか）から 決まる 長さの 幅（いちばん 長い 正解の 2倍＋8字）。 */
+function lengthLimit(answers: readonly string[], readings: readonly FuriganaEntry[]): number {
+  const lengthOf = (answer: string) =>
+    Math.max(
+      ...fillinSpellings(answer, answer, readings).map(([want]) => normalizeReading(want).length),
+    );
+  return Math.max(...answers.map(lengthOf)) * 2 + 8;
+}
+
+/** 欄の どの 正解でも 通らない 長さ（メモを 写したかを 見る）。 */
+function slotLengthLimit(slot: FillinSlot, readings: readonly FuriganaEntry[]): number {
+  return lengthLimit([slot.answer, ...slot.accept], readings);
 }
 
 /**

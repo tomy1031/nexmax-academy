@@ -3,12 +3,19 @@
 import { useMemo, useState } from "react";
 import type { QuizQuestion } from "@/content/schema";
 import { RubyText } from "@/components/ruby-text";
-import { fillinSlotAiMayAccept, fillinSlotOk } from "@/lib/quiz/draft";
+import {
+  fillinSlotAiMayAccept,
+  fillinSlotMiss,
+  fillinSlotOk,
+  type FillinSlotMiss,
+} from "@/lib/quiz/draft";
 import { fillinModelText, fillinSlots, fillinText } from "@/lib/quiz/fillin";
+import { answerReadings } from "@/lib/quiz/fillin-match";
+import { fieldAfter } from "@/lib/quiz/ai-review";
 import type { QuizDraft } from "@/lib/quiz/draft";
 import { aiReplyFurigana } from "@/lib/ai-kanji";
-import type { FuriganaIndex } from "@/lib/text/furigana";
-import { buildFuriganaIndex } from "@/lib/text/furigana";
+import type { FuriganaEntry, FuriganaIndex } from "@/lib/text/furigana";
+import { buildFuriganaIndex, mergeFuriganaEntries } from "@/lib/text/furigana";
 import { useAnswerCheck, useWarmOnReady } from "./answer-check";
 import { AiReviewCard } from "./ai-review-card";
 import { CheckButton, CheckMark } from "./check-parts";
@@ -48,6 +55,67 @@ const UI_FURIGANA = buildFuriganaIndex([
  * **ひらがなだけ**で 書く——AIの 索引に 頼らずに 読める ように。
  */
 const MEMO_AGAIN = "メモの ことばと ちがうようです。もう いちど メモを たしかめて ください。";
+
+/**
+ * **欄が ✗の わけ**を 学生が 読む 文に する（2026-11-27 の 指定「何が間違っているのか
+ * 明確になるようなメッセージを表示するようにしてください」）。
+ *
+ * それまでは AIの ひとことが 無いと「メモの ことばと ちがうようです」しか 出ず、数字が
+ * ちがうのか ことばが 足りないのか 分からなかった。アプリは 何が 合わないかを 知って いる
+ *（`fillinSlotMiss`）ので、それを そのまま 言う。**答え（正解の ことば・数字）は 書かない**。
+ */
+function missNote(miss: FillinSlotMiss, hidden: boolean): string {
+  switch (miss.kind) {
+    case "otherSlot":
+      return `【${miss.label}】に 書く ことが 入って います。この 欄に 入る ことを メモから さがして ください。`;
+    case "copied":
+      return "メモの 文を そのまま 写して います。この 欄に 要る ところだけ 書いて ください。";
+    case "tooLong":
+      return "この 欄には 長すぎます。要る ことだけを みじかく 書いて ください。";
+    case "numberMissing":
+      return "数字（時間・日にち）が 書いて ありません。メモから 数字を さがして ください。";
+    case "number":
+      return "数字（時間・日にち）が メモと ちがいます。メモの 数字を もう いちど 見て ください。";
+    case "dayMissing":
+      return "いつの ことか（今日・明日・曜日）が 書いて ありません。";
+    case "day":
+      return "いつの ことか（今日・明日・曜日）が メモと ちがいます。";
+    case "partMissing":
+      return "朝か 夜かが 書いて ありません。";
+    case "part":
+      return "朝・夜が メモと ちがいます。";
+    case "negation":
+      return "「〜ない」が あるか ないかで、意味が メモと 反対に なって います。";
+    case "words":
+      return hidden
+        ? "下の ？？？の ところの ことばが 足りないか、メモと ちがいます。"
+        : "メモと ちがう ことばが あります。メモを もう いちど 見て ください。";
+  }
+}
+
+/** `missNote` の 文の 読み（教材の 辞書より 後ろに 重ねて こちらを 勝たせる）。 */
+const MISS_FURIGANA: readonly FuriganaEntry[] = [
+  ["書", "か"],
+  ["入", "はい"],
+  ["欄", "らん"],
+  ["文", "ぶん"],
+  ["写", "うつ"],
+  ["要", "い"],
+  ["数字", "すうじ"],
+  ["時間", "じかん"],
+  ["日", "ひ"],
+  ["今日", "きょう"],
+  ["明日", "あした"],
+  ["曜日", "ようび"],
+  ["朝", "あさ"],
+  ["夜", "よる"],
+  ["意味", "いみ"],
+  ["反対", "はんたい"],
+  ["見", "み"],
+  ["下", "した"],
+  ["足", "た"],
+  ["長", "なが"],
+];
 
 type Mail = Extract<QuizQuestion, { type: "fillin" }>;
 
@@ -105,6 +173,20 @@ export function MailQuestion({
     () => buildFuriganaIndex(aiReplyFurigana(furigana.entries)),
     [furigana],
   );
+  /** ✗の わけ（`missNote`）を 描く 索引。欄の 名前（教材）も 入るので 教材の 辞書に 重ねる。 */
+  const reasonFurigana = useMemo(
+    () => buildFuriganaIndex(mergeFuriganaEntries(aiFurigana.entries, MISS_FURIGANA)),
+    [aiFurigana],
+  );
+  /*
+   * 欄ごとの **正解の 漢字と 読み**。漢字を ひらがな・カタカナで 書いた 欄も ⭕に する
+   *（2026-11-27 の 指定「ひらがなを使っていたりカタカナを使っているものは許容して欲しい」）。
+   * 読みは 教材の 読み辞書から 取る——画面の ふりがなと 同じ 読み。
+   */
+  const readings = useMemo(
+    () => slots.map((one) => answerReadings([one.answer, ...one.accept], furigana)),
+    [slots, furigana],
+  );
 
   const empty = inputs.every((value) => value.trim() === "");
   const filled = inputs.every((value) => value.trim() !== "");
@@ -129,14 +211,21 @@ export function MailQuestion({
      * id は 欄の 並び（`fillinSlots`）で 付ける——名前が 同じ 欄が あっても ずれない。
      */
     const items = slots.map((slot, i) => {
-      const ok = fillinSlotOk(slot, inputs[i] ?? "");
+      const value = (inputs[i] ?? "").trim();
+      const own = readings[i] ?? [];
+      const ok = fillinSlotOk(slot, value, own);
+      const miss = ok ? null : fillinSlotMiss(slots, i, value, readings);
       return {
         id: `f${i + 1}`,
         label: slot.label,
-        value: (inputs[i] ?? "").trim(),
+        value,
         answer: slot.answer,
         ok,
-        aiJudges: !ok && fillinSlotAiMayAccept(slot, inputs[i] ?? ""),
+        aiJudges: !ok && fillinSlotAiMayAccept(slot, value, own),
+        readings: own,
+        ...(miss
+          ? { reason: missNote(miss, fieldAfter(slot.answer, value, own).includes("？？？")) }
+          : {}),
       };
     });
     void run({
@@ -293,6 +382,7 @@ export function MailQuestion({
               position={position}
               furigana={furigana}
               aiFurigana={aiFurigana}
+              reasonFurigana={reasonFurigana}
               gated
               fallback={MEMO_AGAIN}
             />

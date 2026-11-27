@@ -17,8 +17,16 @@
  *    ものは AIでも ⭕に しない**——機械が 確かに 見られる ところは 機械が 守る
  *
  * どちらも **メモを 丸ごと 貼った もの**は 通さない（長さの 見張りは `fillinSlotOk`）。
+ *
+ * ## ひらがな・カタカナで 書いた ものも 同じ 中身（2026-11-27 の 指定）
+ * 「もう少しひらがなを使っていたりカタカナを使っているものは許容して欲しいです」。
+ * カタカナと ひらがなの ちがいは `normalizeReading` が もともと そろえる（サーバー＝さーばー）。
+ * **漢字を かなで 書いた もの**（さとうさん＝佐藤さん・あした＝明日）は 字が ちがうので、
+ * 正解の 漢字を 読み辞書の 読みに 置きかえて から もう いちど くらべる（`fillinSpellings`）。
+ * 時刻・日・朝夜の かな（15じ・ごご・らいしゅう・あさ）は `contentForm` が 漢字に そろえる。
  */
 
+import { annotateRuby, type FuriganaEntry, type FuriganaIndex } from "@/lib/text/furigana";
 import { normalizeReading } from "@/lib/text/normalize";
 
 /**
@@ -28,7 +36,8 @@ import { normalizeReading } from "@/lib/text/normalize";
  * 部長・課長は 落とさない——「営業部長」の「部」まで 消えて、部署が 合わなく なる
  *（2026-10-26 の コード検収）。役職の 言いかえは AIが 見る。
  */
-const ADDRESS = /株式会社|みなさま|みなさん|皆様|皆さん|みんな|各位|まねーじゃー|さま|さん|様|殿/g;
+const ADDRESS =
+  /株式会社|かぶしきがいしゃ|みなさま|みなさん|皆様|皆さん|みんな|各位|まねーじゃー|さま|さん|様|殿/g;
 
 /** ていねいな 形・たのむ 形を ふつうの 形に そろえる（並びの 順に 当てる）。 */
 const PLAIN_FORMS: readonly (readonly [RegExp, string])[] = [
@@ -43,6 +52,77 @@ const PLAIN_FORMS: readonly (readonly [RegExp, string])[] = [
   [/てる/g, "ている"],
   [/でる/g, "でいる"],
 ];
+
+/** 月の 中の 日の 読み（5がつ とおか＝5月10日）。 */
+const DAY_OF_MONTH: Readonly<Record<string, number>> = {
+  ついたち: 1,
+  ふつか: 2,
+  みっか: 3,
+  よっか: 4,
+  いつか: 5,
+  むいか: 6,
+  なのか: 7,
+  ようか: 8,
+  ここのか: 9,
+  とおか: 10,
+  はつか: 20,
+};
+
+/**
+ * 曜日の 読み。かようび・どようび は び まで 見る（「かよう（通う）」「など よう…」と
+ * まぎれる ため）。
+ */
+const WEEKDAY_KANA: Readonly<Record<string, string>> = {
+  げつ: "月",
+  すい: "水",
+  もく: "木",
+  きん: "金",
+  にち: "日",
+};
+
+/**
+ * **かなで 書いた 時刻・日・曜日を 漢字に そろえる**（2026-11-27 の 指定・ひらがなを 許す）。
+ * `normalizeReading` の あと（ぜんぶ ひらがな）に 当てる。数字の すぐ あとの じ・ふん だけを
+ * 時刻と みる——「じ」だけで 置きかえると ことばの 中の じ まで 変わる。
+ */
+const KANA_WHEN: readonly (readonly [RegExp, string | ((...parts: string[]) => string)])[] = [
+  [/しょうご/g, "正午"],
+  [/ごご/g, "午後"],
+  [/ごぜん/g, "午前"],
+  [/(\d)じかん/g, "$1時間"],
+  [/(\d)じ/g, "$1時"],
+  [/(\d)(?:ふん|ぷん)/g, "$1分"],
+  [/時はん/g, "時半"],
+  [/(\d)がつ/g, "$1月"],
+  [
+    /月(ついたち|ふつか|みっか|よっか|いつか|むいか|なのか|ようか|ここのか|とおか|はつか)/g,
+    (_whole, day: string) => `月${DAY_OF_MONTH[day] ?? ""}日`,
+  ],
+  [/(\d)にち/g, "$1日"],
+  [/あさって/g, "明後日"],
+  [/きのう/g, "昨日"],
+  [/こんしゅう/g, "今週"],
+  [/らいしゅう/g, "来週"],
+  [/せんしゅう/g, "先週"],
+  [/こんげつ/g, "今月"],
+  [/らいげつ/g, "来月"],
+  [/かようび/g, "火曜"],
+  [/どようび/g, "土曜"],
+  [/(げつ|すい|もく|きん|にち)ようび?/g, (_whole, day: string) => `${WEEKDAY_KANA[day]}曜`],
+];
+
+/**
+ * かなで 書いた 朝・昼・夕方・夜。**日や 時刻の となりの ときだけ**（「〜による」の よる を
+ * 夜に しない）。日の ことばを そろえた あとに 当てる（あしたの あさ → 明日の 朝）。
+ */
+const KANA_PART: Readonly<Record<string, string>> = {
+  ゆうがた: "夕方",
+  あさ: "朝",
+  ひる: "昼",
+  よる: "夜",
+};
+const KANA_PART_AFTER_DAY = /(?<=(?:今日|明日|昨日|曜|日)の?)(ゆうがた|あさ|ひる|よる)/g;
+const KANA_PART_BEFORE_TIME = /(ゆうがた|あさ|ひる|よる)(?=の?\d)/g;
 
 /** 同じ 日を 指す 言い方（5/10＝5月10日・金曜日＝金曜 も ここで そろえる）。 */
 const SAME_DAY: readonly (readonly [RegExp, string])[] = [
@@ -128,7 +208,13 @@ export function contentForm(text: string): string {
   const ranged = text.normalize("NFKC").replace(/(\d)\s*[~〜\-−‐–—ー]\s*(?=\d)/g, "$1から");
   let form = normalizeReading(ranged).replace(ADDRESS, "");
   for (const [from, to] of PLAIN_FORMS) form = form.replace(from, to);
+  for (const [from, to] of KANA_WHEN) {
+    form = typeof to === "string" ? form.replace(from, to) : form.replace(from, to);
+  }
   for (const [from, to] of SAME_DAY) form = form.replace(from, to);
+  form = form
+    .replace(KANA_PART_AFTER_DAY, (part) => KANA_PART[part] ?? part)
+    .replace(KANA_PART_BEFORE_TIME, (part) => KANA_PART[part] ?? part);
   form = normalizeTimes(form);
   for (const [from, to] of SAME_PART) form = form.replace(from, to);
   return form;
@@ -185,23 +271,47 @@ function subset(a: ReadonlySet<string>, b: ReadonlySet<string>): boolean {
  * 書いた ものや 朝夜を 書かなかった ものも 渡す。**正解と ちがう 日・朝夜**は 渡さない。
  */
 function timesAgree(answer: string, written: string, loose: boolean): boolean {
+  return whenMiss(answer, written, loose ? "loose" : "strict") === null;
+}
+
+/**
+ * 見かたの 強さ。`strict`＝アプリの ⭕、`loose`＝AIに 渡すか、`reason`＝✗の わけを 言う とき。
+ * `reason` は 数字を 24時間で くらべ、**正解に 無い 日・朝夜を 書いた ことは わけに しない**
+ *（「明日の 15:00開始に 変更」と 自分で 組み立てた 文に「いつが ちがう」と 言わない）。
+ */
+type WhenMode = "strict" | "loose" | "reason";
+
+/**
+ * 「いつ」の どこが 合わないか（合って いれば null）。`timesAgree` の 中身で、
+ * ✗の わけを 画面に 出す ときにも 使う（`fillinMissOf`）。
+ * 書いて いない（〜Missing）と、書いたが ちがう を 分ける——直す ことが ちがう。
+ */
+function whenMiss(answer: string, written: string, mode: WhenMode): FillinMiss | null {
+  const loose = mode === "loose";
+  /** 正解に 無い 日・朝夜を 書いたら ✗に するか。 */
+  const extrasMiss = mode === "strict";
   const wantNumbers = numbersOf(answer, loose);
-  if (wantNumbers.size > 0 && !sameSet(wantNumbers, numbersOf(written, loose))) return false;
+  if (wantNumbers.size > 0) {
+    const gotNumbers = numbersOf(written, loose);
+    if (!sameSet(wantNumbers, gotNumbers)) {
+      return gotNumbers.size === 0 ? "numberMissing" : "number";
+    }
+  }
 
   const wantDays = wordsOf(answer, DAY_WORDS);
   const gotDays = wordsOf(written, DAY_WORDS);
   if (wantDays.size === 0) {
-    if (!loose && gotDays.size > 0) return false;
+    if (extrasMiss && gotDays.size > 0) return "day";
   } else if (!sameSet(wantDays, gotDays)) {
     const todayLeftOut = wantDays.size === 1 && wantDays.has("今日") && gotDays.size === 0;
-    if (!todayLeftOut) return false;
+    if (!todayLeftOut) return gotDays.size === 0 ? "dayMissing" : "day";
   }
 
   const wantParts = wordsOf(answer, PART_WORDS);
   const gotParts = wordsOf(written, PART_WORDS);
-  if (wantParts.size === 0) return loose || gotParts.size === 0;
-  if (!subset(gotParts, wantParts)) return false;
-  return loose || gotParts.size > 0 || /\d+:\d{2}/.test(answer);
+  if (wantParts.size === 0) return !extrasMiss || gotParts.size === 0 ? null : "part";
+  if (!subset(gotParts, wantParts)) return "part";
+  return loose || gotParts.size > 0 || /\d+:\d{2}/.test(answer) ? null : "partMissing";
 }
 
 /**
@@ -267,4 +377,91 @@ export function fillinAiMayAccept(answer: string, written: string): boolean {
   const form = contentForm(written);
   if (form === "") return false;
   return timesAgree(contentForm(answer), form, true);
+}
+
+/**
+ * 欄が ✗に なった **わけ**（画面に「何が ちがうか」を はっきり 出す・2026-11-27 の 指定
+ *「何が間違っているのか明確になるようなメッセージを表示するようにしてください」）。
+ *
+ * - number／numberMissing … 数字（時刻・日にち）が ちがう／書いて いない
+ * - day／dayMissing … 今日・明日・曜日が ちがう／書いて いない
+ * - part／partMissing … 朝・夜が ちがう／書いて いない
+ * - negation … 「〜ない」の ある・なしで 意味が 反対
+ * - words … 中身の ことばが 足りない・ちがう（どこかは `fieldAfter` の ？？？で 見せる）
+ */
+export type FillinMiss =
+  "number" | "numberMissing" | "day" | "dayMissing" | "part" | "partMissing" | "negation" | "words";
+
+/**
+ * 正解の **漢字の ことばと その 読み**（読み辞書から 取る・最長一致）。
+ *
+ * 数字を 含む もの（「月10日」＝がつとおか）は 取らない——数字が かなに なると、
+ * 数字の 見張り（`whenMiss`）が 効かなく なる。
+ */
+export function answerReadings(answers: readonly string[], index: FuriganaIndex): FuriganaEntry[] {
+  const found = new Map<string, string>();
+  for (const answer of answers) {
+    for (const segment of annotateRuby(answer, index)) {
+      if (segment.reading && !/\d/.test(segment.text)) found.set(segment.text, segment.reading);
+    }
+  }
+  return [...found.entries()];
+}
+
+/** 文の 中の 正解の 漢字を 読みに 置きかえる（長い ことばから）。 */
+function spellOut(text: string, readings: readonly FuriganaEntry[]): string {
+  let spelled = text;
+  for (const [surface, reading] of [...readings].sort((a, b) => b[0].length - a[0].length)) {
+    spelled = spelled.split(surface).join(reading);
+  }
+  return spelled;
+}
+
+/**
+ * くらべる 組（[正解, 書いた もの]）。**字の まま**と、正解の 漢字を **読みに そろえた もの**の 2つ。
+ *
+ * 書いた ほうにも 同じ 置きかえを かける——漢字と かなが 混ざって いても（システム管理部の
+ * さとうさん）同じ 形に なる。読み辞書が 無い ときは 字の まま だけ。
+ */
+export function fillinSpellings(
+  answer: string,
+  written: string,
+  readings: readonly FuriganaEntry[] = [],
+): (readonly [string, string])[] {
+  const pairs: (readonly [string, string])[] = [[answer, written]];
+  if (readings.length > 0) pairs.push([spellOut(answer, readings), spellOut(written, readings)]);
+  return pairs;
+}
+
+/**
+ * **書いた ものに 正解の ことばが 入って いるか**（`fieldAfter` が ？？？に するか 決める）。
+ * かなで 書いた ことば（さとう＝佐藤）も 入って いると みる。
+ */
+export function fillinHasChunk(
+  chunk: string,
+  written: string,
+  readings: readonly FuriganaEntry[] = [],
+): boolean {
+  return fillinSpellings(chunk, written, readings).some(([want, have]) => {
+    const form = contentForm(want);
+    return form === "" || contentForm(have).includes(form);
+  });
+}
+
+/**
+ * 欄が ✗の **わけ**（`fillinContentMatches` が false の とき）。
+ *
+ * 字の まま と 読みに そろえた もの の **どちらでも 合わない** ところを わけに する
+ *（片方で 合って いれば、そこは まちがいでは ない）。いつ → 打ち消し → ことば の 順。
+ */
+export function fillinMissOf(
+  answer: string,
+  written: string,
+  readings: readonly FuriganaEntry[] = [],
+): FillinMiss {
+  const spellings = fillinSpellings(answer, written, readings);
+  const whens = spellings.map(([a, w]) => whenMiss(contentForm(a), contentForm(w), "reason"));
+  if (whens.every((one) => one !== null)) return whens[0] ?? "words";
+  if (spellings.every(([a, w]) => !fillinNegationAgrees(a, w))) return "negation";
+  return "words";
 }

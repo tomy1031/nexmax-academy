@@ -40,7 +40,8 @@
 
 import { FORBIDDEN_LEARNER_WORDS, type QuizQuestion } from "@/content/schema";
 import { AI_KANJI_WORDS } from "@/lib/ai-kanji";
-import { contentForm } from "@/lib/quiz/fillin-match";
+import { fillinHasChunk } from "@/lib/quiz/fillin-match";
+import type { FuriganaEntry } from "@/lib/text/furigana";
 import { normalizeReading } from "@/lib/text/normalize";
 
 /** 見て もらう 単位（メールの 欄、または Slackの 観点）。 */
@@ -59,6 +60,17 @@ export interface ReviewItem {
    * 数字・日にちが ちがう 欄は false（`fillinSlotAiMayAccept`）。
    */
   readonly aiJudges?: boolean;
+  /**
+   * アプリが 見つけた **✗の わけ**（欄の ときだけ・学生が 読む 文）。「なおすところ」の
+   * 見出しに 出す（2026-11-27 の 指定「何が間違っているのか明確になるように」）。
+   * AIに つながらなくても 出る。
+   */
+  readonly reason?: string;
+  /**
+   * 正解の 漢字と その 読み（欄の ときだけ・`answerReadings`）。直した 形（`fieldAfter`）で、
+   * かなで 書いた ことば（さとう＝佐藤）を「書いて ある」と みる ため。
+   */
+  readonly readings?: readonly FuriganaEntry[];
 }
 
 export interface QuizReviewContext {
@@ -86,6 +98,8 @@ export interface ReviewItemResult {
   readonly ok: boolean;
   /** ひとこと（⭕なら よかった ところ・✗なら 足りない ところ）。空の ことも ある。 */
   readonly note: string;
+  /** アプリが 見つけた ✗の わけ（欄で ✗の ときだけ・`ReviewItem.reason`）。 */
+  readonly reason?: string;
   /*
    * ここから 3つは **✗の ときだけ**入る（「AIの ひょうか」の「なおすところ」・2026-10-26 の 指定）。
    * ⭕・AIに 見て もらえなかった 回は 空か 無い。
@@ -163,6 +177,7 @@ export const QUIZ_REVIEW_TOOL = {
                     "「中身で 見て ください」の 項目は、1字1句 同じで なくても 中身が 同じなら true。" +
                     "チャット（場面の メモ）や 正解と 同じ 言い方で なくて よい——" +
                     "言って いる 中身が メモと 合って いて、日本語として 不自然で なければ true。" +
+                    "**ひらがな・カタカナで 書いて いても（漢字で なくても）**、読みが 同じ ことばなら 同じ 中身。" +
                     "**それ以外で すでに ⭕✗が 決まって いる 項目は、その まま 返す**（変えない）。",
                 },
                 note: {
@@ -170,7 +185,9 @@ export const QUIZ_REVIEW_TOOL = {
                   description:
                     "ひとこと（1文・みじかく）。" +
                     "⭕の ときは **どこが よかったか**（学生の ことばを 引く）。" +
-                    "✗の ときは **何が 足りないか・どこが ちがうか**。" +
+                    "✗の ときは **何が 足りないか・どこが ちがうか**を はっきり 書く" +
+                    "（例「変更前の URLが 書いて ありません」「時間が メモと ちがいます」）。" +
+                    "「もう すこし」「わかりにくい」だけで 終わらせない。" +
                     "**答えその ものは 書かない**（学生が もう一度 考えられる ように）。",
                 },
                 before: {
@@ -223,7 +240,8 @@ export const QUIZ_REVIEW_TOOL = {
               "**中身は 合って いるのに 言い方が よくない ときだけ**、学生の 文を 職場で 通じる " +
               "日本語に 書き直した もの（ブラッシュアップ）。" +
               "学生が 書いた 中身と 順番は 残す。**書いて いない 中身（数・日時・名前）は 足さない**。" +
-              "言い方も よい ときや、中身が 足りない ときは **空の 文字列**に する。",
+              "言い方も よい ときや、中身が 足りない ときは **空の 文字列**に する。" +
+              "ひらがな・カタカナを 漢字に 直すだけの ときも 空の 文字列に する。",
           },
         },
         required: ["ok", "items", "polished", "grammar"],
@@ -265,6 +283,7 @@ export function buildQuizReviewPrompt(context: QuizReviewContext, kanjiRetry = f
         "助詞の 有無（の・が）・呼び方（さん／様）・ていねいな 形・ことばの 言いかえ・語順・こまかい ことばの 省略では ✗に しません。",
         "時刻の 書き方の ちがい（15時／15:00）、メモに ある 正しい 中身を 足した もの（正解「15:00」に「明日の 15時から」）、",
         "文の 形に した もの（「15:00に 変更を お願いします」）も ✗に しません。",
+        "漢字を ひらがな・カタカナで 書いた もの（「しすてむかんりぶの さとうさん」「あした 15じ」）も、読みが 同じなら 同じ 中身です。",
         "ちがう 人・ちがう もの・ちがう 日時・反対の 意味・正解の 大事な 中身が 欠けて いる・日本語として 意味が 通らない ときだけ false に します。",
         "「チャットと 同じ 言い方で ない」「正解と 書き方が ちがう」を ✗の 理由に しません。",
       );
@@ -334,6 +353,10 @@ export function buildQuizReviewPrompt(context: QuizReviewContext, kanjiRetry = f
     "- **チャット（場面の メモ）や お手本と 同じ 言い方で なくて よい**。学生が 自分の ことばで 組み立てた 文でも、",
     "  言って いる 中身が メモと 合って いて、日本語として 不自然で なければ ⭕です。",
     "  「チャットの とおりに 書いて いない」「お手本と 言い方が ちがう」は ✗の 理由に しません（note・ask にも 書きません）。",
+    "- **字の 種類（漢字・ひらがな・カタカナ）は 見ません**。漢字の ことばを ひらがなや カタカナで 書いた もの",
+    "  （さとうさん・サトウさん＝佐藤さん、あした＝明日、15じ＝15時、てすと＝テスト）も、読みが 同じなら 同じ 中身で ⭕です。",
+    "  のばす 音の 書き方（サーバー／さーばー）の ちがいも 同じです。",
+    "  「漢字で 書いて いない」「カタカナで 書く」は ✗の 理由にも、note・ask・grammar・polished にも しません。",
     "- 話しことば（〜けど・〜た・〜みたい）、ていねいで ない 形、助詞の ぬけ など **日本語の 文法だけ**の 問題なら、",
     "  その 項目は ⭕に して、grammar に 書きます（items の ✗にも ask にも しません）。",
     "  例: 「テストURLが変わったけど」は 何の 連絡か つたわるので「何の 連絡か」は ⭕。「〜けど」「〜た」は grammar。",
@@ -544,17 +567,23 @@ const FORM_ONLY_CHUNKS = new Set(["こと", "いる", "ある", "もう", "で�
  * 欄の 正解の かたまり ごとに、学生が その 欄に 書いて いれば その まま、書いて いなければ
  * ？？？ に する（助詞は 残す）。「システム管理部の 佐藤さん」に「佐藤さん」→「？？？の 佐藤さん」。
  * AIの 文を 隠す やりかたでは、空白の 位置を 変えた だけで 正解が 出て しまった。
+ *
+ * かなで 書いた ことば（「さとうさん」の さとう＝佐藤）も 書いて ある と みる（`readings`・
+ * 2026-11-27）。見せるのは 正解の 字なので、かなで 書いた 学生には 漢字の 形が 見える。
  */
-export function fieldAfter(answer: string, value: string): string {
-  const have = contentForm(value);
+export function fieldAfter(
+  answer: string,
+  value: string,
+  readings: readonly FuriganaEntry[] = [],
+): string {
   return answer
     .split(/\s+/)
     .filter((chunk) => chunk !== "")
     .map((chunk) => {
       if (FORM_ONLY_CHUNKS.has(chunk)) return chunk;
       const particle = chunk.match(TRAILING_PARTICLE)?.[0] ?? "";
-      const form = contentForm(chunk.slice(0, chunk.length - particle.length));
-      return form === "" || have.includes(form) ? chunk : `？？？${particle}`;
+      const core = chunk.slice(0, chunk.length - particle.length);
+      return fillinHasChunk(core, value, readings) ? chunk : `？？？${particle}`;
     })
     .join(" ");
 }
@@ -564,12 +593,13 @@ function fixOf(
   item: ReviewItem,
   fields: { before?: unknown; after?: unknown; ask?: unknown },
   written: string,
-): Pick<ReviewItemResult, "before" | "after" | "ask"> {
+): Pick<ReviewItemResult, "reason" | "before" | "after" | "ask"> {
   if (item.value !== undefined) {
     // 欄は 学生の 書いた ものが 分かって いる。写しも 直した 形も アプリが 作る
     return {
+      ...(item.reason ? { reason: item.reason } : {}),
       before: item.value,
-      after: fieldAfter(item.answer ?? "", item.value),
+      after: fieldAfter(item.answer ?? "", item.value, item.readings),
       ask: text(fields.ask),
     };
   }
@@ -616,6 +646,10 @@ function grammarOf(value: unknown): GrammarTip[] {
  * 「✗が 3つ」と「⭕ OKです。次の もんだいに 進めます」が **同じ 画面に 同時に 出る**
  *（2026-09-21 のコード検収で 実際に 描画して 確かめた 形）。規律1 の 逆——
  * 学習者は どちらを 信じれば よいか 分からなく なる。だから 観点は 空で 返す。
+ *
+ * ✗の 欄に アプリが 見つけた わけ（`reason`）が あれば、**わけと 直した 形も 出す**
+ *（2026-11-27 の 指定「何が間違っているのか明確に」）。AIに つながらない 端末でも、
+ *「数字が メモと ちがいます」「？？？の 佐藤さん」まで 分かる。
  */
 export function reviewWithoutAi(
   items: readonly ReviewItem[],
@@ -625,7 +659,12 @@ export function reviewWithoutAi(
     ok: okWithoutAi,
     items: items
       .filter((item) => item.ok !== undefined)
-      .map((item) => ({ id: item.id, ok: item.ok === true, note: "" })),
+      .map((item) => ({
+        id: item.id,
+        ok: item.ok === true,
+        note: "",
+        ...(item.ok !== true && item.reason ? fixOf(item, {}, "") : {}),
+      })),
     polished: "",
   };
 }
