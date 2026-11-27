@@ -15,11 +15,35 @@
  * ここで 弾くのが いちばん 軽い。
  */
 
+import { getSupabasePublicConfig } from "@/lib/env";
+
 /** Supabase SSR が置くセッションクッキーの名前（`sb-<ref>-auth-token`・分割時は `.0` などが付く）。 */
-const SUPABASE_AUTH_COOKIE = /^sb-.*-auth-token(\.\d+)?$/;
+const ANY_SUPABASE_AUTH_COOKIE = /^sb-.*-auth-token(\.\d+)?$/;
+
+/**
+ * **いまの** Supabase プロジェクトのセッションクッキーだけに当たる形。
+ *
+ * 2026-11-27（授業中）の事故: 11/21 に Supabase を新しいプロジェクトへ移したあと、
+ * 移す前にログインした人の端末には古いプロジェクトのクッキー（`sb-<古いref>-auth-token`）
+ * だけが残っていた。どの ref にも当たる形で見ていたので、タイトル画面は「ログインずみ」と
+ * 思って「つづきから」を出し、押した先ではミドルウェアが新しいプロジェクトのセッションを
+ * 見つけられずにタイトルへ戻す——を繰り返し、「つづきから が押せない」ように見えた。
+ *
+ * 名前の作り方は supabase-js の既定（`sb-${hostname の最初の区切り}-auth-token`）と同じ。
+ * Supabase の設定が無い（デモモード・設定を入れないテスト）ときは、これまでどおり ref を問わない。
+ */
+function authCookiePattern(): RegExp {
+  const cfg = getSupabasePublicConfig();
+  if (!cfg) return ANY_SUPABASE_AUTH_COOKIE;
+  const ref = new URL(cfg.url).hostname.split(".")[0] ?? "";
+  if (!ref) return ANY_SUPABASE_AUTH_COOKIE;
+  const escaped = ref.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(`^sb-${escaped}-auth-token(\\.\\d+)?$`);
+}
 
 export function hasAuthCookie(cookies: readonly { name: string }[]): boolean {
-  return cookies.some((cookie) => SUPABASE_AUTH_COOKIE.test(cookie.name));
+  const pattern = authCookiePattern();
+  return cookies.some((cookie) => pattern.test(cookie.name));
 }
 
 /** ブラウザ側の同じ判定。ログインしていない人に余計な仕事をさせないために使う。 */
