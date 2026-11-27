@@ -28,6 +28,11 @@ import { NO_COPY_PROPS } from "./copy-guard";
  * 「あなたの メッセージ」と「よかったところ」は 置かない（同日 あとの 指定「いったん削除で
  * お願いします」）。書いた ものは 入力欄に ある——やり直しの ときは 欄を うす赤に する（呼ぶ 側）。
  *
+ * なおすところ 1つずつに **どの 欄・どの 観点の 話か**（【宛先】）と **何が ちがうか**を
+ * はっきり 出す（2026-11-27 の 指定「何が間違っているのか明確になるようなメッセージを表示」）。
+ * 欄は アプリが 見つけた わけ（`reason`：数字が ちがう・ことばが 足りない など）を 見出しに し、
+ * AIの ひとことは その 下に 添える。
+ *
  * 初級（メール）と 上級（Slack）で **同じ 顔**に する（同じ 意味の ものに 2つの 顔を 持たせない）。
  */
 
@@ -49,6 +54,7 @@ export function AiReviewCard({
   gated,
   stale = false,
   fallback = "",
+  reasonFurigana,
 }: {
   check: AnswerCheck;
   /** 項目の id → 画面の 名前（観点・欄）。ひとことが 空の ときの 見出しに 使う。 */
@@ -64,6 +70,8 @@ export function AiReviewCard({
   stale?: boolean;
   /** ✗なのに ひとことが 無い（AIに つながらなかった）ときの 1行。 */
   fallback?: string;
+  /** アプリが 見つけた わけ（`reason`）の 読み辞書。無ければ `aiFurigana`。 */
+  reasonFurigana?: FuriganaIndex;
 }) {
   const ng = check.items.filter((one) => !one.ok);
   const grammar = check.grammar ?? [];
@@ -110,8 +118,13 @@ export function AiReviewCard({
                 key={one.id}
                 number={i + 1}
                 fix={one}
-                title={one.note !== "" ? one.note : withFallback(labels.get(one.id), fallback)}
-                titleIndex={one.note !== "" ? aiFurigana : furigana}
+                label={labels.get(one.id) ?? ""}
+                headline={headlineOf(one, fallback, {
+                  reason: reasonFurigana ?? aiFurigana,
+                  ai: aiFurigana,
+                  plain: furigana,
+                })}
+                furigana={furigana}
                 aiFurigana={aiFurigana}
               />
             ))}
@@ -126,10 +139,30 @@ export function AiReviewCard({
   );
 }
 
-/** ひとことが 無い ✗の 見出し（欄・観点の 名前 ＋ 逃げ道の 1行）。 */
-function withFallback(label: string | undefined, fallback: string): string {
-  if (!label) return fallback;
-  return fallback === "" ? label : `【${label}】${fallback}`;
+/** なおすところ 1つの 見出し（何が ちがうか）と、その 下に 添える AIの ひとこと。 */
+interface Headline {
+  readonly text: string;
+  readonly index: FuriganaIndex;
+  /** 見出しが アプリの わけの ときだけ、AIの ひとことを 下に 添える。 */
+  readonly sub: string;
+}
+
+/**
+ * 見出しを 決める。**アプリの わけ → AIの ひとこと → 逃げ道の 1行** の 順。
+ * アプリの わけ（数字が ちがう・ことばが 足りない）は 確かなので いちばん 上に 置き、
+ * AIの ひとことは 下に 添える（同じ ことを 2回 言う ときは 添えない）。
+ */
+function headlineOf(
+  fix: ReviewItemResult,
+  fallback: string,
+  index: { reason: FuriganaIndex; ai: FuriganaIndex; plain: FuriganaIndex },
+): Headline {
+  const reason = fix.reason ?? "";
+  if (reason !== "") {
+    return { text: reason, index: index.reason, sub: fix.note === reason ? "" : fix.note };
+  }
+  if (fix.note !== "") return { text: fix.note, index: index.ai, sub: "" };
+  return { text: fallback, index: index.plain, sub: "" };
 }
 
 function SectionTitle({ mark, color, text }: { mark: string; color: string; text: string }) {
@@ -171,16 +204,23 @@ function NumberBadge({ number, color }: { number: number; color: string }) {
 function FixRow({
   number,
   fix,
-  title,
-  titleIndex,
+  label,
+  headline,
+  furigana,
   aiFurigana,
 }: {
   number: number;
   fix: ReviewItemResult;
-  title: string;
-  titleIndex: FuriganaIndex;
+  /** どの 欄・観点の 話か（【宛先】）。 */
+  label: string;
+  headline: Headline;
+  /** 教材の 読み辞書（欄・観点の 名前）。 */
+  furigana: FuriganaIndex;
   aiFurigana: FuriganaIndex;
 }) {
+  /* 見出しが 無い（わけも ひとことも 逃げ道も 無い）ときは、名前を 見出しに する */
+  const title = headline.text !== "" ? headline : { text: label, index: furigana, sub: "" };
+  const showLabel = label !== "" && title.text !== label;
   /*
    * 写し（before）は 3つの 場合が ある: 無い（AIの 写しが 学生の 文に 見つからなかった
    * ——出さない）、空（AIが「書いて いない」と 言った）、文。直した 形が 無ければ 並びごと 出さない
@@ -193,9 +233,21 @@ function FixRow({
     <li className="rounded-xl bg-white p-3">
       <div className="flex items-start gap-2">
         <NumberBadge number={number} color="#f2697f" />
-        <p className="text-ink min-w-0 flex-1 pt-0.5 text-base leading-relaxed font-black">
-          <RubyText text={title} index={titleIndex} />
-        </p>
+        <div className="min-w-0 flex-1 pt-0.5">
+          {showLabel && (
+            <p className="text-sm font-black" style={{ color: NG_INK }}>
+              <RubyText text={`【${label}】`} index={furigana} />
+            </p>
+          )}
+          <p className="text-ink text-base leading-relaxed font-black">
+            <RubyText text={title.text} index={title.index} />
+          </p>
+          {title.sub !== "" && (
+            <p className="text-ink-soft mt-1 text-sm leading-relaxed font-bold">
+              <RubyText text={title.sub} index={aiFurigana} />
+            </p>
+          )}
+        </div>
       </div>
 
       <div className="mt-2 grid items-start gap-2 md:grid-cols-[minmax(0,1fr)_auto]">
